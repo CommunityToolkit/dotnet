@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 #endif
 using Microsoft.Toolkit.HighPerformance.Enumerables;
 using Microsoft.Toolkit.HighPerformance.Helpers.Internals;
+using RuntimeHelpers = Microsoft.Toolkit.HighPerformance.Helpers.Internals.RuntimeHelpers;
 
 namespace Microsoft.Toolkit.HighPerformance.Extensions
 {
@@ -30,25 +31,14 @@ namespace Microsoft.Toolkit.HighPerformance.Extensions
         public static ref T DangerousGetReference<T>(this T[] array)
         {
 #if NETCORE_RUNTIME
-            var arrayData = Unsafe.As<RawArrayData>(array);
+            var arrayData = Unsafe.As<RawArrayData>(array)!;
             ref T r0 = ref Unsafe.As<byte, T>(ref arrayData.Data);
 
             return ref r0;
 #else
-#pragma warning disable SA1131 // Inverted comparison to remove JIT bounds check
-            // Checking the length of the array like so allows the JIT
-            // to skip its own bounds check, which results in the element
-            // access below to be executed without branches.
-            if (0u < (uint)array.Length)
-            {
-                return ref array[0];
-            }
+            IntPtr offset = RuntimeHelpers.GetArrayDataByteOffset<T>();
 
-            unsafe
-            {
-                return ref Unsafe.AsRef<T>(null);
-            }
-#pragma warning restore SA1131
+            return ref array.DangerousGetObjectDataReferenceAt<T>(offset);
 #endif
         }
 
@@ -65,21 +55,17 @@ namespace Microsoft.Toolkit.HighPerformance.Extensions
         public static ref T DangerousGetReferenceAt<T>(this T[] array, int i)
         {
 #if NETCORE_RUNTIME
-            var arrayData = Unsafe.As<RawArrayData>(array);
+            var arrayData = Unsafe.As<RawArrayData>(array)!;
             ref T r0 = ref Unsafe.As<byte, T>(ref arrayData.Data);
-            ref T ri = ref Unsafe.Add(ref r0, i);
+            ref T ri = ref Unsafe.Add(ref r0, (nint)(uint)i);
 
             return ref ri;
 #else
-            if ((uint)i < (uint)array.Length)
-            {
-                return ref array[i];
-            }
+            IntPtr offset = RuntimeHelpers.GetArrayDataByteOffset<T>();
+            ref T r0 = ref array.DangerousGetObjectDataReferenceAt<T>(offset);
+            ref T ri = ref Unsafe.Add(ref r0, (nint)(uint)i);
 
-            unsafe
-            {
-                return ref Unsafe.AsRef<T>(null);
-            }
+            return ref ri;
 #endif
         }
 
@@ -118,9 +104,16 @@ namespace Microsoft.Toolkit.HighPerformance.Extensions
             where T : IEquatable<T>
         {
             ref T r0 = ref array.DangerousGetReference();
-            IntPtr length = (IntPtr)array.Length;
+            nint
+                length = RuntimeHelpers.GetArrayNativeLength(array),
+                count = SpanHelper.Count(ref r0, length, value);
 
-            return SpanHelper.Count(ref r0, length, value);
+            if ((nuint)count > int.MaxValue)
+            {
+                ThrowOverflowException();
+            }
+
+            return (int)count;
         }
 
         /// <summary>
@@ -189,9 +182,30 @@ namespace Microsoft.Toolkit.HighPerformance.Extensions
             where T : notnull
         {
             ref T r0 = ref array.DangerousGetReference();
-            IntPtr length = (IntPtr)array.Length;
+            nint length = RuntimeHelpers.GetArrayNativeLength(array);
 
             return SpanHelper.GetDjb2HashCode(ref r0, length);
+        }
+
+        /// <summary>
+        /// Checks whether or not a given <typeparamref name="T"/> array is covariant.
+        /// </summary>
+        /// <typeparam name="T">The type of items in the input <typeparamref name="T"/> array instance.</typeparam>
+        /// <param name="array">The input <typeparamref name="T"/> array instance.</param>
+        /// <returns>Whether or not <paramref name="array"/> is covariant.</returns>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsCovariant<T>(this T[] array)
+        {
+            return default(T) is null && array.GetType() != typeof(T[]);
+        }
+
+        /// <summary>
+        /// Throws an <see cref="OverflowException"/> when the "column" parameter is invalid.
+        /// </summary>
+        public static void ThrowOverflowException()
+        {
+            throw new OverflowException();
         }
     }
 }
