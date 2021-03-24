@@ -16,4 +16,12 @@
     <PackageReference Include="PolySharp" Version="1.8.1" PrivateAssets="All" IncludeAssets="Analyzers;Build" />
   </ItemGroup>
 
+  <!-- Hook various extension targets at the right place in MSBuild target graph using built-in extension points -->
+  <PropertyGroup>
+    <CustomAfterMicrosoftCommonTargets>$(BuildToolsDirectory)Toolkit.CustomAfterCommon.targets</CustomAfterMicrosoftCommonTargets>
+  </PropertyGroup>
+
+  <!-- Extends NuGet packaging with specific features required for packing toolkit projects -->
+  <Import Project="$(BuildToolsDirectory)Toolkit.Packaging.props" Condition="'$(IsPackable)' != 'false'" />
+
 </Project>

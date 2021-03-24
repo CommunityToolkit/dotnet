@@ -76,22 +76,12 @@
   </ItemGroup>
 
   <!--
-      Pack the source generator build outputs to the correct package folders (for each target Roslyn version)
-      for them to be used as analyzers. Roslyn compilers will automatically load the highest version compatible
-      with the Roslyn's version in the SDK.
-
-      HACK: The recommended way to pack is to get the build outputs using the project's built-in targets,
-            and include them using NuGet's Pack targets. However, due to a bug in v5 of those targets,
-            the outputs were not included in the package. So, including them directly via final
-            output path and building it first is the only way to ensure they are included.
+      Pack the source generator build outputs to the correct package folders for it to be used as an analyzer.
+      Roslyn compilers will automatically load the highest version compatible with it's version in the SDK.
+      This uses the Custom Packaging targets that the toolkit build infrastructure imports.
   -->
-  <ItemGroup>
-    <!-- Roslyn v4.0 target -->
-    <PackageFile Include="..\CommunityToolkit.Mvvm.SourceGenerators\bin\$(Configuration)\netstandard2.0-roslyn4.0\CommunityToolkit.Mvvm.SourceGenerators.dll"
-          TargetPath="analyzers\dotnet\roslyn4.0\cs" />
-    <!-- Roslyn v4.3 target -->
-    <PackageFile Include="..\CommunityToolkit.Mvvm.SourceGenerators\bin\$(Configuration)\netstandard2.0-roslyn4.3\CommunityToolkit.Mvvm.SourceGenerators.dll"
-          TargetPath="analyzers\dotnet\roslyn4.3\cs" />
-  </ItemGroup>
+  <PropertyGroup>
+    <PackNonReferencingProjects>true</PackNonReferencingProjects>
+  </PropertyGroup>
 
 </Project>

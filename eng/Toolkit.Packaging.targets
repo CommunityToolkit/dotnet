@@ -5,9 +5,15 @@
       Use 'TargetsForTfmSpecificContentInPackage' extensibility point to include custom TFM-specific assets in the package.
   -->
   <PropertyGroup>
-    <GenerateNuSpecDependsOn>_AddGlobalPackageFilesToNuGetPack;$(GenerateNuSpecDependsOn)</GenerateNuSpecDependsOn>
+    <GenerateNuSpecDependsOn>_GetNonReferencingProjectBuildOutputs;_AddGlobalPackageFilesToNuGetPack;$(GenerateNuSpecDependsOn)</GenerateNuSpecDependsOn>
     <TargetsForTfmSpecificContentInPackage>_AddPackageFilesPerTargetFrameworkToNuGetPack</TargetsForTfmSpecificContentInPackage>
   </PropertyGroup>
+
+<!--
+    =====================================================================================================================================================
+                                                              Generic PackageFile support
+    =====================================================================================================================================================
+-->
 
   <!--
       When the '$(IncludeContentInPack)' property is false, files specified via '@(None)', '@(Content)' items
@@ -43,6 +49,40 @@
     <!-- Error out when the target path of the package file doesn't contain target framework to differentiate itself within the package -->
     <Error Code="NCTDEV02" Condition="!$([System.String]::new(%(PackagePath)).Contains($(TargetFramework))) AND @(TFMSpecificPackageFile->Count()) != 0"
              Text="The package file ('%(Identity)') is 'TargetFramework' specific and should include the value ('$(TargetFramework)') somewhere in the target path ('%(PackagePath)')." />
+  </Target>
+
+<!--
+    =====================================================================================================================================================
+                                                              Pack Non-Referencing Projects
+    =====================================================================================================================================================
+-->
+
+  <!--
+      Pack non-referencing project's build outputs to the correct package folders depending on their intended usage.
+      The following target uses 'GenerateNuSpecDependsOn' extensibility point to pack the build assets
+      by using the custom 'GetBuildOutputs' target imported within the target project.
+  -->
+  <Target Name="_GetNonReferencingProjectBuildOutputs">
+    <!-- Get the build outputs of projects which don't reference the output assembly -->
+    <MSBuild
+      Projects="@(ProjectReference->WithMetadataValue('ReferenceOutputAssembly', 'false'))"
+      Targets="GetBuildOutputs">
+      <Output TaskParameter="TargetOutputs" ItemName="NonReferencingProjectBuildOutput" />
+    </MSBuild>
+  </Target>
+
+  <Target Name="_PackNonReferencingProjectBuildOutputs"
+          DependsOnTargets="_GetNonReferencingProjectBuildOutputs"
+          BeforeTargets="_AddGlobalPackageFilesToNuGetPack"
+          Condition="'$(PackNonReferencingProjects)' == 'true'">
+
+    <!-- Include the Build Outputs (also for each Custom target, like Roslyn analyzers and generators) in the package -->
+    <ItemGroup>
+      <PackageFile Include="@(NonReferencingProjectBuildOutput)">
+        <TargetPath Condition="'%(IsCompilerExtension)' == 'true'">$([System.IO.Path]::Combine('analyzers', 'dotnet', '%(TargetCompiler)', '%(TargetLanguage)'))</TargetPath>
+        <TargetPath Condition="'%(TargetPath)' == ''">$([System.IO.Path]::Combine('tools', '%(TargetFramework)'))</TargetPath>
+      </PackageFile>
+    </ItemGroup>
   </Target>
 
 </Project>

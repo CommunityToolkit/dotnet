@@ -20,4 +20,7 @@
     <InternalsVisibleTo Update="@(InternalsVisibleTo)" PublicKey="$(AssemblySignPublicKey)" Condition="@(InternalsVisibleTo->Count()) != 0" />
   </ItemGroup>
 
+  <!-- Extends NuGet packaging with specific features required for packing toolkit projects -->
+  <Import Project="$(BuildToolsDirectory)Toolkit.Packaging.targets" Condition="'$(IsPackable)' == 'true'" />
+
 </Project>
