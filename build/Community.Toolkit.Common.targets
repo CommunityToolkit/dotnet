@@ -30,7 +30,7 @@
       Use 'TargetsForTfmSpecificContentInPackage' extensibility point to include custom TFM-specific assets in the package.
   -->
   <PropertyGroup>
-    <GenerateNuSpecDependsOn>_AddGlobalPackageFilesToNuGetPack</GenerateNuSpecDependsOn>
+    <GenerateNuSpecDependsOn>_AddGlobalPackageFilesToNuGetPack;$(GenerateNuSpecDependsOn)</GenerateNuSpecDependsOn>
     <TargetsForTfmSpecificContentInPackage>_AddPackageFilesPerTargetFrameworkToNuGetPack</TargetsForTfmSpecificContentInPackage>
   </PropertyGroup>
 

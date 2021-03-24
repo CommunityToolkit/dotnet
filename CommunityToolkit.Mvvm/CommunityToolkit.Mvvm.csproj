@@ -50,22 +50,38 @@
   </ItemGroup>
 
   <!-- Source generator project reference for packing -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+  <ItemGroup>
     <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.csproj"
                       ReferenceOutputAssembly="false" />
   </ItemGroup>
 
+  <!-- Use 'GenerateNuSpecDependsOn' extensibility point to include source generator assets in the package -->
+  <PropertyGroup>
+    <GenerateNuSpecDependsOn>GetSourceGenBuildOutputs</GenerateNuSpecDependsOn>
+  </PropertyGroup>
+
   <!--
       Pack the source generator build outputs to the correct package folder for it to be used as an analyzer.
-
-      HACK: The recommended way to pack is to get the build outputs using the project's built-in targets,
-            and include them using NuGet's Pack targets. However, due to a bug in v5 of those targets,
-            the outputs were not included in the package. So, including them directly via final
-            output path and building it first is the only way to ensure they are included.
+      The following target uses 'GenerateNuSpecDependsOn' extensibility point to pack the build assets
+      by using the custom 'GetBuildOutputs' target imported within the target project.
   -->
-  <ItemGroup>
-    <PackageFile Include="..\CommunityToolkit.Mvvm.SourceGenerators\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.SourceGenerators.dll"
-                 TargetPath="analyzers\dotnet\roslyn4.0\cs" />
-  </ItemGroup>
+  <Target Name="GetSourceGenBuildOutputs"
+          BeforeTargets="_AddGlobalPackageFilesToNuGetPack"
+          AfterTargets="_CalculateInputsOutputsForPack">
+
+    <!-- Get the build outputs of the source generator project -->
+    <MSBuild
+      Projects="@(ProjectReference->WithMetadataValue('ReferenceOutputAssembly', 'false'))"
+      Targets="GetBuildOutputs">
+      <Output TaskParameter="TargetOutputs" ItemName="SourceGenBuildOutput" />
+    </MSBuild>
+
+    <ItemGroup>
+      <!-- Include the Build Outputs in the package via 'PackageFile' item -->
+      <PackageFile Include="@(SourceGenBuildOutput)" TargetPath="analyzers\dotnet\roslyn4.0\cs" />
+      <!-- Use the 'FinalOutputPath' metadata to mark the inputs thus enabling incremental builds -->
+      <NuGetPackInput Include="@(SourceGenBuildOutput->'%(FinalOutputPath)')" />
+    </ItemGroup>
+  </Target>
 
 </Project>

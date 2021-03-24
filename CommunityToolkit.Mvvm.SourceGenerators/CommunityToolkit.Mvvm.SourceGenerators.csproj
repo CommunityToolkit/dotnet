@@ -24,4 +24,6 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" PrivateAssets="all" Pack="false" />
   </ItemGroup>
 
+  <Import Project="$(BuildToolsDirectory)Community.Toolkit.GetBuildOutputs.targets" />
+
 </Project>
