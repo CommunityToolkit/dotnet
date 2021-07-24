@@ -17,17 +17,6 @@ indent_style = space
 # New line preferences
 end_of_line = unset
 insert_final_newline = false
-dotnet_style_prefer_is_null_check_over_reference_equality_method = true:warning
-dotnet_style_readonly_field = true:warning
-dotnet_style_predefined_type_for_locals_parameters_members = true:warning
-dotnet_style_predefined_type_for_member_access = true:warning
-dotnet_style_require_accessibility_modifiers = for_non_interface_members:warning
-dotnet_style_allow_statement_immediately_after_block_experimental = false:warning
-dotnet_style_allow_multiple_blank_lines_experimental = false:warning
-dotnet_style_qualification_for_field = true:warning
-dotnet_style_qualification_for_property = false:warning
-dotnet_style_qualification_for_method = false:warning
-dotnet_style_qualification_for_event = false:warning
 
 #### Build files ####
 
@@ -58,14 +47,14 @@ insert_final_newline = true
 #### .NET Coding Conventions ####
 
 # this. and Me. preferences
-dotnet_style_qualification_for_event = true:silent
-dotnet_style_qualification_for_field = true:silent
-dotnet_style_qualification_for_method = true:silent
-dotnet_style_qualification_for_property = true:silent
+dotnet_style_qualification_for_event = false:warning
+dotnet_style_qualification_for_field = true:warning
+dotnet_style_qualification_for_method = false:warning
+dotnet_style_qualification_for_property = false:warning
 
 # Language keywords vs BCL types preferences
-dotnet_style_predefined_type_for_locals_parameters_members = true:silent
-dotnet_style_predefined_type_for_member_access = true:silent
+dotnet_style_predefined_type_for_locals_parameters_members = true:warning
+dotnet_style_predefined_type_for_member_access = true:warning
 
 # Parentheses preferences
 dotnet_style_parentheses_in_arithmetic_binary_operators = always_for_clarity:silent
@@ -74,7 +63,11 @@ dotnet_style_parentheses_in_other_operators = never_if_unnecessary:silent
 dotnet_style_parentheses_in_relational_binary_operators = always_for_clarity:silent
 
 # Modifier preferences
-dotnet_style_require_accessibility_modifiers = for_non_interface_members:silent
+dotnet_style_require_accessibility_modifiers = for_non_interface_members:warning
+
+# Code block preferences
+dotnet_style_allow_multiple_blank_lines_experimental = false:warning
+dotnet_style_allow_statement_immediately_after_block_experimental = false:warning
 
 # Expression-level preferences
 csharp_style_deconstructed_variable_declaration = true:suggestion
@@ -90,10 +83,10 @@ dotnet_style_prefer_conditional_expression_over_assignment = true:silent
 dotnet_style_prefer_conditional_expression_over_return = true:silent
 dotnet_style_prefer_inferred_anonymous_type_member_names = true:suggestion
 dotnet_style_prefer_inferred_tuple_names = true:suggestion
-dotnet_style_prefer_is_null_check_over_reference_equality_method = true:suggestion
+dotnet_style_prefer_is_null_check_over_reference_equality_method = true:warning
 
 # Field preferences
-dotnet_style_readonly_field = true:suggestion
+dotnet_style_readonly_field = true:warning
 
 #### C# Coding Conventions ####
 
@@ -112,6 +105,7 @@ csharp_style_expression_bodied_operators = false:silent
 csharp_style_expression_bodied_properties = false:silent
 
 # Pattern matching preferences
+csharp_style_prefer_pattern_matching = true:suggestion
 csharp_style_pattern_matching_over_as_with_null_check = true:suggestion
 csharp_style_pattern_matching_over_is_with_cast_check = true:suggestion
 
@@ -123,9 +117,15 @@ csharp_preferred_modifier_order = public,private,protected,internal,static,exter
 
 # Code-block preferences
 csharp_prefer_braces = true:suggestion
+csharp_using_directive_placement = outside_namespace:warning
+csharp_style_namespace_declarations = file_scoped:warning
+csharp_style_unused_value_assignment_preference = discard_variable:warning
+csharp_style_unused_value_expression_statement_preference = discard_variable:warning
+csharp_style_allow_blank_lines_between_consecutive_braces_experimental = false:warning
 
 # Expression-level preferences
 csharp_prefer_simple_default_expression = true:suggestion
+csharp_prefer_static_local_function = true:warning
 csharp_style_pattern_local_over_anonymous_function = true:warning
 
 #### C# Formatting Rules ####
@@ -381,10 +381,3 @@ dotnet_diagnostic.SA1629.severity = none
 dotnet_diagnostic.SA1633.severity = none
 dotnet_diagnostic.SA1634.severity = none
 dotnet_diagnostic.SA1652.severity = none
-csharp_using_directive_placement = outside_namespace:warning
-csharp_style_unused_value_assignment_preference = discard_variable:warning
-csharp_style_unused_value_expression_statement_preference = discard_variable:warning
-csharp_prefer_static_local_function = true:warning
-csharp_style_allow_blank_lines_between_consecutive_braces_experimental = false:warning
-csharp_style_prefer_pattern_matching = true:suggestion
-csharp_style_namespace_declarations = file_scoped:warning
