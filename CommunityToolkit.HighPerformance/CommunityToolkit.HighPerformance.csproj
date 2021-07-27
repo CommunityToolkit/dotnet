@@ -45,17 +45,6 @@
       </ItemGroup>
     </When>
 
-    <When Condition="'$(TargetFramework)' == 'net6.0'">
-
-      <!-- NETSTANDARD2_1_OR_GREATER: includes both .NET Standard 2.1, .NET Core 3.1 and .NET 6.
-           Additionally, also enable trimming support on .NET 6. -->
-      <PropertyGroup>
-        <DefineConstants>NETSTANDARD2_1_OR_GREATER</DefineConstants>
-        <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
-        <IsTrimmable>true</IsTrimmable>
-      </PropertyGroup>
-    </When>
-
     <When Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
       <PropertyGroup>
         <DefineConstants>NETSTANDARD2_1_OR_GREATER</DefineConstants>
@@ -65,6 +54,18 @@
       <ItemGroup>
         <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
       </ItemGroup>
+    </When>
+
+    <!--
+        NETSTANDARD2_1_OR_GREATER: includes both .NET Standard 2.1, .NET Core 3.1 and .NET 6.
+        Additionally, also enable trimming support on .NET 6.
+    -->
+    <When Condition="'$(TargetFramework)' == 'net6.0'">
+      <PropertyGroup>
+        <DefineConstants>NETSTANDARD2_1_OR_GREATER</DefineConstants>
+        <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+        <IsTrimmable>true</IsTrimmable>
+      </PropertyGroup>
     </When>
   </Choose>
 

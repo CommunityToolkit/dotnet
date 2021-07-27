@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net472;netcoreapp3.1;net6.0</TargetFrameworks>
     <EnablePreviewFeatures>true</EnablePreviewFeatures>
+    <TargetFrameworks>net472;netcoreapp3.1;net6.0</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
