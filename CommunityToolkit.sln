@@ -15,7 +15,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		azure-pipelines.yml = azure-pipelines.yml
 		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
-		toolkit.snk = toolkit.snk
 		version.json = version.json
 	EndProjectSection
 EndProject
@@ -27,10 +26,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.HighPerfor
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{88C6FFBE-322D-4CEA-842B-B2CB281D357D}"
 	ProjectSection(SolutionItems) = preProject
-		CODE_OF_CONDUCT.md = CODE_OF_CONDUCT.md
+		Code-of-Conduct.md = Code-of-Conduct.md
 		Contributing.md = Contributing.md
 		License.md = License.md
-		README.md = README.md
+		ReadMe.md = ReadMe.md
 		ThirdPartyNotices.txt = ThirdPartyNotices.txt
 	EndProjectSection
 EndProject
@@ -44,13 +43,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Common.Uni
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{CD16E790-7B7B-411E-9CE7-768E759CC22D}"
 	ProjectSection(SolutionItems) = preProject
-		build\Community.Toolkit.Common.props = build\Community.Toolkit.Common.props
-		build\Community.Toolkit.Common.targets = build\Community.Toolkit.Common.targets
-		build\header.txt = build\header.txt
-		build\nuget.png = build\nuget.png
-		build\Sign-Package.ps1 = build\Sign-Package.ps1
-		build\SignClientSettings.json = build\SignClientSettings.json
-		build\Update-Headers.ps1 = build\Update-Headers.ps1
+		eng\Toolkit.Common.props = eng\Toolkit.Common.props
+		eng\Toolkit.Common.targets = eng\Toolkit.Common.targets
+		eng\Sign-Package.ps1 = eng\Sign-Package.ps1
+		eng\SignClientSettings.json = eng\SignClientSettings.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration", "Configuration", "{6640D447-C28D-4DBB-91F4-3ADCE0CA64AD}"

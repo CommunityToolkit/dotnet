@@ -2,10 +2,10 @@
 
   <PropertyGroup>
     <RepositoryDirectory>$(MSBuildThisFileDirectory)</RepositoryDirectory>
-    <BuildToolsDirectory>$(RepositoryDirectory)build\</BuildToolsDirectory>
+    <BuildToolsDirectory>$(RepositoryDirectory)eng\</BuildToolsDirectory>
   </PropertyGroup>
 
-  <Import Project="$(BuildToolsDirectory)Community.Toolkit.Common.props" />
+  <Import Project="$(BuildToolsDirectory)Toolkit.Common.props" />
 
   <Choose>
     <When Condition="$(IsCoreProject)">
