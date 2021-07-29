@@ -20,6 +20,23 @@
     <PackageTags>MVVM;Toolkit;MVVMToolkit;INotifyPropertyChanged;Observable;IOC;DI;Dependency Injection;Object Messaging;Extensions;Helpers</PackageTags>
   </PropertyGroup>
 
+  <!-- Enable trimming support on .NET 6 -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+    <IsTrimmable>true</IsTrimmable>
+  </PropertyGroup>
+
+  <!--
+      Include the custom .targets file to check the source generator.
+      .NET 6 is not needed as it guarantees Roslyn 4.x.
+  -->
+  <ItemGroup>
+    <None Include="CommunityToolkit.Mvvm.targets" Pack="True" PackagePath="build\netstandard2.0" />
+    <None Include="CommunityToolkit.Mvvm.targets" Pack="True" PackagePath="build\netstandard2.1" />
+    <None Include="CommunityToolkit.Mvvm.targets" Pack="True" PackagePath="buildTransitive\netstandard2.0" />
+    <None Include="CommunityToolkit.Mvvm.targets" Pack="True" PackagePath="buildTransitive\netstandard2.1" />
+  </ItemGroup>
+
   <!-- .NET Standard 2.0 doesn't have the Span<T> and IAsyncEnumerable<T> types -->
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0" />
@@ -34,30 +51,19 @@
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
   </ItemGroup>
 
-  <!-- Enable trimming support on .NET 6 -->
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
-    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
-    <IsTrimmable>true</IsTrimmable>
-  </PropertyGroup>
-
   <!-- Source generator project reference for packing -->
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.csproj"
+                      ReferenceOutputAssembly="false" />
   </ItemGroup>
 
-  <ItemGroup Label="Package">
-
-    <!-- Include the custom .targets file to check the source generator (.NET 6 is not needed as it guarantees Roslyn 4.x) -->
-    <None Include="CommunityToolkit.Mvvm.targets" PackagePath="buildTransitive\netstandard2.0" Pack="true" />
-    <None Include="CommunityToolkit.Mvvm.targets" PackagePath="buildTransitive\netstandard2.1" Pack="true" />
-    <None Include="CommunityToolkit.Mvvm.targets" PackagePath="build\netstandard2.0" Pack="true" />
-    <None Include="CommunityToolkit.Mvvm.targets" PackagePath="build\netstandard2.1" Pack="true" />
-
-    <!-- Pack the source generator to the right package folder -->
+  <!--
+      Pack the source generator to the right package folder
+  -->
+  <ItemGroup>
     <None Include="..\CommunityToolkit.Mvvm.SourceGenerators\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.SourceGenerators.dll"
           PackagePath="analyzers\dotnet\roslyn4.0\cs"
-          Pack="true"
-          Visible="false" />
+          Pack="true" Visible="false" />
   </ItemGroup>
 
 </Project>

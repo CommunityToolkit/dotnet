@@ -12,9 +12,9 @@
   </PropertyGroup>
 
   <ItemGroup Condition="$(IsPackable)">
-    <None Include="$(BuildToolsDirectory)nuget.png" Pack="true" PackagePath="\Icon.png" Visible="False" />
-    <None Include="$(RepositoryDirectory)License.md" Pack="true" PackagePath="\" Visible="False" />
-    <None Include="$(RepositoryDirectory)ThirdPartyNotices.txt" Pack="true" PackagePath="\" Visible="False" />
+    <None Pack="true" PackagePath="\" Visible="False" Include="$(BuildToolsDirectory)Icon.png" />
+    <None Pack="true" PackagePath="\" Visible="False" Include="$(RepositoryDirectory)License.md" />
+    <None Pack="true" PackagePath="\" Visible="False" Include="$(RepositoryDirectory)ThirdPartyNotices.txt" />
   </ItemGroup>
 
 </Project>

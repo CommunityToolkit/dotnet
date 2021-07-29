@@ -13,16 +13,17 @@
           AfterTargets="ResolvePackageDependenciesForBuild;ResolveNuGetPackageAssets"
           DependsOnTargets="MVVMToolkitGatherAnalyzers">
 
-    <!-- Use the CSharpCoreTargetsPath property to find the version of the compiler we are using. This is the same mechanism
-         MSBuild uses to find the compiler. We could check the assembly version for any compiler assembly (since they all have
-         the same version) but Microsoft.Build.Tasks.CodeAnalysis.dll is where MSBuild loads the compiler tasks from so if
-         someone is getting creative with msbuild tasks/targets this is the "most correct" assembly to check. -->
+    <!--
+        Use the CSharpCoreTargetsPath property to find the version of the compiler we are using. This is the same mechanism
+        MSBuild uses to find the compiler. We could check the assembly version for any compiler assembly (since they all have
+        the same version) but Microsoft.Build.Tasks.CodeAnalysis.dll is where MSBuild loads the compiler tasks from so if
+        someone is getting creative with msbuild tasks/targets this is the "most correct" assembly to check.
+    -->
     <GetAssemblyIdentity AssemblyFiles="$([System.IO.Path]::Combine(`$([System.IO.Path]::GetDirectoryName($(CSharpCoreTargetsPath)))`,`Microsoft.Build.Tasks.CodeAnalysis.dll`))">
       <Output TaskParameter="Assemblies" ItemName="MVVMToolkitCurrentCompilerAssemblyIdentity"/>
     </GetAssemblyIdentity>
 
     <PropertyGroup>
-
       <!-- Transform the resulting item from GetAssemblyIdentity into a property representing its assembly version -->
       <MVVMToolkitCurrentCompilerVersion>@(MVVMToolkitCurrentCompilerAssemblyIdentity->'%(Version)')</MVVMToolkitCurrentCompilerVersion>
 
@@ -35,9 +36,11 @@
       <Analyzer Remove="@(MVVMToolkitAnalyzer)"/>
     </ItemGroup>
 
-    <!-- If the source generators are disabled, also emit a warning. This would've been produced by MSBuild itself as well, but
-         emitting this manually lets us customize the message to inform developers as to why exactly the generators have been
-         disabled, and that the rest of the MVVM Toolkit will still keep working as intended, just without additional features. -->
+    <!--
+        If the source generators are disabled, also emit a warning. This would've been produced by MSBuild itself as well, but
+        emitting this manually lets us customize the message to inform developers as to why exactly the generators have been
+        disabled, and that the rest of the MVVM Toolkit will still keep working as intended, just without additional features.
+    -->
     <Warning Condition ="'$(MVVMToolkitCurrentCompilerVersionIsNotNewEnough)' == 'true'" Text="The MVVM Toolkit source generators have been disabled on the current configuration, as they need Roslyn 4.x in order to work. The MVVM Toolkit will work just fine, but features relying on the source generators will not be available."/>
   </Target>
 

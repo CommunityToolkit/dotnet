@@ -15,9 +15,9 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Nullable>Enable</Nullable>
     <LangVersion>10.0</LangVersion>
-    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <PropertyGroup>

@@ -44,6 +44,11 @@
     </When>
   </Choose>
 
+  <!-- T4 service used by the Guard APIs -->
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
   <ItemGroup>
     <None Update="Generated\Guard.Comparable.Numeric.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -61,11 +66,6 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>TypeInfo.g.cs</LastGenOutput>
     </None>
-  </ItemGroup>
-
-  <!-- T4 service used by the Guard APIs -->
-  <ItemGroup>
-    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 
   <ItemGroup>
