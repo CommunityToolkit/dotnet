@@ -1,0 +1,16 @@
+<Project>
+
+  <Import Project="..\Directory.Build.props" />
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <IsPublishable>false</IsPublishable>
+    <NoWarn>$(NoWarn);CS8002;SA0001</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <IsTestProject>true</IsTestProject>
+    <IsTestProject Condition="$(MSBuildProjectName.Contains('Mvvm.ExternalAssembly'))">false</IsTestProject>
+  </PropertyGroup>
+
+</Project>

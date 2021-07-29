@@ -1,19 +1,6 @@
 <Project>
 
   <PropertyGroup>
-    <Company>Microsoft</Company>
-    <Authors>Microsoft</Authors>
-    <Product>.NET Community Toolkit</Product>
-    <CommonTags>dotnet;Community;Toolkit</CommonTags>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Copyright>(c) .NET Foundation and Contributors. All rights reserved.</Copyright>
-    <PackageProjectUrl>https://github.com/CommunityToolkit/dotnet</PackageProjectUrl>
-    <PackageReleaseNotes>https://github.com/CommunityToolkit/dotnet/releases</PackageReleaseNotes>
-    <PackageIcon>Icon.png</PackageIcon>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
@@ -33,19 +20,13 @@
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)toolkit.snk</AssemblyOriginatorKeyFile>
-    <AssemblySignPublicKey>002400000480000094000000060200000024000052534131000400000100010041753AF735AE6140C9508567666C51C6AB929806ADB0D210694B30AB142A060237BC741F9682E7D8D4310364B4BBA4EE89CC9D3D5CE7E5583587E8EA44DCA09977996582875E71FB54FA7B170798D853D5D8010B07219633BDB761D01AC924DA44576D6180CDCEAE537973982BB461C541541D58417A3794E34F45E6F2D129E2</AssemblySignPublicKey>
+    <AssemblySignPublicKeyFile>$(MSBuildThisFileDirectory)toolkit.spk</AssemblySignPublicKeyFile>
+    <AssemblySignPublicKey>$([System.IO.File]::ReadAllText($(AssemblySignPublicKeyFile)))</AssemblySignPublicKey>
   </PropertyGroup>
 
   <PropertyGroup>
-    <IsTestProject>$(MSBuildProjectName.Contains('Test'))</IsTestProject>
-    <IsCoreProject Condition="$(IsTestProject)">False</IsCoreProject>
-    <IsCoreProject Condition="'$(IsCoreProject)' == ''">True</IsCoreProject>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <IsPackable>true</IsPackable>
-    <IsPublishable>true</IsPublishable>
     <ContinuousIntegrationBuild>$(TF_BUILD)</ContinuousIntegrationBuild>
+    <SourceLinkEnabled>$(ContinuousIntegrationBuild)</SourceLinkEnabled>
   </PropertyGroup>
 
   <!-- Identify projects targeting multiple Roslyn versions and add defaults -->

@@ -7,23 +7,6 @@
 
   <Import Project="$(BuildToolsDirectory)Toolkit.Common.props" />
 
-  <Choose>
-    <When Condition="$(IsCoreProject)">
-      <PropertyGroup>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <PackageOutputPath>$(RepositoryDirectory)bin\nupkg</PackageOutputPath>
-        <TreatWarningsAsErrors Condition="'$(Configuration)' == 'Release'">true</TreatWarningsAsErrors>
-      </PropertyGroup>
-    </When>
-    <Otherwise>
-      <PropertyGroup>
-        <IsPackable>false</IsPackable>
-        <IsPublishable>false</IsPublishable>
-        <NoWarn>$(NoWarn);CS8002;SA0001</NoWarn>
-      </PropertyGroup>
-    </Otherwise>
-  </Choose>
-
   <ItemGroup>
     <PackageReference Include="Nerdbank.GitVersioning" Version="3.5.119" PrivateAssets="All" />
   </ItemGroup>

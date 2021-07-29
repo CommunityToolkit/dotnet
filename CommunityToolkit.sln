@@ -23,6 +23,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{CD16E790
 		eng\Toolkit.Common.targets = eng\Toolkit.Common.targets
 		eng\Toolkit.CompilerTargeting.props = eng\Toolkit.CompilerTargeting.props
 		eng\Toolkit.CompilerTargeting.targets = eng\Toolkit.CompilerTargeting.targets
+		eng\toolkit.spk = eng\toolkit.spk
+		eng\Toolkit.TextTemplates.targets = eng\Toolkit.TextTemplates.targets
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{88C6FFBE-322D-4CEA-842B-B2CB281D357D}"
@@ -53,6 +55,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.SourceGenerators.Roslyn43", "src\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.Roslyn43.csproj", "{DF455C40-B18E-4890-8758-7CCCB5CA7052}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B30036C4-D514-4E5B-A323-587A061772CE}"
+	ProjectSection(SolutionItems) = preProject
+		tests\Directory.Build.props = tests\Directory.Build.props
+		tests\Directory.Build.targets = tests\Directory.Build.targets
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Common.UnitTests", "tests\CommunityToolkit.Common.UnitTests\CommunityToolkit.Common.UnitTests.csproj", "{17522D0B-CA70-40B6-AFD8-8B8D45E75D92}"
 EndProject

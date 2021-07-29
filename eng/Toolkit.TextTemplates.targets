@@ -1,0 +1,50 @@
+<Project>
+
+  <ItemGroup>
+    <None Update="Generated\Guard.Comparable.Numeric.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Guard.Comparable.Numeric.g.cs</LastGenOutput>
+    </None>
+    <None Update="Generated\Guard.Collection.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Guard.Collection.g.cs</LastGenOutput>
+    </None>
+    <None Update="Generated\ThrowHelper.Collection.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ThrowHelper.Collection.g.cs</LastGenOutput>
+    </None>
+    <None Update="Generated\TypeInfo.ttinclude">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TypeInfo.g.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <!-- T4 service used by the Guard APIs -->
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Generated\Guard.Comparable.Numeric.g.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Guard.Comparable.Numeric.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Generated\Guard.Collection.g.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Guard.Collection.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Generated\ThrowHelper.Collection.g.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ThrowHelper.Collection.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Generated\TypeInfo.g.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TypeInfo.ttinclude</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+</Project>
