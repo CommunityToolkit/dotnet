@@ -20,6 +20,39 @@
     <PackageTags>MVVM;Toolkit;MVVMToolkit;INotifyPropertyChanged;Observable;IOC;DI;Dependency Injection;Object Messaging;Extensions;Helpers</PackageTags>
   </PropertyGroup>
 
+  <!-- Necessary polyfills -->
+  <PropertyGroup>
+    <PolySharpIncludeGeneratedTypes>
+      System.Diagnostics.CodeAnalysis.DoesNotReturnAttribute;
+      System.Diagnostics.CodeAnalysis.MaybeNullWhenAttribute;
+      System.Diagnostics.CodeAnalysis.MemberNotNullAttribute;
+      System.Diagnostics.CodeAnalysis.NotNullAttribute;
+      System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
+      System.Diagnostics.CodeAnalysis.NotNullWhenAttribute;
+      System.Diagnostics.CodeAnalysis.RequiresUnreferencedCodeAttribute;
+      System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessageAttribute;
+      System.Runtime.CompilerServices.CallerArgumentExpressionAttribute;
+      System.Runtime.CompilerServices.IsExternalInit;
+      System.Runtime.CompilerServices.SkipLocalsInitAttribute;
+    </PolySharpIncludeGeneratedTypes>
+  </PropertyGroup>
+
+  <!-- Add the [InternalsVisibleTo] attribute for the test project -->
+  <ItemGroup>
+    <InternalsVisibleTo Include="CommunityToolkit.Mvvm.Internals.UnitTests, PublicKey=$(AssemblySignPublicKey)" />
+  </ItemGroup>
+
+  <!--
+      Include the custom .targets file to check the source generator.
+      .NET 6 is not needed as it guarantees Roslyn 4.x.
+  -->
+  <ItemGroup>
+    <None Include="CommunityToolkit.Mvvm.targets" Pack="True" PackagePath="build\netstandard2.0" />
+    <None Include="CommunityToolkit.Mvvm.targets" Pack="True" PackagePath="build\netstandard2.1" />
+    <None Include="CommunityToolkit.Mvvm.targets" Pack="True" PackagePath="buildTransitive\netstandard2.0" />
+    <None Include="CommunityToolkit.Mvvm.targets" Pack="True" PackagePath="buildTransitive\netstandard2.1" />
+  </ItemGroup>
+
   <!-- .NET Standard 2.0 doesn't have the Span<T> and IAsyncEnumerable<T> types -->
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="7.0.0" />
@@ -40,40 +73,11 @@
     <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.Roslyn43.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
-  <!-- Add the [InternalsVisibleTo] attribute for the test project -->
-  <ItemGroup>
-    <InternalsVisibleTo Include="CommunityToolkit.Mvvm.Internals.UnitTests, PublicKey=$(AssemblySignPublicKey)" />
-  </ItemGroup>
-
-  <!-- Necessary polyfills -->
-  <PropertyGroup>
-    <PolySharpIncludeGeneratedTypes>
-      System.Diagnostics.CodeAnalysis.DoesNotReturnAttribute;
-      System.Diagnostics.CodeAnalysis.MaybeNullWhenAttribute;
-      System.Diagnostics.CodeAnalysis.MemberNotNullAttribute;
-      System.Diagnostics.CodeAnalysis.NotNullAttribute;
-      System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
-      System.Diagnostics.CodeAnalysis.NotNullWhenAttribute;
-      System.Diagnostics.CodeAnalysis.RequiresUnreferencedCodeAttribute;
-      System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessageAttribute;
-      System.Runtime.CompilerServices.CallerArgumentExpressionAttribute;
-      System.Runtime.CompilerServices.IsExternalInit;
-      System.Runtime.CompilerServices.SkipLocalsInitAttribute;
-    </PolySharpIncludeGeneratedTypes>
-  </PropertyGroup>
-
-  <ItemGroup Label="Package">
-
-    <!-- Include the custom .targets file to check the source generator (.NET 6 is not needed as it guarantees Roslyn 4.x) -->
-    <None Include="CommunityToolkit.Mvvm.targets" PackagePath="buildTransitive\netstandard2.0" Pack="true" />
-    <None Include="CommunityToolkit.Mvvm.targets" PackagePath="buildTransitive\netstandard2.1" Pack="true" />
-    <None Include="CommunityToolkit.Mvvm.targets" PackagePath="build\netstandard2.0" Pack="true" />
-    <None Include="CommunityToolkit.Mvvm.targets" PackagePath="build\netstandard2.1" Pack="true" />
-
-    <!--
+  <!--
       Pack the source generator to the right package folders (each matching the target Roslyn version).
       Roslyn will automatically load the highest version compatible with Roslyn's version in the SDK.
-    -->
+  -->
+  <ItemGroup>
     <None Include="..\CommunityToolkit.Mvvm.SourceGenerators\bin\$(Configuration)\netstandard2.0-roslyn4.0\CommunityToolkit.Mvvm.SourceGenerators.dll" PackagePath="analyzers\dotnet\roslyn4.0\cs" Pack="true" Visible="false" />
     <None Include="..\CommunityToolkit.Mvvm.SourceGenerators\bin\$(Configuration)\netstandard2.0-roslyn4.3\CommunityToolkit.Mvvm.SourceGenerators.dll" PackagePath="analyzers\dotnet\roslyn4.3\cs" Pack="true" Visible="false" />
   </ItemGroup>

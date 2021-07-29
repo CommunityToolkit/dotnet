@@ -14,6 +14,18 @@
     <PackageTags>Diagnostics;Guard;ThrowHelper;TypeInfo;Extensions;Helpers</PackageTags>
   </PropertyGroup>
 
+  <!-- Necessary polyfills -->
+  <PropertyGroup>
+    <PolySharpIncludeGeneratedTypes>
+      System.Diagnostics.CodeAnalysis.DoesNotReturnAttribute;
+      System.Diagnostics.CodeAnalysis.DoesNotReturnIfAttribute;
+      System.Diagnostics.CodeAnalysis.NotNullAttribute;
+      System.Diagnostics.StackTraceHiddenAttribute;
+      System.Runtime.CompilerServices.CallerArgumentExpressionAttribute;
+      System.Runtime.CompilerServices.SkipLocalsInitAttribute;
+    </PolySharpIncludeGeneratedTypes>
+  </PropertyGroup>
+
   <Choose>
 
     <!-- .NET Standard 2.0 doesn't have the Span<T> type -->
@@ -30,18 +42,6 @@
       </ItemGroup>
     </When>
   </Choose>
-
-  <!-- Necessary polyfills -->
-  <PropertyGroup>
-    <PolySharpIncludeGeneratedTypes>
-      System.Diagnostics.CodeAnalysis.DoesNotReturnAttribute;
-      System.Diagnostics.CodeAnalysis.DoesNotReturnIfAttribute;
-      System.Diagnostics.CodeAnalysis.NotNullAttribute;
-      System.Diagnostics.StackTraceHiddenAttribute;
-      System.Runtime.CompilerServices.CallerArgumentExpressionAttribute;
-      System.Runtime.CompilerServices.SkipLocalsInitAttribute;
-    </PolySharpIncludeGeneratedTypes>
-  </PropertyGroup>
 
   <Import Project="$(BuildToolsDirectory)Toolkit.TextTemplates.targets" />
 
