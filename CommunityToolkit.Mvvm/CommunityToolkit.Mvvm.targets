@@ -19,7 +19,7 @@
         the same version) but Microsoft.Build.Tasks.CodeAnalysis.dll is where MSBuild loads the compiler tasks from so if
         someone is getting creative with msbuild tasks/targets this is the "most correct" assembly to check.
     -->
-    <GetAssemblyIdentity AssemblyFiles="$([System.IO.Path]::Combine(`$([System.IO.Path]::GetDirectoryName($(CSharpCoreTargetsPath)))`,`Microsoft.Build.Tasks.CodeAnalysis.dll`))">
+    <GetAssemblyIdentity AssemblyFiles="$([System.IO.Path]::Combine($([System.IO.Path]::GetDirectoryName($(CSharpCoreTargetsPath))), 'Microsoft.Build.Tasks.CodeAnalysis.dll'))">
       <Output TaskParameter="Assemblies" ItemName="MVVMToolkitCurrentCompilerAssemblyIdentity"/>
     </GetAssemblyIdentity>
 

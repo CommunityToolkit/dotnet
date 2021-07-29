@@ -24,9 +24,6 @@
     </When>
 
     <When Condition="'$(TargetFramework)' == 'netstandard2.1'">
-      <PropertyGroup>
-        <DefineConstants>NETSTANDARD2_1_OR_GREATER</DefineConstants>
-      </PropertyGroup>
 
       <!-- .NET Standard 2.1 doesn't have the Unsafe type -->
       <ItemGroup>
@@ -50,44 +47,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Generated\Guard.Comparable.Numeric.tt">
+    <None Update="Generated\*.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Guard.Comparable.Numeric.g.cs</LastGenOutput>
-    </None>
-    <None Update="Generated\Guard.Collection.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Guard.Collection.g.cs</LastGenOutput>
-    </None>
-    <None Update="Generated\ThrowHelper.Collection.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ThrowHelper.Collection.g.cs</LastGenOutput>
-    </None>
-    <None Update="Generated\TypeInfo.ttinclude">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>TypeInfo.g.cs</LastGenOutput>
+      <LastGenOutput>%(Filename).g.cs</LastGenOutput>
     </None>
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Generated\Guard.Comparable.Numeric.g.cs">
+    <Compile Update="Generated\*.g.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>Guard.Comparable.Numeric.tt</DependentUpon>
-    </Compile>
-    <Compile Update="Generated\Guard.Collection.g.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Guard.Collection.tt</DependentUpon>
-    </Compile>
-    <Compile Update="Generated\ThrowHelper.Collection.g.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ThrowHelper.Collection.tt</DependentUpon>
-    </Compile>
-    <Compile Update="Generated\TypeInfo.g.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>TypeInfo.ttinclude</DependentUpon>
+      <DependentUpon>$([System.IO.Path]::ChangeExtension(%(Filename), '.tt'))</DependentUpon>
     </Compile>
   </ItemGroup>
 

@@ -4,14 +4,13 @@
     <Company>Microsoft</Company>
     <Authors>Microsoft</Authors>
     <Product>.NET Community Toolkit</Product>
-    <CommonTags>dotnet;Community;Toolkit</CommonTags>
+    <CommonTags>.NET;Community;Toolkit;dotnet</CommonTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Copyright>(c) .NET Foundation and Contributors. All rights reserved.</Copyright>
     <PackageProjectUrl>https://github.com/CommunityToolkit/dotnet</PackageProjectUrl>
     <PackageReleaseNotes>https://github.com/CommunityToolkit/dotnet/releases</PackageReleaseNotes>
     <PackageIcon>Icon.png</PackageIcon>
-    <PackageIconUrl>https://raw.githubusercontent.com/CommunityToolkit/dotnet/main/build/nuget.png</PackageIconUrl>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -26,7 +25,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <IsTestProject>$(MSBuildProjectName.Contains('Test'))</IsTestProject>
+    <IsTestProject>$(MSBuildProjectName.EndsWith('Tests'))</IsTestProject>
     <IsCoreProject Condition="$(IsTestProject)">False</IsCoreProject>
     <IsCoreProject Condition="'$(IsCoreProject)' == ''">True</IsCoreProject>
   </PropertyGroup>

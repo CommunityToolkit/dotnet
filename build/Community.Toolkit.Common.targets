@@ -1,12 +1,8 @@
 <Project>
 
-  <PropertyGroup>
+  <PropertyGroup Condition="$(IsPackable)">
     <!-- TODO: Dynamically generate Title if one wasn't set -->
     <Title Condition="'$(Title)' == ''">$(Product) Asset</Title>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <CommonTags Condition="$(IsCoreProject)">$(CommonTags);.NET</CommonTags>
     <PackageTags Condition="'$(PackageTags)' != ''">$(CommonTags);$(PackageTags)</PackageTags>
     <PackageTags Condition="'$(PackageTags)' == ''">$(CommonTags)</PackageTags>
   </PropertyGroup>

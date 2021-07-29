@@ -6,29 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="EmbeddedResources\INotifyPropertyChanged.cs" />
-    <Compile Remove="EmbeddedResources\NotNullAttribute.cs" />
-    <Compile Remove="EmbeddedResources\NotNullIfNotNullAttribute.cs" />
-    <Compile Remove="EmbeddedResources\ObservableObject.cs" />
-    <Compile Remove="EmbeddedResources\ObservableRecipient.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="EmbeddedResources\INotifyPropertyChanged.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="EmbeddedResources\NotNullAttribute.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="EmbeddedResources\NotNullIfNotNullAttribute.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="EmbeddedResources\ObservableObject.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="EmbeddedResources\ObservableRecipient.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <Compile Remove="EmbeddedResources\*.cs" />
+    <EmbeddedResource Include="EmbeddedResources\*.cs" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
