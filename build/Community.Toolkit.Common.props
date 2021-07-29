@@ -1,19 +1,6 @@
 <Project>
 
   <PropertyGroup>
-    <Company>Microsoft</Company>
-    <Authors>Microsoft</Authors>
-    <Product>.NET Community Toolkit</Product>
-    <CommonTags>.NET;Community;Toolkit;dotnet</CommonTags>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Copyright>(c) .NET Foundation and Contributors. All rights reserved.</Copyright>
-    <PackageProjectUrl>https://github.com/CommunityToolkit/dotnet</PackageProjectUrl>
-    <PackageReleaseNotes>https://github.com/CommunityToolkit/dotnet/releases</PackageReleaseNotes>
-    <PackageIcon>Icon.png</PackageIcon>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <Nullable>Enable</Nullable>
     <LangVersion>10.0</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

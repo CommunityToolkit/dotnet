@@ -41,24 +41,6 @@
     </When>
   </Choose>
 
-  <!-- T4 service used by the Guard APIs -->
-  <ItemGroup>
-    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Generated\*.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>%(Filename).g.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Generated\*.g.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>$([System.IO.Path]::ChangeExtension(%(Filename), '.tt'))</DependentUpon>
-    </Compile>
-  </ItemGroup>
+  <Import Project="$(BuildToolsDirectory)Community.Toolkit.TextTemplates.targets" />
 
 </Project>

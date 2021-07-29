@@ -1,6 +1,19 @@
 <Project>
 
   <PropertyGroup Condition="$(IsPackable)">
+    <Company>Microsoft</Company>
+    <Authors>Microsoft</Authors>
+    <Product>.NET Community Toolkit</Product>
+    <CommonTags>.NET;Community;Toolkit;dotnet</CommonTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Copyright>(c) .NET Foundation and Contributors. All rights reserved.</Copyright>
+    <PackageProjectUrl>https://github.com/CommunityToolkit/dotnet</PackageProjectUrl>
+    <PackageReleaseNotes>https://github.com/CommunityToolkit/dotnet/releases</PackageReleaseNotes>
+    <PackageIcon>Icon.png</PackageIcon>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(IsPackable)">
     <!-- TODO: Dynamically generate Title if one wasn't set -->
     <Title Condition="'$(Title)' == ''">$(Product) Asset</Title>
     <PackageTags Condition="'$(PackageTags)' != ''">$(CommonTags);$(PackageTags)</PackageTags>
