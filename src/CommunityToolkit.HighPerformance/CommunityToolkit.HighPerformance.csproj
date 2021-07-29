@@ -39,7 +39,7 @@
 
       <!-- On .NET Standard 2.0, the unit test project also needs access to internals -->
       <ItemGroup>
-        <InternalsVisibleTo Include="CommunityToolkit.HighPerformance.UnitTests, PublicKey=$(AssemblySignPublicKey)" />
+        <InternalsVisibleTo Include="CommunityToolkit.HighPerformance.UnitTests" />
       </ItemGroup>
 
       <!-- .NET Standard 2.0 doesn't have the Span<T>, HashCode and ValueTask types -->

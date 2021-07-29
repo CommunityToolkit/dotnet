@@ -1,6 +1,6 @@
 <Project>
 
-  <PropertyGroup>
+  <PropertyGroup Condition="'$(IsPackable)' == 'true'">
     <Company>Microsoft</Company>
     <Authors>Microsoft</Authors>
     <Product>.NET Community Toolkit</Product>
@@ -13,18 +13,24 @@
     <PackageIcon>Icon.png</PackageIcon>
   </PropertyGroup>
 
-  <PropertyGroup>
+  <PropertyGroup Condition="'$(IsPackable)' == 'true'">
     <!-- TODO: Dynamically generate Title if one wasn't set -->
     <Title Condition="'$(Title)' == ''">$(Product) Asset</Title>
     <PackageTags Condition="'$(PackageTags)' != ''">$(CommonTags);$(PackageTags)</PackageTags>
     <PackageTags Condition="'$(PackageTags)' == ''">$(CommonTags)</PackageTags>
   </PropertyGroup>
 
-  <ItemGroup Condition="$(IsPackable)">
+  <ItemGroup Condition="'$(IsPackable)' == 'true'">
     <None Pack="true" PackagePath="\" Visible="False" Include="$(BuildToolsDirectory)Icon.png" />
     <None Pack="true" PackagePath="\" Visible="False" Include="$(RepositoryDirectory)License.md" />
     <None Pack="true" PackagePath="\" Visible="False" Include="$(RepositoryDirectory)ThirdPartyNotices.txt" />
   </ItemGroup>
+
+  <!-- Checked Version properties to use down the line -->
+  <PropertyGroup Condition="'$([MSBuild]::GetTargetFrameworkIdentifier($(TargetFramework)))' == '.NETCoreApp'">
+    <_ToolkitTargetFrameworkVersion>$([MSBuild]::GetTargetFrameworkVersion($(TargetFramework)))</_ToolkitTargetFrameworkVersion>
+    <_NET_6_OR_GREATER>$([MSBuild]::VersionGreaterThanOrEquals($(_ToolkitTargetFrameworkVersion), '6.0'))</_NET_6_OR_GREATER>
+  </PropertyGroup>
 
   <!--
       Add additional Pre-Processor symbols to $(DefineConstants) and $(FinalDefineConstants) in VB.

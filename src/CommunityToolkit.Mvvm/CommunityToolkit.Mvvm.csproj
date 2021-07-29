@@ -39,7 +39,7 @@
 
   <!-- Add the [InternalsVisibleTo] attribute for the test project -->
   <ItemGroup>
-    <InternalsVisibleTo Include="CommunityToolkit.Mvvm.Internals.UnitTests, PublicKey=$(AssemblySignPublicKey)" />
+    <InternalsVisibleTo Include="CommunityToolkit.Mvvm.Internals.UnitTests" />
   </ItemGroup>
 
   <!--

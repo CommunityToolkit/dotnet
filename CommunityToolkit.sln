@@ -17,6 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Root", "Root", "{CFA75BE0-5
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{CD16E790-7B7B-411E-9CE7-768E759CC22D}"
 	ProjectSection(SolutionItems) = preProject
+		eng\AssemblyInfo.Shared.cs = eng\AssemblyInfo.Shared.cs
 		eng\Sign-Package.ps1 = eng\Sign-Package.ps1
 		eng\SignClientSettings.json = eng\SignClientSettings.json
 		eng\Toolkit.Common.props = eng\Toolkit.Common.props
