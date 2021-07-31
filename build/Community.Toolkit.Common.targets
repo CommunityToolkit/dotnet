@@ -13,11 +13,8 @@
     <PackageIcon>Icon.png</PackageIcon>
   </PropertyGroup>
 
-  <PropertyGroup>
+  <PropertyGroup Condition="$(IsPackable)">
     <Title Condition="'$(Title)' == ''">$(Product) Asset</Title>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <PackageTags Condition="'$(PackageTags)' != ''">$(CommonTags);$(PackageTags)</PackageTags>
     <PackageTags Condition="'$(PackageTags)' == ''">$(CommonTags)</PackageTags>
   </PropertyGroup>

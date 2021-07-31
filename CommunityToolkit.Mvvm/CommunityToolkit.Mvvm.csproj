@@ -20,15 +20,15 @@
     <PackageTags>MVVM;Toolkit;MVVMToolkit;INotifyPropertyChanged;Observable;IOC;DI;Dependency Injection;Object Messaging;Extensions;Helpers</PackageTags>
   </PropertyGroup>
 
-  <!-- Enable trimming support on .NET 6 -->
+  <!-- Enable assembly trimming on .NET 6+ -->
   <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
     <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
     <IsTrimmable>true</IsTrimmable>
   </PropertyGroup>
 
   <!--
-      Include the custom .targets file to check the source generator.
-      .NET 6 is not needed as it guarantees Roslyn 4.x.
+      Include a custom targets file to check the included source generator.
+      Including it in .NET 6+ targets is not needed as it guarantees Roslyn 4.x.
   -->
   <ItemGroup>
     <None Include="CommunityToolkit.Mvvm.targets" Pack="True" PackagePath="build\netstandard2.0" />
@@ -58,7 +58,12 @@
   </ItemGroup>
 
   <!--
-      Pack the source generator to the right package folder
+      Pack the source generator build outputs to the correct package folder for it to be used as an analyzer.
+
+      HACK: The recommended way to pack is to get the build outputs using the project's built-in targets,
+            and include them using NuGet's Pack targets. However, due to a bug in v5 of those targets,
+            the outputs were not included in the package. So, including them directly via final
+            output path and building it first is the only way to ensure they are included.
   -->
   <ItemGroup>
     <None Include="..\CommunityToolkit.Mvvm.SourceGenerators\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.SourceGenerators.dll"

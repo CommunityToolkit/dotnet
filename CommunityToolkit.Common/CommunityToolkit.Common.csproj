@@ -15,8 +15,9 @@
   </PropertyGroup>
 
   <!--
-      .NET Standard 2.1 and .NET 6 already have [NotNullIfNotNull] and [NotNullWhen].
-       Additionally, also enable trimming support on .NET 6.
+      Use NETSTANDARD2_1_OR_GREATER define to include .NET Standard 2.1 and .NET 6 shared APIs.
+      They already have [NotNullIfNotNull] and [NotNullWhen] attributes built-in.
+      Additionally, enable assembly trimming on .NET 6+.
   -->
   <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
     <DefineConstants>NETSTANDARD2_1_OR_GREATER</DefineConstants>

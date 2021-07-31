@@ -1,9 +1,10 @@
 <Project>
 
   <PropertyGroup>
+    <Features>Strict</Features>
+    <Nullable>Enable</Nullable>
+    <LangVersion>Latest</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>10.0</LangVersion>
-    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -12,7 +13,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <IsTestProject>$(MSBuildProjectName.Contains('Test'))</IsTestProject>
+    <IsTestProject>$(MSBuildProjectName.EndsWith('Tests'))</IsTestProject>
     <IsCoreProject Condition="$(IsTestProject)">False</IsCoreProject>
     <IsCoreProject Condition="'$(IsCoreProject)' == ''">True</IsCoreProject>
   </PropertyGroup>
