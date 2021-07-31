@@ -46,6 +46,8 @@
     </When>
 
     <When Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+
+      <!-- Use NETSTANDARD2_1_OR_GREATER define to include shared APIs -->
       <PropertyGroup>
         <DefineConstants>NETSTANDARD2_1_OR_GREATER</DefineConstants>
       </PropertyGroup>
@@ -57,8 +59,8 @@
     </When>
 
     <!--
-        NETSTANDARD2_1_OR_GREATER: includes both .NET Standard 2.1, .NET Core 3.1 and .NET 6.
-        Additionally, also enable trimming support on .NET 6.
+        Use NETSTANDARD2_1_OR_GREATER define to include .NET Standard 2.1, .NET Core 3.1 and .NET 6 shared APIs.
+        Additionally, enable assembly trimming on .NET 6+
     -->
     <When Condition="'$(TargetFramework)' == 'net6.0'">
       <PropertyGroup>

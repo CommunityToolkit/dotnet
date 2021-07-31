@@ -5,8 +5,9 @@
   </PropertyGroup>
 
   <!--
-      Manually apply the properties of test projects to this assembly as well,
-      which is neither a test project not one of the libraries to pack for NuGet.
+      The MVVM Toolkit unit tests use this project to test it as a `ProjectReference`.
+      Since this project is neither packed nor published, those targets can be
+      disabled, and validation warnings can be ignored in those contexts.
   -->
   <PropertyGroup>
     <IsPackable>false</IsPackable>

@@ -1,6 +1,6 @@
 <Project>
 
-  <!-- Get the analyzer from the CommunityToolkit.Mvvm NuGet package -->
+  <!-- Get the analyzer from the 'CommunityToolkit.Mvvm' NuGet package -->
   <Target Name="MVVMToolkitGatherAnalyzers">
     <ItemGroup>
       <MVVMToolkitAnalyzer Include="@(Analyzer)" Condition="'%(Analyzer.NuGetPackageId)' == 'CommunityToolkit.Mvvm'" />
@@ -14,9 +14,9 @@
           DependsOnTargets="MVVMToolkitGatherAnalyzers">
 
     <!--
-        Use the CSharpCoreTargetsPath property to find the version of the compiler we are using. This is the same mechanism
+        Use the 'CSharpCoreTargetsPath' property to find the version of the compiler we are using. This is the same mechanism
         MSBuild uses to find the compiler. We could check the assembly version for any compiler assembly (since they all have
-        the same version) but Microsoft.Build.Tasks.CodeAnalysis.dll is where MSBuild loads the compiler tasks from so if
+        the same version) but 'Microsoft.Build.Tasks.CodeAnalysis.dll' is where MSBuild loads the compiler tasks from so if
         someone is getting creative with msbuild tasks/targets this is the "most correct" assembly to check.
     -->
     <GetAssemblyIdentity AssemblyFiles="$([System.IO.Path]::Combine($([System.IO.Path]::GetDirectoryName($(CSharpCoreTargetsPath))), 'Microsoft.Build.Tasks.CodeAnalysis.dll'))">
@@ -24,10 +24,10 @@
     </GetAssemblyIdentity>
 
     <PropertyGroup>
-      <!-- Transform the resulting item from GetAssemblyIdentity into a property representing its assembly version -->
+      <!-- Transform the resulting item from 'GetAssemblyIdentity' task into a property representing its assembly version -->
       <MVVMToolkitCurrentCompilerVersion>@(MVVMToolkitCurrentCompilerAssemblyIdentity->'%(Version)')</MVVMToolkitCurrentCompilerVersion>
 
-      <!-- The CurrentCompilerVersionIsNotNewEnough property can now be defined based on the Roslyn assembly version -->
+      <!-- The 'MVVMToolkitCurrentCompilerVersionIsNotNewEnough' property can now be defined based on the Roslyn assembly version -->
       <MVVMToolkitCurrentCompilerVersionIsNotNewEnough Condition="$([MSBuild]::VersionLessThan($(MVVMToolkitCurrentCompilerVersion), 4.0))">true</MVVMToolkitCurrentCompilerVersionIsNotNewEnough>
     </PropertyGroup>
 

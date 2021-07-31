@@ -31,7 +31,10 @@
       </ItemGroup>
     </When>
 
-    <!-- Enable trimming support on .NET 6 -->
+    <!--
+        Use NETSTANDARD2_1_OR_GREATER define to include .NET Standard 2.1 and .NET 6 shared APIs.
+        Additionally, enable assembly trimming on .NET 6+.
+    -->
     <When Condition="'$(TargetFramework)' == 'net6.0'">
       <PropertyGroup>
         <DefineConstants>NETSTANDARD2_1_OR_GREATER</DefineConstants>
@@ -41,6 +44,10 @@
     </When>
   </Choose>
 
+  <!--
+      Adds support for generating sources using T4 text templating engine.
+      The Guard APIs in 'Generated' folder is generated using text templates.
+  -->
   <Import Project="$(BuildToolsDirectory)Community.Toolkit.TextTemplates.targets" />
 
 </Project>
