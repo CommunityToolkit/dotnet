@@ -72,10 +72,10 @@ jobs:
     env:
       SignClientUser: $(SignClientUser)
       SignClientSecret: $(SignClientSecret)
-      ArtifactDirectory: bin/nupkg
+      ArtifactDirectory: ~packages/bin
     condition: and(succeeded(), not(eq(variables['Build.Reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
 
   # Publish build artifacts
-  - publish: bin/nupkg
+  - publish: ~packages/bin
     artifact: Packages
     displayName: Publish package artifacts

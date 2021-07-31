@@ -1,7 +1,7 @@
 # Script to Update Header comment in C# sources within this repository.
 
 # This script duplicates the fuctionality provided by the 'UpdateHeaders' target in Cake script present previously.
-# Since, Cake build has been removed, this fuctionality has been implimented here in this PowerShell script.
+# Since, Cake build has been removed, this fuctionality has been implemented here in this PowerShell script.
 
 [CmdletBinding()]
 Param(
@@ -33,7 +33,18 @@ function Get-SourceFiles ([string]$Path, [string]$Extension) {
     $fileFilter = "*.$fileType"
     $fileExcludes = "*.g.$fileType", "*.i.$fileType", "*TemporaryGeneratedFile*.$fileType"
     $sourceFiles = Get-ChildItem -Path $Path -File -Recurse -Filter $fileFilter -Exclude $fileExcludes
-    return $sourceFiles.Where({ !($_.FullName.Contains("\bin\") -or $_.FullName.Contains("\obj\")) })
+
+    $folderExcludes = "build", "~build", "~publish", "~packages", "bin", "obj"
+
+    return $sourceFiles.Where({
+        foreach ($folder in $folderExcludes) {
+            $folderPattern = "{0}$folder{0}" -f [IO.Path]::DirectorySeparatorChar
+            if ($_.FullName.Contains($folderPattern)) {
+                return $false
+            }
+        }
+        return $true
+    })
 }
 
 # Set Repot Root

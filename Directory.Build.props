@@ -1,5 +1,7 @@
 <Project>
 
+  <Import Project="Directory.Solution.props" />
+
   <PropertyGroup>
     <RepositoryDirectory>$(MSBuildThisFileDirectory)</RepositoryDirectory>
     <BuildToolsDirectory>$(RepositoryDirectory)build\</BuildToolsDirectory>
@@ -11,7 +13,6 @@
     <When Condition="$(IsCoreProject)">
       <PropertyGroup>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <PackageOutputPath>$(RepositoryDirectory)bin\nupkg</PackageOutputPath>
         <TreatWarningsAsErrors Condition="'$(Configuration)' == 'Release'">true</TreatWarningsAsErrors>
       </PropertyGroup>
     </When>

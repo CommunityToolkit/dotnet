@@ -25,6 +25,11 @@
     <PackageFile Include="$(RepositoryDirectory)ThirdPartyNotices.txt" />
   </ItemGroup>
 
+  <!-- Exclude files and folders from build and publish across all projects -->
+  <PropertyGroup>
+    <DefaultItemExcludes>$(BuildDir)**;$(PublishDir)**;$(DefaultItemExcludes)</DefaultItemExcludes>
+  </PropertyGroup>
+
   <!--
       Use 'GenerateNuSpecDependsOn' extensibility point to include custom global assets in the package.
       Use 'TargetsForTfmSpecificContentInPackage' extensibility point to include custom TFM-specific assets in the package.

@@ -1,24 +1,24 @@
 <Project>
 
-  <PropertyGroup>
+  <PropertyGroup Label="Compile">
     <Features>Strict</Features>
     <Nullable>Enable</Nullable>
     <LangVersion>Latest</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
-  <PropertyGroup>
+  <PropertyGroup Label="Assembly">
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(RepositoryDirectory)toolkit.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
-  <PropertyGroup>
+  <PropertyGroup Label="Project">
     <IsTestProject>$(MSBuildProjectName.EndsWith('Tests'))</IsTestProject>
     <IsCoreProject Condition="$(IsTestProject)">False</IsCoreProject>
     <IsCoreProject Condition="'$(IsCoreProject)' == ''">True</IsCoreProject>
   </PropertyGroup>
 
-  <PropertyGroup>
+  <PropertyGroup Label="Build">
     <IsPackable>true</IsPackable>
     <IsPublishable>true</IsPublishable>
     <ContinuousIntegrationBuild>$(TF_BUILD)</ContinuousIntegrationBuild>
@@ -30,5 +30,20 @@
       <TargetPath>\</TargetPath>
     </PackageFile>
   </ItemDefinitionGroup>
+
+  <PropertyGroup Label="Outputs">
+    <!-- Common Outputs -->
+    <BuildDir>~build\</BuildDir>
+    <PublishDir>~publish\</PublishDir>
+    <!-- Build Outputs -->
+    <BaseOutputPath>$(BuildDir)bin\</BaseOutputPath>
+    <BaseIntermediateOutputPath>$(BuildDir)obj\</BaseIntermediateOutputPath>
+    <!-- Restore Outputs-->
+    <MSBuildProjectExtensionsPath>$(BuildDir)ext\</MSBuildProjectExtensionsPath>
+    <RestoreOutputPath>$(MSBuildProjectExtensionsPath)</RestoreOutputPath>
+    <!-- Pack Outputs -->
+    <PackageOutputPath>$(RepositoryDirectory)~packages\bin\</PackageOutputPath>
+    <NuSpecOutputPath>$(RepositoryDirectory)~packages\obj\</NuSpecOutputPath>
+  </PropertyGroup>
 
 </Project>

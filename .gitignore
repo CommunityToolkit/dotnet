@@ -8,6 +8,10 @@
 *.userosscache
 *.sln.docstates
 
+# Working folders
+~build/
+~publish/
+
 # Build results
 [Bb]in/
 [Oo]bj/
