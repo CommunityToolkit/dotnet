@@ -1,23 +1,23 @@
 <Project>
 
-  <PropertyGroup>
+  <PropertyGroup Label="Compile">
     <Nullable>Enable</Nullable>
     <LangVersion>10.0</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
-  <PropertyGroup>
+  <PropertyGroup Label="Assembly">
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(RepositoryDirectory)toolkit.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
-  <PropertyGroup>
+  <PropertyGroup Label="Project">
     <IsTestProject>$(MSBuildProjectName.EndsWith('Tests'))</IsTestProject>
     <IsCoreProject Condition="$(IsTestProject)">False</IsCoreProject>
     <IsCoreProject Condition="'$(IsCoreProject)' == ''">True</IsCoreProject>
   </PropertyGroup>
 
-  <PropertyGroup>
+  <PropertyGroup Label="Build">
     <IsPackable>true</IsPackable>
     <IsPublishable>true</IsPublishable>
     <ContinuousIntegrationBuild>$(TF_BUILD)</ContinuousIntegrationBuild>
