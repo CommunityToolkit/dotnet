@@ -1,6 +1,7 @@
 <Project>
 
   <PropertyGroup>
+    <ManagePackageVersionsCentrally>True</ManagePackageVersionsCentrally>
     <RestoreUseStaticGraphEvaluation>True</RestoreUseStaticGraphEvaluation>
   </PropertyGroup>
 

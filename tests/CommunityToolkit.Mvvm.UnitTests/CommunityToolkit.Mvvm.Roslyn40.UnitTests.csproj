@@ -13,9 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Reactive" Version="5.0.0" />
-    <PackageReference Include="System.Text.Json" Version="7.0.0" />
-    <PackageReference Include="Dbs.Signed3.Nito.AsyncEx.Context" Version="5.0.0" />
+    <PackageReference Include="System.Reactive" />
+    <PackageReference Include="System.Text.Json" />
+    <PackageReference Include="Dbs.Signed3.Nito.AsyncEx.Context" />
   </ItemGroup>
 
 </Project>

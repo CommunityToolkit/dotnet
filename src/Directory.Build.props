@@ -12,7 +12,7 @@
 
   <!-- Include PolySharp to generate polyfills for all projects (on their .NET Standard 2.x targets) -->
   <ItemGroup>
-    <PackageReference Include="PolySharp" Version="1.8.1" PrivateAssets="All" IncludeAssets="Analyzers;Build" />
+    <PackageReference Include="PolySharp" PrivateAssets="All" IncludeAssets="Analyzers;Build" />
   </ItemGroup>
 
   <!-- Hook various extension targets at the right place in MSBuild target graph using built-in extension points -->
