@@ -2,12 +2,16 @@
 
   <Import Project="..\$(MSBuildThisFile)" />
 
+  <!-- Configure defaults for projects targeting .NET 6 and above -->
   <PropertyGroup Condition="'$(_NET_6_OR_GREATER)' == 'true'">
+    <!-- Enable trimming on supported targets -->
     <IsTrimmable>true</IsTrimmable>
     <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+    <!-- Define `NETSTANDARD2_1_OR_GREATER` to include .NET Standard 2.1 shared APIs -->
     <DefineConstants>NETSTANDARD2_1_OR_GREATER</DefineConstants>
   </PropertyGroup>
 
+  <!-- Common Assembly and Module attributes across projects -->
   <ItemGroup>
     <Compile Include="$(BuildToolsDirectory)AssemblyInfo.Shared.cs" LinkBase="Properties" Visible="False" />
   </ItemGroup>

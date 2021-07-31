@@ -2,6 +2,7 @@
 
   <Import Project="..\$(MSBuildThisFile)" />
 
+  <!-- Common properties for all projects under src folder -->
   <PropertyGroup>
     <IsPackable>true</IsPackable>
     <IsPublishable>true</IsPublishable>

@@ -43,6 +43,10 @@
     </When>
   </Choose>
 
+  <!--
+      Adds support for generating sources using T4 text templating engine.
+      The Guard APIs in 'Generated' folder is generated using text templates.
+  -->
   <Import Project="$(BuildToolsDirectory)Toolkit.TextTemplates.targets" />
 
 </Project>

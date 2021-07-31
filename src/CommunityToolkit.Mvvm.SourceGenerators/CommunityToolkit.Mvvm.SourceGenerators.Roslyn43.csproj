@@ -5,6 +5,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <!-- Sources that are used by Generator logic in the target projects -->
   <ItemGroup>
     <Compile Remove="EmbeddedResources\*.cs" />
     <EmbeddedResource Include="EmbeddedResources\*.cs">
@@ -14,6 +15,10 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <!--
+      These files enables tracking Analyzer releases for the rules that ship from this project.
+      See https://github.com/dotnet/roslyn-analyzers/blob/main/src/Microsoft.CodeAnalysis.Analyzers/ReleaseTrackingAnalyzers.Help.md for more info.
+  -->
   <ItemGroup>
     <AdditionalFiles Include="AnalyzerReleases.Shipped.md" />
     <AdditionalFiles Include="AnalyzerReleases.Unshipped.md" />
