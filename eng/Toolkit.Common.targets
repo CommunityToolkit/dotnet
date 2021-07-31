@@ -19,6 +19,11 @@
     <PackageTags Condition="'$(PackageTags)' == ''">$(CommonTags)</PackageTags>
   </PropertyGroup>
 
+  <!-- Exclude files and folders from build and publish across all projects -->
+  <PropertyGroup>
+    <DefaultItemExcludes>$(BuildDir)**;$(PublishDir)**;$(DefaultItemExcludes)</DefaultItemExcludes>
+  </PropertyGroup>
+
   <ItemGroup Condition="'$(IsPackable)' == 'true'">
     <PackageFile Include="$(BuildToolsDirectory)Icon.png" />
     <PackageFile Include="$(RepositoryDirectory)License.md" />

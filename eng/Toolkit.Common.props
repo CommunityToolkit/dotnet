@@ -28,6 +28,22 @@
     <AssemblySignPublicKey>$([System.IO.File]::ReadAllText($(AssemblySignPublicKeyFile)))</AssemblySignPublicKey>
   </PropertyGroup>
 
+  <PropertyGroup Label="Outputs.Initial">
+    <!-- Build Outputs -->
+    <BuildDir>$(RepositoryDirectory)build\</BuildDir>
+    <!-- Publish Outputs -->
+    <PublishDir>$(RepositoryDirectory)publish\</PublishDir>
+    <!-- Restore Outputs-->
+    <MSBuildProjectExtensionsPath>$(BuildDir)ext\</MSBuildProjectExtensionsPath>
+    <!-- Pack Outputs -->
+    <NuSpecOutputPath>$(RepositoryDirectory)build\</NuSpecOutputPath>
+    <PackageOutputPath>$(RepositoryDirectory)packages\</PackageOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Project">
+    <ProjectDirName>$(MSBuildProjectName.Replace('CommunityToolkit.', ''))</ProjectDirName>
+  </PropertyGroup>
+
   <!-- Identify projects targeting multiple Roslyn versions and add defaults -->
   <PropertyGroup Condition="$(MSBuildProjectName.Contains('.Roslyn'))">
     <IsCompilerTargeting>True</IsCompilerTargeting>
@@ -38,5 +54,20 @@
 
   <!-- Use custom build logic for projects targeting multiple version of the Roslyn Compiler -->
   <Import Project="Toolkit.CompilerTargeting.props" Condition="'$(IsCompilerTargeting)' == 'true'" />
+
+  <PropertyGroup Label="Outputs.Final">
+    <!-- Build Outputs -->
+    <BuildDir>$(BuildDir)$(ProjectDirName)\</BuildDir>
+    <BaseOutputPath>$(BuildDir)bin\</BaseOutputPath>
+    <BaseIntermediateOutputPath>$(BuildDir)obj\</BaseIntermediateOutputPath>
+    <!-- Restore Outputs-->
+    <MSBuildProjectExtensionsPath>$(BuildDir)ext\</MSBuildProjectExtensionsPath>
+    <MSBuildProjectExtensionsPath Condition="'$(TargetCompiler)' != ''">$(MSBuildProjectExtensionsPath)$(TargetCompiler)\</MSBuildProjectExtensionsPath>
+    <RestoreOutputPath>$(MSBuildProjectExtensionsPath)</RestoreOutputPath>
+    <!-- Publish Outputs -->
+    <PublishDir>$(PublishDir)$(ProjectDirName)\</PublishDir>
+    <!-- Test Outputs -->
+    <VSTestResultsDirectory>$(BuildDir)TestResults\</VSTestResultsDirectory>
+  </PropertyGroup>
 
 </Project>

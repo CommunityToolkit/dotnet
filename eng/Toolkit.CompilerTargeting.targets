@@ -1,7 +1,7 @@
 <Project>
 
   <PropertyGroup>
-    <VSTestResultsDirectory>$([System.IO.Path]::Combine('$(BaseOutputPath)', 'TestResults'))</VSTestResultsDirectory>
+    <VSTestResultsDirectory Condition="'$(BuildDir)' == ''">$([System.IO.Path]::Combine('$(BaseOutputPath)', 'TestResults'))</VSTestResultsDirectory>
   </PropertyGroup>
 
   <!-- Append the Compiler moniker (i.e., roslyn4.0) to 'TargetFramework' in the output paths -->

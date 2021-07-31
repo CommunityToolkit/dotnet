@@ -55,7 +55,7 @@
 
   <PropertyGroup>
     <!-- Currently 'project.assets.json' and 'project.nuget.cache' doesn't have unique file-names based on project name like other restore assets do -->
-    <MSBuildProjectExtensionsPath Condition="'$(TargetCompiler)' != ''">$([System.IO.Path]::Combine('obj', '$(TargetCompiler)'))</MSBuildProjectExtensionsPath>
+    <ProjectDirName Condition="'$(ProjectDirName)' != ''">$(ProjectDirName.Replace('.$(TargetCompilerIdentifier)$(_ShortCompilerVersion)', ''))</ProjectDirName>
   </PropertyGroup>
 
   <!-- We also override output paths to separate compiler version specific assets but only after .NET SDK appends 'TargetFramework' -->

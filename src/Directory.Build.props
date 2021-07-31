@@ -7,7 +7,6 @@
     <IsPackable>true</IsPackable>
     <IsPublishable>true</IsPublishable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageOutputPath>$(RepositoryDirectory)bin\nupkg</PackageOutputPath>
     <TreatWarningsAsErrors Condition="'$(Configuration)' == 'Release'">true</TreatWarningsAsErrors>
   </PropertyGroup>
 

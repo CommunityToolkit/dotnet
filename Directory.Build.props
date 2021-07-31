@@ -1,5 +1,7 @@
 <Project>
 
+  <Import Project="Directory.Solution.props" />
+
   <PropertyGroup>
     <RepositoryDirectory>$(MSBuildThisFileDirectory)</RepositoryDirectory>
     <BuildToolsDirectory>$(RepositoryDirectory)eng\</BuildToolsDirectory>
