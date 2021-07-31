@@ -1,12 +1,12 @@
 <Project>
 
-  <PropertyGroup>
+  <PropertyGroup Label="Build">
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <ContinuousIntegrationBuild>$(TF_BUILD)</ContinuousIntegrationBuild>
     <SourceLinkEnabled>$(ContinuousIntegrationBuild)</SourceLinkEnabled>
   </PropertyGroup>
 
-  <PropertyGroup>
+  <PropertyGroup Label="Compile">
     <Nullable>Enable</Nullable>
     <LangVersion>11.0</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -21,7 +21,7 @@
     <NoWarn>$(NoWarn);CS8500</NoWarn>
   </PropertyGroup>
 
-  <PropertyGroup>
+  <PropertyGroup Label="Assembly">
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)toolkit.snk</AssemblyOriginatorKeyFile>
     <AssemblySignPublicKeyFile>$(MSBuildThisFileDirectory)toolkit.spk</AssemblySignPublicKeyFile>
