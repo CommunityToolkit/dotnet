@@ -24,4 +24,11 @@
     <ContinuousIntegrationBuild>$(TF_BUILD)</ContinuousIntegrationBuild>
   </PropertyGroup>
 
+  <ItemDefinitionGroup>
+    <PackageFile>
+      <Visible>False</Visible>
+      <TargetPath>\</TargetPath>
+    </PackageFile>
+  </ItemDefinitionGroup>
+
 </Project>

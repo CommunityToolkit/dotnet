@@ -30,11 +30,9 @@
       Include a custom targets file to check the included source generator.
       Including it in .NET 6+ targets is not needed as it guarantees Roslyn 4.x.
   -->
-  <ItemGroup>
-    <None Include="CommunityToolkit.Mvvm.targets" Pack="True" PackagePath="build\netstandard2.0" />
-    <None Include="CommunityToolkit.Mvvm.targets" Pack="True" PackagePath="build\netstandard2.1" />
-    <None Include="CommunityToolkit.Mvvm.targets" Pack="True" PackagePath="buildTransitive\netstandard2.0" />
-    <None Include="CommunityToolkit.Mvvm.targets" Pack="True" PackagePath="buildTransitive\netstandard2.1" />
+  <ItemGroup Condition="'$(TargetFramework)' != '' AND '$(TargetFramework)' != 'net6.0'">
+    <PackageFile Include="CommunityToolkit.Mvvm.targets" IsSpecific="True" TargetPath="build\$(TargetFramework)" />
+    <PackageFile Include="CommunityToolkit.Mvvm.targets" IsSpecific="True" TargetPath="buildTransitive\$(TargetFramework)" />
   </ItemGroup>
 
   <!-- .NET Standard 2.0 doesn't have the Span<T> and IAsyncEnumerable<T> types -->
@@ -66,9 +64,8 @@
             output path and building it first is the only way to ensure they are included.
   -->
   <ItemGroup>
-    <None Include="..\CommunityToolkit.Mvvm.SourceGenerators\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.SourceGenerators.dll"
-          PackagePath="analyzers\dotnet\roslyn4.0\cs"
-          Pack="true" Visible="false" />
+    <PackageFile Include="..\CommunityToolkit.Mvvm.SourceGenerators\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.SourceGenerators.dll"
+                 TargetPath="analyzers\dotnet\roslyn4.0\cs" />
   </ItemGroup>
 
 </Project>
