@@ -46,11 +46,9 @@
       Include a custom targets file to check the compiler version required for the source generator.
       It needs Roslyn 4.x and including the targets in .NET 6+ is not needed as it guarantees the same.
   -->
-  <ItemGroup>
-    <None Include="CommunityToolkit.Mvvm.targets" Pack="True" PackagePath="build\netstandard2.0" />
-    <None Include="CommunityToolkit.Mvvm.targets" Pack="True" PackagePath="build\netstandard2.1" />
-    <None Include="CommunityToolkit.Mvvm.targets" Pack="True" PackagePath="buildTransitive\netstandard2.0" />
-    <None Include="CommunityToolkit.Mvvm.targets" Pack="True" PackagePath="buildTransitive\netstandard2.1" />
+  <ItemGroup Condition="$(TargetFramework.StartsWith('netstandard'))">
+    <PackageFile Include="CommunityToolkit.Mvvm.targets" IsSpecific="True" TargetPath="build\$(TargetFramework)" />
+    <PackageFile Include="CommunityToolkit.Mvvm.targets" IsSpecific="True" TargetPath="buildTransitive\$(TargetFramework)" />
   </ItemGroup>
 
   <!-- .NET Standard 2.0 doesn't have the Span<T> and IAsyncEnumerable<T> types -->
@@ -68,9 +66,13 @@
   </ItemGroup>
 
   <!-- Reference the various multi-targeted versions of the source generator project (one per Roslyn version) -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.Roslyn40.csproj" ReferenceOutputAssembly="false" />
-    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.Roslyn43.csproj" ReferenceOutputAssembly="false" />
+  <ItemGroup>
+    <!-- Roslyn v4.0 target -->
+    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.Roslyn40.csproj"
+        ReferenceOutputAssembly="false" ExcludeAssets="All" />
+    <!-- Roslyn v4.3 target -->
+    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.Roslyn43.csproj"
+        ReferenceOutputAssembly="false" ExcludeAssets="All" />
   </ItemGroup>
 
   <!--
@@ -84,8 +86,12 @@
             output path and building it first is the only way to ensure they are included.
   -->
   <ItemGroup>
-    <None Include="..\CommunityToolkit.Mvvm.SourceGenerators\bin\$(Configuration)\netstandard2.0-roslyn4.0\CommunityToolkit.Mvvm.SourceGenerators.dll" PackagePath="analyzers\dotnet\roslyn4.0\cs" Pack="true" Visible="false" />
-    <None Include="..\CommunityToolkit.Mvvm.SourceGenerators\bin\$(Configuration)\netstandard2.0-roslyn4.3\CommunityToolkit.Mvvm.SourceGenerators.dll" PackagePath="analyzers\dotnet\roslyn4.3\cs" Pack="true" Visible="false" />
+    <!-- Roslyn v4.0 target -->
+    <PackageFile Include="..\CommunityToolkit.Mvvm.SourceGenerators\bin\$(Configuration)\netstandard2.0-roslyn4.0\CommunityToolkit.Mvvm.SourceGenerators.dll"
+          TargetPath="analyzers\dotnet\roslyn4.0\cs" />
+    <!-- Roslyn v4.3 target -->
+    <PackageFile Include="..\CommunityToolkit.Mvvm.SourceGenerators\bin\$(Configuration)\netstandard2.0-roslyn4.3\CommunityToolkit.Mvvm.SourceGenerators.dll"
+          TargetPath="analyzers\dotnet\roslyn4.3\cs" />
   </ItemGroup>
 
 </Project>

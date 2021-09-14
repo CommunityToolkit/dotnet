@@ -39,4 +39,7 @@
   <!-- Use custom build logic for projects targeting multiple version of the Roslyn Compiler -->
   <Import Project="Toolkit.CompilerTargeting.props" Condition="'$(IsCompilerTargeting)' == 'true'" />
 
+  <!-- Extends NuGet packaging with specific features required for packing toolkit projects -->
+  <Import Project="Toolkit.Packaging.props" Condition="'$(IsPackable)' != 'false'" />
+
 </Project>

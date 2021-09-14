@@ -39,6 +39,13 @@
     <TargetCompiler Condition="'$(TargetCompiler)' == ''">$(_ShortCompilerIdentifier)$(TargetCompilerVersion)</TargetCompiler>
   </PropertyGroup>
 
+  <!-- Use a default 'TargetLanguage' based on project extension if not set in project file -->
+  <PropertyGroup Condition="'$(TargetLanguage)' == ''">
+    <TargetLanguage Condition="'$(MSBuildProjectExtension)' == '.csproj'">cs</TargetLanguage>
+    <TargetLanguage Condition="'$(MSBuildProjectExtension)' == '.fsproj'">fs</TargetLanguage>
+    <TargetLanguage Condition="'$(MSBuildProjectExtension)' == '.vbproj'">vb</TargetLanguage>
+  </PropertyGroup>
+
   <!-- Since we're are separating the assets, we can use the project name without the "Roslyn40" identifier for other default properties -->
   <PropertyGroup>
     <ProjectName Condition="'$(ProjectName)' == ''">$(MSBuildProjectName.Replace('.$(TargetCompilerIdentifier)$(_ShortCompilerVersion)', ''))</ProjectName>
