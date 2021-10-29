@@ -29,10 +29,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Toolkit.HighPerfo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests.HighPerformance.NetCore", "UnitTests\UnitTests.HighPerformance.NetCore\UnitTests.HighPerformance.NetCore.csproj", "{D9BDBC68-3D0A-47FC-9C88-0BF769101644}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "UnitTests.HighPerformance.Shared", "UnitTests\UnitTests.HighPerformance.Shared\UnitTests.HighPerformance.Shared.shproj", "{9B3A94A6-0D29-4523-880B-6938E2EFEEF7}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HighPerformance", "HighPerformance", "{262CDB74-CF21-47AC-8DD9-CBC33C73B7CF}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{88C6FFBE-322D-4CEA-842B-B2CB281D357D}"
 	ProjectSection(SolutionItems) = preProject
 		CODE_OF_CONDUCT.md = CODE_OF_CONDUCT.md
@@ -54,8 +50,6 @@ Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		UnitTests\UnitTests.Shared\UnitTests.Shared.projitems*{4e9466d1-d5aa-46ac-801b-c8fdab79f0d4}*SharedItemsImports = 13
 		UnitTests\UnitTests.Shared\UnitTests.Shared.projitems*{7878cd00-85e8-4d02-9757-8a43db4c6510}*SharedItemsImports = 5
-		UnitTests\UnitTests.HighPerformance.Shared\UnitTests.HighPerformance.Shared.projitems*{9b3a94a6-0d29-4523-880b-6938e2efeef7}*SharedItemsImports = 13
-		UnitTests\UnitTests.HighPerformance.Shared\UnitTests.HighPerformance.Shared.projitems*{d9bdbc68-3d0a-47fc-9c88-0bf769101644}*SharedItemsImports = 5
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -257,9 +251,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{4E9466D1-D5AA-46AC-801B-C8FDAB79F0D4} = {B30036C4-D514-4E5B-A323-587A061772CE}
 		{7878CD00-85E8-4D02-9757-8A43DB4C6510} = {B30036C4-D514-4E5B-A323-587A061772CE}
-		{D9BDBC68-3D0A-47FC-9C88-0BF769101644} = {262CDB74-CF21-47AC-8DD9-CBC33C73B7CF}
-		{9B3A94A6-0D29-4523-880B-6938E2EFEEF7} = {262CDB74-CF21-47AC-8DD9-CBC33C73B7CF}
-		{262CDB74-CF21-47AC-8DD9-CBC33C73B7CF} = {B30036C4-D514-4E5B-A323-587A061772CE}
+		{D9BDBC68-3D0A-47FC-9C88-0BF769101644} = {B30036C4-D514-4E5B-A323-587A061772CE}
 		{88C6FFBE-322D-4CEA-842B-B2CB281D357D} = {CFA75BE0-5A44-45DE-8114-426A605B062B}
 		{338C3BE4-2E71-4F21-AD30-03FDBB47A272} = {B30036C4-D514-4E5B-A323-587A061772CE}
 		{D9C82C0D-31D7-4888-B024-3CF3A4F54FE1} = {B30036C4-D514-4E5B-A323-587A061772CE}

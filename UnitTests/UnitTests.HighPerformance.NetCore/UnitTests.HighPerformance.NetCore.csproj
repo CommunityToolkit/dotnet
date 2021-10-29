@@ -20,6 +20,4 @@
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
   </ItemGroup>
 
-  <Import Project="..\UnitTests.HighPerformance.Shared\UnitTests.HighPerformance.Shared.projitems" Label="Shared" />
-
 </Project>
