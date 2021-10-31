@@ -17,8 +17,4 @@
     <None Include="$(RepositoryDirectory)ThirdPartyNotices.txt" Pack="true" PackagePath="\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <AdditionalFiles Include="$(RepositoryDirectory)stylecop.json" Link="stylecop.json" />
-  </ItemGroup>
-
 </Project>
