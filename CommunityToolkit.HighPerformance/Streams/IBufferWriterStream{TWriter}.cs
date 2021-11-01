@@ -142,9 +142,8 @@ internal sealed partial class IBufferWriterStream<TWriter> : Stream
         MemoryStream.ValidateDisposed(this.disposed);
         MemoryStream.ValidateBuffer(buffer, offset, count);
 
-        Span<byte>
-            source = buffer.AsSpan(offset, count),
-            destination = this.bufferWriter.GetSpan(count);
+        Span<byte> source = buffer.AsSpan(offset, count);
+        Span<byte> destination = this.bufferWriter.GetSpan(count);
 
         if (!source.TryCopyTo(destination))
         {

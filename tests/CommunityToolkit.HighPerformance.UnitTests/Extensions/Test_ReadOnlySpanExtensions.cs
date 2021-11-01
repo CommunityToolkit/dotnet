@@ -277,9 +277,8 @@ public partial class Test_ReadOnlySpanExtensions
     {
         int[,] array = new int[4, 5];
 
-        ReadOnlySpan<int>
-            values1 = new[] { 10, 20, 30, 40, 50 },
-            values2 = new[] { 11, 22, 33, 44, 55 };
+        ReadOnlySpan<int> values1 = new[] { 10, 20, 30, 40, 50 };
+        ReadOnlySpan<int> values2 = new[] { 11, 22, 33, 44, 55 };
 
         // Copy a span to a target row and column with valid lengths
         values1.CopyTo(array.GetRow(0));
@@ -304,11 +303,11 @@ public partial class Test_ReadOnlySpanExtensions
 
         result = new[,]
         {
-                { 10, 11, 30, 40, 50 },
-                { 0, 22, 0, 0, 0 },
-                { 10, 20, 30, 40, 50 },
-                { 0, 44, 0, 0, 0 }
-            };
+            { 10, 11, 30, 40, 50 },
+            { 0, 22, 0, 0, 0 },
+            { 10, 20, 30, 40, 50 },
+            { 0, 44, 0, 0, 0 }
+        };
 
         CollectionAssert.AreEqual(array, result);
     }

@@ -70,9 +70,8 @@ public sealed class StringPool
         // Calculates the rounded up factors for a specific size/factor pair
         static void FindFactors(int size, int factor, out int x, out int y)
         {
-            double
-                a = Math.Sqrt((double)size / factor),
-                b = factor * a;
+            double a = Math.Sqrt((double)size / factor);
+            double b = factor * a;
 
             x = BitOperations.RoundUpPowerOfTwo((int)a);
             y = BitOperations.RoundUpPowerOfTwo((int)b);
@@ -91,10 +90,9 @@ public sealed class StringPool
         FindFactors(minimumSize, 3, out int x3, out int y3);
         FindFactors(minimumSize, 4, out int x4, out int y4);
 
-        int
-            p2 = x2 * y2,
-            p3 = x3 * y3,
-            p4 = x4 * y4;
+        int p2 = x2 * y2;
+        int p3 = x3 * y3;
+        int p4 = x4 * y4;
 
         if (p3 < p2)
         {
@@ -152,9 +150,8 @@ public sealed class StringPool
             return;
         }
 
-        int
-            hashcode = GetHashCode(value.AsSpan()),
-            bucketIndex = hashcode & (this.numberOfMaps - 1);
+        int hashcode = GetHashCode(value.AsSpan());
+        int bucketIndex = hashcode & (this.numberOfMaps - 1);
 
         ref FixedSizePriorityMap map = ref this.maps.DangerousGetReferenceAt(bucketIndex);
 
@@ -176,9 +173,8 @@ public sealed class StringPool
             return string.Empty;
         }
 
-        int
-            hashcode = GetHashCode(value.AsSpan()),
-            bucketIndex = hashcode & (this.numberOfMaps - 1);
+        int hashcode = GetHashCode(value.AsSpan());
+        int bucketIndex = hashcode & (this.numberOfMaps - 1);
 
         ref FixedSizePriorityMap map = ref this.maps.DangerousGetReferenceAt(bucketIndex);
 
@@ -200,9 +196,8 @@ public sealed class StringPool
             return string.Empty;
         }
 
-        int
-            hashcode = GetHashCode(span),
-            bucketIndex = hashcode & (this.numberOfMaps - 1);
+        int hashcode = GetHashCode(span);
+        int bucketIndex = hashcode & (this.numberOfMaps - 1);
 
         ref FixedSizePriorityMap map = ref this.maps.DangerousGetReferenceAt(bucketIndex);
 
@@ -253,9 +248,8 @@ public sealed class StringPool
             return true;
         }
 
-        int
-            hashcode = GetHashCode(span),
-            bucketIndex = hashcode & (this.numberOfMaps - 1);
+        int hashcode = GetHashCode(span);
+        int bucketIndex = hashcode & (this.numberOfMaps - 1);
 
         ref FixedSizePriorityMap map = ref this.maps.DangerousGetReferenceAt(bucketIndex);
 
@@ -499,9 +493,8 @@ public sealed class StringPool
         {
             ref MapEntry mapEntriesRef = ref this.mapEntries.DangerousGetReference();
             ref MapEntry entry = ref Unsafe.NullRef<MapEntry>();
-            int
-                length = this.buckets.Length,
-                bucketIndex = hashcode & (length - 1);
+            int length = this.buckets.Length;
+            int bucketIndex = hashcode & (length - 1);
 
             for (int i = this.buckets.DangerousGetReferenceAt(bucketIndex) - 1;
                  (uint)i < (uint)length;
@@ -590,10 +583,9 @@ public sealed class StringPool
         private void Remove(int hashcode, int mapIndex)
         {
             ref MapEntry mapEntriesRef = ref this.mapEntries.DangerousGetReference();
-            int
-                bucketIndex = hashcode & (this.buckets.Length - 1),
-                entryIndex = this.buckets.DangerousGetReferenceAt(bucketIndex) - 1,
-                lastIndex = EndOfList;
+            int bucketIndex = hashcode & (this.buckets.Length - 1);
+            int entryIndex = this.buckets.DangerousGetReferenceAt(bucketIndex) - 1;
+            int lastIndex = EndOfList;
 
             // We can just have an undefined loop, as the input
             // value we're looking for is guaranteed to be present
@@ -635,9 +627,8 @@ public sealed class StringPool
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void UpdateTimestamp(ref int heapIndex)
         {
-            int
-                currentIndex = heapIndex,
-                count = this.count;
+            int currentIndex = heapIndex;
+            int count = this.count;
             ref MapEntry mapEntriesRef = ref this.mapEntries.DangerousGetReference();
             ref HeapEntry heapEntriesRef = ref this.heapEntries.DangerousGetReference();
             ref HeapEntry root = ref Unsafe.Add(ref heapEntriesRef, (nint)(uint)currentIndex);
@@ -684,10 +675,9 @@ public sealed class StringPool
                 //   - left: (2 * n) + 1
                 //   - right: (2 * n) + 2
                 ref HeapEntry minimum = ref root;
-                int
-                    left = (currentIndex * 2) + 1,
-                    right = (currentIndex * 2) + 2,
-                    targetIndex = currentIndex;
+                int left = (currentIndex * 2) + 1;
+                int right = (currentIndex * 2) + 2;
+                int targetIndex = currentIndex;
 
                 // Check and update the left child, if necessary
                 if (left < count)

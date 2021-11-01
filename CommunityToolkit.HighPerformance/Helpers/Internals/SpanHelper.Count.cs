@@ -81,9 +81,8 @@ internal static partial class SpanHelper
     private static nint CountSequential<T>(ref T r0, nint length, T value)
         where T : IEquatable<T>
     {
-        nint
-            result = 0,
-            offset = 0;
+        nint result = 0;
+        nint offset = 0;
 
         // Main loop with 8 unrolled iterations
         while (length >= 8)
@@ -131,9 +130,8 @@ internal static partial class SpanHelper
     private static nint CountSimd<T>(ref T r0, nint length, T value)
         where T : unmanaged, IEquatable<T>
     {
-        nint
-            result = 0,
-            offset = 0;
+        nint result = 0;
+        nint offset = 0;
 
         // Skip the initialization overhead if there are not enough items
         if (length >= Vector<T>.Count)
@@ -147,10 +145,9 @@ internal static partial class SpanHelper
                 // to sum the partial results. We also backup the current offset to
                 // be able to track how many items have been processed, which lets
                 // us avoid updating a third counter (length) in the loop body.
-                nint
-                    max = GetUpperBound<T>(),
-                    chunkLength = length <= max ? length : max,
-                    initialOffset = offset;
+                nint max = GetUpperBound<T>();
+                nint chunkLength = length <= max ? length : max;
+                nint initialOffset = offset;
 
                 Vector<T> partials = Vector<T>.Zero;
 

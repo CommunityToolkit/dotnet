@@ -84,10 +84,9 @@ public static partial class ParallelHelper
             return;
         }
 
-        int
-            maxBatches = 1 + ((memory.Length - 1) / minimumActionsPerThread),
-            cores = Environment.ProcessorCount,
-            numBatches = Math.Min(maxBatches, cores);
+        int maxBatches = 1 + ((memory.Length - 1) / minimumActionsPerThread);
+        int cores = Environment.ProcessorCount;
+        int numBatches = Math.Min(maxBatches, cores);
 
         // Skip the parallel invocation when a single batch is needed
         if (numBatches == 1)
@@ -137,10 +136,9 @@ public static partial class ParallelHelper
         /// <param name="i">The index of the batch to process</param>
         public void Invoke(int i)
         {
-            int
-                low = i * this.batchSize,
-                high = low + this.batchSize,
-                end = Math.Min(high, this.memory.Length);
+            int low = i * this.batchSize;
+            int high = low + this.batchSize;
+            int end = Math.Min(high, this.memory.Length);
 
             ref TItem r0 = ref MemoryMarshal.GetReference(this.memory.Span);
             ref TItem rStart = ref Unsafe.Add(ref r0, low);

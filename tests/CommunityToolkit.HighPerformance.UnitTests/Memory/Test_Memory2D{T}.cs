@@ -507,7 +507,8 @@ public class Test_Memory2DT
         Memory2D<int> memory2d = new(array);
 
         // Ensure that the GetHashCode method is repeatable
-        int a = memory2d.GetHashCode(), b = memory2d.GetHashCode();
+        int a = memory2d.GetHashCode();
+        int b = memory2d.GetHashCode();
 
         Assert.AreEqual(a, b);
 

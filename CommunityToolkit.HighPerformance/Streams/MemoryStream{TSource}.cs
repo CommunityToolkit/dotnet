@@ -229,13 +229,11 @@ internal partial class MemoryStream<TSource> : Stream
         MemoryStream.ValidateDisposed(this.disposed);
         MemoryStream.ValidateBuffer(buffer, offset, count);
 
-        int
-            bytesAvailable = this.source.Length - this.position,
-            bytesCopied = Math.Min(bytesAvailable, count);
+        int bytesAvailable = this.source.Length - this.position;
+        int bytesCopied = Math.Min(bytesAvailable, count);
 
-        Span<byte>
-            source = this.source.Span.Slice(this.position, bytesCopied),
-            destination = buffer.AsSpan(offset, bytesCopied);
+        Span<byte> source = this.source.Span.Slice(this.position, bytesCopied);
+        Span<byte> destination = buffer.AsSpan(offset, bytesCopied);
 
         source.CopyTo(destination);
 
@@ -264,9 +262,8 @@ internal partial class MemoryStream<TSource> : Stream
         MemoryStream.ValidateCanWrite(CanWrite);
         MemoryStream.ValidateBuffer(buffer, offset, count);
 
-        Span<byte>
-            source = buffer.AsSpan(offset, count),
-            destination = this.source.Span.Slice(this.position);
+        Span<byte> source = buffer.AsSpan(offset, count);
+        Span<byte> destination = this.source.Span.Slice(this.position);
 
         if (!source.TryCopyTo(destination))
         {

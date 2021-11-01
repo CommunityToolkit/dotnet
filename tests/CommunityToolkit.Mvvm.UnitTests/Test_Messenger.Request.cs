@@ -211,14 +211,12 @@ public partial class Test_Messenger
     public void Test_Messenger_CollectionRequestMessage_Ok_MultipleReplies(Type type)
     {
         IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
-        object
-            recipient1 = new(),
-            recipient2 = new(),
-            recipient3 = new();
-        object?
-            r1 = null,
-            r2 = null,
-            r3 = null;
+        object recipient1 = new();
+        object recipient2 = new();
+        object recipient3 = new();
+        object? r1 = null;
+        object? r2 = null;
+        object? r3 = null;
 
         void Receive1(object recipient, NumbersCollectionRequestMessage m)
         {
@@ -289,11 +287,10 @@ public partial class Test_Messenger
     public async Task Test_Messenger_AsyncCollectionRequestMessage_Ok_MultipleReplies(Type type)
     {
         IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
-        object
-            recipient1 = new(),
-            recipient2 = new(),
-            recipient3 = new(),
-            recipient4 = new();
+        object recipient1 = new();
+        object recipient2 = new();
+        object recipient3 = new();
+        object recipient4 = new();
 
         async Task<int> GetNumberAsync()
         {
@@ -329,11 +326,10 @@ public partial class Test_Messenger
     public async Task Test_Messenger_AsyncCollectionRequestMessage_Ok_MultipleReplies_Enumerate(Type type)
     {
         IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
-        object
-            recipient1 = new(),
-            recipient2 = new(),
-            recipient3 = new(),
-            recipient4 = new();
+        object recipient1 = new();
+        object recipient2 = new();
+        object recipient3 = new();
+        object recipient4 = new();
 
         async Task<int> GetNumberAsync()
         {

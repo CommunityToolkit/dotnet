@@ -82,9 +82,8 @@ public partial class Test_MemoryStream
     [TestMethod]
     public void Test_MemoryStream_WriteToEndAndRefreshPosition()
     {
-        byte[]
-            array = new byte[10],
-            temp = new byte[1];
+        byte[] array = new byte[10];
+        byte[] temp = new byte[1];
         ReadOnlyMemory<byte> memory = array;
 
         using Stream? stream = memory.AsStream();

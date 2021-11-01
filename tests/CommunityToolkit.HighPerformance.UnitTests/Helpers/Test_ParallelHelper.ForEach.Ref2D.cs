@@ -27,9 +27,8 @@ public partial class Test_ParallelHelper
         int height,
         int width)
     {
-        int[,]
-            data = CreateRandomData2D(sizeY, sizeX),
-            copy = (int[,])data.Clone();
+        int[,] data = CreateRandomData2D(sizeY, sizeX);
+        int[,] copy = (int[,])data.Clone();
 
         // Prepare the target data iteratively
         foreach (ref int n in copy.AsSpan2D(row, column, height, width))

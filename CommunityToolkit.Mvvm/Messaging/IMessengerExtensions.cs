@@ -168,10 +168,9 @@ public static class IMessengerExtensions
             }
 
             // Input parameters (IMessenger instance, non-generic recipient, token)
-            ParameterExpression
-                arg0 = Expression.Parameter(typeof(IMessenger)),
-                arg1 = Expression.Parameter(typeof(object)),
-                arg2 = Expression.Parameter(typeof(TToken));
+            ParameterExpression arg0 = Expression.Parameter(typeof(IMessenger));
+            ParameterExpression arg1 = Expression.Parameter(typeof(object));
+            ParameterExpression arg2 = Expression.Parameter(typeof(TToken));
 
             // Declare a local resulting from the (RecipientType)recipient cast
             UnaryExpression inst1 = Expression.Convert(arg1, recipientType);

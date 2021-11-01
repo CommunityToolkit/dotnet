@@ -43,16 +43,14 @@ public sealed class NullabilityAttributesGenerator : ISourceGenerator
             return;
         }
 
-        string
-            typeName = typeFullName.Split('.').Last(),
-            filename = $"CommunityToolkit.Mvvm.SourceGenerators.EmbeddedResources.{typeName}.cs";
+        string typeName = typeFullName.Split('.').Last();
+        string filename = $"CommunityToolkit.Mvvm.SourceGenerators.EmbeddedResources.{typeName}.cs";
 
         Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(filename);
         StreamReader reader = new(stream);
 
-        string
-            originalSource = reader.ReadToEnd(),
-            outputSource = originalSource.Replace("NETSTANDARD2_0", "true");
+        string originalSource = reader.ReadToEnd();
+        string outputSource = originalSource.Replace("NETSTANDARD2_0", "true");
 
         context.AddSource($"{typeFullName}.cs", SourceText.From(outputSource, Encoding.UTF8));
     }

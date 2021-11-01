@@ -92,11 +92,10 @@ public static class BitHelper
         int i = x - min;
         bool isInRange = (uint)i < 32u;
         byte byteFlag = *(byte*)&isInRange;
-        int
-            negativeFlag = byteFlag - 1,
-            mask = ~negativeFlag,
-            shift = unchecked((int)((table >> i) & 1)),
-            and = shift & mask;
+        int negativeFlag = byteFlag - 1;
+        int mask = ~negativeFlag;
+        int shift = unchecked((int)((table >> i) & 1));
+        int and = shift & mask;
         byte result = unchecked((byte)and);
         bool valid = *(bool*)&result;
 
@@ -199,10 +198,9 @@ public static class BitHelper
         // Shift a bit left to the n-th position, negate the
         // resulting value and perform an AND with the input value.
         // This effectively clears the n-th bit of our input.
-        uint
-            bit = 1u << n,
-            not = ~bit,
-            and = value & not;
+        uint bit = 1u << n;
+        uint not = ~bit;
+        uint and = value & not;
 
         // Reinterpret the flag as 1 or 0, and cast to uint,
         // then we left shift the uint flag to the right position
@@ -210,10 +208,9 @@ public static class BitHelper
         // operation. This will always guaranteed to work, thanks to the
         // initial code clearing that bit before setting it again.
         bool copy = flag;
-        uint
-            flag32 = *(byte*)&copy,
-            shift = flag32 << n,
-            or = and | shift;
+        uint flag32 = *(byte*)&copy;
+        uint shift = flag32 << n;
+        uint or = and | shift;
 
         return or;
     }
@@ -279,10 +276,9 @@ public static class BitHelper
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static uint SetRange(uint value, byte start, byte length, uint flags)
     {
-        uint
-            highBits = (1u << length) - 1u,
-            loadMask = highBits << start,
-            storeMask = (flags & highBits) << start;
+        uint highBits = (1u << length) - 1u;
+        uint loadMask = highBits << start;
+        uint storeMask = (flags & highBits) << start;
 
 #if NETCOREAPP3_1 || NET5_0
             if (Bmi1.IsSupported)
@@ -334,11 +330,10 @@ public static class BitHelper
         int i = x - min;
         bool isInRange = (uint)i < 64u;
         byte byteFlag = *(byte*)&isInRange;
-        int
-            negativeFlag = byteFlag - 1,
-            mask = ~negativeFlag,
-            shift = unchecked((int)((table >> i) & 1)),
-            and = shift & mask;
+        int negativeFlag = byteFlag - 1;
+        int mask = ~negativeFlag;
+        int shift = unchecked((int)((table >> i) & 1));
+        int and = shift & mask;
         byte result = unchecked((byte)and);
         bool valid = *(bool*)&result;
 
@@ -376,14 +371,13 @@ public static class BitHelper
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe ulong SetFlag(ulong value, int n, bool flag)
     {
-        ulong
-            bit = 1ul << n,
-            not = ~bit,
-            and = value & not;
+        ulong bit = 1ul << n;
+        ulong not = ~bit;
+        ulong and = value & not;
         bool copy = flag;
-        ulong flag64 = *(byte*)&copy,
-            shift = flag64 << n,
-            or = and | shift;
+        ulong flag64 = *(byte*)&copy;
+        ulong shift = flag64 << n;
+        ulong or = and | shift;
 
         return or;
     }
@@ -449,10 +443,9 @@ public static class BitHelper
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ulong SetRange(ulong value, byte start, byte length, ulong flags)
     {
-        ulong
-            highBits = (1ul << length) - 1ul,
-            loadMask = highBits << start,
-            storeMask = (flags & highBits) << start;
+        ulong highBits = (1ul << length) - 1ul;
+        ulong loadMask = highBits << start;
+        ulong storeMask = (flags & highBits) << start;
 
 #if NETCOREAPP3_1 || NET5_0
             if (Bmi1.X64.IsSupported)

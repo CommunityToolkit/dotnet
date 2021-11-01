@@ -39,11 +39,10 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator
         INamedTypeSymbol classDeclarationSymbol,
         [NotNullWhen(false)] out DiagnosticDescriptor? descriptor)
     {
-        INamedTypeSymbol
-            observableRecipientSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableRecipient")!,
-            observableObjectSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableObject")!,
-            observableObjectAttributeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute")!,
-            iNotifyPropertyChangedSymbol = context.Compilation.GetTypeByMetadataName("System.ComponentModel.INotifyPropertyChanged")!;
+        INamedTypeSymbol observableRecipientSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableRecipient")!;
+        INamedTypeSymbol observableObjectSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableObject")!;
+        INamedTypeSymbol observableObjectAttributeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute")!;
+        INamedTypeSymbol iNotifyPropertyChangedSymbol = context.Compilation.GetTypeByMetadataName("System.ComponentModel.INotifyPropertyChanged")!;
 
         // Check if the type already inherits from ObservableRecipient
         if (classDeclarationSymbol.InheritsFrom(observableRecipientSymbol))
@@ -90,9 +89,8 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator
         {
             foreach (ConstructorDeclarationSyntax ctor in sourceDeclaration.Members.OfType<ConstructorDeclarationSyntax>())
             {
-                string
-                    text = ctor.NormalizeWhitespace().ToFullString(),
-                    replaced = text.Replace("ObservableRecipient", classDeclarationSymbol.Name);
+                string text = ctor.NormalizeWhitespace().ToFullString();
+                string replaced = text.Replace("ObservableRecipient", classDeclarationSymbol.Name);
 
                 // Adjust the visibility of the constructors based on whether the target type is abstract.
                 // If that is not the case, the constructors have to be declared as public and not protected.

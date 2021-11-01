@@ -223,9 +223,8 @@ public readonly ref struct ReadOnlyRefEnumerable<T>
 #else
         ref T sourceRef = ref RuntimeHelpers.GetObjectDataAtOffsetOrPointerReference<T>(this.instance, this.offset);
         ref T destinationRef = ref RuntimeHelpers.GetObjectDataAtOffsetOrPointerReference<T>(destination.Instance, destination.Offset);
-        int
-            sourceLength = this.length,
-            destinationLength = destination.Length;
+        int sourceLength = this.length;
+        int destinationLength = destination.Length;
 #endif
 
         if ((uint)destinationLength < (uint)sourceLength)
@@ -248,9 +247,8 @@ public readonly ref struct ReadOnlyRefEnumerable<T>
                 sourceLength = this.span.Length,
                 destinationLength = destination.Span.Length;
 #else
-        int
-            sourceLength = this.length,
-            destinationLength = destination.Length;
+        int sourceLength = this.length;
+        int destinationLength = destination.Length;
 #endif
 
         if (destinationLength >= sourceLength)

@@ -198,11 +198,10 @@ public class Test_BitHelper
         // Specific initial bit mask to check for unwanted modifications
         const uint value = 0xAAAA5555u;
 
-        uint
-            backup = BitHelper.ExtractRange(value, start, length),
-            result = BitHelper.SetRange(value, start, length, flags),
-            extracted = BitHelper.ExtractRange(result, start, length),
-            restored = BitHelper.SetRange(result, start, length, backup);
+        uint backup = BitHelper.ExtractRange(value, start, length);
+        uint result = BitHelper.SetRange(value, start, length, flags);
+        uint extracted = BitHelper.ExtractRange(result, start, length);
+        uint restored = BitHelper.SetRange(result, start, length, backup);
 
         Assert.AreEqual(extracted, flags);
         Assert.AreEqual(restored, value);
@@ -312,11 +311,10 @@ public class Test_BitHelper
         // Specific initial bit mask to check for unwanted modifications
         const ulong value = 0xAAAA5555AAAA5555u;
 
-        ulong
-            backup = BitHelper.ExtractRange(value, start, length),
-            result = BitHelper.SetRange(value, start, length, flags),
-            extracted = BitHelper.ExtractRange(result, start, length),
-            restored = BitHelper.SetRange(result, start, length, backup);
+        ulong backup = BitHelper.ExtractRange(value, start, length);
+        ulong result = BitHelper.SetRange(value, start, length, flags);
+        ulong extracted = BitHelper.ExtractRange(result, start, length);
+        ulong restored = BitHelper.SetRange(result, start, length, backup);
 
         Assert.AreEqual(extracted, flags);
         Assert.AreEqual(restored, value);

@@ -584,9 +584,8 @@ public class Test_ObservableValidator
 
         protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
         {
-            object
-                instance = validationContext.ObjectInstance,
-                otherValue = instance.GetType().GetProperty(PropertyName)!.GetValue(instance)!;
+            object instance = validationContext.ObjectInstance;
+            object otherValue = instance.GetType().GetProperty(PropertyName)!.GetValue(instance)!;
 
             if (((IComparable)value!).CompareTo(otherValue) > 0)
             {

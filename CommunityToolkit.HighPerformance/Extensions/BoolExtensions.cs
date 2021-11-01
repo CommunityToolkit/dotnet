@@ -52,9 +52,8 @@ public static class BoolExtensions
     {
         bool copy = flag;
         byte rangeFlag = *(byte*)&copy;
-        int
-            negativeFlag = rangeFlag - 1,
-            mask = ~negativeFlag;
+        int negativeFlag = rangeFlag - 1;
+        int mask = ~negativeFlag;
 
         return mask;
     }
@@ -72,9 +71,8 @@ public static class BoolExtensions
     {
         bool copy = flag;
         byte rangeFlag = *(byte*)&copy;
-        long
-            negativeFlag = (long)rangeFlag - 1,
-            mask = ~negativeFlag;
+        long negativeFlag = (long)rangeFlag - 1;
+        long mask = ~negativeFlag;
 
         return mask;
     }

@@ -154,10 +154,9 @@ public static class ReadOnlySpanExtensions
         // lookup table can just be assumed to always be false.
         bool isInRange = (uint)i < (uint)span.Length;
         byte rangeFlag = *(byte*)&isInRange;
-        uint
-            negativeFlag = unchecked(rangeFlag - 1u),
-            mask = ~negativeFlag,
-            offset = (uint)i & mask;
+        uint negativeFlag = unchecked(rangeFlag - 1u);
+        uint mask = ~negativeFlag;
+        uint offset = (uint)i & mask;
         ref T r0 = ref MemoryMarshal.GetReference(span);
         ref T r1 = ref Unsafe.Add(ref r0, (nint)offset);
 

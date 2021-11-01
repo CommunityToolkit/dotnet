@@ -80,9 +80,8 @@ public static partial class ParallelHelper
                 ThrowArgumentExceptionForRangeIndexFromEnd(nameof(range));
             }
 
-            int
-                start = range.Start.Value,
-                end = range.End.Value;
+            int start = range.Start.Value;
+            int end = range.End.Value;
 
             For(start, end, action, minimumActionsPerThread);
         }
@@ -163,11 +162,10 @@ public static partial class ParallelHelper
             return;
         }
 
-        int
-            count = Math.Abs(start - end),
-            maxBatches = 1 + ((count - 1) / minimumActionsPerThread),
-            cores = Environment.ProcessorCount,
-            numBatches = Math.Min(maxBatches, cores);
+        int count = Math.Abs(start - end);
+        int maxBatches = 1 + ((count - 1) / minimumActionsPerThread);
+        int cores = Environment.ProcessorCount;
+        int numBatches = Math.Min(maxBatches, cores);
 
         // Skip the parallel invocation when a single batch is needed
         if (numBatches == 1)
@@ -220,11 +218,10 @@ public static partial class ParallelHelper
         /// <param name="i">The index of the batch to process</param>
         public void Invoke(int i)
         {
-            int
-                offset = i * this.batchSize,
-                low = this.start + offset,
-                high = low + this.batchSize,
-                stop = Math.Min(high, this.end);
+            int offset = i * this.batchSize;
+            int low = this.start + offset;
+            int high = low + this.batchSize;
+            int stop = Math.Min(high, this.end);
 
             for (int j = low; j < stop; j++)
             {

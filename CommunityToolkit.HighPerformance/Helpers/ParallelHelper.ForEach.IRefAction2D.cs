@@ -90,13 +90,11 @@ public static partial class ParallelHelper
         // of CPU cores (which is an int), and the height of each batch is necessarily
         // smaller than or equal than int.MaxValue, as it can't be greater than the
         // number of total batches, which again is capped at the number of CPU cores.
-        nint
-            maxBatches = 1 + ((memory.Length - 1) / minimumActionsPerThread),
-            clipBatches = maxBatches <= memory.Height ? maxBatches : memory.Height;
-        int
-            cores = Environment.ProcessorCount,
-            numBatches = (int)(clipBatches <= cores ? clipBatches : cores),
-            batchHeight = 1 + ((memory.Height - 1) / numBatches);
+        nint maxBatches = 1 + ((memory.Length - 1) / minimumActionsPerThread);
+        nint clipBatches = maxBatches <= memory.Height ? maxBatches : memory.Height;
+        int cores = Environment.ProcessorCount;
+        int numBatches = (int)(clipBatches <= cores ? clipBatches : cores);
+        int batchHeight = 1 + ((memory.Height - 1) / numBatches);
 
         RefActionInvokerWithReadOnlyMemory2D<TItem, TAction> actionInvoker = new(batchHeight, memory, action);
 
@@ -143,9 +141,8 @@ public static partial class ParallelHelper
         {
             int lowY = i * this.batchHeight;
             nint highY = lowY + this.batchHeight;
-            int
-                stopY = (int)(highY <= this.memory.Height ? highY : this.memory.Height),
-                width = this.memory.Width;
+            int stopY = (int)(highY <= this.memory.Height ? highY : this.memory.Height);
+            int width = this.memory.Width;
 
             ReadOnlySpan2D<TItem> span = this.memory.Span;
 

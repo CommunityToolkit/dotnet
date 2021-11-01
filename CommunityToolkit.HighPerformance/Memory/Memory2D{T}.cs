@@ -119,9 +119,8 @@ public readonly struct Memory2D<T> : IEquatable<Memory2D<T>>
             ThrowHelper.ThrowArgumentOutOfRangeExceptionForPitch();
         }
 
-        int
-            area = OverflowHelper.ComputeInt32Area(height, width, pitch),
-            remaining = array.Length - offset;
+        int area = OverflowHelper.ComputeInt32Area(height, width, pitch);
+        int remaining = array.Length - offset;
 
         if (area > remaining)
         {
@@ -197,9 +196,8 @@ public readonly struct Memory2D<T> : IEquatable<Memory2D<T>>
             ThrowHelper.ThrowArrayTypeMismatchException();
         }
 
-        int
-            rows = array.GetLength(0),
-            columns = array.GetLength(1);
+        int rows = array.GetLength(0);
+        int columns = array.GetLength(1);
 
         if ((uint)row >= (uint)rows)
         {
@@ -281,9 +279,8 @@ public readonly struct Memory2D<T> : IEquatable<Memory2D<T>>
             ThrowHelper.ThrowArgumentOutOfRangeExceptionForDepth();
         }
 
-        int
-            rows = array.GetLength(1),
-            columns = array.GetLength(2);
+        int rows = array.GetLength(1);
+        int columns = array.GetLength(2);
 
         if ((uint)row >= (uint)rows)
         {
@@ -373,9 +370,8 @@ public readonly struct Memory2D<T> : IEquatable<Memory2D<T>>
                 return;
             }
 
-            int
-                area = OverflowHelper.ComputeInt32Area(height, width, pitch),
-                remaining = length - offset;
+            int area = OverflowHelper.ComputeInt32Area(height, width, pitch);
+            int remaining = length - offset;
 
             if (area > remaining)
             {
@@ -686,9 +682,8 @@ public readonly struct Memory2D<T> : IEquatable<Memory2D<T>>
             ThrowHelper.ThrowArgumentOutOfRangeExceptionForWidth();
         }
 
-        int
-            shift = ((this.width + this.pitch) * row) + column,
-            pitch = this.pitch + (this.width - width);
+        int shift = ((this.width + this.pitch) * row) + column;
+        int pitch = this.pitch + (this.width - width);
 
         IntPtr offset = this.offset + (shift * Unsafe.SizeOf<T>());
 

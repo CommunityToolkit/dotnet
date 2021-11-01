@@ -35,9 +35,8 @@ public sealed class ObservableObjectGenerator : TransitiveMembersGenerator
         INamedTypeSymbol classDeclarationSymbol,
         [NotNullWhen(false)] out DiagnosticDescriptor? descriptor)
     {
-        INamedTypeSymbol
-            iNotifyPropertyChangedSymbol = context.Compilation.GetTypeByMetadataName("System.ComponentModel.INotifyPropertyChanged")!,
-            iNotifyPropertyChangingSymbol = context.Compilation.GetTypeByMetadataName("System.ComponentModel.INotifyPropertyChanging")!;
+        INamedTypeSymbol iNotifyPropertyChangedSymbol = context.Compilation.GetTypeByMetadataName("System.ComponentModel.INotifyPropertyChanged")!;
+        INamedTypeSymbol iNotifyPropertyChangingSymbol = context.Compilation.GetTypeByMetadataName("System.ComponentModel.INotifyPropertyChanging")!;
 
         // Check if the type already implements INotifyPropertyChanged...
         if (classDeclarationSymbol.AllInterfaces.Any(i => SymbolEqualityComparer.Default.Equals(i, iNotifyPropertyChangedSymbol)))

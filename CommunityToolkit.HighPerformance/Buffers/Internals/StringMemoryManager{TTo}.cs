@@ -71,10 +71,9 @@ internal sealed class StringMemoryManager<TTo> : MemoryManager<TTo>, IMemoryMana
             ThrowArgumentOutOfRangeExceptionForInvalidIndex();
         }
 
-        int
-            bytePrefix = this.offset * Unsafe.SizeOf<char>(),
-            byteSuffix = elementIndex * Unsafe.SizeOf<TTo>(),
-            byteOffset = bytePrefix + byteSuffix;
+        int bytePrefix = this.offset * Unsafe.SizeOf<char>();
+        int byteSuffix = elementIndex * Unsafe.SizeOf<TTo>();
+        int byteOffset = bytePrefix + byteSuffix;
 
         GCHandle handle = GCHandle.Alloc(this.text, GCHandleType.Pinned);
 
@@ -100,9 +99,8 @@ internal sealed class StringMemoryManager<TTo> : MemoryManager<TTo>, IMemoryMana
     public Memory<T> GetMemory<T>(int offset, int length)
         where T : unmanaged
     {
-        int
-            absoluteOffset = this.offset + RuntimeHelpers.ConvertLength<TTo, char>(offset),
-            absoluteLength = RuntimeHelpers.ConvertLength<TTo, char>(length);
+        int absoluteOffset = this.offset + RuntimeHelpers.ConvertLength<TTo, char>(offset);
+        int absoluteLength = RuntimeHelpers.ConvertLength<TTo, char>(length);
 
         if (typeof(T) == typeof(char))
         {

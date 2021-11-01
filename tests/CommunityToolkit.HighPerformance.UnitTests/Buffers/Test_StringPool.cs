@@ -103,26 +103,25 @@ public class Test_StringPool
     {
         StringPool? pool = new();
 
-        string
-            hello = nameof(hello),
-            helloworld = nameof(helloworld),
-            windowsCommunityToolkit = nameof(windowsCommunityToolkit);
+        string hello = nameof(hello);
+        string helloworld = nameof(helloworld);
+        string dotnetCommunityToolkit = nameof(dotnetCommunityToolkit);
 
         Assert.IsFalse(pool.TryGet(hello.AsSpan(), out _));
         Assert.IsFalse(pool.TryGet(helloworld.AsSpan(), out _));
-        Assert.IsFalse(pool.TryGet(windowsCommunityToolkit.AsSpan(), out _));
+        Assert.IsFalse(pool.TryGet(dotnetCommunityToolkit.AsSpan(), out _));
 
         pool.Add(hello);
         pool.Add(helloworld);
-        pool.Add(windowsCommunityToolkit);
+        pool.Add(dotnetCommunityToolkit);
 
         Assert.IsTrue(pool.TryGet(hello.AsSpan(), out string? hello2));
         Assert.IsTrue(pool.TryGet(helloworld.AsSpan(), out string? world2));
-        Assert.IsTrue(pool.TryGet(windowsCommunityToolkit.AsSpan(), out string? windowsCommunityToolkit2));
+        Assert.IsTrue(pool.TryGet(dotnetCommunityToolkit.AsSpan(), out string? windowsCommunityToolkit2));
 
         Assert.AreSame(hello, hello2);
         Assert.AreSame(helloworld, world2);
-        Assert.AreSame(windowsCommunityToolkit, windowsCommunityToolkit2);
+        Assert.AreSame(dotnetCommunityToolkit, windowsCommunityToolkit2);
     }
 
     [TestCategory("StringPool")]
@@ -210,28 +209,27 @@ public class Test_StringPool
     {
         StringPool? pool = new();
 
-        string
-            hello = pool.GetOrAdd(nameof(hello).AsSpan()),
-            helloworld = pool.GetOrAdd(nameof(helloworld).AsSpan()),
-            windowsCommunityToolkit = pool.GetOrAdd(nameof(windowsCommunityToolkit).AsSpan());
+        string hello = pool.GetOrAdd(nameof(hello).AsSpan());
+        string helloworld = pool.GetOrAdd(nameof(helloworld).AsSpan());
+        string dotnetCommunityToolkit = pool.GetOrAdd(nameof(dotnetCommunityToolkit).AsSpan());
 
         Assert.AreEqual(nameof(hello), hello);
         Assert.AreEqual(nameof(helloworld), helloworld);
-        Assert.AreEqual(nameof(windowsCommunityToolkit), windowsCommunityToolkit);
+        Assert.AreEqual(nameof(dotnetCommunityToolkit), dotnetCommunityToolkit);
 
         Assert.AreSame(hello, pool.GetOrAdd(hello.AsSpan()));
         Assert.AreSame(helloworld, pool.GetOrAdd(helloworld.AsSpan()));
-        Assert.AreSame(windowsCommunityToolkit, pool.GetOrAdd(windowsCommunityToolkit.AsSpan()));
+        Assert.AreSame(dotnetCommunityToolkit, pool.GetOrAdd(dotnetCommunityToolkit.AsSpan()));
 
         pool.Reset();
 
         Assert.AreEqual(nameof(hello), hello);
         Assert.AreEqual(nameof(helloworld), helloworld);
-        Assert.AreEqual(nameof(windowsCommunityToolkit), windowsCommunityToolkit);
+        Assert.AreEqual(nameof(dotnetCommunityToolkit), dotnetCommunityToolkit);
 
         Assert.AreNotSame(hello, pool.GetOrAdd(hello.AsSpan()));
         Assert.AreNotSame(helloworld, pool.GetOrAdd(helloworld.AsSpan()));
-        Assert.AreNotSame(windowsCommunityToolkit, pool.GetOrAdd(windowsCommunityToolkit.AsSpan()));
+        Assert.AreNotSame(dotnetCommunityToolkit, pool.GetOrAdd(dotnetCommunityToolkit.AsSpan()));
     }
 
     [TestCategory("StringPool")]
@@ -263,11 +261,10 @@ public class Test_StringPool
 
         Span<byte> span2 = Encoding.ASCII.GetBytes(windowsCommunityToolkit);
 
-        string
-            windowsCommunityToolkit2 = pool.GetOrAdd(span2, Encoding.ASCII),
-            windowsCommunityToolkit3 = pool.GetOrAdd(windowsCommunityToolkit);
+        string dotnetCommunityToolkit2 = pool.GetOrAdd(span2, Encoding.ASCII);
+        string dotnetCommunityToolkit3 = pool.GetOrAdd(windowsCommunityToolkit);
 
-        Assert.AreSame(windowsCommunityToolkit2, windowsCommunityToolkit3);
+        Assert.AreSame(dotnetCommunityToolkit2, dotnetCommunityToolkit3);
     }
 
     [TestCategory("StringPool")]
@@ -318,9 +315,8 @@ public class Test_StringPool
             {
                 for (int i = 0; i < array.Length; i++)
                 {
-                    int
-                        left = (i * 2) + 1,
-                        right = (i * 2) + 2;
+                    int left = (i * 2) + 1;
+                    int right = (i * 2) + 2;
 
                     if ((left < array.Length &&
                          array[left] <= array[i]) ||

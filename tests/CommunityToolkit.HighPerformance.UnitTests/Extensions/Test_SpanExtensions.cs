@@ -175,9 +175,8 @@ public class Test_SpanExtensions
     {
         int[,] array = new int[4, 5];
 
-        int[]
-            values1 = { 10, 20, 30, 40, 50 },
-            values2 = { 11, 22, 33, 44, 55 };
+        int[] values1 = { 10, 20, 30, 40, 50 };
+        int[] values2 = { 11, 22, 33, 44, 55 };
 
         // Copy a span to a target row and column with valid lengths
         values1.AsSpan().CopyTo(array.GetRow(0));
@@ -185,11 +184,11 @@ public class Test_SpanExtensions
 
         int[,] result =
         {
-                { 10, 11, 30, 40, 50 },
-                { 0, 22, 0, 0, 0 },
-                { 0, 33, 0, 0, 0 },
-                { 0, 44, 0, 0, 0 }
-            };
+            { 10, 11, 30, 40, 50 },
+            { 0, 22, 0, 0, 0 },
+            { 0, 33, 0, 0, 0 },
+            { 0, 44, 0, 0, 0 }
+        };
 
         CollectionAssert.AreEqual(array, result);
 
@@ -202,11 +201,11 @@ public class Test_SpanExtensions
 
         result = new[,]
         {
-                { 10, 11, 30, 40, 50 },
-                { 0, 22, 0, 0, 0 },
-                { 10, 20, 30, 40, 50 },
-                { 0, 44, 0, 0, 0 }
-            };
+            { 10, 11, 30, 40, 50 },
+            { 0, 22, 0, 0, 0 },
+            { 10, 20, 30, 40, 50 },
+            { 0, 44, 0, 0, 0 }
+        };
 
         CollectionAssert.AreEqual(array, result);
     }

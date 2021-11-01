@@ -70,11 +70,10 @@ public static partial class ArrayExtensions
             ref T r0 = ref Unsafe.As<byte, T>(ref arrayData.Data);
             ref T ri = ref Unsafe.Add(ref r0, offset);
 
-            return ref ri;
+        return ref ri;
 #else
-        int
-            height = array.GetLength(1),
-            width = array.GetLength(2);
+        int height = array.GetLength(1);
+        int width = array.GetLength(2);
         nint index =
             ((nint)(uint)i * (nint)(uint)height * (nint)(uint)width) +
             ((nint)(uint)j * (nint)(uint)width) + (nint)(uint)k;
@@ -267,9 +266,8 @@ public static partial class ArrayExtensions
         where T : IEquatable<T>
     {
         ref T r0 = ref array.DangerousGetReference();
-        nint
-            length = RuntimeHelpers.GetArrayNativeLength(array),
-            count = SpanHelper.Count(ref r0, length, value);
+        nint length = RuntimeHelpers.GetArrayNativeLength(array);
+        nint count = SpanHelper.Count(ref r0, length, value);
 
         if ((nuint)count > int.MaxValue)
         {

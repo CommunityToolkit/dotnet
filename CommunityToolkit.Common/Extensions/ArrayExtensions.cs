@@ -132,9 +132,8 @@ public static class ArrayExtensions
 
         _ = builder.Append('[');
 
-        int
-            height = array.GetLength(0),
-            width = array.GetLength(1);
+        int height = array.GetLength(0);
+        int width = array.GetLength(1);
 
         for (int i = 0; i < height; i++)
         {

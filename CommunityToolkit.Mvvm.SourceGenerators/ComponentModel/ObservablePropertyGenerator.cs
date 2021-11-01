@@ -51,9 +51,8 @@ public sealed partial class ObservablePropertyGenerator : ISourceGenerator
         }
 
         // Sets of discovered property names
-        HashSet<string>
-            propertyChangedNames = new(),
-            propertyChangingNames = new();
+        HashSet<string> propertyChangedNames = new();
+        HashSet<string> propertyChangingNames = new();
 
         // Process the annotated fields
         foreach (IGrouping<INamedTypeSymbol, SyntaxReceiver.Item>? items in syntaxReceiver.GatheredInfo.GroupBy<SyntaxReceiver.Item, INamedTypeSymbol>(static item => item.FieldSymbol.ContainingType, SymbolEqualityComparer.Default))
@@ -93,17 +92,15 @@ public sealed partial class ObservablePropertyGenerator : ISourceGenerator
         ICollection<string> propertyChangedNames,
         ICollection<string> propertyChangingNames)
     {
-        INamedTypeSymbol
-            iNotifyPropertyChangingSymbol = context.Compilation.GetTypeByMetadataName("System.ComponentModel.INotifyPropertyChanging")!,
-            observableObjectSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableObject")!,
-            observableObjectAttributeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute")!,
-            observableValidatorSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableValidator")!;
+        INamedTypeSymbol iNotifyPropertyChangingSymbol = context.Compilation.GetTypeByMetadataName("System.ComponentModel.INotifyPropertyChanging")!;
+        INamedTypeSymbol observableObjectSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableObject")!;
+        INamedTypeSymbol observableObjectAttributeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute")!;
+        INamedTypeSymbol observableValidatorSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableValidator")!;
 
         // Check whether the current type implements INotifyPropertyChanging and whether it inherits from ObservableValidator
-        bool
-            isObservableObject = classDeclarationSymbol.InheritsFrom(observableObjectSymbol),
-            isObservableValidator = classDeclarationSymbol.InheritsFrom(observableValidatorSymbol),
-            isNotifyPropertyChanging =
+        bool isObservableObject = classDeclarationSymbol.InheritsFrom(observableObjectSymbol);
+        bool isObservableValidator = classDeclarationSymbol.InheritsFrom(observableValidatorSymbol);
+        bool isNotifyPropertyChanging =
                 isObservableObject ||
                 classDeclarationSymbol.AllInterfaces.Contains(iNotifyPropertyChangingSymbol, SymbolEqualityComparer.Default) ||
                 classDeclarationSymbol.GetAttributes().Any(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, observableObjectAttributeSymbol));
@@ -182,9 +179,8 @@ public sealed partial class ObservablePropertyGenerator : ISourceGenerator
         ICollection<string> propertyChangingNames)
     {
         // Get the field type and the target property name
-        string
-            typeName = fieldSymbol.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
-            propertyName = GetGeneratedPropertyName(fieldSymbol);
+        string typeName = fieldSymbol.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+        string propertyName = GetGeneratedPropertyName(fieldSymbol);
 
         INamedTypeSymbol alsoNotifyChangeForAttributeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.AlsoNotifyChangeForAttribute")!;
         INamedTypeSymbol? validationAttributeSymbol = context.Compilation.GetTypeByMetadataName("System.ComponentModel.DataAnnotations.ValidationAttribute");
@@ -489,9 +485,8 @@ public sealed partial class ObservablePropertyGenerator : ISourceGenerator
             return;
         }
 
-        INamedTypeSymbol
-            propertyChangedEventArgsSymbol = context.Compilation.GetTypeByMetadataName("System.ComponentModel.PropertyChangedEventArgs")!,
-            propertyChangingEventArgsSymbol = context.Compilation.GetTypeByMetadataName("System.ComponentModel.PropertyChangingEventArgs")!;
+        INamedTypeSymbol propertyChangedEventArgsSymbol = context.Compilation.GetTypeByMetadataName("System.ComponentModel.PropertyChangedEventArgs")!;
+        INamedTypeSymbol propertyChangingEventArgsSymbol = context.Compilation.GetTypeByMetadataName("System.ComponentModel.PropertyChangingEventArgs")!;
 
         // Create a static method to validate all properties in a given class.
         // This code takes a class symbol and produces a compilation unit as follows:

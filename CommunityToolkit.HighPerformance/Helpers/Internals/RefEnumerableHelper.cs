@@ -69,9 +69,8 @@ internal static class RefEnumerableHelper
     /// <param name="sourceStep">The step between consecutive items in the memory area pointed to by <paramref name="sourceRef"/>.</param>
     public static void CopyTo<T>(ref T sourceRef, ref T destinationRef, nint length, nint sourceStep)
     {
-        nint
-            sourceOffset = 0,
-            destinationOffset = 0;
+        nint sourceOffset = 0;
+        nint destinationOffset = 0;
 
         while (length >= 8)
         {
@@ -122,9 +121,8 @@ internal static class RefEnumerableHelper
     /// <param name="destinationStep">The step between consecutive items in the memory area pointed to by <paramref name="destinationRef"/>.</param>
     public static void CopyTo<T>(ref T sourceRef, ref T destinationRef, nint length, nint sourceStep, nint destinationStep)
     {
-        nint
-            sourceOffset = 0,
-            destinationOffset = 0;
+        nint sourceOffset = 0;
+        nint destinationOffset = 0;
 
         while (length >= 8)
         {
@@ -175,9 +173,8 @@ internal static class RefEnumerableHelper
     /// <param name="sourceStep">The step between consecutive items in the memory area pointed to by <paramref name="sourceRef"/>.</param>
     public static void CopyFrom<T>(ref T sourceRef, ref T destinationRef, nint length, nint sourceStep)
     {
-        nint
-            sourceOffset = 0,
-            destinationOffset = 0;
+        nint sourceOffset = 0;
+        nint destinationOffset = 0;
 
         while (length >= 8)
         {

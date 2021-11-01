@@ -67,9 +67,8 @@ public ref struct ReadOnlySpanTokenizer<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool MoveNext()
     {
-        int
-            newEnd = this.end + 1,
-            length = this.span.Length;
+        int newEnd = this.end + 1;
+        int length = this.span.Length;
 
         // Additional check if the separator is not the last character
         if (newEnd <= length)

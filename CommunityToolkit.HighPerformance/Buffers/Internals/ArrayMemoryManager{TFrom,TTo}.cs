@@ -75,10 +75,9 @@ internal sealed class ArrayMemoryManager<TFrom, TTo> : MemoryManager<TTo>, IMemo
             ThrowArgumentOutOfRangeExceptionForInvalidIndex();
         }
 
-        int
-            bytePrefix = this.offset * Unsafe.SizeOf<TFrom>(),
-            byteSuffix = elementIndex * Unsafe.SizeOf<TTo>(),
-            byteOffset = bytePrefix + byteSuffix;
+        int bytePrefix = this.offset * Unsafe.SizeOf<TFrom>();
+        int byteSuffix = elementIndex * Unsafe.SizeOf<TTo>();
+        int byteOffset = bytePrefix + byteSuffix;
 
         GCHandle handle = GCHandle.Alloc(this.array, GCHandleType.Pinned);
 
@@ -107,9 +106,8 @@ internal sealed class ArrayMemoryManager<TFrom, TTo> : MemoryManager<TTo>, IMemo
         // We need to calculate the right offset and length of the new Memory<T>. The local offset
         // is the original offset into the wrapped TFrom[] array, while the input offset is the one
         // with respect to TTo items in the Memory<TTo> instance that is currently being cast.
-        int
-            absoluteOffset = this.offset + RuntimeHelpers.ConvertLength<TTo, TFrom>(offset),
-            absoluteLength = RuntimeHelpers.ConvertLength<TTo, TFrom>(length);
+        int absoluteOffset = this.offset + RuntimeHelpers.ConvertLength<TTo, TFrom>(offset);
+        int absoluteLength = RuntimeHelpers.ConvertLength<TTo, TFrom>(length);
 
         // We have a special handling in cases where the user is circling back to the original type
         // of the wrapped array. In this case we can just return a memory wrapping that array directly,

@@ -112,9 +112,8 @@ public static partial class ArrayExtensions
         where T : IEquatable<T>
     {
         ref T r0 = ref array.DangerousGetReference();
-        nint
-            length = RuntimeHelpers.GetArrayNativeLength(array),
-            count = SpanHelper.Count(ref r0, length, value);
+        nint length = RuntimeHelpers.GetArrayNativeLength(array);
+        nint count = SpanHelper.Count(ref r0, length, value);
 
         if ((nuint)count > int.MaxValue)
         {

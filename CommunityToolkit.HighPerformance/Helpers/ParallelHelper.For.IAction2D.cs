@@ -86,11 +86,10 @@ public static partial class ParallelHelper
                 ThrowArgumentExceptionForRangeIndexFromEnd(nameof(j));
             }
 
-            int
-                top = i.Start.Value,
-                bottom = i.End.Value,
-                left = j.Start.Value,
-                right = j.End.Value;
+            int top = i.Start.Value;
+            int bottom = i.End.Value;
+            int left = j.Start.Value;
+            int right = j.End.Value;
 
             For2D(top, bottom, left, right, action, minimumActionsPerThread);
         }
@@ -245,14 +244,13 @@ public static partial class ParallelHelper
             return;
         }
 
-        int
-            height = Math.Abs(top - bottom),
-            width = Math.Abs(left - right),
-            count = height * width,
-            maxBatches = 1 + ((count - 1) / minimumActionsPerThread),
-            clipBatches = Math.Min(maxBatches, height),
-            cores = Environment.ProcessorCount,
-            numBatches = Math.Min(clipBatches, cores);
+        int height = Math.Abs(top - bottom);
+        int width = Math.Abs(left - right);
+        int count = height * width;
+        int maxBatches = 1 + ((count - 1) / minimumActionsPerThread);
+        int clipBatches = Math.Min(maxBatches, height);
+        int cores = Environment.ProcessorCount;
+        int numBatches = Math.Min(clipBatches, cores);
 
         // Skip the parallel invocation when a single batch is needed
         if (numBatches == 1)
@@ -314,11 +312,10 @@ public static partial class ParallelHelper
         /// <param name="i">The index of the batch to process</param>
         public void Invoke(int i)
         {
-            int
-                heightOffset = i * this.batchHeight,
-                lowY = this.startY + heightOffset,
-                highY = lowY + this.batchHeight,
-                stopY = Math.Min(highY, this.endY);
+            int heightOffset = i * this.batchHeight;
+            int lowY = this.startY + heightOffset;
+            int highY = lowY + this.batchHeight;
+            int stopY = Math.Min(highY, this.endY);
 
             for (int y = lowY; y < stopY; y++)
             {

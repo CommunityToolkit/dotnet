@@ -457,7 +457,8 @@ public class Test_ReadOnlyMemory2DT
 
         ReadOnlyMemory2D<int> memory2d = new(array);
 
-        int a = memory2d.GetHashCode(), b = memory2d.GetHashCode();
+        int a = memory2d.GetHashCode();
+        int b = memory2d.GetHashCode();
 
         Assert.AreEqual(a, b);
 

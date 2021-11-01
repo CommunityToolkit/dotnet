@@ -64,15 +64,13 @@ internal sealed class ProxyMemoryManager<TFrom, TTo> : MemoryManager<TTo>, IMemo
             ThrowArgumentExceptionForInvalidIndex();
         }
 
-        int
-            bytePrefix = this.offset * Unsafe.SizeOf<TFrom>(),
-            byteSuffix = elementIndex * Unsafe.SizeOf<TTo>(),
-            byteOffset = bytePrefix + byteSuffix;
+        int bytePrefix = this.offset * Unsafe.SizeOf<TFrom>();
+        int byteSuffix = elementIndex * Unsafe.SizeOf<TTo>();
+        int byteOffset = bytePrefix + byteSuffix;
 
 #if NETSTANDARD1_4
-        int
-            shiftedOffset = byteOffset / Unsafe.SizeOf<TFrom>(),
-            remainder = byteOffset - (shiftedOffset * Unsafe.SizeOf<TFrom>());
+        int shiftedOffset = byteOffset / Unsafe.SizeOf<TFrom>();
+        int remainder = byteOffset - (shiftedOffset * Unsafe.SizeOf<TFrom>());
 #else
             int shiftedOffset = Math.DivRem(byteOffset, Unsafe.SizeOf<TFrom>(), out int remainder);
 #endif
@@ -102,9 +100,8 @@ internal sealed class ProxyMemoryManager<TFrom, TTo> : MemoryManager<TTo>, IMemo
         where T : unmanaged
     {
         // Like in the other memory manager, calculate the absolute offset and length
-        int
-            absoluteOffset = this.offset + RuntimeHelpers.ConvertLength<TTo, TFrom>(offset),
-            absoluteLength = RuntimeHelpers.ConvertLength<TTo, TFrom>(length);
+        int absoluteOffset = this.offset + RuntimeHelpers.ConvertLength<TTo, TFrom>(offset);
+        int absoluteLength = RuntimeHelpers.ConvertLength<TTo, TFrom>(length);
 
         // Skip one indirection level and slice the original memory manager, if possible
         if (typeof(T) == typeof(TFrom))
