@@ -9,14 +9,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CFA75BE0-5A44-45DE-8114-426A605B062B}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		.runsettings = .runsettings
 		azure-pipelines.yml = azure-pipelines.yml
-		build\build.cake = build\build.cake
-		build\build.ps1 = build\build.ps1
 		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
-		global.json = global.json
-		build\Windows.Toolkit.Common.props = build\Windows.Toolkit.Common.props
-		build\Windows.Toolkit.Common.targets = build\Windows.Toolkit.Common.targets
+		toolkit.snk = toolkit.snk
+		version.json = version.json
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Toolkit.Mvvm", "Microsoft.Toolkit.Mvvm\Microsoft.Toolkit.Mvvm.csproj", "{D82AE6E1-E612-434E-ACB2-363EE48738D3}"
@@ -28,9 +28,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{88C6FFBE-322D-4CEA-842B-B2CB281D357D}"
 	ProjectSection(SolutionItems) = preProject
 		CODE_OF_CONDUCT.md = CODE_OF_CONDUCT.md
-		contributing.md = contributing.md
-		license.md = license.md
-		readme.md = readme.md
+		Contributing.md = Contributing.md
+		License.md = License.md
+		README.md = README.md
 		ThirdPartyNotices.txt = ThirdPartyNotices.txt
 	EndProjectSection
 EndProject
@@ -46,7 +46,27 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Toolkit.Diagnosti
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Toolkit.Mvvm.UnitTests", "tests\Microsoft.Toolkit.Mvvm.UnitTests\Microsoft.Toolkit.Mvvm.UnitTests.csproj", "{59212E0A-878C-4097-A1CE-58CE3375F8D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Toolkit.UnitTests", "tests\Microsoft.Toolkit.UnitTests\Microsoft.Toolkit.UnitTests.csproj", "{17522D0B-CA70-40B6-AFD8-8B8D45E75D92}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Toolkit.UnitTests", "tests\Microsoft.Toolkit.UnitTests\Microsoft.Toolkit.UnitTests.csproj", "{17522D0B-CA70-40B6-AFD8-8B8D45E75D92}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{CD16E790-7B7B-411E-9CE7-768E759CC22D}"
+	ProjectSection(SolutionItems) = preProject
+		build\Build.bat = build\Build.bat
+		build\build.cake = build\build.cake
+		build\build.ps1 = build\build.ps1
+		build\header.txt = build\header.txt
+		build\nuget.png = build\nuget.png
+		build\Sign-Package.ps1 = build\Sign-Package.ps1
+		build\SignClientSettings.json = build\SignClientSettings.json
+		build\StyleXaml.bat = build\StyleXaml.bat
+		build\UpdateHeaders.bat = build\UpdateHeaders.bat
+		build\Windows.Toolkit.Common.props = build\Windows.Toolkit.Common.props
+		build\Windows.Toolkit.Common.targets = build\Windows.Toolkit.Common.targets
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{11CB82CB-F72A-4690-9C0F-0AD5303C79B6}"
+	ProjectSection(SolutionItems) = preProject
+		build\tools\packages.config = build\tools\packages.config
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -294,6 +314,8 @@ Global
 		{35E48D4D-6433-4B70-98A9-BA544921EE04} = {B30036C4-D514-4E5B-A323-587A061772CE}
 		{59212E0A-878C-4097-A1CE-58CE3375F8D7} = {B30036C4-D514-4E5B-A323-587A061772CE}
 		{17522D0B-CA70-40B6-AFD8-8B8D45E75D92} = {B30036C4-D514-4E5B-A323-587A061772CE}
+		{CD16E790-7B7B-411E-9CE7-768E759CC22D} = {CFA75BE0-5A44-45DE-8114-426A605B062B}
+		{11CB82CB-F72A-4690-9C0F-0AD5303C79B6} = {CD16E790-7B7B-411E-9CE7-768E759CC22D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5403B0C4-F244-4F73-A35C-FE664D0F4345}
