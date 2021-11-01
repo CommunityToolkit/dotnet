@@ -5,7 +5,7 @@
 using CommunityToolkit.HighPerformance.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.HighPerformance.Helpers;
+namespace CommunityToolkit.HighPerformance.UnitTests.Helpers;
 
 [TestClass]
 public class Test_BitHelper

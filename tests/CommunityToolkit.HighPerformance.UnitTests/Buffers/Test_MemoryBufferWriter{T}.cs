@@ -8,7 +8,7 @@ using System.Linq;
 using CommunityToolkit.HighPerformance.Buffers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.HighPerformance.Buffers;
+namespace CommunityToolkit.HighPerformance.UnitTests.Buffers;
 
 [TestClass]
 [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1649", Justification = "Test class for generic type")]

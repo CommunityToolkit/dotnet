@@ -3,12 +3,11 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using CommunityToolkit.HighPerformance;
 using CommunityToolkit.HighPerformance.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using UnitTests.HighPerformance.Shared.Buffers.Internals;
+using CommunityToolkit.HighPerformance.UnitTests.Buffers.Internals;
 
-namespace UnitTests.HighPerformance.Helpers;
+namespace CommunityToolkit.HighPerformance.UnitTests.Helpers;
 
 [TestClass]
 public partial class Test_ParallelHelper

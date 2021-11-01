@@ -8,7 +8,7 @@ using System.Numerics;
 using CommunityToolkit.HighPerformance.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.HighPerformance.Extensions
+namespace CommunityToolkit.HighPerformance.UnitTests.Extensions
 {
     [TestClass]
     public class Test_NullableExtensions

@@ -12,7 +12,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 #nullable enable
 
-namespace UnitTests.HighPerformance.Buffers;
+namespace CommunityToolkit.HighPerformance.UnitTests.Buffers;
 
 [TestClass]
 public class Test_StringPool

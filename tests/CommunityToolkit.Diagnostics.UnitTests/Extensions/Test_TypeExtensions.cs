@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using CommunityToolkit.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.Extensions;
+namespace CommunityToolkit.Diagnostics.UnitTests.Extensions;
 
 [TestClass]
 public class Test_TypeExtensions

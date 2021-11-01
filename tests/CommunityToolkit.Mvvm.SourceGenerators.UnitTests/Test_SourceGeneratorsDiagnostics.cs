@@ -13,7 +13,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.SourceGenerators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.Mvvm;
+namespace CommunityToolkit.Mvvm.SourceGenerators.UnitTests;
 
 [TestClass]
 public class Test_SourceGeneratorsDiagnostics

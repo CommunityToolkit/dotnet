@@ -9,7 +9,7 @@ using System.Reflection;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.Mvvm;
+namespace CommunityToolkit.Mvvm.UnitTests;
 
 [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1601", Justification = "Type only used for testing")]
 [TestClass]

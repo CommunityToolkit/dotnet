@@ -10,7 +10,7 @@ using System.Runtime.CompilerServices;
 using CommunityToolkit.HighPerformance;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.HighPerformance;
+namespace CommunityToolkit.HighPerformance.UnitTests;
 
 /* ====================================================================
 *                                 NOTE

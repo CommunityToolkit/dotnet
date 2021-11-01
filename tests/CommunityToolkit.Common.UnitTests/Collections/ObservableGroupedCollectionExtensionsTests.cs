@@ -7,7 +7,7 @@ using System.Linq;
 using CommunityToolkit.Common.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.Collections;
+namespace CommunityToolkit.Common.UnitTests.Collections;
 
 [TestClass]
 public class ObservableGroupedCollectionExtensionsTests

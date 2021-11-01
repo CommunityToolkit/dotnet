@@ -8,7 +8,7 @@ using System.Linq;
 using CommunityToolkit.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.Extensions;
+namespace CommunityToolkit.Common.UnitTests.Extensions;
 
 [TestClass]
 public class Test_ArrayExtensions

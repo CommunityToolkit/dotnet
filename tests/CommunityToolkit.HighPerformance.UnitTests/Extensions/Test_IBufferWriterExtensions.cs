@@ -12,7 +12,7 @@ using CommunityToolkit.HighPerformance;
 using CommunityToolkit.HighPerformance.Buffers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.HighPerformance.Extensions;
+namespace CommunityToolkit.HighPerformance.UnitTests.Extensions;
 
 [TestClass]
 public class Test_IBufferWriterExtensions

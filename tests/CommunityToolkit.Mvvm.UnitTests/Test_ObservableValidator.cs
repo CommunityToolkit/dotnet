@@ -12,7 +12,7 @@ using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.Mvvm;
+namespace CommunityToolkit.Mvvm.UnitTests;
 
 [TestClass]
 public class Test_ObservableValidator

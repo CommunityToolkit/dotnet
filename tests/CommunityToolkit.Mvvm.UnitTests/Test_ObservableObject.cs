@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.Mvvm;
+namespace CommunityToolkit.Mvvm.UnitTests;
 
 [TestClass]
 public class Test_ObservableObject

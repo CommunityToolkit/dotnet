@@ -7,7 +7,7 @@ using CommunityToolkit.HighPerformance.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ArgumentOutOfRangeException = System.ArgumentOutOfRangeException;
 
-namespace UnitTests.HighPerformance.Helpers;
+namespace CommunityToolkit.HighPerformance.UnitTests.Helpers;
 
 public partial class Test_ParallelHelper
 {

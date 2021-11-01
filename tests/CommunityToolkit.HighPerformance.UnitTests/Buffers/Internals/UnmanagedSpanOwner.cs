@@ -7,7 +7,7 @@ using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace UnitTests.HighPerformance.Shared.Buffers.Internals;
+namespace CommunityToolkit.HighPerformance.UnitTests.Buffers.Internals;
 
 /// <summary>
 /// An owner for a buffer of an unmanaged type, recycling <see cref="byte"/> arrays to save memory.

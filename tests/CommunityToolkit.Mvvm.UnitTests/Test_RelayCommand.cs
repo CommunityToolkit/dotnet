@@ -6,7 +6,7 @@ using System;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.Mvvm;
+namespace CommunityToolkit.Mvvm.UnitTests;
 
 [TestClass]
 public class Test_RelayCommand

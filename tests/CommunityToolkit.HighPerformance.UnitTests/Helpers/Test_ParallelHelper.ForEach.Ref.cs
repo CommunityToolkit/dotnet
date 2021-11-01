@@ -5,9 +5,9 @@
 using System;
 using CommunityToolkit.HighPerformance.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using UnitTests.HighPerformance.Shared.Buffers.Internals;
+using CommunityToolkit.HighPerformance.UnitTests.Buffers.Internals;
 
-namespace UnitTests.HighPerformance.Helpers;
+namespace CommunityToolkit.HighPerformance.UnitTests.Helpers;
 
 public partial class Test_ParallelHelper
 {

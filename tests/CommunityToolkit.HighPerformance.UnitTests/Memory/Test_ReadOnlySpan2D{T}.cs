@@ -9,7 +9,7 @@ using CommunityToolkit.HighPerformance;
 using CommunityToolkit.HighPerformance.Enumerables;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.HighPerformance;
+namespace CommunityToolkit.HighPerformance.UnitTests;
 
 /* ====================================================================
 *                                 NOTE

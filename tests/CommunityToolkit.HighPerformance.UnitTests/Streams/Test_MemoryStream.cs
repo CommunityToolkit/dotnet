@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.HighPerformance;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.HighPerformance.Streams;
+namespace CommunityToolkit.HighPerformance.UnitTests.Streams;
 
 [TestClass]
 public partial class Test_MemoryStream

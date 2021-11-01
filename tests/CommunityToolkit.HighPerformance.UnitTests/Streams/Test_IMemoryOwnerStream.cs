@@ -8,7 +8,7 @@ using CommunityToolkit.HighPerformance;
 using CommunityToolkit.HighPerformance.Buffers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.HighPerformance.Streams;
+namespace CommunityToolkit.HighPerformance.UnitTests.Streams;
 
 [TestClass]
 public class Test_IMemoryOwnerStream

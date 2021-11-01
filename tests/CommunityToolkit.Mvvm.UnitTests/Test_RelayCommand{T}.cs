@@ -7,7 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.Mvvm;
+namespace CommunityToolkit.Mvvm.UnitTests;
 
 [TestClass]
 [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1649", Justification = "Generic type")]

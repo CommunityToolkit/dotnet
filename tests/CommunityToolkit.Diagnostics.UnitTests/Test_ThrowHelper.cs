@@ -13,7 +13,7 @@ using System.Threading;
 using CommunityToolkit.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.Diagnostics;
+namespace CommunityToolkit.Diagnostics.UnitTests;
 
 [TestClass]
 public class Test_ThrowHelper

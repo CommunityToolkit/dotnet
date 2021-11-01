@@ -8,7 +8,7 @@ using CommunityToolkit.HighPerformance;
 using CommunityToolkit.HighPerformance.Enumerables;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.HighPerformance.Extensions;
+namespace CommunityToolkit.HighPerformance.UnitTests.Extensions;
 
 public partial class Test_ArrayExtensions
 {

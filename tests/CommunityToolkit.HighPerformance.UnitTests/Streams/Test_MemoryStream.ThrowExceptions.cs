@@ -8,7 +8,7 @@ using System.Linq;
 using CommunityToolkit.HighPerformance;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.HighPerformance.Streams;
+namespace CommunityToolkit.HighPerformance.UnitTests.Streams;
 
 public partial class Test_MemoryStream
 {

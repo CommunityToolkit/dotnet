@@ -9,11 +9,11 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using CommunityToolkit.HighPerformance;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using UnitTests.HighPerformance.Shared.Buffers.Internals;
+using CommunityToolkit.HighPerformance.UnitTests.Buffers.Internals;
 
 #nullable enable
 
-namespace UnitTests.HighPerformance.Extensions;
+namespace CommunityToolkit.HighPerformance.UnitTests.Extensions;
 
 public partial class Test_ReadOnlySpanExtensions
 {

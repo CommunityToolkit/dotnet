@@ -7,7 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using CommunityToolkit.HighPerformance;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.HighPerformance;
+namespace CommunityToolkit.HighPerformance.UnitTests;
 
 [TestClass]
 [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1649", Justification = "Test class for generic type")]

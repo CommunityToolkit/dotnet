@@ -6,7 +6,7 @@ using System;
 using CommunityToolkit.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.Diagnostics;
+namespace CommunityToolkit.Diagnostics.UnitTests;
 
 public partial class Test_Guard
 {

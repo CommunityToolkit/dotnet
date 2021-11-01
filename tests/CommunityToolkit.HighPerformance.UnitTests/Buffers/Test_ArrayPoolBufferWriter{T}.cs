@@ -9,10 +9,10 @@ using System.Linq;
 using System.Reflection;
 using CommunityToolkit.HighPerformance;
 using CommunityToolkit.HighPerformance.Buffers;
+using CommunityToolkit.HighPerformance.UnitTests.Buffers.Internals;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using UnitTests.HighPerformance.Shared.Buffers;
 
-namespace UnitTests.HighPerformance.Buffers;
+namespace CommunityToolkit.HighPerformance.UnitTests.Buffers;
 
 [TestClass]
 [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1649", Justification = "Test class for generic type")]

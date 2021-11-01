@@ -9,8 +9,9 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using CommunityToolkit.HighPerformance;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using CommunityToolkit.HighPerformance.UnitTests.Buffers.Internals;
 
-namespace UnitTests.HighPerformance.Extensions;
+namespace CommunityToolkit.HighPerformance.UnitTests.Extensions;
 
 [TestClass]
 [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1601", Justification = "Partial test class")]
@@ -20,7 +21,7 @@ public partial class Test_ReadOnlySpanExtensions
     [TestMethod]
     public void Test_ReadOnlySpanExtensions_DangerousGetReference()
     {
-        using Shared.Buffers.Internals.UnmanagedSpanOwner<int>? owner = CreateRandomData<int>(12, default);
+        using UnmanagedSpanOwner<int>? owner = CreateRandomData<int>(12, default);
 
         ReadOnlySpan<int> data = owner.GetSpan();
 
@@ -34,7 +35,7 @@ public partial class Test_ReadOnlySpanExtensions
     [TestMethod]
     public void Test_ReadOnlySpanExtensions_DangerousGetReferenceAt_Zero()
     {
-        using Shared.Buffers.Internals.UnmanagedSpanOwner<int>? owner = CreateRandomData<int>(12, default);
+        using UnmanagedSpanOwner<int>? owner = CreateRandomData<int>(12, default);
 
         ReadOnlySpan<int> data = owner.GetSpan();
 
@@ -48,7 +49,7 @@ public partial class Test_ReadOnlySpanExtensions
     [TestMethod]
     public void Test_ReadOnlySpanExtensions_DangerousGetReferenceAt_Index()
     {
-        using Shared.Buffers.Internals.UnmanagedSpanOwner<int>? owner = CreateRandomData<int>(12, default);
+        using UnmanagedSpanOwner<int>? owner = CreateRandomData<int>(12, default);
 
         ReadOnlySpan<int> data = owner.GetSpan();
 

@@ -5,11 +5,11 @@
 using System.Buffers;
 using System.Collections.Generic;
 
-namespace UnitTests.HighPerformance.Shared.Buffers;
+namespace CommunityToolkit.HighPerformance.UnitTests.Buffers.Internals;
 
-public sealed class TrackingArrayPool<T> : ArrayPool<T>
+internal sealed class TrackingArrayPool<T> : ArrayPool<T>
 {
-    private readonly ArrayPool<T> pool = ArrayPool<T>.Create();
+    private readonly ArrayPool<T> pool = Create();
 
     private readonly HashSet<T[]> arrays = new();
 

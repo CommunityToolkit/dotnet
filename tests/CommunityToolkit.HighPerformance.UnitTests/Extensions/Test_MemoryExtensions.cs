@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 using CommunityToolkit.HighPerformance;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.HighPerformance.Extensions;
+namespace CommunityToolkit.HighPerformance.UnitTests.Extensions;
 
 [TestClass]
 public class Test_MemoryExtensions

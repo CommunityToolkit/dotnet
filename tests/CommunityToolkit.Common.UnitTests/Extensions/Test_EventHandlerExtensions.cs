@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Common.Deferred;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.Extensions;
+namespace CommunityToolkit.Common.UnitTests.Extensions;
 
 [TestClass]
 public class Test_EventHandlerExtensions

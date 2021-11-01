@@ -9,7 +9,7 @@ using System.Reflection;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.Mvvm;
+namespace CommunityToolkit.Mvvm.UnitTests;
 
 [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1601", Justification = "Type only used for testing")]
 [TestClass]
@@ -112,10 +112,10 @@ public partial class Test_INotifyPropertyChangedAttribute
     [TestMethod]
     public void Test_INotifyPropertyChanged_WithGeneratedProperties_ExternalNetStandard20Assembly()
     {
-        Assert.IsTrue(typeof(INotifyPropertyChanged).IsAssignableFrom(typeof(NetStandard.SampleModelWithINPCAndObservableProperties)));
-        Assert.IsFalse(typeof(INotifyPropertyChanging).IsAssignableFrom(typeof(NetStandard.SampleModelWithINPCAndObservableProperties)));
+        Assert.IsTrue(typeof(INotifyPropertyChanged).IsAssignableFrom(typeof(ExternalAssembly.UnitTests.SampleModelWithINPCAndObservableProperties)));
+        Assert.IsFalse(typeof(INotifyPropertyChanging).IsAssignableFrom(typeof(ExternalAssembly.UnitTests.SampleModelWithINPCAndObservableProperties)));
 
-        NetStandard.SampleModelWithINPCAndObservableProperties model = new();
+        ExternalAssembly.UnitTests.SampleModelWithINPCAndObservableProperties model = new();
         List<PropertyChangedEventArgs> eventArgs = new();
 
         model.PropertyChanged += (s, e) => eventArgs.Add(e);
@@ -124,7 +124,7 @@ public partial class Test_INotifyPropertyChangedAttribute
         model.Y = 66;
 
         Assert.AreEqual(eventArgs.Count, 2);
-        Assert.AreEqual(eventArgs[0].PropertyName, nameof(NetStandard.SampleModelWithINPCAndObservableProperties.X));
-        Assert.AreEqual(eventArgs[1].PropertyName, nameof(NetStandard.SampleModelWithINPCAndObservableProperties.Y));
+        Assert.AreEqual(eventArgs[0].PropertyName, nameof(ExternalAssembly.UnitTests.SampleModelWithINPCAndObservableProperties.X));
+        Assert.AreEqual(eventArgs[1].PropertyName, nameof(ExternalAssembly.UnitTests.SampleModelWithINPCAndObservableProperties.Y));
     }
 }
