@@ -2,10 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using FluentAssertions;
 using Microsoft.Toolkit.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -21,8 +21,8 @@ namespace UnitTests.Collections
             var source = new ObservableCollection<int>(new[] { 1, 2, 3 });
             var group = new ReadOnlyObservableGroup<string, int>("key", source);
 
-            group.Key.Should().Be("key");
-            group.Should().BeEquivalentTo(new[] { 1, 2, 3 }, option => option.WithStrictOrdering());
+            Assert.AreEqual(group.Key, "key");
+            CollectionAssert.AreEqual(group, new[] { 1, 2, 3 });
         }
 
         [TestCategory("Collections")]
@@ -33,8 +33,8 @@ namespace UnitTests.Collections
             var sourceGroup = new ObservableGroup<string, int>("key", source);
             var group = new ReadOnlyObservableGroup<string, int>(sourceGroup);
 
-            group.Key.Should().Be("key");
-            group.Should().BeEquivalentTo(new[] { 1, 2, 3 }, option => option.WithStrictOrdering());
+            Assert.AreEqual(group.Key, "key");
+            CollectionAssert.AreEqual(group, new[] { 1, 2, 3 });
         }
 
         [TestCategory("Collections")]
@@ -44,8 +44,8 @@ namespace UnitTests.Collections
             var source = new[] { 1, 2, 3 };
             var group = new ReadOnlyObservableGroup<string, int>("key", source);
 
-            group.Key.Should().Be("key");
-            group.Should().BeEquivalentTo(new[] { 1, 2, 3 }, option => option.WithStrictOrdering());
+            Assert.AreEqual(group.Key, "key");
+            CollectionAssert.AreEqual(group, new[] { 1, 2, 3 });
         }
 
         [TestCategory("Collections")]
@@ -60,9 +60,10 @@ namespace UnitTests.Collections
 
             sourceGroup.Add(4);
 
-            group.Key.Should().Be("key");
-            group.Should().BeEquivalentTo(new[] { 1, 2, 3, 4 }, option => option.WithStrictOrdering());
-            collectionChangedEventRaised.Should().BeTrue();
+            Assert.AreEqual(group.Key, "key");
+            CollectionAssert.AreEqual(group, new[] { 1, 2, 3, 4 });
+
+            Assert.IsTrue(collectionChangedEventRaised);
         }
 
         [TestCategory("Collections")]
@@ -77,9 +78,10 @@ namespace UnitTests.Collections
 
             sourceGroup[1] = 4;
 
-            group.Key.Should().Be("key");
-            group.Should().BeEquivalentTo(new[] { 1, 4, 3 }, option => option.WithStrictOrdering());
-            collectionChangedEventRaised.Should().BeTrue();
+            Assert.AreEqual(group.Key, "key");
+            CollectionAssert.AreEqual(group, new[] { 1, 4, 3 });
+
+            Assert.IsTrue(collectionChangedEventRaised);
         }
 
         [TestCategory("Collections")]
@@ -94,9 +96,10 @@ namespace UnitTests.Collections
 
             sourceGroup.Remove(1);
 
-            group.Key.Should().Be("key");
-            group.Should().BeEquivalentTo(new[] { 2, 3 }, option => option.WithStrictOrdering());
-            collectionChangedEventRaised.Should().BeTrue();
+            Assert.AreEqual(group.Key, "key");
+            CollectionAssert.AreEqual(group, new[] { 2, 3 });
+
+            Assert.IsTrue(collectionChangedEventRaised);
         }
 
         [TestCategory("Collections")]
@@ -111,9 +114,10 @@ namespace UnitTests.Collections
 
             sourceGroup.Clear();
 
-            group.Key.Should().Be("key");
-            group.Should().BeEmpty();
-            collectionChangedEventRaised.Should().BeTrue();
+            Assert.AreEqual(group.Key, "key");
+            CollectionAssert.AreEqual(group, Array.Empty<int>());
+
+            Assert.IsTrue(collectionChangedEventRaised);
         }
 
         [TestCategory("Collections")]
@@ -126,8 +130,8 @@ namespace UnitTests.Collections
             var group = new ReadOnlyObservableGroup<string, int>(sourceGroup);
             var iReadOnlyObservableGroup = (IReadOnlyObservableGroup)group;
 
-            iReadOnlyObservableGroup.Key.Should().Be("key");
-            iReadOnlyObservableGroup.Count.Should().Be(count);
+            Assert.AreEqual(iReadOnlyObservableGroup.Key, "key");
+            Assert.AreEqual(iReadOnlyObservableGroup.Count, count);
         }
     }
 }

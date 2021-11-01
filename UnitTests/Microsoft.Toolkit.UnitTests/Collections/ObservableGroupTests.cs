@@ -4,7 +4,6 @@
 
 using System.Collections.Specialized;
 using System.Linq;
-using FluentAssertions;
 using Microsoft.Toolkit.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -19,19 +18,19 @@ namespace UnitTests.Collections
         {
             var group = new ObservableGroup<string, int>("key");
 
-            group.Key.Should().Be("key");
-            group.Should().BeEmpty();
+            Assert.AreEqual(group.Key, "key");
+            Assert.AreEqual(group.Count, 0);
         }
 
         [TestCategory("Collections")]
         [TestMethod]
         public void Ctor_WithGrouping_ShouldHaveExpectedState()
         {
-            var source = new IntGroup("Key", new[] { 1, 2, 3 });
+            var source = new IntGroup("key", new[] { 1, 2, 3 });
             var group = new ObservableGroup<string, int>(source);
 
-            group.Key.Should().Be("Key");
-            group.Should().BeEquivalentTo(new[] { 1, 2, 3 }, option => option.WithStrictOrdering());
+            Assert.AreEqual(group.Key, "key");
+            CollectionAssert.AreEqual(group, new[] { 1, 2, 3 });
         }
 
         [TestCategory("Collections")]
@@ -41,8 +40,8 @@ namespace UnitTests.Collections
             var source = new[] { 1, 2, 3 };
             var group = new ObservableGroup<string, int>("key", source);
 
-            group.Key.Should().Be("key");
-            group.Should().BeEquivalentTo(new[] { 1, 2, 3 }, option => option.WithStrictOrdering());
+            Assert.AreEqual(group.Key, "key");
+            CollectionAssert.AreEqual(group, new[] { 1, 2, 3 });
         }
 
         [TestCategory("Collections")]
@@ -56,9 +55,9 @@ namespace UnitTests.Collections
 
             group.Add(4);
 
-            group.Key.Should().Be("key");
-            group.Should().BeEquivalentTo(new[] { 1, 2, 3, 4 }, option => option.WithStrictOrdering());
-            collectionChangedEventRaised.Should().BeTrue();
+            Assert.AreEqual(group.Key, "key");
+            CollectionAssert.AreEqual(group, new[] { 1, 2, 3, 4 });
+            Assert.IsTrue(collectionChangedEventRaised);
         }
 
         [TestCategory("Collections")]
@@ -72,9 +71,9 @@ namespace UnitTests.Collections
 
             group[1] = 4;
 
-            group.Key.Should().Be("key");
-            group.Should().BeEquivalentTo(new[] { 1, 4, 3 }, option => option.WithStrictOrdering());
-            collectionChangedEventRaised.Should().BeTrue();
+            Assert.AreEqual(group.Key, "key");
+            CollectionAssert.AreEqual(group, new[] { 1, 4, 3 });
+            Assert.IsTrue(collectionChangedEventRaised);
         }
 
         [TestCategory("Collections")]
@@ -88,9 +87,9 @@ namespace UnitTests.Collections
 
             group.Remove(1);
 
-            group.Key.Should().Be("key");
-            group.Should().BeEquivalentTo(new[] { 2, 3 }, option => option.WithStrictOrdering());
-            collectionChangedEventRaised.Should().BeTrue();
+            Assert.AreEqual(group.Key, "key");
+            CollectionAssert.AreEqual(group, new[] { 2, 3 });
+            Assert.IsTrue(collectionChangedEventRaised);
         }
 
         [TestCategory("Collections")]
@@ -104,9 +103,9 @@ namespace UnitTests.Collections
 
             group.Clear();
 
-            group.Key.Should().Be("key");
-            group.Should().BeEmpty();
-            collectionChangedEventRaised.Should().BeTrue();
+            Assert.AreEqual(group.Key, "key");
+            Assert.AreEqual(group.Count, 0);
+            Assert.IsTrue(collectionChangedEventRaised);
         }
 
         [TestCategory("Collections")]
@@ -118,8 +117,8 @@ namespace UnitTests.Collections
             var group = new ObservableGroup<string, int>("key", Enumerable.Range(0, count));
             var iReadOnlyObservableGroup = (IReadOnlyObservableGroup)group;
 
-            iReadOnlyObservableGroup.Key.Should().Be("key");
-            iReadOnlyObservableGroup.Count.Should().Be(count);
+            Assert.AreEqual(iReadOnlyObservableGroup.Key, "key");
+            Assert.AreEqual(iReadOnlyObservableGroup.Count, count);
         }
     }
 }

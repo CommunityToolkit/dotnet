@@ -9,7 +9,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using FluentAssertions;
 using Microsoft.Toolkit.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -25,8 +24,8 @@ namespace UnitTests.Collections
             var source = new ObservableGroupedCollection<string, int>();
             var readOnlyGroup = new ReadOnlyObservableGroupedCollection<string, int>(source);
 
-            readOnlyGroup.Should().BeEmpty();
-            readOnlyGroup.Count.Should().Be(0);
+            Assert.AreEqual(readOnlyGroup.Count, 0);
+            CollectionAssert.AreEqual(readOnlyGroup, Array.Empty<int>());
         }
 
         [TestCategory("Collections")]
@@ -41,12 +40,13 @@ namespace UnitTests.Collections
             var source = new ObservableGroupedCollection<string, int>(groups);
             var readOnlyGroup = new ReadOnlyObservableGroupedCollection<string, int>(source);
 
-            readOnlyGroup.Should().HaveCount(2);
-            readOnlyGroup.Count.Should().Be(2);
-            readOnlyGroup.ElementAt(0).Key.Should().Be("A");
-            readOnlyGroup.ElementAt(0).Should().BeEquivalentTo(new[] { 1, 3, 5 }, o => o.WithoutStrictOrdering());
-            readOnlyGroup.ElementAt(1).Key.Should().Be("B");
-            readOnlyGroup.ElementAt(1).Should().BeEquivalentTo(new[] { 2, 4, 6 }, o => o.WithoutStrictOrdering());
+            Assert.AreEqual(readOnlyGroup.Count, 2);
+
+            Assert.AreEqual(readOnlyGroup.ElementAt(0).Key, "A");
+            CollectionAssert.AreEquivalent(readOnlyGroup.ElementAt(0), new[] { 1, 3, 5 });
+
+            Assert.AreEqual(readOnlyGroup.ElementAt(1).Key, "B");
+            CollectionAssert.AreEquivalent(readOnlyGroup.ElementAt(1), new[] { 2, 4, 6 });
         }
 
         [TestCategory("Collections")]
@@ -60,12 +60,13 @@ namespace UnitTests.Collections
             };
             var readOnlyGroup = new ReadOnlyObservableGroupedCollection<string, int>(source);
 
-            readOnlyGroup.Should().HaveCount(2);
-            readOnlyGroup.Count.Should().Be(2);
-            readOnlyGroup.ElementAt(0).Key.Should().Be("A");
-            readOnlyGroup.ElementAt(0).Should().BeEquivalentTo(new[] { 1, 3, 5 }, o => o.WithoutStrictOrdering());
-            readOnlyGroup.ElementAt(1).Key.Should().Be("B");
-            readOnlyGroup.ElementAt(1).Should().BeEquivalentTo(new[] { 2, 4, 6 }, o => o.WithoutStrictOrdering());
+            Assert.AreEqual(readOnlyGroup.Count, 2);
+
+            Assert.AreEqual(readOnlyGroup.ElementAt(0).Key, "A");
+            CollectionAssert.AreEquivalent(readOnlyGroup.ElementAt(0), new[] { 1, 3, 5 });
+
+            Assert.AreEqual(readOnlyGroup.ElementAt(1).Key, "B");
+            CollectionAssert.AreEquivalent(readOnlyGroup.ElementAt(1), new[] { 2, 4, 6 });
         }
 
         [TestCategory("Collections")]
@@ -79,12 +80,13 @@ namespace UnitTests.Collections
             };
             var readOnlyGroup = new ReadOnlyObservableGroupedCollection<string, int>(source);
 
-            readOnlyGroup.Should().HaveCount(2);
-            readOnlyGroup.Count.Should().Be(2);
-            readOnlyGroup.ElementAt(0).Key.Should().Be("A");
-            readOnlyGroup.ElementAt(0).Should().BeEquivalentTo(new[] { 1, 3, 5 }, o => o.WithoutStrictOrdering());
-            readOnlyGroup.ElementAt(1).Key.Should().Be("B");
-            readOnlyGroup.ElementAt(1).Should().BeEquivalentTo(new[] { 2, 4, 6 }, o => o.WithoutStrictOrdering());
+            Assert.AreEqual(readOnlyGroup.Count, 2);
+
+            Assert.AreEqual(readOnlyGroup.ElementAt(0).Key, "A");
+            CollectionAssert.AreEqual(readOnlyGroup.ElementAt(0), new[] { 1, 3, 5 });
+
+            Assert.AreEqual(readOnlyGroup.ElementAt(1).Key, "B");
+            CollectionAssert.AreEqual(readOnlyGroup.ElementAt(1), new[] { 2, 4, 6 });
         }
 
         [TestCategory("Collections")]
@@ -100,18 +102,22 @@ namespace UnitTests.Collections
             var readOnlyGroup = new ReadOnlyObservableGroupedCollection<string, int>(source);
             var list = (IList)readOnlyGroup;
 
-            list.Count.Should().Be(2);
-            var group0 = (ReadOnlyObservableGroup<string, int>)list[0];
-            group0.Key.Should().Be("A");
-            group0.Should().BeEquivalentTo(new[] { 1, 3, 5 }, o => o.WithoutStrictOrdering());
-            var group1 = (ReadOnlyObservableGroup<string, int>)list[1];
-            group1.Key.Should().Be("B");
-            group1.Should().BeEquivalentTo(new[] { 2, 4, 6 }, o => o.WithoutStrictOrdering());
+            Assert.AreEqual(list.Count, 2);
 
-            list.SyncRoot.Should().NotBeNull();
-            list.IsFixedSize.Should().BeTrue();
-            list.IsReadOnly.Should().BeTrue();
-            list.IsSynchronized.Should().BeFalse();
+            var group0 = (ReadOnlyObservableGroup<string, int>)list[0];
+
+            Assert.AreEqual(group0.Key, "A");
+            CollectionAssert.AreEqual(group0, new[] { 1, 3, 5 });
+
+            var group1 = (ReadOnlyObservableGroup<string, int>)list[1];
+
+            Assert.AreEqual(group1.Key, "B");
+            CollectionAssert.AreEqual(group1, new[] { 2, 4, 6 });
+
+            Assert.IsNotNull(list.SyncRoot);
+            Assert.IsTrue(list.IsFixedSize);
+            Assert.IsTrue(list.IsReadOnly);
+            Assert.IsFalse(list.IsSynchronized);
         }
 
         [TestCategory("Collections")]
@@ -128,27 +134,18 @@ namespace UnitTests.Collections
             var list = (IList)readOnlyGroup;
 
             var testGroup = new ReadOnlyObservableGroup<string, int>("test", new ObservableCollection<int>());
-            Action add = () => list.Add(testGroup);
-            add.Should().Throw<NotSupportedException>();
 
-            Action clear = () => list.Clear();
-            clear.Should().Throw<NotSupportedException>();
-
-            Action insert = () => list.Insert(2, testGroup);
-            insert.Should().Throw<NotSupportedException>();
-
-            Action remove = () => list.Remove(testGroup);
-            remove.Should().Throw<NotSupportedException>();
-
-            Action removeAt = () => list.RemoveAt(2);
-            removeAt.Should().Throw<NotSupportedException>();
-
-            Action set = () => list[2] = testGroup;
-            set.Should().Throw<NotSupportedException>();
+            Assert.ThrowsException<NotSupportedException>(() => list.Add(testGroup));
+            Assert.ThrowsException<NotSupportedException>(() => list.Clear());
+            Assert.ThrowsException<NotSupportedException>(() => list.Insert(2, testGroup));
+            Assert.ThrowsException<NotSupportedException>(() => list.Remove(testGroup));
+            Assert.ThrowsException<NotSupportedException>(() => list.RemoveAt(2));
+            Assert.ThrowsException<NotSupportedException>(() => list[2] = testGroup);
 
             var array = new object[5];
-            Action copyTo = () => list.CopyTo(array, 0);
-            copyTo.Should().NotThrow();
+
+            // This line should not throw
+            list.CopyTo(array, 0);
         }
 
         [TestCategory("Collections")]
@@ -173,7 +170,7 @@ namespace UnitTests.Collections
 
             var index = list.IndexOf(groupToSearch);
 
-            index.Should().Be(groupIndex);
+            Assert.AreEqual(index, groupIndex);
         }
 
         [TestCategory("Collections")]
@@ -196,7 +193,7 @@ namespace UnitTests.Collections
 
             var result = list.Contains(groupToSearch);
 
-            result.Should().Be(expectedResult);
+            Assert.AreEqual(result, expectedResult);
         }
 
         [TestCategory("Collections")]
@@ -226,15 +223,19 @@ namespace UnitTests.Collections
             source.Add(new ObservableGroup<string, int>("Add", itemsList));
 
             var expectedReadOnlyGroupCount = sourceInitialItemsCount + 1;
-            readOnlyGroup.Should().HaveCount(expectedReadOnlyGroupCount);
-            readOnlyGroup.Count.Should().Be(expectedReadOnlyGroupCount);
-            readOnlyGroup.Last().Key.Should().Be("Add");
-            readOnlyGroup.Last().Should().BeEquivalentTo(itemsList, o => o.WithoutStrictOrdering());
 
-            isCountPropertyChangedEventRaised.Should().BeTrue();
-            collectionChangedEventArgs.Should().NotBeNull();
-            collectionChangedEventsCount.Should().Be(1);
-            IsAddEventValid(collectionChangedEventArgs, itemsList, expectedInsertionIndex).Should().BeTrue();
+            Assert.AreEqual(readOnlyGroup.Count, expectedReadOnlyGroupCount);
+
+            Assert.AreEqual(readOnlyGroup.Last().Key, "Add");
+            CollectionAssert.AreEquivalent(readOnlyGroup.Last(), itemsList);
+
+            Assert.IsTrue(isCountPropertyChangedEventRaised);
+            Assert.IsNotNull(collectionChangedEventArgs);
+            Assert.AreEqual(collectionChangedEventsCount, 1);
+
+            bool isAddEventValid = IsAddEventValid(collectionChangedEventArgs, itemsList, expectedInsertionIndex);
+
+            Assert.IsTrue(isAddEventValid);
         }
 
         [TestCategory("Collections")]
@@ -263,15 +264,18 @@ namespace UnitTests.Collections
 
             source.Insert(insertionIndex, new ObservableGroup<string, int>("Add", itemsList));
 
-            readOnlyGroup.Should().HaveCount(3);
-            readOnlyGroup.Count.Should().Be(3);
-            readOnlyGroup.ElementAt(insertionIndex).Key.Should().Be("Add");
-            readOnlyGroup.ElementAt(insertionIndex).Should().BeEquivalentTo(itemsList, o => o.WithoutStrictOrdering());
+            Assert.AreEqual(readOnlyGroup.Count, 3);
 
-            isCountPropertyChangedEventRaised.Should().BeTrue();
-            collectionChangedEventArgs.Should().NotBeNull();
-            collectionChangedEventsCount.Should().Be(1);
-            IsAddEventValid(collectionChangedEventArgs, itemsList, addIndex: insertionIndex).Should().BeTrue();
+            Assert.AreEqual(readOnlyGroup.ElementAt(insertionIndex).Key, "Add");
+            CollectionAssert.AreEquivalent(readOnlyGroup.ElementAt(insertionIndex), itemsList);
+
+            Assert.IsTrue(isCountPropertyChangedEventRaised);
+            Assert.IsNotNull(collectionChangedEventArgs);
+            Assert.AreEqual(collectionChangedEventsCount, 1);
+
+            bool isAddEventValid = IsAddEventValid(collectionChangedEventArgs, itemsList, addIndex: insertionIndex);
+
+            Assert.IsTrue(isAddEventValid);
         }
 
         [TestCategory("Collections")]
@@ -299,15 +303,18 @@ namespace UnitTests.Collections
 
             source.RemoveAt(1);
 
-            readOnlyGroup.Should().ContainSingle();
-            readOnlyGroup.Count.Should().Be(1);
-            readOnlyGroup.ElementAt(0).Key.Should().Be("A");
-            readOnlyGroup.ElementAt(0).Should().BeEquivalentTo(aItemsList, o => o.WithoutStrictOrdering());
+            Assert.AreEqual(readOnlyGroup.Count, 1);
 
-            isCountPropertyChangedEventRaised.Should().BeTrue();
-            collectionChangedEventArgs.Should().NotBeNull();
-            collectionChangedEventsCount.Should().Be(1);
-            IsRemoveEventValid(collectionChangedEventArgs, bItemsList, 1).Should().BeTrue();
+            Assert.AreEqual(readOnlyGroup.ElementAt(0).Key, "A");
+            CollectionAssert.AreEquivalent(readOnlyGroup.ElementAt(0), aItemsList);
+
+            Assert.IsTrue(isCountPropertyChangedEventRaised);
+            Assert.IsNotNull(collectionChangedEventArgs);
+            Assert.AreEqual(collectionChangedEventsCount, 1);
+
+            bool isRemoveEventValid = IsRemoveEventValid(collectionChangedEventArgs, bItemsList, 1);
+
+            Assert.IsTrue(isRemoveEventValid);
         }
 
         [TestCategory("Collections")]
@@ -337,17 +344,21 @@ namespace UnitTests.Collections
 
             source.Move(oldIndex, newIndex);
 
-            readOnlyGroup.Should().HaveCount(2);
-            readOnlyGroup.Count.Should().Be(2);
-            readOnlyGroup.ElementAt(0).Key.Should().Be("B");
-            readOnlyGroup.ElementAt(0).Should().BeEquivalentTo(bItemsList, o => o.WithoutStrictOrdering());
-            readOnlyGroup.ElementAt(1).Key.Should().Be("A");
-            readOnlyGroup.ElementAt(1).Should().BeEquivalentTo(aItemsList, o => o.WithoutStrictOrdering());
+            Assert.AreEqual(readOnlyGroup.Count, 2);
 
-            isCountPropertyChangedEventRaised.Should().BeFalse();
-            collectionChangedEventArgs.Should().NotBeNull();
-            collectionChangedEventsCount.Should().Be(1);
-            IsMoveEventValid(collectionChangedEventArgs, groups[oldIndex], oldIndex, newIndex).Should().BeTrue();
+            Assert.AreEqual(readOnlyGroup.ElementAt(0).Key, "B");
+            CollectionAssert.AreEquivalent(readOnlyGroup.ElementAt(0), bItemsList);
+
+            Assert.AreEqual(readOnlyGroup.ElementAt(1).Key, "A");
+            CollectionAssert.AreEquivalent(readOnlyGroup.ElementAt(1), aItemsList);
+
+            Assert.IsFalse(isCountPropertyChangedEventRaised);
+            Assert.IsNotNull(collectionChangedEventArgs);
+            Assert.AreEqual(collectionChangedEventsCount, 1);
+
+            bool isMoveEventValid = IsMoveEventValid(collectionChangedEventArgs, groups[oldIndex], oldIndex, newIndex);
+
+            Assert.IsTrue(isMoveEventValid);
         }
 
         [TestCategory("Collections")]
@@ -375,13 +386,15 @@ namespace UnitTests.Collections
 
             source.Clear();
 
-            readOnlyGroup.Should().BeEmpty();
-            readOnlyGroup.Count.Should().Be(0);
+            Assert.AreEqual(readOnlyGroup.Count, 0);
 
-            isCountPropertyChangedEventRaised.Should().BeTrue();
-            collectionChangedEventArgs.Should().NotBeNull();
-            collectionChangedEventsCount.Should().Be(1);
-            IsResetEventValid(collectionChangedEventArgs).Should().BeTrue();
+            Assert.IsTrue(isCountPropertyChangedEventRaised);
+            Assert.IsNotNull(collectionChangedEventArgs);
+            Assert.AreEqual(collectionChangedEventsCount, 1);
+
+            bool isResetEventValid = IsResetEventValid(collectionChangedEventArgs);
+
+            Assert.IsTrue(isResetEventValid);
         }
 
         [TestCategory("Collections")]
@@ -410,17 +423,21 @@ namespace UnitTests.Collections
 
             source[0] = new ObservableGroup<string, int>("C", cItemsList);
 
-            readOnlyGroup.Should().HaveCount(2);
-            readOnlyGroup.Count.Should().Be(2);
-            readOnlyGroup.ElementAt(0).Key.Should().Be("C");
-            readOnlyGroup.ElementAt(0).Should().BeEquivalentTo(cItemsList, o => o.WithoutStrictOrdering());
-            readOnlyGroup.ElementAt(1).Key.Should().Be("B");
-            readOnlyGroup.ElementAt(1).Should().BeEquivalentTo(bItemsList, o => o.WithoutStrictOrdering());
+            Assert.AreEqual(readOnlyGroup.Count, 2);
 
-            isCountPropertyChangedEventRaised.Should().BeFalse();
-            collectionChangedEventArgs.Should().NotBeNull();
-            collectionChangedEventsCount.Should().Be(1);
-            IsReplaceEventValid(collectionChangedEventArgs, aItemsList, cItemsList).Should().BeTrue();
+            Assert.AreEqual(readOnlyGroup.ElementAt(0).Key, "C");
+            CollectionAssert.AreEquivalent(readOnlyGroup.ElementAt(0), cItemsList);
+
+            Assert.AreEqual(readOnlyGroup.ElementAt(1).Key, "B");
+            CollectionAssert.AreEquivalent(readOnlyGroup.ElementAt(1), bItemsList);
+
+            Assert.IsFalse(isCountPropertyChangedEventRaised);
+            Assert.IsNotNull(collectionChangedEventArgs);
+            Assert.AreEqual(collectionChangedEventsCount, 1);
+
+            bool isReplaceEventValid = IsReplaceEventValid(collectionChangedEventArgs, aItemsList, cItemsList);
+
+            Assert.IsTrue(isReplaceEventValid);
         }
 
         private static bool IsAddEventValid(NotifyCollectionChangedEventArgs args, IEnumerable<int> expectedGroupItems, int addIndex)

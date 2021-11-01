@@ -4,7 +4,6 @@
 
 using System;
 using System.Linq;
-using FluentAssertions;
 using Microsoft.Toolkit.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -24,19 +23,18 @@ namespace UnitTests.Collections
 
             var result = groupedCollection.First("B");
 
-            result.Should().BeSameAs(target);
+            Assert.AreSame(result, target);
         }
 
         [TestCategory("Collections")]
         [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
         public void First_WhenGroupDoesNotExist_ShouldThrow()
         {
             var groupedCollection = new ObservableGroupedCollection<string, int>();
             groupedCollection.AddGroup("A", 23);
 
-            Action action = () => groupedCollection.First("I do not exist");
-
-            action.Should().Throw<InvalidOperationException>();
+            _ = groupedCollection.First("I do not exist");
         }
 
         [TestCategory("Collections")]
@@ -50,7 +48,7 @@ namespace UnitTests.Collections
 
             var result = groupedCollection.FirstOrDefault("B");
 
-            result.Should().BeSameAs(target);
+            Assert.AreSame(result, target);
         }
 
         [TestCategory("Collections")]
@@ -62,7 +60,7 @@ namespace UnitTests.Collections
 
             var result = groupedCollection.FirstOrDefault("I do not exist");
 
-            result.Should().BeNull();
+            Assert.IsNull(result);
         }
 
         [TestCategory("Collections")]
@@ -76,13 +74,14 @@ namespace UnitTests.Collections
 
             var result = groupedCollection.ElementAt("B", 2);
 
-            result.Should().Be(12);
+            Assert.AreEqual(result, 12);
         }
 
         [TestCategory("Collections")]
         [DataTestMethod]
         [DataRow(-1)]
         [DataRow(3)]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void ElementAt_WhenGroupExistsAndIndexOutOfRange_ShouldReturnThrow(int index)
         {
             var groupedCollection = new ObservableGroupedCollection<string, int>();
@@ -90,21 +89,18 @@ namespace UnitTests.Collections
             groupedCollection.AddGroup("B", 10, 11, 12);
             groupedCollection.AddGroup("B", 42);
 
-            Action action = () => groupedCollection.ElementAt("B", index);
-
-            action.Should().Throw<ArgumentException>();
+            _ = groupedCollection.ElementAt("B", index);
         }
 
         [TestCategory("Collections")]
         [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
         public void ElementAt_WhenGroupDoesNotExist_ShouldThrow()
         {
             var groupedCollection = new ObservableGroupedCollection<string, int>();
             groupedCollection.AddGroup("A", 23);
 
-            Action action = () => groupedCollection.ElementAt("I do not exist", 0);
-
-            action.Should().Throw<InvalidOperationException>();
+            _ = groupedCollection.ElementAt("I do not exist", 0);
         }
 
         [TestCategory("Collections")]
@@ -118,7 +114,7 @@ namespace UnitTests.Collections
 
             var result = groupedCollection.ElementAt("B", 2);
 
-            result.Should().Be(12);
+            Assert.AreEqual(result, 12);
         }
 
         [TestCategory("Collections")]
@@ -134,7 +130,7 @@ namespace UnitTests.Collections
 
             var result = groupedCollection.ElementAtOrDefault("B", index);
 
-            result.Should().Be(0);
+            Assert.AreEqual(result, 0);
         }
 
         [TestCategory("Collections")]
@@ -146,7 +142,7 @@ namespace UnitTests.Collections
 
             var result = groupedCollection.ElementAtOrDefault("I do not exist", 0);
 
-            result.Should().Be(0);
+            Assert.AreEqual(result, 0);
         }
 
         [TestCategory("Collections")]
@@ -157,13 +153,10 @@ namespace UnitTests.Collections
 
             var addedGroup = groupedCollection.AddGroup("new key", 23);
 
-            addedGroup.Should().NotBeNull();
-            addedGroup.Key.Should().Be("new key");
-            addedGroup.Should().ContainSingle();
-            addedGroup.Should().ContainInOrder(23);
-
-            groupedCollection.Should().ContainSingle();
-            groupedCollection.Should().HaveElementAt(0, addedGroup);
+            Assert.IsNotNull(addedGroup);
+            Assert.AreEqual(addedGroup.Key, "new key");
+            CollectionAssert.AreEqual(addedGroup, new[] { 23 });
+            CollectionAssert.AreEqual(groupedCollection, new[] { addedGroup });
         }
 
         [TestCategory("Collections")]
@@ -174,13 +167,10 @@ namespace UnitTests.Collections
 
             var addedGroup = groupedCollection.AddGroup("new key", new[] { 23, 10, 42 });
 
-            addedGroup.Should().NotBeNull();
-            addedGroup.Key.Should().Be("new key");
-            addedGroup.Should().HaveCount(3);
-            addedGroup.Should().ContainInOrder(23, 10, 42);
-
-            groupedCollection.Should().ContainSingle();
-            groupedCollection.Should().HaveElementAt(0, addedGroup);
+            Assert.IsNotNull(addedGroup);
+            Assert.AreEqual(addedGroup.Key, "new key");
+            CollectionAssert.AreEqual(addedGroup, new[] { 23, 10, 42 });
+            CollectionAssert.AreEqual(groupedCollection, new[] { addedGroup });
         }
 
         [TestCategory("Collections")]
@@ -191,13 +181,10 @@ namespace UnitTests.Collections
 
             var addedGroup = groupedCollection.AddGroup("new key", 23, 10, 42);
 
-            addedGroup.Should().NotBeNull();
-            addedGroup.Key.Should().Be("new key");
-            addedGroup.Should().HaveCount(3);
-            addedGroup.Should().ContainInOrder(23, 10, 42);
-
-            groupedCollection.Should().ContainSingle();
-            groupedCollection.Should().HaveElementAt(0, addedGroup);
+            Assert.IsNotNull(addedGroup);
+            Assert.AreEqual(addedGroup.Key, "new key");
+            CollectionAssert.AreEqual(addedGroup, new[] { 23, 10, 42 });
+            CollectionAssert.AreEqual(groupedCollection, new[] { addedGroup });
         }
 
         [TestCategory("Collections")]
@@ -208,13 +195,10 @@ namespace UnitTests.Collections
 
             var addedGroup = groupedCollection.AddItem("new key", 23);
 
-            addedGroup.Should().NotBeNull();
-            addedGroup.Key.Should().Be("new key");
-            addedGroup.Should().ContainSingle();
-            addedGroup.Should().ContainInOrder(23);
-
-            groupedCollection.Should().ContainSingle();
-            groupedCollection.Should().HaveElementAt(0, addedGroup);
+            Assert.IsNotNull(addedGroup);
+            Assert.AreEqual(addedGroup.Key, "new key");
+            CollectionAssert.AreEqual(addedGroup, new[] { 23 });
+            CollectionAssert.AreEqual(groupedCollection, new[] { addedGroup });
         }
 
         [TestCategory("Collections")]
@@ -228,23 +212,20 @@ namespace UnitTests.Collections
 
             var addedGroup = groupedCollection.AddItem("B", 23);
 
-            addedGroup.Should().BeSameAs(targetGroup);
-            addedGroup.Key.Should().Be("B");
-            addedGroup.Should().HaveCount(4);
-            addedGroup.Should().ContainInOrder(4, 5, 6, 23);
+            Assert.AreSame(addedGroup, targetGroup);
+            Assert.AreEqual(addedGroup.Key, "B");
+            CollectionAssert.AreEqual(addedGroup, new[] { 4, 5, 6, 23 });
 
-            groupedCollection.Should().HaveCount(3);
-            groupedCollection.ElementAt(0).Key.Should().Be("A");
-            groupedCollection.ElementAt(0).Should().HaveCount(3);
-            groupedCollection.ElementAt(0).Should().ContainInOrder(1, 2, 3);
+            Assert.AreEqual(groupedCollection.Count, 3);
 
-            groupedCollection.ElementAt(1).Key.Should().Be("B");
-            groupedCollection.ElementAt(1).Should().HaveCount(4);
-            groupedCollection.ElementAt(1).Should().ContainInOrder(4, 5, 6, 23);
+            Assert.AreEqual(groupedCollection.ElementAt(0).Key, "A");
+            CollectionAssert.AreEqual(groupedCollection.ElementAt(0), new[] { 1, 2, 3 });
 
-            groupedCollection.ElementAt(2).Key.Should().Be("C");
-            groupedCollection.ElementAt(2).Should().HaveCount(2);
-            groupedCollection.ElementAt(2).Should().ContainInOrder(7, 8);
+            Assert.AreEqual(groupedCollection.ElementAt(1).Key, "B");
+            CollectionAssert.AreEqual(groupedCollection.ElementAt(1), new[] { 4, 5, 6, 23 });
+
+            Assert.AreEqual(groupedCollection.ElementAt(2).Key, "C");
+            CollectionAssert.AreEqual(groupedCollection.ElementAt(2), new[] { 7, 8 });
         }
 
         [TestCategory("Collections")]
@@ -259,53 +240,47 @@ namespace UnitTests.Collections
 
             var addedGroup = groupedCollection.AddItem("B", 23);
 
-            addedGroup.Should().BeSameAs(targetGroup);
-            addedGroup.Key.Should().Be("B");
-            addedGroup.Should().HaveCount(4);
-            addedGroup.Should().ContainInOrder(4, 5, 6, 23);
+            Assert.AreSame(addedGroup, targetGroup);
+            Assert.AreEqual(addedGroup.Key, "B");
+            CollectionAssert.AreEqual(addedGroup, new[] { 4, 5, 6, 23 });
 
-            groupedCollection.Should().HaveCount(4);
-            groupedCollection.ElementAt(0).Key.Should().Be("A");
-            groupedCollection.ElementAt(0).Should().HaveCount(3);
-            groupedCollection.ElementAt(0).Should().ContainInOrder(1, 2, 3);
+            Assert.AreEqual(groupedCollection.Count, 4);
 
-            groupedCollection.ElementAt(1).Key.Should().Be("B");
-            groupedCollection.ElementAt(1).Should().HaveCount(4);
-            groupedCollection.ElementAt(1).Should().ContainInOrder(4, 5, 6, 23);
+            Assert.AreEqual(groupedCollection.ElementAt(0).Key, "A");
+            CollectionAssert.AreEqual(groupedCollection.ElementAt(0), new[] { 1, 2, 3 });
 
-            groupedCollection.ElementAt(2).Key.Should().Be("B");
-            groupedCollection.ElementAt(2).Should().HaveCount(3);
-            groupedCollection.ElementAt(2).Should().ContainInOrder(7, 8, 9);
+            Assert.AreEqual(groupedCollection.ElementAt(1).Key, "B");
+            CollectionAssert.AreEqual(groupedCollection.ElementAt(1), new[] { 4, 5, 6, 23 });
 
-            groupedCollection.ElementAt(3).Key.Should().Be("C");
-            groupedCollection.ElementAt(3).Should().HaveCount(2);
-            groupedCollection.ElementAt(3).Should().ContainInOrder(10, 11);
+            Assert.AreEqual(groupedCollection.ElementAt(2).Key, "B");
+            CollectionAssert.AreEqual(groupedCollection.ElementAt(2), new[] { 7, 8, 9 });
+
+            Assert.AreEqual(groupedCollection.ElementAt(3).Key, "C");
+            CollectionAssert.AreEqual(groupedCollection.ElementAt(3), new[] { 10, 11 });
         }
 
         [TestCategory("Collections")]
         [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
         public void InsertItem_WhenGroupDoesNotExist_ShouldThrow()
         {
             var groupedCollection = new ObservableGroupedCollection<string, int>();
             groupedCollection.AddGroup("A", 1, 2, 3);
 
-            Action action = () => groupedCollection.InsertItem("I do not exist", 0, 23);
-
-            action.Should().Throw<InvalidOperationException>();
+            groupedCollection.InsertItem("I do not exist", 0, 23);
         }
 
         [TestCategory("Collections")]
         [DataTestMethod]
         [DataRow(-1)]
         [DataRow(4)]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void InsertItem_WhenIndexOutOfRange_ShouldThrow(int index)
         {
             var groupedCollection = new ObservableGroupedCollection<string, int>();
             groupedCollection.AddGroup("A", 1, 2, 3);
 
-            Action action = () => groupedCollection.InsertItem("A", index, 23);
-
-            action.Should().Throw<ArgumentOutOfRangeException>();
+            groupedCollection.InsertItem("A", index, 23);
         }
 
         [TestCategory("Collections")]
@@ -322,46 +297,42 @@ namespace UnitTests.Collections
 
             var group = groupedCollection.InsertItem("B", index, 23);
 
-            group.Should().BeSameAs(targetGroup);
+            Assert.AreSame(group, targetGroup);
 
-            groupedCollection.Should().HaveCount(3);
-            groupedCollection.ElementAt(0).Key.Should().Be("A");
-            groupedCollection.ElementAt(0).Should().HaveCount(2);
-            groupedCollection.ElementAt(0).Should().ContainInOrder(4, 5);
+            Assert.AreEqual(groupedCollection.Count, 3);
 
-            groupedCollection.ElementAt(1).Key.Should().Be("B");
-            groupedCollection.ElementAt(1).Should().HaveCount(4);
-            groupedCollection.ElementAt(1).Should().ContainInOrder(expecteGroupValues);
+            Assert.AreEqual(groupedCollection.ElementAt(0).Key, "A");
+            CollectionAssert.AreEqual(groupedCollection.ElementAt(0), new[] { 4, 5 });
 
-            groupedCollection.ElementAt(2).Key.Should().Be("B");
-            groupedCollection.ElementAt(2).Should().HaveCount(2);
-            groupedCollection.ElementAt(2).Should().ContainInOrder(6, 7);
+            Assert.AreEqual(groupedCollection.ElementAt(1).Key, "B");
+            CollectionAssert.AreEqual(groupedCollection.ElementAt(1), expecteGroupValues);
+
+            Assert.AreEqual(groupedCollection.ElementAt(2).Key, "B");
+            CollectionAssert.AreEqual(groupedCollection.ElementAt(2), new[] { 6, 7 });
         }
 
         [TestCategory("Collections")]
         [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
         public void SetItem_WhenGroupDoesNotExist_ShouldThrow()
         {
             var groupedCollection = new ObservableGroupedCollection<string, int>();
             groupedCollection.AddGroup("A", 1, 2, 3);
 
-            Action action = () => groupedCollection.SetItem("I do not exist", 0, 23);
-
-            action.Should().Throw<InvalidOperationException>();
+            groupedCollection.SetItem("I do not exist", 0, 23);
         }
 
         [TestCategory("Collections")]
         [DataTestMethod]
         [DataRow(-1)]
         [DataRow(3)]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void SetItem_WhenIndexOutOfRange_ShouldThrow(int index)
         {
             var groupedCollection = new ObservableGroupedCollection<string, int>();
             groupedCollection.AddGroup("A", 1, 2, 3);
 
-            Action action = () => groupedCollection.SetItem("A", index, 23);
-
-            action.Should().Throw<ArgumentOutOfRangeException>();
+            groupedCollection.SetItem("A", index, 23);
         }
 
         [TestCategory("Collections")]
@@ -378,20 +349,18 @@ namespace UnitTests.Collections
 
             var group = groupedCollection.SetItem("B", index, 23);
 
-            group.Should().BeSameAs(targetGroup);
+            Assert.AreSame(group, targetGroup);
 
-            groupedCollection.Should().HaveCount(3);
-            groupedCollection.ElementAt(0).Key.Should().Be("A");
-            groupedCollection.ElementAt(0).Should().HaveCount(2);
-            groupedCollection.ElementAt(0).Should().ContainInOrder(4, 5);
+            Assert.AreEqual(groupedCollection.Count, 3);
 
-            groupedCollection.ElementAt(1).Key.Should().Be("B");
-            groupedCollection.ElementAt(1).Should().HaveCount(3);
-            groupedCollection.ElementAt(1).Should().ContainInOrder(expectedGroupValues);
+            Assert.AreEqual(groupedCollection.ElementAt(0).Key, "A");
+            CollectionAssert.AreEqual(groupedCollection.ElementAt(0), new[] { 4, 5 });
 
-            groupedCollection.ElementAt(2).Key.Should().Be("B");
-            groupedCollection.ElementAt(2).Should().HaveCount(2);
-            groupedCollection.ElementAt(2).Should().ContainInOrder(6, 7);
+            Assert.AreEqual(groupedCollection.ElementAt(1).Key, "B");
+            CollectionAssert.AreEqual(groupedCollection.ElementAt(1), expectedGroupValues);
+
+            Assert.AreEqual(groupedCollection.ElementAt(2).Key, "B");
+            CollectionAssert.AreEqual(groupedCollection.ElementAt(2), new[] { 6, 7 });
         }
 
         [TestCategory("Collections")]
@@ -403,10 +372,9 @@ namespace UnitTests.Collections
 
             groupedCollection.RemoveGroup("I do not exist");
 
-            groupedCollection.Should().ContainSingle();
-            groupedCollection.ElementAt(0).Key.Should().Be("A");
-            groupedCollection.ElementAt(0).Should().HaveCount(3);
-            groupedCollection.ElementAt(0).Should().ContainInOrder(1, 2, 3);
+            Assert.AreEqual(groupedCollection.Count, 1);
+            Assert.AreEqual(groupedCollection.ElementAt(0).Key, "A");
+            CollectionAssert.AreEqual(groupedCollection.ElementAt(0), new[] { 1, 2, 3 });
         }
 
         [TestCategory("Collections")]
@@ -419,10 +387,9 @@ namespace UnitTests.Collections
 
             groupedCollection.RemoveGroup("B");
 
-            groupedCollection.Should().ContainSingle();
-            groupedCollection.ElementAt(0).Key.Should().Be("A");
-            groupedCollection.ElementAt(0).Should().HaveCount(3);
-            groupedCollection.ElementAt(0).Should().ContainInOrder(1, 2, 3);
+            Assert.AreEqual(groupedCollection.Count, 1);
+            Assert.AreEqual(groupedCollection.ElementAt(0).Key, "A");
+            CollectionAssert.AreEqual(groupedCollection.ElementAt(0), new[] { 1, 2, 3 });
         }
 
         [TestCategory("Collections")]
@@ -436,14 +403,13 @@ namespace UnitTests.Collections
 
             groupedCollection.RemoveGroup("B");
 
-            groupedCollection.Should().HaveCount(2);
-            groupedCollection.ElementAt(0).Key.Should().Be("A");
-            groupedCollection.ElementAt(0).Should().HaveCount(3);
-            groupedCollection.ElementAt(0).Should().ContainInOrder(1, 2, 3);
+            Assert.AreEqual(groupedCollection.Count, 2);
 
-            groupedCollection.ElementAt(1).Key.Should().Be("B");
-            groupedCollection.ElementAt(1).Should().HaveCount(2);
-            groupedCollection.ElementAt(1).Should().ContainInOrder(7, 8);
+            Assert.AreEqual(groupedCollection.ElementAt(0).Key, "A");
+            CollectionAssert.AreEqual(groupedCollection.ElementAt(0), new[] { 1, 2, 3 });
+
+            Assert.AreEqual(groupedCollection.ElementAt(1).Key, "B");
+            CollectionAssert.AreEqual(groupedCollection.ElementAt(1), new[] { 7, 8 });
         }
 
         [TestCategory("Collections")]
@@ -458,14 +424,13 @@ namespace UnitTests.Collections
 
             groupedCollection.RemoveItem("I do not exist", 8, removeGroupIfEmpty);
 
-            groupedCollection.Should().HaveCount(2);
-            groupedCollection.ElementAt(0).Key.Should().Be("A");
-            groupedCollection.ElementAt(0).Should().HaveCount(3);
-            groupedCollection.ElementAt(0).Should().ContainInOrder(1, 2, 3);
+            Assert.AreEqual(groupedCollection.Count, 2);
 
-            groupedCollection.ElementAt(1).Key.Should().Be("B");
-            groupedCollection.ElementAt(1).Should().HaveCount(3);
-            groupedCollection.ElementAt(1).Should().ContainInOrder(4, 5, 6);
+            Assert.AreEqual(groupedCollection.ElementAt(0).Key, "A");
+            CollectionAssert.AreEqual(groupedCollection.ElementAt(0), new[] { 1, 2, 3 });
+
+            Assert.AreEqual(groupedCollection.ElementAt(1).Key, "B");
+            CollectionAssert.AreEqual(groupedCollection.ElementAt(1), new[] { 4, 5, 6 });
         }
 
         [TestCategory("Collections")]
@@ -480,14 +445,13 @@ namespace UnitTests.Collections
 
             groupedCollection.RemoveItem("B", 8, removeGroupIfEmpty);
 
-            groupedCollection.Should().HaveCount(2);
-            groupedCollection.ElementAt(0).Key.Should().Be("A");
-            groupedCollection.ElementAt(0).Should().HaveCount(3);
-            groupedCollection.ElementAt(0).Should().ContainInOrder(1, 2, 3);
+            Assert.AreEqual(groupedCollection.Count, 2);
 
-            groupedCollection.ElementAt(1).Key.Should().Be("B");
-            groupedCollection.ElementAt(1).Should().HaveCount(3);
-            groupedCollection.ElementAt(1).Should().ContainInOrder(4, 5, 6);
+            Assert.AreEqual(groupedCollection.ElementAt(0).Key, "A");
+            CollectionAssert.AreEqual(groupedCollection.ElementAt(0), new[] { 1, 2, 3 });
+
+            Assert.AreEqual(groupedCollection.ElementAt(1).Key, "B");
+            CollectionAssert.AreEqual(groupedCollection.ElementAt(1), new[] { 4, 5, 6 });
         }
 
         [TestCategory("Collections")]
@@ -502,14 +466,13 @@ namespace UnitTests.Collections
 
             groupedCollection.RemoveItem("B", 5, removeGroupIfEmpty);
 
-            groupedCollection.Should().HaveCount(2);
-            groupedCollection.ElementAt(0).Key.Should().Be("A");
-            groupedCollection.ElementAt(0).Should().HaveCount(3);
-            groupedCollection.ElementAt(0).Should().ContainInOrder(1, 2, 3);
+            Assert.AreEqual(groupedCollection.Count, 2);
 
-            groupedCollection.ElementAt(1).Key.Should().Be("B");
-            groupedCollection.ElementAt(1).Should().HaveCount(2);
-            groupedCollection.ElementAt(1).Should().ContainInOrder(4, 6);
+            Assert.AreEqual(groupedCollection.ElementAt(0).Key, "A");
+            CollectionAssert.AreEqual(groupedCollection.ElementAt(0), new[] { 1, 2, 3 });
+
+            Assert.AreEqual(groupedCollection.ElementAt(1).Key, "B");
+            CollectionAssert.AreEqual(groupedCollection.ElementAt(1), new[] { 4, 6 });
         }
 
         [TestCategory("Collections")]
@@ -524,15 +487,15 @@ namespace UnitTests.Collections
 
             groupedCollection.RemoveItem("B", 4, removeGroupIfEmpty);
 
-            groupedCollection.Should().HaveCount(expectGroupRemoved ? 1 : 2);
-            groupedCollection.ElementAt(0).Key.Should().Be("A");
-            groupedCollection.ElementAt(0).Should().HaveCount(3);
-            groupedCollection.ElementAt(0).Should().ContainInOrder(1, 2, 3);
+            Assert.AreEqual(groupedCollection.Count, expectGroupRemoved ? 1 : 2);
+
+            Assert.AreEqual(groupedCollection.ElementAt(0).Key, "A");
+            CollectionAssert.AreEqual(groupedCollection.ElementAt(0), new[] { 1, 2, 3 });
 
             if (!expectGroupRemoved)
             {
-                groupedCollection.ElementAt(1).Key.Should().Be("B");
-                groupedCollection.ElementAt(1).Should().BeEmpty();
+                Assert.AreEqual(groupedCollection.ElementAt(1).Key, "B");
+                Assert.AreEqual(groupedCollection.ElementAt(1).Count, 0);
             }
         }
     }
