@@ -4,7 +4,6 @@
 
 using System;
 using System.IO;
-using CommunityToolkit.HighPerformance;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommunityToolkit.HighPerformance.UnitTests.Extensions;

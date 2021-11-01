@@ -4,7 +4,6 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using CommunityToolkit.HighPerformance;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommunityToolkit.HighPerformance.UnitTests;

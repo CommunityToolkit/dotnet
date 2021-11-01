@@ -5,7 +5,6 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
-using CommunityToolkit.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommunityToolkit.Common.UnitTests.Extensions;

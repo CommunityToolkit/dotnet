@@ -4,7 +4,6 @@
 
 using System;
 using System.Diagnostics.Contracts;
-using CommunityToolkit.HighPerformance;
 using CommunityToolkit.HighPerformance.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

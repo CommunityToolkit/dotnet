@@ -14,7 +14,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
 
 #pragma warning disable SA1008
 

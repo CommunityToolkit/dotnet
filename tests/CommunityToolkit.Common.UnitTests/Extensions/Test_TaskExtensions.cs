@@ -4,7 +4,6 @@
 
 using System;
 using System.Threading.Tasks;
-using CommunityToolkit.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommunityToolkit.Common.UnitTests.Extensions;

@@ -10,7 +10,6 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.SourceGenerators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators.UnitTests;

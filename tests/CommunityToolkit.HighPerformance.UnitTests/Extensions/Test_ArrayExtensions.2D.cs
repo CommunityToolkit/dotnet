@@ -4,7 +4,6 @@
 
 using System;
 using System.Runtime.CompilerServices;
-using CommunityToolkit.HighPerformance;
 using CommunityToolkit.HighPerformance.Enumerables;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

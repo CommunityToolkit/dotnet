@@ -7,7 +7,6 @@ using System.Diagnostics.CodeAnalysis;
 #if !WINDOWS_UWP
 using System.Runtime.CompilerServices;
 #endif
-using CommunityToolkit.HighPerformance;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommunityToolkit.HighPerformance.UnitTests;
