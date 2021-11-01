@@ -19,7 +19,7 @@ namespace CommunityToolkit.HighPerformance
     /// </summary>
     public static class ReadOnlyMemoryExtensions
     {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
         /// <summary>
         /// Returns a <see cref="ReadOnlyMemory2D{T}"/> instance wrapping the underlying data for the given <see cref="ReadOnlyMemory{T}"/> instance.
         /// </summary>

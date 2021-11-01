@@ -4,7 +4,7 @@
 
 using System;
 using System.Runtime.CompilerServices;
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
 using System.Runtime.InteropServices;
 #else
 using CommunityToolkit.HighPerformance.Helpers;
@@ -18,7 +18,7 @@ namespace CommunityToolkit.HighPerformance
     /// <typeparam name="T">The type of value to reference.</typeparam>
     public readonly ref struct ReadOnlyRef<T>
     {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
         /// <summary>
         /// The 1-length <see cref="ReadOnlySpan{T}"/> instance used to track the target <typeparamref name="T"/> value.
         /// </summary>

@@ -65,7 +65,7 @@ namespace CommunityToolkit.HighPerformance.Enumerables
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
                 ref T r0 = ref MemoryMarshal.GetReference(this.span);
                 ref T ri = ref Unsafe.Add(ref r0, (nint)(uint)this.index);
 
@@ -93,7 +93,7 @@ namespace CommunityToolkit.HighPerformance.Enumerables
             /// </summary>
             private readonly Span<T> span;
 
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             /// <summary>
             /// Initializes a new instance of the <see cref="Item"/> struct.
             /// </summary>
@@ -131,7 +131,7 @@ namespace CommunityToolkit.HighPerformance.Enumerables
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
                 get
                 {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
                     return ref MemoryMarshal.GetReference(this.span);
 #else
                     ref T r0 = ref MemoryMarshal.GetReference(this.span);
@@ -150,7 +150,7 @@ namespace CommunityToolkit.HighPerformance.Enumerables
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
                 get
                 {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
                     return this.span.Length;
 #else
                     return this.index;

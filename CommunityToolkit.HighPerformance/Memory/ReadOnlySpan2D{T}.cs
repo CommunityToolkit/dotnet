@@ -8,12 +8,12 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-#if !SPAN_RUNTIME_SUPPORT
+#if !NETSTANDARD2_1_OR_GREATER
 using CommunityToolkit.HighPerformance.Helpers;
 #endif
 using CommunityToolkit.HighPerformance.Memory.Internals;
 using CommunityToolkit.HighPerformance.Memory.Views;
-#if !SPAN_RUNTIME_SUPPORT
+#if !NETSTANDARD2_1_OR_GREATER
 using RuntimeHelpers = CommunityToolkit.HighPerformance.Helpers.Internals.RuntimeHelpers;
 #endif
 
@@ -29,7 +29,7 @@ namespace CommunityToolkit.HighPerformance
     [DebuggerDisplay("{ToString(),raw}")]
     public readonly ref partial struct ReadOnlySpan2D<T>
     {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
         /// <summary>
         /// The <see cref="ReadOnlySpan{T}"/> instance pointing to the first item in the target memory area.
         /// </summary>
@@ -61,7 +61,7 @@ namespace CommunityToolkit.HighPerformance
         /// </summary>
         private readonly int stride;
 
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
         /// <summary>
         /// Initializes a new instance of the <see cref="ReadOnlySpan2D{T}"/> struct with the specified parameters.
         /// </summary>
@@ -110,7 +110,7 @@ namespace CommunityToolkit.HighPerformance
 
             OverflowHelper.EnsureIsInNativeIntRange(height, width, pitch);
 
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             this.span = new ReadOnlySpan<T>(pointer, height);
 #else
             this.instance = null;
@@ -121,7 +121,7 @@ namespace CommunityToolkit.HighPerformance
             this.stride = width + pitch;
         }
 
-#if !SPAN_RUNTIME_SUPPORT
+#if !NETSTANDARD2_1_OR_GREATER
         /// <summary>
         /// Initializes a new instance of the <see cref="ReadOnlySpan2D{T}"/> struct with the specified parameters.
         /// </summary>
@@ -208,7 +208,7 @@ namespace CommunityToolkit.HighPerformance
                 ThrowHelper.ThrowArgumentException();
             }
 
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             this.span = MemoryMarshal.CreateReadOnlySpan(ref array.DangerousGetReferenceAt(offset), height);
 #else
             this.instance = array;
@@ -232,7 +232,7 @@ namespace CommunityToolkit.HighPerformance
                 return;
             }
 
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             this.span = MemoryMarshal.CreateReadOnlySpan(ref array.DangerousGetReference(), array.GetLength(0));
 #else
             this.instance = array;
@@ -292,7 +292,7 @@ namespace CommunityToolkit.HighPerformance
                 ThrowHelper.ThrowArgumentOutOfRangeExceptionForWidth();
             }
 
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             this.span = MemoryMarshal.CreateReadOnlySpan(ref array.DangerousGetReferenceAt(row, column), height);
 #else
             this.instance = array;
@@ -316,7 +316,7 @@ namespace CommunityToolkit.HighPerformance
                 ThrowHelper.ThrowArgumentOutOfRangeExceptionForDepth();
             }
 
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             this.span = MemoryMarshal.CreateReadOnlySpan(ref array.DangerousGetReferenceAt(depth, 0, 0), array.GetLength(1));
 #else
             this.instance = array;
@@ -367,7 +367,7 @@ namespace CommunityToolkit.HighPerformance
                 ThrowHelper.ThrowArgumentOutOfRangeExceptionForWidth();
             }
 
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             this.span = MemoryMarshal.CreateReadOnlySpan(ref array.DangerousGetReferenceAt(depth, row, column), height);
 #else
             this.instance = array;
@@ -378,7 +378,7 @@ namespace CommunityToolkit.HighPerformance
             this.stride = columns;
         }
 
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
         /// <summary>
         /// Initializes a new instance of the <see cref="ReadOnlySpan2D{T}"/> struct.
         /// </summary>
@@ -515,7 +515,7 @@ namespace CommunityToolkit.HighPerformance
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
                 return this.span.Length;
 #else
                 return this.height;
@@ -620,7 +620,7 @@ namespace CommunityToolkit.HighPerformance
                 }
 
                 // Copy each row individually
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
                 for (int i = 0, j = 0; i < Height; i++, j += this.width)
                 {
                     GetRowSpan(i).CopyTo(destination.Slice(j));
@@ -676,7 +676,7 @@ namespace CommunityToolkit.HighPerformance
             else
             {
                 // Copy each row individually
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
                 for (int i = 0; i < Height; i++)
                 {
                     GetRowSpan(i).CopyTo(destination.GetRowSpan(i));
@@ -753,7 +753,7 @@ namespace CommunityToolkit.HighPerformance
 
             if (Length != 0)
             {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
                 r0 = ref MemoryMarshal.GetReference(this.span);
 #else
                 r0 = ref RuntimeHelpers.GetObjectDataAtOffsetOrPointerReference<T>(this.instance, this.offset);
@@ -771,7 +771,7 @@ namespace CommunityToolkit.HighPerformance
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T DangerousGetReference()
         {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             return ref MemoryMarshal.GetReference(this.span);
 #else
             return ref RuntimeHelpers.GetObjectDataAtOffsetOrPointerReference<T>(this.instance, this.offset);
@@ -788,7 +788,7 @@ namespace CommunityToolkit.HighPerformance
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T DangerousGetReferenceAt(int i, int j)
         {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             ref T r0 = ref MemoryMarshal.GetReference(this.span);
 #else
             ref T r0 = ref RuntimeHelpers.GetObjectDataAtOffsetOrPointerReference<T>(this.instance, this.offset);
@@ -836,7 +836,7 @@ namespace CommunityToolkit.HighPerformance
             nint shift = ((nint)(uint)this.stride * (nint)(uint)row) + (nint)(uint)column;
             int pitch = this.stride - width;
 
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             ref T r0 = ref this.span.DangerousGetReferenceAt(shift);
 
             return new ReadOnlySpan2D<T>(in r0, height, width, pitch);
@@ -847,7 +847,7 @@ namespace CommunityToolkit.HighPerformance
 #endif
         }
 
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
         /// <summary>
         /// Gets a <see cref="ReadOnlySpan{T}"/> for a specified row.
         /// </summary>
@@ -879,7 +879,7 @@ namespace CommunityToolkit.HighPerformance
             if (this.stride == this.width &&
                 Length <= int.MaxValue)
             {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
                 span = MemoryMarshal.CreateReadOnlySpan(ref MemoryMarshal.GetReference(this.span), (int)Length);
 
                 return true;
@@ -930,7 +930,7 @@ namespace CommunityToolkit.HighPerformance
         {
             T[,] array = new T[Height, this.width];
 
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             CopyTo(array.AsSpan());
 #else
             // Skip the initialization if the array is empty
@@ -991,7 +991,7 @@ namespace CommunityToolkit.HighPerformance
         public static bool operator ==(ReadOnlySpan2D<T> left, ReadOnlySpan2D<T> right)
         {
             return
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
                 left.span == right.span &&
 #else
                 ReferenceEquals(left.instance, right.instance) &&
@@ -1025,7 +1025,7 @@ namespace CommunityToolkit.HighPerformance
         /// <param name="span">The input <see cref="Span2D{T}"/> to convert.</param>
         public static implicit operator ReadOnlySpan2D<T>(Span2D<T> span)
         {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             return new ReadOnlySpan2D<T>(in span.DangerousGetReference(), span.Height, span.Width, span.Stride - span.Width);
 #else
             return new ReadOnlySpan2D<T>(span.Instance!, span.Offset, span.Height, span.Width, span.Stride - span.Width);

@@ -51,7 +51,7 @@ namespace CommunityToolkit.HighPerformance.Buffers.Internals
         /// <inheritdoc/>
         public override Span<TTo> GetSpan()
         {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             ref TFrom r0 = ref this.array.DangerousGetReferenceAt(this.offset);
             ref TTo r1 = ref Unsafe.As<TFrom, TTo>(ref r0);
             int length = RuntimeHelpers.ConvertLength<TFrom, TTo>(this.length);

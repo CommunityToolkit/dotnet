@@ -5,11 +5,11 @@
 using System;
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
-#if NETCORE_RUNTIME || NET5_0
+#if NETCOREAPP3_1_OR_GREATER
 using System.Runtime.InteropServices;
 #endif
 using CommunityToolkit.HighPerformance.Enumerables;
-#if !NETCORE_RUNTIME && !NET5_0
+#if NETSTANDARD
 using CommunityToolkit.HighPerformance.Helpers;
 #endif
 using CommunityToolkit.HighPerformance.Helpers.Internals;
@@ -35,7 +35,7 @@ namespace CommunityToolkit.HighPerformance
         {
 #if NET5_0
             return ref MemoryMarshal.GetArrayDataReference(array);
-#elif NETCORE_RUNTIME
+#elif NETCOREAPP3_1
             var arrayData = Unsafe.As<RawArrayData>(array)!;
             ref T r0 = ref Unsafe.As<byte, T>(ref arrayData.Data);
 
@@ -64,7 +64,7 @@ namespace CommunityToolkit.HighPerformance
             ref T ri = ref Unsafe.Add(ref r0, (nint)(uint)i);
 
             return ref ri;
-#elif NETCORE_RUNTIME
+#elif NETCOREAPP3_1
             var arrayData = Unsafe.As<RawArrayData>(array)!;
             ref T r0 = ref Unsafe.As<byte, T>(ref arrayData.Data);
             ref T ri = ref Unsafe.Add(ref r0, (nint)(uint)i);
@@ -79,7 +79,7 @@ namespace CommunityToolkit.HighPerformance
 #endif
         }
 
-#if NETCORE_RUNTIME
+#if NETCOREAPP3_1
         // Description taken from CoreCLR: see https://source.dot.net/#System.Private.CoreLib/src/System/Runtime/CompilerServices/RuntimeHelpers.CoreCLR.cs,285.
         // CLR arrays are laid out in memory as follows (multidimensional array bounds are optional):
         // [ sync block || pMethodTable || num components || MD array bounds || array data .. ]
@@ -93,11 +93,9 @@ namespace CommunityToolkit.HighPerformance
         private sealed class RawArrayData
         {
 #pragma warning disable CS0649 // Unassigned fields
-#pragma warning disable SA1401 // Fields should be private
             public IntPtr Length;
             public byte Data;
 #pragma warning restore CS0649
-#pragma warning restore SA1401
         }
 #endif
 

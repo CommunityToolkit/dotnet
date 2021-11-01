@@ -164,7 +164,7 @@ namespace CommunityToolkit.HighPerformance
             return ref r1;
         }
 
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
         /// <summary>
         /// Returns a <see cref="ReadOnlySpan2D{T}"/> instance wrapping the underlying data for the given <see cref="ReadOnlySpan{T}"/> instance.
         /// </summary>

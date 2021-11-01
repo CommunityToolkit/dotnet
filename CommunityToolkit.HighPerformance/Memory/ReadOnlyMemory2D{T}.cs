@@ -9,7 +9,7 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
 using CommunityToolkit.HighPerformance.Buffers.Internals;
 #endif
 using CommunityToolkit.HighPerformance.Helpers;
@@ -333,7 +333,7 @@ namespace CommunityToolkit.HighPerformance
             this.pitch = columns - width;
         }
 
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
         /// <summary>
         /// Initializes a new instance of the <see cref="ReadOnlyMemory2D{T}"/> struct.
         /// </summary>
@@ -619,7 +619,7 @@ namespace CommunityToolkit.HighPerformance
             {
                 if (this.instance is not null)
                 {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
                     if (this.instance is MemoryManager<T> memoryManager)
                     {
                         ref T r0 = ref memoryManager.GetSpan().DangerousGetReference();
@@ -815,7 +815,7 @@ namespace CommunityToolkit.HighPerformance
 
                     memory = array.AsMemory(index, this.height * this.width);
                 }
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
                 else if (this.instance.GetType() == typeof(T[,]) ||
                          this.instance.GetType() == typeof(T[,,]))
                 {

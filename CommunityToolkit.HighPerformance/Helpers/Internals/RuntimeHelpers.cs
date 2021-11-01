@@ -9,7 +9,7 @@
 
 using System;
 using System.Diagnostics.Contracts;
-#if !SPAN_RUNTIME_SUPPORT
+#if !NETSTANDARD2_1_OR_GREATER
 using System.Reflection;
 #endif
 using System.Runtime.CompilerServices;
@@ -128,7 +128,7 @@ namespace CommunityToolkit.HighPerformance.Helpers.Internals
             return TypeInfo<T>.Array3DDataByteOffset;
         }
 
-#if !SPAN_RUNTIME_SUPPORT
+#if !NETSTANDARD2_1_OR_GREATER
         /// <summary>
         /// Gets a byte offset describing a portable pinnable reference. This can either be an
         /// interior pointer into some object data (described with a valid <see cref="object"/> reference
@@ -257,7 +257,7 @@ namespace CommunityToolkit.HighPerformance.Helpers.Internals
             /// </summary>
             public static readonly IntPtr Array3DDataByteOffset = MeasureArray3DDataByteOffset();
 
-#if !SPAN_RUNTIME_SUPPORT
+#if !NETSTANDARD2_1_OR_GREATER
             /// <summary>
             /// Indicates whether <typeparamref name="T"/> does not respect the <see langword="unmanaged"/> constraint.
             /// </summary>

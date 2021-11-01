@@ -106,7 +106,7 @@ namespace CommunityToolkit.HighPerformance
             writer.Advance(source.Length);
         }
 
-#if !SPAN_RUNTIME_SUPPORT
+#if !NETSTANDARD2_1_OR_GREATER
         /// <summary>
         /// Writes a series of items of a specified type into a target <see cref="IBufferWriter{T}"/> instance.
         /// </summary>

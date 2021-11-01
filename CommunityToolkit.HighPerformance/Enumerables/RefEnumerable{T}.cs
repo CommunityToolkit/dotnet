@@ -5,12 +5,12 @@
 using System;
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
 using System.Runtime.InteropServices;
 #endif
 using CommunityToolkit.HighPerformance.Helpers.Internals;
 using CommunityToolkit.HighPerformance.Memory.Internals;
-#if !SPAN_RUNTIME_SUPPORT
+#if !NETSTANDARD2_1_OR_GREATER
 using RuntimeHelpers = CommunityToolkit.HighPerformance.Helpers.Internals.RuntimeHelpers;
 #endif
 
@@ -22,7 +22,7 @@ namespace CommunityToolkit.HighPerformance.Enumerables
     /// <typeparam name="T">The type of items to enumerate.</typeparam>
     public readonly ref struct RefEnumerable<T>
     {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
         /// <summary>
         /// The <see cref="Span{T}"/> instance pointing to the first item in the target memory area.
         /// </summary>
@@ -46,7 +46,7 @@ namespace CommunityToolkit.HighPerformance.Enumerables
         /// <remarks>The distance refers to <typeparamref name="T"/> items, not byte offset.</remarks>
         internal readonly int Step;
 
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
         /// <summary>
         /// Initializes a new instance of the <see cref="RefEnumerable{T}"/> struct.
         /// </summary>
@@ -109,7 +109,7 @@ namespace CommunityToolkit.HighPerformance.Enumerables
         public int Length
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             get => this.Span.Length;
 #else
             get;
@@ -134,7 +134,7 @@ namespace CommunityToolkit.HighPerformance.Enumerables
                     ThrowHelper.ThrowIndexOutOfRangeException();
                 }
 
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
                 ref T r0 = ref MemoryMarshal.GetReference(this.Span);
 #else
                 ref T r0 = ref RuntimeHelpers.GetObjectDataAtOffsetOrPointerReference<T>(this.Instance, this.Offset);
@@ -167,7 +167,7 @@ namespace CommunityToolkit.HighPerformance.Enumerables
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Enumerator GetEnumerator()
         {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             return new Enumerator(this.Span, this.Step);
 #else
             return new Enumerator(this.Instance, this.Offset, this.Length, this.Step);
@@ -179,7 +179,7 @@ namespace CommunityToolkit.HighPerformance.Enumerables
         /// </summary>
         public void Clear()
         {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             // Fast path for contiguous items
             if (this.Step == 1)
             {
@@ -207,7 +207,7 @@ namespace CommunityToolkit.HighPerformance.Enumerables
         /// </exception>
         public void CopyTo(RefEnumerable<T> destination)
         {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             if (this.Step == 1)
             {
                 destination.CopyFrom(this.Span);
@@ -250,7 +250,7 @@ namespace CommunityToolkit.HighPerformance.Enumerables
         /// <returns>Whether or not the operation was successful.</returns>
         public bool TryCopyTo(RefEnumerable<T> destination)
         {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             int
                 sourceLength = this.Span.Length,
                 destinationLength = destination.Span.Length;
@@ -279,7 +279,7 @@ namespace CommunityToolkit.HighPerformance.Enumerables
         /// </exception>
         public void CopyTo(Span<T> destination)
         {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             if (this.Step == 1)
             {
                 this.Span.CopyTo(destination);
@@ -310,7 +310,7 @@ namespace CommunityToolkit.HighPerformance.Enumerables
         /// <returns>Whether or not the operation was successful.</returns>
         public bool TryCopyTo(Span<T> destination)
         {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             int length = this.Span.Length;
 #else
             int length = this.Length;
@@ -335,7 +335,7 @@ namespace CommunityToolkit.HighPerformance.Enumerables
         /// </exception>
         internal void CopyFrom(ReadOnlySpan<T> source)
         {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             if (this.Step == 1)
             {
                 source.CopyTo(this.Span);
@@ -367,7 +367,7 @@ namespace CommunityToolkit.HighPerformance.Enumerables
         /// <returns>Whether or not the operation was successful.</returns>
         public bool TryCopyFrom(ReadOnlySpan<T> source)
         {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             int length = this.Span.Length;
 #else
             int length = this.Length;
@@ -389,7 +389,7 @@ namespace CommunityToolkit.HighPerformance.Enumerables
         /// <param name="value">The value to assign to each element of the <see cref="RefEnumerable{T}"/> instance.</param>
         public void Fill(T value)
         {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             if (this.Step == 1)
             {
                 this.Span.Fill(value);
@@ -418,7 +418,7 @@ namespace CommunityToolkit.HighPerformance.Enumerables
         [Pure]
         public T[] ToArray()
         {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             int length = this.Span.Length;
 #else
             int length = this.Length;
@@ -442,7 +442,7 @@ namespace CommunityToolkit.HighPerformance.Enumerables
         /// </summary>
         public ref struct Enumerator
         {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             /// <inheritdoc cref="RefEnumerable{T}.Span"/>
             private readonly Span<T> span;
 #else
@@ -464,7 +464,7 @@ namespace CommunityToolkit.HighPerformance.Enumerables
             /// </summary>
             private int position;
 
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             /// <summary>
             /// Initializes a new instance of the <see cref="Enumerator"/> struct.
             /// </summary>
@@ -500,7 +500,7 @@ namespace CommunityToolkit.HighPerformance.Enumerables
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public bool MoveNext()
             {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
                 return ++this.position < this.span.Length;
 #else
                 return ++this.position < this.length;
@@ -513,7 +513,7 @@ namespace CommunityToolkit.HighPerformance.Enumerables
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
                 get
                 {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
                     ref T r0 = ref this.span.DangerousGetReference();
 #else
                     ref T r0 = ref RuntimeHelpers.GetObjectDataAtOffsetOrPointerReference<T>(this.instance, this.offset);

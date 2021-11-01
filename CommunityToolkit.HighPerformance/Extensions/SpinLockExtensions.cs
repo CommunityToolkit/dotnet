@@ -77,7 +77,7 @@ namespace CommunityToolkit.HighPerformance
             }
         }
 
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
         /// <summary>
         /// Enters a specified <see cref="SpinLock"/> instance and returns a wrapper to use to release the lock.
         /// This extension should be used though a <see langword="using"/> block or statement:
@@ -143,7 +143,7 @@ namespace CommunityToolkit.HighPerformance
             /// </summary>
             private readonly bool lockTaken;
 
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             /// <summary>
             /// Initializes a new instance of the <see cref="Lock"/> struct.
             /// </summary>

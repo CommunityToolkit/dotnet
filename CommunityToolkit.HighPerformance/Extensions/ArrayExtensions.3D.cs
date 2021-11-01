@@ -6,7 +6,7 @@ using System;
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using CommunityToolkit.HighPerformance.Helpers;
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
 using System.Runtime.InteropServices;
 using CommunityToolkit.HighPerformance.Buffers.Internals;
 #endif
@@ -31,7 +31,7 @@ namespace CommunityToolkit.HighPerformance
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ref T DangerousGetReference<T>(this T[,,] array)
         {
-#if NETCORE_RUNTIME
+#if NETCOREAPP3_1
             var arrayData = Unsafe.As<RawArray3DData>(array)!;
             ref T r0 = ref Unsafe.As<byte, T>(ref arrayData.Data);
 
@@ -62,7 +62,7 @@ namespace CommunityToolkit.HighPerformance
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ref T DangerousGetReferenceAt<T>(this T[,,] array, int i, int j, int k)
         {
-#if NETCORE_RUNTIME
+#if NETCOREAPP3_1
             var arrayData = Unsafe.As<RawArray3DData>(array)!;
             nint offset =
                 ((nint)(uint)i * (nint)(uint)arrayData.Height * (nint)(uint)arrayData.Width) +
@@ -86,14 +86,13 @@ namespace CommunityToolkit.HighPerformance
 #endif
         }
 
-#if NETCORE_RUNTIME
+#if NETCOREAPP3_1
         // See description for this in the 2D partial file.
         // Using the CHW naming scheme here (like with RGB images).
         [StructLayout(LayoutKind.Sequential)]
         private sealed class RawArray3DData
         {
 #pragma warning disable CS0649 // Unassigned fields
-#pragma warning disable SA1401 // Fields should be private
             public IntPtr Length;
             public int Channel;
             public int Height;
@@ -103,11 +102,10 @@ namespace CommunityToolkit.HighPerformance
             public int WidthLowerBound;
             public byte Data;
 #pragma warning restore CS0649
-#pragma warning restore SA1401
         }
 #endif
 
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
         /// <summary>
         /// Creates a new <see cref="Memory{T}"/> over an input 3D <typeparamref name="T"/> array.
         /// </summary>

@@ -5,7 +5,7 @@
 using System;
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
 using System.Runtime.InteropServices;
 using CommunityToolkit.HighPerformance.Buffers.Internals;
 #endif
@@ -32,7 +32,7 @@ namespace CommunityToolkit.HighPerformance
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ref T DangerousGetReference<T>(this T[,] array)
         {
-#if NETCORE_RUNTIME
+#if NETCOREAPP3_1
             var arrayData = Unsafe.As<RawArray2DData>(array)!;
             ref T r0 = ref Unsafe.As<byte, T>(ref arrayData.Data);
 
@@ -62,7 +62,7 @@ namespace CommunityToolkit.HighPerformance
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ref T DangerousGetReferenceAt<T>(this T[,] array, int i, int j)
         {
-#if NETCORE_RUNTIME
+#if NETCOREAPP3_1
             var arrayData = Unsafe.As<RawArray2DData>(array)!;
             nint offset = ((nint)(uint)i * (nint)(uint)arrayData.Width) + (nint)(uint)j;
             ref T r0 = ref Unsafe.As<byte, T>(ref arrayData.Data);
@@ -80,7 +80,7 @@ namespace CommunityToolkit.HighPerformance
 #endif
         }
 
-#if NETCORE_RUNTIME
+#if NETCOREAPP3_1
         // Description adapted from CoreCLR: see https://source.dot.net/#System.Private.CoreLib/src/System/Runtime/CompilerServices/RuntimeHelpers.CoreCLR.cs,285.
         // CLR 2D arrays are laid out in memory as follows:
         // [ sync block || pMethodTable || Length (padded to IntPtr) || HxW || HxW bounds || array data .. ]
@@ -132,7 +132,7 @@ namespace CommunityToolkit.HighPerformance
 
             int width = array.GetLength(1);
 
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             ref T r0 = ref array.DangerousGetReferenceAt(row, 0);
 
             return new RefEnumerable<T>(ref r0, width, 1);
@@ -186,7 +186,7 @@ namespace CommunityToolkit.HighPerformance
 
             int height = array.GetLength(0);
 
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             ref T r0 = ref array.DangerousGetReferenceAt(0, column);
 
             return new RefEnumerable<T>(ref r0, height, width);
@@ -272,7 +272,7 @@ namespace CommunityToolkit.HighPerformance
             return new(array, row, column, height, width);
         }
 
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
         /// <summary>
         /// Returns a <see cref="Span{T}"/> over a row in a given 2D <typeparamref name="T"/> array instance.
         /// </summary>

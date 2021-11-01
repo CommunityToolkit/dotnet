@@ -7,7 +7,7 @@ using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using CommunityToolkit.HighPerformance.Enumerables;
 using CommunityToolkit.HighPerformance.Memory.Internals;
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
 using System.Runtime.InteropServices;
 #else
 using RuntimeHelpers = CommunityToolkit.HighPerformance.Helpers.Internals.RuntimeHelpers;
@@ -37,7 +37,7 @@ namespace CommunityToolkit.HighPerformance
             ref T r0 = ref DangerousGetReference();
             ref T r1 = ref Unsafe.Add(ref r0, startIndex);
 
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             return new ReadOnlyRefEnumerable<T>(in r1, Width, 1);
 #else
             IntPtr offset = RuntimeHelpers.GetObjectDataOrReferenceByteOffset(this.instance, ref r1);
@@ -64,7 +64,7 @@ namespace CommunityToolkit.HighPerformance
             ref T r0 = ref DangerousGetReference();
             ref T r1 = ref Unsafe.Add(ref r0, (nint)(uint)column);
 
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             return new ReadOnlyRefEnumerable<T>(in r1, Height, this.stride);
 #else
             IntPtr offset = RuntimeHelpers.GetObjectDataOrReferenceByteOffset(this.instance, ref r1);
@@ -88,7 +88,7 @@ namespace CommunityToolkit.HighPerformance
         /// </summary>
         public ref struct Enumerator
         {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             /// <summary>
             /// The <see cref="ReadOnlySpan{T}"/> instance pointing to the first item in the target memory area.
             /// </summary>
@@ -137,7 +137,7 @@ namespace CommunityToolkit.HighPerformance
             /// <param name="span">The target <see cref="ReadOnlySpan2D{T}"/> instance to enumerate.</param>
             internal Enumerator(ReadOnlySpan2D<T> span)
             {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
                 this.span = span.span;
 #else
                 this.instance = span.instance;
@@ -171,7 +171,7 @@ namespace CommunityToolkit.HighPerformance
                 // another row available: wrap to a new line and continue.
                 this.x = 0;
 
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
                 return ++this.y < this.span.Length;
 #else
                 return ++this.y < this.height;
@@ -186,7 +186,7 @@ namespace CommunityToolkit.HighPerformance
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
                 get
                 {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
                     ref T r0 = ref MemoryMarshal.GetReference(this.span);
 #else
                     ref T r0 = ref RuntimeHelpers.GetObjectDataAtOffsetOrPointerReference<T>(this.instance, this.offset);

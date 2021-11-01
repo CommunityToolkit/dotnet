@@ -6,7 +6,7 @@ using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-#if !SPAN_RUNTIME_SUPPORT
+#if !NETSTANDARD2_1_OR_GREATER
 using System.Buffers;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,7 +19,7 @@ namespace CommunityToolkit.HighPerformance
     /// </summary>
     public static class StreamExtensions
     {
-#if !SPAN_RUNTIME_SUPPORT
+#if !NETSTANDARD2_1_OR_GREATER
         /// <summary>
         /// Asynchronously reads a sequence of bytes from a given <see cref="Stream"/> instance.
         /// </summary>
@@ -166,13 +166,13 @@ namespace CommunityToolkit.HighPerformance
         /// <param name="stream">The source <see cref="Stream"/> instance to read from.</param>
         /// <returns>The <typeparamref name="T"/> value read from <paramref name="stream"/>.</returns>
         /// <exception cref="InvalidOperationException">Thrown if <paramref name="stream"/> reaches the end.</exception>
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         public static T Read<T>(this Stream stream)
             where T : unmanaged
         {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             T result = default;
             int length = Unsafe.SizeOf<T>();
 
@@ -211,13 +211,13 @@ namespace CommunityToolkit.HighPerformance
         /// <typeparam name="T">The type of value to write.</typeparam>
         /// <param name="stream">The target <see cref="Stream"/> instance to write to.</param>
         /// <param name="value">The input value to write to <paramref name="stream"/>.</param>
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         public static void Write<T>(this Stream stream, in T value)
             where T : unmanaged
         {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
             ref T r0 = ref Unsafe.AsRef(value);
             ref byte r1 = ref Unsafe.As<T, byte>(ref r0);
             int length = Unsafe.SizeOf<T>();

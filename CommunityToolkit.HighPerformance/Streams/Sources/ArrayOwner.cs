@@ -4,7 +4,7 @@
 
 using System;
 using System.Runtime.CompilerServices;
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
 using System.Runtime.InteropServices;
 #endif
 
@@ -65,7 +65,7 @@ namespace CommunityToolkit.HighPerformance.Streams
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
                 ref byte r0 = ref this.array.DangerousGetReferenceAt(this.offset);
 
                 return MemoryMarshal.CreateSpan(ref r0, this.length);

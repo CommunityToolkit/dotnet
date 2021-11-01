@@ -16,7 +16,7 @@ namespace CommunityToolkit.HighPerformance
     /// </summary>
     public static class MemoryExtensions
     {
-#if SPAN_RUNTIME_SUPPORT
+#if NETSTANDARD2_1_OR_GREATER
         /// <summary>
         /// Returns a <see cref="Memory2D{T}"/> instance wrapping the underlying data for the given <see cref="Memory{T}"/> instance.
         /// </summary>
