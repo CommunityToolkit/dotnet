@@ -45,7 +45,7 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
 
             string
                 typeName = typeFullName.Split('.').Last(),
-                filename = $"Microsoft.Toolkit.Mvvm.SourceGenerators.EmbeddedResources.{typeName}.cs";
+                filename = $"CommunityToolkit.Mvvm.SourceGenerators.EmbeddedResources.{typeName}.cs";
 
             Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(filename);
             StreamReader reader = new(stream);

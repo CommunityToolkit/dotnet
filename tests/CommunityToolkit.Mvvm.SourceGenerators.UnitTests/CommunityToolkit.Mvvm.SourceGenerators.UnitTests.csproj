@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net5.0</TargetFrameworks>
@@ -14,8 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Microsoft.Toolkit.Mvvm.SourceGenerators\Microsoft.Toolkit.Mvvm.SourceGenerators.csproj" />
-    <ProjectReference Include="..\..\Microsoft.Toolkit.Mvvm\Microsoft.Toolkit.Mvvm.csproj" />
+    <ProjectReference Include="..\..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.csproj" />
+    <ProjectReference Include="..\..\CommunityToolkit.Mvvm\CommunityToolkit.Mvvm.csproj" />
   </ItemGroup>
 
 </Project>

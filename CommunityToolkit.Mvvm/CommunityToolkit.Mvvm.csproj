@@ -38,7 +38,7 @@
     
   <!-- Source generator project reference for packing -->
   <ItemGroup>
-    <ProjectReference Include="..\Microsoft.Toolkit.Mvvm.SourceGenerators\Microsoft.Toolkit.Mvvm.SourceGenerators.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.csproj" PrivateAssets="all" />
   </ItemGroup>
 
   <!-- Target to pack the source generator into the "analyzers\dotnet\cs" package folder.

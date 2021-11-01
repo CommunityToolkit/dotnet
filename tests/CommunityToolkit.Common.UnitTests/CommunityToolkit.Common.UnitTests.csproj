@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Microsoft.Toolkit.Diagnostics\Microsoft.Toolkit.Diagnostics.csproj" />
+    <ProjectReference Include="..\..\CommunityToolkit.Common\CommunityToolkit.Common.csproj" />
   </ItemGroup>
 
 </Project>

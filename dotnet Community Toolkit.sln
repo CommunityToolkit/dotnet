@@ -4,7 +4,7 @@ VisualStudioVersion = 17.0.31815.197
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B30036C4-D514-4E5B-A323-587A061772CE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Toolkit", "Microsoft.Toolkit\Microsoft.Toolkit.csproj", "{6FE128A8-CEFA-4A61-A987-EC92DE6B538E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Common", "CommunityToolkit.Common\CommunityToolkit.Common.csproj", "{6FE128A8-CEFA-4A61-A987-EC92DE6B538E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CFA75BE0-5A44-45DE-8114-426A605B062B}"
 	ProjectSection(SolutionItems) = preProject
@@ -19,11 +19,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		version.json = version.json
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Toolkit.Mvvm", "Microsoft.Toolkit.Mvvm\Microsoft.Toolkit.Mvvm.csproj", "{D82AE6E1-E612-434E-ACB2-363EE48738D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm", "CommunityToolkit.Mvvm\CommunityToolkit.Mvvm.csproj", "{D82AE6E1-E612-434E-ACB2-363EE48738D3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Toolkit.HighPerformance", "Microsoft.Toolkit.HighPerformance\Microsoft.Toolkit.HighPerformance.csproj", "{7E30D48C-4CD8-47BE-B557-10A20391DCC4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.HighPerformance", "CommunityToolkit.HighPerformance\CommunityToolkit.HighPerformance.csproj", "{7E30D48C-4CD8-47BE-B557-10A20391DCC4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Toolkit.HighPerformance.UnitTests", "tests\Microsoft.Toolkit.HighPerformance.UnitTests\Microsoft.Toolkit.HighPerformance.UnitTests.csproj", "{D9BDBC68-3D0A-47FC-9C88-0BF769101644}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.HighPerformance.UnitTests", "tests\CommunityToolkit.HighPerformance.UnitTests\CommunityToolkit.HighPerformance.UnitTests.csproj", "{D9BDBC68-3D0A-47FC-9C88-0BF769101644}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{88C6FFBE-322D-4CEA-842B-B2CB281D357D}"
 	ProjectSection(SolutionItems) = preProject
@@ -34,19 +34,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{88C6FFBE-3
 		ThirdPartyNotices.txt = ThirdPartyNotices.txt
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Toolkit.Diagnostics", "Microsoft.Toolkit.Diagnostics\Microsoft.Toolkit.Diagnostics.csproj", "{76F89522-CA28-458D-801D-947AB033A758}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Diagnostics", "CommunityToolkit.Diagnostics\CommunityToolkit.Diagnostics.csproj", "{76F89522-CA28-458D-801D-947AB033A758}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Toolkit.Mvvm.SourceGenerators", "Microsoft.Toolkit.Mvvm.SourceGenerators\Microsoft.Toolkit.Mvvm.SourceGenerators.csproj", "{E24D1146-5AD8-498F-A518-4890D8BF4937}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.SourceGenerators", "CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.csproj", "{E24D1146-5AD8-498F-A518-4890D8BF4937}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Toolkit.Mvvm.SourceGenerators.UnitTests", "tests\Microsoft.Toolkit.Mvvm.SourceGenerators.UnitTests\Microsoft.Toolkit.Mvvm.SourceGenerators.UnitTests.csproj", "{338C3BE4-2E71-4F21-AD30-03FDBB47A272}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.SourceGenerators.UnitTests", "tests\CommunityToolkit.Mvvm.SourceGenerators.UnitTests\CommunityToolkit.Mvvm.SourceGenerators.UnitTests.csproj", "{338C3BE4-2E71-4F21-AD30-03FDBB47A272}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Toolkit.Mvvm.ExternalAssembly.UnitTests", "tests\Microsoft.Toolkit.Mvvm.ExternalAssembly.UnitTests\Microsoft.Toolkit.Mvvm.ExternalAssembly.UnitTests.csproj", "{D9C82C0D-31D7-4888-B024-3CF3A4F54FE1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.ExternalAssembly.UnitTests", "tests\CommunityToolkit.Mvvm.ExternalAssembly.UnitTests\CommunityToolkit.Mvvm.ExternalAssembly.UnitTests.csproj", "{D9C82C0D-31D7-4888-B024-3CF3A4F54FE1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Toolkit.Diagnostics.UnitTests", "tests\Microsoft.Toolkit.Diagnostics.UnitTests\Microsoft.Toolkit.Diagnostics.UnitTests.csproj", "{35E48D4D-6433-4B70-98A9-BA544921EE04}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Diagnostics.UnitTests", "tests\CommunityToolkit.Diagnostics.UnitTests\CommunityToolkit.Diagnostics.UnitTests.csproj", "{35E48D4D-6433-4B70-98A9-BA544921EE04}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Toolkit.Mvvm.UnitTests", "tests\Microsoft.Toolkit.Mvvm.UnitTests\Microsoft.Toolkit.Mvvm.UnitTests.csproj", "{59212E0A-878C-4097-A1CE-58CE3375F8D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.UnitTests", "tests\CommunityToolkit.Mvvm.UnitTests\CommunityToolkit.Mvvm.UnitTests.csproj", "{59212E0A-878C-4097-A1CE-58CE3375F8D7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Toolkit.UnitTests", "tests\Microsoft.Toolkit.UnitTests\Microsoft.Toolkit.UnitTests.csproj", "{17522D0B-CA70-40B6-AFD8-8B8D45E75D92}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Common.UnitTests", "tests\CommunityToolkit.Common.UnitTests\CommunityToolkit.Common.UnitTests.csproj", "{17522D0B-CA70-40B6-AFD8-8B8D45E75D92}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{CD16E790-7B7B-411E-9CE7-768E759CC22D}"
 	ProjectSection(SolutionItems) = preProject

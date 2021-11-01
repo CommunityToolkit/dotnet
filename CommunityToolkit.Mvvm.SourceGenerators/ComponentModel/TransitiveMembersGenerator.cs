@@ -104,7 +104,7 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
         [Pure]
         private SyntaxTree LoadSourceSyntaxTree()
         {
-            string filename = $"Microsoft.Toolkit.Mvvm.SourceGenerators.EmbeddedResources.{this.attributeTypeName.Replace("Attribute", string.Empty)}.cs";
+            string filename = $"CommunityToolkit.Mvvm.SourceGenerators.EmbeddedResources.{this.attributeTypeName.Replace("Attribute", string.Empty)}.cs";
 
             Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(filename);
             StreamReader reader = new(stream);
