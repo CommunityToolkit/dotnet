@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Microsoft.Toolkit.Mvvm.ComponentModel
+namespace CommunityToolkit.Mvvm.ComponentModel
 {
     /// <summary>
     /// An attribute that indicates that a given type should have all the members from <see cref="ObservableRecipient"/>

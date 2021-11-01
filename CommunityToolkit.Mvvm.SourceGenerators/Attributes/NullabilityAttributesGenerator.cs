@@ -9,7 +9,7 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
-namespace Microsoft.Toolkit.Mvvm.SourceGenerators
+namespace CommunityToolkit.Mvvm.SourceGenerators
 {
     /// <summary>
     /// A source generator for necessary nullability attributes.

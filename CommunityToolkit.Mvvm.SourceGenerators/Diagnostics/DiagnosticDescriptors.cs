@@ -6,7 +6,7 @@ using System.ComponentModel;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace Microsoft.Toolkit.Mvvm.SourceGenerators.Diagnostics
+namespace CommunityToolkit.Mvvm.SourceGenerators.Diagnostics
 {
     /// <summary>
     /// A container for all <see cref="DiagnosticDescriptor"/> instances for errors reported by analyzers in this project.

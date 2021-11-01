@@ -6,9 +6,9 @@ using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.Toolkit.Mvvm.SourceGenerators.Extensions;
+using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 
-namespace Microsoft.Toolkit.Mvvm.SourceGenerators
+namespace CommunityToolkit.Mvvm.SourceGenerators
 {
     /// <inheritdoc cref="ObservableValidatorValidateAllPropertiesGenerator"/>
     public sealed partial class ObservableValidatorValidateAllPropertiesGenerator
@@ -33,7 +33,7 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
             {
                 if (context.Node is ClassDeclarationSyntax classDeclaration &&
                     context.SemanticModel.GetDeclaredSymbol(classDeclaration) is INamedTypeSymbol { IsGenericType: false } classSymbol &&
-                    context.SemanticModel.Compilation.GetTypeByMetadataName("Microsoft.Toolkit.Mvvm.ComponentModel.ObservableValidator") is INamedTypeSymbol validatorSymbol &&
+                    context.SemanticModel.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableValidator") is INamedTypeSymbol validatorSymbol &&
                     classSymbol.InheritsFrom(validatorSymbol))
                 {
                     this.gatheredInfo.Add(classSymbol);

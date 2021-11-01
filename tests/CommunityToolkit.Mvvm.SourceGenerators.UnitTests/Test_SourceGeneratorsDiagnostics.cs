@@ -9,8 +9,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.Toolkit.Mvvm.ComponentModel;
-using Microsoft.Toolkit.Mvvm.SourceGenerators;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.SourceGenerators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UnitTests.Mvvm
@@ -24,7 +24,7 @@ namespace UnitTests.Mvvm
         {
             string source = @"
             using System.ComponentModel;
-            using Microsoft.Toolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
             {
@@ -44,9 +44,9 @@ namespace UnitTests.Mvvm
         {
             string source = @"
             using System.ComponentModel;
-            using Microsoft.Toolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.ComponentModel;
 
-            namespace Microsoft.Toolkit.Mvvm.ComponentModel
+            namespace CommunityToolkit.Mvvm.ComponentModel
             {
                 public abstract class ObservableObject : INotifyPropertyChanged, INotifyPropertyChanging
                 {
@@ -72,7 +72,7 @@ namespace UnitTests.Mvvm
         {
             string source = @"
             using System.ComponentModel;
-            using Microsoft.Toolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
             {
@@ -92,9 +92,9 @@ namespace UnitTests.Mvvm
         {
             string source = @"
             using System.ComponentModel;
-            using Microsoft.Toolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.ComponentModel;
 
-            namespace Microsoft.Toolkit.Mvvm.ComponentModel
+            namespace CommunityToolkit.Mvvm.ComponentModel
             {
                 public abstract class ObservableObject : INotifyPropertyChanged
                 {
@@ -119,7 +119,7 @@ namespace UnitTests.Mvvm
         {
             string source = @"
             using System.ComponentModel;
-            using Microsoft.Toolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
             {
@@ -139,7 +139,7 @@ namespace UnitTests.Mvvm
         {
             string source = @"
             using System.ComponentModel;
-            using Microsoft.Toolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
             {
@@ -162,9 +162,9 @@ namespace UnitTests.Mvvm
         public void DuplicateObservableRecipientError()
         {
             string source = @"
-            using Microsoft.Toolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.ComponentModel;
 
-            namespace Microsoft.Toolkit.Mvvm.ComponentModel
+            namespace CommunityToolkit.Mvvm.ComponentModel
             {
                 public abstract class ObservableRecipient : ObservableObject
                 {
@@ -187,7 +187,7 @@ namespace UnitTests.Mvvm
         public void MissingBaseObservableObjectFunctionalityError()
         {
             string source = @"
-            using Microsoft.Toolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
             {
@@ -206,7 +206,7 @@ namespace UnitTests.Mvvm
         {
             string source = @"
             using System.ComponentModel.DataAnnotations;
-            using Microsoft.Toolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
             {
@@ -227,7 +227,7 @@ namespace UnitTests.Mvvm
         public void InvalidICommandMethodSignatureError()
         {
             string source = @"
-            using Microsoft.Toolkit.Mvvm.Input;
+            using CommunityToolkit.Mvvm.Input;
 
             namespace MyApp
             {
@@ -246,7 +246,7 @@ namespace UnitTests.Mvvm
         public void UnsupportedCSharpLanguageVersion_FromINotifyPropertyChangedGenerator()
         {
             string source = @"
-            using Microsoft.Toolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
             {
@@ -266,7 +266,7 @@ namespace UnitTests.Mvvm
         public void UnsupportedCSharpLanguageVersion_FromObservableObjectGenerator()
         {
             string source = @"
-            using Microsoft.Toolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
             {
@@ -286,7 +286,7 @@ namespace UnitTests.Mvvm
         public void UnsupportedCSharpLanguageVersion_FromObservablePropertyGenerator()
         {
             string source = @"
-            using Microsoft.Toolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
             {
@@ -308,7 +308,7 @@ namespace UnitTests.Mvvm
         public void UnsupportedCSharpLanguageVersion_FromObservableValidatorValidateAllPropertiesGenerator()
         {
             string source = @"
-            using Microsoft.Toolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
             {
@@ -329,7 +329,7 @@ namespace UnitTests.Mvvm
         public void UnsupportedCSharpLanguageVersion_FromICommandGenerator()
         {
             string source = @"
-            using Microsoft.Toolkit.Mvvm.Input;
+            using CommunityToolkit.Mvvm.Input;
 
             namespace MyApp
             {
@@ -352,7 +352,7 @@ namespace UnitTests.Mvvm
         public void UnsupportedCSharpLanguageVersion_FromIMessengerRegisterAllGenerator()
         {
             string source = @"
-            using Microsoft.Toolkit.Mvvm.Messaging;
+            using CommunityToolkit.Mvvm.Messaging;
 
             namespace MyApp
             {

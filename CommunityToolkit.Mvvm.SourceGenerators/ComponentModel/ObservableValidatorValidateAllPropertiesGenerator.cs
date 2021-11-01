@@ -12,13 +12,13 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-using Microsoft.Toolkit.Mvvm.SourceGenerators.Extensions;
+using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-using static Microsoft.Toolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
+using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
 
 #pragma warning disable SA1008
 
-namespace Microsoft.Toolkit.Mvvm.SourceGenerators
+namespace CommunityToolkit.Mvvm.SourceGenerators
 {
     /// <summary>
     /// A source generator for properties validation without relying on compiled LINQ expressions.
@@ -52,7 +52,7 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
             // Get the symbol for the required attributes
             INamedTypeSymbol
                 validationSymbol = context.Compilation.GetTypeByMetadataName("System.ComponentModel.DataAnnotations.ValidationAttribute")!,
-                observablePropertySymbol = context.Compilation.GetTypeByMetadataName("Microsoft.Toolkit.Mvvm.ComponentModel.ObservablePropertyAttribute")!;
+                observablePropertySymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute")!;
 
             // Prepare the attributes to add to the first class declaration
             AttributeListSyntax[] classAttributes = new[]
@@ -93,7 +93,7 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
                 //
                 // #pragma warning disable
                 //
-                // namespace Microsoft.Toolkit.Mvvm.ComponentModel.__Internals
+                // namespace CommunityToolkit.Mvvm.ComponentModel.__Internals
                 // {
                 //     [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
                 //     [global::System.Diagnostics.DebuggerNonUserCode]
@@ -118,7 +118,7 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
                 // }
                 var source =
                     CompilationUnit().AddMembers(
-                    NamespaceDeclaration(IdentifierName("Microsoft.Toolkit.Mvvm.ComponentModel.__Internals")).WithLeadingTrivia(TriviaList(
+                    NamespaceDeclaration(IdentifierName("CommunityToolkit.Mvvm.ComponentModel.__Internals")).WithLeadingTrivia(TriviaList(
                         Comment("// Licensed to the .NET Foundation under one or more agreements."),
                         Comment("// The .NET Foundation licenses this file to you under the MIT license."),
                         Comment("// See the LICENSE file in the project root for more information."),

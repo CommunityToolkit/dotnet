@@ -7,16 +7,16 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Microsoft.Collections.Extensions;
-using Microsoft.Toolkit.Mvvm.Messaging.Internals;
+using CommunityToolkit.Mvvm.Messaging.Internals;
 #if NETSTANDARD2_0
-using RecipientsTable = Microsoft.Toolkit.Mvvm.Messaging.Internals.ConditionalWeakTable2<object, Microsoft.Collections.Extensions.IDictionarySlim>;
+using RecipientsTable = CommunityToolkit.Mvvm.Messaging.Internals.ConditionalWeakTable2<object, Microsoft.Collections.Extensions.IDictionarySlim>;
 #else
 using RecipientsTable = System.Runtime.CompilerServices.ConditionalWeakTable<object, Microsoft.Collections.Extensions.IDictionarySlim>;
 #endif
 
 #pragma warning disable SA1204
 
-namespace Microsoft.Toolkit.Mvvm.Messaging
+namespace CommunityToolkit.Mvvm.Messaging
 {
     /// <summary>
     /// A class providing a reference implementation for the <see cref="IMessenger"/> interface.

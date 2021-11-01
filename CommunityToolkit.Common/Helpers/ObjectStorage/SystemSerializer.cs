@@ -5,7 +5,7 @@
 using System;
 using System.Reflection;
 
-namespace Microsoft.Toolkit.Helpers
+namespace CommunityToolkit.Common.Helpers
 {
     /// <summary>
     /// A bare-bones serializer which knows how to deal with primitive types and strings only.

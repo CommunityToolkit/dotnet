@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Microsoft.Toolkit.Mvvm.SourceGenerators
+namespace CommunityToolkit.Mvvm.SourceGenerators
 {
     /// <inheritdoc cref="TransitiveMembersGenerator"/>
     public abstract partial class TransitiveMembersGenerator

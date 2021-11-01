@@ -2,12 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
 using System.Collections.Generic;
-using System.Text;
-using Microsoft.Toolkit.Helpers;
+using CommunityToolkit.Helpers;
 
-namespace Microsoft.Toolkit.Extensions
+namespace CommunityToolkit.Common.Extensions
 {
     /// <summary>
     /// Helpers methods for working with <see cref="ISettingsStorageHelper{TKey}"/> implementations.
@@ -27,7 +25,7 @@ namespace Microsoft.Toolkit.Extensions
         public static TValue? GetValueOrDefault<TKey, TValue>(this ISettingsStorageHelper<TKey> storageHelper, TKey key, TValue? fallback = default)
             where TKey : notnull
         {
-            if (storageHelper.TryRead<TValue>(key, out TValue? storedValue))
+            if (storageHelper.TryRead(key, out TValue? storedValue))
             {
                 return storedValue;
             }

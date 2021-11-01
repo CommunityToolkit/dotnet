@@ -6,10 +6,10 @@ using System;
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Microsoft.Toolkit.HighPerformance.Enumerables;
-using Microsoft.Toolkit.HighPerformance.Helpers.Internals;
+using CommunityToolkit.HighPerformance.Enumerables;
+using CommunityToolkit.HighPerformance.Helpers.Internals;
 
-namespace Microsoft.Toolkit.HighPerformance
+namespace CommunityToolkit.HighPerformance
 {
     /// <summary>
     /// Helpers for working with the <see cref="Span{T}"/> type.

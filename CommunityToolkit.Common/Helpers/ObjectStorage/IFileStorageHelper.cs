@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Microsoft.Toolkit.Helpers
+namespace CommunityToolkit.Common.Helpers
 {
     /// <summary>
     /// Service interface used to store data in a directory/file-system via files and folders.

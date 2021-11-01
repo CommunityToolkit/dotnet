@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Microsoft.Toolkit.Mvvm.SourceGenerators.Extensions
+namespace CommunityToolkit.Mvvm.SourceGenerators.Extensions
 {
     /// <summary>
     /// Extension methods for the <see cref="MemberDeclarationSyntax"/> type.

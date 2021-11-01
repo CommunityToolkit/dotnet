@@ -8,9 +8,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Microsoft.Toolkit.Mvvm.Messaging.Internals;
+using CommunityToolkit.Mvvm.Messaging.Internals;
 
-namespace Microsoft.Toolkit.Mvvm.Messaging
+namespace CommunityToolkit.Mvvm.Messaging
 {
     /// <summary>
     /// Extensions for the <see cref="IMessenger"/> type.
@@ -89,7 +89,7 @@ namespace Microsoft.Toolkit.Mvvm.Messaging
             // target recipient type, and just invoke it to get the delegate to cache and use later.
             static Action<IMessenger, object>? LoadRegistrationMethodsForType(Type recipientType)
             {
-                if (recipientType.Assembly.GetType("Microsoft.Toolkit.Mvvm.Messaging.__Internals.__IMessengerExtensions") is Type extensionsType &&
+                if (recipientType.Assembly.GetType("CommunityToolkit.Mvvm.Messaging.__Internals.__IMessengerExtensions") is Type extensionsType &&
                     extensionsType.GetMethod("CreateAllMessagesRegistrator", new[] { recipientType }) is MethodInfo methodInfo)
                 {
                     return (Action<IMessenger, object>)methodInfo.Invoke(null, new object?[] { null })!;
@@ -136,7 +136,7 @@ namespace Microsoft.Toolkit.Mvvm.Messaging
             // In this case we also need to create a generic instantiation of the target method first.
             static Action<IMessenger, object, TToken> LoadRegistrationMethodsForType(Type recipientType)
             {
-                if (recipientType.Assembly.GetType("Microsoft.Toolkit.Mvvm.Messaging.__Internals.__IMessengerExtensions") is Type extensionsType &&
+                if (recipientType.Assembly.GetType("CommunityToolkit.Mvvm.Messaging.__Internals.__IMessengerExtensions") is Type extensionsType &&
                     extensionsType.GetMethod("CreateAllMessagesRegistratorWithToken", new[] { recipientType }) is MethodInfo methodInfo)
                 {
                     MethodInfo genericMethodInfo = methodInfo.MakeGenericMethod(typeof(TToken));
@@ -204,7 +204,7 @@ namespace Microsoft.Toolkit.Mvvm.Messaging
             }
 
             // Get or compute the registration method for the current recipient type.
-            // As in Microsoft.Toolkit.Diagnostics.TypeExtensions.ToTypeString, we use a lambda
+            // As in CommunityToolkit.Diagnostics.TypeExtensions.ToTypeString, we use a lambda
             // expression instead of a method group expression to leverage the statically initialized
             // delegate and avoid repeated allocations for each invocation of this method.
             // For more info on this, see the related issue at https://github.com/dotnet/roslyn/issues/5835.

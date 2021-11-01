@@ -8,11 +8,11 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.Toolkit.Mvvm.SourceGenerators.Extensions;
+using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-using static Microsoft.Toolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
+using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
 
-namespace Microsoft.Toolkit.Mvvm.SourceGenerators
+namespace CommunityToolkit.Mvvm.SourceGenerators
 {
     /// <summary>
     /// A source generator for the <c>ObservableRecipientAttribute</c> type.
@@ -24,7 +24,7 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
         /// Initializes a new instance of the <see cref="ObservableRecipientGenerator"/> class.
         /// </summary>
         public ObservableRecipientGenerator()
-            : base("Microsoft.Toolkit.Mvvm.ComponentModel.ObservableRecipientAttribute")
+            : base("CommunityToolkit.Mvvm.ComponentModel.ObservableRecipientAttribute")
         {
         }
 
@@ -40,9 +40,9 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
             [NotNullWhen(false)] out DiagnosticDescriptor? descriptor)
         {
             INamedTypeSymbol
-                observableRecipientSymbol = context.Compilation.GetTypeByMetadataName("Microsoft.Toolkit.Mvvm.ComponentModel.ObservableRecipient")!,
-                observableObjectSymbol = context.Compilation.GetTypeByMetadataName("Microsoft.Toolkit.Mvvm.ComponentModel.ObservableObject")!,
-                observableObjectAttributeSymbol = context.Compilation.GetTypeByMetadataName("Microsoft.Toolkit.Mvvm.ComponentModel.ObservableObjectAttribute")!,
+                observableRecipientSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableRecipient")!,
+                observableObjectSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableObject")!,
+                observableObjectAttributeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute")!,
                 iNotifyPropertyChangedSymbol = context.Compilation.GetTypeByMetadataName("System.ComponentModel.INotifyPropertyChanged")!;
 
             // Check if the type already inherits from ObservableRecipient
@@ -105,7 +105,7 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
                 }
             }
 
-            INamedTypeSymbol observableValidatorSymbol = context.Compilation.GetTypeByMetadataName("Microsoft.Toolkit.Mvvm.ComponentModel.ObservableValidator")!;
+            INamedTypeSymbol observableValidatorSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableValidator")!;
 
             // Skip the SetProperty overloads if the target type inherits from ObservableValidator, to avoid conflicts
             if (classDeclarationSymbol.InheritsFrom(observableValidatorSymbol))

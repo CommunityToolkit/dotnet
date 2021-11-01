@@ -7,10 +7,10 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.Toolkit.Mvvm.SourceGenerators.Extensions;
-using static Microsoft.Toolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
+using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
+using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
 
-namespace Microsoft.Toolkit.Mvvm.SourceGenerators
+namespace CommunityToolkit.Mvvm.SourceGenerators
 {
     /// <summary>
     /// A source generator for the <c>INotifyPropertyChangedAttribute</c> type.
@@ -22,7 +22,7 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
         /// Initializes a new instance of the <see cref="INotifyPropertyChangedGenerator"/> class.
         /// </summary>
         public INotifyPropertyChangedGenerator()
-            : base("Microsoft.Toolkit.Mvvm.ComponentModel.INotifyPropertyChangedAttribute")
+            : base("CommunityToolkit.Mvvm.ComponentModel.INotifyPropertyChangedAttribute")
         {
         }
 

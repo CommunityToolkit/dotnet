@@ -11,7 +11,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-namespace Microsoft.Toolkit.Mvvm.ComponentModel
+namespace CommunityToolkit.Mvvm.ComponentModel
 {
     /// <summary>
     /// A base class for objects implementing <see cref="INotifyPropertyChanged"/>.

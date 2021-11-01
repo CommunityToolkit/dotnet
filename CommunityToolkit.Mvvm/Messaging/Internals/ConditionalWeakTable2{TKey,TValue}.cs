@@ -10,7 +10,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 
-namespace Microsoft.Toolkit.Mvvm.Messaging.Internals
+namespace CommunityToolkit.Mvvm.Messaging.Internals
 {
     /// <summary>
     /// A wrapper for <see cref="ConditionalWeakTable{TKey,TValue}"/>

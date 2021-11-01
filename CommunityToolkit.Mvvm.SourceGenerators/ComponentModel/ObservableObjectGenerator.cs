@@ -6,9 +6,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Microsoft.Toolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
+using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
 
-namespace Microsoft.Toolkit.Mvvm.SourceGenerators
+namespace CommunityToolkit.Mvvm.SourceGenerators
 {
     /// <summary>
     /// A source generator for the <c>ObservableObjectAttribute</c> type.
@@ -20,7 +20,7 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
         /// Initializes a new instance of the <see cref="ObservableObjectGenerator"/> class.
         /// </summary>
         public ObservableObjectGenerator()
-            : base("Microsoft.Toolkit.Mvvm.ComponentModel.ObservableObjectAttribute")
+            : base("CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute")
         {
         }
 

@@ -13,13 +13,13 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-using Microsoft.Toolkit.Mvvm.SourceGenerators.Diagnostics;
-using Microsoft.Toolkit.Mvvm.SourceGenerators.Extensions;
+using CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
+using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Microsoft.CodeAnalysis.SymbolDisplayTypeQualificationStyle;
-using static Microsoft.Toolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
+using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
 
-namespace Microsoft.Toolkit.Mvvm.SourceGenerators
+namespace CommunityToolkit.Mvvm.SourceGenerators
 {
     /// <summary>
     /// A source generator for generating command properties from annotated methods.
@@ -263,8 +263,8 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
             // Map <void, void> to IRelayCommand, RelayCommand, Action
             if (methodSymbol.ReturnsVoid && methodSymbol.Parameters.Length == 0)
             {
-                commandInterfaceTypeSymbol = context.Compilation.GetTypeByMetadataName("Microsoft.Toolkit.Mvvm.Input.IRelayCommand")!;
-                commandClassTypeSymbol = context.Compilation.GetTypeByMetadataName("Microsoft.Toolkit.Mvvm.Input.RelayCommand")!;
+                commandInterfaceTypeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Input.IRelayCommand")!;
+                commandClassTypeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Input.RelayCommand")!;
                 delegateTypeSymbol = context.Compilation.GetTypeByMetadataName("System.Action")!;
 
                 return true;
@@ -275,8 +275,8 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
                 methodSymbol.Parameters.Length == 1 &&
                 methodSymbol.Parameters[0] is IParameterSymbol { RefKind: RefKind.None, Type: { IsRefLikeType: false, TypeKind: not TypeKind.Pointer and not TypeKind.FunctionPointer } } parameter)
             {
-                commandInterfaceTypeSymbol = context.Compilation.GetTypeByMetadataName("Microsoft.Toolkit.Mvvm.Input.IRelayCommand`1")!.Construct(parameter.Type);
-                commandClassTypeSymbol = context.Compilation.GetTypeByMetadataName("Microsoft.Toolkit.Mvvm.Input.RelayCommand`1")!.Construct(parameter.Type);
+                commandInterfaceTypeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Input.IRelayCommand`1")!.Construct(parameter.Type);
+                commandClassTypeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Input.RelayCommand`1")!.Construct(parameter.Type);
                 delegateTypeSymbol = context.Compilation.GetTypeByMetadataName("System.Action`1")!.Construct(parameter.Type);
 
                 return true;
@@ -287,8 +287,8 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
                 // Map <void, Task> to IAsyncRelayCommand, AsyncRelayCommand, Func<Task>
                 if (methodSymbol.Parameters.Length == 0)
                 {
-                    commandInterfaceTypeSymbol = context.Compilation.GetTypeByMetadataName("Microsoft.Toolkit.Mvvm.Input.IAsyncRelayCommand")!;
-                    commandClassTypeSymbol = context.Compilation.GetTypeByMetadataName("Microsoft.Toolkit.Mvvm.Input.AsyncRelayCommand")!;
+                    commandInterfaceTypeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Input.IAsyncRelayCommand")!;
+                    commandClassTypeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Input.AsyncRelayCommand")!;
                     delegateTypeSymbol = context.Compilation.GetTypeByMetadataName("System.Func`1")!.Construct(context.Compilation.GetTypeByMetadataName("System.Threading.Tasks.Task")!);
 
                     return true;
@@ -300,8 +300,8 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
                     // Map <CancellationToken, Task> to IAsyncRelayCommand, AsyncRelayCommand, Func<CancellationToken, Task>
                     if (SymbolEqualityComparer.Default.Equals(singleParameter.Type, context.Compilation.GetTypeByMetadataName("System.Threading.CancellationToken")!))
                     {
-                        commandInterfaceTypeSymbol = context.Compilation.GetTypeByMetadataName("Microsoft.Toolkit.Mvvm.Input.IAsyncRelayCommand")!;
-                        commandClassTypeSymbol = context.Compilation.GetTypeByMetadataName("Microsoft.Toolkit.Mvvm.Input.AsyncRelayCommand")!;
+                        commandInterfaceTypeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Input.IAsyncRelayCommand")!;
+                        commandClassTypeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Input.AsyncRelayCommand")!;
                         delegateTypeSymbol = context.Compilation.GetTypeByMetadataName("System.Func`2")!.Construct(
                             context.Compilation.GetTypeByMetadataName("System.Threading.CancellationToken")!,
                             context.Compilation.GetTypeByMetadataName("System.Threading.Tasks.Task")!);
@@ -310,8 +310,8 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
                     }
 
                     // Map <T, Task> to IAsyncRelayCommand<T>, AsyncRelayCommand<T>, Func<T, Task>
-                    commandInterfaceTypeSymbol = context.Compilation.GetTypeByMetadataName("Microsoft.Toolkit.Mvvm.Input.IAsyncRelayCommand`1")!.Construct(singleParameter.Type);
-                    commandClassTypeSymbol = context.Compilation.GetTypeByMetadataName("Microsoft.Toolkit.Mvvm.Input.AsyncRelayCommand`1")!.Construct(singleParameter.Type);
+                    commandInterfaceTypeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Input.IAsyncRelayCommand`1")!.Construct(singleParameter.Type);
+                    commandClassTypeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Input.AsyncRelayCommand`1")!.Construct(singleParameter.Type);
                     delegateTypeSymbol = context.Compilation.GetTypeByMetadataName("System.Func`2")!.Construct(
                         singleParameter.Type,
                         context.Compilation.GetTypeByMetadataName("System.Threading.Tasks.Task")!);
@@ -325,8 +325,8 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
                     methodSymbol.Parameters[1] is IParameterSymbol { RefKind: RefKind.None, Type: { IsRefLikeType: false, TypeKind: not TypeKind.Pointer and not TypeKind.FunctionPointer } } secondParameter &&
                     SymbolEqualityComparer.Default.Equals(secondParameter.Type, context.Compilation.GetTypeByMetadataName("System.Threading.CancellationToken")!))
                 {
-                    commandInterfaceTypeSymbol = context.Compilation.GetTypeByMetadataName("Microsoft.Toolkit.Mvvm.Input.IAsyncRelayCommand`1")!.Construct(firstParameter.Type);
-                    commandClassTypeSymbol = context.Compilation.GetTypeByMetadataName("Microsoft.Toolkit.Mvvm.Input.AsyncRelayCommand`1")!.Construct(firstParameter.Type);
+                    commandInterfaceTypeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Input.IAsyncRelayCommand`1")!.Construct(firstParameter.Type);
+                    commandClassTypeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Input.AsyncRelayCommand`1")!.Construct(firstParameter.Type);
                     delegateTypeSymbol = context.Compilation.GetTypeByMetadataName("System.Func`3")!.Construct(
                         firstParameter.Type,
                         secondParameter.Type,

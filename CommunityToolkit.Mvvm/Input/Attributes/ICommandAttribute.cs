@@ -5,7 +5,7 @@
 using System;
 using System.Windows.Input;
 
-namespace Microsoft.Toolkit.Mvvm.Input
+namespace CommunityToolkit.Mvvm.Input
 {
     /// <summary>
     /// An attribute that can be used to automatically generate <see cref="ICommand"/> properties from declared methods. When this attribute

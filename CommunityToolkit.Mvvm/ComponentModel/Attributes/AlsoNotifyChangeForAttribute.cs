@@ -6,7 +6,7 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 
-namespace Microsoft.Toolkit.Mvvm.ComponentModel
+namespace CommunityToolkit.Mvvm.ComponentModel
 {
     /// <summary>
     /// An attribute that can be used to support <see cref="ObservablePropertyAttribute"/> in generated properties. When this attribute is

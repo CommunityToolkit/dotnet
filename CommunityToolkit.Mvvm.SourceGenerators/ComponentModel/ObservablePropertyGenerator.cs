@@ -11,13 +11,13 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-using Microsoft.Toolkit.Mvvm.SourceGenerators.Diagnostics;
-using Microsoft.Toolkit.Mvvm.SourceGenerators.Extensions;
+using CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
+using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Microsoft.CodeAnalysis.SymbolDisplayTypeQualificationStyle;
-using static Microsoft.Toolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
+using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
 
-namespace Microsoft.Toolkit.Mvvm.SourceGenerators
+namespace CommunityToolkit.Mvvm.SourceGenerators
 {
     /// <summary>
     /// A source generator for the <c>ObservablePropertyAttribute</c> type.
@@ -95,9 +95,9 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
         {
             INamedTypeSymbol
                 iNotifyPropertyChangingSymbol = context.Compilation.GetTypeByMetadataName("System.ComponentModel.INotifyPropertyChanging")!,
-                observableObjectSymbol = context.Compilation.GetTypeByMetadataName("Microsoft.Toolkit.Mvvm.ComponentModel.ObservableObject")!,
-                observableObjectAttributeSymbol = context.Compilation.GetTypeByMetadataName("Microsoft.Toolkit.Mvvm.ComponentModel.ObservableObjectAttribute")!,
-                observableValidatorSymbol = context.Compilation.GetTypeByMetadataName("Microsoft.Toolkit.Mvvm.ComponentModel.ObservableValidator")!;
+                observableObjectSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableObject")!,
+                observableObjectAttributeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute")!,
+                observableValidatorSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableValidator")!;
 
             // Check whether the current type implements INotifyPropertyChanging and whether it inherits from ObservableValidator
             bool
@@ -186,7 +186,7 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
                 typeName = fieldSymbol.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
                 propertyName = GetGeneratedPropertyName(fieldSymbol);
 
-            INamedTypeSymbol alsoNotifyChangeForAttributeSymbol = context.Compilation.GetTypeByMetadataName("Microsoft.Toolkit.Mvvm.ComponentModel.AlsoNotifyChangeForAttribute")!;
+            INamedTypeSymbol alsoNotifyChangeForAttributeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.AlsoNotifyChangeForAttribute")!;
             INamedTypeSymbol? validationAttributeSymbol = context.Compilation.GetTypeByMetadataName("System.ComponentModel.DataAnnotations.ValidationAttribute");
 
             List<StatementSyntax> dependentPropertyNotificationStatements = new();
@@ -214,7 +214,7 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
                                 InvocationExpression(IdentifierName("OnPropertyChanged"))
                                 .AddArgumentListArguments(Argument(MemberAccessExpression(
                                     SyntaxKind.SimpleMemberAccessExpression,
-                                    IdentifierName("global::Microsoft.Toolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs"),
+                                    IdentifierName("global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs"),
                                     IdentifierName($"{dependentPropertyName}{nameof(PropertyChangedEventArgs)}"))))));
                         }
                         else if (attributeArgument.Kind == TypedConstantKind.Array)
@@ -235,7 +235,7 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
                                     InvocationExpression(IdentifierName("OnPropertyChanged"))
                                     .AddArgumentListArguments(Argument(MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
-                                        IdentifierName("global::Microsoft.Toolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs"),
+                                        IdentifierName("global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs"),
                                         IdentifierName($"{currentPropertyName}{nameof(PropertyChangedEventArgs)}"))))));
                             }
                         }
@@ -282,14 +282,14 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
                     //
                     // if (!global::System.Collections.Generic.EqualityComparer<<FIELD_TYPE>>.Default.Equals(this.<FIELD_NAME>, value))
                     // {
-                    //     OnPropertyChanging(global::Microsoft.Toolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.PropertyNamePropertyChangingEventArgs); // Optional
+                    //     OnPropertyChanging(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.PropertyNamePropertyChangingEventArgs); // Optional
                     //     this.<FIELD_NAME> = value;
-                    //     OnPropertyChanged(global::Microsoft.Toolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.PropertyNamePropertyChangedEventArgs);
+                    //     OnPropertyChanged(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.PropertyNamePropertyChangedEventArgs);
                     //     ValidateProperty(value, <PROPERTY_NAME>);
-                    //     OnPropertyChanged(global::Microsoft.Toolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.Property1PropertyChangedEventArgs); // Optional
-                    //     OnPropertyChanged(global::Microsoft.Toolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.Property2PropertyChangedEventArgs);
+                    //     OnPropertyChanged(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.Property1PropertyChangedEventArgs); // Optional
+                    //     OnPropertyChanged(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.Property2PropertyChangedEventArgs);
                     //     ...
-                    //     OnPropertyChanged(global::Microsoft.Toolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.PropertyNPropertyChangedEventArgs);
+                    //     OnPropertyChanged(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.PropertyNPropertyChangedEventArgs);
                     // }
                     //
                     // The reason why the code is explicitly generated instead of just calling ObservableValidator.SetProperty() is so that we can
@@ -315,7 +315,7 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
                                     InvocationExpression(IdentifierName("OnPropertyChanging"))
                                     .AddArgumentListArguments(Argument(MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
-                                        IdentifierName("global::Microsoft.Toolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs"),
+                                        IdentifierName("global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs"),
                                         IdentifierName($"{propertyName}{nameof(PropertyChangingEventArgs)}"))))),
                                 ExpressionStatement(
                                     AssignmentExpression(
@@ -326,7 +326,7 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
                                     InvocationExpression(IdentifierName("OnPropertyChanged"))
                                     .AddArgumentListArguments(Argument(MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
-                                        IdentifierName("global::Microsoft.Toolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs"),
+                                        IdentifierName("global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs"),
                                         IdentifierName($"{propertyName}{nameof(PropertyChangedEventArgs)}"))))),
                                 ExpressionStatement(
                                     InvocationExpression(IdentifierName("ValidateProperty"))
@@ -340,7 +340,7 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
             {
                 BlockSyntax updateAndNotificationBlock = Block();
 
-                // Add OnPropertyChanging(global::Microsoft.Toolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.PropertyNamePropertyChangingEventArgs) if necessary
+                // Add OnPropertyChanging(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.PropertyNamePropertyChangingEventArgs) if necessary
                 if (isNotifyPropertyChanging)
                 {
                     propertyChangingNames.Add(propertyName);
@@ -349,7 +349,7 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
                         InvocationExpression(IdentifierName("OnPropertyChanging"))
                         .AddArgumentListArguments(Argument(MemberAccessExpression(
                             SyntaxKind.SimpleMemberAccessExpression,
-                            IdentifierName("global::Microsoft.Toolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs"),
+                            IdentifierName("global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs"),
                             IdentifierName($"{propertyName}{nameof(PropertyChangingEventArgs)}"))))));
                 }
 
@@ -358,7 +358,7 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
                 // Add the following statements:
                 //
                 // <FIELD_NAME> = value;
-                // OnPropertyChanged(global::Microsoft.Toolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.PropertyNamePropertyChangedEventArgs);
+                // OnPropertyChanged(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.PropertyNamePropertyChangedEventArgs);
                 updateAndNotificationBlock = updateAndNotificationBlock.AddStatements(
                     ExpressionStatement(
                         AssignmentExpression(
@@ -369,7 +369,7 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
                         InvocationExpression(IdentifierName("OnPropertyChanged"))
                         .AddArgumentListArguments(Argument(MemberAccessExpression(
                             SyntaxKind.SimpleMemberAccessExpression,
-                            IdentifierName("global::Microsoft.Toolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs"),
+                            IdentifierName("global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs"),
                             IdentifierName($"{propertyName}{nameof(PropertyChangedEventArgs)}"))))));
 
                 // Add the dependent property notifications at the end
@@ -379,13 +379,13 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
                 //
                 // if (!global::System.Collections.Generic.EqualityComparer<<FIELD_TYPE>>.Default.Equals(<FIELD_NAME>, value))
                 // {
-                //     OnPropertyChanging(global::Microsoft.Toolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.PropertyNamePropertyChangingEventArgs); // Optional
+                //     OnPropertyChanging(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.PropertyNamePropertyChangingEventArgs); // Optional
                 //     <FIELD_NAME> = value;
-                //     OnPropertyChanged(global::Microsoft.Toolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.PropertyNamePropertyChangedEventArgs);
-                //     OnPropertyChanged(global::Microsoft.Toolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.Property1PropertyChangedEventArgs); // Optional
-                //     OnPropertyChanged(global::Microsoft.Toolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.Property2PropertyChangedEventArgs);
+                //     OnPropertyChanged(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.PropertyNamePropertyChangedEventArgs);
+                //     OnPropertyChanged(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.Property1PropertyChangedEventArgs); // Optional
+                //     OnPropertyChanged(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.Property2PropertyChangedEventArgs);
                 //     ...
-                //     OnPropertyChanged(global::Microsoft.Toolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.PropertyNPropertyChangedEventArgs);
+                //     OnPropertyChanged(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.PropertyNPropertyChangedEventArgs);
                 // }
                 setterBlock = Block(
                     IfStatement(
@@ -502,7 +502,7 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
             //
             // #pragma warning disable
             //
-            // namespace Microsoft.Toolkit.Mvvm.ComponentModel.__Internals
+            // namespace CommunityToolkit.Mvvm.ComponentModel.__Internals
             // {
             //     [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
             //     [global::System.Diagnostics.DebuggerNonUserCode]
@@ -516,7 +516,7 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
             // }
             var source =
                 CompilationUnit().AddMembers(
-                NamespaceDeclaration(IdentifierName("Microsoft.Toolkit.Mvvm.ComponentModel.__Internals")).WithLeadingTrivia(TriviaList(
+                NamespaceDeclaration(IdentifierName("CommunityToolkit.Mvvm.ComponentModel.__Internals")).WithLeadingTrivia(TriviaList(
                     Comment("// Licensed to the .NET Foundation under one or more agreements."),
                     Comment("// The .NET Foundation licenses this file to you under the MIT license."),
                     Comment("// See the LICENSE file in the project root for more information."),

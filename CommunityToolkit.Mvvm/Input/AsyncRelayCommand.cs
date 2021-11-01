@@ -7,9 +7,9 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Toolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Microsoft.Toolkit.Mvvm.Input
+namespace CommunityToolkit.Mvvm.Input
 {
     /// <summary>
     /// A command that mirrors the functionality of <see cref="RelayCommand"/>, with the addition of

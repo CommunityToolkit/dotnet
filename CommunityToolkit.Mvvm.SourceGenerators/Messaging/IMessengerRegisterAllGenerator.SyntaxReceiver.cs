@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Microsoft.Toolkit.Mvvm.SourceGenerators
+namespace CommunityToolkit.Mvvm.SourceGenerators
 {
     /// <inheritdoc cref="IMessengerRegisterAllGenerator"/>
     public sealed partial class IMessengerRegisterAllGenerator
@@ -33,7 +33,7 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
             {
                 if (context.Node is ClassDeclarationSyntax classDeclaration &&
                     context.SemanticModel.GetDeclaredSymbol(classDeclaration) is INamedTypeSymbol { IsGenericType: false } classSymbol &&
-                    context.SemanticModel.Compilation.GetTypeByMetadataName("Microsoft.Toolkit.Mvvm.Messaging.IRecipient`1") is INamedTypeSymbol iRecipientSymbol &&
+                    context.SemanticModel.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Messaging.IRecipient`1") is INamedTypeSymbol iRecipientSymbol &&
                     classSymbol.AllInterfaces.Any(i => SymbolEqualityComparer.Default.Equals(i.OriginalDefinition, iRecipientSymbol)))
                 {
                     this.gatheredInfo.Add(classSymbol);

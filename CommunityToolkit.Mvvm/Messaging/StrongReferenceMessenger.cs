@@ -9,9 +9,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Microsoft.Collections.Extensions;
-using Microsoft.Toolkit.Mvvm.Messaging.Internals;
+using CommunityToolkit.Mvvm.Messaging.Internals;
 
-namespace Microsoft.Toolkit.Mvvm.Messaging
+namespace CommunityToolkit.Mvvm.Messaging
 {
     /// <summary>
     /// A class providing a reference implementation for the <see cref="IMessenger"/> interface.

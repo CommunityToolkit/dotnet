@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Microsoft.Toolkit.Mvvm.SourceGenerators
+namespace CommunityToolkit.Mvvm.SourceGenerators
 {
     /// <inheritdoc cref="ICommandGenerator"/>
     public sealed partial class ICommandGenerator
@@ -33,7 +33,7 @@ namespace Microsoft.Toolkit.Mvvm.SourceGenerators
             {
                 if (context.Node is MethodDeclarationSyntax methodDeclaration &&
                     context.SemanticModel.GetDeclaredSymbol(methodDeclaration) is IMethodSymbol methodSymbol &&
-                    context.SemanticModel.Compilation.GetTypeByMetadataName("Microsoft.Toolkit.Mvvm.Input.ICommandAttribute") is INamedTypeSymbol iCommandSymbol &&
+                    context.SemanticModel.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Input.ICommandAttribute") is INamedTypeSymbol iCommandSymbol &&
                     methodSymbol.GetAttributes().Any(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, iCommandSymbol)))
                 {
                     this.gatheredInfo.Add(new Item(methodDeclaration.GetLeadingTrivia(), methodSymbol));

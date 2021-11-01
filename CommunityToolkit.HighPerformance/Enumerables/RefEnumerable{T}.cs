@@ -8,13 +8,13 @@ using System.Runtime.CompilerServices;
 #if SPAN_RUNTIME_SUPPORT
 using System.Runtime.InteropServices;
 #endif
-using Microsoft.Toolkit.HighPerformance.Helpers.Internals;
-using Microsoft.Toolkit.HighPerformance.Memory.Internals;
+using CommunityToolkit.HighPerformance.Helpers.Internals;
+using CommunityToolkit.HighPerformance.Memory.Internals;
 #if !SPAN_RUNTIME_SUPPORT
-using RuntimeHelpers = Microsoft.Toolkit.HighPerformance.Helpers.Internals.RuntimeHelpers;
+using RuntimeHelpers = CommunityToolkit.HighPerformance.Helpers.Internals.RuntimeHelpers;
 #endif
 
-namespace Microsoft.Toolkit.HighPerformance.Enumerables
+namespace CommunityToolkit.HighPerformance.Enumerables
 {
     /// <summary>
     /// A <see langword="ref"/> <see langword="struct"/> that iterates items from arbitrary memory locations.

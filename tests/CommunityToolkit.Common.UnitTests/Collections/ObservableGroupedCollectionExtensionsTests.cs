@@ -4,7 +4,7 @@
 
 using System;
 using System.Linq;
-using Microsoft.Toolkit.Collections;
+using CommunityToolkit.Common.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UnitTests.Collections

@@ -5,7 +5,7 @@
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
-namespace Microsoft.Toolkit.Mvvm.SourceGenerators.Diagnostics
+namespace CommunityToolkit.Mvvm.SourceGenerators.Diagnostics
 {
     /// <summary>
     /// Extension methods for <see cref="GeneratorExecutionContext"/>, specifically for reporting diagnostics.

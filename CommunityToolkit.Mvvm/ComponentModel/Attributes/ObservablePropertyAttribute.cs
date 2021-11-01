@@ -5,7 +5,7 @@
 using System;
 using System.ComponentModel;
 
-namespace Microsoft.Toolkit.Mvvm.ComponentModel
+namespace CommunityToolkit.Mvvm.ComponentModel
 {
     /// <summary>
     /// An attribute that indicates that a given field should be wrapped by a generated observable property.

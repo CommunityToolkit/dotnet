@@ -6,7 +6,7 @@ using System.Diagnostics.Contracts;
 using System.Text;
 using Microsoft.CodeAnalysis;
 
-namespace Microsoft.Toolkit.Mvvm.SourceGenerators.Extensions
+namespace CommunityToolkit.Mvvm.SourceGenerators.Extensions
 {
     /// <summary>
     /// Extension methods for the <see cref="INamedTypeSymbol"/> type.

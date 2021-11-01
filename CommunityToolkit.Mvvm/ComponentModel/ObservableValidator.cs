@@ -14,7 +14,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace Microsoft.Toolkit.Mvvm.ComponentModel
+namespace CommunityToolkit.Mvvm.ComponentModel
 {
     /// <summary>
     /// A base class for objects implementing the <see cref="INotifyDataErrorInfo"/> interface. This class
@@ -476,7 +476,7 @@ namespace Microsoft.Toolkit.Mvvm.ComponentModel
             // is used to make this method more AOT-friendly and faster, as there is no dynamic code.
             static Action<object> GetValidationAction(Type type)
             {
-                if (type.Assembly.GetType("Microsoft.Toolkit.Mvvm.ComponentModel.__Internals.__ObservableValidatorExtensions") is Type extensionsType &&
+                if (type.Assembly.GetType("CommunityToolkit.Mvvm.ComponentModel.__Internals.__ObservableValidatorExtensions") is Type extensionsType &&
                     extensionsType.GetMethod("CreateAllPropertiesValidator", new[] { type }) is MethodInfo methodInfo)
                 {
                     return (Action<object>)methodInfo.Invoke(null, new object?[] { null })!;

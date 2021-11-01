@@ -7,7 +7,7 @@
 using System;
 using System.ComponentModel;
 
-namespace Microsoft.Toolkit.Mvvm.ComponentModel.__Internals
+namespace CommunityToolkit.Mvvm.ComponentModel.__Internals
 {
     /// <summary>
     /// An internal helper to support the source generator APIs related to <see cref="ObservableValidator"/>.
