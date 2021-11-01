@@ -125,8 +125,8 @@ public class Test_Span2DT
     {
         int[] array =
         {
-                1, 2, 3, 4, 5, 6
-            };
+            1, 2, 3, 4, 5, 6
+        };
 
         // Same as above, but wrapping a 1D array with data in row-major order
         Span2D<int> span2d = new(array, 1, 2, 2, 1);
@@ -158,9 +158,9 @@ public class Test_Span2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         // Same as above, but directly wrapping a 2D array
         Span2D<int> span2d = new(array);
@@ -185,9 +185,9 @@ public class Test_Span2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         // Same as above, but with a custom slicing over the target 2D array
         Span2D<int> span2d = new(array, 0, 1, 2, 2);
@@ -212,15 +212,15 @@ public class Test_Span2DT
     {
         int[,,] array =
         {
-                {
-                    { 1, 2, 3 },
-                    { 4, 5, 6 }
-                },
-                {
-                    { 10, 20, 30 },
-                    { 40, 50, 60 }
-                }
-            };
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 }
+            },
+            {
+                { 10, 20, 30 },
+                { 40, 50, 60 }
+            }
+        };
 
         // Here we wrap a layer in a 3D array instead, the rest is the same
         Span2D<int> span2d = new(array, 1);
@@ -247,15 +247,15 @@ public class Test_Span2DT
     {
         int[,,] array =
         {
-                {
-                    { 1, 2, 3 },
-                    { 4, 5, 6 }
-                },
-                {
-                    { 10, 20, 30 },
-                    { 40, 50, 60 }
-                }
-            };
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 }
+            },
+            {
+                { 10, 20, 30 },
+                { 40, 50, 60 }
+            }
+        };
 
         // Same as above, but also slicing a target 2D area in the 3D array layer
         Span2D<int> span2d = new(array, 1, 0, 1, 2, 2);
@@ -285,9 +285,9 @@ public class Test_Span2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         // Tests for the Fill and Clear APIs for Span2D<T>. These should fill
         // or clear the entire wrapped 2D array (just like eg. Span<T>.Fill).
@@ -308,9 +308,9 @@ public class Test_Span2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         // Same as above, but with an initial slicing as well to ensure
         // these method work correctly with different internal offsets
@@ -331,9 +331,9 @@ public class Test_Span2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         // Same as above, just with different slicing to a target smaller 2D area
         Span2D<int> span2d = new(array, 0, 1, 2, 2);
@@ -342,9 +342,9 @@ public class Test_Span2DT
 
         int[,] filled =
         {
-                { 1, 42, 42 },
-                { 4, 42, 42 }
-            };
+            { 1, 42, 42 },
+            { 4, 42, 42 }
+        };
 
         CollectionAssert.AreEqual(array, filled);
 
@@ -352,9 +352,9 @@ public class Test_Span2DT
 
         int[,] cleared =
         {
-                { 1, 0, 0 },
-                { 4, 0, 0 }
-            };
+            { 1, 0, 0 },
+            { 4, 0, 0 }
+        };
 
         CollectionAssert.AreEqual(array, cleared);
     }
@@ -377,9 +377,9 @@ public class Test_Span2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         Span2D<int> span2d = new(array);
 
@@ -401,9 +401,9 @@ public class Test_Span2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         // Same as above, but with different initial slicing
         Span2D<int> span2d = new(array, 0, 1, 2, 2);
@@ -426,9 +426,9 @@ public class Test_Span2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         Span2D<int> span2d = new(array);
 
@@ -449,9 +449,9 @@ public class Test_Span2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         // Same as above, but with extra initial slicing
         Span2D<int> span2d = new(array, 0, 1, 2, 2);
@@ -462,9 +462,9 @@ public class Test_Span2DT
 
         int[,] expected =
         {
-                { 2, 3 },
-                { 5, 6 }
-            };
+            { 2, 3 },
+            { 5, 6 }
+        };
 
         CollectionAssert.AreEqual(target, expected);
 
@@ -477,9 +477,9 @@ public class Test_Span2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         Span2D<int> span2d = new(array);
 
@@ -500,9 +500,9 @@ public class Test_Span2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         // Same as above, but copying to a 2D array with the safe TryCopyTo method
         Span2D<int> span2d = new(array);
@@ -514,9 +514,9 @@ public class Test_Span2DT
 
         int[,] expected =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         CollectionAssert.AreEqual(target, expected);
     }
@@ -532,9 +532,9 @@ public class Test_Span2DT
 
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         Span2D<int> span2d = new(array);
 
@@ -555,9 +555,9 @@ public class Test_Span2DT
 
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         Span2D<int> span2d = new(array);
 
@@ -655,9 +655,9 @@ public class Test_Span2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         // Here we have a number of tests that just take an initial 2D array, create a Span2D<T>,
         // perform a number of slicing operations and then validate the parameters for the resulting
@@ -697,9 +697,9 @@ public class Test_Span2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         Span2D<int> span2d = new(array);
 
@@ -735,9 +735,9 @@ public class Test_Span2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         Span2D<int> span2d = new(array);
 
@@ -826,9 +826,9 @@ public class Test_Span2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         Span2D<int> span2d = new(array);
 
@@ -855,9 +855,9 @@ public class Test_Span2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         // Same as above, but this will always fail because we're creating
         // a Span2D<T> wrapping non contiguous data (the pitch is not 0).
@@ -875,9 +875,9 @@ public class Test_Span2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         // Here we create a Span2D<T> and verify that ToArray() produces
         // a 2D array that is identical to the original one being wrapped.
@@ -897,9 +897,9 @@ public class Test_Span2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         // Same as above, but with extra initial slicing
         Span2D<int> span2d = new(array, 0, 0, 2, 2);
@@ -911,9 +911,9 @@ public class Test_Span2DT
 
         int[,] expected =
         {
-                { 1, 2 },
-                { 4, 5 }
-            };
+            { 1, 2 },
+            { 4, 5 }
+        };
 
         CollectionAssert.AreEqual(expected, copy);
     }
@@ -925,9 +925,9 @@ public class Test_Span2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         Span2D<int> span2d = new(array);
 
@@ -942,9 +942,9 @@ public class Test_Span2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         Span2D<int> span2d = new(array);
 
@@ -958,9 +958,9 @@ public class Test_Span2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         Span2D<int> span2d = new(array);
 
@@ -978,9 +978,9 @@ public class Test_Span2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         // Create two Span2D<T> instances wrapping the same array with the same
         // parameters, and verify that the equality operators work correctly.
@@ -1004,9 +1004,9 @@ public class Test_Span2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         // Verify that an explicit constructor and the implicit conversion
         // operator generate an identical Span2D<T> instance from the array.
@@ -1022,9 +1022,9 @@ public class Test_Span2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         // Get a target row and verify the contents match with our data
         RefEnumerable<int> enumerable = new Span2D<int>(array).GetRow(1);
@@ -1070,9 +1070,9 @@ public class Test_Span2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         // Same as above, but getting a column instead
         RefEnumerable<int> enumerable = new Span2D<int>(array).GetColumn(2);
@@ -1118,9 +1118,9 @@ public class Test_Span2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         int[] result = new int[4];
         int i = 0;

@@ -21,15 +21,15 @@ public class Test_SpinLockExtensions
         int sum = 0;
 
         _ = Parallel.For(0, 1000, i =>
-          {
-              for (int j = 0; j < 10; j++)
-              {
-                  using (SpinLockExtensions.Enter(p))
-                  {
-                      sum++;
-                  }
-              }
-          });
+            {
+                for (int j = 0; j < 10; j++)
+                {
+                    using (SpinLockExtensions.Enter(p))
+                    {
+                        sum++;
+                    }
+                }
+            });
 
         Assert.AreEqual(sum, 1000 * 10);
     }

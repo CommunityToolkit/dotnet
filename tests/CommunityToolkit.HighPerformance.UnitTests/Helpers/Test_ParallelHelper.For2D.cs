@@ -17,14 +17,14 @@ public partial class Test_ParallelHelper
     /// </summary>
     private static ReadOnlySpan<Size> TestFor2DSizes => new[]
     {
-            new Size(0, 0),
-            new Size(0, 1),
-            new Size(1, 1),
-            new Size(3, 3),
-            new Size(1024, 1024),
-            new Size(512, 2175),
-            new Size(4039, 11231)
-        };
+        new Size(0, 0),
+        new Size(0, 1),
+        new Size(1, 1),
+        new Size(3, 3),
+        new Size(1024, 1024),
+        new Size(512, 2175),
+        new Size(4039, 11231)
+    };
 
     [TestCategory("ParallelHelper")]
     [TestMethod]

@@ -72,10 +72,10 @@ public class Test_AsyncRelayCommand
 
         AsyncRelayCommand? command = new(
             () =>
-        {
-            ticks++;
-            return Task.CompletedTask;
-        }, () => true);
+            {
+                ticks++;
+                return Task.CompletedTask;
+            }, () => true);
 
         Assert.IsTrue(command.CanExecute(null));
         Assert.IsTrue(command.CanExecute(new object()));
@@ -100,10 +100,10 @@ public class Test_AsyncRelayCommand
 
         AsyncRelayCommand? command = new(
             () =>
-        {
-            ticks++;
-            return Task.CompletedTask;
-        }, () => false);
+            {
+                ticks++;
+                return Task.CompletedTask;
+            }, () => false);
 
         Assert.IsFalse(command.CanExecute(null));
         Assert.IsFalse(command.CanExecute(new object()));

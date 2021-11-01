@@ -239,9 +239,9 @@ public partial class Test_Messenger
         messenger.Register<MessageA>(recipient, (r, m) => { });
 
         _ = Assert.ThrowsException<InvalidOperationException>(() =>
-          {
-              messenger.Register<MessageA>(recipient, (r, m) => { });
-          });
+        {
+            messenger.Register<MessageA>(recipient, (r, m) => { });
+        });
     }
 
     [TestCategory("Mvvm")]
@@ -256,9 +256,9 @@ public partial class Test_Messenger
         messenger.Register<MessageA, string>(recipient, nameof(MessageA), (r, m) => { });
 
         _ = Assert.ThrowsException<InvalidOperationException>(() =>
-          {
-              messenger.Register<MessageA, string>(recipient, nameof(MessageA), (r, m) => { });
-          });
+        {
+            messenger.Register<MessageA, string>(recipient, nameof(MessageA), (r, m) => { });
+        });
     }
 
     [TestCategory("Mvvm")]

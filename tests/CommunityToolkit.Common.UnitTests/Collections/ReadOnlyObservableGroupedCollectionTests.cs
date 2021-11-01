@@ -443,45 +443,53 @@ public class ReadOnlyObservableGroupedCollectionTests
     private static bool IsAddEventValid(NotifyCollectionChangedEventArgs args, IEnumerable<int> expectedGroupItems, int addIndex)
     {
         IEnumerable<IEnumerable<int>>? newItems = args.NewItems?.Cast<IEnumerable<int>>();
-        return args.Action == NotifyCollectionChangedAction.Add &&
-                args.NewStartingIndex == addIndex &&
-                args.OldItems == null &&
-                newItems?.Count() == 1 &&
-                Enumerable.SequenceEqual(newItems.ElementAt(0), expectedGroupItems);
+
+        return
+            args.Action == NotifyCollectionChangedAction.Add &&
+            args.NewStartingIndex == addIndex &&
+            args.OldItems == null &&
+            newItems?.Count() == 1 &&
+            Enumerable.SequenceEqual(newItems.ElementAt(0), expectedGroupItems);
     }
 
     private static bool IsRemoveEventValid(NotifyCollectionChangedEventArgs args, IEnumerable<int> expectedGroupItems, int oldIndex)
     {
         IEnumerable<IEnumerable<int>>? oldItems = args.OldItems?.Cast<IEnumerable<int>>();
-        return args.Action == NotifyCollectionChangedAction.Remove &&
-                args.NewItems == null &&
-                args.OldStartingIndex == oldIndex &&
-                oldItems?.Count() == 1 &&
-                Enumerable.SequenceEqual(oldItems.ElementAt(0), expectedGroupItems);
+
+        return
+            args.Action == NotifyCollectionChangedAction.Remove &&
+            args.NewItems == null &&
+            args.OldStartingIndex == oldIndex &&
+            oldItems?.Count() == 1 &&
+            Enumerable.SequenceEqual(oldItems.ElementAt(0), expectedGroupItems);
     }
 
     private static bool IsMoveEventValid(NotifyCollectionChangedEventArgs args, IEnumerable<int> expectedGroupItems, int oldIndex, int newIndex)
     {
         IEnumerable<IEnumerable<int>>? oldItems = args.OldItems?.Cast<IEnumerable<int>>();
         IEnumerable<IEnumerable<int>>? newItems = args.NewItems?.Cast<IEnumerable<int>>();
-        return args.Action == NotifyCollectionChangedAction.Move &&
-                args.OldStartingIndex == oldIndex &&
-                args.NewStartingIndex == newIndex &&
-                oldItems?.Count() == 1 &&
-                Enumerable.SequenceEqual(oldItems.ElementAt(0), expectedGroupItems) &&
-                newItems?.Count() == 1 &&
-                Enumerable.SequenceEqual(newItems.ElementAt(0), expectedGroupItems);
+
+        return
+            args.Action == NotifyCollectionChangedAction.Move &&
+            args.OldStartingIndex == oldIndex &&
+            args.NewStartingIndex == newIndex &&
+            oldItems?.Count() == 1 &&
+            Enumerable.SequenceEqual(oldItems.ElementAt(0), expectedGroupItems) &&
+            newItems?.Count() == 1 &&
+            Enumerable.SequenceEqual(newItems.ElementAt(0), expectedGroupItems);
     }
 
     private static bool IsReplaceEventValid(NotifyCollectionChangedEventArgs args, IEnumerable<int> expectedRemovedItems, IEnumerable<int> expectedAddItems)
     {
         IEnumerable<IEnumerable<int>>? oldItems = args.OldItems?.Cast<IEnumerable<int>>();
         IEnumerable<IEnumerable<int>>? newItems = args.NewItems?.Cast<IEnumerable<int>>();
-        return args.Action == NotifyCollectionChangedAction.Replace &&
-                oldItems?.Count() == 1 &&
-                Enumerable.SequenceEqual(oldItems.ElementAt(0), expectedRemovedItems) &&
-                newItems?.Count() == 1 &&
-                Enumerable.SequenceEqual(newItems.ElementAt(0), expectedAddItems);
+
+        return
+            args.Action == NotifyCollectionChangedAction.Replace &&
+            oldItems?.Count() == 1 &&
+            Enumerable.SequenceEqual(oldItems.ElementAt(0), expectedRemovedItems) &&
+            newItems?.Count() == 1 &&
+            Enumerable.SequenceEqual(newItems.ElementAt(0), expectedAddItems);
     }
 
     private static bool IsResetEventValid(NotifyCollectionChangedEventArgs args) => args.Action == NotifyCollectionChangedAction.Reset && args.NewItems == null && args.OldItems == null;

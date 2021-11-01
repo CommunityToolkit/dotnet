@@ -24,11 +24,11 @@ public class Test_RefEnumerable
     {
         Span<int> data = new[]
         {
-                1, 2, 3, 4,
-                5, 6, 7, 8,
-                9, 10, 11, 12,
-                13, 14, 15, 16
-            };
+            1, 2, 3, 4,
+            5, 6, 7, 8,
+            9, 10, 11, 12,
+            13, 14, 15, 16
+        };
 
         RefEnumerable<int> enumerable = RefEnumerable<int>.DangerousCreate(ref data[0], length, step);
 
@@ -58,11 +58,11 @@ public class Test_RefEnumerable
     {
         Span<int> data = new[]
         {
-                1, 2, 3, 4,
-                5, 6, 7, 8,
-                9, 10, 11, 12,
-                13, 14, 15, 16
-            };
+            1, 2, 3, 4,
+            5, 6, 7, 8,
+            9, 10, 11, 12,
+            13, 14, 15, 16
+        };
 
         RefEnumerable<int> enumerable = RefEnumerable<int>.DangerousCreate(ref data[0], values.Length, step);
 
@@ -78,8 +78,8 @@ public class Test_RefEnumerable
     {
         int[] array = new[]
         {
-                0, 0, 0, 0
-            };
+            0, 0, 0, 0
+        };
 
         _ = Assert.ThrowsException<IndexOutOfRangeException>(() => RefEnumerable<int>.DangerousCreate(ref array[0], array.Length, 1)[-1]);
         _ = Assert.ThrowsException<IndexOutOfRangeException>(() => RefEnumerable<int>.DangerousCreate(ref array[0], array.Length, 1)[array.Length]);
@@ -96,11 +96,11 @@ public class Test_RefEnumerable
     {
         Span<int> data = new[]
         {
-                1, 2, 3, 4,
-                5, 6, 7, 8,
-                9, 10, 11, 12,
-                13, 14, 15, 16
-            };
+            1, 2, 3, 4,
+            5, 6, 7, 8,
+            9, 10, 11, 12,
+            13, 14, 15, 16
+        };
 
         RefEnumerable<int> enumerable = RefEnumerable<int>.DangerousCreate(ref data[0], values.Length, step);
 
@@ -116,8 +116,8 @@ public class Test_RefEnumerable
     {
         int[] array = new[]
         {
-                0, 0, 0, 0
-            };
+            0, 0, 0, 0
+        };
 
         _ = Assert.ThrowsException<IndexOutOfRangeException>(() => RefEnumerable<int>.DangerousCreate(ref array[0], array.Length, 1)[new Index(array.Length)]);
         _ = Assert.ThrowsException<IndexOutOfRangeException>(() => RefEnumerable<int>.DangerousCreate(ref array[0], array.Length, 1)[^0]);

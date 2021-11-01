@@ -17,10 +17,10 @@ public partial class Test_ArrayExtensions
     {
         int[,] array =
         {
-                { 1, 2, 3, 4 },
-                { 5, 6, 7, 8 },
-                { 9, 10, 11, 12 }
-            };
+            { 1, 2, 3, 4 },
+            { 5, 6, 7, 8 },
+            { 9, 10, 11, 12 }
+        };
 
         // See comments in Test_ArrayExtensions.1D for how these tests work
         ref int r0 = ref array.DangerousGetReference();
@@ -35,9 +35,9 @@ public partial class Test_ArrayExtensions
     {
         string[,] array =
         {
-                { "a", "bb", "ccc" },
-                { "dddd", "eeeee", "ffffff" }
-            };
+            { "a", "bb", "ccc" },
+            { "dddd", "eeeee", "ffffff" }
+        };
 
         ref string r0 = ref array.DangerousGetReference();
         ref string r1 = ref array[0, 0];
@@ -51,10 +51,10 @@ public partial class Test_ArrayExtensions
     {
         int[,] array =
         {
-                { 1, 2, 3, 4 },
-                { 5, 6, 7, 8 },
-                { 9, 10, 11, 12 }
-            };
+            { 1, 2, 3, 4 },
+            { 5, 6, 7, 8 },
+            { 9, 10, 11, 12 }
+        };
 
         ref int r0 = ref array.DangerousGetReferenceAt(0, 0);
         ref int r1 = ref array[0, 0];
@@ -68,10 +68,10 @@ public partial class Test_ArrayExtensions
     {
         int[,] array =
         {
-                { 1, 2, 3, 4 },
-                { 5, 6, 7, 8 },
-                { 9, 10, 11, 12 }
-            };
+            { 1, 2, 3, 4 },
+            { 5, 6, 7, 8 },
+            { 9, 10, 11, 12 }
+        };
 
         ref int r0 = ref array.DangerousGetReferenceAt(1, 3);
         ref int r1 = ref array[1, 3];
@@ -94,11 +94,11 @@ public partial class Test_ArrayExtensions
 
         bool[,]? expected = new[,]
         {
-                { false, false, false, false, false },
-                { false,  true,  true,  true, false },
-                { false,  true,  true,  true, false },
-                { false, false, false, false, false },
-            };
+            { false, false, false, false, false },
+            { false,  true,  true,  true, false },
+            { false,  true,  true,  true, false },
+            { false, false, false, false, false },
+        };
 
         CollectionAssert.AreEqual(expected, test);
     }
@@ -114,11 +114,11 @@ public partial class Test_ArrayExtensions
 
         bool[,]? expected = new[,]
         {
-                { true,  false, false, false, false },
-                { true,  false, false,  true,  true },
-                { false, false, false,  true,  true },
-                { false, false, false, false, false },
-            };
+            { true,  false, false, false, false },
+            { true,  false, false,  true,  true },
+            { false, false, false,  true,  true },
+            { false, false, false, false, false },
+        };
 
         CollectionAssert.AreEqual(expected, test);
     }
@@ -133,11 +133,11 @@ public partial class Test_ArrayExtensions
 
         bool[,]? expected = new[,]
         {
-                { false, false, false, false, false },
-                { false, false,  true,  true, false },
-                { false, false,  true,  true, false },
-                { false, false,  true,  true, false },
-            };
+            { false, false, false, false, false },
+            { false, false,  true,  true, false },
+            { false, false,  true,  true, false },
+            { false, false,  true,  true, false },
+        };
 
         CollectionAssert.AreEqual(expected, test);
     }
@@ -152,12 +152,12 @@ public partial class Test_ArrayExtensions
 
         bool[,]? expected = new[,]
         {
-                { false, false, false, false },
-                { false, false, false, false },
-                { false, false, false, false },
-                { false, false,  true,  true },
-                { false, false,  true,  true },
-            };
+            { false, false, false, false },
+            { false, false, false, false },
+            { false, false, false, false },
+            { false, false,  true,  true },
+            { false, false,  true,  true },
+        };
 
         CollectionAssert.AreEqual(expected, test);
     }
@@ -168,10 +168,10 @@ public partial class Test_ArrayExtensions
     {
         int[,] array =
         {
-                { 1, 2, 3, 4 },
-                { 5, 6, 7, 8 },
-                { 9, 10, 11, 12 }
-            };
+            { 1, 2, 3, 4 },
+            { 5, 6, 7, 8 },
+            { 9, 10, 11, 12 }
+        };
 
         // Here we use the enumerator on the RefEnumerator<T> type to traverse items in a row
         // by reference. For each one, we check that the reference does in fact point to the
@@ -200,10 +200,10 @@ public partial class Test_ArrayExtensions
     {
         int[,] array =
         {
-                { 1, 2, 3, 4 },
-                { 5, 6, 7, 8 },
-                { 9, 10, 11, 12 }
-            };
+            { 1, 2, 3, 4 },
+            { 5, 6, 7, 8 },
+            { 9, 10, 11, 12 }
+        };
 
         // Same as above, but this time we iterate a column instead (so non contiguous items)
         int i = 0;
@@ -236,11 +236,11 @@ public partial class Test_ArrayExtensions
     {
         int[,] array =
         {
-                { 1, 2, 3, 4 },
-                { 5, 6, 7, 8 },
-                { 9, 10, 11, 12 },
-                { 13, 14, 15, 16 }
-            };
+            { 1, 2, 3, 4 },
+            { 5, 6, 7, 8 },
+            { 9, 10, 11, 12 },
+            { 13, 14, 15, 16 }
+        };
 
         // Get a row and test the Clear method. Note that the Span2D<T> here is sliced
         // starting from the second column, so this method should clear the row from index 1.
@@ -248,11 +248,11 @@ public partial class Test_ArrayExtensions
 
         int[,] expected =
         {
-                { 1, 2, 3, 4 },
-                { 5, 0, 0, 0 },
-                { 9, 10, 11, 12 },
-                { 13, 14, 15, 16 }
-            };
+            { 1, 2, 3, 4 },
+            { 5, 0, 0, 0 },
+            { 9, 10, 11, 12 },
+            { 13, 14, 15, 16 }
+        };
 
         CollectionAssert.AreEqual(array, expected);
 
@@ -261,11 +261,11 @@ public partial class Test_ArrayExtensions
 
         expected = new[,]
         {
-                { 1, 2, 42, 4 },
-                { 5, 0, 42, 0 },
-                { 9, 10, 42, 12 },
-                { 13, 14, 42, 16 }
-            };
+            { 1, 2, 42, 4 },
+            { 5, 0, 42, 0 },
+            { 9, 10, 42, 12 },
+            { 13, 14, 42, 16 }
+        };
 
         CollectionAssert.AreEqual(array, expected);
 
@@ -305,11 +305,11 @@ public partial class Test_ArrayExtensions
 
         expected = new[,]
         {
-                { 1, 2, 42, 4 },
-                { 5, 0, 42, 0 },
-                { 99, 99, 99, 99 },
-                { 13, 14, 42, 16 }
-            };
+            { 1, 2, 42, 4 },
+            { 5, 0, 42, 0 },
+            { 99, 99, 99, 99 },
+            { 13, 14, 42, 16 }
+        };
 
         CollectionAssert.AreEqual(array, expected);
 
@@ -317,11 +317,11 @@ public partial class Test_ArrayExtensions
 
         expected = new[,]
         {
-                { 1, 2, 0, 4 },
-                { 5, 0, 0, 0 },
-                { 99, 99, 0, 99 },
-                { 13, 14, 0, 16 }
-            };
+            { 1, 2, 0, 4 },
+            { 5, 0, 0, 0 },
+            { 99, 99, 0, 99 },
+            { 13, 14, 0, 16 }
+        };
 
         CollectionAssert.AreEqual(array, expected);
     }
@@ -332,11 +332,11 @@ public partial class Test_ArrayExtensions
     {
         int[,] array =
         {
-                { 1, 2, 3, 4 },
-                { 5, 6, 7, 8 },
-                { 9, 10, 11, 12 },
-                { 13, 14, 15, 16 }
-            };
+            { 1, 2, 3, 4 },
+            { 5, 6, 7, 8 },
+            { 9, 10, 11, 12 },
+            { 13, 14, 15, 16 }
+        };
 
         // This test pretty much does the same things as the method above, but this time
         // using a source ReadOnlySpan2D<T>, so that the sequence type being tested is
@@ -377,11 +377,11 @@ public partial class Test_ArrayExtensions
     {
         int[,] array1 =
         {
-                { 1, 2, 3, 4 },
-                { 5, 6, 7, 8 },
-                { 9, 10, 11, 12 },
-                { 13, 14, 15, 16 }
-            };
+            { 1, 2, 3, 4 },
+            { 5, 6, 7, 8 },
+            { 9, 10, 11, 12 },
+            { 13, 14, 15, 16 }
+        };
 
         int[,] array2 = new int[4, 4];
 
@@ -399,11 +399,11 @@ public partial class Test_ArrayExtensions
 
         int[,] result =
         {
-                { 1, 5, 3, 4 },
-                { 0, 6, 0, 8 },
-                { 3, 7, 11, 12 },
-                { 0, 8, 0, 16 }
-            };
+            { 1, 5, 3, 4 },
+            { 0, 6, 0, 8 },
+            { 3, 7, 11, 12 },
+            { 0, 8, 0, 16 }
+        };
 
         CollectionAssert.AreEqual(array2, result);
 
@@ -413,11 +413,11 @@ public partial class Test_ArrayExtensions
 
         result = new[,]
         {
-                { 1, 5, 3, 4 },
-                { 2, 6, 0, 8 },
-                { 3, 7, 11, 12 },
-                { 4, 8, 0, 16 }
-            };
+            { 1, 5, 3, 4 },
+            { 2, 6, 0, 8 },
+            { 3, 7, 11, 12 },
+            { 4, 8, 0, 16 }
+        };
 
         CollectionAssert.AreEqual(array2, result);
 
@@ -454,10 +454,10 @@ public partial class Test_ArrayExtensions
     {
         int[,] array =
         {
-                { 1, 2, 3, 4 },
-                { 5, 6, 7, 8 },
-                { 9, 10, 11, 12 }
-            };
+            { 1, 2, 3, 4 },
+            { 5, 6, 7, 8 },
+            { 9, 10, 11, 12 }
+        };
 
         Span<int> span = array.AsSpan();
 

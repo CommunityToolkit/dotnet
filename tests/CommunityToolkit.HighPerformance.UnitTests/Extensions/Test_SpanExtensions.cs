@@ -56,18 +56,18 @@ public class Test_SpanExtensions
         static void Test<T>()
         {
             _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-              {
-                  T? a = default;
+                {
+                    T? a = default;
 
-                  _ = default(Span<T?>).IndexOf(ref a);
-              });
+                    _ = default(Span<T?>).IndexOf(ref a);
+                });
 
             _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-              {
-                  Span<T?> data = new T?[] { default };
+                {
+                    Span<T?> data = new T?[] { default };
 
-                  _ = data.Slice(1).IndexOf(ref data[0]);
-              });
+                    _ = data.Slice(1).IndexOf(ref data[0]);
+                });
         }
 
         Test<byte>();
@@ -108,28 +108,28 @@ public class Test_SpanExtensions
         {
             // Before start
             _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-              {
-                  Span<T?> data = new T?[] { default, default, default, default };
+                {
+                    Span<T?> data = new T?[] { default, default, default, default };
 
-                  _ = data.Slice(1).IndexOf(ref data[0]);
-              });
+                    _ = data.Slice(1).IndexOf(ref data[0]);
+                });
 
             // After end
             _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-              {
-                  Span<T?> data = new T?[] { default, default, default, default };
+                {
+                    Span<T?> data = new T?[] { default, default, default, default };
 
-                  _ = data.Slice(0, 2).IndexOf(ref data[2]);
-              });
+                    _ = data.Slice(0, 2).IndexOf(ref data[2]);
+                });
 
             // Local variable
             _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-              {
-                  T?[]? dummy = new T?[] { default };
-                  Span<T?> data = new T?[] { default, default, default, default };
+                {
+                    T?[]? dummy = new T?[] { default };
+                    Span<T?> data = new T?[] { default, default, default, default };
 
-                  _ = data.IndexOf(ref dummy[0]);
-              });
+                    _ = data.IndexOf(ref dummy[0]);
+                });
         }
 
         Test<byte>();

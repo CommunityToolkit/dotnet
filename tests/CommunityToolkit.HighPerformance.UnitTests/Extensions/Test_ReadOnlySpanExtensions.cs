@@ -76,11 +76,11 @@ public partial class Test_ReadOnlySpanExtensions
     {
         ReadOnlySpan<byte> table = new byte[]
         {
-                0xFF, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 1, 1, 0, 1, 1, 1, 1,
-                0, 1, 0, 1, 0, 1, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 1, 0, 1
+            0xFF, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 1, 1, 0, 1, 1, 1, 1,
+            0, 1, 0, 1, 0, 1, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 1, 0, 1
         };
 
         ref byte ri = ref Unsafe.AsRef(table.DangerousGetLookupReferenceAt(i));
@@ -104,18 +104,18 @@ public partial class Test_ReadOnlySpanExtensions
         static void Test<T>()
         {
             _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-              {
-                  T? a = default;
+                {
+                    T? a = default;
 
-                  _ = default(ReadOnlySpan<T?>).IndexOf(in a);
-              });
+                    _ = default(ReadOnlySpan<T?>).IndexOf(in a);
+                });
 
             _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-              {
-                  ReadOnlySpan<T?> data = new T?[] { default };
+                {
+                    ReadOnlySpan<T?> data = new T?[] { default };
 
-                  _ = data.Slice(1).IndexOf(in data[0]);
-              });
+                    _ = data.Slice(1).IndexOf(in data[0]);
+                });
         }
 
         Test<byte>();
@@ -156,28 +156,28 @@ public partial class Test_ReadOnlySpanExtensions
         {
             // Before start
             _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-              {
-                  ReadOnlySpan<T?> data = new T?[] { default, default, default, default };
+                {
+                    ReadOnlySpan<T?> data = new T?[] { default, default, default, default };
 
-                  _ = data.Slice(1).IndexOf(in data[0]);
-              });
+                    _ = data.Slice(1).IndexOf(in data[0]);
+                });
 
             // After end
             _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-              {
-                  ReadOnlySpan<T?> data = new T?[] { default, default, default, default };
+                {
+                    ReadOnlySpan<T?> data = new T?[] { default, default, default, default };
 
-                  _ = data.Slice(0, 2).IndexOf(in data[2]);
-              });
+                    _ = data.Slice(0, 2).IndexOf(in data[2]);
+                });
 
             // Local variable
             _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-              {
-                  T?[]? dummy = new T?[] { default };
-                  ReadOnlySpan<T?> data = new T?[] { default, default, default, default };
+                {
+                    T?[]? dummy = new T?[] { default };
+                    ReadOnlySpan<T?> data = new T?[] { default, default, default, default };
 
-                  _ = data.IndexOf(in dummy[0]);
-              });
+                    _ = data.IndexOf(in dummy[0]);
+                });
         }
 
         Test<byte>();
@@ -286,11 +286,11 @@ public partial class Test_ReadOnlySpanExtensions
 
         int[,] result =
         {
-                { 10, 11, 30, 40, 50 },
-                { 0, 22, 0, 0, 0 },
-                { 0, 33, 0, 0, 0 },
-                { 0, 44, 0, 0, 0 }
-            };
+            { 10, 11, 30, 40, 50 },
+            { 0, 22, 0, 0, 0 },
+            { 0, 33, 0, 0, 0 },
+            { 0, 44, 0, 0, 0 }
+        };
 
         CollectionAssert.AreEqual(array, result);
 

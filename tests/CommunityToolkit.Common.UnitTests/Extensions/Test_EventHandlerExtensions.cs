@@ -91,9 +91,9 @@ public class Test_EventHandlerExtensions
     {
         TaskCompletionSource<bool>[]? tsc = new[]
         {
-                new TaskCompletionSource<bool>(),
-                new TaskCompletionSource<bool>()
-            };
+            new TaskCompletionSource<bool>(),
+            new TaskCompletionSource<bool>()
+        };
 
         TestClass? testClass = new();
 

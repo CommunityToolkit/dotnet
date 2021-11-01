@@ -69,10 +69,10 @@ public class Test_AsyncRelayCommandOfT
 
         AsyncRelayCommand<string>? command = new(
             s =>
-        {
-            ticks = int.Parse(s!);
-            return Task.CompletedTask;
-        }, s => true);
+            {
+                ticks = int.Parse(s!);
+                return Task.CompletedTask;
+            }, s => true);
 
         Assert.IsTrue(command.CanExecute(null));
         Assert.IsTrue(command.CanExecute("1"));
@@ -94,10 +94,10 @@ public class Test_AsyncRelayCommandOfT
 
         AsyncRelayCommand<string>? command = new(
             s =>
-        {
-            ticks = int.Parse(s!);
-            return Task.CompletedTask;
-        }, s => false);
+            {
+                ticks = int.Parse(s!);
+                return Task.CompletedTask;
+            }, s => false);
 
         Assert.IsFalse(command.CanExecute(null));
         Assert.IsFalse(command.CanExecute("1"));
@@ -128,10 +128,10 @@ public class Test_AsyncRelayCommandOfT
 
         command = new AsyncRelayCommand<int>(
             i =>
-        {
-            n = i;
-            return Task.CompletedTask;
-        }, i => i > 0);
+            {
+                n = i;
+                return Task.CompletedTask;
+            }, i => i > 0);
 
         Assert.IsFalse(command.CanExecute(null));
         _ = Assert.ThrowsException<NullReferenceException>(() => command.Execute(null));

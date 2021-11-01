@@ -54,8 +54,8 @@ public class Test_Memory2DT
     {
         int[] array =
         {
-                1, 2, 3, 4, 5, 6
-            };
+            1, 2, 3, 4, 5, 6
+        };
 
         // Create a memory over a 1D array with 2D data in row-major order. This tests
         // the T[] array constructor for Memory2D<T> with custom size and pitch.
@@ -87,9 +87,9 @@ public class Test_Memory2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         // Test the constructor taking a T[,] array that is mapped directly (no slicing)
         Memory2D<int> memory2d = new(array);
@@ -112,9 +112,9 @@ public class Test_Memory2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         // Same as above, but this time we also slice the memory to test the other constructor
         Memory2D<int> memory2d = new(array, 0, 1, 2, 2);
@@ -135,15 +135,15 @@ public class Test_Memory2DT
     {
         int[,,] array =
         {
-                {
-                    { 1, 2, 3 },
-                    { 4, 5, 6 }
-                },
-                {
-                    { 10, 20, 30 },
-                    { 40, 50, 60 }
-                }
-            };
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 }
+            },
+            {
+                { 10, 20, 30 },
+                { 40, 50, 60 }
+            }
+        };
 
         // Same as above, but we test the constructor taking a layer within a 3D array
         Memory2D<int> memory2d = new(array, 1);
@@ -167,15 +167,15 @@ public class Test_Memory2DT
     {
         int[,,] array =
         {
-                {
-                    { 1, 2, 3 },
-                    { 4, 5, 6 }
-                },
-                {
-                    { 10, 20, 30 },
-                    { 40, 50, 60 }
-                }
-            };
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 }
+            },
+            {
+                { 10, 20, 30 },
+                { 40, 50, 60 }
+            }
+        };
 
         // Same as above, but we also slice the target layer in the 3D array. In this case we're creating
         // a Memory<int> instance from a slice in the layer at depth 1 in our 3D array, and with an area
@@ -209,8 +209,8 @@ public class Test_Memory2DT
     {
         Memory<int> memory = new[]
         {
-                1, 2, 3, 4, 5, 6
-            };
+            1, 2, 3, 4, 5, 6
+        };
 
         // We also test the constructor that takes an input Memory<T> instance.
         // This is only available on runtimes with fast Span<T> support, as otherwise
@@ -242,9 +242,9 @@ public class Test_Memory2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         Memory2D<int> memory2d = new(array);
 
@@ -289,9 +289,9 @@ public class Test_Memory2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         Memory2D<int> memory2d = new(array);
 
@@ -326,9 +326,9 @@ public class Test_Memory2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         Memory2D<int> memory2d = new(array);
 
@@ -422,9 +422,9 @@ public class Test_Memory2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         // Here we create a Memory2D<T> instance from a 2D array and then verify that
         // calling ToArray() creates an array that matches the contents of the first.
@@ -444,9 +444,9 @@ public class Test_Memory2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         // Same as above, but with a sliced Memory2D<T> instance
         Memory2D<int> memory2d = new(array, 0, 0, 2, 2);
@@ -458,9 +458,9 @@ public class Test_Memory2DT
 
         int[,] expected =
         {
-                { 1, 2 },
-                { 4, 5 }
-            };
+            { 1, 2 },
+            { 4, 5 }
+        };
 
         CollectionAssert.AreEqual(expected, copy);
     }
@@ -471,9 +471,9 @@ public class Test_Memory2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         // Here we want to verify that the Memory2D<T>.Equals method works correctly. This is true
         // when the wrapped instance is the same, and the various internal offsets and sizes match.
@@ -500,9 +500,9 @@ public class Test_Memory2DT
 
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         Memory2D<int> memory2d = new(array);
 
@@ -524,9 +524,9 @@ public class Test_Memory2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         Memory2D<int> memory2d = new(array);
 

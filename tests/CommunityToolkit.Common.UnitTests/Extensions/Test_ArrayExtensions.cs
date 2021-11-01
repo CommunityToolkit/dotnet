@@ -18,10 +18,10 @@ public class Test_ArrayExtensions
     {
         int[][] array =
         {
-                new int[] { 5, 2, 4 },
-                new int[] { 6, 3 },
-                new int[] { 7 }
-            };
+            new int[] { 5, 2, 4 },
+            new int[] { 6, 3 },
+            new int[] { 7 }
+        };
 
         int[]? col = array.GetColumn(1).ToArray();
 
@@ -34,20 +34,20 @@ public class Test_ArrayExtensions
     {
         int[][] array =
         {
-                new int[] { 5, 2, 4 },
-                new int[] { 6, 3 },
-                new int[] { 7 }
-            };
+            new int[] { 5, 2, 4 },
+            new int[] { 6, 3 },
+            new int[] { 7 }
+        };
 
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-          {
-              _ = array.GetColumn(-1).ToArray();
-          });
+            {
+                _ = array.GetColumn(-1).ToArray();
+            });
 
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-          {
-              _ = array.GetColumn(3).ToArray();
-          });
+            {
+                _ = array.GetColumn(3).ToArray();
+            });
     }
 
     [TestCategory("ArrayExtensions")]
@@ -56,10 +56,10 @@ public class Test_ArrayExtensions
     {
         int[,] array =
         {
-                { 5, 2,  4 },
-                { 6, 3, -1 },
-                { 7, 0,  9 }
-            };
+            { 5, 2,  4 },
+            { 6, 3, -1 },
+            { 7, 0,  9 }
+        };
 
         string value = array.ToArrayString();
 
@@ -74,10 +74,10 @@ public class Test_ArrayExtensions
     {
         int[][] array =
         {
-                new int[] { 5, 2 },
-                new int[] { 6, 3, -1, 2 },
-                new int[] { 7, 0,  9 }
-            };
+            new int[] { 5, 2 },
+            new int[] { 6, 3, -1, 2 },
+            new int[] { 7, 0,  9 }
+        };
 
         string value = array.ToArrayString();
 

@@ -45,8 +45,8 @@ public class Test_ReadOnlyMemory2DT
     {
         int[] array =
         {
-                1, 2, 3, 4, 5, 6
-            };
+            1, 2, 3, 4, 5, 6
+        };
 
         ReadOnlyMemory2D<int> memory2d = new(array, 1, 2, 2, 1);
 
@@ -76,9 +76,9 @@ public class Test_ReadOnlyMemory2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlyMemory2D<int> memory2d = new(array);
 
@@ -98,9 +98,9 @@ public class Test_ReadOnlyMemory2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlyMemory2D<int> memory2d = new(array, 0, 1, 2, 2);
 
@@ -122,15 +122,15 @@ public class Test_ReadOnlyMemory2DT
     {
         int[,,] array =
         {
-                {
-                    { 1, 2, 3 },
-                    { 4, 5, 6 }
-                },
-                {
-                    { 10, 20, 30 },
-                    { 40, 50, 60 }
-                }
-            };
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 }
+            },
+            {
+                { 10, 20, 30 },
+                { 40, 50, 60 }
+            }
+        };
 
         ReadOnlyMemory2D<int> memory2d = new(array, 1);
 
@@ -152,15 +152,15 @@ public class Test_ReadOnlyMemory2DT
     {
         int[,,] array =
         {
-                {
-                    { 1, 2, 3 },
-                    { 4, 5, 6 }
-                },
-                {
-                    { 10, 20, 30 },
-                    { 40, 50, 60 }
-                }
-            };
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 }
+            },
+            {
+                { 10, 20, 30 },
+                { 40, 50, 60 }
+            }
+        };
 
         ReadOnlyMemory2D<int> memory2d = new(array, 1, 0, 1, 2, 2);
 
@@ -189,8 +189,8 @@ public class Test_ReadOnlyMemory2DT
     {
         ReadOnlyMemory<int> memory = new[]
         {
-                1, 2, 3, 4, 5, 6
-            };
+            1, 2, 3, 4, 5, 6
+        };
 
         ReadOnlyMemory2D<int> memory2d = memory.AsMemory2D(1, 2, 2, 1);
 
@@ -218,9 +218,9 @@ public class Test_ReadOnlyMemory2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlyMemory2D<int> memory2d = new(array);
 
@@ -260,9 +260,9 @@ public class Test_ReadOnlyMemory2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlyMemory2D<int> memory2d = new(array);
 
@@ -296,9 +296,9 @@ public class Test_ReadOnlyMemory2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlyMemory2D<int> memory2d = new(array);
 
@@ -380,9 +380,9 @@ public class Test_ReadOnlyMemory2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlyMemory2D<int> memory2d = new(array);
 
@@ -400,9 +400,9 @@ public class Test_ReadOnlyMemory2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlyMemory2D<int> memory2d = new(array, 0, 0, 2, 2);
 
@@ -413,9 +413,9 @@ public class Test_ReadOnlyMemory2DT
 
         int[,] expected =
         {
-                { 1, 2 },
-                { 4, 5 }
-            };
+            { 1, 2 },
+            { 4, 5 }
+        };
 
         CollectionAssert.AreEqual(expected, copy);
     }
@@ -426,9 +426,9 @@ public class Test_ReadOnlyMemory2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlyMemory2D<int> readOnlyMemory2D = new(array);
 
@@ -451,9 +451,9 @@ public class Test_ReadOnlyMemory2DT
 
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlyMemory2D<int> memory2d = new(array);
 
@@ -473,9 +473,9 @@ public class Test_ReadOnlyMemory2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlyMemory2D<int> memory2d = new(array);
 

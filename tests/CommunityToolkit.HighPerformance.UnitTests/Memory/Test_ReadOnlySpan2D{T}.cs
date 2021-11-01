@@ -101,8 +101,8 @@ public class Test_ReadOnlySpan2DT
     {
         int[] array =
         {
-                1, 2, 3, 4, 5, 6
-            };
+            1, 2, 3, 4, 5, 6
+        };
 
         ReadOnlySpan2D<int> span2d = new(array, 1, 2, 2, 1);
 
@@ -129,9 +129,9 @@ public class Test_ReadOnlySpan2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlySpan2D<int> span2d = new(array);
 
@@ -151,9 +151,9 @@ public class Test_ReadOnlySpan2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlySpan2D<int> span2d = new(array, 0, 1, 2, 2);
 
@@ -175,15 +175,15 @@ public class Test_ReadOnlySpan2DT
     {
         int[,,] array =
         {
-                {
-                    { 1, 2, 3 },
-                    { 4, 5, 6 }
-                },
-                {
-                    { 10, 20, 30 },
-                    { 40, 50, 60 }
-                }
-            };
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 }
+            },
+            {
+                { 10, 20, 30 },
+                { 40, 50, 60 }
+            }
+        };
 
         ReadOnlySpan2D<int> span2d = new(array, 1);
 
@@ -205,15 +205,15 @@ public class Test_ReadOnlySpan2DT
     {
         int[,,] array =
         {
-                {
-                    { 1, 2, 3 },
-                    { 4, 5, 6 }
-                },
-                {
-                    { 10, 20, 30 },
-                    { 40, 50, 60 }
-                }
-            };
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 }
+            },
+            {
+                { 10, 20, 30 },
+                { 40, 50, 60 }
+            }
+        };
 
         ReadOnlySpan2D<int> span2d = new(array, 1, 0, 1, 2, 2);
 
@@ -238,9 +238,9 @@ public class Test_ReadOnlySpan2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlySpan2D<int> span2d = new(array);
 
@@ -259,9 +259,9 @@ public class Test_ReadOnlySpan2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlySpan2D<int> span2d = new(array, 0, 1, 2, 2);
 
@@ -282,9 +282,9 @@ public class Test_ReadOnlySpan2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlySpan2D<int> span2d = new(array);
 
@@ -303,9 +303,9 @@ public class Test_ReadOnlySpan2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlySpan2D<int> span2d = new(array, 0, 1, 2, 2);
 
@@ -315,9 +315,9 @@ public class Test_ReadOnlySpan2DT
 
         int[,] expected =
         {
-                { 2, 3 },
-                { 5, 6 }
-            };
+            { 2, 3 },
+            { 5, 6 }
+        };
 
         CollectionAssert.AreEqual(target, expected);
 
@@ -330,9 +330,9 @@ public class Test_ReadOnlySpan2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlySpan2D<int> span2d = new(array);
 
@@ -348,9 +348,9 @@ public class Test_ReadOnlySpan2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlySpan2D<int> span2d = new(array);
 
@@ -370,9 +370,9 @@ public class Test_ReadOnlySpan2DT
 
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlySpan2D<int> span2d = new(array);
 
@@ -391,9 +391,9 @@ public class Test_ReadOnlySpan2DT
 
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlySpan2D<int> span2d = new(array);
 
@@ -491,9 +491,9 @@ public class Test_ReadOnlySpan2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlySpan2D<int> span2d = new(array);
 
@@ -529,9 +529,9 @@ public class Test_ReadOnlySpan2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlySpan2D<int> span2d = new(array);
 
@@ -566,9 +566,9 @@ public class Test_ReadOnlySpan2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlySpan2D<int> span2d = new(array);
 
@@ -636,9 +636,9 @@ public class Test_ReadOnlySpan2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlySpan2D<int> span2d = new(array);
 
@@ -660,9 +660,9 @@ public class Test_ReadOnlySpan2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlySpan2D<int> span2d = new(array, 0, 0, 2, 2);
 
@@ -678,9 +678,9 @@ public class Test_ReadOnlySpan2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlySpan2D<int> span2d = new(array);
 
@@ -698,9 +698,9 @@ public class Test_ReadOnlySpan2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlySpan2D<int> span2d = new(array, 0, 0, 2, 2);
 
@@ -711,9 +711,9 @@ public class Test_ReadOnlySpan2DT
 
         int[,] expected =
         {
-                { 1, 2 },
-                { 4, 5 }
-            };
+            { 1, 2 },
+            { 4, 5 }
+        };
 
         CollectionAssert.AreEqual(expected, copy);
     }
@@ -725,9 +725,9 @@ public class Test_ReadOnlySpan2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlySpan2D<int> span2d = new(array);
 
@@ -741,9 +741,9 @@ public class Test_ReadOnlySpan2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlySpan2D<int> span2d = new(array);
 
@@ -756,9 +756,9 @@ public class Test_ReadOnlySpan2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlySpan2D<int> span2d = new(array);
 
@@ -775,9 +775,9 @@ public class Test_ReadOnlySpan2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlySpan2D<int> span2d_1 = new(array);
         ReadOnlySpan2D<int> span2d_2 = new(array);
@@ -798,9 +798,9 @@ public class Test_ReadOnlySpan2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         ReadOnlySpan2D<int> span2d_1 = array;
         ReadOnlySpan2D<int> span2d_2 = new(array);
@@ -814,9 +814,9 @@ public class Test_ReadOnlySpan2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         int i = 0;
         foreach (ref readonly int value in new ReadOnlySpan2D<int>(array).GetRow(1))
@@ -874,9 +874,9 @@ public class Test_ReadOnlySpan2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         int i = 0;
         foreach (ref readonly int value in new ReadOnlySpan2D<int>(array).GetColumn(1))
@@ -932,9 +932,9 @@ public class Test_ReadOnlySpan2DT
     {
         int[,] array =
         {
-                { 1, 2, 3 },
-                { 4, 5, 6 }
-            };
+            { 1, 2, 3 },
+            { 4, 5, 6 }
+        };
 
         int[] result = new int[4];
         int i = 0;
@@ -991,11 +991,11 @@ public class Test_ReadOnlySpan2DT
     {
         int[,] array1 =
         {
-                { 1, 2, 3, 4 },
-                { 5, 6, 7, 8 },
-                { 9, 10, 11, 12 },
-                { 13, 14, 15, 16 }
-            };
+            { 1, 2, 3, 4 },
+            { 5, 6, 7, 8 },
+            { 9, 10, 11, 12 },
+            { 13, 14, 15, 16 }
+        };
 
         ReadOnlySpan2D<int> span1 = array1;
 
@@ -1015,11 +1015,11 @@ public class Test_ReadOnlySpan2DT
 
         int[,] result =
         {
-                { 1, 5, 3, 4 },
-                { 0, 6, 0, 8 },
-                { 3, 7, 11, 12 },
-                { 0, 8, 0, 16 }
-            };
+            { 1, 5, 3, 4 },
+            { 0, 6, 0, 8 },
+            { 3, 7, 11, 12 },
+            { 0, 8, 0, 16 }
+        };
 
         CollectionAssert.AreEqual(array2, result);
 
@@ -1029,11 +1029,11 @@ public class Test_ReadOnlySpan2DT
 
         result = new[,]
         {
-                { 1, 5, 3, 4 },
-                { 2, 6, 0, 8 },
-                { 3, 7, 11, 12 },
-                { 4, 8, 0, 16 }
-            };
+            { 1, 5, 3, 4 },
+            { 2, 6, 0, 8 },
+            { 3, 7, 11, 12 },
+            { 4, 8, 0, 16 }
+        };
 
         CollectionAssert.AreEqual(array2, result);
 
@@ -1047,11 +1047,11 @@ public class Test_ReadOnlySpan2DT
     {
         int[,] array1 =
         {
-                { 1, 2, 3, 4 },
-                { 5, 6, 7, 8 },
-                { 9, 10, 11, 12 },
-                { 13, 14, 15, 16 }
-            };
+            { 1, 2, 3, 4 },
+            { 5, 6, 7, 8 },
+            { 9, 10, 11, 12 },
+            { 13, 14, 15, 16 }
+        };
 
         int[] result = { 5, 6, 7, 8 };
 
