@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Title>Windows Community Toolkit - Diagnostics (.NET Standard)</Title>
+    <Title>.NET Community Toolkit - Diagnostics</Title>
     <Description>
-      This package includes .NET Standard code only helpers such as:
+      This package includes .NET helpers such as:
         - Guard: Helper methods to verify conditions when running code.
         - ThrowHelper: Helper methods to efficiently throw exceptions.
     </Description>

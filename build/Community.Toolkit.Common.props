@@ -3,15 +3,15 @@
   <PropertyGroup>
     <Company>.NET Foundation</Company>
     <Authors>Microsoft.Toolkit</Authors>
-    <Product>Windows Community Toolkit</Product>
-    <CommonTags>Windows;Community;Toolkit;WCT</CommonTags>
+    <Product>.NET Community Toolkit</Product>
+    <CommonTags>DotNet;Community;Toolkit</CommonTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Copyright>(c) .NET Foundation and Contributors.  All rights reserved.</Copyright>
-    <PackageProjectUrl>https://github.com/CommunityToolkit/WindowsCommunityToolkit</PackageProjectUrl>
-    <PackageReleaseNotes>https://github.com/CommunityToolkit/WindowsCommunityToolkit/releases</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/CommunityToolkit/dotnet</PackageProjectUrl>
+    <PackageReleaseNotes>https://github.com/CommunityToolkit/dotnet/releases</PackageReleaseNotes>
     <PackageIcon>Icon.png</PackageIcon>
-    <PackageIconUrl>https://raw.githubusercontent.com/CommunityToolkit/WindowsCommunityToolkit/main/build/nuget.png</PackageIconUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/CommunityToolkit/dotnet/main/build/nuget.png</PackageIconUrl>
   </PropertyGroup>
 
   <PropertyGroup>

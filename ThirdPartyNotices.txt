@@ -1,4 +1,4 @@
-Windows-Community-Toolkit
+.NET-Community-Toolkit
 
 THIRD-PARTY SOFTWARE NOTICES AND INFORMATION
 Do Not Translate or Localize

@@ -10,7 +10,7 @@
 
 ## 🙌 Getting Started
 
-Please read the [Getting Started with the Windows Community Toolkit](https://docs.microsoft.com/windows/communitytoolkit/getting-started) page for more detailed information about using the toolkit.
+Please read the [Getting Started with the .NET Community Toolkit](https://docs.microsoft.com/windows/communitytoolkit/getting-started) page for more detailed information about using the toolkit.
 
 ## 📃 Documentation
 
@@ -18,11 +18,11 @@ All documentation for the toolkit is hosted on [Microsoft Docs](https://docs.mic
 
 ## 🚀 Contribution
 
-Do you want to contribute? Check out our [Windows Community Toolkit Wiki](https://aka.ms/wct/wiki) page to learn more about contribution and guidelines.
+Do you want to contribute? Check out our [.NET Community Toolkit Wiki](https://aka.ms/wct/wiki) page to learn more about contribution and guidelines.
 
 ## 📦 NuGet Packages
 
-NuGet is a standard package manager for .NET applications which is built into Visual Studio. When you open solution in Visual Studio, choose the *Tools* menu > *NuGet Package Manager* > *Manage NuGet packages for solution…* Enter one of the package names mentioned in [Windows Community Toolkit NuGet Packages](https://docs.microsoft.com/windows/communitytoolkit/nuget-packages) table to search for it online.
+NuGet is a standard package manager for .NET applications which is built into Visual Studio. When you open solution in Visual Studio, choose the *Tools* menu > *NuGet Package Manager* > *Manage NuGet packages for solution…* Enter one of the package names mentioned in [.NET Community Toolkit NuGet Packages](https://docs.microsoft.com/windows/communitytoolkit/nuget-packages) table to search for it online.
 
 ## 🌍 Roadmap
 

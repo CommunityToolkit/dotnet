@@ -1,4 +1,4 @@
-# Windows Community Toolkit
+# .NET Community Toolkit
 
 Copyright © .NET Foundation and Contributors
 

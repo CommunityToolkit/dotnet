@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Title>Windows Community Toolkit - High Performance (.NET Standard)</Title>
+    <Title>.NET Community Toolkit - High Performance</Title>
     <Description>
-      This package includes high performance .NET Standard helpers such as:
+      This package includes high performance .NET helpers such as:
       - Memory2D&lt;T&gt; and Span2D&lt;T&gt;: two types providing fast and allocation-free abstraction over 2D memory areas.
       - ArrayPoolBufferWriter&lt;T&gt;: an IBufferWriter&lt;T&gt; implementation using pooled arrays, which also supports IMemoryOwner&lt;T&gt;.
       - MemoryBufferWriter&lt;T&gt;: an IBufferWriter&lt;T&gt;: implementation that can wrap external Memory&lt;T&gt;: instances.

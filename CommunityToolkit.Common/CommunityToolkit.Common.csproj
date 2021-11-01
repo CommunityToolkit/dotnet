@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Title>Windows Community Toolkit - Common (.NET Standard)</Title>
+    <Title>.NET Community Toolkit - Common</Title>
     <Description>
-      This package includes .NET Standard code only helpers such as:
+      This package includes .NET helpers such as:
       - IncrementalLoadingCollection: Simplifies the definition and usage of collections whose items can be loaded incrementally only when needed by the view.
       - String extensions and array extensions: These extensions make working with string and arrays easier.
     </Description>
