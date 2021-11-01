@@ -3,14 +3,12 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommunityToolkit.Mvvm.UnitTests;
 
 [TestClass]
-[SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1649", Justification = "Generic type")]
 public class Test_RelayCommandOfT
 {
     [TestCategory("Mvvm")]

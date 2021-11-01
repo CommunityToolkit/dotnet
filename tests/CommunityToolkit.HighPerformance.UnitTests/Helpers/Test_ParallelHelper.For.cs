@@ -29,7 +29,7 @@ public partial class Test_ParallelHelper
 
             ParallelHelper.For(0, data.Length, new Assigner(data.Length, data.Ptr));
 
-            foreach (CommunityToolkit.HighPerformance.Enumerables.SpanEnumerable<int>.Item item in data.GetSpan().Enumerate())
+            foreach (HighPerformance.Enumerables.SpanEnumerable<int>.Item item in data.GetSpan().Enumerate())
             {
                 if (item.Index != item.Value)
                 {
@@ -68,7 +68,7 @@ public partial class Test_ParallelHelper
 
             ParallelHelper.For(..data.Length, new Assigner(data.Length, data.Ptr));
 
-            foreach (CommunityToolkit.HighPerformance.Enumerables.SpanEnumerable<int>.Item item in data.GetSpan().Enumerate())
+            foreach (HighPerformance.Enumerables.SpanEnumerable<int>.Item item in data.GetSpan().Enumerate())
             {
                 if (item.Index != item.Value)
                 {

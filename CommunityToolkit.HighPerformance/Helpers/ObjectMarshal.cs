@@ -82,9 +82,7 @@ public static class ObjectMarshal
     private sealed class RawObjectData
     {
         [FieldOffset(0)]
-#pragma warning disable SA1401 // Fields should be private
         public byte Data;
-#pragma warning restore SA1401
     }
 
     /// <summary>

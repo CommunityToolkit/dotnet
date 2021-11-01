@@ -5,14 +5,12 @@
 #if NETCOREAPP3_1 || NET5_0
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommunityToolkit.HighPerformance.UnitTests;
 
 [TestClass]
-[SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1649", Justification = "Test class for generic type")]
 public class Test_NullableRefOfT
 {
     [TestCategory("NullableRefOfT")]

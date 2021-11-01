@@ -18,7 +18,7 @@ public static partial class Guard
     private static partial class ThrowHelper
     {
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsDefault{T}"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsDefault{T}"/> fails.
         /// </summary>
         /// <typeparam name="T">The type of <see langword="struct"/> value type being tested.</typeparam>
         [DoesNotReturn]
@@ -29,7 +29,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsNotDefault{T}"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsNotDefault{T}"/> fails.
         /// </summary>
         /// <typeparam name="T">The type of <see langword="struct"/> value type being tested.</typeparam>
         [DoesNotReturn]
@@ -40,7 +40,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsEqualTo{T}"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsEqualTo{T}"/> fails.
         /// </summary>
         /// <typeparam name="T">The type of values being tested.</typeparam>
         [DoesNotReturn]
@@ -50,7 +50,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsNotEqualTo{T}"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsNotEqualTo{T}"/> fails.
         /// </summary>
         /// <typeparam name="T">The type of values being tested.</typeparam>
         [DoesNotReturn]
@@ -60,7 +60,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsBitwiseEqualTo{T}"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsBitwiseEqualTo{T}"/> fails.
         /// </summary>
         /// <typeparam name="T">The type of input values being compared.</typeparam>
         [DoesNotReturn]
@@ -71,7 +71,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentOutOfRangeException"/> when <see cref="Guard.IsLessThan{T}"/> fails.
+        /// Throws an <see cref="ArgumentOutOfRangeException"/> when <see cref="IsLessThan{T}"/> fails.
         /// </summary>
         /// <typeparam name="T">The type of values being tested.</typeparam>
         [DoesNotReturn]
@@ -81,7 +81,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentOutOfRangeException"/> when <see cref="Guard.IsLessThanOrEqualTo{T}"/> fails.
+        /// Throws an <see cref="ArgumentOutOfRangeException"/> when <see cref="IsLessThanOrEqualTo{T}"/> fails.
         /// </summary>
         /// <typeparam name="T">The type of values being tested.</typeparam>
         [DoesNotReturn]
@@ -91,7 +91,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentOutOfRangeException"/> when <see cref="Guard.IsGreaterThan{T}"/> fails.
+        /// Throws an <see cref="ArgumentOutOfRangeException"/> when <see cref="IsGreaterThan{T}"/> fails.
         /// </summary>
         /// <typeparam name="T">The type of values being tested.</typeparam>
         [DoesNotReturn]
@@ -101,7 +101,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentOutOfRangeException"/> when <see cref="Guard.IsGreaterThanOrEqualTo{T}"/> fails.
+        /// Throws an <see cref="ArgumentOutOfRangeException"/> when <see cref="IsGreaterThanOrEqualTo{T}"/> fails.
         /// </summary>
         /// <typeparam name="T">The type of values being tested.</typeparam>
         [DoesNotReturn]
@@ -111,7 +111,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentOutOfRangeException"/> when <see cref="Guard.IsInRange{T}"/> fails.
+        /// Throws an <see cref="ArgumentOutOfRangeException"/> when <see cref="IsInRange{T}"/> fails.
         /// </summary>
         /// <typeparam name="T">The type of values being tested.</typeparam>
         [DoesNotReturn]
@@ -121,7 +121,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentOutOfRangeException"/> when <see cref="Guard.IsInRange{T}"/> fails.
+        /// Throws an <see cref="ArgumentOutOfRangeException"/> when <see cref="IsInRange{T}"/> fails.
         /// </summary>
         /// <typeparam name="T">The type of values being tested.</typeparam>
         [DoesNotReturn]
@@ -131,7 +131,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentOutOfRangeException"/> when <see cref="Guard.IsBetween{T}"/> fails.
+        /// Throws an <see cref="ArgumentOutOfRangeException"/> when <see cref="IsBetween{T}"/> fails.
         /// </summary>
         /// <typeparam name="T">The type of values being tested.</typeparam>
         [DoesNotReturn]
@@ -141,7 +141,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentOutOfRangeException"/> when <see cref="Guard.IsNotBetween{T}"/> fails.
+        /// Throws an <see cref="ArgumentOutOfRangeException"/> when <see cref="IsNotBetween{T}"/> fails.
         /// </summary>
         /// <typeparam name="T">The type of values being tested.</typeparam>
         [DoesNotReturn]
@@ -151,7 +151,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentOutOfRangeException"/> when <see cref="Guard.IsBetweenOrEqualTo{T}"/> fails.
+        /// Throws an <see cref="ArgumentOutOfRangeException"/> when <see cref="IsBetweenOrEqualTo{T}"/> fails.
         /// </summary>
         /// <typeparam name="T">The type of values being tested.</typeparam>
         [DoesNotReturn]
@@ -161,7 +161,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentOutOfRangeException"/> when <see cref="Guard.IsNotBetweenOrEqualTo{T}"/> fails.
+        /// Throws an <see cref="ArgumentOutOfRangeException"/> when <see cref="IsNotBetweenOrEqualTo{T}"/> fails.
         /// </summary>
         /// <typeparam name="T">The type of values being tested.</typeparam>
         [DoesNotReturn]

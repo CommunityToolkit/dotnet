@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -182,14 +181,13 @@ public partial class Test_MemoryStream
 
     [TestCategory("MemoryStream")]
     [TestMethod]
-    [SuppressMessage("StyleCop.CSharp.LayoutRules", "SA1500", Justification = "Array initialization")]
     public void Test_MemoryStream_ReadWriteByte()
     {
         Stream stream = new byte[4].AsMemory().AsStream();
 
         ReadOnlySpan<byte> data = stackalloc byte[] { 1, 128, 255, 32 };
 
-        foreach (CommunityToolkit.HighPerformance.Enumerables.ReadOnlySpanEnumerable<byte>.Item item in data.Enumerate())
+        foreach (HighPerformance.Enumerables.ReadOnlySpanEnumerable<byte>.Item item in data.Enumerate())
         {
             Assert.AreEqual(stream.Position, item.Index);
 

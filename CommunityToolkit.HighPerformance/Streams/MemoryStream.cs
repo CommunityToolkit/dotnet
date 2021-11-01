@@ -38,9 +38,9 @@ internal static partial class MemoryStream
             return new MemoryStream<ArrayOwner>(arraySpanSource, isReadOnly);
         }
 
-        if (MemoryMarshal.TryGetMemoryManager<byte, MemoryManager<byte>>(memory, out MemoryManager<byte>? memoryManager, out int start, out int length))
+        if (MemoryMarshal.TryGetMemoryManager(memory, out MemoryManager<byte>? memoryManager, out int start, out int length))
         {
-            MemoryManagerOwner memoryManagerSpanSource = new(memoryManager, start, length);
+            MemoryManagerOwner memoryManagerSpanSource = new(memoryManager!, start, length);
 
             return new MemoryStream<MemoryManagerOwner>(memoryManagerSpanSource, isReadOnly);
         }

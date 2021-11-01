@@ -148,7 +148,7 @@ public class Test_SpanExtensions
 
         int i = 0;
 
-        foreach (CommunityToolkit.HighPerformance.Enumerables.SpanEnumerable<int>.Item item in data.Enumerate())
+        foreach (HighPerformance.Enumerables.SpanEnumerable<int>.Item item in data.Enumerate())
         {
             Assert.IsTrue(Unsafe.AreSame(ref data[i], ref item.Value));
             Assert.AreEqual(i, item.Index);
@@ -163,7 +163,7 @@ public class Test_SpanExtensions
     {
         Span<int> data = Array.Empty<int>();
 
-        foreach (CommunityToolkit.HighPerformance.Enumerables.SpanEnumerable<int>.Item item in data.Enumerate())
+        foreach (HighPerformance.Enumerables.SpanEnumerable<int>.Item item in data.Enumerate())
         {
             Assert.Fail("Empty source sequence");
         }

@@ -93,7 +93,6 @@ public static partial class ArrayExtensions
         private sealed class RawArray2DData
         {
 #pragma warning disable CS0649 // Unassigned fields
-#pragma warning disable SA1401 // Fields should be private
             public IntPtr Length;
             public int Height;
             public int Width;
@@ -101,7 +100,6 @@ public static partial class ArrayExtensions
             public int WidthLowerBound;
             public byte Data;
 #pragma warning restore CS0649
-#pragma warning restore SA1401
         }
 #endif
 

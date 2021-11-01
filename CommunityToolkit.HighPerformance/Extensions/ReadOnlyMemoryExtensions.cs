@@ -113,7 +113,7 @@ public static class ReadOnlyMemoryExtensions
             return new ArrayMemoryManager<TFrom, TTo>(segment.Array!, segment.Offset, segment.Count).Memory;
         }
 
-        if (MemoryMarshal.TryGetMemoryManager<TFrom, MemoryManager<TFrom>>(memory, out MemoryManager<TFrom>? memoryManager, out start, out length))
+        if (MemoryMarshal.TryGetMemoryManager(memory, out MemoryManager<TFrom>? memoryManager, out start, out length))
         {
             // If the memory manager is the one resulting from a previous cast, we can use it directly to retrieve
             // a new manager for the target type that wraps the original data store, instead of creating one that
@@ -124,7 +124,7 @@ public static class ReadOnlyMemoryExtensions
                 return wrappingManager.GetMemory<TTo>(start, length);
             }
 
-            return new ProxyMemoryManager<TFrom, TTo>(memoryManager, start, length).Memory;
+            return new ProxyMemoryManager<TFrom, TTo>(memoryManager!, start, length).Memory;
         }
 
         // Throws when the memory instance has an unsupported backing store

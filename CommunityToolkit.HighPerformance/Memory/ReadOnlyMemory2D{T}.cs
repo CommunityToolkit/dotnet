@@ -493,7 +493,7 @@ public readonly struct ReadOnlyMemory2D<T> : IEquatable<ReadOnlyMemory2D<T>>
                 this.instance = array;
                 this.offset = ObjectMarshal.DangerousGetObjectDataByteOffset(array, ref array.DangerousGetReferenceAt(segment.Offset + offset));
             }
-            else if (MemoryMarshal.TryGetMemoryManager<T, MemoryManager<T>>(memory, out MemoryManager<T>? memoryManager, out int memoryManagerStart, out _))
+            else if (MemoryMarshal.TryGetMemoryManager(memory, out MemoryManager<T>? memoryManager, out int memoryManagerStart, out _))
             {
                 this.instance = memoryManager;
                 this.offset = (nint)(uint)(memoryManagerStart + offset);

@@ -18,7 +18,7 @@ public static partial class Guard
     private static partial class ThrowHelper
     {
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsNotEmpty{T}(Span{T},string)"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsNotEmpty{T}(Span{T},string)"/> fails.
         /// </summary>
         /// <typeparam name="T">The item of items in the input <see cref="Span{T}"/> instance.</typeparam>
         /// <remarks>This method is needed because <see cref="Span{T}"/> can't be used as a generic type parameter.</remarks>
@@ -29,7 +29,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsNotEmpty{T}(ReadOnlySpan{T},string)"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsNotEmpty{T}(ReadOnlySpan{T},string)"/> fails.
         /// </summary>
         /// <typeparam name="T">The item of items in the input <see cref="ReadOnlySpan{T}"/> instance.</typeparam>
         /// <remarks>This method is needed because <see cref="ReadOnlySpan{T}"/> can't be used as a generic type parameter.</remarks>
@@ -40,7 +40,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsNotEmpty{T}(T[],string)"/> (or an overload) fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsNotEmpty{T}(T[],string)"/> (or an overload) fails.
         /// </summary>
         /// <typeparam name="T">The item of items in the input collection.</typeparam>
         [DoesNotReturn]

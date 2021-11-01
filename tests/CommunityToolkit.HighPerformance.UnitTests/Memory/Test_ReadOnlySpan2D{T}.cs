@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using CommunityToolkit.HighPerformance.Enumerables;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -16,7 +15,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests;
 * All the tests here mirror the ones for ReadOnlySpan2D<T>. See comments
 * in the test file for Span2D<T> for more info on these tests. */
 [TestClass]
-[SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1649", Justification = "Test class for generic type")]
 public class Test_ReadOnlySpan2DT
 {
     [TestCategory("ReadOnlySpan2DT")]

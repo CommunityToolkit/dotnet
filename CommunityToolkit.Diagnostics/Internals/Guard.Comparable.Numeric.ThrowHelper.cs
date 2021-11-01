@@ -18,7 +18,7 @@ public static partial class Guard
     private static partial class ThrowHelper
     {
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsCloseTo(int,int,uint,string)"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsCloseTo(int,int,uint,string)"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsCloseTo(int value, int target, uint delta, string name)
@@ -27,7 +27,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsNotCloseTo(int,int,uint,string)"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsNotCloseTo(int,int,uint,string)"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsNotCloseTo(int value, int target, uint delta, string name)
@@ -36,7 +36,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsCloseTo(long,long,ulong,string)"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsCloseTo(long,long,ulong,string)"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsCloseTo(long value, long target, ulong delta, string name)
@@ -45,7 +45,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsNotCloseTo(long,long,ulong,string)"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsNotCloseTo(long,long,ulong,string)"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsNotCloseTo(long value, long target, ulong delta, string name)
@@ -54,7 +54,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsCloseTo(float,float,float,string)"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsCloseTo(float,float,float,string)"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsCloseTo(float value, float target, float delta, string name)
@@ -63,7 +63,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsNotCloseTo(float,float,float,string)"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsNotCloseTo(float,float,float,string)"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsNotCloseTo(float value, float target, float delta, string name)
@@ -72,7 +72,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsCloseTo(double,double,double,string)"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsCloseTo(double,double,double,string)"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsCloseTo(double value, double target, double delta, string name)
@@ -81,7 +81,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsNotCloseTo(double,double,double,string)"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsNotCloseTo(double,double,double,string)"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsNotCloseTo(double value, double target, double delta, string name)
@@ -90,7 +90,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsCloseTo(nint,nint,nuint,string)"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsCloseTo(nint,nint,nuint,string)"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsCloseTo(nint value, nint target, nuint delta, string name)
@@ -99,7 +99,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsNotCloseTo(nint,nint,nuint,string)"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsNotCloseTo(nint,nint,nuint,string)"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsNotCloseTo(nint value, nint target, nuint delta, string name)

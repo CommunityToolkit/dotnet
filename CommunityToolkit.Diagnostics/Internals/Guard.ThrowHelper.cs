@@ -35,7 +35,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsNull{T}(T,string)"/> (where <typeparamref name="T"/> is <see langword="class"/>) fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsNull{T}(T,string)"/> (where <typeparamref name="T"/> is <see langword="class"/>) fails.
         /// </summary>
         /// <typeparam name="T">The type of the input value.</typeparam>
         [DoesNotReturn]
@@ -46,7 +46,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsNull{T}(T,string)"/> (where <typeparamref name="T"/> is <see langword="struct"/>) fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsNull{T}(T,string)"/> (where <typeparamref name="T"/> is <see langword="struct"/>) fails.
         /// </summary>
         /// <typeparam name="T">The type of the input value.</typeparam>
         [DoesNotReturn]
@@ -57,7 +57,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentNullException"/> when <see cref="Guard.IsNotNull{T}(T,string)"/> fails.
+        /// Throws an <see cref="ArgumentNullException"/> when <see cref="IsNotNull{T}(T,string)"/> fails.
         /// </summary>
         /// <typeparam name="T">The type of the input value.</typeparam>
         [DoesNotReturn]
@@ -67,7 +67,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsOfType{T}"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsOfType{T}"/> fails.
         /// </summary>
         /// <typeparam name="T">The type of the input value.</typeparam>
         [DoesNotReturn]
@@ -77,7 +77,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsNotOfType{T}"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsNotOfType{T}"/> fails.
         /// </summary>
         /// <typeparam name="T">The type of the input value.</typeparam>
         [DoesNotReturn]
@@ -87,7 +87,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsOfType"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsOfType"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsOfType(object value, Type type, string name)
@@ -96,7 +96,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsNotOfType"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsNotOfType"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsNotOfType(object value, Type type, string name)
@@ -105,7 +105,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsAssignableToType{T}"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsAssignableToType{T}"/> fails.
         /// </summary>
         /// <typeparam name="T">The type being checked against.</typeparam>
         [DoesNotReturn]
@@ -115,7 +115,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsNotAssignableToType{T}"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsNotAssignableToType{T}"/> fails.
         /// </summary>
         /// <typeparam name="T">The type being checked against.</typeparam>
         [DoesNotReturn]
@@ -125,7 +125,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsAssignableToType"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsAssignableToType"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsAssignableToType(object value, Type type, string name)
@@ -134,7 +134,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsAssignableToType"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsAssignableToType"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsNotAssignableToType(object value, Type type, string name)
@@ -143,7 +143,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsReferenceEqualTo{T}"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsReferenceEqualTo{T}"/> fails.
         /// </summary>
         /// <typeparam name="T">The type of input value being compared.</typeparam>
         [DoesNotReturn]
@@ -154,7 +154,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsReferenceNotEqualTo{T}"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsReferenceNotEqualTo{T}"/> fails.
         /// </summary>
         /// <typeparam name="T">The type of input value being compared.</typeparam>
         [DoesNotReturn]
@@ -165,7 +165,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsTrue(bool,string)"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsTrue(bool,string)"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsTrue(string name)
@@ -174,7 +174,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsTrue(bool,string,string)"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsTrue(bool,string,string)"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsTrue(string name, string message)
@@ -183,7 +183,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsFalse(bool,string)"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsFalse(bool,string)"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsFalse(string name)
@@ -192,7 +192,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsFalse(bool,string,string)"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsFalse(bool,string,string)"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsFalse(string name, string message)

@@ -72,7 +72,6 @@ public class Test_TypeExtensions
         Assert.AreEqual(name, type.ToTypeString());
     }
 
-#pragma warning disable SA1015 // Closing generic brackets should be spaced correctly
     [TestCategory("TypeExtensions")]
     [TestMethod]
     [DataRow("void*", typeof(void*))]
@@ -88,7 +87,6 @@ public class Test_TypeExtensions
     {
         Assert.AreEqual(name, type.ToTypeString());
     }
-#pragma warning restore SA1015
 
     [TestCategory("TypeExtensions")]
     [TestMethod]

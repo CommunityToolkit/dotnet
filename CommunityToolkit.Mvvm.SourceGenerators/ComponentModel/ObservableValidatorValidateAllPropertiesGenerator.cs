@@ -15,8 +15,6 @@ using Microsoft.CodeAnalysis.Text;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-#pragma warning disable SA1008
-
 namespace CommunityToolkit.Mvvm.SourceGenerators;
 
 /// <summary>

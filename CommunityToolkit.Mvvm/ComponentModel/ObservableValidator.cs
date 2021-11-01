@@ -759,7 +759,6 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
         return displayName ?? propertyName;
     }
 
-#pragma warning disable SA1204
     /// <summary>
     /// Throws an <see cref="ArgumentNullException"/> when a property name given as input is <see langword="null"/>.
     /// </summary>
@@ -767,5 +766,4 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     {
         throw new ArgumentNullException("propertyName", "The input property name cannot be null when validating a property");
     }
-#pragma warning restore SA1204
 }

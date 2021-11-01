@@ -47,7 +47,7 @@ public static class ISettingsStorageHelperExtensions
     public static TValue? Read<TKey, TValue>(this ISettingsStorageHelper<TKey> storageHelper, TKey key)
         where TKey : notnull
     {
-        if (storageHelper.TryRead<TValue>(key, out TValue? value))
+        if (storageHelper.TryRead(key, out TValue? value))
         {
             return value;
         }

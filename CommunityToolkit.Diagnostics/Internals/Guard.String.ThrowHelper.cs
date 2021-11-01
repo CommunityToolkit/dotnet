@@ -19,7 +19,7 @@ public static partial class Guard
     private static partial class ThrowHelper
     {
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsNullOrEmpty"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsNullOrEmpty"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsNullOrEmpty(string? text, string name)
@@ -28,7 +28,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentNullException"/> or <see cref="ArgumentException"/> when <see cref="Guard.IsNotNullOrEmpty"/> fails.
+        /// Throws an <see cref="ArgumentNullException"/> or <see cref="ArgumentException"/> when <see cref="IsNotNullOrEmpty"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsNotNullOrEmpty(string? text, string name)
@@ -48,7 +48,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsNullOrWhitespace"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsNullOrWhitespace"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsNullOrWhiteSpace(string? text, string name)
@@ -57,7 +57,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsNotNullOrWhitespace"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsNotNullOrWhitespace"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsNotNullOrWhiteSpace(string? text, string name)
@@ -77,7 +77,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsEmpty"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsEmpty"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsEmpty(string text, string name)
@@ -86,7 +86,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsNotEmpty"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsNotEmpty"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsNotEmpty(string text, string name)
@@ -95,7 +95,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsWhitespace"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsWhitespace"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsWhiteSpace(string text, string name)
@@ -104,7 +104,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsNotWhitespace"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsNotWhitespace"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsNotWhiteSpace(string text, string name)
@@ -113,7 +113,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.HasSizeEqualTo(string,int,string)"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="HasSizeEqualTo(string,int,string)"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForHasSizeEqualTo(string text, int size, string name)
@@ -122,7 +122,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.HasSizeNotEqualTo"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="HasSizeNotEqualTo"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForHasSizeNotEqualTo(string text, int size, string name)
@@ -131,7 +131,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.HasSizeGreaterThan"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="HasSizeGreaterThan"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForHasSizeGreaterThan(string text, int size, string name)
@@ -140,7 +140,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.HasSizeGreaterThanOrEqualTo"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="HasSizeGreaterThanOrEqualTo"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForHasSizeGreaterThanOrEqualTo(string text, int size, string name)
@@ -149,7 +149,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.HasSizeLessThan"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="HasSizeLessThan"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForHasSizeLessThan(string text, int size, string name)
@@ -158,7 +158,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.HasSizeLessThanOrEqualTo(string,int,string)"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="HasSizeLessThanOrEqualTo(string,int,string)"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForHasSizeLessThanOrEqualTo(string text, int size, string name)
@@ -167,7 +167,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.HasSizeEqualTo(string,string,string)"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="HasSizeEqualTo(string,string,string)"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForHasSizeEqualTo(string source, string destination, string name)
@@ -176,7 +176,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.HasSizeLessThanOrEqualTo(string,string,string)"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="HasSizeLessThanOrEqualTo(string,string,string)"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForHasSizeLessThanOrEqualTo(string source, string destination, string name)
@@ -185,7 +185,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentOutOfRangeException"/> when <see cref="Guard.IsInRangeFor(int,string,string)"/> fails.
+        /// Throws an <see cref="ArgumentOutOfRangeException"/> when <see cref="IsInRangeFor(int,string,string)"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentOutOfRangeExceptionForIsInRangeFor(int index, string text, string name)
@@ -194,7 +194,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentOutOfRangeException"/> when <see cref="Guard.IsNotInRangeFor(int,string,string)"/> fails.
+        /// Throws an <see cref="ArgumentOutOfRangeException"/> when <see cref="IsNotInRangeFor(int,string,string)"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentOutOfRangeExceptionForIsNotInRangeFor(int index, string text, string name)

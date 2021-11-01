@@ -153,7 +153,7 @@ public class Test_MemoryExtensions
 
         // Here we get the array from the final memory and check that it does exist and
         // the associated parameters match the ones we'd expect here (same length, offset of 0).
-        Assert.IsTrue(MemoryMarshal.TryGetArray<byte>(memoryBack, out ArraySegment<byte> segment));
+        Assert.IsTrue(MemoryMarshal.TryGetArray(memoryBack, out ArraySegment<byte> segment));
         Assert.AreSame(segment.Array!, data);
         Assert.AreEqual(segment.Offset, 0);
         Assert.AreEqual(segment.Count, data.Length);
@@ -261,7 +261,7 @@ public class Test_MemoryExtensions
         Assert.AreEqual(memoryOfBytes.Length, memoryBack.Length);
 
         // Here we now also have to validate the starting offset from the extracted array
-        Assert.IsTrue(MemoryMarshal.TryGetArray<byte>(memoryBack, out ArraySegment<byte> segment));
+        Assert.IsTrue(MemoryMarshal.TryGetArray(memoryBack, out ArraySegment<byte> segment));
         Assert.AreSame(segment.Array!, data);
         Assert.AreEqual(segment.Offset, 128);
         Assert.AreEqual(segment.Count, 128);

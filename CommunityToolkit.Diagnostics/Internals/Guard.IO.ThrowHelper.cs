@@ -19,7 +19,7 @@ public static partial class Guard
     private static partial class ThrowHelper
     {
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.CanRead"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="CanRead"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForCanRead(Stream stream, string name)
@@ -28,7 +28,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.CanWrite"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="CanWrite"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForCanWrite(Stream stream, string name)
@@ -37,7 +37,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.CanSeek"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="CanSeek"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForCanSeek(Stream stream, string name)
@@ -46,7 +46,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsAtStartPosition"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsAtStartPosition"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsAtStartPosition(Stream stream, string name)

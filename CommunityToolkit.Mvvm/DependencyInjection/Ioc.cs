@@ -5,8 +5,6 @@
 using System;
 using System.Threading;
 
-#nullable enable
-
 namespace CommunityToolkit.Mvvm.DependencyInjection;
 
 /// <summary>

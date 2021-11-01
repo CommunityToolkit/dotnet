@@ -186,9 +186,6 @@ public sealed class Box<T>
     }
 }
 
-#pragma warning disable SA1402 // Extensions being declared after the type they apply to
-#pragma warning disable SA1204 // Extension class to replace instance methods for Box<T>
-
 /// <summary>
 /// Helpers for working with the <see cref="Box{T}"/> type.
 /// </summary>

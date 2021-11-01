@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using CommunityToolkit.HighPerformance.Buffers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -12,7 +11,6 @@ using CommunityToolkit.HighPerformance.UnitTests.Buffers.Internals;
 namespace CommunityToolkit.HighPerformance.UnitTests.Buffers;
 
 [TestClass]
-[SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1649", Justification = "Test class for generic type")]
 public class Test_MemoryOwnerOfT
 {
     [TestCategory("MemoryOwnerOfT")]

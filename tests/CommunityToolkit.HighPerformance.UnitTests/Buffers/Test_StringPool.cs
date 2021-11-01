@@ -10,8 +10,6 @@ using System.Text;
 using CommunityToolkit.HighPerformance.Buffers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-#nullable enable
-
 namespace CommunityToolkit.HighPerformance.UnitTests.Buffers;
 
 [TestClass]

@@ -41,7 +41,7 @@ public class DeferredEventArgs : EventArgs
     /// </summary>
     /// <returns>Internal EventDeferral reference</returns>
 #if !NETSTANDARD1_4
-        [Browsable(false)]
+    [Browsable(false)]
 #endif
     [EditorBrowsable(EditorBrowsableState.Never)]
     [Obsolete("This is an internal only method to be used by EventHandler extension classes, public callers should call GetDeferral() instead.")]

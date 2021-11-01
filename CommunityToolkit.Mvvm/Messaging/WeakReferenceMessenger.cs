@@ -14,8 +14,6 @@ using RecipientsTable = CommunityToolkit.Mvvm.Messaging.Internals.ConditionalWea
 using RecipientsTable = System.Runtime.CompilerServices.ConditionalWeakTable<object, Microsoft.Collections.Extensions.IDictionarySlim>;
 #endif
 
-#pragma warning disable SA1204
-
 namespace CommunityToolkit.Mvvm.Messaging;
 
 /// <summary>

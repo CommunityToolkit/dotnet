@@ -3,14 +3,11 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Runtime.InteropServices;
 using CommunityToolkit.HighPerformance;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CommunityToolkit.HighPerformance.UnitTests.Buffers.Internals;
-
-#nullable enable
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommunityToolkit.HighPerformance.UnitTests.Extensions;
 
@@ -41,7 +38,6 @@ public partial class Test_ReadOnlySpanExtensions
 
     [TestCategory("ReadOnlySpanExtensions")]
     [TestMethod]
-    [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1139", Justification = "Easier to tell types apart at a glance")]
     public void Test_ReadOnlySpanExtensions_RandomCount32()
     {
         TestForType((int)37438941, CreateRandomData);
@@ -51,7 +47,6 @@ public partial class Test_ReadOnlySpanExtensions
 
     [TestCategory("ReadOnlySpanExtensions")]
     [TestMethod]
-    [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1139", Justification = "Easier to tell types apart at a glance")]
     public void Test_ReadOnlySpanExtensions_RandomCount64()
     {
         TestForType((long)47128480128401, CreateRandomData);
@@ -149,7 +144,6 @@ public partial class Test_ReadOnlySpanExtensions
 
     [TestCategory("ReadOnlySpanExtensions")]
     [TestMethod]
-    [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1139", Justification = "Easier to tell types apart at a glance")]
     public void Test_ReadOnlySpanExtensions_FilledCount32()
     {
         TestForType((int)37438941, (count, _) => CreateFilledData(count, (int)37438941));
@@ -158,7 +152,6 @@ public partial class Test_ReadOnlySpanExtensions
 
     [TestCategory("ReadOnlySpanExtensions")]
     [TestMethod]
-    [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1139", Justification = "Easier to tell types apart at a glance")]
     public void Test_ReadOnlySpanExtensions_FilledCount64()
     {
         TestForType((long)47128480128401, (count, _) => CreateFilledData(count, (long)47128480128401));

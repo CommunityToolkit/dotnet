@@ -196,7 +196,7 @@ public partial class Test_ReadOnlySpanExtensions
 
         int i = 0;
 
-        foreach (CommunityToolkit.HighPerformance.Enumerables.ReadOnlySpanEnumerable<int>.Item item in data.Enumerate())
+        foreach (HighPerformance.Enumerables.ReadOnlySpanEnumerable<int>.Item item in data.Enumerate())
         {
             Assert.IsTrue(Unsafe.AreSame(ref Unsafe.AsRef(data[i]), ref Unsafe.AsRef(item.Value)));
             Assert.AreEqual(i, item.Index);
@@ -211,7 +211,7 @@ public partial class Test_ReadOnlySpanExtensions
     {
         ReadOnlySpan<int> data = Array.Empty<int>();
 
-        foreach (CommunityToolkit.HighPerformance.Enumerables.ReadOnlySpanEnumerable<int>.Item item in data.Enumerate())
+        foreach (HighPerformance.Enumerables.ReadOnlySpanEnumerable<int>.Item item in data.Enumerate())
         {
             Assert.Fail("Empty source sequence");
         }

@@ -104,7 +104,7 @@ public class Test_IBufferWriterStream
 
         ReadOnlySpan<byte> data = stackalloc byte[] { 1, 128, 255, 32 };
 
-        foreach (CommunityToolkit.HighPerformance.Enumerables.ReadOnlySpanEnumerable<byte>.Item item in data.Enumerate())
+        foreach (HighPerformance.Enumerables.ReadOnlySpanEnumerable<byte>.Item item in data.Enumerate())
         {
             // Since we're enumerating, we can also double check the current written count
             // at each iteration, to ensure the writes are done correctly every time.

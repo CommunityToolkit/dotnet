@@ -19,7 +19,7 @@ public static partial class Guard
     private static partial class ThrowHelper
     {
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsCompleted"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsCompleted"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsCompleted(Task task, string name)
@@ -28,7 +28,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsNotCompleted"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsNotCompleted"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsNotCompleted(Task task, string name)
@@ -37,7 +37,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsCompletedSuccessfully"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsCompletedSuccessfully"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsCompletedSuccessfully(Task task, string name)
@@ -46,7 +46,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsNotCompletedSuccessfully"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsNotCompletedSuccessfully"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsNotCompletedSuccessfully(Task task, string name)
@@ -55,7 +55,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsFaulted"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsFaulted"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsFaulted(Task task, string name)
@@ -64,7 +64,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsNotFaulted"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsNotFaulted"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsNotFaulted(Task task, string name)
@@ -73,7 +73,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsCanceled"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsCanceled"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsCanceled(Task task, string name)
@@ -82,7 +82,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.IsNotCanceled"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsNotCanceled"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsNotCanceled(Task task, string name)
@@ -91,7 +91,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.HasStatusEqualTo"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="HasStatusEqualTo"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForHasStatusEqualTo(Task task, TaskStatus status, string name)
@@ -100,7 +100,7 @@ public static partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="Guard.HasStatusNotEqualTo"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="HasStatusNotEqualTo"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForHasStatusNotEqualTo(Task task, TaskStatus status, string name)

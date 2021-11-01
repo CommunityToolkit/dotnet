@@ -2,16 +2,14 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#pragma warning disable CS0618
-
 using System;
-using System.Diagnostics.CodeAnalysis;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+#pragma warning disable CS0618
+
 namespace CommunityToolkit.Mvvm.UnitTests;
 
-[SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1601", Justification = "Type only used for testing")]
 [TestClass]
 public partial class Test_IRecipientGenerator
 {
@@ -25,7 +23,7 @@ public partial class Test_IRecipientGenerator
         MessageA? messageA = new();
         MessageB? messageB = new();
 
-        Action<IMessenger, object, int> registrator = CommunityToolkit.Mvvm.Messaging.__Internals.__IMessengerExtensions.CreateAllMessagesRegistratorWithToken<int>(recipient);
+        Action<IMessenger, object, int> registrator = Messaging.__Internals.__IMessengerExtensions.CreateAllMessagesRegistratorWithToken<int>(recipient);
 
         registrator(messenger, recipient, 42);
 

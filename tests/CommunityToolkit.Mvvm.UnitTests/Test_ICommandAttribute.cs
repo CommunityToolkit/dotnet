@@ -2,17 +2,13 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-#pragma warning disable SA1124
-
 namespace CommunityToolkit.Mvvm.UnitTests;
 
-[SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1601", Justification = "Type only used for testing")]
 [TestClass]
 public partial class Test_ICommandAttribute
 {

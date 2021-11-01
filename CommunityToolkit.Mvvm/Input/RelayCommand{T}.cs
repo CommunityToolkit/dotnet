@@ -2,8 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#pragma warning disable SA1512
-
 // This file is inspired from the MvvmLight library (lbugnion/MvvmLight),
 // more info in ThirdPartyNotices.txt in the root of the project.
 

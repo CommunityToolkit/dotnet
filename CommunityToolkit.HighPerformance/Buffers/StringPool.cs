@@ -12,8 +12,6 @@ using CommunityToolkit.HighPerformance.Helpers;
 #endif
 using BitOperations = CommunityToolkit.HighPerformance.Helpers.Internals.BitOperations;
 
-#nullable enable
-
 namespace CommunityToolkit.HighPerformance.Buffers;
 
 /// <summary>
