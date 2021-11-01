@@ -5,7 +5,7 @@
 using System;
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
-#if NETCOREAPP2_1 || NETSTANDARD
+#if NETSTANDARD
 using System.Runtime.InteropServices;
 #endif
 using CommunityToolkit.HighPerformance.Enumerables;
@@ -30,10 +30,6 @@ namespace CommunityToolkit.HighPerformance
         {
 #if NETCOREAPP3_1 || NET5_0
             return ref Unsafe.AsRef(text.GetPinnableReference());
-#elif NETCOREAPP2_1
-            var stringData = Unsafe.As<RawStringData>(text)!;
-
-            return ref stringData.Data;
 #else
             return ref MemoryMarshal.GetReference(text.AsSpan());
 #endif
@@ -52,8 +48,6 @@ namespace CommunityToolkit.HighPerformance
         {
 #if NETCOREAPP3_1 || NET5_0
             ref char r0 = ref Unsafe.AsRef(text.GetPinnableReference());
-#elif NETCOREAPP2_1
-            ref char r0 = ref Unsafe.As<RawStringData>(text)!.Data;
 #else
             ref char r0 = ref MemoryMarshal.GetReference(text.AsSpan());
 #endif
@@ -61,27 +55,6 @@ namespace CommunityToolkit.HighPerformance
 
             return ref ri;
         }
-
-#if NETCOREAPP2_1
-        // Description adapted from CoreCLR: see https://source.dot.net/#System.Private.CoreLib/src/System/Runtime/CompilerServices/RuntimeHelpers.CoreCLR.cs,285.
-        // CLR strings are laid out in memory as follows:
-        // [ sync block || pMethodTable || length || string data .. ]
-        //                 ^                         ^
-        //                 |                         \-- ref Unsafe.As<RawStringData>(text).Data
-        //                 \-- string
-        // The reference to RawStringData.Data points to the first character in the
-        // string, skipping over the sync block, method table and string length.
-        [StructLayout(LayoutKind.Explicit)]
-        private sealed class RawStringData
-        {
-#pragma warning disable CS0649 // Unassigned fields
-#pragma warning disable SA1401 // Fields should be private
-            [FieldOffset(4)]
-            public char Data;
-#pragma warning restore CS0649
-#pragma warning restore SA1401
-        }
-#endif
 
         /// <summary>
         /// Counts the number of occurrences of a given character into a target <see cref="string"/> instance.
