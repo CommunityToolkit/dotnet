@@ -12,120 +12,119 @@ using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
 
-namespace CommunityToolkit.Mvvm.SourceGenerators
+namespace CommunityToolkit.Mvvm.SourceGenerators;
+
+/// <summary>
+/// A source generator for the <c>ObservableRecipientAttribute</c> type.
+/// </summary>
+[Generator]
+public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator
 {
     /// <summary>
-    /// A source generator for the <c>ObservableRecipientAttribute</c> type.
+    /// Initializes a new instance of the <see cref="ObservableRecipientGenerator"/> class.
     /// </summary>
-    [Generator]
-    public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator
+    public ObservableRecipientGenerator()
+        : base("CommunityToolkit.Mvvm.ComponentModel.ObservableRecipientAttribute")
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ObservableRecipientGenerator"/> class.
-        /// </summary>
-        public ObservableRecipientGenerator()
-            : base("CommunityToolkit.Mvvm.ComponentModel.ObservableRecipientAttribute")
+    }
+
+    /// <inheritdoc/>
+    protected override DiagnosticDescriptor TargetTypeErrorDescriptor => ObservableRecipientGeneratorError;
+
+    /// <inheritdoc/>
+    protected override bool ValidateTargetType(
+        GeneratorExecutionContext context,
+        AttributeData attributeData,
+        ClassDeclarationSyntax classDeclaration,
+        INamedTypeSymbol classDeclarationSymbol,
+        [NotNullWhen(false)] out DiagnosticDescriptor? descriptor)
+    {
+        INamedTypeSymbol
+            observableRecipientSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableRecipient")!,
+            observableObjectSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableObject")!,
+            observableObjectAttributeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute")!,
+            iNotifyPropertyChangedSymbol = context.Compilation.GetTypeByMetadataName("System.ComponentModel.INotifyPropertyChanged")!;
+
+        // Check if the type already inherits from ObservableRecipient
+        if (classDeclarationSymbol.InheritsFrom(observableRecipientSymbol))
         {
+            descriptor = DuplicateObservableRecipientError;
+
+            return false;
         }
 
-        /// <inheritdoc/>
-        protected override DiagnosticDescriptor TargetTypeErrorDescriptor => ObservableRecipientGeneratorError;
-
-        /// <inheritdoc/>
-        protected override bool ValidateTargetType(
-            GeneratorExecutionContext context,
-            AttributeData attributeData,
-            ClassDeclarationSyntax classDeclaration,
-            INamedTypeSymbol classDeclarationSymbol,
-            [NotNullWhen(false)] out DiagnosticDescriptor? descriptor)
+        // In order to use [ObservableRecipient], the target type needs to inherit from ObservableObject,
+        // or be annotated with [ObservableObject] or [INotifyPropertyChanged] (with additional helpers).
+        if (!classDeclarationSymbol.InheritsFrom(observableObjectSymbol) &&
+            !classDeclarationSymbol.GetAttributes().Any(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, observableObjectAttributeSymbol)) &&
+            !classDeclarationSymbol.GetAttributes().Any(a =>
+                SymbolEqualityComparer.Default.Equals(a.AttributeClass, iNotifyPropertyChangedSymbol) &&
+                !a.HasNamedArgument("IncludeAdditionalHelperMethods", false)))
         {
-            INamedTypeSymbol
-                observableRecipientSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableRecipient")!,
-                observableObjectSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableObject")!,
-                observableObjectAttributeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute")!,
-                iNotifyPropertyChangedSymbol = context.Compilation.GetTypeByMetadataName("System.ComponentModel.INotifyPropertyChanged")!;
+            descriptor = MissingBaseObservableObjectFunctionalityError;
 
-            // Check if the type already inherits from ObservableRecipient
-            if (classDeclarationSymbol.InheritsFrom(observableRecipientSymbol))
-            {
-                descriptor = DuplicateObservableRecipientError;
-
-                return false;
-            }
-
-            // In order to use [ObservableRecipient], the target type needs to inherit from ObservableObject,
-            // or be annotated with [ObservableObject] or [INotifyPropertyChanged] (with additional helpers).
-            if (!classDeclarationSymbol.InheritsFrom(observableObjectSymbol) &&
-                !classDeclarationSymbol.GetAttributes().Any(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, observableObjectAttributeSymbol)) &&
-                !classDeclarationSymbol.GetAttributes().Any(a =>
-                    SymbolEqualityComparer.Default.Equals(a.AttributeClass, iNotifyPropertyChangedSymbol) &&
-                    !a.HasNamedArgument("IncludeAdditionalHelperMethods", false)))
-            {
-                descriptor = MissingBaseObservableObjectFunctionalityError;
-
-                return false;
-            }
-
-            descriptor = null;
-
-            return true;
+            return false;
         }
 
-        /// <inheritdoc/>
-        protected override IEnumerable<MemberDeclarationSyntax> FilterDeclaredMembers(
-            GeneratorExecutionContext context,
-            AttributeData attributeData,
-            ClassDeclarationSyntax classDeclaration,
-            INamedTypeSymbol classDeclarationSymbol,
-            ClassDeclarationSyntax sourceDeclaration)
+        descriptor = null;
+
+        return true;
+    }
+
+    /// <inheritdoc/>
+    protected override IEnumerable<MemberDeclarationSyntax> FilterDeclaredMembers(
+        GeneratorExecutionContext context,
+        AttributeData attributeData,
+        ClassDeclarationSyntax classDeclaration,
+        INamedTypeSymbol classDeclarationSymbol,
+        ClassDeclarationSyntax sourceDeclaration)
+    {
+        // If the target type has no constructors, generate constructors as well
+        if (classDeclarationSymbol.InstanceConstructors.Length == 1 &&
+            classDeclarationSymbol.InstanceConstructors[0] is
+            {
+                Parameters: { IsEmpty: true },
+                DeclaringSyntaxReferences: { IsEmpty: true },
+                IsImplicitlyDeclared: true
+            })
         {
-            // If the target type has no constructors, generate constructors as well
-            if (classDeclarationSymbol.InstanceConstructors.Length == 1 &&
-                classDeclarationSymbol.InstanceConstructors[0] is
-                {
-                    Parameters: { IsEmpty: true },
-                    DeclaringSyntaxReferences: { IsEmpty: true },
-                    IsImplicitlyDeclared: true
-                })
+            foreach (ConstructorDeclarationSyntax ctor in sourceDeclaration.Members.OfType<ConstructorDeclarationSyntax>())
             {
-                foreach (ConstructorDeclarationSyntax ctor in sourceDeclaration.Members.OfType<ConstructorDeclarationSyntax>())
+                string
+                    text = ctor.NormalizeWhitespace().ToFullString(),
+                    replaced = text.Replace("ObservableRecipient", classDeclarationSymbol.Name);
+
+                // Adjust the visibility of the constructors based on whether the target type is abstract.
+                // If that is not the case, the constructors have to be declared as public and not protected.
+                if (!classDeclarationSymbol.IsAbstract)
                 {
-                    string
-                        text = ctor.NormalizeWhitespace().ToFullString(),
-                        replaced = text.Replace("ObservableRecipient", classDeclarationSymbol.Name);
-
-                    // Adjust the visibility of the constructors based on whether the target type is abstract.
-                    // If that is not the case, the constructors have to be declared as public and not protected.
-                    if (!classDeclarationSymbol.IsAbstract)
-                    {
-                        replaced = replaced.Replace("protected", "public");
-                    }
-
-                    yield return (ConstructorDeclarationSyntax)ParseMemberDeclaration(replaced)!;
-                }
-            }
-
-            INamedTypeSymbol observableValidatorSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableValidator")!;
-
-            // Skip the SetProperty overloads if the target type inherits from ObservableValidator, to avoid conflicts
-            if (classDeclarationSymbol.InheritsFrom(observableValidatorSymbol))
-            {
-                foreach (MemberDeclarationSyntax member in sourceDeclaration.Members.Where(static member => member is not ConstructorDeclarationSyntax))
-                {
-                    if (member is not MethodDeclarationSyntax { Identifier: { ValueText: "SetProperty" } })
-                    {
-                        yield return member;
-                    }
+                    replaced = replaced.Replace("protected", "public");
                 }
 
-                yield break;
+                yield return (ConstructorDeclarationSyntax)ParseMemberDeclaration(replaced)!;
             }
+        }
 
-            // If the target type has at least one custom constructor, only generate methods
+        INamedTypeSymbol observableValidatorSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableValidator")!;
+
+        // Skip the SetProperty overloads if the target type inherits from ObservableValidator, to avoid conflicts
+        if (classDeclarationSymbol.InheritsFrom(observableValidatorSymbol))
+        {
             foreach (MemberDeclarationSyntax member in sourceDeclaration.Members.Where(static member => member is not ConstructorDeclarationSyntax))
             {
-                yield return member;
+                if (member is not MethodDeclarationSyntax { Identifier: { ValueText: "SetProperty" } })
+                {
+                    yield return member;
+                }
             }
+
+            yield break;
+        }
+
+        // If the target type has at least one custom constructor, only generate methods
+        foreach (MemberDeclarationSyntax member in sourceDeclaration.Members.Where(static member => member is not ConstructorDeclarationSyntax))
+        {
+            yield return member;
         }
     }
 }

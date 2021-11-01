@@ -5,16 +5,15 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace UnitTests.Collections
-{
-    public class IntGroup : List<int>, IGrouping<string, int>
-    {
-        public IntGroup(string key, IEnumerable<int> collection)
-            : base(collection)
-        {
-            Key = key;
-        }
+namespace UnitTests.Collections;
 
-        public string Key { get; }
+public class IntGroup : List<int>, IGrouping<string, int>
+{
+    public IntGroup(string key, IEnumerable<int> collection)
+        : base(collection)
+    {
+        Key = key;
     }
+
+    public string Key { get; }
 }

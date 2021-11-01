@@ -7,14 +7,14 @@ using System.Runtime.CompilerServices;
 using CommunityToolkit.HighPerformance;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.HighPerformance
+namespace UnitTests.HighPerformance;
+
+[TestClass]
+[SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1649", Justification = "Test class for generic type")]
+public class Test_ReadOnlyRefOfT
 {
-    [TestClass]
-    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1649", Justification = "Test class for generic type")]
-    public class Test_ReadOnlyRefOfT
-    {
-        [TestCategory("ReadOnlyRefOfT")]
-        [TestMethod]
+    [TestCategory("ReadOnlyRefOfT")]
+    [TestMethod]
 #if WINDOWS_UWP
         public void Test_RefOfT_CreateRefOfT()
         {
@@ -33,13 +33,12 @@ namespace UnitTests.HighPerformance
             public readonly int Value = 1;
         }
 #else
-        public void Test_RefOfT_CreateRefOfT()
-        {
-            int value = 1;
-            ReadOnlyRef<int> reference = new(value);
+    public void Test_RefOfT_CreateRefOfT()
+    {
+        int value = 1;
+        ReadOnlyRef<int> reference = new(value);
 
-            Assert.IsTrue(Unsafe.AreSame(ref value, ref Unsafe.AsRef(reference.Value)));
-        }
-#endif
+        Assert.IsTrue(Unsafe.AreSame(ref value, ref Unsafe.AsRef(reference.Value)));
     }
+#endif
 }

@@ -4,19 +4,18 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace UnitTests.NetStandard
-{
-    /// <summary>
-    /// See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4167.
-    /// This model in particular is loaded from an external .NET Standard 2.0 assembly.
-    /// </summary>
-    [INotifyPropertyChanged]
-    public partial class SampleModelWithINPCAndObservableProperties
-    {
-        [ObservableProperty]
-        private int x;
+namespace UnitTests.NetStandard;
 
-        [ObservableProperty]
-        private int y;
-    }
+/// <summary>
+/// See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4167.
+/// This model in particular is loaded from an external .NET Standard 2.0 assembly.
+/// </summary>
+[INotifyPropertyChanged]
+public partial class SampleModelWithINPCAndObservableProperties
+{
+    [ObservableProperty]
+    private int x;
+
+    [ObservableProperty]
+    private int y;
 }

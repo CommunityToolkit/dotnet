@@ -8,51 +8,50 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace CommunityToolkit.Mvvm.SourceGenerators
+namespace CommunityToolkit.Mvvm.SourceGenerators;
+
+/// <inheritdoc cref="ObservablePropertyGenerator"/>
+public sealed partial class ObservablePropertyGenerator
 {
-    /// <inheritdoc cref="ObservablePropertyGenerator"/>
-    public sealed partial class ObservablePropertyGenerator
+    /// <summary>
+    /// An <see cref="ISyntaxContextReceiver"/> that selects candidate nodes to process.
+    /// </summary>
+    private sealed class SyntaxReceiver : ISyntaxContextReceiver
     {
         /// <summary>
-        /// An <see cref="ISyntaxContextReceiver"/> that selects candidate nodes to process.
+        /// The list of info gathered during exploration.
         /// </summary>
-        private sealed class SyntaxReceiver : ISyntaxContextReceiver
+        private readonly List<Item> gatheredInfo = new();
+
+        /// <summary>
+        /// Gets the collection of gathered info to process.
+        /// </summary>
+        public IReadOnlyCollection<Item> GatheredInfo => this.gatheredInfo;
+
+        /// <inheritdoc/>
+        public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
         {
-            /// <summary>
-            /// The list of info gathered during exploration.
-            /// </summary>
-            private readonly List<Item> gatheredInfo = new();
-
-            /// <summary>
-            /// Gets the collection of gathered info to process.
-            /// </summary>
-            public IReadOnlyCollection<Item> GatheredInfo => this.gatheredInfo;
-
-            /// <inheritdoc/>
-            public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
+            if (context.Node is FieldDeclarationSyntax { AttributeLists: { Count: > 0 } } fieldDeclaration &&
+                context.SemanticModel.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute") is INamedTypeSymbol attributeSymbol)
             {
-                if (context.Node is FieldDeclarationSyntax { AttributeLists: { Count: > 0 } } fieldDeclaration &&
-                    context.SemanticModel.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute") is INamedTypeSymbol attributeSymbol)
-                {
-                    SyntaxTriviaList leadingTrivia = fieldDeclaration.GetLeadingTrivia();
+                SyntaxTriviaList leadingTrivia = fieldDeclaration.GetLeadingTrivia();
 
-                    foreach (VariableDeclaratorSyntax variableDeclarator in fieldDeclaration.Declaration.Variables)
+                foreach (VariableDeclaratorSyntax variableDeclarator in fieldDeclaration.Declaration.Variables)
+                {
+                    if (context.SemanticModel.GetDeclaredSymbol(variableDeclarator) is IFieldSymbol fieldSymbol &&
+                        fieldSymbol.GetAttributes().Any(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, attributeSymbol)))
                     {
-                        if (context.SemanticModel.GetDeclaredSymbol(variableDeclarator) is IFieldSymbol fieldSymbol &&
-                            fieldSymbol.GetAttributes().Any(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, attributeSymbol)))
-                        {
-                            this.gatheredInfo.Add(new Item(leadingTrivia, fieldSymbol));
-                        }
+                        this.gatheredInfo.Add(new Item(leadingTrivia, fieldSymbol));
                     }
                 }
             }
-
-            /// <summary>
-            /// A model for a group of item representing a discovered type to process.
-            /// </summary>
-            /// <param name="LeadingTrivia">The leading trivia for the field declaration.</param>
-            /// <param name="FieldSymbol">The <see cref="IFieldSymbol"/> instance for the target field.</param>
-            public sealed record Item(SyntaxTriviaList LeadingTrivia, IFieldSymbol FieldSymbol);
         }
+
+        /// <summary>
+        /// A model for a group of item representing a discovered type to process.
+        /// </summary>
+        /// <param name="LeadingTrivia">The leading trivia for the field declaration.</param>
+        /// <param name="FieldSymbol">The <see cref="IFieldSymbol"/> instance for the target field.</param>
+        public sealed record Item(SyntaxTriviaList LeadingTrivia, IFieldSymbol FieldSymbol);
     }
 }

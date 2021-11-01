@@ -8,128 +8,127 @@ using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.Mvvm
+namespace UnitTests.Mvvm;
+
+[TestClass]
+public class Test_ObservableRecipient
 {
-    [TestClass]
-    public class Test_ObservableRecipient
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    [DataRow(typeof(StrongReferenceMessenger))]
+    [DataRow(typeof(WeakReferenceMessenger))]
+    public void Test_ObservableRecipient_Activation(Type type)
     {
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        [DataRow(typeof(StrongReferenceMessenger))]
-        [DataRow(typeof(WeakReferenceMessenger))]
-        public void Test_ObservableRecipient_Activation(Type type)
-        {
-            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
-            SomeRecipient<int>? viewmodel = new(messenger);
+        IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+        SomeRecipient<int>? viewmodel = new(messenger);
 
-            Assert.IsFalse(viewmodel.IsActivatedCheck);
+        Assert.IsFalse(viewmodel.IsActivatedCheck);
 
-            viewmodel.IsActive = true;
+        viewmodel.IsActive = true;
 
-            Assert.IsTrue(viewmodel.IsActivatedCheck);
-            Assert.IsTrue(viewmodel.CurrentMessenger.IsRegistered<SampleMessage>(viewmodel));
+        Assert.IsTrue(viewmodel.IsActivatedCheck);
+        Assert.IsTrue(viewmodel.CurrentMessenger.IsRegistered<SampleMessage>(viewmodel));
 
-            viewmodel.IsActive = false;
+        viewmodel.IsActive = false;
 
-            Assert.IsFalse(viewmodel.IsActivatedCheck);
-            Assert.IsFalse(viewmodel.CurrentMessenger.IsRegistered<SampleMessage>(viewmodel));
-        }
+        Assert.IsFalse(viewmodel.IsActivatedCheck);
+        Assert.IsFalse(viewmodel.CurrentMessenger.IsRegistered<SampleMessage>(viewmodel));
+    }
 
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        [DataRow(typeof(StrongReferenceMessenger))]
-        [DataRow(typeof(WeakReferenceMessenger))]
-        public void Test_ObservableRecipient_IsSame(Type type)
-        {
-            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
-            SomeRecipient<int>? viewmodel = new(messenger);
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    [DataRow(typeof(StrongReferenceMessenger))]
+    [DataRow(typeof(WeakReferenceMessenger))]
+    public void Test_ObservableRecipient_IsSame(Type type)
+    {
+        IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+        SomeRecipient<int>? viewmodel = new(messenger);
 
-            Assert.AreSame(viewmodel.CurrentMessenger, messenger);
-        }
+        Assert.AreSame(viewmodel.CurrentMessenger, messenger);
+    }
 
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void Test_ObservableRecipient_Default()
-        {
-            SomeRecipient<int>? viewmodel = new();
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void Test_ObservableRecipient_Default()
+    {
+        SomeRecipient<int>? viewmodel = new();
 
-            Assert.AreSame(viewmodel.CurrentMessenger, WeakReferenceMessenger.Default);
-        }
+        Assert.AreSame(viewmodel.CurrentMessenger, WeakReferenceMessenger.Default);
+    }
 
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        [DataRow(typeof(StrongReferenceMessenger))]
-        [DataRow(typeof(WeakReferenceMessenger))]
-        public void Test_ObservableRecipient_Injection(Type type)
-        {
-            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
-            SomeRecipient<int>? viewmodel = new(messenger);
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    [DataRow(typeof(StrongReferenceMessenger))]
+    [DataRow(typeof(WeakReferenceMessenger))]
+    public void Test_ObservableRecipient_Injection(Type type)
+    {
+        IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+        SomeRecipient<int>? viewmodel = new(messenger);
 
-            Assert.AreSame(viewmodel.CurrentMessenger, messenger);
-        }
+        Assert.AreSame(viewmodel.CurrentMessenger, messenger);
+    }
 
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        [DataRow(typeof(StrongReferenceMessenger))]
-        [DataRow(typeof(WeakReferenceMessenger))]
-        public void Test_ObservableRecipient_Broadcast(Type type)
-        {
-            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
-            SomeRecipient<int>? viewmodel = new(messenger);
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    [DataRow(typeof(StrongReferenceMessenger))]
+    [DataRow(typeof(WeakReferenceMessenger))]
+    public void Test_ObservableRecipient_Broadcast(Type type)
+    {
+        IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+        SomeRecipient<int>? viewmodel = new(messenger);
 
-            PropertyChangedMessage<int>? message = null;
+        PropertyChangedMessage<int>? message = null;
 
-            messenger.Register<PropertyChangedMessage<int>>(messenger, (r, m) => message = m);
+        messenger.Register<PropertyChangedMessage<int>>(messenger, (r, m) => message = m);
 
-            viewmodel.Data = 42;
+        viewmodel.Data = 42;
 
-            Assert.IsNotNull(message);
-            Assert.AreSame(message.Sender, viewmodel);
-            Assert.AreEqual(message.OldValue, 0);
-            Assert.AreEqual(message.NewValue, 42);
-            Assert.AreEqual(message.PropertyName, nameof(SomeRecipient<int>.Data));
-        }
+        Assert.IsNotNull(message);
+        Assert.AreSame(message.Sender, viewmodel);
+        Assert.AreEqual(message.OldValue, 0);
+        Assert.AreEqual(message.NewValue, 42);
+        Assert.AreEqual(message.PropertyName, nameof(SomeRecipient<int>.Data));
+    }
 
-        public class SomeRecipient<T> : ObservableRecipient
-        {
-            public SomeRecipient()
-            {
-            }
-
-            public SomeRecipient(IMessenger messenger)
-                : base(messenger)
-            {
-            }
-
-            public IMessenger CurrentMessenger => Messenger;
-
-            private T? data;
-
-            public T? Data
-            {
-                get => data;
-                set => SetProperty(ref data, value, true);
-            }
-
-            public bool IsActivatedCheck { get; private set; }
-
-            protected override void OnActivated()
-            {
-                IsActivatedCheck = true;
-
-                Messenger.Register<SampleMessage>(this, (r, m) => { });
-            }
-
-            protected override void OnDeactivated()
-            {
-                base.OnDeactivated();
-
-                IsActivatedCheck = false;
-            }
-        }
-
-        public class SampleMessage
+    public class SomeRecipient<T> : ObservableRecipient
+    {
+        public SomeRecipient()
         {
         }
+
+        public SomeRecipient(IMessenger messenger)
+            : base(messenger)
+        {
+        }
+
+        public IMessenger CurrentMessenger => Messenger;
+
+        private T? data;
+
+        public T? Data
+        {
+            get => data;
+            set => SetProperty(ref data, value, true);
+        }
+
+        public bool IsActivatedCheck { get; private set; }
+
+        protected override void OnActivated()
+        {
+            IsActivatedCheck = true;
+
+            Messenger.Register<SampleMessage>(this, (r, m) => { });
+        }
+
+        protected override void OnDeactivated()
+        {
+            base.OnDeactivated();
+
+            IsActivatedCheck = false;
+        }
+    }
+
+    public class SampleMessage
+    {
     }
 }

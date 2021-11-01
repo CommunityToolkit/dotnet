@@ -7,54 +7,53 @@ using System.ComponentModel;
 
 #pragma warning disable CA1001
 
-namespace CommunityToolkit.Common.Deferred
+namespace CommunityToolkit.Common.Deferred;
+
+/// <summary>
+/// <see cref="EventArgs"/> which can retrieve a <see cref="EventDeferral"/> in order to process data asynchronously before an <see cref="EventHandler"/> completes and returns to the calling control.
+/// </summary>
+public class DeferredEventArgs : EventArgs
 {
     /// <summary>
-    /// <see cref="EventArgs"/> which can retrieve a <see cref="EventDeferral"/> in order to process data asynchronously before an <see cref="EventHandler"/> completes and returns to the calling control.
+    /// Gets a new <see cref="DeferredEventArgs"/> to use in cases where no <see cref="EventArgs"/> wish to be provided.
     /// </summary>
-    public class DeferredEventArgs : EventArgs
+    public static new DeferredEventArgs Empty => new();
+
+    private readonly object _eventDeferralLock = new();
+
+    private EventDeferral? _eventDeferral;
+
+    /// <summary>
+    /// Returns an <see cref="EventDeferral"/> which can be completed when deferred event is ready to continue.
+    /// </summary>
+    /// <returns><see cref="EventDeferral"/> instance.</returns>
+    public EventDeferral GetDeferral()
     {
-        /// <summary>
-        /// Gets a new <see cref="DeferredEventArgs"/> to use in cases where no <see cref="EventArgs"/> wish to be provided.
-        /// </summary>
-        public static new DeferredEventArgs Empty => new();
-
-        private readonly object _eventDeferralLock = new();
-
-        private EventDeferral? _eventDeferral;
-
-        /// <summary>
-        /// Returns an <see cref="EventDeferral"/> which can be completed when deferred event is ready to continue.
-        /// </summary>
-        /// <returns><see cref="EventDeferral"/> instance.</returns>
-        public EventDeferral GetDeferral()
+        lock (_eventDeferralLock)
         {
-            lock (_eventDeferralLock)
-            {
-                return _eventDeferral ??= new EventDeferral();
-            }
+            return _eventDeferral ??= new EventDeferral();
         }
+    }
 
-        /// <summary>
-        /// DO NOT USE - This is a support method used by <see cref="EventHandlerExtensions"/>. It is public only for
-        /// additional usage within extensions for the UWP based TypedEventHandler extensions.
-        /// </summary>
-        /// <returns>Internal EventDeferral reference</returns>
+    /// <summary>
+    /// DO NOT USE - This is a support method used by <see cref="EventHandlerExtensions"/>. It is public only for
+    /// additional usage within extensions for the UWP based TypedEventHandler extensions.
+    /// </summary>
+    /// <returns>Internal EventDeferral reference</returns>
 #if !NETSTANDARD1_4
         [Browsable(false)]
 #endif
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("This is an internal only method to be used by EventHandler extension classes, public callers should call GetDeferral() instead.")]
-        public EventDeferral? GetCurrentDeferralAndReset()
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    [Obsolete("This is an internal only method to be used by EventHandler extension classes, public callers should call GetDeferral() instead.")]
+    public EventDeferral? GetCurrentDeferralAndReset()
+    {
+        lock (_eventDeferralLock)
         {
-            lock (_eventDeferralLock)
-            {
-                EventDeferral? eventDeferral = _eventDeferral;
+            EventDeferral? eventDeferral = _eventDeferral;
 
-                _eventDeferral = null;
+            _eventDeferral = null;
 
-                return eventDeferral;
-            }
+            return eventDeferral;
         }
     }
 }

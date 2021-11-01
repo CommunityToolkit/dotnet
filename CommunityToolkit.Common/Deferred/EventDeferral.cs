@@ -9,47 +9,46 @@ using System.Threading.Tasks;
 
 #pragma warning disable CA1063
 
-namespace CommunityToolkit.Common.Deferred
+namespace CommunityToolkit.Common.Deferred;
+
+/// <summary>
+/// Deferral handle provided by a <see cref="DeferredEventArgs"/>.
+/// </summary>
+public class EventDeferral : IDisposable
 {
-    /// <summary>
-    /// Deferral handle provided by a <see cref="DeferredEventArgs"/>.
-    /// </summary>
-    public class EventDeferral : IDisposable
+    //// TODO: If/when .NET 5 is base, we can upgrade to non-generic version
+    private readonly TaskCompletionSource<object?> _taskCompletionSource = new();
+
+    internal EventDeferral()
     {
-        //// TODO: If/when .NET 5 is base, we can upgrade to non-generic version
-        private readonly TaskCompletionSource<object?> _taskCompletionSource = new();
+    }
 
-        internal EventDeferral()
-        {
-        }
+    /// <summary>
+    /// Call when finished with the Deferral.
+    /// </summary>
+    public void Complete() => _taskCompletionSource.TrySetResult(null);
 
-        /// <summary>
-        /// Call when finished with the Deferral.
-        /// </summary>
-        public void Complete() => _taskCompletionSource.TrySetResult(null);
-
-        /// <summary>
-        /// Waits for the <see cref="EventDeferral"/> to be completed by the event handler.
-        /// </summary>
-        /// <param name="cancellationToken"><see cref="CancellationToken"/>.</param>
-        /// <returns><see cref="Task"/>.</returns>
+    /// <summary>
+    /// Waits for the <see cref="EventDeferral"/> to be completed by the event handler.
+    /// </summary>
+    /// <param name="cancellationToken"><see cref="CancellationToken"/>.</param>
+    /// <returns><see cref="Task"/>.</returns>
 #if !NETSTANDARD1_4
         [Browsable(false)]
 #endif
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("This is an internal only method to be used by EventHandler extension classes, public callers should call GetDeferral() instead on the DeferredEventArgs.")]
-        public async Task WaitForCompletion(CancellationToken cancellationToken)
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    [Obsolete("This is an internal only method to be used by EventHandler extension classes, public callers should call GetDeferral() instead on the DeferredEventArgs.")]
+    public async Task WaitForCompletion(CancellationToken cancellationToken)
+    {
+        using (cancellationToken.Register(() => _taskCompletionSource.TrySetCanceled()))
         {
-            using (cancellationToken.Register(() => _taskCompletionSource.TrySetCanceled()))
-            {
-                _ = await _taskCompletionSource.Task;
-            }
+            _ = await _taskCompletionSource.Task;
         }
+    }
 
-        /// <inheritdoc/>
-        public void Dispose()
-        {
-            Complete();
-        }
+    /// <inheritdoc/>
+    public void Dispose()
+    {
+        Complete();
     }
 }

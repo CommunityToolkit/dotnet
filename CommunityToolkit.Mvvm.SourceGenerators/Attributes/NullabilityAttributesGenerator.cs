@@ -9,52 +9,51 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
-namespace CommunityToolkit.Mvvm.SourceGenerators
+namespace CommunityToolkit.Mvvm.SourceGenerators;
+
+/// <summary>
+/// A source generator for necessary nullability attributes.
+/// </summary>
+[Generator]
+public sealed class NullabilityAttributesGenerator : ISourceGenerator
 {
-    /// <summary>
-    /// A source generator for necessary nullability attributes.
-    /// </summary>
-    [Generator]
-    public sealed class NullabilityAttributesGenerator : ISourceGenerator
+    /// <inheritdoc/>
+    public void Initialize(GeneratorInitializationContext context)
     {
-        /// <inheritdoc/>
-        public void Initialize(GeneratorInitializationContext context)
+    }
+
+    /// <inheritdoc/>
+    public void Execute(GeneratorExecutionContext context)
+    {
+        AddSourceCodeIfTypeIsNotPresent(context, "System.Diagnostics.CodeAnalysis.NotNullAttribute");
+        AddSourceCodeIfTypeIsNotPresent(context, "System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute");
+    }
+
+    /// <summary>
+    /// Adds the source for a given attribute type if it's not present already in the compilation.
+    /// </summary>
+    private void AddSourceCodeIfTypeIsNotPresent(GeneratorExecutionContext context, string typeFullName)
+    {
+        // Check that the target attributes are not available in the consuming project. To ensure that
+        // this works fine both in .NET (Core) and .NET Standard implementations, we also need to check
+        // that the target types are declared as public (we assume that in this case those types are from the BCL).
+        // This avoids issues on .NET Standard with Roslyn also seeing internal types from referenced assemblies.
+        if (context.Compilation.GetTypeByMetadataName(typeFullName) is { DeclaredAccessibility: Accessibility.Public })
         {
+            return;
         }
 
-        /// <inheritdoc/>
-        public void Execute(GeneratorExecutionContext context)
-        {
-            AddSourceCodeIfTypeIsNotPresent(context, "System.Diagnostics.CodeAnalysis.NotNullAttribute");
-            AddSourceCodeIfTypeIsNotPresent(context, "System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute");
-        }
+        string
+            typeName = typeFullName.Split('.').Last(),
+            filename = $"CommunityToolkit.Mvvm.SourceGenerators.EmbeddedResources.{typeName}.cs";
 
-        /// <summary>
-        /// Adds the source for a given attribute type if it's not present already in the compilation.
-        /// </summary>
-        private void AddSourceCodeIfTypeIsNotPresent(GeneratorExecutionContext context, string typeFullName)
-        {
-            // Check that the target attributes are not available in the consuming project. To ensure that
-            // this works fine both in .NET (Core) and .NET Standard implementations, we also need to check
-            // that the target types are declared as public (we assume that in this case those types are from the BCL).
-            // This avoids issues on .NET Standard with Roslyn also seeing internal types from referenced assemblies.
-            if (context.Compilation.GetTypeByMetadataName(typeFullName) is { DeclaredAccessibility: Accessibility.Public })
-            {
-                return;
-            }
+        Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(filename);
+        StreamReader reader = new(stream);
 
-            string
-                typeName = typeFullName.Split('.').Last(),
-                filename = $"CommunityToolkit.Mvvm.SourceGenerators.EmbeddedResources.{typeName}.cs";
+        string
+            originalSource = reader.ReadToEnd(),
+            outputSource = originalSource.Replace("NETSTANDARD2_0", "true");
 
-            Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(filename);
-            StreamReader reader = new(stream);
-
-            string
-                originalSource = reader.ReadToEnd(),
-                outputSource = originalSource.Replace("NETSTANDARD2_0", "true");
-
-            context.AddSource($"{typeFullName}.cs", SourceText.From(outputSource, Encoding.UTF8));
-        }
+        context.AddSource($"{typeFullName}.cs", SourceText.From(outputSource, Encoding.UTF8));
     }
 }

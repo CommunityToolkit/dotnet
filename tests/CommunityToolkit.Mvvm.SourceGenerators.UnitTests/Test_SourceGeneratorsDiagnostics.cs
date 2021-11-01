@@ -13,16 +13,16 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.SourceGenerators;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.Mvvm
+namespace UnitTests.Mvvm;
+
+[TestClass]
+public class Test_SourceGeneratorsDiagnostics
 {
-    [TestClass]
-    public class Test_SourceGeneratorsDiagnostics
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void DuplicateINotifyPropertyChangedInterfaceForINotifyPropertyChangedAttributeError_Explicit()
     {
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void DuplicateINotifyPropertyChangedInterfaceForINotifyPropertyChangedAttributeError_Explicit()
-        {
-            string source = @"
+        string source = @"
             using System.ComponentModel;
             using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -35,14 +35,14 @@ namespace UnitTests.Mvvm
                 }
             }";
 
-            VerifyGeneratedDiagnostics<INotifyPropertyChangedGenerator>(source, "MVVMTK0004");
-        }
+        VerifyGeneratedDiagnostics<INotifyPropertyChangedGenerator>(source, "MVVMTK0004");
+    }
 
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void DuplicateINotifyPropertyChangedInterfaceForINotifyPropertyChangedAttributeError_Inherited()
-        {
-            string source = @"
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void DuplicateINotifyPropertyChangedInterfaceForINotifyPropertyChangedAttributeError_Inherited()
+    {
+        string source = @"
             using System.ComponentModel;
             using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -63,14 +63,14 @@ namespace UnitTests.Mvvm
                 }
             }";
 
-            VerifyGeneratedDiagnostics<INotifyPropertyChangedGenerator>(source, "MVVMTK0004");
-        }
+        VerifyGeneratedDiagnostics<INotifyPropertyChangedGenerator>(source, "MVVMTK0004");
+    }
 
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void DuplicateINotifyPropertyChangedInterfaceForObservableObjectAttributeError_Explicit()
-        {
-            string source = @"
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void DuplicateINotifyPropertyChangedInterfaceForObservableObjectAttributeError_Explicit()
+    {
+        string source = @"
             using System.ComponentModel;
             using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -83,14 +83,14 @@ namespace UnitTests.Mvvm
                 }
             }";
 
-            VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0005");
-        }
+        VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0005");
+    }
 
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void DuplicateINotifyPropertyChangedInterfaceForObservableObjectAttributeError_Inherited()
-        {
-            string source = @"
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void DuplicateINotifyPropertyChangedInterfaceForObservableObjectAttributeError_Inherited()
+    {
+        string source = @"
             using System.ComponentModel;
             using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -110,14 +110,14 @@ namespace UnitTests.Mvvm
                 }
             }";
 
-            VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0005");
-        }
+        VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0005");
+    }
 
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void DuplicateINotifyPropertyChangingInterfaceForObservableObjectAttributeError_Explicit()
-        {
-            string source = @"
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void DuplicateINotifyPropertyChangingInterfaceForObservableObjectAttributeError_Explicit()
+    {
+        string source = @"
             using System.ComponentModel;
             using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -130,14 +130,14 @@ namespace UnitTests.Mvvm
                 }
             }";
 
-            VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0006");
-        }
+        VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0006");
+    }
 
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void DuplicateINotifyPropertyChangingInterfaceForObservableObjectAttributeError_Inherited()
-        {
-            string source = @"
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void DuplicateINotifyPropertyChangingInterfaceForObservableObjectAttributeError_Inherited()
+    {
+        string source = @"
             using System.ComponentModel;
             using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -154,14 +154,14 @@ namespace UnitTests.Mvvm
                 }
             }";
 
-            VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0006");
-        }
+        VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0006");
+    }
 
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void DuplicateObservableRecipientError()
-        {
-            string source = @"
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void DuplicateObservableRecipientError()
+    {
+        string source = @"
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace CommunityToolkit.Mvvm.ComponentModel
@@ -179,14 +179,14 @@ namespace UnitTests.Mvvm
                 }
             }";
 
-            VerifyGeneratedDiagnostics<ObservableRecipientGenerator>(source, "MVVMTK0007");
-        }
+        VerifyGeneratedDiagnostics<ObservableRecipientGenerator>(source, "MVVMTK0007");
+    }
 
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void MissingBaseObservableObjectFunctionalityError()
-        {
-            string source = @"
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void MissingBaseObservableObjectFunctionalityError()
+    {
+        string source = @"
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -197,14 +197,14 @@ namespace UnitTests.Mvvm
                 }
             }";
 
-            VerifyGeneratedDiagnostics<ObservableRecipientGenerator>(source, "MVVMTK0008");
-        }
+        VerifyGeneratedDiagnostics<ObservableRecipientGenerator>(source, "MVVMTK0008");
+    }
 
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void MissingObservableValidatorInheritanceError()
-        {
-            string source = @"
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void MissingObservableValidatorInheritanceError()
+    {
+        string source = @"
             using System.ComponentModel.DataAnnotations;
             using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -219,14 +219,14 @@ namespace UnitTests.Mvvm
                 }
             }";
 
-            VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0009");
-        }
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0009");
+    }
 
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void InvalidICommandMethodSignatureError()
-        {
-            string source = @"
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void InvalidICommandMethodSignatureError()
+    {
+        string source = @"
             using CommunityToolkit.Mvvm.Input;
 
             namespace MyApp
@@ -238,14 +238,14 @@ namespace UnitTests.Mvvm
                 }
             }";
 
-            VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0012");
-        }
+        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0012");
+    }
 
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void UnsupportedCSharpLanguageVersion_FromINotifyPropertyChangedGenerator()
-        {
-            string source = @"
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void UnsupportedCSharpLanguageVersion_FromINotifyPropertyChangedGenerator()
+    {
+        string source = @"
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -256,16 +256,16 @@ namespace UnitTests.Mvvm
                 }
             }";
 
-            VerifyGeneratedDiagnostics<INotifyPropertyChangedGenerator>(
-                CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)),
-                "MVVMTK0013");
-        }
+        VerifyGeneratedDiagnostics<INotifyPropertyChangedGenerator>(
+            CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)),
+            "MVVMTK0013");
+    }
 
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void UnsupportedCSharpLanguageVersion_FromObservableObjectGenerator()
-        {
-            string source = @"
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void UnsupportedCSharpLanguageVersion_FromObservableObjectGenerator()
+    {
+        string source = @"
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -276,16 +276,16 @@ namespace UnitTests.Mvvm
                 }
             }";
 
-            VerifyGeneratedDiagnostics<ObservableObjectGenerator>(
-                CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)),
-                "MVVMTK0013");
-        }
+        VerifyGeneratedDiagnostics<ObservableObjectGenerator>(
+            CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)),
+            "MVVMTK0013");
+    }
 
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void UnsupportedCSharpLanguageVersion_FromObservablePropertyGenerator()
-        {
-            string source = @"
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void UnsupportedCSharpLanguageVersion_FromObservablePropertyGenerator()
+    {
+        string source = @"
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -298,16 +298,16 @@ namespace UnitTests.Mvvm
                 }
             }";
 
-            VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(
-                CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)),
-                "MVVMTK0013");
-        }
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(
+            CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)),
+            "MVVMTK0013");
+    }
 
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void UnsupportedCSharpLanguageVersion_FromObservableValidatorValidateAllPropertiesGenerator()
-        {
-            string source = @"
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void UnsupportedCSharpLanguageVersion_FromObservableValidatorValidateAllPropertiesGenerator()
+    {
+        string source = @"
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -319,16 +319,16 @@ namespace UnitTests.Mvvm
                 }
             }";
 
-            // This is explicitly allowed in C# < 9.0, as it doesn't use any new features
-            VerifyGeneratedDiagnostics<ObservableValidatorValidateAllPropertiesGenerator>(
-                CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)));
-        }
+        // This is explicitly allowed in C# < 9.0, as it doesn't use any new features
+        VerifyGeneratedDiagnostics<ObservableValidatorValidateAllPropertiesGenerator>(
+            CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)));
+    }
 
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void UnsupportedCSharpLanguageVersion_FromICommandGenerator()
-        {
-            string source = @"
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void UnsupportedCSharpLanguageVersion_FromICommandGenerator()
+    {
+        string source = @"
             using CommunityToolkit.Mvvm.Input;
 
             namespace MyApp
@@ -342,16 +342,16 @@ namespace UnitTests.Mvvm
                 }
             }";
 
-            VerifyGeneratedDiagnostics<ICommandGenerator>(
-                CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)),
-                "MVVMTK0013");
-        }
+        VerifyGeneratedDiagnostics<ICommandGenerator>(
+            CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)),
+            "MVVMTK0013");
+    }
 
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void UnsupportedCSharpLanguageVersion_FromIMessengerRegisterAllGenerator()
-        {
-            string source = @"
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void UnsupportedCSharpLanguageVersion_FromIMessengerRegisterAllGenerator()
+    {
+        string source = @"
             using CommunityToolkit.Mvvm.Messaging;
 
             namespace MyApp
@@ -368,59 +368,58 @@ namespace UnitTests.Mvvm
                 }
             }";
 
-            // This is explicitly allowed in C# < 9.0, as it doesn't use any new features
-            VerifyGeneratedDiagnostics<IMessengerRegisterAllGenerator>(
-                CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)));
-        }
+        // This is explicitly allowed in C# < 9.0, as it doesn't use any new features
+        VerifyGeneratedDiagnostics<IMessengerRegisterAllGenerator>(
+            CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)));
+    }
 
-        /// <summary>
-        /// Verifies the output of a source generator.
-        /// </summary>
-        /// <typeparam name="TGenerator">The generator type to use.</typeparam>
-        /// <param name="source">The input source to process.</param>
-        /// <param name="diagnosticsIds">The diagnostic ids to expect for the input source code.</param>
-        private static void VerifyGeneratedDiagnostics<TGenerator>(string source, params string[] diagnosticsIds)
-            where TGenerator : class, ISourceGenerator, new()
-        {
-            VerifyGeneratedDiagnostics<TGenerator>(CSharpSyntaxTree.ParseText(source), diagnosticsIds);
-        }
+    /// <summary>
+    /// Verifies the output of a source generator.
+    /// </summary>
+    /// <typeparam name="TGenerator">The generator type to use.</typeparam>
+    /// <param name="source">The input source to process.</param>
+    /// <param name="diagnosticsIds">The diagnostic ids to expect for the input source code.</param>
+    private static void VerifyGeneratedDiagnostics<TGenerator>(string source, params string[] diagnosticsIds)
+        where TGenerator : class, ISourceGenerator, new()
+    {
+        VerifyGeneratedDiagnostics<TGenerator>(CSharpSyntaxTree.ParseText(source), diagnosticsIds);
+    }
 
-        /// <summary>
-        /// Verifies the output of a source generator.
-        /// </summary>
-        /// <typeparam name="TGenerator">The generator type to use.</typeparam>
-        /// <param name="syntaxTree">The input source tree to process.</param>
-        /// <param name="diagnosticsIds">The diagnostic ids to expect for the input source code.</param>
-        private static void VerifyGeneratedDiagnostics<TGenerator>(SyntaxTree syntaxTree, params string[] diagnosticsIds)
-            where TGenerator : class, ISourceGenerator, new()
-        {
-            Type observableObjectType = typeof(ObservableObject);
-            Type validationAttributeType = typeof(ValidationAttribute);
+    /// <summary>
+    /// Verifies the output of a source generator.
+    /// </summary>
+    /// <typeparam name="TGenerator">The generator type to use.</typeparam>
+    /// <param name="syntaxTree">The input source tree to process.</param>
+    /// <param name="diagnosticsIds">The diagnostic ids to expect for the input source code.</param>
+    private static void VerifyGeneratedDiagnostics<TGenerator>(SyntaxTree syntaxTree, params string[] diagnosticsIds)
+        where TGenerator : class, ISourceGenerator, new()
+    {
+        Type observableObjectType = typeof(ObservableObject);
+        Type validationAttributeType = typeof(ValidationAttribute);
 
-            IEnumerable<MetadataReference> references =
-                from assembly in AppDomain.CurrentDomain.GetAssemblies()
-                where !assembly.IsDynamic
-                let reference = MetadataReference.CreateFromFile(assembly.Location)
-                select reference;
+        IEnumerable<MetadataReference> references =
+            from assembly in AppDomain.CurrentDomain.GetAssemblies()
+            where !assembly.IsDynamic
+            let reference = MetadataReference.CreateFromFile(assembly.Location)
+            select reference;
 
-            CSharpCompilation compilation = CSharpCompilation.Create(
-                "original",
-                new SyntaxTree[] { syntaxTree },
-                references,
-                new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+        CSharpCompilation compilation = CSharpCompilation.Create(
+            "original",
+            new SyntaxTree[] { syntaxTree },
+            references,
+            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
-            ISourceGenerator generator = new TGenerator();
+        ISourceGenerator generator = new TGenerator();
 
-            CSharpGeneratorDriver driver = CSharpGeneratorDriver.Create(new[] { generator }, parseOptions: (CSharpParseOptions)syntaxTree.Options);
+        CSharpGeneratorDriver driver = CSharpGeneratorDriver.Create(new[] { generator }, parseOptions: (CSharpParseOptions)syntaxTree.Options);
 
-            _ = driver.RunGeneratorsAndUpdateCompilation(compilation, out Compilation outputCompilation, out ImmutableArray<Diagnostic> diagnostics);
+        _ = driver.RunGeneratorsAndUpdateCompilation(compilation, out Compilation outputCompilation, out ImmutableArray<Diagnostic> diagnostics);
 
-            HashSet<string> resultingIds = diagnostics.Select(diagnostic => diagnostic.Id).ToHashSet();
+        HashSet<string> resultingIds = diagnostics.Select(diagnostic => diagnostic.Id).ToHashSet();
 
-            Assert.IsTrue(resultingIds.SetEquals(diagnosticsIds));
+        Assert.IsTrue(resultingIds.SetEquals(diagnosticsIds));
 
-            GC.KeepAlive(observableObjectType);
-            GC.KeepAlive(validationAttributeType);
-        }
+        GC.KeepAlive(observableObjectType);
+        GC.KeepAlive(validationAttributeType);
     }
 }

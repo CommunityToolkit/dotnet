@@ -9,165 +9,164 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CommunityToolkit.HighPerformance.Streams
+namespace CommunityToolkit.HighPerformance.Streams;
+
+/// <summary>
+/// A <see cref="Stream"/> implementation wrapping an <see cref="IBufferWriter{T}"/> instance.
+/// </summary>
+/// <typeparam name="TWriter">The type of buffer writer to use.</typeparam>
+internal sealed partial class IBufferWriterStream<TWriter> : Stream
+    where TWriter : struct, IBufferWriter<byte>
 {
     /// <summary>
-    /// A <see cref="Stream"/> implementation wrapping an <see cref="IBufferWriter{T}"/> instance.
+    /// The target <typeparamref name="TWriter"/> instance to use.
     /// </summary>
-    /// <typeparam name="TWriter">The type of buffer writer to use.</typeparam>
-    internal sealed partial class IBufferWriterStream<TWriter> : Stream
-        where TWriter : struct, IBufferWriter<byte>
+    private readonly TWriter bufferWriter;
+
+    /// <summary>
+    /// Indicates whether or not the current instance has been disposed
+    /// </summary>
+    private bool disposed;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="IBufferWriterStream{TWriter}"/> class.
+    /// </summary>
+    /// <param name="bufferWriter">The target <see cref="IBufferWriter{T}"/> instance to use.</param>
+    public IBufferWriterStream(TWriter bufferWriter)
     {
-        /// <summary>
-        /// The target <typeparamref name="TWriter"/> instance to use.
-        /// </summary>
-        private readonly TWriter bufferWriter;
+        this.bufferWriter = bufferWriter;
+    }
 
-        /// <summary>
-        /// Indicates whether or not the current instance has been disposed
-        /// </summary>
-        private bool disposed;
+    /// <inheritdoc/>
+    public override bool CanRead => false;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="IBufferWriterStream{TWriter}"/> class.
-        /// </summary>
-        /// <param name="bufferWriter">The target <see cref="IBufferWriter{T}"/> instance to use.</param>
-        public IBufferWriterStream(TWriter bufferWriter)
+    /// <inheritdoc/>
+    public override bool CanSeek => false;
+
+    /// <inheritdoc/>
+    public override bool CanWrite
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => !this.disposed;
+    }
+
+    /// <inheritdoc/>
+    public override long Length => throw MemoryStream.GetNotSupportedException();
+
+    /// <inheritdoc/>
+    public override long Position
+    {
+        get => throw MemoryStream.GetNotSupportedException();
+        set => throw MemoryStream.GetNotSupportedException();
+    }
+
+    /// <inheritdoc/>
+    public override Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken)
+    {
+        throw MemoryStream.GetNotSupportedException();
+    }
+
+    /// <inheritdoc/>
+    public override void Flush()
+    {
+    }
+
+    /// <inheritdoc/>
+    public override Task FlushAsync(CancellationToken cancellationToken)
+    {
+        if (cancellationToken.IsCancellationRequested)
         {
-            this.bufferWriter = bufferWriter;
+            return Task.FromCanceled(cancellationToken);
         }
 
-        /// <inheritdoc/>
-        public override bool CanRead => false;
+        return Task.CompletedTask;
+    }
 
-        /// <inheritdoc/>
-        public override bool CanSeek => false;
+    /// <inheritdoc/>
+    public override Task<int> ReadAsync(byte[]? buffer, int offset, int count, CancellationToken cancellationToken)
+    {
+        throw MemoryStream.GetNotSupportedException();
+    }
 
-        /// <inheritdoc/>
-        public override bool CanWrite
+    /// <inheritdoc/>
+    public override Task WriteAsync(byte[]? buffer, int offset, int count, CancellationToken cancellationToken)
+    {
+        if (cancellationToken.IsCancellationRequested)
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => !this.disposed;
+            return Task.FromCanceled(cancellationToken);
         }
 
-        /// <inheritdoc/>
-        public override long Length => throw MemoryStream.GetNotSupportedException();
-
-        /// <inheritdoc/>
-        public override long Position
+        try
         {
-            get => throw MemoryStream.GetNotSupportedException();
-            set => throw MemoryStream.GetNotSupportedException();
-        }
-
-        /// <inheritdoc/>
-        public override Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken)
-        {
-            throw MemoryStream.GetNotSupportedException();
-        }
-
-        /// <inheritdoc/>
-        public override void Flush()
-        {
-        }
-
-        /// <inheritdoc/>
-        public override Task FlushAsync(CancellationToken cancellationToken)
-        {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return Task.FromCanceled(cancellationToken);
-            }
+            Write(buffer, offset, count);
 
             return Task.CompletedTask;
         }
-
-        /// <inheritdoc/>
-        public override Task<int> ReadAsync(byte[]? buffer, int offset, int count, CancellationToken cancellationToken)
+        catch (OperationCanceledException e)
         {
-            throw MemoryStream.GetNotSupportedException();
+            return Task.FromCanceled(e.CancellationToken);
+        }
+        catch (Exception e)
+        {
+            return Task.FromException(e);
+        }
+    }
+
+    /// <inheritdoc/>
+    public override long Seek(long offset, SeekOrigin origin)
+    {
+        throw MemoryStream.GetNotSupportedException();
+    }
+
+    /// <inheritdoc/>
+    public override void SetLength(long value)
+    {
+        throw MemoryStream.GetNotSupportedException();
+    }
+
+    /// <inheritdoc/>
+    public override int Read(byte[]? buffer, int offset, int count)
+    {
+        throw MemoryStream.GetNotSupportedException();
+    }
+
+    /// <inheritdoc/>
+    public override int ReadByte()
+    {
+        throw MemoryStream.GetNotSupportedException();
+    }
+
+    /// <inheritdoc/>
+    public override void Write(byte[]? buffer, int offset, int count)
+    {
+        MemoryStream.ValidateDisposed(this.disposed);
+        MemoryStream.ValidateBuffer(buffer, offset, count);
+
+        Span<byte>
+            source = buffer.AsSpan(offset, count),
+            destination = this.bufferWriter.GetSpan(count);
+
+        if (!source.TryCopyTo(destination))
+        {
+            MemoryStream.ThrowArgumentExceptionForEndOfStreamOnWrite();
         }
 
-        /// <inheritdoc/>
-        public override Task WriteAsync(byte[]? buffer, int offset, int count, CancellationToken cancellationToken)
-        {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return Task.FromCanceled(cancellationToken);
-            }
+        this.bufferWriter.Advance(count);
+    }
 
-            try
-            {
-                Write(buffer, offset, count);
+    /// <inheritdoc/>
+    public override void WriteByte(byte value)
+    {
+        MemoryStream.ValidateDisposed(this.disposed);
 
-                return Task.CompletedTask;
-            }
-            catch (OperationCanceledException e)
-            {
-                return Task.FromCanceled(e.CancellationToken);
-            }
-            catch (Exception e)
-            {
-                return Task.FromException(e);
-            }
-        }
+        this.bufferWriter.GetSpan(1)[0] = value;
 
-        /// <inheritdoc/>
-        public override long Seek(long offset, SeekOrigin origin)
-        {
-            throw MemoryStream.GetNotSupportedException();
-        }
+        this.bufferWriter.Advance(1);
+    }
 
-        /// <inheritdoc/>
-        public override void SetLength(long value)
-        {
-            throw MemoryStream.GetNotSupportedException();
-        }
-
-        /// <inheritdoc/>
-        public override int Read(byte[]? buffer, int offset, int count)
-        {
-            throw MemoryStream.GetNotSupportedException();
-        }
-
-        /// <inheritdoc/>
-        public override int ReadByte()
-        {
-            throw MemoryStream.GetNotSupportedException();
-        }
-
-        /// <inheritdoc/>
-        public override void Write(byte[]? buffer, int offset, int count)
-        {
-            MemoryStream.ValidateDisposed(this.disposed);
-            MemoryStream.ValidateBuffer(buffer, offset, count);
-
-            Span<byte>
-                source = buffer.AsSpan(offset, count),
-                destination = this.bufferWriter.GetSpan(count);
-
-            if (!source.TryCopyTo(destination))
-            {
-                MemoryStream.ThrowArgumentExceptionForEndOfStreamOnWrite();
-            }
-
-            this.bufferWriter.Advance(count);
-        }
-
-        /// <inheritdoc/>
-        public override void WriteByte(byte value)
-        {
-            MemoryStream.ValidateDisposed(this.disposed);
-
-            this.bufferWriter.GetSpan(1)[0] = value;
-
-            this.bufferWriter.Advance(1);
-        }
-
-        /// <inheritdoc/>
-        protected override void Dispose(bool disposing)
-        {
-            this.disposed = true;
-        }
+    /// <inheritdoc/>
+    protected override void Dispose(bool disposing)
+    {
+        this.disposed = true;
     }
 }

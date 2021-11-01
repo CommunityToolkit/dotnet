@@ -7,154 +7,153 @@ using System.Threading.Tasks;
 using CommunityToolkit.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.Extensions
+namespace UnitTests.Extensions;
+
+[TestClass]
+public class Test_TaskExtensions
 {
-    [TestClass]
-    public class Test_TaskExtensions
+    [TestCategory("TaskExtensions")]
+    [TestMethod]
+    public void Test_TaskExtensions_NonGeneric_CompletedTask()
     {
-        [TestCategory("TaskExtensions")]
-        [TestMethod]
-        public void Test_TaskExtensions_NonGeneric_CompletedTask()
-        {
-            _ = Task.CompletedTask.GetResultOrDefault();
-        }
+        _ = Task.CompletedTask.GetResultOrDefault();
+    }
 
-        [TestCategory("TaskExtensions")]
-        [TestMethod]
-        public void Test_TaskExtensions_Generic_ValueType()
-        {
-            TaskCompletionSource<int> tcs = new();
+    [TestCategory("TaskExtensions")]
+    [TestMethod]
+    public void Test_TaskExtensions_Generic_ValueType()
+    {
+        TaskCompletionSource<int> tcs = new();
 
-            Assert.AreEqual(0, tcs.Task.GetResultOrDefault());
+        Assert.AreEqual(0, tcs.Task.GetResultOrDefault());
 
-            tcs.SetResult(42);
+        tcs.SetResult(42);
 
-            Assert.AreEqual(42, tcs.Task.GetResultOrDefault());
-        }
+        Assert.AreEqual(42, tcs.Task.GetResultOrDefault());
+    }
 
-        [TestCategory("TaskExtensions")]
-        [TestMethod]
-        public void Test_TaskExtensions_Generic_ReferenceType()
-        {
-            TaskCompletionSource<string?> tcs = new();
+    [TestCategory("TaskExtensions")]
+    [TestMethod]
+    public void Test_TaskExtensions_Generic_ReferenceType()
+    {
+        TaskCompletionSource<string?> tcs = new();
 
-            Assert.AreEqual(null, tcs.Task.GetResultOrDefault());
+        Assert.AreEqual(null, tcs.Task.GetResultOrDefault());
 
-            tcs.SetResult(nameof(Test_TaskExtensions_Generic_ReferenceType));
+        tcs.SetResult(nameof(Test_TaskExtensions_Generic_ReferenceType));
 
-            Assert.AreEqual(nameof(Test_TaskExtensions_Generic_ReferenceType), tcs.Task.GetResultOrDefault());
-        }
+        Assert.AreEqual(nameof(Test_TaskExtensions_Generic_ReferenceType), tcs.Task.GetResultOrDefault());
+    }
 
-        [TestCategory("TaskExtensions")]
-        [TestMethod]
-        public void Test_TaskExtensions_ResultOrDefault()
-        {
-            TaskCompletionSource<int> tcs = new();
+    [TestCategory("TaskExtensions")]
+    [TestMethod]
+    public void Test_TaskExtensions_ResultOrDefault()
+    {
+        TaskCompletionSource<int> tcs = new();
 
-            Assert.AreEqual(null, ((Task)tcs.Task).GetResultOrDefault());
+        Assert.AreEqual(null, ((Task)tcs.Task).GetResultOrDefault());
 
-            tcs.SetCanceled();
+        tcs.SetCanceled();
 
-            Assert.AreEqual(null, ((Task)tcs.Task).GetResultOrDefault());
+        Assert.AreEqual(null, ((Task)tcs.Task).GetResultOrDefault());
 
-            tcs = new TaskCompletionSource<int>();
+        tcs = new TaskCompletionSource<int>();
 
-            tcs.SetException(new InvalidOperationException("Test"));
+        tcs.SetException(new InvalidOperationException("Test"));
 
-            Assert.AreEqual(null, ((Task)tcs.Task).GetResultOrDefault());
+        Assert.AreEqual(null, ((Task)tcs.Task).GetResultOrDefault());
 
-            tcs = new TaskCompletionSource<int>();
+        tcs = new TaskCompletionSource<int>();
 
-            tcs.SetResult(42);
+        tcs.SetResult(42);
 
-            Assert.AreEqual(42, ((Task)tcs.Task).GetResultOrDefault());
-        }
+        Assert.AreEqual(42, ((Task)tcs.Task).GetResultOrDefault());
+    }
 
-        [TestCategory("TaskExtensions")]
-        [TestMethod]
-        public void Test_TaskExtensions_ResultOrDefault_FromTaskCompleted()
-        {
-            Assert.AreEqual(null, Task.CompletedTask.GetResultOrDefault());
-        }
+    [TestCategory("TaskExtensions")]
+    [TestMethod]
+    public void Test_TaskExtensions_ResultOrDefault_FromTaskCompleted()
+    {
+        Assert.AreEqual(null, Task.CompletedTask.GetResultOrDefault());
+    }
 
-        [TestCategory("TaskExtensions")]
-        [TestMethod]
-        public async Task Test_TaskExtensions_ResultOrDefault_FromAsyncTaskMethodBuilder()
-        {
-            TaskCompletionSource<object?>? tcs = new();
+    [TestCategory("TaskExtensions")]
+    [TestMethod]
+    public async Task Test_TaskExtensions_ResultOrDefault_FromAsyncTaskMethodBuilder()
+    {
+        TaskCompletionSource<object?>? tcs = new();
 
-            Task<string?> taskFromBuilder = GetTaskFromAsyncMethodBuilder("Test", tcs);
+        Task<string?> taskFromBuilder = GetTaskFromAsyncMethodBuilder("Test", tcs);
 
-            Assert.IsNull(((Task)taskFromBuilder).GetResultOrDefault());
-            Assert.IsNull(taskFromBuilder.GetResultOrDefault());
+        Assert.IsNull(((Task)taskFromBuilder).GetResultOrDefault());
+        Assert.IsNull(taskFromBuilder.GetResultOrDefault());
 
-            tcs.SetResult(null);
+        tcs.SetResult(null);
 
-            _ = await taskFromBuilder;
+        _ = await taskFromBuilder;
 
-            Assert.AreEqual(((Task)taskFromBuilder).GetResultOrDefault(), "Test");
-            Assert.AreEqual(taskFromBuilder.GetResultOrDefault(), "Test");
-        }
+        Assert.AreEqual(((Task)taskFromBuilder).GetResultOrDefault(), "Test");
+        Assert.AreEqual(taskFromBuilder.GetResultOrDefault(), "Test");
+    }
 
-        [TestCategory("TaskExtensions")]
-        [TestMethod]
-        public void Test_TaskExtensions_ResultOrDefault_OfT_Int32()
-        {
-            TaskCompletionSource<int> tcs = new();
+    [TestCategory("TaskExtensions")]
+    [TestMethod]
+    public void Test_TaskExtensions_ResultOrDefault_OfT_Int32()
+    {
+        TaskCompletionSource<int> tcs = new();
 
-            Assert.AreEqual(0, tcs.Task.GetResultOrDefault());
+        Assert.AreEqual(0, tcs.Task.GetResultOrDefault());
 
-            tcs.SetCanceled();
+        tcs.SetCanceled();
 
-            Assert.AreEqual(0, tcs.Task.GetResultOrDefault());
+        Assert.AreEqual(0, tcs.Task.GetResultOrDefault());
 
-            tcs = new TaskCompletionSource<int>();
+        tcs = new TaskCompletionSource<int>();
 
-            tcs.SetException(new InvalidOperationException("Test"));
+        tcs.SetException(new InvalidOperationException("Test"));
 
-            Assert.AreEqual(0, tcs.Task.GetResultOrDefault());
+        Assert.AreEqual(0, tcs.Task.GetResultOrDefault());
 
-            tcs = new TaskCompletionSource<int>();
+        tcs = new TaskCompletionSource<int>();
 
-            tcs.SetResult(42);
+        tcs.SetResult(42);
 
-            Assert.AreEqual(42, tcs.Task.GetResultOrDefault());
-        }
+        Assert.AreEqual(42, tcs.Task.GetResultOrDefault());
+    }
 
-        [TestCategory("TaskExtensions")]
-        [TestMethod]
-        public void Test_TaskExtensions_ResultOrDefault_OfT_String()
-        {
-            TaskCompletionSource<string?> tcs = new();
+    [TestCategory("TaskExtensions")]
+    [TestMethod]
+    public void Test_TaskExtensions_ResultOrDefault_OfT_String()
+    {
+        TaskCompletionSource<string?> tcs = new();
 
-            Assert.AreEqual(null, tcs.Task.GetResultOrDefault());
+        Assert.AreEqual(null, tcs.Task.GetResultOrDefault());
 
-            tcs.SetCanceled();
+        tcs.SetCanceled();
 
-            Assert.AreEqual(null, tcs.Task.GetResultOrDefault());
+        Assert.AreEqual(null, tcs.Task.GetResultOrDefault());
 
-            tcs = new TaskCompletionSource<string?>();
+        tcs = new TaskCompletionSource<string?>();
 
-            tcs.SetException(new InvalidOperationException("Test"));
+        tcs.SetException(new InvalidOperationException("Test"));
 
-            Assert.AreEqual(null, tcs.Task.GetResultOrDefault());
+        Assert.AreEqual(null, tcs.Task.GetResultOrDefault());
 
-            tcs = new TaskCompletionSource<string?>();
+        tcs = new TaskCompletionSource<string?>();
 
-            tcs.SetResult("Hello world");
+        tcs.SetResult("Hello world");
 
-            Assert.AreEqual("Hello world", tcs.Task.GetResultOrDefault());
-        }
+        Assert.AreEqual("Hello world", tcs.Task.GetResultOrDefault());
+    }
 
-        // Creates a Task<T> of a given type which is actually an instance of
-        // System.Runtime.CompilerServices.AsyncTaskMethodBuilder<TResult>.AsyncStateMachineBox<TStateMachine>.
-        // See https://source.dot.net/#System.Private.CoreLib/AsyncTaskMethodBuilderT.cs,f8f35fd356112b30.
-        // This is needed to verify that the extension also works when the input Task<T> is of a derived type.
-        private static async Task<T?> GetTaskFromAsyncMethodBuilder<T>(T? result, TaskCompletionSource<object?> tcs)
-        {
-            _ = await tcs.Task;
+    // Creates a Task<T> of a given type which is actually an instance of
+    // System.Runtime.CompilerServices.AsyncTaskMethodBuilder<TResult>.AsyncStateMachineBox<TStateMachine>.
+    // See https://source.dot.net/#System.Private.CoreLib/AsyncTaskMethodBuilderT.cs,f8f35fd356112b30.
+    // This is needed to verify that the extension also works when the input Task<T> is of a derived type.
+    private static async Task<T?> GetTaskFromAsyncMethodBuilder<T>(T? result, TaskCompletionSource<object?> tcs)
+    {
+        _ = await tcs.Task;
 
-            return result;
-        }
+        return result;
     }
 }

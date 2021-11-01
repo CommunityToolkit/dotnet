@@ -5,35 +5,34 @@
 using System.Buffers;
 using System.Collections.Generic;
 
-namespace UnitTests.HighPerformance.Shared.Buffers
+namespace UnitTests.HighPerformance.Shared.Buffers;
+
+public sealed class TrackingArrayPool<T> : ArrayPool<T>
 {
-    public sealed class TrackingArrayPool<T> : ArrayPool<T>
+    private readonly ArrayPool<T> pool = ArrayPool<T>.Create();
+
+    private readonly HashSet<T[]> arrays = new();
+
+    /// <summary>
+    /// Gets the collection of currently rented out arrays
+    /// </summary>
+    public IReadOnlyCollection<T[]> RentedArrays => this.arrays;
+
+    /// <inheritdoc/>
+    public override T[] Rent(int minimumLength)
     {
-        private readonly ArrayPool<T> pool = ArrayPool<T>.Create();
+        T[] array = this.pool.Rent(minimumLength);
 
-        private readonly HashSet<T[]> arrays = new();
+        _ = this.arrays.Add(array);
 
-        /// <summary>
-        /// Gets the collection of currently rented out arrays
-        /// </summary>
-        public IReadOnlyCollection<T[]> RentedArrays => this.arrays;
+        return array;
+    }
 
-        /// <inheritdoc/>
-        public override T[] Rent(int minimumLength)
-        {
-            T[] array = this.pool.Rent(minimumLength);
+    /// <inheritdoc/>
+    public override void Return(T[] array, bool clearArray = false)
+    {
+        _ = this.arrays.Remove(array);
 
-            _ = this.arrays.Add(array);
-
-            return array;
-        }
-
-        /// <inheritdoc/>
-        public override void Return(T[] array, bool clearArray = false)
-        {
-            _ = this.arrays.Remove(array);
-
-            this.pool.Return(array, clearArray);
-        }
+        this.pool.Return(array, clearArray);
     }
 }

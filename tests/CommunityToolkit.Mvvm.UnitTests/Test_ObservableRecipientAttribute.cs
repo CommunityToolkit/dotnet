@@ -12,95 +12,94 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.Mvvm
+namespace UnitTests.Mvvm;
+
+[SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1601", Justification = "Type only used for testing")]
+[TestClass]
+public partial class Test_ObservableRecipientAttribute
 {
-    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1601", Justification = "Type only used for testing")]
-    [TestClass]
-    public partial class Test_ObservableRecipientAttribute
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void Test_ObservableRecipientAttribute_Events()
     {
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void Test_ObservableRecipientAttribute_Events()
+        Person? model = new();
+        List<PropertyChangedEventArgs>? args = new();
+
+        model.PropertyChanged += (s, e) => args.Add(e);
+
+        Assert.IsFalse(model.HasErrors);
+
+        model.Name = "No";
+
+        Assert.IsTrue(model.HasErrors);
+        Assert.AreEqual(args.Count, 2);
+        Assert.AreEqual(args[0].PropertyName, nameof(Person.Name));
+        Assert.AreEqual(args[1].PropertyName, nameof(INotifyDataErrorInfo.HasErrors));
+
+        model.Name = "Valid";
+
+        Assert.IsFalse(model.HasErrors);
+        Assert.AreEqual(args.Count, 4);
+        Assert.AreEqual(args[2].PropertyName, nameof(Person.Name));
+        Assert.AreEqual(args[3].PropertyName, nameof(INotifyDataErrorInfo.HasErrors));
+
+        Assert.IsNotNull(typeof(Person).GetProperty("Messenger", BindingFlags.Instance | BindingFlags.NonPublic));
+        Assert.AreEqual(typeof(Person).GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic).Length, 0);
+    }
+
+    [ObservableRecipient]
+    public partial class Person : ObservableValidator
+    {
+        public Person()
         {
-            Person? model = new();
-            List<PropertyChangedEventArgs>? args = new();
-
-            model.PropertyChanged += (s, e) => args.Add(e);
-
-            Assert.IsFalse(model.HasErrors);
-
-            model.Name = "No";
-
-            Assert.IsTrue(model.HasErrors);
-            Assert.AreEqual(args.Count, 2);
-            Assert.AreEqual(args[0].PropertyName, nameof(Person.Name));
-            Assert.AreEqual(args[1].PropertyName, nameof(INotifyDataErrorInfo.HasErrors));
-
-            model.Name = "Valid";
-
-            Assert.IsFalse(model.HasErrors);
-            Assert.AreEqual(args.Count, 4);
-            Assert.AreEqual(args[2].PropertyName, nameof(Person.Name));
-            Assert.AreEqual(args[3].PropertyName, nameof(INotifyDataErrorInfo.HasErrors));
-
-            Assert.IsNotNull(typeof(Person).GetProperty("Messenger", BindingFlags.Instance | BindingFlags.NonPublic));
-            Assert.AreEqual(typeof(Person).GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic).Length, 0);
+            Messenger = WeakReferenceMessenger.Default;
         }
 
-        [ObservableRecipient]
-        public partial class Person : ObservableValidator
+        private string? name;
+
+        [MinLength(4)]
+        [MaxLength(20)]
+        [Required]
+        public string? Name
         {
-            public Person()
-            {
-                Messenger = WeakReferenceMessenger.Default;
-            }
-
-            private string? name;
-
-            [MinLength(4)]
-            [MaxLength(20)]
-            [Required]
-            public string? Name
-            {
-                get => this.name;
-                set => SetProperty(ref this.name, value, true);
-            }
-
-            public void TestCompile()
-            {
-                // Validates that the method Broadcast is correctly being generated
-                Broadcast(0, 1, nameof(TestCompile));
-            }
+            get => this.name;
+            set => SetProperty(ref this.name, value, true);
         }
 
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void Test_ObservableRecipientAttribute_AbstractConstructors()
+        public void TestCompile()
         {
-            ConstructorInfo[]? ctors = typeof(AbstractPerson).GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic);
-
-            Assert.AreEqual(ctors.Length, 2);
-            Assert.IsTrue(ctors.All(static ctor => ctor.IsFamily));
+            // Validates that the method Broadcast is correctly being generated
+            Broadcast(0, 1, nameof(TestCompile));
         }
+    }
 
-        [ObservableRecipient]
-        public abstract partial class AbstractPerson : ObservableObject
-        {
-        }
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void Test_ObservableRecipientAttribute_AbstractConstructors()
+    {
+        ConstructorInfo[]? ctors = typeof(AbstractPerson).GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic);
 
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void Test_ObservableRecipientAttribute_NonAbstractConstructors()
-        {
-            ConstructorInfo[]? ctors = typeof(NonAbstractPerson).GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        Assert.AreEqual(ctors.Length, 2);
+        Assert.IsTrue(ctors.All(static ctor => ctor.IsFamily));
+    }
 
-            Assert.AreEqual(ctors.Length, 2);
-            Assert.IsTrue(ctors.All(static ctor => ctor.IsPublic));
-        }
+    [ObservableRecipient]
+    public abstract partial class AbstractPerson : ObservableObject
+    {
+    }
 
-        [ObservableRecipient]
-        public partial class NonAbstractPerson : ObservableObject
-        {
-        }
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void Test_ObservableRecipientAttribute_NonAbstractConstructors()
+    {
+        ConstructorInfo[]? ctors = typeof(NonAbstractPerson).GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+        Assert.AreEqual(ctors.Length, 2);
+        Assert.IsTrue(ctors.All(static ctor => ctor.IsPublic));
+    }
+
+    [ObservableRecipient]
+    public partial class NonAbstractPerson : ObservableObject
+    {
     }
 }

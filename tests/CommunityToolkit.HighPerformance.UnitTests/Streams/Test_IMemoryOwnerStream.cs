@@ -8,28 +8,27 @@ using CommunityToolkit.HighPerformance;
 using CommunityToolkit.HighPerformance.Buffers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.HighPerformance.Streams
+namespace UnitTests.HighPerformance.Streams;
+
+[TestClass]
+public class Test_IMemoryOwnerStream
 {
-    [TestClass]
-    public class Test_IMemoryOwnerStream
+    [TestCategory("IMemoryOwnerStream")]
+    [TestMethod]
+    public void Test_IMemoryOwnerStream_Lifecycle()
     {
-        [TestCategory("IMemoryOwnerStream")]
-        [TestMethod]
-        public void Test_IMemoryOwnerStream_Lifecycle()
-        {
-            MemoryOwner<byte> buffer = MemoryOwner<byte>.Allocate(100);
+        MemoryOwner<byte> buffer = MemoryOwner<byte>.Allocate(100);
 
-            Stream stream = buffer.AsStream();
+        Stream stream = buffer.AsStream();
 
-            Assert.IsTrue(stream.CanRead);
-            Assert.IsTrue(stream.CanSeek);
-            Assert.IsTrue(stream.CanWrite);
-            Assert.AreEqual(stream.Length, buffer.Length);
-            Assert.AreEqual(stream.Position, 0);
+        Assert.IsTrue(stream.CanRead);
+        Assert.IsTrue(stream.CanSeek);
+        Assert.IsTrue(stream.CanWrite);
+        Assert.AreEqual(stream.Length, buffer.Length);
+        Assert.AreEqual(stream.Position, 0);
 
-            stream.Dispose();
+        stream.Dispose();
 
-            _ = Assert.ThrowsException<ObjectDisposedException>(() => buffer.Memory);
-        }
+        _ = Assert.ThrowsException<ObjectDisposedException>(() => buffer.Memory);
     }
 }

@@ -4,33 +4,32 @@
 
 #if !NETSTANDARD2_1_OR_GREATER
 
-namespace System.Diagnostics.CodeAnalysis
+namespace System.Diagnostics.CodeAnalysis;
+
+/// <summary>
+/// Specifies that when a method returns <see cref="ReturnValue"/>, the parameter
+/// will not be null even if the corresponding type allows it.
+/// </summary>
+/// <remarks>Internal copy of the .NET Standard 2.1 attribute.</remarks>
+[AttributeUsage(AttributeTargets.Parameter)]
+internal sealed class NotNullWhenAttribute : Attribute
 {
     /// <summary>
-    /// Specifies that when a method returns <see cref="ReturnValue"/>, the parameter
-    /// will not be null even if the corresponding type allows it.
+    /// Initializes a new instance of the <see cref="NotNullWhenAttribute"/> class.
     /// </summary>
-    /// <remarks>Internal copy of the .NET Standard 2.1 attribute.</remarks>
-    [AttributeUsage(AttributeTargets.Parameter)]
-    internal sealed class NotNullWhenAttribute : Attribute
+    /// <param name="returnValue">
+    /// The return value condition. If the method returns this value,
+    /// the associated parameter will not be <see langword="null"/>.
+    /// </param>
+    public NotNullWhenAttribute(bool returnValue)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NotNullWhenAttribute"/> class.
-        /// </summary>
-        /// <param name="returnValue">
-        /// The return value condition. If the method returns this value,
-        /// the associated parameter will not be <see langword="null"/>.
-        /// </param>
-        public NotNullWhenAttribute(bool returnValue)
-        {
-            ReturnValue = returnValue;
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the return value should be <see langword="true"/>.
-        /// </summary>
-        public bool ReturnValue { get; }
+        ReturnValue = returnValue;
     }
+
+    /// <summary>
+    /// Gets a value indicating whether the return value should be <see langword="true"/>.
+    /// </summary>
+    public bool ReturnValue { get; }
 }
 
 #endif

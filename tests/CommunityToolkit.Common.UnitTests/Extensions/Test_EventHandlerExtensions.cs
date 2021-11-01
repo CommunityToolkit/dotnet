@@ -7,132 +7,131 @@ using System.Threading.Tasks;
 using CommunityToolkit.Common.Deferred;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.Extensions
+namespace UnitTests.Extensions;
+
+[TestClass]
+public class Test_EventHandlerExtensions
 {
-    [TestClass]
-    public class Test_EventHandlerExtensions
+    [TestCategory("Deferred")]
+    [TestMethod]
+    public void Test_EventHandlerExtensions_GettingDeferralCausesAwait()
     {
-        [TestCategory("Deferred")]
-        [TestMethod]
-        public void Test_EventHandlerExtensions_GettingDeferralCausesAwait()
+        TaskCompletionSource<bool>? tsc = new();
+
+        TestClass? testClass = new();
+
+        testClass.TestEvent += async (s, e) =>
         {
-            TaskCompletionSource<bool>? tsc = new();
+            EventDeferral? deferral = e.GetDeferral();
 
-            TestClass? testClass = new();
+            _ = await tsc.Task;
 
-            testClass.TestEvent += async (s, e) =>
+            deferral.Complete();
+        };
+
+        Task? handlersTask = testClass.RaiseTestEvent();
+
+        Assert.IsFalse(handlersTask.IsCompleted);
+
+        tsc.SetResult(true);
+
+        Assert.IsTrue(handlersTask.IsCompleted);
+    }
+
+    [TestCategory("Deferred")]
+    [TestMethod]
+    public void Test_EventHandlerExtensions_NotGettingDeferralCausesNoAwait()
+    {
+        TaskCompletionSource<bool>? tsc = new();
+
+        TestClass? testClass = new();
+
+        testClass.TestEvent += async (s, e) =>
+        {
+            _ = await tsc.Task;
+        };
+
+        Task? handlersTask = testClass.RaiseTestEvent();
+
+        Assert.IsTrue(handlersTask.IsCompleted);
+
+        tsc.SetResult(true);
+    }
+
+    [TestCategory("Deferred")]
+    [TestMethod]
+    public void Test_EventHandlerExtensions_UsingDeferralCausesAwait()
+    {
+        TaskCompletionSource<bool>? tsc = new();
+
+        TestClass? testClass = new();
+
+        testClass.TestEvent += async (s, e) =>
+        {
+            using (e.GetDeferral())
             {
-                EventDeferral? deferral = e.GetDeferral();
-
                 _ = await tsc.Task;
+            }
+        };
 
-                deferral.Complete();
-            };
+        Task? handlersTask = testClass.RaiseTestEvent();
 
-            Task? handlersTask = testClass.RaiseTestEvent();
+        Assert.IsFalse(handlersTask.IsCompleted);
 
-            Assert.IsFalse(handlersTask.IsCompleted);
+        tsc.SetResult(true);
 
-            tsc.SetResult(true);
+        Assert.IsTrue(handlersTask.IsCompleted);
+    }
 
-            Assert.IsTrue(handlersTask.IsCompleted);
-        }
-
-        [TestCategory("Deferred")]
-        [TestMethod]
-        public void Test_EventHandlerExtensions_NotGettingDeferralCausesNoAwait()
+    [TestCategory("Deferred")]
+    [DataTestMethod]
+    [DataRow(0, 1)]
+    [DataRow(1, 0)]
+    public void Test_EventHandlerExtensions_MultipleHandlersCauseAwait(int firstToReleaseDeferral, int lastToReleaseDeferral)
+    {
+        TaskCompletionSource<bool>[]? tsc = new[]
         {
-            TaskCompletionSource<bool>? tsc = new();
-
-            TestClass? testClass = new();
-
-            testClass.TestEvent += async (s, e) =>
-            {
-                _ = await tsc.Task;
-            };
-
-            Task? handlersTask = testClass.RaiseTestEvent();
-
-            Assert.IsTrue(handlersTask.IsCompleted);
-
-            tsc.SetResult(true);
-        }
-
-        [TestCategory("Deferred")]
-        [TestMethod]
-        public void Test_EventHandlerExtensions_UsingDeferralCausesAwait()
-        {
-            TaskCompletionSource<bool>? tsc = new();
-
-            TestClass? testClass = new();
-
-            testClass.TestEvent += async (s, e) =>
-            {
-                using (e.GetDeferral())
-                {
-                    _ = await tsc.Task;
-                }
-            };
-
-            Task? handlersTask = testClass.RaiseTestEvent();
-
-            Assert.IsFalse(handlersTask.IsCompleted);
-
-            tsc.SetResult(true);
-
-            Assert.IsTrue(handlersTask.IsCompleted);
-        }
-
-        [TestCategory("Deferred")]
-        [DataTestMethod]
-        [DataRow(0, 1)]
-        [DataRow(1, 0)]
-        public void Test_EventHandlerExtensions_MultipleHandlersCauseAwait(int firstToReleaseDeferral, int lastToReleaseDeferral)
-        {
-            TaskCompletionSource<bool>[]? tsc = new[]
-            {
                 new TaskCompletionSource<bool>(),
                 new TaskCompletionSource<bool>()
             };
 
-            TestClass? testClass = new();
+        TestClass? testClass = new();
 
-            testClass.TestEvent += async (s, e) =>
-            {
-                EventDeferral? deferral = e.GetDeferral();
-
-                _ = await tsc[0].Task;
-
-                deferral.Complete();
-            };
-
-            testClass.TestEvent += async (s, e) =>
-            {
-                EventDeferral? deferral = e.GetDeferral();
-
-                _ = await tsc[1].Task;
-
-                deferral.Complete();
-            };
-
-            Task? handlersTask = testClass.RaiseTestEvent();
-
-            Assert.IsFalse(handlersTask.IsCompleted);
-
-            tsc[firstToReleaseDeferral].SetResult(true);
-
-            Assert.IsFalse(handlersTask.IsCompleted);
-
-            tsc[lastToReleaseDeferral].SetResult(true);
-
-            Assert.IsTrue(handlersTask.IsCompleted);
-        }
-
-        private class TestClass
+        testClass.TestEvent += async (s, e) =>
         {
-            public event EventHandler<DeferredEventArgs>? TestEvent;
+            EventDeferral? deferral = e.GetDeferral();
 
-            public Task RaiseTestEvent() => TestEvent.InvokeAsync(this, new DeferredEventArgs());
-        }
+            _ = await tsc[0].Task;
+
+            deferral.Complete();
+        };
+
+        testClass.TestEvent += async (s, e) =>
+        {
+            EventDeferral? deferral = e.GetDeferral();
+
+            _ = await tsc[1].Task;
+
+            deferral.Complete();
+        };
+
+        Task? handlersTask = testClass.RaiseTestEvent();
+
+        Assert.IsFalse(handlersTask.IsCompleted);
+
+        tsc[firstToReleaseDeferral].SetResult(true);
+
+        Assert.IsFalse(handlersTask.IsCompleted);
+
+        tsc[lastToReleaseDeferral].SetResult(true);
+
+        Assert.IsTrue(handlersTask.IsCompleted);
+    }
+
+    private class TestClass
+    {
+        public event EventHandler<DeferredEventArgs>? TestEvent;
+
+        public Task RaiseTestEvent() => TestEvent.InvokeAsync(this, new DeferredEventArgs());
     }
 }

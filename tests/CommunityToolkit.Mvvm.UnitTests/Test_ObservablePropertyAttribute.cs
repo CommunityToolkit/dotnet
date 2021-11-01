@@ -16,379 +16,378 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 #nullable enable
 
-namespace UnitTests.Mvvm
+namespace UnitTests.Mvvm;
+
+[SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1601", Justification = "Type only used for testing")]
+[TestClass]
+public partial class Test_ObservablePropertyAttribute
 {
-    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1601", Justification = "Type only used for testing")]
-    [TestClass]
-    public partial class Test_ObservablePropertyAttribute
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void Test_ObservablePropertyAttribute_Events()
     {
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void Test_ObservablePropertyAttribute_Events()
+        SampleModel? model = new();
+
+        (PropertyChangingEventArgs, int) changing = default;
+        (PropertyChangedEventArgs, int) changed = default;
+
+        model.PropertyChanging += (s, e) =>
         {
-            SampleModel? model = new();
+            Assert.IsNull(changing.Item1);
+            Assert.IsNull(changed.Item1);
+            Assert.AreSame(model, s);
+            Assert.IsNotNull(s);
+            Assert.IsNotNull(e);
 
-            (PropertyChangingEventArgs, int) changing = default;
-            (PropertyChangedEventArgs, int) changed = default;
+            changing = (e, model.Data);
+        };
 
-            model.PropertyChanging += (s, e) =>
-            {
-                Assert.IsNull(changing.Item1);
-                Assert.IsNull(changed.Item1);
-                Assert.AreSame(model, s);
-                Assert.IsNotNull(s);
-                Assert.IsNotNull(e);
+        model.PropertyChanged += (s, e) =>
+        {
+            Assert.IsNotNull(changing.Item1);
+            Assert.IsNull(changed.Item1);
+            Assert.AreSame(model, s);
+            Assert.IsNotNull(s);
+            Assert.IsNotNull(e);
 
-                changing = (e, model.Data);
-            };
+            changed = (e, model.Data);
+        };
 
-            model.PropertyChanged += (s, e) =>
-            {
-                Assert.IsNotNull(changing.Item1);
-                Assert.IsNull(changed.Item1);
-                Assert.AreSame(model, s);
-                Assert.IsNotNull(s);
-                Assert.IsNotNull(e);
+        model.Data = 42;
 
-                changed = (e, model.Data);
-            };
+        Assert.AreEqual(changing.Item1?.PropertyName, nameof(SampleModel.Data));
+        Assert.AreEqual(changing.Item2, 0);
+        Assert.AreEqual(changed.Item1?.PropertyName, nameof(SampleModel.Data));
+        Assert.AreEqual(changed.Item2, 42);
+    }
 
-            model.Data = 42;
+    // See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4225
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void Test_ObservablePropertyAttributeWithinRegion_Events()
+    {
+        SampleModel? model = new();
 
-            Assert.AreEqual(changing.Item1?.PropertyName, nameof(SampleModel.Data));
-            Assert.AreEqual(changing.Item2, 0);
-            Assert.AreEqual(changed.Item1?.PropertyName, nameof(SampleModel.Data));
-            Assert.AreEqual(changed.Item2, 42);
+        (PropertyChangingEventArgs, int) changing = default;
+        (PropertyChangedEventArgs, int) changed = default;
+
+        model.PropertyChanging += (s, e) =>
+        {
+            Assert.IsNull(changing.Item1);
+            Assert.IsNull(changed.Item1);
+            Assert.AreSame(model, s);
+            Assert.IsNotNull(s);
+            Assert.IsNotNull(e);
+
+            changing = (e, model.Counter);
+        };
+
+        model.PropertyChanged += (s, e) =>
+        {
+            Assert.IsNotNull(changing.Item1);
+            Assert.IsNull(changed.Item1);
+            Assert.AreSame(model, s);
+            Assert.IsNotNull(s);
+            Assert.IsNotNull(e);
+
+            changed = (e, model.Counter);
+        };
+
+        model.Counter = 42;
+
+        Assert.AreEqual(changing.Item1?.PropertyName, nameof(SampleModel.Counter));
+        Assert.AreEqual(changing.Item2, 0);
+        Assert.AreEqual(changed.Item1?.PropertyName, nameof(SampleModel.Counter));
+        Assert.AreEqual(changed.Item2, 42);
+    }
+
+    // See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4225
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void Test_ObservablePropertyAttributeRightBelowRegion_Events()
+    {
+        SampleModel? model = new();
+
+        (PropertyChangingEventArgs, string?) changing = default;
+        (PropertyChangedEventArgs, string?) changed = default;
+
+        model.PropertyChanging += (s, e) =>
+        {
+            Assert.IsNull(changing.Item1);
+            Assert.IsNull(changed.Item1);
+            Assert.AreSame(model, s);
+            Assert.IsNotNull(s);
+            Assert.IsNotNull(e);
+
+            changing = (e, model.Name);
+        };
+
+        model.PropertyChanged += (s, e) =>
+        {
+            Assert.IsNotNull(changing.Item1);
+            Assert.IsNull(changed.Item1);
+            Assert.AreSame(model, s);
+            Assert.IsNotNull(s);
+            Assert.IsNotNull(e);
+
+            changed = (e, model.Name);
+        };
+
+        model.Name = "Bob";
+
+        Assert.AreEqual(changing.Item1?.PropertyName, nameof(SampleModel.Name));
+        Assert.AreEqual(changing.Item2, null);
+        Assert.AreEqual(changed.Item1?.PropertyName, nameof(SampleModel.Name));
+        Assert.AreEqual(changed.Item2, "Bob");
+    }
+
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void Test_AlsoNotifyChangeForAttribute_Events()
+    {
+        DependentPropertyModel? model = new();
+
+        List<string?> propertyNames = new();
+
+        model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
+
+        model.Name = "Bob";
+        model.Surname = "Ross";
+
+        CollectionAssert.AreEqual(new[] { nameof(model.Name), nameof(model.FullName), nameof(model.Alias), nameof(model.Surname), nameof(model.FullName), nameof(model.Alias) }, propertyNames);
+    }
+
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void Test_ValidationAttributes()
+    {
+        PropertyInfo? nameProperty = typeof(MyFormViewModel).GetProperty(nameof(MyFormViewModel.Name))!;
+
+        Assert.IsNotNull(nameProperty.GetCustomAttribute<RequiredAttribute>());
+        Assert.IsNotNull(nameProperty.GetCustomAttribute<MinLengthAttribute>());
+        Assert.AreEqual(nameProperty.GetCustomAttribute<MinLengthAttribute>()!.Length, 1);
+        Assert.IsNotNull(nameProperty.GetCustomAttribute<MaxLengthAttribute>());
+        Assert.AreEqual(nameProperty.GetCustomAttribute<MaxLengthAttribute>()!.Length, 100);
+
+        PropertyInfo? ageProperty = typeof(MyFormViewModel).GetProperty(nameof(MyFormViewModel.Age))!;
+
+        Assert.IsNotNull(ageProperty.GetCustomAttribute<RangeAttribute>());
+        Assert.AreEqual(ageProperty.GetCustomAttribute<RangeAttribute>()!.Minimum, 0);
+        Assert.AreEqual(ageProperty.GetCustomAttribute<RangeAttribute>()!.Maximum, 120);
+
+        PropertyInfo? emailProperty = typeof(MyFormViewModel).GetProperty(nameof(MyFormViewModel.Email))!;
+
+        Assert.IsNotNull(emailProperty.GetCustomAttribute<EmailAddressAttribute>());
+
+        PropertyInfo? comboProperty = typeof(MyFormViewModel).GetProperty(nameof(MyFormViewModel.IfThisWorksThenThatsGreat))!;
+
+        TestValidationAttribute testAttribute = comboProperty.GetCustomAttribute<TestValidationAttribute>()!;
+
+        Assert.IsNotNull(testAttribute);
+        Assert.IsNull(testAttribute.O);
+        Assert.AreEqual(testAttribute.T, typeof(SampleModel));
+        Assert.AreEqual(testAttribute.Flag, true);
+        Assert.AreEqual(testAttribute.D, 6.28);
+        CollectionAssert.AreEqual(testAttribute.Names, new[] { "Bob", "Ross" });
+
+        object[]? nestedArray = (object[]?)testAttribute.NestedArray;
+
+        Assert.IsNotNull(nestedArray);
+        Assert.AreEqual(nestedArray!.Length, 3);
+        Assert.AreEqual(nestedArray[0], 1);
+        Assert.AreEqual(nestedArray[1], "Hello");
+        Assert.IsTrue(nestedArray[2] is int[]);
+        CollectionAssert.AreEqual((int[])nestedArray[2], new[] { 2, 3, 4 });
+
+        Assert.AreEqual(testAttribute.Animal, Animal.Llama);
+    }
+
+    // See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4216
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void Test_ObservablePropertyWithValueNamedField()
+    {
+        ModelWithValueProperty? model = new();
+
+        List<string?> propertyNames = new();
+
+        model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
+
+        model.Value = "Hello world";
+
+        Assert.AreEqual(model.Value, "Hello world");
+
+        CollectionAssert.AreEqual(new[] { nameof(model.Value) }, propertyNames);
+    }
+
+    // See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4216
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void Test_ObservablePropertyWithValueNamedField_WithValidationAttributes()
+    {
+        ModelWithValuePropertyWithValidation? model = new();
+
+        List<string?> propertyNames = new();
+
+        model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
+
+        model.Value = "Hello world";
+
+        Assert.AreEqual(model.Value, "Hello world");
+
+        CollectionAssert.AreEqual(new[] { nameof(model.Value) }, propertyNames);
+    }
+
+    // See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4184
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void Test_GeneratedPropertiesWithValidationAttributesOverFields()
+    {
+        ViewModelWithValidatableGeneratedProperties? model = new();
+
+        List<string?> propertyNames = new();
+
+        model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
+
+        // Assign these fields directly to bypass the validation that is executed in the generated setters.
+        // We only need those generated properties to be there to check whether they are correctly detected.
+        model.first = "A";
+        model.last = "This is a very long name that exceeds the maximum length of 60 for this property";
+
+        Assert.IsFalse(model.HasErrors);
+
+        model.RunValidation();
+
+        Assert.IsTrue(model.HasErrors);
+
+        ValidationResult[] validationErrors = model.GetErrors().ToArray();
+
+        Assert.AreEqual(validationErrors.Length, 2);
+
+        CollectionAssert.AreEqual(new[] { nameof(ViewModelWithValidatableGeneratedProperties.First) }, validationErrors[0].MemberNames.ToArray());
+        CollectionAssert.AreEqual(new[] { nameof(ViewModelWithValidatableGeneratedProperties.Last) }, validationErrors[1].MemberNames.ToArray());
+    }
+
+    public partial class SampleModel : ObservableObject
+    {
+        /// <summary>
+        /// This is a sample data field within <see cref="SampleModel"/> of type <see cref="int"/>.
+        /// </summary>
+        [ObservableProperty]
+        private int data;
+
+        #region More properties
+
+        [ObservableProperty]
+        private int counter;
+
+        #endregion
+
+        [ObservableProperty]
+        private string? name;
+    }
+
+    [INotifyPropertyChanged]
+    public sealed partial class DependentPropertyModel
+    {
+        [ObservableProperty]
+        [AlsoNotifyChangeFor(nameof(FullName))]
+        [AlsoNotifyChangeFor(nameof(Alias))]
+        private string? name;
+
+        [ObservableProperty]
+        [AlsoNotifyChangeFor(nameof(FullName), nameof(Alias))]
+        private string? surname;
+
+        public string FullName => $"{Name} {Surname}";
+
+        public string Alias => $"{Name?.ToLower()}{Surname?.ToLower()}";
+    }
+
+    public partial class MyFormViewModel : ObservableValidator
+    {
+        [ObservableProperty]
+        [Required]
+        [MinLength(1)]
+        [MaxLength(100)]
+        private string? name;
+
+        [ObservableProperty]
+        [Range(0, 120)]
+        private int age;
+
+        [ObservableProperty]
+        [EmailAddress]
+        private string? email;
+
+        [ObservableProperty]
+        [TestValidation(null, typeof(SampleModel), true, 6.28, new[] { "Bob", "Ross" }, NestedArray = new object[] { 1, "Hello", new int[] { 2, 3, 4 } }, Animal = Animal.Llama)]
+        private int ifThisWorksThenThatsGreat;
+    }
+
+    private sealed class TestValidationAttribute : ValidationAttribute
+    {
+        public TestValidationAttribute(object? o, Type t, bool flag, double d, string[] names)
+        {
+            O = o;
+            T = t;
+            Flag = flag;
+            D = d;
+            Names = names;
         }
 
-        // See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4225
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void Test_ObservablePropertyAttributeWithinRegion_Events()
-        {
-            SampleModel? model = new();
-
-            (PropertyChangingEventArgs, int) changing = default;
-            (PropertyChangedEventArgs, int) changed = default;
-
-            model.PropertyChanging += (s, e) =>
-            {
-                Assert.IsNull(changing.Item1);
-                Assert.IsNull(changed.Item1);
-                Assert.AreSame(model, s);
-                Assert.IsNotNull(s);
-                Assert.IsNotNull(e);
-
-                changing = (e, model.Counter);
-            };
-
-            model.PropertyChanged += (s, e) =>
-            {
-                Assert.IsNotNull(changing.Item1);
-                Assert.IsNull(changed.Item1);
-                Assert.AreSame(model, s);
-                Assert.IsNotNull(s);
-                Assert.IsNotNull(e);
-
-                changed = (e, model.Counter);
-            };
-
-            model.Counter = 42;
-
-            Assert.AreEqual(changing.Item1?.PropertyName, nameof(SampleModel.Counter));
-            Assert.AreEqual(changing.Item2, 0);
-            Assert.AreEqual(changed.Item1?.PropertyName, nameof(SampleModel.Counter));
-            Assert.AreEqual(changed.Item2, 42);
-        }
-
-        // See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4225
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void Test_ObservablePropertyAttributeRightBelowRegion_Events()
-        {
-            SampleModel? model = new();
-
-            (PropertyChangingEventArgs, string?) changing = default;
-            (PropertyChangedEventArgs, string?) changed = default;
-
-            model.PropertyChanging += (s, e) =>
-            {
-                Assert.IsNull(changing.Item1);
-                Assert.IsNull(changed.Item1);
-                Assert.AreSame(model, s);
-                Assert.IsNotNull(s);
-                Assert.IsNotNull(e);
-
-                changing = (e, model.Name);
-            };
-
-            model.PropertyChanged += (s, e) =>
-            {
-                Assert.IsNotNull(changing.Item1);
-                Assert.IsNull(changed.Item1);
-                Assert.AreSame(model, s);
-                Assert.IsNotNull(s);
-                Assert.IsNotNull(e);
-
-                changed = (e, model.Name);
-            };
-
-            model.Name = "Bob";
-
-            Assert.AreEqual(changing.Item1?.PropertyName, nameof(SampleModel.Name));
-            Assert.AreEqual(changing.Item2, null);
-            Assert.AreEqual(changed.Item1?.PropertyName, nameof(SampleModel.Name));
-            Assert.AreEqual(changed.Item2, "Bob");
-        }
-
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void Test_AlsoNotifyChangeForAttribute_Events()
-        {
-            DependentPropertyModel? model = new();
-
-            List<string?> propertyNames = new();
-
-            model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
-
-            model.Name = "Bob";
-            model.Surname = "Ross";
-
-            CollectionAssert.AreEqual(new[] { nameof(model.Name), nameof(model.FullName), nameof(model.Alias), nameof(model.Surname), nameof(model.FullName), nameof(model.Alias) }, propertyNames);
-        }
-
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void Test_ValidationAttributes()
-        {
-            PropertyInfo? nameProperty = typeof(MyFormViewModel).GetProperty(nameof(MyFormViewModel.Name))!;
-
-            Assert.IsNotNull(nameProperty.GetCustomAttribute<RequiredAttribute>());
-            Assert.IsNotNull(nameProperty.GetCustomAttribute<MinLengthAttribute>());
-            Assert.AreEqual(nameProperty.GetCustomAttribute<MinLengthAttribute>()!.Length, 1);
-            Assert.IsNotNull(nameProperty.GetCustomAttribute<MaxLengthAttribute>());
-            Assert.AreEqual(nameProperty.GetCustomAttribute<MaxLengthAttribute>()!.Length, 100);
-
-            PropertyInfo? ageProperty = typeof(MyFormViewModel).GetProperty(nameof(MyFormViewModel.Age))!;
-
-            Assert.IsNotNull(ageProperty.GetCustomAttribute<RangeAttribute>());
-            Assert.AreEqual(ageProperty.GetCustomAttribute<RangeAttribute>()!.Minimum, 0);
-            Assert.AreEqual(ageProperty.GetCustomAttribute<RangeAttribute>()!.Maximum, 120);
-
-            PropertyInfo? emailProperty = typeof(MyFormViewModel).GetProperty(nameof(MyFormViewModel.Email))!;
-
-            Assert.IsNotNull(emailProperty.GetCustomAttribute<EmailAddressAttribute>());
-
-            PropertyInfo? comboProperty = typeof(MyFormViewModel).GetProperty(nameof(MyFormViewModel.IfThisWorksThenThatsGreat))!;
-
-            TestValidationAttribute testAttribute = comboProperty.GetCustomAttribute<TestValidationAttribute>()!;
-
-            Assert.IsNotNull(testAttribute);
-            Assert.IsNull(testAttribute.O);
-            Assert.AreEqual(testAttribute.T, typeof(SampleModel));
-            Assert.AreEqual(testAttribute.Flag, true);
-            Assert.AreEqual(testAttribute.D, 6.28);
-            CollectionAssert.AreEqual(testAttribute.Names, new[] { "Bob", "Ross" });
-
-            object[]? nestedArray = (object[]?)testAttribute.NestedArray;
-
-            Assert.IsNotNull(nestedArray);
-            Assert.AreEqual(nestedArray!.Length, 3);
-            Assert.AreEqual(nestedArray[0], 1);
-            Assert.AreEqual(nestedArray[1], "Hello");
-            Assert.IsTrue(nestedArray[2] is int[]);
-            CollectionAssert.AreEqual((int[])nestedArray[2], new[] { 2, 3, 4 });
-
-            Assert.AreEqual(testAttribute.Animal, Animal.Llama);
-        }
-
-        // See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4216
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void Test_ObservablePropertyWithValueNamedField()
-        {
-            ModelWithValueProperty? model = new();
-
-            List<string?> propertyNames = new();
-
-            model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
-
-            model.Value = "Hello world";
-
-            Assert.AreEqual(model.Value, "Hello world");
-
-            CollectionAssert.AreEqual(new[] { nameof(model.Value) }, propertyNames);
-        }
-
-        // See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4216
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void Test_ObservablePropertyWithValueNamedField_WithValidationAttributes()
-        {
-            ModelWithValuePropertyWithValidation? model = new();
-
-            List<string?> propertyNames = new();
-
-            model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
-
-            model.Value = "Hello world";
-
-            Assert.AreEqual(model.Value, "Hello world");
-
-            CollectionAssert.AreEqual(new[] { nameof(model.Value) }, propertyNames);
-        }
-
-        // See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4184
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void Test_GeneratedPropertiesWithValidationAttributesOverFields()
-        {
-            ViewModelWithValidatableGeneratedProperties? model = new();
-
-            List<string?> propertyNames = new();
-
-            model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
-
-            // Assign these fields directly to bypass the validation that is executed in the generated setters.
-            // We only need those generated properties to be there to check whether they are correctly detected.
-            model.first = "A";
-            model.last = "This is a very long name that exceeds the maximum length of 60 for this property";
-
-            Assert.IsFalse(model.HasErrors);
-
-            model.RunValidation();
-
-            Assert.IsTrue(model.HasErrors);
-
-            ValidationResult[] validationErrors = model.GetErrors().ToArray();
-
-            Assert.AreEqual(validationErrors.Length, 2);
-
-            CollectionAssert.AreEqual(new[] { nameof(ViewModelWithValidatableGeneratedProperties.First) }, validationErrors[0].MemberNames.ToArray());
-            CollectionAssert.AreEqual(new[] { nameof(ViewModelWithValidatableGeneratedProperties.Last) }, validationErrors[1].MemberNames.ToArray());
-        }
-
-        public partial class SampleModel : ObservableObject
-        {
-            /// <summary>
-            /// This is a sample data field within <see cref="SampleModel"/> of type <see cref="int"/>.
-            /// </summary>
-            [ObservableProperty]
-            private int data;
-
-            #region More properties
-
-            [ObservableProperty]
-            private int counter;
-
-            #endregion
-
-            [ObservableProperty]
-            private string? name;
-        }
-
-        [INotifyPropertyChanged]
-        public sealed partial class DependentPropertyModel
-        {
-            [ObservableProperty]
-            [AlsoNotifyChangeFor(nameof(FullName))]
-            [AlsoNotifyChangeFor(nameof(Alias))]
-            private string? name;
-
-            [ObservableProperty]
-            [AlsoNotifyChangeFor(nameof(FullName), nameof(Alias))]
-            private string? surname;
-
-            public string FullName => $"{Name} {Surname}";
-
-            public string Alias => $"{Name?.ToLower()}{Surname?.ToLower()}";
-        }
-
-        public partial class MyFormViewModel : ObservableValidator
-        {
-            [ObservableProperty]
-            [Required]
-            [MinLength(1)]
-            [MaxLength(100)]
-            private string? name;
-
-            [ObservableProperty]
-            [Range(0, 120)]
-            private int age;
-
-            [ObservableProperty]
-            [EmailAddress]
-            private string? email;
-
-            [ObservableProperty]
-            [TestValidation(null, typeof(SampleModel), true, 6.28, new[] { "Bob", "Ross" }, NestedArray = new object[] { 1, "Hello", new int[] { 2, 3, 4 } }, Animal = Animal.Llama)]
-            private int ifThisWorksThenThatsGreat;
-        }
-
-        private sealed class TestValidationAttribute : ValidationAttribute
-        {
-            public TestValidationAttribute(object? o, Type t, bool flag, double d, string[] names)
-            {
-                O = o;
-                T = t;
-                Flag = flag;
-                D = d;
-                Names = names;
-            }
-
-            public object? O { get; }
-
-            public Type T { get; }
-
-            public bool Flag { get; }
-
-            public double D { get; }
-
-            public string[] Names { get; }
-
-            public object? NestedArray { get; set; }
-
-            public Animal Animal { get; set; }
-        }
-
-        public enum Animal
-        {
-            Cat,
-            Dog,
-            Llama
-        }
-
-        public partial class ModelWithValueProperty : ObservableObject
-        {
-            [ObservableProperty]
-            private string? value;
-        }
-
-        public partial class ModelWithValuePropertyWithValidation : ObservableValidator
-        {
-            [ObservableProperty]
-            [Required]
-            [MinLength(5)]
-            private string? value;
-        }
-
-        public partial class ViewModelWithValidatableGeneratedProperties : ObservableValidator
-        {
-            [Required]
-            [MinLength(2)]
-            [MaxLength(60)]
-            [Display(Name = "FirstName")]
-            [ObservableProperty]
-            public string first = "Bob";
-
-            [Display(Name = "LastName")]
-            [Required]
-            [MinLength(2)]
-            [MaxLength(60)]
-            [ObservableProperty]
-            public string last = "Jones";
-
-            public void RunValidation() => ValidateAllProperties();
-        }
+        public object? O { get; }
+
+        public Type T { get; }
+
+        public bool Flag { get; }
+
+        public double D { get; }
+
+        public string[] Names { get; }
+
+        public object? NestedArray { get; set; }
+
+        public Animal Animal { get; set; }
+    }
+
+    public enum Animal
+    {
+        Cat,
+        Dog,
+        Llama
+    }
+
+    public partial class ModelWithValueProperty : ObservableObject
+    {
+        [ObservableProperty]
+        private string? value;
+    }
+
+    public partial class ModelWithValuePropertyWithValidation : ObservableValidator
+    {
+        [ObservableProperty]
+        [Required]
+        [MinLength(5)]
+        private string? value;
+    }
+
+    public partial class ViewModelWithValidatableGeneratedProperties : ObservableValidator
+    {
+        [Required]
+        [MinLength(2)]
+        [MaxLength(60)]
+        [Display(Name = "FirstName")]
+        [ObservableProperty]
+        public string first = "Bob";
+
+        [Display(Name = "LastName")]
+        [Required]
+        [MinLength(2)]
+        [MaxLength(60)]
+        [ObservableProperty]
+        public string last = "Jones";
+
+        public void RunValidation() => ValidateAllProperties();
     }
 }

@@ -5,31 +5,30 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace CommunityToolkit.Mvvm.Messaging.Internals
+namespace CommunityToolkit.Mvvm.Messaging.Internals;
+
+/// <summary>
+/// An empty type representing a generic token with no specific value.
+/// </summary>
+internal readonly struct Unit : IEquatable<Unit>
 {
-    /// <summary>
-    /// An empty type representing a generic token with no specific value.
-    /// </summary>
-    internal readonly struct Unit : IEquatable<Unit>
+    /// <inheritdoc/>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool Equals(Unit other)
     {
-        /// <inheritdoc/>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Unit other)
-        {
-            return true;
-        }
+        return true;
+    }
 
-        /// <inheritdoc/>
-        public override bool Equals(object? obj)
-        {
-            return obj is Unit;
-        }
+    /// <inheritdoc/>
+    public override bool Equals(object? obj)
+    {
+        return obj is Unit;
+    }
 
-        /// <inheritdoc/>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode()
-        {
-            return 0;
-        }
+    /// <inheritdoc/>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public override int GetHashCode()
+    {
+        return 0;
     }
 }

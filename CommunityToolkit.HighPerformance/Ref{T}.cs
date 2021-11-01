@@ -10,14 +10,14 @@ using System.Runtime.InteropServices;
 using CommunityToolkit.HighPerformance.Helpers;
 #endif
 
-namespace CommunityToolkit.HighPerformance
+namespace CommunityToolkit.HighPerformance;
+
+/// <summary>
+/// A <see langword="struct"/> that can store a reference to a value of a specified type.
+/// </summary>
+/// <typeparam name="T">The type of value to reference.</typeparam>
+public readonly ref struct Ref<T>
 {
-    /// <summary>
-    /// A <see langword="struct"/> that can store a reference to a value of a specified type.
-    /// </summary>
-    /// <typeparam name="T">The type of value to reference.</typeparam>
-    public readonly ref struct Ref<T>
-    {
 #if NETSTANDARD2_1_OR_GREATER
         /// <summary>
         /// The 1-length <see cref="Span{T}"/> instance used to track the target <typeparamref name="T"/> value.
@@ -53,51 +53,50 @@ namespace CommunityToolkit.HighPerformance
             get => ref MemoryMarshal.GetReference(Span);
         }
 #else
-        /// <summary>
-        /// The owner <see cref="object"/> the current instance belongs to
-        /// </summary>
-        internal readonly object Owner;
+    /// <summary>
+    /// The owner <see cref="object"/> the current instance belongs to
+    /// </summary>
+    internal readonly object Owner;
 
-        /// <summary>
-        /// The target offset within <see cref="Owner"/> the current instance is pointing to
-        /// </summary>
-        /// <remarks>
-        /// Using an <see cref="IntPtr"/> instead of <see cref="int"/> to avoid the int to
-        /// native int conversion in the generated asm (an extra movsxd on x64).
-        /// </remarks>
-        internal readonly IntPtr Offset;
+    /// <summary>
+    /// The target offset within <see cref="Owner"/> the current instance is pointing to
+    /// </summary>
+    /// <remarks>
+    /// Using an <see cref="IntPtr"/> instead of <see cref="int"/> to avoid the int to
+    /// native int conversion in the generated asm (an extra movsxd on x64).
+    /// </remarks>
+    internal readonly IntPtr Offset;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Ref{T}"/> struct.
-        /// </summary>
-        /// <param name="owner">The owner <see cref="object"/> to create a portable reference for.</param>
-        /// <param name="value">The target reference to point to (it must be within <paramref name="owner"/>).</param>
-        /// <remarks>The <paramref name="value"/> parameter is not validated, and it's responsibility of the caller to ensure it's valid.</remarks>
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Ref{T}"/> struct.
+    /// </summary>
+    /// <param name="owner">The owner <see cref="object"/> to create a portable reference for.</param>
+    /// <param name="value">The target reference to point to (it must be within <paramref name="owner"/>).</param>
+    /// <remarks>The <paramref name="value"/> parameter is not validated, and it's responsibility of the caller to ensure it's valid.</remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Ref(object owner, ref T value)
+    {
+        Owner = owner;
+        Offset = ObjectMarshal.DangerousGetObjectDataByteOffset(owner, ref value);
+    }
+
+    /// <summary>
+    /// Gets the <typeparamref name="T"/> reference represented by the current <see cref="Ref{T}"/> instance.
+    /// </summary>
+    public ref T Value
+    {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Ref(object owner, ref T value)
-        {
-            Owner = owner;
-            Offset = ObjectMarshal.DangerousGetObjectDataByteOffset(owner, ref value);
-        }
-
-        /// <summary>
-        /// Gets the <typeparamref name="T"/> reference represented by the current <see cref="Ref{T}"/> instance.
-        /// </summary>
-        public ref T Value
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => ref ObjectMarshal.DangerousGetObjectDataReferenceAt<T>(Owner, Offset);
-        }
+        get => ref ObjectMarshal.DangerousGetObjectDataReferenceAt<T>(Owner, Offset);
+    }
 #endif
 
-        /// <summary>
-        /// Implicitly gets the <typeparamref name="T"/> value from a given <see cref="Ref{T}"/> instance.
-        /// </summary>
-        /// <param name="reference">The input <see cref="Ref{T}"/> instance.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static implicit operator T(Ref<T> reference)
-        {
-            return reference.Value;
-        }
+    /// <summary>
+    /// Implicitly gets the <typeparamref name="T"/> value from a given <see cref="Ref{T}"/> instance.
+    /// </summary>
+    /// <param name="reference">The input <see cref="Ref{T}"/> instance.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator T(Ref<T> reference)
+    {
+        return reference.Value;
     }
 }

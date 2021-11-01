@@ -9,46 +9,46 @@ using System.Runtime.InteropServices;
 using CommunityToolkit.HighPerformance.Buffers.Internals.Interfaces;
 using RuntimeHelpers = CommunityToolkit.HighPerformance.Helpers.Internals.RuntimeHelpers;
 
-namespace CommunityToolkit.HighPerformance.Buffers.Internals
+namespace CommunityToolkit.HighPerformance.Buffers.Internals;
+
+/// <summary>
+/// A custom <see cref="MemoryManager{T}"/> that casts data from a <see cref="string"/> to <typeparamref name="TTo"/> values.
+/// </summary>
+/// <typeparam name="TTo">The target type to cast the source characters to.</typeparam>
+internal sealed class StringMemoryManager<TTo> : MemoryManager<TTo>, IMemoryManager
+    where TTo : unmanaged
 {
     /// <summary>
-    /// A custom <see cref="MemoryManager{T}"/> that casts data from a <see cref="string"/> to <typeparamref name="TTo"/> values.
+    /// The source <see cref="string"/> to read data from.
     /// </summary>
-    /// <typeparam name="TTo">The target type to cast the source characters to.</typeparam>
-    internal sealed class StringMemoryManager<TTo> : MemoryManager<TTo>, IMemoryManager
-        where TTo : unmanaged
+    private readonly string text;
+
+    /// <summary>
+    /// The starting offset within <see name="array"/>.
+    /// </summary>
+    private readonly int offset;
+
+    /// <summary>
+    /// The original used length for <see name="array"/>.
+    /// </summary>
+    private readonly int length;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="StringMemoryManager{T}"/> class.
+    /// </summary>
+    /// <param name="text">The source <see cref="string"/> to read data from.</param>
+    /// <param name="offset">The starting offset within <paramref name="text"/>.</param>
+    /// <param name="length">The original used length for <paramref name="text"/>.</param>
+    public StringMemoryManager(string text, int offset, int length)
     {
-        /// <summary>
-        /// The source <see cref="string"/> to read data from.
-        /// </summary>
-        private readonly string text;
+        this.text = text;
+        this.offset = offset;
+        this.length = length;
+    }
 
-        /// <summary>
-        /// The starting offset within <see name="array"/>.
-        /// </summary>
-        private readonly int offset;
-
-        /// <summary>
-        /// The original used length for <see name="array"/>.
-        /// </summary>
-        private readonly int length;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="StringMemoryManager{T}"/> class.
-        /// </summary>
-        /// <param name="text">The source <see cref="string"/> to read data from.</param>
-        /// <param name="offset">The starting offset within <paramref name="text"/>.</param>
-        /// <param name="length">The original used length for <paramref name="text"/>.</param>
-        public StringMemoryManager(string text, int offset, int length)
-        {
-            this.text = text;
-            this.offset = offset;
-            this.length = length;
-        }
-
-        /// <inheritdoc/>
-        public override Span<TTo> GetSpan()
-        {
+    /// <inheritdoc/>
+    public override Span<TTo> GetSpan()
+    {
 #if NETSTANDARD2_1_OR_GREATER
             ref char r0 = ref this.text.DangerousGetReferenceAt(this.offset);
             ref TTo r1 = ref Unsafe.As<char, TTo>(ref r0);
@@ -56,70 +56,69 @@ namespace CommunityToolkit.HighPerformance.Buffers.Internals
 
             return MemoryMarshal.CreateSpan(ref r1, length);
 #else
-            ReadOnlyMemory<char> memory = this.text.AsMemory(this.offset, this.length);
-            Span<char> span = MemoryMarshal.AsMemory(memory).Span;
+        ReadOnlyMemory<char> memory = this.text.AsMemory(this.offset, this.length);
+        Span<char> span = MemoryMarshal.AsMemory(memory).Span;
 
-            return MemoryMarshal.Cast<char, TTo>(span);
+        return MemoryMarshal.Cast<char, TTo>(span);
 #endif
-        }
+    }
 
-        /// <inheritdoc/>
-        public override unsafe MemoryHandle Pin(int elementIndex = 0)
+    /// <inheritdoc/>
+    public override unsafe MemoryHandle Pin(int elementIndex = 0)
+    {
+        if ((uint)elementIndex >= (uint)(this.length * Unsafe.SizeOf<char>() / Unsafe.SizeOf<TTo>()))
         {
-            if ((uint)elementIndex >= (uint)(this.length * Unsafe.SizeOf<char>() / Unsafe.SizeOf<TTo>()))
-            {
-                ThrowArgumentOutOfRangeExceptionForInvalidIndex();
-            }
-
-            int
-                bytePrefix = this.offset * Unsafe.SizeOf<char>(),
-                byteSuffix = elementIndex * Unsafe.SizeOf<TTo>(),
-                byteOffset = bytePrefix + byteSuffix;
-
-            GCHandle handle = GCHandle.Alloc(this.text, GCHandleType.Pinned);
-
-            ref char r0 = ref this.text.DangerousGetReference();
-            ref byte r1 = ref Unsafe.As<char, byte>(ref r0);
-            ref byte r2 = ref Unsafe.Add(ref r1, byteOffset);
-            void* pi = Unsafe.AsPointer(ref r2);
-
-            return new MemoryHandle(pi, handle);
+            ThrowArgumentOutOfRangeExceptionForInvalidIndex();
         }
 
-        /// <inheritdoc/>
-        public override void Unpin()
+        int
+            bytePrefix = this.offset * Unsafe.SizeOf<char>(),
+            byteSuffix = elementIndex * Unsafe.SizeOf<TTo>(),
+            byteOffset = bytePrefix + byteSuffix;
+
+        GCHandle handle = GCHandle.Alloc(this.text, GCHandleType.Pinned);
+
+        ref char r0 = ref this.text.DangerousGetReference();
+        ref byte r1 = ref Unsafe.As<char, byte>(ref r0);
+        ref byte r2 = ref Unsafe.Add(ref r1, byteOffset);
+        void* pi = Unsafe.AsPointer(ref r2);
+
+        return new MemoryHandle(pi, handle);
+    }
+
+    /// <inheritdoc/>
+    public override void Unpin()
+    {
+    }
+
+    /// <inheritdoc/>
+    protected override void Dispose(bool disposing)
+    {
+    }
+
+    /// <inheritdoc/>
+    public Memory<T> GetMemory<T>(int offset, int length)
+        where T : unmanaged
+    {
+        int
+            absoluteOffset = this.offset + RuntimeHelpers.ConvertLength<TTo, char>(offset),
+            absoluteLength = RuntimeHelpers.ConvertLength<TTo, char>(length);
+
+        if (typeof(T) == typeof(char))
         {
+            ReadOnlyMemory<char> memory = this.text.AsMemory(absoluteOffset, absoluteLength);
+
+            return (Memory<T>)(object)MemoryMarshal.AsMemory(memory);
         }
 
-        /// <inheritdoc/>
-        protected override void Dispose(bool disposing)
-        {
-        }
+        return new StringMemoryManager<T>(this.text, absoluteOffset, absoluteLength).Memory;
+    }
 
-        /// <inheritdoc/>
-        public Memory<T> GetMemory<T>(int offset, int length)
-            where T : unmanaged
-        {
-            int
-                absoluteOffset = this.offset + RuntimeHelpers.ConvertLength<TTo, char>(offset),
-                absoluteLength = RuntimeHelpers.ConvertLength<TTo, char>(length);
-
-            if (typeof(T) == typeof(char))
-            {
-                ReadOnlyMemory<char> memory = this.text.AsMemory(absoluteOffset, absoluteLength);
-
-                return (Memory<T>)(object)MemoryMarshal.AsMemory(memory);
-            }
-
-            return new StringMemoryManager<T>(this.text, absoluteOffset, absoluteLength).Memory;
-        }
-
-        /// <summary>
-        /// Throws an <see cref="ArgumentOutOfRangeException"/> when the target index for <see cref="Pin"/> is invalid.
-        /// </summary>
-        private static void ThrowArgumentOutOfRangeExceptionForInvalidIndex()
-        {
-            throw new ArgumentOutOfRangeException("elementIndex", "The input index is not in the valid range");
-        }
+    /// <summary>
+    /// Throws an <see cref="ArgumentOutOfRangeException"/> when the target index for <see cref="Pin"/> is invalid.
+    /// </summary>
+    private static void ThrowArgumentOutOfRangeExceptionForInvalidIndex()
+    {
+        throw new ArgumentOutOfRangeException("elementIndex", "The input index is not in the valid range");
     }
 }

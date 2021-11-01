@@ -8,44 +8,43 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace CommunityToolkit.Mvvm.SourceGenerators
+namespace CommunityToolkit.Mvvm.SourceGenerators;
+
+/// <inheritdoc cref="ICommandGenerator"/>
+public sealed partial class ICommandGenerator
 {
-    /// <inheritdoc cref="ICommandGenerator"/>
-    public sealed partial class ICommandGenerator
+    /// <summary>
+    /// An <see cref="ISyntaxContextReceiver"/> that selects candidate nodes to process.
+    /// </summary>
+    private sealed class SyntaxReceiver : ISyntaxContextReceiver
     {
         /// <summary>
-        /// An <see cref="ISyntaxContextReceiver"/> that selects candidate nodes to process.
+        /// The list of info gathered during exploration.
         /// </summary>
-        private sealed class SyntaxReceiver : ISyntaxContextReceiver
+        private readonly List<Item> gatheredInfo = new();
+
+        /// <summary>
+        /// Gets the collection of gathered info to process.
+        /// </summary>
+        public IReadOnlyCollection<Item> GatheredInfo => this.gatheredInfo;
+
+        /// <inheritdoc/>
+        public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
         {
-            /// <summary>
-            /// The list of info gathered during exploration.
-            /// </summary>
-            private readonly List<Item> gatheredInfo = new();
-
-            /// <summary>
-            /// Gets the collection of gathered info to process.
-            /// </summary>
-            public IReadOnlyCollection<Item> GatheredInfo => this.gatheredInfo;
-
-            /// <inheritdoc/>
-            public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
+            if (context.Node is MethodDeclarationSyntax methodDeclaration &&
+                context.SemanticModel.GetDeclaredSymbol(methodDeclaration) is IMethodSymbol methodSymbol &&
+                context.SemanticModel.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Input.ICommandAttribute") is INamedTypeSymbol iCommandSymbol &&
+                methodSymbol.GetAttributes().Any(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, iCommandSymbol)))
             {
-                if (context.Node is MethodDeclarationSyntax methodDeclaration &&
-                    context.SemanticModel.GetDeclaredSymbol(methodDeclaration) is IMethodSymbol methodSymbol &&
-                    context.SemanticModel.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Input.ICommandAttribute") is INamedTypeSymbol iCommandSymbol &&
-                    methodSymbol.GetAttributes().Any(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, iCommandSymbol)))
-                {
-                    this.gatheredInfo.Add(new Item(methodDeclaration.GetLeadingTrivia(), methodSymbol));
-                }
+                this.gatheredInfo.Add(new Item(methodDeclaration.GetLeadingTrivia(), methodSymbol));
             }
-
-            /// <summary>
-            /// A model for a group of item representing a discovered type to process.
-            /// </summary>
-            /// <param name="LeadingTrivia">The leading trivia for the field declaration.</param>
-            /// <param name="MethodSymbol">The <see cref="IMethodSymbol"/> instance for the target method.</param>
-            public sealed record Item(SyntaxTriviaList LeadingTrivia, IMethodSymbol MethodSymbol);
         }
+
+        /// <summary>
+        /// A model for a group of item representing a discovered type to process.
+        /// </summary>
+        /// <param name="LeadingTrivia">The leading trivia for the field declaration.</param>
+        /// <param name="MethodSymbol">The <see cref="IMethodSymbol"/> instance for the target method.</param>
+        public sealed record Item(SyntaxTriviaList LeadingTrivia, IMethodSymbol MethodSymbol);
     }
 }

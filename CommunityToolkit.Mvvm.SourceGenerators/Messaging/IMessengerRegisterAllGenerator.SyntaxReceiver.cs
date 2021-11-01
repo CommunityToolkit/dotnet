@@ -8,36 +8,35 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace CommunityToolkit.Mvvm.SourceGenerators
+namespace CommunityToolkit.Mvvm.SourceGenerators;
+
+/// <inheritdoc cref="IMessengerRegisterAllGenerator"/>
+public sealed partial class IMessengerRegisterAllGenerator
 {
-    /// <inheritdoc cref="IMessengerRegisterAllGenerator"/>
-    public sealed partial class IMessengerRegisterAllGenerator
+    /// <summary>
+    /// An <see cref="ISyntaxContextReceiver"/> that selects candidate nodes to process.
+    /// </summary>
+    private sealed class SyntaxReceiver : ISyntaxContextReceiver
     {
         /// <summary>
-        /// An <see cref="ISyntaxContextReceiver"/> that selects candidate nodes to process.
+        /// The list of info gathered during exploration.
         /// </summary>
-        private sealed class SyntaxReceiver : ISyntaxContextReceiver
+        private readonly List<INamedTypeSymbol> gatheredInfo = new();
+
+        /// <summary>
+        /// Gets the collection of gathered info to process.
+        /// </summary>
+        public IReadOnlyCollection<INamedTypeSymbol> GatheredInfo => this.gatheredInfo;
+
+        /// <inheritdoc/>
+        public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
         {
-            /// <summary>
-            /// The list of info gathered during exploration.
-            /// </summary>
-            private readonly List<INamedTypeSymbol> gatheredInfo = new();
-
-            /// <summary>
-            /// Gets the collection of gathered info to process.
-            /// </summary>
-            public IReadOnlyCollection<INamedTypeSymbol> GatheredInfo => this.gatheredInfo;
-
-            /// <inheritdoc/>
-            public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
+            if (context.Node is ClassDeclarationSyntax classDeclaration &&
+                context.SemanticModel.GetDeclaredSymbol(classDeclaration) is INamedTypeSymbol { IsGenericType: false } classSymbol &&
+                context.SemanticModel.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Messaging.IRecipient`1") is INamedTypeSymbol iRecipientSymbol &&
+                classSymbol.AllInterfaces.Any(i => SymbolEqualityComparer.Default.Equals(i.OriginalDefinition, iRecipientSymbol)))
             {
-                if (context.Node is ClassDeclarationSyntax classDeclaration &&
-                    context.SemanticModel.GetDeclaredSymbol(classDeclaration) is INamedTypeSymbol { IsGenericType: false } classSymbol &&
-                    context.SemanticModel.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Messaging.IRecipient`1") is INamedTypeSymbol iRecipientSymbol &&
-                    classSymbol.AllInterfaces.Any(i => SymbolEqualityComparer.Default.Equals(i.OriginalDefinition, iRecipientSymbol)))
-                {
-                    this.gatheredInfo.Add(classSymbol);
-                }
+                this.gatheredInfo.Add(classSymbol);
             }
         }
     }

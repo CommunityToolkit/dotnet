@@ -6,78 +6,77 @@ using System;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.Mvvm
+namespace UnitTests.Mvvm;
+
+[TestClass]
+public class Test_RelayCommand
 {
-    [TestClass]
-    public class Test_RelayCommand
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void Test_RelayCommand_AlwaysEnabled()
     {
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void Test_RelayCommand_AlwaysEnabled()
-        {
-            int ticks = 0;
+        int ticks = 0;
 
-            RelayCommand? command = new(() => ticks++);
+        RelayCommand? command = new(() => ticks++);
 
-            Assert.IsTrue(command.CanExecute(null));
-            Assert.IsTrue(command.CanExecute(new object()));
+        Assert.IsTrue(command.CanExecute(null));
+        Assert.IsTrue(command.CanExecute(new object()));
 
-            (object?, EventArgs?) args = default;
+        (object?, EventArgs?) args = default;
 
-            command.CanExecuteChanged += (s, e) => args = (s, e);
+        command.CanExecuteChanged += (s, e) => args = (s, e);
 
-            command.NotifyCanExecuteChanged();
+        command.NotifyCanExecuteChanged();
 
-            Assert.AreSame(args.Item1, command);
-            Assert.AreSame(args.Item2, EventArgs.Empty);
+        Assert.AreSame(args.Item1, command);
+        Assert.AreSame(args.Item2, EventArgs.Empty);
 
-            command.Execute(null);
+        command.Execute(null);
 
-            Assert.AreEqual(ticks, 1);
+        Assert.AreEqual(ticks, 1);
 
-            command.Execute(new object());
+        command.Execute(new object());
 
-            Assert.AreEqual(ticks, 2);
-        }
+        Assert.AreEqual(ticks, 2);
+    }
 
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void Test_RelayCommand_WithCanExecuteFunctionTrue()
-        {
-            int ticks = 0;
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void Test_RelayCommand_WithCanExecuteFunctionTrue()
+    {
+        int ticks = 0;
 
-            RelayCommand? command = new(() => ticks++, () => true);
+        RelayCommand? command = new(() => ticks++, () => true);
 
-            Assert.IsTrue(command.CanExecute(null));
-            Assert.IsTrue(command.CanExecute(new object()));
+        Assert.IsTrue(command.CanExecute(null));
+        Assert.IsTrue(command.CanExecute(new object()));
 
-            command.Execute(null);
+        command.Execute(null);
 
-            Assert.AreEqual(ticks, 1);
+        Assert.AreEqual(ticks, 1);
 
-            command.Execute(new object());
+        command.Execute(new object());
 
-            Assert.AreEqual(ticks, 2);
-        }
+        Assert.AreEqual(ticks, 2);
+    }
 
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void Test_RelayCommand_WithCanExecuteFunctionFalse()
-        {
-            int ticks = 0;
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void Test_RelayCommand_WithCanExecuteFunctionFalse()
+    {
+        int ticks = 0;
 
-            RelayCommand? command = new(() => ticks++, () => false);
+        RelayCommand? command = new(() => ticks++, () => false);
 
-            Assert.IsFalse(command.CanExecute(null));
-            Assert.IsFalse(command.CanExecute(new object()));
+        Assert.IsFalse(command.CanExecute(null));
+        Assert.IsFalse(command.CanExecute(new object()));
 
-            command.Execute(null);
+        command.Execute(null);
 
-            Assert.AreEqual(ticks, 0);
+        Assert.AreEqual(ticks, 0);
 
-            command.Execute(new object());
+        command.Execute(new object());
 
-            Assert.AreEqual(ticks, 0);
-        }
+        Assert.AreEqual(ticks, 0);
     }
 }

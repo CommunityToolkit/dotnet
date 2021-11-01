@@ -7,112 +7,111 @@ using System.Diagnostics.CodeAnalysis;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.Mvvm
+namespace UnitTests.Mvvm;
+
+[SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1601", Justification = "Type only used for testing")]
+[TestClass]
+public partial class Test_ObservableObjectAttribute
 {
-    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1601", Justification = "Type only used for testing")]
-    [TestClass]
-    public partial class Test_ObservableObjectAttribute
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void Test_ObservableObjectAttribute_Events()
     {
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void Test_ObservableObjectAttribute_Events()
+        SampleModel? model = new();
+
+        (PropertyChangingEventArgs, int) changing = default;
+        (PropertyChangedEventArgs, int) changed = default;
+
+        model.PropertyChanging += (s, e) =>
         {
-            SampleModel? model = new();
+            Assert.IsNull(changing.Item1);
+            Assert.IsNull(changed.Item1);
+            Assert.AreSame(model, s);
+            Assert.IsNotNull(s);
+            Assert.IsNotNull(e);
 
-            (PropertyChangingEventArgs, int) changing = default;
-            (PropertyChangedEventArgs, int) changed = default;
+            changing = (e, model.Data);
+        };
 
-            model.PropertyChanging += (s, e) =>
-            {
-                Assert.IsNull(changing.Item1);
-                Assert.IsNull(changed.Item1);
-                Assert.AreSame(model, s);
-                Assert.IsNotNull(s);
-                Assert.IsNotNull(e);
+        model.PropertyChanged += (s, e) =>
+        {
+            Assert.IsNotNull(changing.Item1);
+            Assert.IsNull(changed.Item1);
+            Assert.AreSame(model, s);
+            Assert.IsNotNull(s);
+            Assert.IsNotNull(e);
 
-                changing = (e, model.Data);
-            };
+            changed = (e, model.Data);
+        };
 
-            model.PropertyChanged += (s, e) =>
-            {
-                Assert.IsNotNull(changing.Item1);
-                Assert.IsNull(changed.Item1);
-                Assert.AreSame(model, s);
-                Assert.IsNotNull(s);
-                Assert.IsNotNull(e);
+        model.Data = 42;
 
-                changed = (e, model.Data);
-            };
+        Assert.AreEqual(changing.Item1?.PropertyName, nameof(SampleModel.Data));
+        Assert.AreEqual(changing.Item2, 0);
+        Assert.AreEqual(changed.Item1?.PropertyName, nameof(SampleModel.Data));
+        Assert.AreEqual(changed.Item2, 42);
+    }
 
-            model.Data = 42;
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public void Test_ObservableObjectAttribute_OnSealedClass_Events()
+    {
+        SampleModelSealed? model = new();
 
-            Assert.AreEqual(changing.Item1?.PropertyName, nameof(SampleModel.Data));
-            Assert.AreEqual(changing.Item2, 0);
-            Assert.AreEqual(changed.Item1?.PropertyName, nameof(SampleModel.Data));
-            Assert.AreEqual(changed.Item2, 42);
+        (PropertyChangingEventArgs, int) changing = default;
+        (PropertyChangedEventArgs, int) changed = default;
+
+        model.PropertyChanging += (s, e) =>
+        {
+            Assert.IsNull(changing.Item1);
+            Assert.IsNull(changed.Item1);
+            Assert.AreSame(model, s);
+            Assert.IsNotNull(s);
+            Assert.IsNotNull(e);
+
+            changing = (e, model.Data);
+        };
+
+        model.PropertyChanged += (s, e) =>
+        {
+            Assert.IsNotNull(changing.Item1);
+            Assert.IsNull(changed.Item1);
+            Assert.AreSame(model, s);
+            Assert.IsNotNull(s);
+            Assert.IsNotNull(e);
+
+            changed = (e, model.Data);
+        };
+
+        model.Data = 42;
+
+        Assert.AreEqual(changing.Item1?.PropertyName, nameof(SampleModelSealed.Data));
+        Assert.AreEqual(changing.Item2, 0);
+        Assert.AreEqual(changed.Item1?.PropertyName, nameof(SampleModelSealed.Data));
+        Assert.AreEqual(changed.Item2, 42);
+    }
+
+    [ObservableObject]
+    public partial class SampleModel
+    {
+        private int data;
+
+        public int Data
+        {
+            get => data;
+            set => SetProperty(ref data, value);
         }
+    }
 
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public void Test_ObservableObjectAttribute_OnSealedClass_Events()
+    [ObservableObject]
+    public sealed partial class SampleModelSealed
+    {
+        private int data;
+
+        public int Data
         {
-            SampleModelSealed? model = new();
-
-            (PropertyChangingEventArgs, int) changing = default;
-            (PropertyChangedEventArgs, int) changed = default;
-
-            model.PropertyChanging += (s, e) =>
-            {
-                Assert.IsNull(changing.Item1);
-                Assert.IsNull(changed.Item1);
-                Assert.AreSame(model, s);
-                Assert.IsNotNull(s);
-                Assert.IsNotNull(e);
-
-                changing = (e, model.Data);
-            };
-
-            model.PropertyChanged += (s, e) =>
-            {
-                Assert.IsNotNull(changing.Item1);
-                Assert.IsNull(changed.Item1);
-                Assert.AreSame(model, s);
-                Assert.IsNotNull(s);
-                Assert.IsNotNull(e);
-
-                changed = (e, model.Data);
-            };
-
-            model.Data = 42;
-
-            Assert.AreEqual(changing.Item1?.PropertyName, nameof(SampleModelSealed.Data));
-            Assert.AreEqual(changing.Item2, 0);
-            Assert.AreEqual(changed.Item1?.PropertyName, nameof(SampleModelSealed.Data));
-            Assert.AreEqual(changed.Item2, 42);
-        }
-
-        [ObservableObject]
-        public partial class SampleModel
-        {
-            private int data;
-
-            public int Data
-            {
-                get => data;
-                set => SetProperty(ref data, value);
-            }
-        }
-
-        [ObservableObject]
-        public sealed partial class SampleModelSealed
-        {
-            private int data;
-
-            public int Data
-            {
-                get => data;
-                set => SetProperty(ref data, value);
-            }
+            get => data;
+            set => SetProperty(ref data, value);
         }
     }
 }

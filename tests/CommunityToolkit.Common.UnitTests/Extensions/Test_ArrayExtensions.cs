@@ -8,83 +8,82 @@ using System.Linq;
 using CommunityToolkit.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.Extensions
+namespace UnitTests.Extensions;
+
+[TestClass]
+public class Test_ArrayExtensions
 {
-    [TestClass]
-    public class Test_ArrayExtensions
+    [TestCategory("ArrayExtensions")]
+    [TestMethod]
+    public void Test_ArrayExtensions_Jagged_GetColumn()
     {
-        [TestCategory("ArrayExtensions")]
-        [TestMethod]
-        public void Test_ArrayExtensions_Jagged_GetColumn()
+        int[][] array =
         {
-            int[][] array =
-            {
                 new int[] { 5, 2, 4 },
                 new int[] { 6, 3 },
                 new int[] { 7 }
             };
 
-            int[]? col = array.GetColumn(1).ToArray();
+        int[]? col = array.GetColumn(1).ToArray();
 
-            CollectionAssert.AreEquivalent(new int[] { 2, 3, 0 }, col);
-        }
+        CollectionAssert.AreEquivalent(new int[] { 2, 3, 0 }, col);
+    }
 
-        [TestCategory("ArrayExtensions")]
-        [TestMethod]
-        public void Test_ArrayExtensions_Jagged_GetColumn_Exception()
+    [TestCategory("ArrayExtensions")]
+    [TestMethod]
+    public void Test_ArrayExtensions_Jagged_GetColumn_Exception()
+    {
+        int[][] array =
         {
-            int[][] array =
-            {
                 new int[] { 5, 2, 4 },
                 new int[] { 6, 3 },
                 new int[] { 7 }
             };
 
-            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-              {
-                  _ = array.GetColumn(-1).ToArray();
-              });
+        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
+          {
+              _ = array.GetColumn(-1).ToArray();
+          });
 
-            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-              {
-                  _ = array.GetColumn(3).ToArray();
-              });
-        }
+        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
+          {
+              _ = array.GetColumn(3).ToArray();
+          });
+    }
 
-        [TestCategory("ArrayExtensions")]
-        [TestMethod]
-        public void Test_ArrayExtensions_Rectangular_ToString()
+    [TestCategory("ArrayExtensions")]
+    [TestMethod]
+    public void Test_ArrayExtensions_Rectangular_ToString()
+    {
+        int[,] array =
         {
-            int[,] array =
-            {
                 { 5, 2,  4 },
                 { 6, 3, -1 },
                 { 7, 0,  9 }
             };
 
-            string value = array.ToArrayString();
+        string value = array.ToArrayString();
 
-            Debug.WriteLine(value);
+        Debug.WriteLine(value);
 
-            Assert.AreEqual("[[5,\t2,\t4]," + Environment.NewLine + " [6,\t3,\t-1]," + Environment.NewLine + " [7,\t0,\t9]]", value);
-        }
+        Assert.AreEqual("[[5,\t2,\t4]," + Environment.NewLine + " [6,\t3,\t-1]," + Environment.NewLine + " [7,\t0,\t9]]", value);
+    }
 
-        [TestCategory("ArrayExtensions")]
-        [TestMethod]
-        public void Test_ArrayExtensions_Jagged_ToString()
+    [TestCategory("ArrayExtensions")]
+    [TestMethod]
+    public void Test_ArrayExtensions_Jagged_ToString()
+    {
+        int[][] array =
         {
-            int[][] array =
-            {
                 new int[] { 5, 2 },
                 new int[] { 6, 3, -1, 2 },
                 new int[] { 7, 0,  9 }
             };
 
-            string value = array.ToArrayString();
+        string value = array.ToArrayString();
 
-            Debug.WriteLine(value);
+        Debug.WriteLine(value);
 
-            Assert.AreEqual("[[5,\t2]," + Environment.NewLine + " [6,\t3,\t-1,\t2]," + Environment.NewLine + " [7,\t0,\t9]]", value);
-        }
+        Assert.AreEqual("[[5,\t2]," + Environment.NewLine + " [6,\t3,\t-1,\t2]," + Environment.NewLine + " [7,\t0,\t9]]", value);
     }
 }

@@ -4,16 +4,15 @@
 
 #if !NETSTANDARD2_1_OR_GREATER
 
-namespace System.Diagnostics.CodeAnalysis
+namespace System.Diagnostics.CodeAnalysis;
+
+/// <summary>
+/// Applied to a method that will never return under any circumstance.
+/// </summary>
+/// <remarks>Internal copy from the BCL attribute.</remarks>
+[AttributeUsage(AttributeTargets.Method, Inherited = false)]
+internal sealed class DoesNotReturnAttribute : Attribute
 {
-    /// <summary>
-    /// Applied to a method that will never return under any circumstance.
-    /// </summary>
-    /// <remarks>Internal copy from the BCL attribute.</remarks>
-    [AttributeUsage(AttributeTargets.Method, Inherited = false)]
-    internal sealed class DoesNotReturnAttribute : Attribute
-    {
-    }
 }
 
 #endif

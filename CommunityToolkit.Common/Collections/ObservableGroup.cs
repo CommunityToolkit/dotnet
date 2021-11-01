@@ -8,73 +8,72 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 
-namespace CommunityToolkit.Common.Collections
+namespace CommunityToolkit.Common.Collections;
+
+/// <summary>
+/// An observable group.
+/// It associates a <see cref="Key"/> to an <see cref="ObservableCollection{T}"/>.
+/// </summary>
+/// <typeparam name="TKey">The type of the group key.</typeparam>
+/// <typeparam name="TValue">The type of the items in the collection.</typeparam>
+[DebuggerDisplay("Key = {Key}, Count = {Count}")]
+public class ObservableGroup<TKey, TValue> : ObservableCollection<TValue>, IGrouping<TKey, TValue>, IReadOnlyObservableGroup
+    where TKey : notnull
 {
     /// <summary>
-    /// An observable group.
-    /// It associates a <see cref="Key"/> to an <see cref="ObservableCollection{T}"/>.
+    /// The cached <see cref="PropertyChangedEventArgs"/> for <see cref="Key"/>
     /// </summary>
-    /// <typeparam name="TKey">The type of the group key.</typeparam>
-    /// <typeparam name="TValue">The type of the items in the collection.</typeparam>
-    [DebuggerDisplay("Key = {Key}, Count = {Count}")]
-    public class ObservableGroup<TKey, TValue> : ObservableCollection<TValue>, IGrouping<TKey, TValue>, IReadOnlyObservableGroup
-        where TKey : notnull
+    private static readonly PropertyChangedEventArgs KeyChangedEventArgs = new(nameof(Key));
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ObservableGroup{TKey, TValue}"/> class.
+    /// </summary>
+    /// <param name="key">The key for the group.</param>
+    public ObservableGroup(TKey key)
     {
-        /// <summary>
-        /// The cached <see cref="PropertyChangedEventArgs"/> for <see cref="Key"/>
-        /// </summary>
-        private static readonly PropertyChangedEventArgs KeyChangedEventArgs = new(nameof(Key));
+        this.key = key;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ObservableGroup{TKey, TValue}"/> class.
-        /// </summary>
-        /// <param name="key">The key for the group.</param>
-        public ObservableGroup(TKey key)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ObservableGroup{TKey, TValue}"/> class.
+    /// </summary>
+    /// <param name="grouping">The grouping to fill the group.</param>
+    public ObservableGroup(IGrouping<TKey, TValue> grouping)
+        : base(grouping)
+    {
+        this.key = grouping.Key;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ObservableGroup{TKey, TValue}"/> class.
+    /// </summary>
+    /// <param name="key">The key for the group.</param>
+    /// <param name="collection">The initial collection of data to add to the group.</param>
+    public ObservableGroup(TKey key, IEnumerable<TValue> collection)
+        : base(collection)
+    {
+        this.key = key;
+    }
+
+    private TKey key;
+
+    /// <summary>
+    /// Gets or sets the key of the group.
+    /// </summary>
+    public TKey Key
+    {
+        get => this.key;
+        set
         {
-            this.key = key;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ObservableGroup{TKey, TValue}"/> class.
-        /// </summary>
-        /// <param name="grouping">The grouping to fill the group.</param>
-        public ObservableGroup(IGrouping<TKey, TValue> grouping)
-            : base(grouping)
-        {
-            this.key = grouping.Key;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ObservableGroup{TKey, TValue}"/> class.
-        /// </summary>
-        /// <param name="key">The key for the group.</param>
-        /// <param name="collection">The initial collection of data to add to the group.</param>
-        public ObservableGroup(TKey key, IEnumerable<TValue> collection)
-            : base(collection)
-        {
-            this.key = key;
-        }
-
-        private TKey key;
-
-        /// <summary>
-        /// Gets or sets the key of the group.
-        /// </summary>
-        public TKey Key
-        {
-            get => this.key;
-            set
+            if (!EqualityComparer<TKey>.Default.Equals(this.key!, value))
             {
-                if (!EqualityComparer<TKey>.Default.Equals(this.key!, value))
-                {
-                    this.key = value;
+                this.key = value;
 
-                    OnPropertyChanged(KeyChangedEventArgs);
-                }
+                OnPropertyChanged(KeyChangedEventArgs);
             }
         }
-
-        /// <inheritdoc/>
-        object IReadOnlyObservableGroup.Key => Key;
     }
+
+    /// <inheritdoc/>
+    object IReadOnlyObservableGroup.Key => Key;
 }

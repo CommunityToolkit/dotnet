@@ -7,35 +7,34 @@ using System.IO;
 using CommunityToolkit.HighPerformance;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.HighPerformance.Extensions
+namespace UnitTests.HighPerformance.Extensions;
+
+[TestClass]
+public class Test_ReadOnlyMemoryExtensions
 {
-    [TestClass]
-    public class Test_ReadOnlyMemoryExtensions
+    [TestCategory("ReadOnlyMemoryExtensions")]
+    [TestMethod]
+    public void Test_ReadOnlyMemoryExtensions_EmptyMemoryStream()
     {
-        [TestCategory("ReadOnlyMemoryExtensions")]
-        [TestMethod]
-        public void Test_ReadOnlyMemoryExtensions_EmptyMemoryStream()
-        {
-            ReadOnlyMemory<byte> memory = default;
+        ReadOnlyMemory<byte> memory = default;
 
-            Stream stream = memory.AsStream();
+        Stream stream = memory.AsStream();
 
-            Assert.IsNotNull(stream);
-            Assert.AreEqual(stream.Length, memory.Length);
-            Assert.IsFalse(stream.CanWrite);
-        }
+        Assert.IsNotNull(stream);
+        Assert.AreEqual(stream.Length, memory.Length);
+        Assert.IsFalse(stream.CanWrite);
+    }
 
-        [TestCategory("ReadOnlyMemoryExtensions")]
-        [TestMethod]
-        public void Test_ReadOnlyMemoryExtensions_MemoryStream()
-        {
-            ReadOnlyMemory<byte> memory = new byte[1024];
+    [TestCategory("ReadOnlyMemoryExtensions")]
+    [TestMethod]
+    public void Test_ReadOnlyMemoryExtensions_MemoryStream()
+    {
+        ReadOnlyMemory<byte> memory = new byte[1024];
 
-            Stream stream = memory.AsStream();
+        Stream stream = memory.AsStream();
 
-            Assert.IsNotNull(stream);
-            Assert.AreEqual(stream.Length, memory.Length);
-            Assert.IsFalse(stream.CanWrite);
-        }
+        Assert.IsNotNull(stream);
+        Assert.AreEqual(stream.Length, memory.Length);
+        Assert.IsFalse(stream.CanWrite);
     }
 }

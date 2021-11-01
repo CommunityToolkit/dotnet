@@ -10,109 +10,108 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 #pragma warning disable SA1124
 
-namespace UnitTests.Mvvm
+namespace UnitTests.Mvvm;
+
+[SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1601", Justification = "Type only used for testing")]
+[TestClass]
+public partial class Test_ICommandAttribute
 {
-    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1601", Justification = "Type only used for testing")]
-    [TestClass]
-    public partial class Test_ICommandAttribute
+    [TestCategory("Mvvm")]
+    [TestMethod]
+    public async Task Test_ICommandAttribute_RelayCommand()
     {
-        [TestCategory("Mvvm")]
-        [TestMethod]
-        public async Task Test_ICommandAttribute_RelayCommand()
+        MyViewModel? model = new();
+
+        Assert.AreEqual(model.Counter, 0);
+
+        model.IncrementCounterCommand.Execute(null);
+
+        Assert.AreEqual(model.Counter, 1);
+
+        model.IncrementCounterWithValueCommand.Execute(5);
+
+        Assert.AreEqual(model.Counter, 6);
+
+        await model.DelayAndIncrementCounterCommand.ExecuteAsync(null);
+
+        Assert.AreEqual(model.Counter, 7);
+
+        await model.DelayAndIncrementCounterWithTokenCommand.ExecuteAsync(null);
+
+        Assert.AreEqual(model.Counter, 8);
+
+        await model.DelayAndIncrementCounterWithValueCommand.ExecuteAsync(5);
+
+        Assert.AreEqual(model.Counter, 13);
+
+        await model.DelayAndIncrementCounterWithValueAndTokenCommand.ExecuteAsync(5);
+
+        Assert.AreEqual(model.Counter, 18);
+    }
+
+    public sealed partial class MyViewModel
+    {
+        public int Counter { get; private set; }
+
+        /// <summary>This is a single line summary.</summary>
+        [ICommand]
+        private void IncrementCounter()
         {
-            MyViewModel? model = new();
-
-            Assert.AreEqual(model.Counter, 0);
-
-            model.IncrementCounterCommand.Execute(null);
-
-            Assert.AreEqual(model.Counter, 1);
-
-            model.IncrementCounterWithValueCommand.Execute(5);
-
-            Assert.AreEqual(model.Counter, 6);
-
-            await model.DelayAndIncrementCounterCommand.ExecuteAsync(null);
-
-            Assert.AreEqual(model.Counter, 7);
-
-            await model.DelayAndIncrementCounterWithTokenCommand.ExecuteAsync(null);
-
-            Assert.AreEqual(model.Counter, 8);
-
-            await model.DelayAndIncrementCounterWithValueCommand.ExecuteAsync(5);
-
-            Assert.AreEqual(model.Counter, 13);
-
-            await model.DelayAndIncrementCounterWithValueAndTokenCommand.ExecuteAsync(5);
-
-            Assert.AreEqual(model.Counter, 18);
+            Counter++;
         }
 
-        public sealed partial class MyViewModel
+        /// <summary>
+        /// This is a multiline summary
+        /// </summary>
+        [ICommand]
+        private void IncrementCounterWithValue(int count)
         {
-            public int Counter { get; private set; }
+            Counter += count;
+        }
 
-            /// <summary>This is a single line summary.</summary>
-            [ICommand]
-            private void IncrementCounter()
-            {
-                Counter++;
-            }
+        /// <summary>This is single line with also other stuff below</summary>
+        /// <returns>Foo bar baz</returns>
+        /// <returns>A task</returns>
+        [ICommand]
+        private async Task DelayAndIncrementCounterAsync()
+        {
+            await Task.Delay(50);
 
-            /// <summary>
-            /// This is a multiline summary
-            /// </summary>
-            [ICommand]
-            private void IncrementCounterWithValue(int count)
-            {
-                Counter += count;
-            }
+            Counter += 1;
+        }
 
-            /// <summary>This is single line with also other stuff below</summary>
-            /// <returns>Foo bar baz</returns>
-            /// <returns>A task</returns>
-            [ICommand]
-            private async Task DelayAndIncrementCounterAsync()
-            {
-                await Task.Delay(50);
+        #region Test region
 
-                Counter += 1;
-            }
+        /// <summary>
+        /// This is multi line with also other stuff below
+        /// </summary>
+        /// <returns>Foo bar baz</returns>
+        /// <returns>A task</returns>
+        [ICommand]
+        private async Task DelayAndIncrementCounterWithTokenAsync(CancellationToken token)
+        {
+            await Task.Delay(50);
 
-            #region Test region
+            Counter += 1;
+        }
 
-            /// <summary>
-            /// This is multi line with also other stuff below
-            /// </summary>
-            /// <returns>Foo bar baz</returns>
-            /// <returns>A task</returns>
-            [ICommand]
-            private async Task DelayAndIncrementCounterWithTokenAsync(CancellationToken token)
-            {
-                await Task.Delay(50);
+        // This should not be ported over
+        [ICommand]
+        private async Task DelayAndIncrementCounterWithValueAsync(int count)
+        {
+            await Task.Delay(50);
 
-                Counter += 1;
-            }
+            Counter += count;
+        }
 
-            // This should not be ported over
-            [ICommand]
-            private async Task DelayAndIncrementCounterWithValueAsync(int count)
-            {
-                await Task.Delay(50);
+        #endregion
 
-                Counter += count;
-            }
+        [ICommand]
+        private async Task DelayAndIncrementCounterWithValueAndTokenAsync(int count, CancellationToken token)
+        {
+            await Task.Delay(50);
 
-            #endregion
-
-            [ICommand]
-            private async Task DelayAndIncrementCounterWithValueAndTokenAsync(int count, CancellationToken token)
-            {
-                await Task.Delay(50);
-
-                Counter += count;
-            }
+            Counter += count;
         }
     }
 }

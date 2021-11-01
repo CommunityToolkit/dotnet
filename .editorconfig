@@ -387,3 +387,4 @@ csharp_style_unused_value_expression_statement_preference = discard_variable:war
 csharp_prefer_static_local_function = true:warning
 csharp_style_allow_blank_lines_between_consecutive_braces_experimental = false:warning
 csharp_style_prefer_pattern_matching = true:suggestion
+csharp_style_namespace_declarations = file_scoped:warning

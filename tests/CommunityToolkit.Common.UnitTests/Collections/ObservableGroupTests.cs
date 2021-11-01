@@ -7,118 +7,117 @@ using System.Linq;
 using CommunityToolkit.Common.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.Collections
+namespace UnitTests.Collections;
+
+[TestClass]
+public class ObservableGroupTests
 {
-    [TestClass]
-    public class ObservableGroupTests
+    [TestCategory("Collections")]
+    [TestMethod]
+    public void Ctor_ShouldHaveExpectedState()
     {
-        [TestCategory("Collections")]
-        [TestMethod]
-        public void Ctor_ShouldHaveExpectedState()
-        {
-            ObservableGroup<string, int>? group = new("key");
+        ObservableGroup<string, int>? group = new("key");
 
-            Assert.AreEqual(group.Key, "key");
-            Assert.AreEqual(group.Count, 0);
-        }
+        Assert.AreEqual(group.Key, "key");
+        Assert.AreEqual(group.Count, 0);
+    }
 
-        [TestCategory("Collections")]
-        [TestMethod]
-        public void Ctor_WithGrouping_ShouldHaveExpectedState()
-        {
-            IntGroup? source = new("key", new[] { 1, 2, 3 });
-            ObservableGroup<string, int>? group = new(source);
+    [TestCategory("Collections")]
+    [TestMethod]
+    public void Ctor_WithGrouping_ShouldHaveExpectedState()
+    {
+        IntGroup? source = new("key", new[] { 1, 2, 3 });
+        ObservableGroup<string, int>? group = new(source);
 
-            Assert.AreEqual(group.Key, "key");
-            CollectionAssert.AreEqual(group, new[] { 1, 2, 3 });
-        }
+        Assert.AreEqual(group.Key, "key");
+        CollectionAssert.AreEqual(group, new[] { 1, 2, 3 });
+    }
 
-        [TestCategory("Collections")]
-        [TestMethod]
-        public void Ctor_WithCollection_ShouldHaveExpectedState()
-        {
-            int[]? source = new[] { 1, 2, 3 };
-            ObservableGroup<string, int>? group = new("key", source);
+    [TestCategory("Collections")]
+    [TestMethod]
+    public void Ctor_WithCollection_ShouldHaveExpectedState()
+    {
+        int[]? source = new[] { 1, 2, 3 };
+        ObservableGroup<string, int>? group = new("key", source);
 
-            Assert.AreEqual(group.Key, "key");
-            CollectionAssert.AreEqual(group, new[] { 1, 2, 3 });
-        }
+        Assert.AreEqual(group.Key, "key");
+        CollectionAssert.AreEqual(group, new[] { 1, 2, 3 });
+    }
 
-        [TestCategory("Collections")]
-        [TestMethod]
-        public void Add_ShouldRaiseEvent()
-        {
-            bool collectionChangedEventRaised = false;
-            int[]? source = new[] { 1, 2, 3 };
-            ObservableGroup<string, int>? group = new("key", source);
-            ((INotifyCollectionChanged)group).CollectionChanged += (s, e) => collectionChangedEventRaised = true;
+    [TestCategory("Collections")]
+    [TestMethod]
+    public void Add_ShouldRaiseEvent()
+    {
+        bool collectionChangedEventRaised = false;
+        int[]? source = new[] { 1, 2, 3 };
+        ObservableGroup<string, int>? group = new("key", source);
+        ((INotifyCollectionChanged)group).CollectionChanged += (s, e) => collectionChangedEventRaised = true;
 
-            group.Add(4);
+        group.Add(4);
 
-            Assert.AreEqual(group.Key, "key");
-            CollectionAssert.AreEqual(group, new[] { 1, 2, 3, 4 });
-            Assert.IsTrue(collectionChangedEventRaised);
-        }
+        Assert.AreEqual(group.Key, "key");
+        CollectionAssert.AreEqual(group, new[] { 1, 2, 3, 4 });
+        Assert.IsTrue(collectionChangedEventRaised);
+    }
 
-        [TestCategory("Collections")]
-        [TestMethod]
-        public void Update_ShouldRaiseEvent()
-        {
-            bool collectionChangedEventRaised = false;
-            int[]? source = new[] { 1, 2, 3 };
-            ObservableGroup<string, int>? group = new("key", source);
-            ((INotifyCollectionChanged)group).CollectionChanged += (s, e) => collectionChangedEventRaised = true;
+    [TestCategory("Collections")]
+    [TestMethod]
+    public void Update_ShouldRaiseEvent()
+    {
+        bool collectionChangedEventRaised = false;
+        int[]? source = new[] { 1, 2, 3 };
+        ObservableGroup<string, int>? group = new("key", source);
+        ((INotifyCollectionChanged)group).CollectionChanged += (s, e) => collectionChangedEventRaised = true;
 
-            group[1] = 4;
+        group[1] = 4;
 
-            Assert.AreEqual(group.Key, "key");
-            CollectionAssert.AreEqual(group, new[] { 1, 4, 3 });
-            Assert.IsTrue(collectionChangedEventRaised);
-        }
+        Assert.AreEqual(group.Key, "key");
+        CollectionAssert.AreEqual(group, new[] { 1, 4, 3 });
+        Assert.IsTrue(collectionChangedEventRaised);
+    }
 
-        [TestCategory("Collections")]
-        [TestMethod]
-        public void Remove_ShouldRaiseEvent()
-        {
-            bool collectionChangedEventRaised = false;
-            int[]? source = new[] { 1, 2, 3 };
-            ObservableGroup<string, int>? group = new("key", source);
-            ((INotifyCollectionChanged)group).CollectionChanged += (s, e) => collectionChangedEventRaised = true;
+    [TestCategory("Collections")]
+    [TestMethod]
+    public void Remove_ShouldRaiseEvent()
+    {
+        bool collectionChangedEventRaised = false;
+        int[]? source = new[] { 1, 2, 3 };
+        ObservableGroup<string, int>? group = new("key", source);
+        ((INotifyCollectionChanged)group).CollectionChanged += (s, e) => collectionChangedEventRaised = true;
 
-            _ = group.Remove(1);
+        _ = group.Remove(1);
 
-            Assert.AreEqual(group.Key, "key");
-            CollectionAssert.AreEqual(group, new[] { 2, 3 });
-            Assert.IsTrue(collectionChangedEventRaised);
-        }
+        Assert.AreEqual(group.Key, "key");
+        CollectionAssert.AreEqual(group, new[] { 2, 3 });
+        Assert.IsTrue(collectionChangedEventRaised);
+    }
 
-        [TestCategory("Collections")]
-        [TestMethod]
-        public void Clear_ShouldRaiseEvent()
-        {
-            bool collectionChangedEventRaised = false;
-            int[]? source = new[] { 1, 2, 3 };
-            ObservableGroup<string, int>? group = new("key", source);
-            ((INotifyCollectionChanged)group).CollectionChanged += (s, e) => collectionChangedEventRaised = true;
+    [TestCategory("Collections")]
+    [TestMethod]
+    public void Clear_ShouldRaiseEvent()
+    {
+        bool collectionChangedEventRaised = false;
+        int[]? source = new[] { 1, 2, 3 };
+        ObservableGroup<string, int>? group = new("key", source);
+        ((INotifyCollectionChanged)group).CollectionChanged += (s, e) => collectionChangedEventRaised = true;
 
-            group.Clear();
+        group.Clear();
 
-            Assert.AreEqual(group.Key, "key");
-            Assert.AreEqual(group.Count, 0);
-            Assert.IsTrue(collectionChangedEventRaised);
-        }
+        Assert.AreEqual(group.Key, "key");
+        Assert.AreEqual(group.Count, 0);
+        Assert.IsTrue(collectionChangedEventRaised);
+    }
 
-        [TestCategory("Collections")]
-        [DataTestMethod]
-        [DataRow(0)]
-        [DataRow(3)]
-        public void IReadOnlyObservableGroup_ShouldReturnExpectedValues(int count)
-        {
-            ObservableGroup<string, int>? group = new("key", Enumerable.Range(0, count));
-            IReadOnlyObservableGroup? iReadOnlyObservableGroup = (IReadOnlyObservableGroup)group;
+    [TestCategory("Collections")]
+    [DataTestMethod]
+    [DataRow(0)]
+    [DataRow(3)]
+    public void IReadOnlyObservableGroup_ShouldReturnExpectedValues(int count)
+    {
+        ObservableGroup<string, int>? group = new("key", Enumerable.Range(0, count));
+        IReadOnlyObservableGroup? iReadOnlyObservableGroup = (IReadOnlyObservableGroup)group;
 
-            Assert.AreEqual(iReadOnlyObservableGroup.Key, "key");
-            Assert.AreEqual(iReadOnlyObservableGroup.Count, count);
-        }
+        Assert.AreEqual(iReadOnlyObservableGroup.Key, "key");
+        Assert.AreEqual(iReadOnlyObservableGroup.Count, count);
     }
 }

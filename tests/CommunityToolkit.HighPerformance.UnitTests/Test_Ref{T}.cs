@@ -7,14 +7,14 @@ using System.Runtime.CompilerServices;
 using CommunityToolkit.HighPerformance;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests.HighPerformance
+namespace UnitTests.HighPerformance;
+
+[TestClass]
+[SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1649", Justification = "Test class for generic type")]
+public class Test_RefOfT
 {
-    [TestClass]
-    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1649", Justification = "Test class for generic type")]
-    public class Test_RefOfT
-    {
-        [TestCategory("RefOfT")]
-        [TestMethod]
+    [TestCategory("RefOfT")]
+    [TestMethod]
 #if WINDOWS_UWP
         public void Test_RefOfT_CreateRefOfT()
         {
@@ -37,17 +37,16 @@ namespace UnitTests.HighPerformance
             public int Value;
         }
 #else
-        public void Test_RefOfT_CreateRefOfT()
-        {
-            int value = 1;
-            Ref<int> reference = new(ref value);
+    public void Test_RefOfT_CreateRefOfT()
+    {
+        int value = 1;
+        Ref<int> reference = new(ref value);
 
-            Assert.IsTrue(Unsafe.AreSame(ref value, ref reference.Value));
+        Assert.IsTrue(Unsafe.AreSame(ref value, ref reference.Value));
 
-            reference.Value++;
+        reference.Value++;
 
-            Assert.AreEqual(value, 2);
-        }
-#endif
+        Assert.AreEqual(value, 2);
     }
+#endif
 }
