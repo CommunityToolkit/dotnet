@@ -21,8 +21,8 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_ObservableValidator_HasErrors()
         {
-            var model = new Person();
-            var args = new List<PropertyChangedEventArgs>();
+            Person model = new();
+            List<PropertyChangedEventArgs> args = new();
 
             model.PropertyChanged += (s, e) => args.Add(e);
 
@@ -50,9 +50,9 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_ObservableValidator_ErrorsChanged()
         {
-            var model = new Person();
+            Person model = new();
 
-            List<(object? Sender, DataErrorsChangedEventArgs Args)> errors = new List<(object?, DataErrorsChangedEventArgs)>();
+            List<(object? Sender, DataErrorsChangedEventArgs Args)> errors = new();
 
             model.ErrorsChanged += (s, e) => errors.Add((s, e));
 
@@ -89,7 +89,7 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_ObservableValidator_GetErrors()
         {
-            var model = new Person();
+            Person? model = new();
 
             Assert.AreEqual(model.GetErrors(null).Count(), 0);
             Assert.AreEqual(model.GetErrors(string.Empty).Count(), 0);
@@ -98,7 +98,7 @@ namespace UnitTests.Mvvm
 
             model.Name = "Foo";
 
-            var errors = model.GetErrors(nameof(Person.Name)).ToArray();
+            ValidationResult[]? errors = model.GetErrors(nameof(Person.Name)).ToArray();
 
             Assert.AreEqual(errors.Length, 1);
             Assert.AreEqual(errors[0].MemberNames.First(), nameof(Person.Name));
@@ -142,7 +142,7 @@ namespace UnitTests.Mvvm
         [DataRow("Hello world", true)]
         public void Test_ObservableValidator_ValidateReturn(string value, bool isValid)
         {
-            var model = new Person { Name = value };
+            Person? model = new() { Name = value };
 
             Assert.AreEqual(model.HasErrors, !isValid);
 
@@ -160,13 +160,13 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_ObservableValidator_TrySetProperty()
         {
-            var model = new Person();
-            var events = new List<DataErrorsChangedEventArgs>();
+            Person? model = new();
+            List<DataErrorsChangedEventArgs>? events = new();
 
             model.ErrorsChanged += (s, e) => events.Add(e);
 
             // Set a correct value, this should update the property
-            Assert.IsTrue(model.TrySetName("Hello", out var errors));
+            Assert.IsTrue(model.TrySetName("Hello", out IReadOnlyCollection<ValidationResult>? errors));
             Assert.IsTrue(errors.Count == 0);
             Assert.IsTrue(events.Count == 0);
             Assert.AreEqual(model.Name, "Hello");
@@ -214,8 +214,8 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_ObservableValidator_ValidateProperty()
         {
-            var model = new ComparableModel();
-            var events = new List<DataErrorsChangedEventArgs>();
+            ComparableModel? model = new();
+            List<DataErrorsChangedEventArgs>? events = new();
 
             model.ErrorsChanged += (s, e) => events.Add(e);
 
@@ -268,8 +268,8 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_ObservableValidator_ClearErrors()
         {
-            var model = new Person();
-            var events = new List<DataErrorsChangedEventArgs>();
+            Person? model = new();
+            List<DataErrorsChangedEventArgs>? events = new();
 
             model.ErrorsChanged += (s, e) => events.Add(e);
 
@@ -304,8 +304,8 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_ObservableValidator_ValidateAllProperties()
         {
-            var model = new PersonWithDeferredValidation();
-            var events = new List<DataErrorsChangedEventArgs>();
+            PersonWithDeferredValidation? model = new();
+            List<DataErrorsChangedEventArgs>? events = new();
 
             model.ErrorsChanged += (s, e) => events.Add(e);
 
@@ -346,8 +346,8 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_ObservableValidator_ValidateAllProperties_WithFallback()
         {
-            var model = new PersonWithDeferredValidation();
-            var events = new List<DataErrorsChangedEventArgs>();
+            PersonWithDeferredValidation? model = new();
+            List<DataErrorsChangedEventArgs>? events = new();
 
             MethodInfo[] staticMethods = typeof(ObservableValidator).GetMethods(BindingFlags.Static | BindingFlags.NonPublic);
             MethodInfo validationMethod = staticMethods.Single(static m => m.Name.Contains("GetValidationActionFallback"));
@@ -393,9 +393,9 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_ObservableValidator_CustomValidation()
         {
-            var items = new Dictionary<object, object?> { [nameof(CustomValidationModel.A)] = 42 };
-            var model = new CustomValidationModel(items);
-            var events = new List<DataErrorsChangedEventArgs>();
+            Dictionary<object, object?>? items = new() { [nameof(CustomValidationModel.A)] = 42 };
+            CustomValidationModel? model = new(items);
+            List<DataErrorsChangedEventArgs>? events = new();
 
             model.ErrorsChanged += (s, e) => events.Add(e);
 
@@ -409,8 +409,8 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_ObservableValidator_CustomValidationWithInjectedService()
         {
-            var model = new ValidationWithServiceModel(new FancyService());
-            var events = new List<DataErrorsChangedEventArgs>();
+            ValidationWithServiceModel? model = new(new FancyService());
+            List<DataErrorsChangedEventArgs>? events = new();
 
             model.ErrorsChanged += (s, e) => events.Add(e);
 
@@ -445,7 +445,7 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_ObservableValidator_ValidationWithFormattedDisplayName()
         {
-            var model = new ValidationWithDisplayName();
+            ValidationWithDisplayName? model = new();
 
             Assert.IsTrue(model.HasErrors);
 
@@ -466,11 +466,11 @@ namespace UnitTests.Mvvm
         // See: https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4272
         [TestCategory("Mvvm")]
         [TestMethod]
-        [DataRow(typeof(MyBase))]
-        [DataRow(typeof(MyDerived2))]
+        [DataRow(typeof(ObservableValidatorBase))]
+        [DataRow(typeof(ObservableValidatorDerived))]
         public void Test_ObservableRecipient_ValidationOnNonValidatableProperties(Type type)
         {
-            MyBase viewmodel = (MyBase)Activator.CreateInstance(type)!;
+            ObservableValidatorBase viewmodel = (ObservableValidatorBase)Activator.CreateInstance(type)!;
 
             viewmodel.ValidateAll();
         }
@@ -478,11 +478,11 @@ namespace UnitTests.Mvvm
         // See: https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4272
         [TestCategory("Mvvm")]
         [TestMethod]
-        [DataRow(typeof(MyBase))]
-        [DataRow(typeof(MyDerived2))]
+        [DataRow(typeof(ObservableValidatorBase))]
+        [DataRow(typeof(ObservableValidatorDerived))]
         public void Test_ObservableRecipient_ValidationOnNonValidatableProperties_WithFallback(Type type)
         {
-            MyBase viewmodel = (MyBase)Activator.CreateInstance(type)!;
+            ObservableValidatorBase viewmodel = (ObservableValidatorBase)Activator.CreateInstance(type)!;
 
             MethodInfo[] staticMethods = typeof(ObservableValidator).GetMethods(BindingFlags.Static | BindingFlags.NonPublic);
             MethodInfo validationMethod = staticMethods.Single(static m => m.Name.Contains("GetValidationActionFallback"));
@@ -567,7 +567,7 @@ namespace UnitTests.Mvvm
                 get => this.b;
                 set
                 {
-                    SetProperty(ref this.b, value, true);
+                    _ = SetProperty(ref this.b, value, true);
                     ValidateProperty(A, nameof(A));
                 }
             }
@@ -709,7 +709,7 @@ namespace UnitTests.Mvvm
             }
         }
 
-        public class MyBase : ObservableValidator
+        public class ObservableValidatorBase : ObservableValidator
         {
             public int? MyDummyInt { get; set; } = 0;
 
@@ -719,7 +719,7 @@ namespace UnitTests.Mvvm
             }
         }
 
-        public class MyDerived2 : MyBase
+        public class ObservableValidatorDerived : ObservableValidatorBase
         {
             public string? Name { get; set; }
 

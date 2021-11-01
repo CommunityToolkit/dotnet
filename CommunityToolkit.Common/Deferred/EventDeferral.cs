@@ -17,7 +17,7 @@ namespace CommunityToolkit.Common.Deferred
     public class EventDeferral : IDisposable
     {
         //// TODO: If/when .NET 5 is base, we can upgrade to non-generic version
-        private readonly TaskCompletionSource<object?> _taskCompletionSource = new TaskCompletionSource<object?>();
+        private readonly TaskCompletionSource<object?> _taskCompletionSource = new();
 
         internal EventDeferral()
         {
@@ -42,7 +42,7 @@ namespace CommunityToolkit.Common.Deferred
         {
             using (cancellationToken.Register(() => _taskCompletionSource.TrySetCanceled()))
             {
-                await _taskCompletionSource.Task;
+                _ = await _taskCompletionSource.Task;
             }
         }
 

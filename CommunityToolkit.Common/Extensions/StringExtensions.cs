@@ -105,7 +105,7 @@ namespace CommunityToolkit.Common
                 return null;
             }
 
-            var ret = htmlText.FixHtml();
+            string? ret = htmlText.FixHtml();
 
             // Remove html tags
             ret = new Regex(RemoveHtmlTagsRegex).Replace(ret, string.Empty);
@@ -121,13 +121,13 @@ namespace CommunityToolkit.Common
         public static string FixHtml(this string html)
         {
             // Remove comments
-            var withoutComments = RemoveHtmlCommentsRegex.Replace(html, string.Empty);
+            string? withoutComments = RemoveHtmlCommentsRegex.Replace(html, string.Empty);
 
             // Remove scripts
-            var withoutScripts = RemoveHtmlScriptsRegex.Replace(withoutComments, string.Empty);
+            string? withoutScripts = RemoveHtmlScriptsRegex.Replace(withoutComments, string.Empty);
 
             // Remove styles
-            var withoutStyles = RemoveHtmlStylesRegex.Replace(withoutScripts, string.Empty);
+            string? withoutStyles = RemoveHtmlStylesRegex.Replace(withoutScripts, string.Empty);
 
             return withoutStyles;
         }

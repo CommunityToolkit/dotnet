@@ -113,7 +113,7 @@ namespace CommunityToolkit.HighPerformance
                 return new ArrayMemoryManager<TFrom, TTo>(segment.Array!, segment.Offset, segment.Count).Memory;
             }
 
-            if (MemoryMarshal.TryGetMemoryManager<TFrom, MemoryManager<TFrom>>(memory, out var memoryManager, out start, out length))
+            if (MemoryMarshal.TryGetMemoryManager<TFrom, MemoryManager<TFrom>>(memory, out MemoryManager<TFrom>? memoryManager, out start, out length))
             {
                 // If the memory manager is the one resulting from a previous cast, we can use it directly to retrieve
                 // a new manager for the target type that wraps the original data store, instead of creating one that

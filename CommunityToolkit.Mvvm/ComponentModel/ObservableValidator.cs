@@ -563,7 +563,7 @@ namespace CommunityToolkit.Mvvm.ComponentModel
             // If the property isn't present in the dictionary, add it now to avoid allocations.
             if (!this.errors.TryGetValue(propertyName!, out List<ValidationResult>? propertyErrors))
             {
-                propertyErrors = new();
+                propertyErrors = new List<ValidationResult>();
 
                 this.errors.Add(propertyName!, propertyErrors);
             }
@@ -640,7 +640,7 @@ namespace CommunityToolkit.Mvvm.ComponentModel
             // Add the cached errors list for later use.
             if (!this.errors.TryGetValue(propertyName!, out List<ValidationResult>? propertyErrors))
             {
-                propertyErrors = new();
+                propertyErrors = new List<ValidationResult>();
 
                 this.errors.Add(propertyName!, propertyErrors);
             }
@@ -688,7 +688,7 @@ namespace CommunityToolkit.Mvvm.ComponentModel
 
             // Clear the errors for all properties with at least one error, and raise the
             // ErrorsChanged event for those properties. Other properties will be ignored.
-            foreach (var propertyInfo in this.errors)
+            foreach (KeyValuePair<string, List<ValidationResult>> propertyInfo in this.errors)
             {
                 bool hasErrors = propertyInfo.Value.Count > 0;
 

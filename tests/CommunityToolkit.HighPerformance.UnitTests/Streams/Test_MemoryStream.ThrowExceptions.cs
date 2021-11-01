@@ -16,7 +16,7 @@ namespace UnitTests.HighPerformance.Streams
         [TestMethod]
         public void Test_MemoryStream_ParameterName_ThrowArgumentExceptionForPosition()
         {
-            var stream = new byte[10].AsMemory().AsStream();
+            Stream? stream = new byte[10].AsMemory().AsStream();
 
             try
             {
@@ -36,16 +36,16 @@ namespace UnitTests.HighPerformance.Streams
         [TestMethod]
         public void Test_MemoryStream_ParameterName_ThrowArgumentExceptionForSeekOrigin()
         {
-            var stream = new byte[10].AsMemory().AsStream();
+            Stream? stream = new byte[10].AsMemory().AsStream();
 
             try
             {
-                stream.Seek(0, (SeekOrigin)int.MinValue);
+                _ = stream.Seek(0, (SeekOrigin)int.MinValue);
             }
             catch (ArgumentException e) when (e.GetType() == typeof(ArgumentException))
             {
-                var method = stream.GetType().GetMethod(nameof(Stream.Seek));
-                var name = method!.GetParameters()[1].Name;
+                System.Reflection.MethodInfo? method = stream.GetType().GetMethod(nameof(Stream.Seek));
+                string? name = method!.GetParameters()[1].Name;
 
                 Assert.AreEqual(e.ParamName, name);
 
@@ -59,7 +59,7 @@ namespace UnitTests.HighPerformance.Streams
         [TestMethod]
         public void Test_MemoryStream_ParameterName_ThrowArgumentNullExceptionForNullBuffer()
         {
-            var stream = new byte[10].AsMemory().AsStream();
+            Stream? stream = new byte[10].AsMemory().AsStream();
 
             try
             {
@@ -67,7 +67,7 @@ namespace UnitTests.HighPerformance.Streams
             }
             catch (ArgumentNullException e) when (e.GetType() == typeof(ArgumentNullException))
             {
-                var name = (
+                string? name = (
                     from method in typeof(Stream).GetMethods()
                     where method.Name == nameof(Stream.Write)
                     let normalParams = method.GetParameters()
@@ -90,7 +90,7 @@ namespace UnitTests.HighPerformance.Streams
         [TestMethod]
         public void Test_MemoryStream_ParameterName_ThrowArgumentOutOfRangeExceptionForNegativeOffset()
         {
-            var stream = new byte[10].AsMemory().AsStream();
+            Stream? stream = new byte[10].AsMemory().AsStream();
 
             try
             {
@@ -98,7 +98,7 @@ namespace UnitTests.HighPerformance.Streams
             }
             catch (ArgumentOutOfRangeException e) when (e.GetType() == typeof(ArgumentOutOfRangeException))
             {
-                var name = (
+                string? name = (
                     from method in typeof(Stream).GetMethods()
                     where method.Name == nameof(Stream.Write)
                     let normalParams = method.GetParameters()
@@ -121,7 +121,7 @@ namespace UnitTests.HighPerformance.Streams
         [TestMethod]
         public void Test_MemoryStream_ParameterName_ThrowArgumentOutOfRangeExceptionForNegativeCount()
         {
-            var stream = new byte[10].AsMemory().AsStream();
+            Stream? stream = new byte[10].AsMemory().AsStream();
 
             try
             {
@@ -129,7 +129,7 @@ namespace UnitTests.HighPerformance.Streams
             }
             catch (ArgumentOutOfRangeException e) when (e.GetType() == typeof(ArgumentOutOfRangeException))
             {
-                var name = (
+                string? name = (
                     from method in typeof(Stream).GetMethods()
                     where method.Name == nameof(Stream.Write)
                     let normalParams = method.GetParameters()
@@ -152,7 +152,7 @@ namespace UnitTests.HighPerformance.Streams
         [TestMethod]
         public void Test_MemoryStream_ParameterName_ThrowArgumentExceptionForExceededBufferSize()
         {
-            var stream = new byte[10].AsMemory().AsStream();
+            Stream? stream = new byte[10].AsMemory().AsStream();
 
             try
             {
@@ -160,7 +160,7 @@ namespace UnitTests.HighPerformance.Streams
             }
             catch (ArgumentException e) when (e.GetType() == typeof(ArgumentException))
             {
-                var name = (
+                string? name = (
                     from method in typeof(Stream).GetMethods()
                     where method.Name == nameof(Stream.Write)
                     let normalParams = method.GetParameters()

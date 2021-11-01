@@ -58,9 +58,9 @@ namespace UnitTests.HighPerformance.Helpers
         [Pure]
         private static UnmanagedSpanOwner<int> CreateRandomData(int count)
         {
-            var random = new Random(count);
+            Random? random = new(count);
 
-            UnmanagedSpanOwner<int> data = new UnmanagedSpanOwner<int>(count);
+            UnmanagedSpanOwner<int> data = new(count);
 
             foreach (ref int n in data.GetSpan())
             {

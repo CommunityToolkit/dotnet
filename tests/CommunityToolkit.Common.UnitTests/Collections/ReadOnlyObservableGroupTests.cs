@@ -18,8 +18,8 @@ namespace UnitTests.Collections
         [TestMethod]
         public void Ctor_WithKeyAndOBservableCollection_ShouldHaveExpectedInitialState()
         {
-            var source = new ObservableCollection<int>(new[] { 1, 2, 3 });
-            var group = new ReadOnlyObservableGroup<string, int>("key", source);
+            ObservableCollection<int>? source = new(new[] { 1, 2, 3 });
+            ReadOnlyObservableGroup<string, int>? group = new("key", source);
 
             Assert.AreEqual(group.Key, "key");
             CollectionAssert.AreEqual(group, new[] { 1, 2, 3 });
@@ -29,9 +29,9 @@ namespace UnitTests.Collections
         [TestMethod]
         public void Ctor_ObservableGroup_ShouldHaveExpectedInitialState()
         {
-            var source = new[] { 1, 2, 3 };
-            var sourceGroup = new ObservableGroup<string, int>("key", source);
-            var group = new ReadOnlyObservableGroup<string, int>(sourceGroup);
+            int[]? source = new[] { 1, 2, 3 };
+            ObservableGroup<string, int>? sourceGroup = new("key", source);
+            ReadOnlyObservableGroup<string, int>? group = new(sourceGroup);
 
             Assert.AreEqual(group.Key, "key");
             CollectionAssert.AreEqual(group, new[] { 1, 2, 3 });
@@ -41,8 +41,8 @@ namespace UnitTests.Collections
         [TestMethod]
         public void Ctor_WithKeyAndCollection_ShouldHaveExpectedInitialState()
         {
-            var source = new[] { 1, 2, 3 };
-            var group = new ReadOnlyObservableGroup<string, int>("key", source);
+            int[]? source = new[] { 1, 2, 3 };
+            ReadOnlyObservableGroup<string, int>? group = new("key", source);
 
             Assert.AreEqual(group.Key, "key");
             CollectionAssert.AreEqual(group, new[] { 1, 2, 3 });
@@ -52,10 +52,10 @@ namespace UnitTests.Collections
         [TestMethod]
         public void Add_ShouldRaiseEvent()
         {
-            var collectionChangedEventRaised = false;
-            var source = new[] { 1, 2, 3 };
-            var sourceGroup = new ObservableGroup<string, int>("key", source);
-            var group = new ReadOnlyObservableGroup<string, int>(sourceGroup);
+            bool collectionChangedEventRaised = false;
+            int[]? source = new[] { 1, 2, 3 };
+            ObservableGroup<string, int>? sourceGroup = new("key", source);
+            ReadOnlyObservableGroup<string, int>? group = new(sourceGroup);
             ((INotifyCollectionChanged)group).CollectionChanged += (s, e) => collectionChangedEventRaised = true;
 
             sourceGroup.Add(4);
@@ -70,10 +70,10 @@ namespace UnitTests.Collections
         [TestMethod]
         public void Update_ShouldRaiseEvent()
         {
-            var collectionChangedEventRaised = false;
-            var source = new[] { 1, 2, 3 };
-            var sourceGroup = new ObservableGroup<string, int>("key", source);
-            var group = new ReadOnlyObservableGroup<string, int>(sourceGroup);
+            bool collectionChangedEventRaised = false;
+            int[]? source = new[] { 1, 2, 3 };
+            ObservableGroup<string, int>? sourceGroup = new("key", source);
+            ReadOnlyObservableGroup<string, int>? group = new(sourceGroup);
             ((INotifyCollectionChanged)group).CollectionChanged += (s, e) => collectionChangedEventRaised = true;
 
             sourceGroup[1] = 4;
@@ -88,13 +88,13 @@ namespace UnitTests.Collections
         [TestMethod]
         public void Remove_ShouldRaiseEvent()
         {
-            var collectionChangedEventRaised = false;
-            var source = new[] { 1, 2, 3 };
-            var sourceGroup = new ObservableGroup<string, int>("key", source);
-            var group = new ReadOnlyObservableGroup<string, int>(sourceGroup);
+            bool collectionChangedEventRaised = false;
+            int[]? source = new[] { 1, 2, 3 };
+            ObservableGroup<string, int>? sourceGroup = new("key", source);
+            ReadOnlyObservableGroup<string, int>? group = new(sourceGroup);
             ((INotifyCollectionChanged)group).CollectionChanged += (s, e) => collectionChangedEventRaised = true;
 
-            sourceGroup.Remove(1);
+            _ = sourceGroup.Remove(1);
 
             Assert.AreEqual(group.Key, "key");
             CollectionAssert.AreEqual(group, new[] { 2, 3 });
@@ -106,10 +106,10 @@ namespace UnitTests.Collections
         [TestMethod]
         public void Clear_ShouldRaiseEvent()
         {
-            var collectionChangedEventRaised = false;
-            var source = new[] { 1, 2, 3 };
-            var sourceGroup = new ObservableGroup<string, int>("key", source);
-            var group = new ReadOnlyObservableGroup<string, int>(sourceGroup);
+            bool collectionChangedEventRaised = false;
+            int[]? source = new[] { 1, 2, 3 };
+            ObservableGroup<string, int>? sourceGroup = new("key", source);
+            ReadOnlyObservableGroup<string, int>? group = new(sourceGroup);
             ((INotifyCollectionChanged)group).CollectionChanged += (s, e) => collectionChangedEventRaised = true;
 
             sourceGroup.Clear();
@@ -126,9 +126,9 @@ namespace UnitTests.Collections
         [DataRow(3)]
         public void IReadOnlyObservableGroup_ShouldReturnExpectedValues(int count)
         {
-            var sourceGroup = new ObservableGroup<string, int>("key", Enumerable.Range(0, count));
-            var group = new ReadOnlyObservableGroup<string, int>(sourceGroup);
-            var iReadOnlyObservableGroup = (IReadOnlyObservableGroup)group;
+            ObservableGroup<string, int>? sourceGroup = new("key", Enumerable.Range(0, count));
+            ReadOnlyObservableGroup<string, int>? group = new(sourceGroup);
+            IReadOnlyObservableGroup? iReadOnlyObservableGroup = (IReadOnlyObservableGroup)group;
 
             Assert.AreEqual(iReadOnlyObservableGroup.Key, "key");
             Assert.AreEqual(iReadOnlyObservableGroup.Count, count);

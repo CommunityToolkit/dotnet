@@ -17,7 +17,7 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_ObservableObject_Events()
         {
-            var model = new SampleModel<int>();
+            SampleModel<int>? model = new();
 
             (PropertyChangingEventArgs, int) changing = default;
             (PropertyChangedEventArgs, int) changed = default;
@@ -67,7 +67,7 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_ObservableObject_ProxyCrudWithProperty()
         {
-            var model = new WrappingModelWithProperty(new Person { Name = "Alice" });
+            WrappingModelWithProperty? model = new(new Person { Name = "Alice" });
 
             (PropertyChangingEventArgs?, string?) changing = default;
             (PropertyChangedEventArgs?, string?) changed = default;
@@ -122,7 +122,7 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_ObservableObject_ProxyCrudWithField()
         {
-            var model = new WrappingModelWithField(new Person { Name = "Alice" });
+            WrappingModelWithField? model = new(new Person { Name = "Alice" });
 
             (PropertyChangingEventArgs?, string?) changing = default;
             (PropertyChangedEventArgs?, string?) changed = default;
@@ -174,9 +174,9 @@ namespace UnitTests.Mvvm
         {
             static async Task TestAsync(Action<TaskCompletionSource<int>> callback)
             {
-                var model = new SampleModelWithTask<int>();
-                var tcs = new TaskCompletionSource<int>();
-                var task = tcs.Task;
+                SampleModelWithTask<int>? model = new();
+                TaskCompletionSource<int>? tcs = new();
+                Task<int>? task = tcs.Task;
 
                 (PropertyChangingEventArgs?, Task<int>?) changing = default;
                 (PropertyChangedEventArgs?, Task<int>?) changed = default;

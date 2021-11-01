@@ -116,7 +116,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators
                 //         }
                 //     }
                 // }
-                var source =
+                string? source =
                     CompilationUnit().AddMembers(
                     NamespaceDeclaration(IdentifierName("CommunityToolkit.Mvvm.ComponentModel.__Internals")).WithLeadingTrivia(TriviaList(
                         Comment("// Licensed to the .NET Foundation under one or more agreements."),
@@ -180,7 +180,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators
         [Pure]
         private static IEnumerable<StatementSyntax> EnumerateValidationStatements(INamedTypeSymbol classSymbol, INamedTypeSymbol validationSymbol, INamedTypeSymbol observablePropertySymbol)
         {
-            foreach (var memberSymbol in classSymbol.GetMembers())
+            foreach (ISymbol? memberSymbol in classSymbol.GetMembers())
             {
                 if (memberSymbol is not (IPropertySymbol { IsIndexer: false } or IFieldSymbol))
                 {

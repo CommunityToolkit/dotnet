@@ -17,7 +17,7 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_ObservableObjectAttribute_Events()
         {
-            var model = new SampleModel();
+            SampleModel? model = new();
 
             (PropertyChangingEventArgs, int) changing = default;
             (PropertyChangedEventArgs, int) changed = default;
@@ -56,7 +56,7 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_ObservableObjectAttribute_OnSealedClass_Events()
         {
-            var model = new SampleModelSealed();
+            SampleModelSealed? model = new();
 
             (PropertyChangingEventArgs, int) changing = default;
             (PropertyChangedEventArgs, int) changed = default;

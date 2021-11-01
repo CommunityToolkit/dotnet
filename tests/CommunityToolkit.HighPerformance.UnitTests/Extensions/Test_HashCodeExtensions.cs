@@ -68,7 +68,7 @@ namespace UnitTests.HighPerformance.Extensions
         private static void TestForType<T>()
             where T : unmanaged, IEquatable<T>
         {
-            foreach (var count in TestCounts)
+            foreach (int count in TestCounts)
             {
                 T[] data = CreateRandomData<T>(count);
 
@@ -101,7 +101,7 @@ namespace UnitTests.HighPerformance.Extensions
         private static T[] CreateRandomData<T>(int count)
             where T : unmanaged
         {
-            var random = new Random(count);
+            Random? random = new(count);
 
             T[] data = new T[count];
 

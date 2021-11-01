@@ -23,7 +23,7 @@ namespace UnitTests.Extensions
         [TestMethod]
         public void Test_TaskExtensions_Generic_ValueType()
         {
-            TaskCompletionSource<int> tcs = new TaskCompletionSource<int>();
+            TaskCompletionSource<int> tcs = new();
 
             Assert.AreEqual(0, tcs.Task.GetResultOrDefault());
 
@@ -36,7 +36,7 @@ namespace UnitTests.Extensions
         [TestMethod]
         public void Test_TaskExtensions_Generic_ReferenceType()
         {
-            TaskCompletionSource<string?> tcs = new TaskCompletionSource<string?>();
+            TaskCompletionSource<string?> tcs = new();
 
             Assert.AreEqual(null, tcs.Task.GetResultOrDefault());
 
@@ -49,7 +49,7 @@ namespace UnitTests.Extensions
         [TestMethod]
         public void Test_TaskExtensions_ResultOrDefault()
         {
-            TaskCompletionSource<int> tcs = new TaskCompletionSource<int>();
+            TaskCompletionSource<int> tcs = new();
 
             Assert.AreEqual(null, ((Task)tcs.Task).GetResultOrDefault());
 
@@ -81,7 +81,7 @@ namespace UnitTests.Extensions
         [TestMethod]
         public async Task Test_TaskExtensions_ResultOrDefault_FromAsyncTaskMethodBuilder()
         {
-            var tcs = new TaskCompletionSource<object?>();
+            TaskCompletionSource<object?>? tcs = new();
 
             Task<string?> taskFromBuilder = GetTaskFromAsyncMethodBuilder("Test", tcs);
 
@@ -90,7 +90,7 @@ namespace UnitTests.Extensions
 
             tcs.SetResult(null);
 
-            await taskFromBuilder;
+            _ = await taskFromBuilder;
 
             Assert.AreEqual(((Task)taskFromBuilder).GetResultOrDefault(), "Test");
             Assert.AreEqual(taskFromBuilder.GetResultOrDefault(), "Test");
@@ -100,7 +100,7 @@ namespace UnitTests.Extensions
         [TestMethod]
         public void Test_TaskExtensions_ResultOrDefault_OfT_Int32()
         {
-            TaskCompletionSource<int> tcs = new TaskCompletionSource<int>();
+            TaskCompletionSource<int> tcs = new();
 
             Assert.AreEqual(0, tcs.Task.GetResultOrDefault());
 
@@ -125,7 +125,7 @@ namespace UnitTests.Extensions
         [TestMethod]
         public void Test_TaskExtensions_ResultOrDefault_OfT_String()
         {
-            TaskCompletionSource<string?> tcs = new TaskCompletionSource<string?>();
+            TaskCompletionSource<string?> tcs = new();
 
             Assert.AreEqual(null, tcs.Task.GetResultOrDefault());
 
@@ -152,7 +152,7 @@ namespace UnitTests.Extensions
         // This is needed to verify that the extension also works when the input Task<T> is of a derived type.
         private static async Task<T?> GetTaskFromAsyncMethodBuilder<T>(T? result, TaskCompletionSource<object?> tcs)
         {
-            await tcs.Task;
+            _ = await tcs.Task;
 
             return result;
         }

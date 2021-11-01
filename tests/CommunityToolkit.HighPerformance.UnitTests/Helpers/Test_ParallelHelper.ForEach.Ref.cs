@@ -18,7 +18,7 @@ namespace UnitTests.HighPerformance.Helpers
             foreach (int count in TestForCounts)
             {
                 using UnmanagedSpanOwner<int> data = CreateRandomData(count);
-                using UnmanagedSpanOwner<int> copy = new UnmanagedSpanOwner<int>(count);
+                using UnmanagedSpanOwner<int> copy = new(count);
 
                 data.GetSpan().CopyTo(copy.GetSpan());
 

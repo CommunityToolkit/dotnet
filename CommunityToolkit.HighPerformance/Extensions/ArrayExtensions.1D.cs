@@ -36,7 +36,7 @@ namespace CommunityToolkit.HighPerformance
 #if NET5_0
             return ref MemoryMarshal.GetArrayDataReference(array);
 #elif NETCOREAPP3_1
-            var arrayData = Unsafe.As<RawArrayData>(array)!;
+            RawArrayData? arrayData = Unsafe.As<RawArrayData>(array)!;
             ref T r0 = ref Unsafe.As<byte, T>(ref arrayData.Data);
 
             return ref r0;
@@ -65,7 +65,7 @@ namespace CommunityToolkit.HighPerformance
 
             return ref ri;
 #elif NETCOREAPP3_1
-            var arrayData = Unsafe.As<RawArrayData>(array)!;
+            RawArrayData? arrayData = Unsafe.As<RawArrayData>(array)!;
             ref T r0 = ref Unsafe.As<byte, T>(ref arrayData.Data);
             ref T ri = ref Unsafe.Add(ref r0, (nint)(uint)i);
 

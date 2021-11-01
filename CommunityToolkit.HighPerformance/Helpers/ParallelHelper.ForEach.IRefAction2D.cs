@@ -98,7 +98,7 @@ namespace CommunityToolkit.HighPerformance.Helpers
                 numBatches = (int)(clipBatches <= cores ? clipBatches : cores),
                 batchHeight = 1 + ((memory.Height - 1) / numBatches);
 
-            var actionInvoker = new RefActionInvokerWithReadOnlyMemory2D<TItem, TAction>(batchHeight, memory, action);
+            RefActionInvokerWithReadOnlyMemory2D<TItem, TAction> actionInvoker = new(batchHeight, memory, action);
 
             // Skip the parallel invocation when possible
             if (numBatches == 1)
@@ -109,7 +109,7 @@ namespace CommunityToolkit.HighPerformance.Helpers
             }
 
             // Run the batched operations in parallel
-            Parallel.For(
+            _ = Parallel.For(
                 0,
                 numBatches,
                 new ParallelOptions { MaxDegreeOfParallelism = numBatches },

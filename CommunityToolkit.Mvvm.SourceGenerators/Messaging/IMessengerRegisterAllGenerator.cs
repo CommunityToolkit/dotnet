@@ -122,7 +122,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators
                 //         }
                 //     }
                 // }
-                var source =
+                string? source =
                     CompilationUnit().AddMembers(
                     NamespaceDeclaration(IdentifierName("CommunityToolkit.Mvvm.Messaging.__Internals")).WithLeadingTrivia(TriviaList(
                         Comment("// Licensed to the .NET Foundation under one or more agreements."),
@@ -229,7 +229,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators
         [Pure]
         private static IEnumerable<StatementSyntax> EnumerateRegistrationStatements(INamedTypeSymbol classSymbol, INamedTypeSymbol iRecipientSymbol)
         {
-            foreach (var interfaceSymbol in classSymbol.AllInterfaces)
+            foreach (INamedTypeSymbol? interfaceSymbol in classSymbol.AllInterfaces)
             {
                 if (!SymbolEqualityComparer.Default.Equals(interfaceSymbol.OriginalDefinition, iRecipientSymbol))
                 {
@@ -263,7 +263,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators
         [Pure]
         private static IEnumerable<StatementSyntax> EnumerateRegistrationStatementsWithTokens(INamedTypeSymbol classSymbol, INamedTypeSymbol iRecipientSymbol)
         {
-            foreach (var interfaceSymbol in classSymbol.AllInterfaces)
+            foreach (INamedTypeSymbol? interfaceSymbol in classSymbol.AllInterfaces)
             {
                 if (!SymbolEqualityComparer.Default.Equals(interfaceSymbol.OriginalDefinition, iRecipientSymbol))
                 {

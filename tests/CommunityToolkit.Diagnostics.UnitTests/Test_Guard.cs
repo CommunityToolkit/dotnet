@@ -221,11 +221,11 @@ namespace UnitTests.Diagnostics
             Guard.IsBitwiseEqualTo(MathF.PI, MathF.PI, nameof(Test_Guard_IsBitwiseEqualTo_Ok));
             Guard.IsBitwiseEqualTo(double.Epsilon, double.Epsilon, nameof(Test_Guard_IsBitwiseEqualTo_Ok));
 
-            var guid = Guid.NewGuid();
+            Guid guid = Guid.NewGuid();
             Guard.IsBitwiseEqualTo(guid, guid, nameof(Test_Guard_IsBitwiseEqualTo_Ok));
 
             // tests the >16 byte case where the loop is called
-            var biggerThanLimit = new BiggerThanLimit(0, 3, ulong.MaxValue, ulong.MinValue);
+            BiggerThanLimit biggerThanLimit = new(0, 3, ulong.MaxValue, ulong.MinValue);
             Guard.IsBitwiseEqualTo(biggerThanLimit, biggerThanLimit, nameof(Test_Guard_IsBitwiseEqualTo_Ok));
         }
 
@@ -273,8 +273,8 @@ namespace UnitTests.Diagnostics
         public void Test_Guard_IsBitwiseEqualTo_SequenceEqualFail()
         {
             // tests the >16 byte case where the loop is called
-            var biggerThanLimit0 = new BiggerThanLimit(0, 3, ulong.MaxValue, ulong.MinValue);
-            var biggerThanLimit1 = new BiggerThanLimit(long.MaxValue + 1UL, 99, ulong.MaxValue ^ 0xF7UL, ulong.MinValue ^ 5555UL);
+            BiggerThanLimit biggerThanLimit0 = new(0, 3, ulong.MaxValue, ulong.MinValue);
+            BiggerThanLimit biggerThanLimit1 = new(long.MaxValue + 1UL, 99, ulong.MaxValue ^ 0xF7UL, ulong.MinValue ^ 5555UL);
 
             Guard.IsBitwiseEqualTo(biggerThanLimit0, biggerThanLimit1, nameof(Test_Guard_IsBitwiseEqualTo_SequenceEqualFail));
         }
@@ -283,7 +283,7 @@ namespace UnitTests.Diagnostics
         [TestMethod]
         public void Test_Guard_IsReferenceEqualTo_Ok()
         {
-            var obj = new object();
+            object? obj = new();
 
             Guard.IsReferenceEqualTo(obj, obj, nameof(Test_Guard_IsReferenceEqualTo_Ok));
         }
@@ -308,7 +308,7 @@ namespace UnitTests.Diagnostics
         [ExpectedException(typeof(ArgumentException))]
         public void Test_Guard_IsReferenceNotEqualTo_Fail()
         {
-            var obj = new object();
+            object? obj = new();
 
             Guard.IsReferenceNotEqualTo(obj, obj, nameof(Test_Guard_IsReferenceEqualTo_Ok));
         }

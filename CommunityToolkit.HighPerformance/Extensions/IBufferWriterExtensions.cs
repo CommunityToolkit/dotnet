@@ -32,7 +32,7 @@ namespace CommunityToolkit.HighPerformance
             {
                 // If the input writer is of type ArrayPoolBufferWriter<byte>, we can use the type
                 // specific buffer writer owner to let the JIT elide callvirts when accessing it.
-                var internalWriter = Unsafe.As<ArrayPoolBufferWriter<byte>>(writer)!;
+                ArrayPoolBufferWriter<byte>? internalWriter = Unsafe.As<ArrayPoolBufferWriter<byte>>(writer)!;
 
                 return new IBufferWriterStream<ArrayBufferWriterOwner>(new ArrayBufferWriterOwner(internalWriter));
             }

@@ -55,19 +55,19 @@ namespace UnitTests.HighPerformance.Extensions
         {
             static void Test<T>()
             {
-                Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-                {
-                    T? a = default;
+                _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
+                  {
+                      T? a = default;
 
-                    default(Span<T?>).IndexOf(ref a);
-                });
+                      _ = default(Span<T?>).IndexOf(ref a);
+                  });
 
-                Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-                {
-                    Span<T?> data = new T?[] { default };
+                _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
+                  {
+                      Span<T?> data = new T?[] { default };
 
-                    data.Slice(1).IndexOf(ref data[0]);
-                });
+                      _ = data.Slice(1).IndexOf(ref data[0]);
+                  });
             }
 
             Test<byte>();
@@ -107,29 +107,29 @@ namespace UnitTests.HighPerformance.Extensions
             static void Test<T>()
             {
                 // Before start
-                Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-                {
-                    Span<T?> data = new T?[] { default, default, default, default };
+                _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
+                  {
+                      Span<T?> data = new T?[] { default, default, default, default };
 
-                    data.Slice(1).IndexOf(ref data[0]);
-                });
+                      _ = data.Slice(1).IndexOf(ref data[0]);
+                  });
 
                 // After end
-                Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-                {
-                    Span<T?> data = new T?[] { default, default, default, default };
+                _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
+                  {
+                      Span<T?> data = new T?[] { default, default, default, default };
 
-                    data.Slice(0, 2).IndexOf(ref data[2]);
-                });
+                      _ = data.Slice(0, 2).IndexOf(ref data[2]);
+                  });
 
                 // Local variable
-                Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-                {
-                    var dummy = new T?[] { default };
-                    Span<T?> data = new T?[] { default, default, default, default };
+                _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
+                  {
+                      T?[]? dummy = new T?[] { default };
+                      Span<T?> data = new T?[] { default, default, default, default };
 
-                    data.IndexOf(ref dummy[0]);
-                });
+                      _ = data.IndexOf(ref dummy[0]);
+                  });
             }
 
             Test<byte>();
@@ -148,7 +148,7 @@ namespace UnitTests.HighPerformance.Extensions
 
             int i = 0;
 
-            foreach (var item in data.Enumerate())
+            foreach (CommunityToolkit.HighPerformance.Enumerables.SpanEnumerable<int>.Item item in data.Enumerate())
             {
                 Assert.IsTrue(Unsafe.AreSame(ref data[i], ref item.Value));
                 Assert.AreEqual(i, item.Index);
@@ -163,7 +163,7 @@ namespace UnitTests.HighPerformance.Extensions
         {
             Span<int> data = Array.Empty<int>();
 
-            foreach (var item in data.Enumerate())
+            foreach (CommunityToolkit.HighPerformance.Enumerables.SpanEnumerable<int>.Item item in data.Enumerate())
             {
                 Assert.Fail("Empty source sequence");
             }

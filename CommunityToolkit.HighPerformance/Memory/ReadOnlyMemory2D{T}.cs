@@ -493,7 +493,7 @@ namespace CommunityToolkit.HighPerformance
                 this.instance = array;
                 this.offset = ObjectMarshal.DangerousGetObjectDataByteOffset(array, ref array.DangerousGetReferenceAt(segment.Offset + offset));
             }
-            else if (MemoryMarshal.TryGetMemoryManager<T, MemoryManager<T>>(memory, out var memoryManager, out int memoryManagerStart, out _))
+            else if (MemoryMarshal.TryGetMemoryManager<T, MemoryManager<T>>(memory, out MemoryManager<T>? memoryManager, out int memoryManagerStart, out _))
             {
                 this.instance = memoryManager;
                 this.offset = (nint)(uint)(memoryManagerStart + offset);
@@ -658,8 +658,8 @@ namespace CommunityToolkit.HighPerformance
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                var (row, height) = rows.GetOffsetAndLength(this.height);
-                var (column, width) = columns.GetOffsetAndLength(this.width);
+                (int row, int height) = rows.GetOffsetAndLength(this.height);
+                (int column, int width) = columns.GetOffsetAndLength(this.width);
 
                 return Slice(row, column, height, width);
             }

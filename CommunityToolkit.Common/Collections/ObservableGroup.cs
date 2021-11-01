@@ -23,7 +23,7 @@ namespace CommunityToolkit.Common.Collections
         /// <summary>
         /// The cached <see cref="PropertyChangedEventArgs"/> for <see cref="Key"/>
         /// </summary>
-        private static readonly PropertyChangedEventArgs KeyChangedEventArgs = new PropertyChangedEventArgs(nameof(Key));
+        private static readonly PropertyChangedEventArgs KeyChangedEventArgs = new(nameof(Key));
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ObservableGroup{TKey, TValue}"/> class.

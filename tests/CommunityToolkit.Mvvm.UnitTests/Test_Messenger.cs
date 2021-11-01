@@ -21,8 +21,8 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_Messenger_UnregisterRecipientWithMessageType(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
-            var recipient = new object();
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+            object? recipient = new();
 
             messenger.Unregister<MessageA>(recipient);
         }
@@ -33,8 +33,8 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_Messenger_UnregisterRecipientWithMessageTypeAndToken(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
-            var recipient = new object();
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+            object? recipient = new();
 
             messenger.Unregister<MessageA, string>(recipient, nameof(MessageA));
         }
@@ -45,8 +45,8 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_Messenger_UnregisterRecipientWithToken(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
-            var recipient = new object();
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+            object? recipient = new();
 
             messenger.UnregisterAll(recipient, nameof(MessageA));
         }
@@ -57,8 +57,8 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_Messenger_UnregisterRecipientWithRecipient(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
-            var recipient = new object();
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+            object? recipient = new();
 
             messenger.UnregisterAll(recipient);
         }
@@ -69,8 +69,8 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_Messenger_RegisterAndUnregisterRecipientWithMessageType(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
-            var recipient = new object();
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+            object? recipient = new();
 
             messenger.Register<MessageA>(recipient, (r, m) => { });
 
@@ -85,8 +85,8 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_Messenger_RegisterAndUnregisterRecipientWithMessageTypeAndToken(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
-            var recipient = new object();
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+            object? recipient = new();
 
             messenger.Register<MessageA, string>(recipient, nameof(MessageA), (r, m) => { });
 
@@ -101,8 +101,8 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_Messenger_RegisterAndUnregisterRecipientWithToken(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
-            var recipient = new object();
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+            object? recipient = new();
 
             messenger.Register<MessageA, string>(recipient, nameof(MessageA), (r, m) => { });
 
@@ -117,8 +117,8 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_Messenger_RegisterAndUnregisterRecipientWithRecipient(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
-            var recipient = new object();
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+            object? recipient = new();
 
             messenger.Register<MessageA, string>(recipient, nameof(MessageA), (r, m) => { });
 
@@ -133,8 +133,8 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_Messenger_IsRegistered_Register_Send_UnregisterOfTMessage_WithNoToken(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
-            object a = new object();
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+            object a = new();
 
             Assert.IsFalse(messenger.IsRegistered<MessageA>(a));
 
@@ -149,7 +149,7 @@ namespace UnitTests.Mvvm
 
             Assert.IsTrue(messenger.IsRegistered<MessageA>(a));
 
-            messenger.Send(new MessageA { Text = nameof(MessageA) });
+            _ = messenger.Send(new MessageA { Text = nameof(MessageA) });
 
             Assert.AreSame(recipient, a);
             Assert.AreEqual(result, nameof(MessageA));
@@ -161,7 +161,7 @@ namespace UnitTests.Mvvm
             recipient = null;
             result = null;
 
-            messenger.Send(new MessageA { Text = nameof(MessageA) });
+            _ = messenger.Send(new MessageA { Text = nameof(MessageA) });
 
             Assert.IsNull(recipient);
             Assert.IsNull(result);
@@ -173,8 +173,8 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_Messenger_IsRegistered_Register_Send_UnregisterRecipient_WithNoToken(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
-            object a = new object();
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+            object a = new();
 
             Assert.IsFalse(messenger.IsRegistered<MessageA>(a));
 
@@ -183,7 +183,7 @@ namespace UnitTests.Mvvm
 
             Assert.IsTrue(messenger.IsRegistered<MessageA>(a));
 
-            messenger.Send(new MessageA { Text = nameof(MessageA) });
+            _ = messenger.Send(new MessageA { Text = nameof(MessageA) });
 
             Assert.AreEqual(result, nameof(MessageA));
 
@@ -192,7 +192,7 @@ namespace UnitTests.Mvvm
             Assert.IsFalse(messenger.IsRegistered<MessageA>(a));
 
             result = null;
-            messenger.Send(new MessageA { Text = nameof(MessageA) });
+            _ = messenger.Send(new MessageA { Text = nameof(MessageA) });
 
             Assert.IsNull(result);
         }
@@ -203,8 +203,8 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_Messenger_IsRegistered_Register_Send_UnregisterOfTMessage_WithToken(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
-            object a = new object();
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+            object a = new();
 
             Assert.IsFalse(messenger.IsRegistered<MessageA>(a));
 
@@ -213,7 +213,7 @@ namespace UnitTests.Mvvm
 
             Assert.IsTrue(messenger.IsRegistered<MessageA, string>(a, nameof(MessageA)));
 
-            messenger.Send(new MessageA { Text = nameof(MessageA) }, nameof(MessageA));
+            _ = messenger.Send(new MessageA { Text = nameof(MessageA) }, nameof(MessageA));
 
             Assert.AreEqual(result, nameof(MessageA));
 
@@ -222,7 +222,7 @@ namespace UnitTests.Mvvm
             Assert.IsFalse(messenger.IsRegistered<MessageA, string>(a, nameof(MessageA)));
 
             result = null;
-            messenger.Send(new MessageA { Text = nameof(MessageA) }, nameof(MessageA));
+            _ = messenger.Send(new MessageA { Text = nameof(MessageA) }, nameof(MessageA));
 
             Assert.IsNull(result);
         }
@@ -233,15 +233,15 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_Messenger_DuplicateRegistrationWithMessageType(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
-            var recipient = new object();
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+            object? recipient = new();
 
             messenger.Register<MessageA>(recipient, (r, m) => { });
 
-            Assert.ThrowsException<InvalidOperationException>(() =>
-            {
-                messenger.Register<MessageA>(recipient, (r, m) => { });
-            });
+            _ = Assert.ThrowsException<InvalidOperationException>(() =>
+              {
+                  messenger.Register<MessageA>(recipient, (r, m) => { });
+              });
         }
 
         [TestCategory("Mvvm")]
@@ -250,15 +250,15 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_Messenger_DuplicateRegistrationWithMessageTypeAndToken(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
-            var recipient = new object();
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+            object? recipient = new();
 
             messenger.Register<MessageA, string>(recipient, nameof(MessageA), (r, m) => { });
 
-            Assert.ThrowsException<InvalidOperationException>(() =>
-            {
-                messenger.Register<MessageA, string>(recipient, nameof(MessageA), (r, m) => { });
-            });
+            _ = Assert.ThrowsException<InvalidOperationException>(() =>
+              {
+                  messenger.Register<MessageA, string>(recipient, nameof(MessageA), (r, m) => { });
+              });
         }
 
         [TestCategory("Mvvm")]
@@ -267,8 +267,8 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_Messenger_IRecipient_NoMessages(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
-            var recipient = new RecipientWithNoMessages();
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+            RecipientWithNoMessages? recipient = new();
 
             messenger.RegisterAll(recipient);
 
@@ -282,8 +282,8 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_Messenger_IRecipient_SomeMessages_NoToken(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
-            var recipient = new RecipientWithSomeMessages();
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+            RecipientWithSomeMessages? recipient = new();
 
             messenger.RegisterAll(recipient);
 
@@ -293,12 +293,12 @@ namespace UnitTests.Mvvm
             Assert.AreEqual(recipient.As, 0);
             Assert.AreEqual(recipient.Bs, 0);
 
-            messenger.Send<MessageA>();
+            _ = messenger.Send<MessageA>();
 
             Assert.AreEqual(recipient.As, 1);
             Assert.AreEqual(recipient.Bs, 0);
 
-            messenger.Send<MessageB>();
+            _ = messenger.Send<MessageB>();
 
             Assert.AreEqual(recipient.As, 1);
             Assert.AreEqual(recipient.Bs, 1);
@@ -315,9 +315,9 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_Messenger_IRecipient_SomeMessages_WithToken(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
-            var recipient = new RecipientWithSomeMessages();
-            var token = nameof(Test_Messenger_IRecipient_SomeMessages_WithToken);
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+            RecipientWithSomeMessages? recipient = new();
+            string? token = nameof(Test_Messenger_IRecipient_SomeMessages_WithToken);
 
             messenger.RegisterAll(recipient, token);
 
@@ -330,12 +330,12 @@ namespace UnitTests.Mvvm
             Assert.AreEqual(recipient.As, 0);
             Assert.AreEqual(recipient.Bs, 0);
 
-            messenger.Send<MessageB, string>(token);
+            _ = messenger.Send<MessageB, string>(token);
 
             Assert.AreEqual(recipient.As, 0);
             Assert.AreEqual(recipient.Bs, 1);
 
-            messenger.Send<MessageA, string>(token);
+            _ = messenger.Send<MessageA, string>(token);
 
             Assert.AreEqual(recipient.As, 1);
             Assert.AreEqual(recipient.Bs, 1);
@@ -352,14 +352,14 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_Messenger_RegisterWithTypeParameter(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
-            var recipient = new RecipientWithNoMessages { Number = 42 };
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+            RecipientWithNoMessages? recipient = new() { Number = 42 };
 
             int number = 0;
 
             messenger.Register<RecipientWithNoMessages, MessageA>(recipient, (r, m) => number = r.Number);
 
-            messenger.Send<MessageA>();
+            _ = messenger.Send<MessageA>();
 
             Assert.AreEqual(number, 42);
         }
@@ -370,13 +370,13 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger), true)]
         public void Test_Messenger_Collect_Test(Type type, bool isWeak)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
 
             WeakReference weakRecipient;
 
             void Test()
             {
-                var recipient = new RecipientWithNoMessages { Number = 42 };
+                RecipientWithNoMessages? recipient = new() { Number = 42 };
                 weakRecipient = new WeakReference(recipient);
 
                 messenger.Register<MessageA>(recipient, (r, m) => { });
@@ -402,8 +402,8 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_Messenger_Reset(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
-            var recipient = new RecipientWithSomeMessages();
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+            RecipientWithSomeMessages? recipient = new();
 
             messenger.RegisterAll(recipient);
 
@@ -424,8 +424,8 @@ namespace UnitTests.Mvvm
         {
             PropertyInfo defaultInfo = type.GetProperty("Default")!;
 
-            var default1 = defaultInfo!.GetValue(null);
-            var default2 = defaultInfo!.GetValue(null);
+            object? default1 = defaultInfo!.GetValue(null);
+            object? default2 = defaultInfo!.GetValue(null);
 
             Assert.IsNotNull(default1);
             Assert.IsNotNull(default2);
@@ -438,8 +438,8 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_Messenger_Cleanup(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
-            var recipient = new RecipientWithSomeMessages();
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+            RecipientWithSomeMessages? recipient = new();
 
             messenger.Register<MessageA>(recipient);
 
@@ -447,7 +447,7 @@ namespace UnitTests.Mvvm
 
             void Test()
             {
-                var recipient2 = new RecipientWithSomeMessages();
+                RecipientWithSomeMessages? recipient2 = new();
 
                 messenger.Register<MessageB>(recipient2);
 
@@ -488,7 +488,7 @@ namespace UnitTests.Mvvm
 
             void Test()
             {
-                var recipient = new RecipientWithSomeMessages();
+                RecipientWithSomeMessages? recipient = new();
                 weakRecipient = new WeakReference(recipient);
 
                 messenger.Register<MessageA>(recipient);
@@ -522,34 +522,34 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_Messenger_ManyRecipients(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
 
             void Test()
             {
-                var recipients = Enumerable.Range(0, 512).Select(_ => new RecipientWithSomeMessages()).ToArray();
+                RecipientWithSomeMessages?[] recipients = Enumerable.Range(0, 512).Select(_ => new RecipientWithSomeMessages()).ToArray();
 
-                foreach (var recipient in recipients)
+                foreach (RecipientWithSomeMessages? recipient in recipients)
                 {
-                    messenger.RegisterAll(recipient);
+                    messenger.RegisterAll(recipient!);
                 }
 
-                foreach (var recipient in recipients)
+                foreach (RecipientWithSomeMessages? recipient in recipients)
                 {
-                    Assert.IsTrue(messenger.IsRegistered<MessageA>(recipient));
-                    Assert.IsTrue(messenger.IsRegistered<MessageB>(recipient));
+                    Assert.IsTrue(messenger.IsRegistered<MessageA>(recipient!));
+                    Assert.IsTrue(messenger.IsRegistered<MessageB>(recipient!));
                 }
 
-                messenger.Send<MessageA>();
-                messenger.Send<MessageB>();
-                messenger.Send<MessageB>();
+                _ = messenger.Send<MessageA>();
+                _ = messenger.Send<MessageB>();
+                _ = messenger.Send<MessageB>();
 
-                foreach (var recipient in recipients)
+                foreach (RecipientWithSomeMessages? recipient in recipients)
                 {
-                    Assert.AreEqual(recipient.As, 1);
-                    Assert.AreEqual(recipient.Bs, 2);
+                    Assert.AreEqual(recipient!.As, 1);
+                    Assert.AreEqual(recipient!.Bs, 2);
                 }
 
-                foreach (ref var recipient in recipients.AsSpan())
+                foreach (ref RecipientWithSomeMessages? recipient in recipients.AsSpan())
                 {
                     recipient = null;
                 }
@@ -570,10 +570,10 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_Messenger_RegisterMultiple_UnregisterSingle(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
 
-            var recipient1 = new object();
-            var recipient2 = new object();
+            object? recipient1 = new();
+            object? recipient2 = new();
 
             int handler1CalledCount = 0;
             int handler2CalledCount = 0;
@@ -583,7 +583,7 @@ namespace UnitTests.Mvvm
 
             messenger.UnregisterAll(recipient2);
 
-            messenger.Send(new MessageA());
+            _ = messenger.Send(new MessageA());
 
             Assert.AreEqual(1, handler1CalledCount);
             Assert.AreEqual(0, handler2CalledCount);

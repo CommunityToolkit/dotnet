@@ -271,7 +271,7 @@ namespace CommunityToolkit.HighPerformance.Helpers.Internals
             [Pure]
             private static IntPtr MeasureArrayDataByteOffset()
             {
-                var array = new T[1];
+                T[]? array = new T[1];
 
                 return ObjectMarshal.DangerousGetObjectDataByteOffset(array, ref array[0]);
             }
@@ -283,7 +283,7 @@ namespace CommunityToolkit.HighPerformance.Helpers.Internals
             [Pure]
             private static IntPtr MeasureArray2DDataByteOffset()
             {
-                var array = new T[1, 1];
+                T[,]? array = new T[1, 1];
 
                 return ObjectMarshal.DangerousGetObjectDataByteOffset(array, ref array[0, 0]);
             }
@@ -295,7 +295,7 @@ namespace CommunityToolkit.HighPerformance.Helpers.Internals
             [Pure]
             private static IntPtr MeasureArray3DDataByteOffset()
             {
-                var array = new T[1, 1, 1];
+                T[,,]? array = new T[1, 1, 1];
 
                 return ObjectMarshal.DangerousGetObjectDataByteOffset(array, ref array[0, 0, 0]);
             }

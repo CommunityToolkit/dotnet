@@ -45,7 +45,7 @@ namespace CommunityToolkit.Common.Deferred
                 return Task.CompletedTask;
             }
 
-            var tasks = eventHandler.GetInvocationList()
+            Task[]? tasks = eventHandler.GetInvocationList()
                 .OfType<EventHandler<T>>()
                 .Select(invocationDelegate =>
                 {
@@ -54,7 +54,7 @@ namespace CommunityToolkit.Common.Deferred
                     invocationDelegate(sender, eventArgs);
 
 #pragma warning disable CS0618 // Type or member is obsolete
-                    var deferral = eventArgs.GetCurrentDeferralAndReset();
+                    EventDeferral? deferral = eventArgs.GetCurrentDeferralAndReset();
 
                     return deferral?.WaitForCompletion(cancellationToken) ?? Task.CompletedTask;
 #pragma warning restore CS0618 // Type or member is obsolete

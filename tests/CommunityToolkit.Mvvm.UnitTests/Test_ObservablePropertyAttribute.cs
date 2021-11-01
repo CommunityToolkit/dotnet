@@ -26,7 +26,7 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_ObservablePropertyAttribute_Events()
         {
-            var model = new SampleModel();
+            SampleModel? model = new();
 
             (PropertyChangingEventArgs, int) changing = default;
             (PropertyChangedEventArgs, int) changed = default;
@@ -66,7 +66,7 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_ObservablePropertyAttributeWithinRegion_Events()
         {
-            var model = new SampleModel();
+            SampleModel? model = new();
 
             (PropertyChangingEventArgs, int) changing = default;
             (PropertyChangedEventArgs, int) changed = default;
@@ -106,7 +106,7 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_ObservablePropertyAttributeRightBelowRegion_Events()
         {
-            var model = new SampleModel();
+            SampleModel? model = new();
 
             (PropertyChangingEventArgs, string?) changing = default;
             (PropertyChangedEventArgs, string?) changed = default;
@@ -145,7 +145,7 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_AlsoNotifyChangeForAttribute_Events()
         {
-            var model = new DependentPropertyModel();
+            DependentPropertyModel? model = new();
 
             List<string?> propertyNames = new();
 
@@ -161,7 +161,7 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_ValidationAttributes()
         {
-            var nameProperty = typeof(MyFormViewModel).GetProperty(nameof(MyFormViewModel.Name))!;
+            PropertyInfo? nameProperty = typeof(MyFormViewModel).GetProperty(nameof(MyFormViewModel.Name))!;
 
             Assert.IsNotNull(nameProperty.GetCustomAttribute<RequiredAttribute>());
             Assert.IsNotNull(nameProperty.GetCustomAttribute<MinLengthAttribute>());
@@ -169,17 +169,17 @@ namespace UnitTests.Mvvm
             Assert.IsNotNull(nameProperty.GetCustomAttribute<MaxLengthAttribute>());
             Assert.AreEqual(nameProperty.GetCustomAttribute<MaxLengthAttribute>()!.Length, 100);
 
-            var ageProperty = typeof(MyFormViewModel).GetProperty(nameof(MyFormViewModel.Age))!;
+            PropertyInfo? ageProperty = typeof(MyFormViewModel).GetProperty(nameof(MyFormViewModel.Age))!;
 
             Assert.IsNotNull(ageProperty.GetCustomAttribute<RangeAttribute>());
             Assert.AreEqual(ageProperty.GetCustomAttribute<RangeAttribute>()!.Minimum, 0);
             Assert.AreEqual(ageProperty.GetCustomAttribute<RangeAttribute>()!.Maximum, 120);
 
-            var emailProperty = typeof(MyFormViewModel).GetProperty(nameof(MyFormViewModel.Email))!;
+            PropertyInfo? emailProperty = typeof(MyFormViewModel).GetProperty(nameof(MyFormViewModel.Email))!;
 
             Assert.IsNotNull(emailProperty.GetCustomAttribute<EmailAddressAttribute>());
 
-            var comboProperty = typeof(MyFormViewModel).GetProperty(nameof(MyFormViewModel.IfThisWorksThenThatsGreat))!;
+            PropertyInfo? comboProperty = typeof(MyFormViewModel).GetProperty(nameof(MyFormViewModel.IfThisWorksThenThatsGreat))!;
 
             TestValidationAttribute testAttribute = comboProperty.GetCustomAttribute<TestValidationAttribute>()!;
 
@@ -207,7 +207,7 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_ObservablePropertyWithValueNamedField()
         {
-            var model = new ModelWithValueProperty();
+            ModelWithValueProperty? model = new();
 
             List<string?> propertyNames = new();
 
@@ -225,7 +225,7 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_ObservablePropertyWithValueNamedField_WithValidationAttributes()
         {
-            var model = new ModelWithValuePropertyWithValidation();
+            ModelWithValuePropertyWithValidation? model = new();
 
             List<string?> propertyNames = new();
 
@@ -243,7 +243,7 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_GeneratedPropertiesWithValidationAttributesOverFields()
         {
-            var model = new ViewModelWithValidatableGeneratedProperties();
+            ViewModelWithValidatableGeneratedProperties? model = new();
 
             List<string?> propertyNames = new();
 

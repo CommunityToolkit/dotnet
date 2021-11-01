@@ -27,7 +27,7 @@ namespace UnitTests.HighPerformance.Extensions
 
             Assert.AreEqual(stream.Position, 17);
 
-            Assert.ThrowsException<ArgumentException>(() => stream.Write(long.MaxValue));
+            _ = Assert.ThrowsException<ArgumentException>(() => stream.Write(long.MaxValue));
 
             stream.Position = 0;
 
@@ -36,7 +36,7 @@ namespace UnitTests.HighPerformance.Extensions
             Assert.AreEqual(3.14f, stream.Read<float>());
             Assert.AreEqual(unchecked(uint.MaxValue * 324823489204ul), stream.Read<ulong>());
 
-            Assert.ThrowsException<InvalidOperationException>(() => stream.Read<long>());
+            _ = Assert.ThrowsException<InvalidOperationException>(() => stream.Read<long>());
         }
     }
 }

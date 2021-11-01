@@ -64,16 +64,16 @@ namespace UnitTests.HighPerformance.Extensions
         [TestMethod]
         public void Test_ReadOnlySpanExtensions_RandomCountManaged()
         {
-            var value = new Int(37438941);
+            Int? value = new(37438941);
 
             // We can skip the most expensive test in this case, as we're not testing
             // a SIMD enabled path. The last test requires a very high memory usage which
             // sometimes causes the CI test runner to fail with an out of memory exception.
             // Since we don't need to double check overflows in the managed case, which is
             // just a classic linear loop with some optimizations, omitting this case is fine.
-            foreach (var count in TestCounts.Slice(0, TestCounts.Length - 1))
+            foreach (int count in TestCounts.Slice(0, TestCounts.Length - 1))
             {
-                var random = new Random(count);
+                Random? random = new(count);
 
                 Int[] data = new Int[count];
 
@@ -175,7 +175,7 @@ namespace UnitTests.HighPerformance.Extensions
         private static void TestForType<T>(T value, Func<int, T, UnmanagedSpanOwner<T>> provider)
             where T : unmanaged, IEquatable<T>
         {
-            foreach (var count in TestCounts)
+            foreach (int count in TestCounts)
             {
                 using UnmanagedSpanOwner<T> data = provider(count, value);
 
@@ -199,7 +199,7 @@ namespace UnitTests.HighPerformance.Extensions
         {
             int count = 0;
 
-            foreach (var item in span)
+            foreach (T? item in span)
             {
                 if (item.Equals(value))
                 {
@@ -221,9 +221,9 @@ namespace UnitTests.HighPerformance.Extensions
         private static UnmanagedSpanOwner<T> CreateRandomData<T>(int count, T value)
             where T : unmanaged
         {
-            var random = new Random(count);
+            Random? random = new(count);
 
-            UnmanagedSpanOwner<T> data = new UnmanagedSpanOwner<T>(count);
+            UnmanagedSpanOwner<T> data = new(count);
 
             foreach (ref byte n in MemoryMarshal.AsBytes(data.GetSpan()))
             {
@@ -254,7 +254,7 @@ namespace UnitTests.HighPerformance.Extensions
         private static UnmanagedSpanOwner<T> CreateFilledData<T>(int count, T value)
             where T : unmanaged
         {
-            UnmanagedSpanOwner<T> data = new UnmanagedSpanOwner<T>(count);
+            UnmanagedSpanOwner<T> data = new(count);
 
             data.GetSpan().Fill(value);
 

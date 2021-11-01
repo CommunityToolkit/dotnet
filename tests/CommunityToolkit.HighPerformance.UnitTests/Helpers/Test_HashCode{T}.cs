@@ -68,18 +68,18 @@ namespace UnitTests.HighPerformance.Helpers
         [TestMethod]
         public void Test_HashCodeOfT_ManagedType_TestRepeat()
         {
-            var localTestCounts = TestCounts.Slice(0, 8);
+            ReadOnlySpan<int> localTestCounts = TestCounts.Slice(0, 8);
 
             // Only rent a single array of the maximum necessary size, to save space
             string[] data = new string[localTestCounts[localTestCounts.Length - 1]];
 
-            var random = new Random();
+            Random? random = new();
             foreach (ref string text in data.AsSpan())
             {
                 text = random.NextDouble().ToString("E");
             }
 
-            foreach (var count in localTestCounts)
+            foreach (int count in localTestCounts)
             {
                 Span<string> iterationData = data.AsSpan().Slice(0, count);
 
@@ -98,7 +98,7 @@ namespace UnitTests.HighPerformance.Helpers
         private static void TestForType<T>()
             where T : unmanaged, IEquatable<T>
         {
-            foreach (var count in TestCounts)
+            foreach (int count in TestCounts)
             {
                 using UnmanagedSpanOwner<T> data = CreateRandomData<T>(count);
 
@@ -119,9 +119,9 @@ namespace UnitTests.HighPerformance.Helpers
         private static UnmanagedSpanOwner<T> CreateRandomData<T>(int count)
             where T : unmanaged
         {
-            var random = new Random(count);
+            Random? random = new(count);
 
-            UnmanagedSpanOwner<T> data = new UnmanagedSpanOwner<T>(count);
+            UnmanagedSpanOwner<T> data = new(count);
 
             foreach (ref byte n in MemoryMarshal.AsBytes(data.GetSpan()))
             {

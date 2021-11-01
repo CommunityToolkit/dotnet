@@ -296,11 +296,11 @@ namespace Microsoft.Collections.Extensions
                 ThrowInvalidOperationExceptionForMaxCapacityExceeded();
             }
 
-            var entries = new Entry[newSize];
+            DictionarySlim<TKey, TValue>.Entry[]? entries = new Entry[newSize];
 
             Array.Copy(this.entries, 0, entries, 0, count);
 
-            var newBuckets = new int[entries.Length];
+            int[]? newBuckets = new int[entries.Length];
 
             while (count-- > 0)
             {

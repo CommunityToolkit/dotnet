@@ -93,7 +93,7 @@ namespace UnitTests.HighPerformance.Extensions
             // 2 and a width of 2, and then filling it. Then we just compare the results.
             test.AsSpan2D(1, 1, 2, 3).Fill(true);
 
-            var expected = new[,]
+            bool[,]? expected = new[,]
             {
                 { false, false, false, false, false },
                 { false,  true,  true,  true, false },
@@ -113,7 +113,7 @@ namespace UnitTests.HighPerformance.Extensions
             test.AsSpan2D(0, 0, 2, 1).Fill(true);
             test.AsSpan2D(1, 3, 2, 2).Fill(true);
 
-            var expected = new[,]
+            bool[,]? expected = new[,]
             {
                 { true,  false, false, false, false },
                 { true,  false, false,  true,  true },
@@ -132,7 +132,7 @@ namespace UnitTests.HighPerformance.Extensions
 
             test.AsSpan2D(1, 2, 3, 2).Fill(true);
 
-            var expected = new[,]
+            bool[,]? expected = new[,]
             {
                 { false, false, false, false, false },
                 { false, false,  true,  true, false },
@@ -151,7 +151,7 @@ namespace UnitTests.HighPerformance.Extensions
 
             test.AsSpan2D(3, 2, 2, 2).Fill(true);
 
-            var expected = new[,]
+            bool[,]? expected = new[,]
             {
                 { false, false, false, false },
                 { false, false, false, false },
@@ -189,10 +189,10 @@ namespace UnitTests.HighPerformance.Extensions
             // Test an empty array
             Assert.AreSame(new int[1, 0].GetRow(0).ToArray(), Array.Empty<int>());
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetRow(-1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetRow(3));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetRow(-1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetRow(3));
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetRow(20));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetRow(20));
         }
 
         [TestCategory("ArrayExtensions")]
@@ -215,10 +215,10 @@ namespace UnitTests.HighPerformance.Extensions
 
             CollectionAssert.AreEqual(array.GetColumn(1).ToArray(), new[] { 2, 6, 10 });
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetColumn(-1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetColumn(4));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetColumn(-1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetColumn(4));
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetColumn(20));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetColumn(20));
         }
 
         [TestCategory("ArrayExtensions")]
@@ -228,7 +228,7 @@ namespace UnitTests.HighPerformance.Extensions
             int[,] array = new int[0, 0];
 
             // Try to get a row from an empty array (the row index isn't in range)
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetRow(0).ToArray());
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetRow(0).ToArray());
         }
 
         [TestCategory("ArrayExtensions")]
@@ -287,11 +287,11 @@ namespace UnitTests.HighPerformance.Extensions
             CollectionAssert.AreEqual(copy, result);
 
             // Some invalid attempts to copy to an empty span or sequence
-            Assert.ThrowsException<ArgumentException>(() => array.GetRow(0).CopyTo(default(RefEnumerable<int>)));
-            Assert.ThrowsException<ArgumentException>(() => array.GetRow(0).CopyTo(default(Span<int>)));
+            _ = Assert.ThrowsException<ArgumentException>(() => array.GetRow(0).CopyTo(default(RefEnumerable<int>)));
+            _ = Assert.ThrowsException<ArgumentException>(() => array.GetRow(0).CopyTo(default(Span<int>)));
 
-            Assert.ThrowsException<ArgumentException>(() => array.GetColumn(0).CopyTo(default(RefEnumerable<int>)));
-            Assert.ThrowsException<ArgumentException>(() => array.GetColumn(0).CopyTo(default(Span<int>)));
+            _ = Assert.ThrowsException<ArgumentException>(() => array.GetColumn(0).CopyTo(default(RefEnumerable<int>)));
+            _ = Assert.ThrowsException<ArgumentException>(() => array.GetColumn(0).CopyTo(default(Span<int>)));
 
             // Same as CopyTo, but this will fail gracefully with an invalid target
             Assert.IsTrue(array.GetRow(2).TryCopyTo(copy));
@@ -358,11 +358,11 @@ namespace UnitTests.HighPerformance.Extensions
 
             CollectionAssert.AreEqual(copy, result);
 
-            Assert.ThrowsException<ArgumentException>(() => ((ReadOnlySpan2D<int>)array).GetRow(0).CopyTo(default(RefEnumerable<int>)));
-            Assert.ThrowsException<ArgumentException>(() => ((ReadOnlySpan2D<int>)array).GetRow(0).CopyTo(default(Span<int>)));
+            _ = Assert.ThrowsException<ArgumentException>(() => ((ReadOnlySpan2D<int>)array).GetRow(0).CopyTo(default(RefEnumerable<int>)));
+            _ = Assert.ThrowsException<ArgumentException>(() => ((ReadOnlySpan2D<int>)array).GetRow(0).CopyTo(default(Span<int>)));
 
-            Assert.ThrowsException<ArgumentException>(() => ((ReadOnlySpan2D<int>)array).GetColumn(0).CopyTo(default(RefEnumerable<int>)));
-            Assert.ThrowsException<ArgumentException>(() => ((ReadOnlySpan2D<int>)array).GetColumn(0).CopyTo(default(Span<int>)));
+            _ = Assert.ThrowsException<ArgumentException>(() => ((ReadOnlySpan2D<int>)array).GetColumn(0).CopyTo(default(RefEnumerable<int>)));
+            _ = Assert.ThrowsException<ArgumentException>(() => ((ReadOnlySpan2D<int>)array).GetColumn(0).CopyTo(default(Span<int>)));
 
             Assert.IsTrue(span2D.GetRow(2).TryCopyTo(copy));
             Assert.IsFalse(span2D.GetRow(2).TryCopyTo(default(Span<int>)));
@@ -432,7 +432,7 @@ namespace UnitTests.HighPerformance.Extensions
         {
             int[,] array = new int[0, 0];
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetColumn(0).ToArray());
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetColumn(0).ToArray());
         }
 
 #if NETCOREAPP3_1 || NET5_0

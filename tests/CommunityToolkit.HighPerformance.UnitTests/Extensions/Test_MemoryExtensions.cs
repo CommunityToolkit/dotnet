@@ -144,7 +144,7 @@ namespace UnitTests.HighPerformance.Extensions
             // consistent, as well that our internal optimization works and that the final
             // memory correctly skipped the indirect memory managed and just wrapped the original
             // array instead. This is documented in the custom array memory manager in the package.
-            var data = new byte[128];
+            byte[]? data = new byte[128];
             Memory<byte> memoryOfBytes = data;
             Memory<float> memoryOfFloats = memoryOfBytes.Cast<byte, float>();
             Memory<byte> memoryBack = memoryOfFloats.Cast<float, byte>();
@@ -153,7 +153,7 @@ namespace UnitTests.HighPerformance.Extensions
 
             // Here we get the array from the final memory and check that it does exist and
             // the associated parameters match the ones we'd expect here (same length, offset of 0).
-            Assert.IsTrue(MemoryMarshal.TryGetArray<byte>(memoryBack, out var segment));
+            Assert.IsTrue(MemoryMarshal.TryGetArray<byte>(memoryBack, out ArraySegment<byte> segment));
             Assert.AreSame(segment.Array!, data);
             Assert.AreEqual(segment.Offset, 0);
             Assert.AreEqual(segment.Count, data.Length);
@@ -253,7 +253,7 @@ namespace UnitTests.HighPerformance.Extensions
         public void Test_MemoryExtensions_FromArray_CastFromByteAndBack_WithSlice()
         {
             // Just like the equivalent test above, but with a slice thrown in too
-            var data = new byte[512];
+            byte[]? data = new byte[512];
             Memory<byte> memoryOfBytes = data.AsMemory().Slice(128, 128);
             Memory<float> memoryOfFloats = memoryOfBytes.Cast<byte, float>();
             Memory<byte> memoryBack = memoryOfFloats.Cast<float, byte>();
@@ -261,7 +261,7 @@ namespace UnitTests.HighPerformance.Extensions
             Assert.AreEqual(memoryOfBytes.Length, memoryBack.Length);
 
             // Here we now also have to validate the starting offset from the extracted array
-            Assert.IsTrue(MemoryMarshal.TryGetArray<byte>(memoryBack, out var segment));
+            Assert.IsTrue(MemoryMarshal.TryGetArray<byte>(memoryBack, out ArraySegment<byte> segment));
             Assert.AreSame(segment.Array!, data);
             Assert.AreEqual(segment.Offset, 128);
             Assert.AreEqual(segment.Count, 128);
@@ -339,7 +339,7 @@ namespace UnitTests.HighPerformance.Extensions
         public void Test_MemoryExtensions_FromMemoryManager_CastFromByteAndBack()
         {
             // Equivalent to the one with an array, but with a memory manager
-            var data = new ArrayMemoryManager<byte>(128);
+            ArrayMemoryManager<byte>? data = new(128);
             Memory<byte> memoryOfBytes = data;
             Memory<float> memoryOfFloats = memoryOfBytes.Cast<byte, float>();
             Memory<byte> memoryBack = memoryOfFloats.Cast<float, byte>();
@@ -348,7 +348,7 @@ namespace UnitTests.HighPerformance.Extensions
 
             // Here we expect to get back the original memory manager, due to the same optimization we
             // checked for when using an array. We need to check they're the same, and the other parameters.
-            Assert.IsTrue(MemoryMarshal.TryGetMemoryManager<byte, ArrayMemoryManager<byte>>(memoryBack, out var manager, out var start, out var length));
+            Assert.IsTrue(MemoryMarshal.TryGetMemoryManager<byte, ArrayMemoryManager<byte>>(memoryBack, out ArrayMemoryManager<byte>? manager, out int start, out int length));
             Assert.AreSame(manager!, data);
             Assert.AreEqual(start, 0);
             Assert.AreEqual(length, 128);
@@ -423,7 +423,7 @@ namespace UnitTests.HighPerformance.Extensions
         public void Test_MemoryExtensions_FromMemoryManager_CastFromByteAndBack_WithSlice()
         {
             // Just like the one above, but with the slice
-            var data = new ArrayMemoryManager<byte>(512);
+            ArrayMemoryManager<byte>? data = new(512);
             Memory<byte> memoryOfBytes = data.Memory.Slice(128, 128);
             Memory<float> memoryOfFloats = memoryOfBytes.Cast<byte, float>();
             Memory<byte> memoryBack = memoryOfFloats.Cast<float, byte>();
@@ -431,7 +431,7 @@ namespace UnitTests.HighPerformance.Extensions
             Assert.AreEqual(memoryOfBytes.Length, memoryBack.Length);
 
             // Here we also need to validate that the offset was maintained
-            Assert.IsTrue(MemoryMarshal.TryGetMemoryManager<byte, ArrayMemoryManager<byte>>(memoryBack, out var manager, out var start, out var length));
+            Assert.IsTrue(MemoryMarshal.TryGetMemoryManager<byte, ArrayMemoryManager<byte>>(memoryBack, out ArrayMemoryManager<byte>? manager, out int start, out int length));
             Assert.AreSame(manager!, data);
             Assert.AreEqual(start, 128);
             Assert.AreEqual(length, 128);
@@ -463,11 +463,11 @@ namespace UnitTests.HighPerformance.Extensions
             // respect to the original array through a number of internal offsets. As in, when pinning the
             // final memory, our internal custom memory manager should be able to pin the item in the original
             // array at offset preOffset + (postOffset * sizeof(float)), accounting for the cast as well.
-            var data = new byte[size];
+            byte[]? data = new byte[size];
             Memory<byte> memoryOfBytes = data.AsMemory(preOffset);
             Memory<float> memoryOfFloats = memoryOfBytes.Cast<byte, float>().Slice(postOffset);
 
-            using var handle = memoryOfFloats.Pin();
+            using MemoryHandle handle = memoryOfFloats.Pin();
 
             void* p1 = handle.Pointer;
             void* p2 = Unsafe.AsPointer(ref data[preOffset + (postOffset * sizeof(float))]);
@@ -489,11 +489,11 @@ namespace UnitTests.HighPerformance.Extensions
         public unsafe void Test_MemoryExtensions_FromMemoryManager_CastFromByte_Pin(int size, int preOffset, int postOffset)
         {
             // Just like the test above, but this type the initial memory wraps a memory manager
-            var data = new ArrayMemoryManager<byte>(size);
+            ArrayMemoryManager<byte>? data = new(size);
             Memory<byte> memoryOfBytes = data.Memory.Slice(preOffset);
             Memory<float> memoryOfFloats = memoryOfBytes.Cast<byte, float>().Slice(postOffset);
 
-            using var handle = memoryOfFloats.Pin();
+            using MemoryHandle handle = memoryOfFloats.Pin();
 
             void* p1 = handle.Pointer;
             void* p2 = Unsafe.AsPointer(ref data.GetSpan()[preOffset + (postOffset * sizeof(float))]);
@@ -507,7 +507,7 @@ namespace UnitTests.HighPerformance.Extensions
         {
             // This is the same as the tests above, but here we're testing the
             // other remaining case, that is when a memory is wrapping a string.
-            var data = new string('a', 128);
+            string? data = new('a', 128);
             Memory<char> memoryOfChars = MemoryMarshal.AsMemory(data.AsMemory());
             Memory<float> memoryOfFloats = memoryOfChars.Cast<char, float>();
             Memory<char> memoryBack = memoryOfFloats.Cast<float, char>();
@@ -515,7 +515,7 @@ namespace UnitTests.HighPerformance.Extensions
             Assert.AreEqual(memoryOfChars.Length, memoryBack.Length);
 
             // Get the original string back (to validate the optimization too) and check the params
-            Assert.IsTrue(MemoryMarshal.TryGetString(memoryOfChars, out var text, out int start, out int length));
+            Assert.IsTrue(MemoryMarshal.TryGetString(memoryOfChars, out string? text, out int start, out int length));
             Assert.AreSame(text!, data);
             Assert.AreEqual(start, 0);
             Assert.AreEqual(length, data.Length);
@@ -542,11 +542,11 @@ namespace UnitTests.HighPerformance.Extensions
         public unsafe void Test_MemoryExtensions_FromString_CastAndPin(int size, int preOffset, int postOffset)
         {
             // Same test as before to validate pinning, but starting from a string
-            var data = new string('a', size);
+            string? data = new('a', size);
             Memory<char> memoryOfChars = MemoryMarshal.AsMemory(data.AsMemory()).Slice(preOffset);
             Memory<byte> memoryOfBytes = memoryOfChars.Cast<char, byte>().Slice(postOffset);
 
-            using (var handle1 = memoryOfBytes.Pin())
+            using (MemoryHandle handle1 = memoryOfBytes.Pin())
             {
                 void* p1 = handle1.Pointer;
                 void* p2 = Unsafe.AsPointer(ref data.DangerousGetReferenceAt(preOffset + (postOffset * sizeof(byte) / sizeof(char))));
@@ -558,7 +558,7 @@ namespace UnitTests.HighPerformance.Extensions
             // that is bigger in byte size than char. Just to double check the casting logic.
             Memory<int> memoryOfInts = memoryOfChars.Cast<char, int>().Slice(postOffset);
 
-            using (var handle2 = memoryOfInts.Pin())
+            using (MemoryHandle handle2 = memoryOfInts.Pin())
             {
                 void* p3 = handle2.Pointer;
                 void* p4 = Unsafe.AsPointer(ref data.DangerousGetReferenceAt(preOffset + (postOffset * sizeof(int) / sizeof(char))));

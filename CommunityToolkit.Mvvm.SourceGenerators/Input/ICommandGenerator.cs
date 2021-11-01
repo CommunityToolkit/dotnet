@@ -49,7 +49,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators
                 context.ReportDiagnostic(Diagnostic.Create(UnsupportedCSharpLanguageVersionError, null));
             }
 
-            foreach (var items in syntaxReceiver.GatheredInfo.GroupBy<SyntaxReceiver.Item, INamedTypeSymbol>(static item => item.MethodSymbol.ContainingType, SymbolEqualityComparer.Default))
+            foreach (IGrouping<INamedTypeSymbol, SyntaxReceiver.Item>? items in syntaxReceiver.GatheredInfo.GroupBy<SyntaxReceiver.Item, INamedTypeSymbol>(static item => item.MethodSymbol.ContainingType, SymbolEqualityComparer.Default))
             {
                 if (items.Key.DeclaringSyntaxReferences.Length > 0 &&
                     items.Key.DeclaringSyntaxReferences.First().GetSyntax() is ClassDeclarationSyntax classDeclaration)
@@ -85,7 +85,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators
             // {
             //     <MEMBERS>
             // }
-            var classDeclarationSyntax =
+            ClassDeclarationSyntax? classDeclarationSyntax =
                 ClassDeclaration(classDeclarationSymbol.Name)
                 .WithModifiers(classDeclaration.Modifiers)
                 .AddMembers(items.Select(item => CreateCommandMembers(context, item.LeadingTrivia, item.MethodSymbol)).SelectMany(static g => g).ToArray());
@@ -93,7 +93,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators
             TypeDeclarationSyntax typeDeclarationSyntax = classDeclarationSyntax;
 
             // Add all parent types in ascending order, if any
-            foreach (var parentType in classDeclaration.Ancestors().OfType<TypeDeclarationSyntax>())
+            foreach (TypeDeclarationSyntax? parentType in classDeclaration.Ancestors().OfType<TypeDeclarationSyntax>())
             {
                 typeDeclarationSyntax = parentType
                     .WithMembers(SingletonList<MemberDeclarationSyntax>(typeDeclarationSyntax))
@@ -105,10 +105,10 @@ namespace CommunityToolkit.Mvvm.SourceGenerators
 
             // Create the compilation unit with the namespace and target member.
             // From this, we can finally generate the source code to output.
-            var namespaceName = classDeclarationSymbol.ContainingNamespace.ToDisplayString(new(typeQualificationStyle: NameAndContainingTypesAndNamespaces));
+            string? namespaceName = classDeclarationSymbol.ContainingNamespace.ToDisplayString(new SymbolDisplayFormat(typeQualificationStyle: NameAndContainingTypesAndNamespaces));
 
             // Create the final compilation unit to generate (with leading trivia)
-            var source =
+            string? source =
                 CompilationUnit().AddMembers(
                 NamespaceDeclaration(IdentifierName(namespaceName)).WithLeadingTrivia(TriviaList(
                     Comment("// Licensed to the .NET Foundation under one or more agreements."),
@@ -134,7 +134,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators
         private static IEnumerable<MemberDeclarationSyntax> CreateCommandMembers(GeneratorExecutionContext context, SyntaxTriviaList leadingTrivia, IMethodSymbol methodSymbol)
         {
             // Get the command member names
-            var (fieldName, propertyName) = GetGeneratedFieldAndPropertyNames(context, methodSymbol);
+            (string fieldName, string propertyName) = GetGeneratedFieldAndPropertyNames(context, methodSymbol);
 
             // Get the command type symbols
             if (!TryMapCommandTypesFromMethod(

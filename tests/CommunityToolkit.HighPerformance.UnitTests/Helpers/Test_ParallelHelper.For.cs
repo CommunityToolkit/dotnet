@@ -24,13 +24,13 @@ namespace UnitTests.HighPerformance.Helpers
         {
             foreach (int count in TestForCounts)
             {
-                using UnmanagedSpanOwner<int> data = new UnmanagedSpanOwner<int>(count);
+                using UnmanagedSpanOwner<int> data = new(count);
 
                 data.GetSpan().Clear();
 
                 ParallelHelper.For(0, data.Length, new Assigner(data.Length, data.Ptr));
 
-                foreach (var item in data.GetSpan().Enumerate())
+                foreach (CommunityToolkit.HighPerformance.Enumerables.SpanEnumerable<int>.Item item in data.GetSpan().Enumerate())
                 {
                     if (item.Index != item.Value)
                     {
@@ -63,13 +63,13 @@ namespace UnitTests.HighPerformance.Helpers
         {
             foreach (int count in TestForCounts)
             {
-                using UnmanagedSpanOwner<int> data = new UnmanagedSpanOwner<int>(count);
+                using UnmanagedSpanOwner<int> data = new(count);
 
                 data.GetSpan().Clear();
 
                 ParallelHelper.For(..data.Length, new Assigner(data.Length, data.Ptr));
 
-                foreach (var item in data.GetSpan().Enumerate())
+                foreach (CommunityToolkit.HighPerformance.Enumerables.SpanEnumerable<int>.Item item in data.GetSpan().Enumerate())
                 {
                     if (item.Index != item.Value)
                     {

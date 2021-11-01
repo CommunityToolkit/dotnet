@@ -586,8 +586,8 @@ namespace CommunityToolkit.HighPerformance
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                var (row, height) = rows.GetOffsetAndLength(Height);
-                var (column, width) = columns.GetOffsetAndLength(this.width);
+                (int row, int height) = rows.GetOffsetAndLength(Height);
+                (int column, int width) = columns.GetOffsetAndLength(this.width);
 
                 return Slice(row, column, height, width);
             }

@@ -33,7 +33,7 @@ namespace CommunityToolkit.HighPerformance
         public static ref T DangerousGetReference<T>(this T[,] array)
         {
 #if NETCOREAPP3_1
-            var arrayData = Unsafe.As<RawArray2DData>(array)!;
+            RawArray2DData? arrayData = Unsafe.As<RawArray2DData>(array)!;
             ref T r0 = ref Unsafe.As<byte, T>(ref arrayData.Data);
 
             return ref r0;
@@ -63,7 +63,7 @@ namespace CommunityToolkit.HighPerformance
         public static ref T DangerousGetReferenceAt<T>(this T[,] array, int i, int j)
         {
 #if NETCOREAPP3_1
-            var arrayData = Unsafe.As<RawArray2DData>(array)!;
+            RawArray2DData? arrayData = Unsafe.As<RawArray2DData>(array)!;
             nint offset = ((nint)(uint)i * (nint)(uint)arrayData.Width) + (nint)(uint)j;
             ref T r0 = ref Unsafe.As<byte, T>(ref arrayData.Data);
             ref T ri = ref Unsafe.Add(ref r0, offset);

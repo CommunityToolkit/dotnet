@@ -21,8 +21,8 @@ namespace CommunityToolkit.Common.Helpers
         /// <returns>Deserialized value or default value.</returns>
         public T Deserialize<T>(string value)
         {
-            var type = typeof(T);
-            var typeInfo = type.GetTypeInfo();
+            Type? type = typeof(T);
+            TypeInfo? typeInfo = type.GetTypeInfo();
 
             if (typeInfo.IsPrimitive || type == typeof(string))
             {

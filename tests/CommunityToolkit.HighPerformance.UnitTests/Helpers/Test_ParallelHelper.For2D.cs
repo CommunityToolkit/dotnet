@@ -30,9 +30,9 @@ namespace UnitTests.HighPerformance.Helpers
         [TestMethod]
         public unsafe void Test_ParallelHelper_For2DWithIndices()
         {
-            foreach (var size in TestFor2DSizes)
+            foreach (Size size in TestFor2DSizes)
             {
-                using UnmanagedSpanOwner<int> data = new UnmanagedSpanOwner<int>(size.Height * size.Width);
+                using UnmanagedSpanOwner<int> data = new(size.Height * size.Width);
 
                 data.GetSpan().Clear();
 
@@ -72,9 +72,9 @@ namespace UnitTests.HighPerformance.Helpers
         [TestMethod]
         public unsafe void Test_ParallelHelper_For2DWithRanges()
         {
-            foreach (var size in TestFor2DSizes)
+            foreach (Size size in TestFor2DSizes)
             {
-                using UnmanagedSpanOwner<int> data = new UnmanagedSpanOwner<int>(size.Height * size.Width);
+                using UnmanagedSpanOwner<int> data = new(size.Height * size.Width);
 
                 data.GetSpan().Clear();
 

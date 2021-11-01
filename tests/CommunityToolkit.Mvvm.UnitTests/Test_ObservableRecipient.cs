@@ -19,8 +19,8 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_ObservableRecipient_Activation(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
-            var viewmodel = new SomeRecipient<int>(messenger);
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+            SomeRecipient<int>? viewmodel = new(messenger);
 
             Assert.IsFalse(viewmodel.IsActivatedCheck);
 
@@ -41,8 +41,8 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_ObservableRecipient_IsSame(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
-            var viewmodel = new SomeRecipient<int>(messenger);
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+            SomeRecipient<int>? viewmodel = new(messenger);
 
             Assert.AreSame(viewmodel.CurrentMessenger, messenger);
         }
@@ -51,7 +51,7 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_ObservableRecipient_Default()
         {
-            var viewmodel = new SomeRecipient<int>();
+            SomeRecipient<int>? viewmodel = new();
 
             Assert.AreSame(viewmodel.CurrentMessenger, WeakReferenceMessenger.Default);
         }
@@ -62,8 +62,8 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_ObservableRecipient_Injection(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
-            var viewmodel = new SomeRecipient<int>(messenger);
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+            SomeRecipient<int>? viewmodel = new(messenger);
 
             Assert.AreSame(viewmodel.CurrentMessenger, messenger);
         }
@@ -74,8 +74,8 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_ObservableRecipient_Broadcast(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
-            var viewmodel = new SomeRecipient<int>(messenger);
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+            SomeRecipient<int>? viewmodel = new(messenger);
 
             PropertyChangedMessage<int>? message = null;
 

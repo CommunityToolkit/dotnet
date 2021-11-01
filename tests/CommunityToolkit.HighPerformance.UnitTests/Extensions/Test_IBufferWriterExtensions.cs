@@ -21,7 +21,7 @@ namespace UnitTests.HighPerformance.Extensions
         [TestMethod]
         public void Test_IBufferWriterExtensions_WriteReadOverBytes()
         {
-            ArrayPoolBufferWriter<byte> writer = new ArrayPoolBufferWriter<byte>();
+            ArrayPoolBufferWriter<byte> writer = new();
 
             byte b = 255;
             char c = '$';
@@ -65,7 +65,7 @@ namespace UnitTests.HighPerformance.Extensions
         private static void Test_IBufferWriterExtensions_WriteReadItem<T>(T a, T b)
             where T : IEquatable<T>
         {
-            ArrayPoolBufferWriter<T> writer = new ArrayPoolBufferWriter<T>();
+            ArrayPoolBufferWriter<T> writer = new();
 
             writer.Write(a);
             writer.Write(b);
@@ -84,14 +84,14 @@ namespace UnitTests.HighPerformance.Extensions
         {
             int[] buffer = new int[128];
 
-            var random = new Random(42);
+            Random? random = new(42);
 
-            foreach (ref var n in buffer.AsSpan())
+            foreach (ref int n in buffer.AsSpan())
             {
                 n = random.Next(int.MinValue, int.MaxValue);
             }
 
-            ArrayPoolBufferWriter<byte> writer = new ArrayPoolBufferWriter<byte>();
+            ArrayPoolBufferWriter<byte> writer = new();
 
             writer.Write<int>(buffer);
 
@@ -108,14 +108,14 @@ namespace UnitTests.HighPerformance.Extensions
         {
             int[] buffer = new int[128];
 
-            var random = new Random(42);
+            Random? random = new(42);
 
-            foreach (ref var n in buffer.AsSpan())
+            foreach (ref int n in buffer.AsSpan())
             {
                 n = random.Next(int.MinValue, int.MaxValue);
             }
 
-            ArrayPoolBufferWriter<int> writer = new ArrayPoolBufferWriter<int>();
+            ArrayPoolBufferWriter<int> writer = new();
 
             writer.Write(buffer.AsSpan());
 

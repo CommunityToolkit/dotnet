@@ -22,16 +22,16 @@ namespace UnitTests.HighPerformance.Extensions
 
             int sum = 0;
 
-            Parallel.For(0, 1000, i =>
-            {
-                for (int j = 0; j < 10; j++)
-                {
-                    using (SpinLockExtensions.Enter(p))
-                    {
-                        sum++;
-                    }
-                }
-            });
+            _ = Parallel.For(0, 1000, i =>
+              {
+                  for (int j = 0; j < 10; j++)
+                  {
+                      using (SpinLockExtensions.Enter(p))
+                      {
+                          sum++;
+                      }
+                  }
+              });
 
             Assert.AreEqual(sum, 1000 * 10);
         }
@@ -40,7 +40,7 @@ namespace UnitTests.HighPerformance.Extensions
         [TestMethod]
         public void Test_ArrayExtensions_Ref()
         {
-            var spinLockOwner = new SpinLockOwner();
+            SpinLockOwner? spinLockOwner = new();
 
             int sum = 0;
 

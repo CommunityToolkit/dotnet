@@ -413,7 +413,7 @@ namespace UnitTests.Mvvm
 
             CSharpGeneratorDriver driver = CSharpGeneratorDriver.Create(new[] { generator }, parseOptions: (CSharpParseOptions)syntaxTree.Options);
 
-            driver.RunGeneratorsAndUpdateCompilation(compilation, out Compilation outputCompilation, out ImmutableArray<Diagnostic> diagnostics);
+            _ = driver.RunGeneratorsAndUpdateCompilation(compilation, out Compilation outputCompilation, out ImmutableArray<Diagnostic> diagnostics);
 
             HashSet<string> resultingIds = diagnostics.Select(diagnostic => diagnostic.Id).ToHashSet();
 

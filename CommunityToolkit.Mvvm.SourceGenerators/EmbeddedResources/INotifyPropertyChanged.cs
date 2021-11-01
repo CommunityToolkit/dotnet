@@ -1,4 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
@@ -283,7 +283,7 @@ namespace CommunityToolkit.Mvvm.ComponentModel
         /// </remarks>
         protected bool SetPropertyAndNotifyOnCompletion([NotNull] ref TaskNotifier? taskNotifier, Task? newValue, [CallerMemberName] string? propertyName = null)
         {
-            return SetPropertyAndNotifyOnCompletion(taskNotifier ??= new(), newValue, static _ => { }, propertyName);
+            return SetPropertyAndNotifyOnCompletion(taskNotifier ??= new TaskNotifier(), newValue, static _ => { }, propertyName);
         }
 
         /// <summary>
@@ -303,7 +303,7 @@ namespace CommunityToolkit.Mvvm.ComponentModel
         /// </remarks>
         protected bool SetPropertyAndNotifyOnCompletion([NotNull] ref TaskNotifier? taskNotifier, Task? newValue, Action<Task?> callback, [CallerMemberName] string? propertyName = null)
         {
-            return SetPropertyAndNotifyOnCompletion(taskNotifier ??= new(), newValue, callback, propertyName);
+            return SetPropertyAndNotifyOnCompletion(taskNotifier ??= new TaskNotifier(), newValue, callback, propertyName);
         }
 
         /// <summary>
@@ -341,7 +341,7 @@ namespace CommunityToolkit.Mvvm.ComponentModel
         /// </remarks>
         protected bool SetPropertyAndNotifyOnCompletion<T>([NotNull] ref TaskNotifier<T>? taskNotifier, Task<T>? newValue, [CallerMemberName] string? propertyName = null)
         {
-            return SetPropertyAndNotifyOnCompletion(taskNotifier ??= new(), newValue, static _ => { }, propertyName);
+            return SetPropertyAndNotifyOnCompletion(taskNotifier ??= new TaskNotifier<T>(), newValue, static _ => { }, propertyName);
         }
 
         /// <summary>
@@ -362,7 +362,7 @@ namespace CommunityToolkit.Mvvm.ComponentModel
         /// </remarks>
         protected bool SetPropertyAndNotifyOnCompletion<T>([NotNull] ref TaskNotifier<T>? taskNotifier, Task<T>? newValue, Action<Task<T>?> callback, [CallerMemberName] string? propertyName = null)
         {
-            return SetPropertyAndNotifyOnCompletion(taskNotifier ??= new(), newValue, callback, propertyName);
+            return SetPropertyAndNotifyOnCompletion(taskNotifier ??= new TaskNotifier<T>(), newValue, callback, propertyName);
         }
 
         /// <summary>

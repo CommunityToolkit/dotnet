@@ -34,7 +34,7 @@ namespace UnitTests.HighPerformance.Buffers
         [DataRow(234000, 256, 1024, 262144)]
         public void Test_StringPool_Cctor_Ok(int minimumSize, int x, int y, int size)
         {
-            var pool = new StringPool(minimumSize);
+            StringPool? pool = new(minimumSize);
 
             Assert.AreEqual(size, pool.Size);
 
@@ -58,13 +58,13 @@ namespace UnitTests.HighPerformance.Buffers
         {
             try
             {
-                var pool = new StringPool(size);
+                StringPool? pool = new(size);
 
                 Assert.Fail();
             }
             catch (ArgumentOutOfRangeException e)
             {
-                var cctor = typeof(StringPool).GetConstructor(new[] { typeof(int) })!;
+                ConstructorInfo? cctor = typeof(StringPool).GetConstructor(new[] { typeof(int) })!;
 
                 Assert.AreEqual(cctor.GetParameters()[0].Name, e.ParamName);
             }
@@ -86,7 +86,7 @@ namespace UnitTests.HighPerformance.Buffers
         [TestMethod]
         public void Test_StringPool_Add_Single()
         {
-            var pool = new StringPool();
+            StringPool? pool = new();
 
             string hello = nameof(hello);
 
@@ -103,7 +103,7 @@ namespace UnitTests.HighPerformance.Buffers
         [TestMethod]
         public void Test_StringPool_Add_Misc()
         {
-            var pool = new StringPool();
+            StringPool? pool = new();
 
             string
                 hello = nameof(hello),
@@ -131,11 +131,11 @@ namespace UnitTests.HighPerformance.Buffers
         [TestMethod]
         public void Test_StringPool_Add_Overwrite()
         {
-            var pool = new StringPool();
+            StringPool? pool = new();
 
-            var today = DateTime.Today;
+            DateTime today = DateTime.Today;
 
-            var text1 = ToStringNoInlining(today);
+            string? text1 = ToStringNoInlining(today);
 
             pool.Add(text1);
 
@@ -143,7 +143,7 @@ namespace UnitTests.HighPerformance.Buffers
 
             Assert.AreSame(text1, result);
 
-            var text2 = ToStringNoInlining(today);
+            string? text2 = ToStringNoInlining(today);
 
             pool.Add(text2);
 
@@ -174,7 +174,7 @@ namespace UnitTests.HighPerformance.Buffers
         [TestMethod]
         public void Test_StringPool_GetOrAdd_String_Misc()
         {
-            var pool = new StringPool();
+            StringPool? pool = new();
 
             string helloworld = nameof(helloworld);
 
@@ -210,7 +210,7 @@ namespace UnitTests.HighPerformance.Buffers
         [TestMethod]
         public void Test_StringPool_GetOrAdd_ReadOnlySpan_Misc()
         {
-            var pool = new StringPool();
+            StringPool? pool = new();
 
             string
                 hello = pool.GetOrAdd(nameof(hello).AsSpan()),
@@ -249,7 +249,7 @@ namespace UnitTests.HighPerformance.Buffers
         [TestMethod]
         public void Test_StringPool_GetOrAdd_Encoding_Misc()
         {
-            var pool = new StringPool();
+            StringPool? pool = new();
 
             string helloworld = nameof(helloworld);
 
@@ -276,7 +276,7 @@ namespace UnitTests.HighPerformance.Buffers
         [TestMethod]
         public void Test_StringPool_GetOrAdd_Overflow()
         {
-            var pool = new StringPool(32);
+            StringPool? pool = new(32);
 
             // Fill the pool
             for (int i = 0; i < 4096; i++)
@@ -307,7 +307,7 @@ namespace UnitTests.HighPerformance.Buffers
 
             Type heapEntryType = Type.GetType("CommunityToolkit.HighPerformance.Buffers.StringPool+FixedSizePriorityMap+HeapEntry, CommunityToolkit.HighPerformance")!;
 
-            foreach (var map in maps)
+            foreach (object? map in maps)
             {
                 // Get the heap for each bucket
                 Array heapEntries = (Array)bucketType.GetField("heapEntries", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(map)!;

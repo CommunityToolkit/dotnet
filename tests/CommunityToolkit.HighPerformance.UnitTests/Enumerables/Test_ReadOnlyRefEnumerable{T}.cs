@@ -83,8 +83,8 @@ namespace UnitTests.HighPerformance.Enumerables
                 0, 0, 0, 0
             };
 
-            Assert.ThrowsException<IndexOutOfRangeException>(() => ReadOnlyRefEnumerable<int>.DangerousCreate(in array[0], array.Length, 1)[-1]);
-            Assert.ThrowsException<IndexOutOfRangeException>(() => ReadOnlyRefEnumerable<int>.DangerousCreate(in array[0], array.Length, 1)[array.Length]);
+            _ = Assert.ThrowsException<IndexOutOfRangeException>(() => ReadOnlyRefEnumerable<int>.DangerousCreate(in array[0], array.Length, 1)[-1]);
+            _ = Assert.ThrowsException<IndexOutOfRangeException>(() => ReadOnlyRefEnumerable<int>.DangerousCreate(in array[0], array.Length, 1)[array.Length]);
         }
 
 #if NETCOREAPP3_1_OR_GREATER
@@ -121,8 +121,8 @@ namespace UnitTests.HighPerformance.Enumerables
                 0, 0, 0, 0
             };
 
-            Assert.ThrowsException<IndexOutOfRangeException>(() => ReadOnlyRefEnumerable<int>.DangerousCreate(in array[0], array.Length, 1)[new Index(array.Length)]);
-            Assert.ThrowsException<IndexOutOfRangeException>(() => ReadOnlyRefEnumerable<int>.DangerousCreate(in array[0], array.Length, 1)[^0]);
+            _ = Assert.ThrowsException<IndexOutOfRangeException>(() => ReadOnlyRefEnumerable<int>.DangerousCreate(in array[0], array.Length, 1)[new Index(array.Length)]);
+            _ = Assert.ThrowsException<IndexOutOfRangeException>(() => ReadOnlyRefEnumerable<int>.DangerousCreate(in array[0], array.Length, 1)[^0]);
         }
 #endif
     }

@@ -17,9 +17,9 @@ namespace CommunityToolkit.Common.Deferred
         /// <summary>
         /// Gets a new <see cref="DeferredEventArgs"/> to use in cases where no <see cref="EventArgs"/> wish to be provided.
         /// </summary>
-        public static new DeferredEventArgs Empty => new DeferredEventArgs();
+        public static new DeferredEventArgs Empty => new();
 
-        private readonly object _eventDeferralLock = new object();
+        private readonly object _eventDeferralLock = new();
 
         private EventDeferral? _eventDeferral;
 
@@ -49,7 +49,7 @@ namespace CommunityToolkit.Common.Deferred
         {
             lock (_eventDeferralLock)
             {
-                var eventDeferral = _eventDeferral;
+                EventDeferral? eventDeferral = _eventDeferral;
 
                 _eventDeferral = null;
 

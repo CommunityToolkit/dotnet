@@ -40,7 +40,7 @@ namespace UnitTests.HighPerformance
         public void Test_RefOfT_CreateRefOfT()
         {
             int value = 1;
-            var reference = new Ref<int>(ref value);
+            Ref<int> reference = new(ref value);
 
             Assert.IsTrue(Unsafe.AreSame(ref value, ref reference.Value));
 

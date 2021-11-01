@@ -53,21 +53,21 @@ namespace CommunityToolkit.Common
         {
             // The returned string will be in the following format:
             // [1, 2, 3]
-            StringBuilder builder = new StringBuilder();
+            StringBuilder builder = new();
 
-            builder.Append('[');
+            _ = builder.Append('[');
 
             for (int i = 0; i < array.Length; i++)
             {
                 if (i != 0)
                 {
-                    builder.Append(",\t");
+                    _ = builder.Append(",\t");
                 }
 
-                builder.Append(array[i]?.ToString());
+                _ = builder.Append(array[i]?.ToString());
             }
 
-            builder.Append(']');
+            _ = builder.Append(']');
 
             return builder.ToString();
         }
@@ -81,20 +81,20 @@ namespace CommunityToolkit.Common
         public static string ToArrayString<T>(this T?[][] mdarray)
         {
             // The returned string uses the same format as the overload for 2D arrays
-            StringBuilder builder = new StringBuilder();
+            StringBuilder builder = new();
 
-            builder.Append('[');
+            _ = builder.Append('[');
 
             for (int i = 0; i < mdarray.Length; i++)
             {
                 if (i != 0)
                 {
-                    builder.Append(',');
-                    builder.Append(Environment.NewLine);
-                    builder.Append(' ');
+                    _ = builder.Append(',');
+                    _ = builder.Append(Environment.NewLine);
+                    _ = builder.Append(' ');
                 }
 
-                builder.Append('[');
+                _ = builder.Append('[');
 
                 T?[] row = mdarray[i];
 
@@ -102,16 +102,16 @@ namespace CommunityToolkit.Common
                 {
                     if (j != 0)
                     {
-                        builder.Append(",\t");
+                        _ = builder.Append(",\t");
                     }
 
-                    builder.Append(row[j]?.ToString());
+                    _ = builder.Append(row[j]?.ToString());
                 }
 
-                builder.Append(']');
+                _ = builder.Append(']');
             }
 
-            builder.Append(']');
+            _ = builder.Append(']');
 
             return builder.ToString();
         }
@@ -128,9 +128,9 @@ namespace CommunityToolkit.Common
             // [[1, 2,  3],
             //  [4, 5,  6],
             //  [7, 8,  9]]
-            StringBuilder builder = new StringBuilder();
+            StringBuilder builder = new();
 
-            builder.Append('[');
+            _ = builder.Append('[');
 
             int
                 height = array.GetLength(0),
@@ -140,27 +140,27 @@ namespace CommunityToolkit.Common
             {
                 if (i != 0)
                 {
-                    builder.Append(',');
-                    builder.Append(Environment.NewLine);
-                    builder.Append(' ');
+                    _ = builder.Append(',');
+                    _ = builder.Append(Environment.NewLine);
+                    _ = builder.Append(' ');
                 }
 
-                builder.Append('[');
+                _ = builder.Append('[');
 
                 for (int j = 0; j < width; j++)
                 {
                     if (j != 0)
                     {
-                        builder.Append(",\t");
+                        _ = builder.Append(",\t");
                     }
 
-                    builder.Append(array[i, j]?.ToString());
+                    _ = builder.Append(array[i, j]?.ToString());
                 }
 
-                builder.Append(']');
+                _ = builder.Append(']');
             }
 
-            builder.Append(']');
+            _ = builder.Append(']');
 
             return builder.ToString();
         }

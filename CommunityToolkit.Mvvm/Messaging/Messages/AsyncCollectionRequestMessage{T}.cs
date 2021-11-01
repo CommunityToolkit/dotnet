@@ -104,7 +104,7 @@ namespace CommunityToolkit.Mvvm.Messaging.Messages
 
             List<T> results = new(this.responses.Count);
 
-            await foreach (var response in this.WithCancellation(cancellationToken).ConfigureAwait(false))
+            await foreach (T? response in this.WithCancellation(cancellationToken).ConfigureAwait(false))
             {
                 results.Add(response);
             }
@@ -122,7 +122,7 @@ namespace CommunityToolkit.Mvvm.Messaging.Messages
                 _ = cancellationToken.Register(this.cancellationTokenSource.Cancel);
             }
 
-            foreach (var (task, func) in this.responses)
+            foreach ((Task<T>? task, Func<CancellationToken, Task<T>>? func) in this.responses)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {

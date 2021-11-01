@@ -92,7 +92,7 @@ namespace CommunityToolkit.HighPerformance.Helpers
             // Skip the parallel invocation when a single batch is needed
             if (numBatches == 1)
             {
-                foreach (ref var item in memory.Span)
+                foreach (ref TItem item in memory.Span)
                 {
                     Unsafe.AsRef(action).Invoke(ref item);
                 }
@@ -102,10 +102,10 @@ namespace CommunityToolkit.HighPerformance.Helpers
 
             int batchSize = 1 + ((memory.Length - 1) / numBatches);
 
-            var actionInvoker = new RefActionInvoker<TItem, TAction>(batchSize, memory, action);
+            RefActionInvoker<TItem, TAction> actionInvoker = new(batchSize, memory, action);
 
             // Run the batched operations in parallel
-            Parallel.For(
+            _ = Parallel.For(
                 0,
                 numBatches,
                 new ParallelOptions { MaxDegreeOfParallelism = numBatches },

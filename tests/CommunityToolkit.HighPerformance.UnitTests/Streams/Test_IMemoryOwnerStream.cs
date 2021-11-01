@@ -29,7 +29,7 @@ namespace UnitTests.HighPerformance.Streams
 
             stream.Dispose();
 
-            Assert.ThrowsException<ObjectDisposedException>(() => buffer.Memory);
+            _ = Assert.ThrowsException<ObjectDisposedException>(() => buffer.Memory);
         }
     }
 }

@@ -21,7 +21,7 @@ namespace UnitTests.HighPerformance
         public void Test_NullableRefOfT_CreateNullableRefOfT_Ok()
         {
             int value = 1;
-            var reference = new NullableRef<int>(ref value);
+            NullableRef<int> reference = new(ref value);
 
             Assert.IsTrue(reference.HasValue);
             Assert.IsTrue(Unsafe.AreSame(ref value, ref reference.Value));
@@ -57,7 +57,7 @@ namespace UnitTests.HighPerformance
         public void Test_NullableRefOfT_CreateNullableRefOfT_ImplicitRefCast()
         {
             int value = 42;
-            var reference = new Ref<int>(ref value);
+            Ref<int> reference = new(ref value);
             NullableRef<int> nullableRef = reference;
 
             Assert.IsTrue(nullableRef.HasValue);
@@ -69,7 +69,7 @@ namespace UnitTests.HighPerformance
         public void Test_NullableRefOfT_CreateNullableRefOfT_ExplicitCastOfT()
         {
             int value = 42;
-            var reference = new NullableRef<int>(ref value);
+            NullableRef<int> reference = new(ref value);
 
             Assert.AreEqual(value, (int)reference);
         }

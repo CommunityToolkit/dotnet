@@ -79,7 +79,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators
 
             foreach (SyntaxReceiver.Item item in syntaxReceiver.GatheredInfo)
             {
-                if (!ValidateTargetType(context, item.AttributeData, item.ClassDeclaration, item.ClassSymbol, out var descriptor))
+                if (!ValidateTargetType(context, item.AttributeData, item.ClassDeclaration, item.ClassSymbol, out DiagnosticDescriptor? descriptor))
                 {
                     context.ReportDiagnostic(descriptor, item.AttributeSyntax, item.ClassSymbol);
 
@@ -152,7 +152,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators
             // {
             //     <MEMBERS>
             // }
-            var classDeclarationSyntax =
+            ClassDeclarationSyntax? classDeclarationSyntax =
                 ClassDeclaration(classDeclaration.Identifier.Text)
                 .WithModifiers(classDeclaration.Modifiers)
                 .WithBaseList(baseListSyntax)
@@ -161,7 +161,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators
             TypeDeclarationSyntax typeDeclarationSyntax = classDeclarationSyntax;
 
             // Add all parent types in ascending order, if any
-            foreach (var parentType in classDeclaration.Ancestors().OfType<TypeDeclarationSyntax>())
+            foreach (TypeDeclarationSyntax? parentType in classDeclaration.Ancestors().OfType<TypeDeclarationSyntax>())
             {
                 typeDeclarationSyntax = parentType
                     .WithMembers(SingletonList<MemberDeclarationSyntax>(typeDeclarationSyntax))
@@ -173,10 +173,10 @@ namespace CommunityToolkit.Mvvm.SourceGenerators
 
             // Create the compilation unit with the namespace and target member.
             // From this, we can finally generate the source code to output.
-            var namespaceName = classDeclarationSymbol.ContainingNamespace.ToDisplayString(new(typeQualificationStyle: NameAndContainingTypesAndNamespaces));
+            string? namespaceName = classDeclarationSymbol.ContainingNamespace.ToDisplayString(new(typeQualificationStyle: NameAndContainingTypesAndNamespaces));
 
             // Create the final compilation unit to generate (with using directives and the full type declaration)
-            var source =
+            string? source =
                 CompilationUnit()
                 .AddMembers(NamespaceDeclaration(IdentifierName(namespaceName))
                 .AddMembers(typeDeclarationSyntax))

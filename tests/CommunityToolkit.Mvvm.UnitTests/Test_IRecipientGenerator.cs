@@ -19,11 +19,11 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_IRecipientGenerator_GeneratedRegistration()
         {
-            var messenger = new StrongReferenceMessenger();
-            var recipient = new RecipientWithSomeMessages();
+            StrongReferenceMessenger? messenger = new();
+            RecipientWithSomeMessages? recipient = new();
 
-            var messageA = new MessageA();
-            var messageB = new MessageB();
+            MessageA? messageA = new();
+            MessageB? messageB = new();
 
             Action<IMessenger, object, int> registrator = CommunityToolkit.Mvvm.Messaging.__Internals.__IMessengerExtensions.CreateAllMessagesRegistratorWithToken<int>(recipient);
 
@@ -35,12 +35,12 @@ namespace UnitTests.Mvvm
             Assert.IsNull(recipient.A);
             Assert.IsNull(recipient.B);
 
-            messenger.Send(messageA, 42);
+            _ = messenger.Send(messageA, 42);
 
             Assert.AreSame(recipient.A, messageA);
             Assert.IsNull(recipient.B);
 
-            messenger.Send(messageB, 42);
+            _ = messenger.Send(messageB, 42);
 
             Assert.AreSame(recipient.A, messageA);
             Assert.AreSame(recipient.B, messageB);

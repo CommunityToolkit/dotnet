@@ -20,7 +20,7 @@ namespace UnitTests.HighPerformance.Streams
         [TestMethod]
         public void Test_IBufferWriterStream_Lifecycle()
         {
-            ArrayPoolBufferWriter<byte> writer = new ArrayPoolBufferWriter<byte>();
+            ArrayPoolBufferWriter<byte> writer = new();
 
             // Get a stream from a buffer writer aand validate that it can only be written to.
             // This is to mirror the same functionality as the IBufferWriter<T> interface.
@@ -30,8 +30,8 @@ namespace UnitTests.HighPerformance.Streams
             Assert.IsFalse(stream.CanSeek);
             Assert.IsTrue(stream.CanWrite);
 
-            Assert.ThrowsException<NotSupportedException>(() => stream.Length);
-            Assert.ThrowsException<NotSupportedException>(() => stream.Position);
+            _ = Assert.ThrowsException<NotSupportedException>(() => stream.Length);
+            _ = Assert.ThrowsException<NotSupportedException>(() => stream.Position);
 
             // Dispose the stream and check that no operation is now allowed
             stream.Dispose();
@@ -39,15 +39,15 @@ namespace UnitTests.HighPerformance.Streams
             Assert.IsFalse(stream.CanRead);
             Assert.IsFalse(stream.CanSeek);
             Assert.IsFalse(stream.CanWrite);
-            Assert.ThrowsException<NotSupportedException>(() => stream.Length);
-            Assert.ThrowsException<NotSupportedException>(() => stream.Position);
+            _ = Assert.ThrowsException<NotSupportedException>(() => stream.Length);
+            _ = Assert.ThrowsException<NotSupportedException>(() => stream.Position);
         }
 
         [TestCategory("IBufferWriterStream")]
         [TestMethod]
         public void Test_IBufferWriterStream_Write_Array()
         {
-            ArrayPoolBufferWriter<byte> writer = new ArrayPoolBufferWriter<byte>();
+            ArrayPoolBufferWriter<byte> writer = new();
             Stream stream = ((IBufferWriter<byte>)writer).AsStream();
 
             byte[] data = Test_MemoryStream.CreateRandomData(64);
@@ -60,22 +60,22 @@ namespace UnitTests.HighPerformance.Streams
             Assert.IsTrue(writer.WrittenSpan.SequenceEqual(data));
 
             // A few tests with invalid inputs (null buffers, invalid indices, etc.)
-            Assert.ThrowsException<ArgumentNullException>(() => stream.Write(null!, 0, 10));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Write(data, -1, 10));
-            Assert.ThrowsException<ArgumentException>(() => stream.Write(data, 200, 10));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Write(data, 0, -24));
-            Assert.ThrowsException<ArgumentException>(() => stream.Write(data, 0, 200));
+            _ = Assert.ThrowsException<ArgumentNullException>(() => stream.Write(null!, 0, 10));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Write(data, -1, 10));
+            _ = Assert.ThrowsException<ArgumentException>(() => stream.Write(data, 200, 10));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Write(data, 0, -24));
+            _ = Assert.ThrowsException<ArgumentException>(() => stream.Write(data, 0, 200));
 
             stream.Dispose();
 
-            Assert.ThrowsException<ObjectDisposedException>(() => stream.Write(data, 0, data.Length));
+            _ = Assert.ThrowsException<ObjectDisposedException>(() => stream.Write(data, 0, data.Length));
         }
 
         [TestCategory("IBufferWriterStream")]
         [TestMethod]
         public async Task Test_IBufferWriterStream_WriteAsync_Array()
         {
-            ArrayPoolBufferWriter<byte> writer = new ArrayPoolBufferWriter<byte>();
+            ArrayPoolBufferWriter<byte> writer = new();
             Stream stream = ((IBufferWriter<byte>)writer).AsStream();
 
             byte[] data = Test_MemoryStream.CreateRandomData(64);
@@ -86,27 +86,27 @@ namespace UnitTests.HighPerformance.Streams
             Assert.AreEqual(writer.WrittenCount, data.Length);
             Assert.IsTrue(writer.WrittenSpan.SequenceEqual(data));
 
-            await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => stream.WriteAsync(null!, 0, 10));
-            await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(() => stream.WriteAsync(data, -1, 10));
-            await Assert.ThrowsExceptionAsync<ArgumentException>(() => stream.WriteAsync(data, 200, 10));
-            await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(() => stream.WriteAsync(data, 0, -24));
-            await Assert.ThrowsExceptionAsync<ArgumentException>(() => stream.WriteAsync(data, 0, 200));
+            _ = await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => stream.WriteAsync(null!, 0, 10));
+            _ = await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(() => stream.WriteAsync(data, -1, 10));
+            _ = await Assert.ThrowsExceptionAsync<ArgumentException>(() => stream.WriteAsync(data, 200, 10));
+            _ = await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(() => stream.WriteAsync(data, 0, -24));
+            _ = await Assert.ThrowsExceptionAsync<ArgumentException>(() => stream.WriteAsync(data, 0, 200));
 
             stream.Dispose();
 
-            await Assert.ThrowsExceptionAsync<ObjectDisposedException>(() => stream.WriteAsync(data, 0, data.Length));
+            _ = await Assert.ThrowsExceptionAsync<ObjectDisposedException>(() => stream.WriteAsync(data, 0, data.Length));
         }
 
         [TestCategory("IBufferWriterStream")]
         [TestMethod]
         public void Test_IBufferWriterStream_WriteByte()
         {
-            ArrayPoolBufferWriter<byte> writer = new ArrayPoolBufferWriter<byte>();
+            ArrayPoolBufferWriter<byte> writer = new();
             Stream stream = ((IBufferWriter<byte>)writer).AsStream();
 
             ReadOnlySpan<byte> data = stackalloc byte[] { 1, 128, 255, 32 };
 
-            foreach (var item in data.Enumerate())
+            foreach (CommunityToolkit.HighPerformance.Enumerables.ReadOnlySpanEnumerable<byte>.Item item in data.Enumerate())
             {
                 // Since we're enumerating, we can also double check the current written count
                 // at each iteration, to ensure the writes are done correctly every time.
@@ -120,14 +120,14 @@ namespace UnitTests.HighPerformance.Streams
             Assert.AreEqual(writer.WrittenCount, data.Length);
             Assert.IsTrue(data.SequenceEqual(writer.WrittenSpan));
 
-            Assert.ThrowsException<NotSupportedException>(() => stream.ReadByte());
+            _ = Assert.ThrowsException<NotSupportedException>(() => stream.ReadByte());
         }
 
         [TestCategory("IBufferWriterStream")]
         [TestMethod]
         public void Test_IBufferWriterStream_Write_Span()
         {
-            ArrayPoolBufferWriter<byte> writer = new ArrayPoolBufferWriter<byte>();
+            ArrayPoolBufferWriter<byte> writer = new();
             Stream stream = ((IBufferWriter<byte>)writer).AsStream();
 
             Memory<byte> data = Test_MemoryStream.CreateRandomData(64);
@@ -145,7 +145,7 @@ namespace UnitTests.HighPerformance.Streams
         [TestMethod]
         public async Task Test_IBufferWriterStream_WriteAsync_Memory()
         {
-            ArrayPoolBufferWriter<byte> writer = new ArrayPoolBufferWriter<byte>();
+            ArrayPoolBufferWriter<byte> writer = new();
             Stream stream = ((IBufferWriter<byte>)writer).AsStream();
 
             Memory<byte> data = Test_MemoryStream.CreateRandomData(64);

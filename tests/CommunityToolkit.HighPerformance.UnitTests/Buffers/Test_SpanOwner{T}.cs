@@ -19,7 +19,7 @@ namespace UnitTests.HighPerformance.Buffers
         [TestMethod]
         public void Test_SpanOwnerOfT_AllocateAndGetMemoryAndSpan()
         {
-            using var buffer = SpanOwner<int>.Allocate(127);
+            using SpanOwner<int> buffer = SpanOwner<int>.Allocate(127);
 
             Assert.IsTrue(buffer.Length == 127);
             Assert.IsTrue(buffer.Span.Length == 127);
@@ -33,9 +33,9 @@ namespace UnitTests.HighPerformance.Buffers
         [TestMethod]
         public void Test_SpanOwnerOfT_AllocateFromCustomPoolAndGetMemoryAndSpan()
         {
-            var pool = new TrackingArrayPool<int>();
+            TrackingArrayPool<int>? pool = new();
 
-            using (var buffer = SpanOwner<int>.Allocate(127, pool))
+            using (SpanOwner<int> buffer = SpanOwner<int>.Allocate(127, pool))
             {
                 Assert.AreEqual(pool.RentedArrays.Count, 1);
 
@@ -55,7 +55,7 @@ namespace UnitTests.HighPerformance.Buffers
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void Test_SpanOwnerOfT_InvalidRequestedSize()
         {
-            using var buffer = SpanOwner<int>.Allocate(-1);
+            using SpanOwner<int> buffer = SpanOwner<int>.Allocate(-1);
 
             Assert.Fail("You shouldn't be here");
         }
@@ -64,17 +64,17 @@ namespace UnitTests.HighPerformance.Buffers
         [TestMethod]
         public void Test_SpanOwnerOfT_PooledBuffersAndClear()
         {
-            using (var buffer = SpanOwner<int>.Allocate(127))
+            using (SpanOwner<int> buffer = SpanOwner<int>.Allocate(127))
             {
                 buffer.Span.Fill(42);
             }
 
-            using (var buffer = SpanOwner<int>.Allocate(127))
+            using (SpanOwner<int> buffer = SpanOwner<int>.Allocate(127))
             {
                 Assert.IsTrue(buffer.Span.ToArray().All(i => i == 42));
             }
 
-            using (var buffer = SpanOwner<int>.Allocate(127, AllocationMode.Clear))
+            using (SpanOwner<int> buffer = SpanOwner<int>.Allocate(127, AllocationMode.Clear))
             {
                 Assert.IsTrue(buffer.Span.ToArray().All(i => i == 0));
             }
@@ -84,9 +84,9 @@ namespace UnitTests.HighPerformance.Buffers
         [TestMethod]
         public void Test_SpanOwnerOfT_AllocateAndGetArray()
         {
-            using var buffer = SpanOwner<int>.Allocate(127);
+            using SpanOwner<int> buffer = SpanOwner<int>.Allocate(127);
 
-            var segment = buffer.DangerousGetArray();
+            ArraySegment<int> segment = buffer.DangerousGetArray();
 
             // See comments in the MemoryOwner<T> tests about this. The main difference
             // here is that we don't do the disposed checks, as SpanOwner<T> is optimized

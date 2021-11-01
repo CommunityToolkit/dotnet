@@ -21,7 +21,7 @@ namespace UnitTests.HighPerformance.Helpers
             }
             catch (ArgumentOutOfRangeException e) when (e.GetType() == typeof(ArgumentOutOfRangeException))
             {
-                var name = (
+                string? name = (
                     from method in typeof(ParallelHelper).GetMethods()
                     where
                         method.Name == nameof(ParallelHelper.For) &&
@@ -52,7 +52,7 @@ namespace UnitTests.HighPerformance.Helpers
             }
             catch (ArgumentOutOfRangeException e) when (e.GetType() == typeof(ArgumentOutOfRangeException))
             {
-                var name = (
+                string? name = (
                     from method in typeof(ParallelHelper).GetMethods()
                     where
                         method.Name == nameof(ParallelHelper.For) &&
@@ -83,7 +83,7 @@ namespace UnitTests.HighPerformance.Helpers
             }
             catch (ArgumentOutOfRangeException e) when (e.GetType() == typeof(ArgumentOutOfRangeException))
             {
-                var name = (
+                string? name = (
                     from method in typeof(ParallelHelper).GetMethods()
                     where
                         method.Name == nameof(ParallelHelper.For2D) &&
@@ -114,7 +114,7 @@ namespace UnitTests.HighPerformance.Helpers
             }
             catch (ArgumentOutOfRangeException e) when (e.GetType() == typeof(ArgumentOutOfRangeException))
             {
-                var name = (
+                string? name = (
                     from method in typeof(ParallelHelper).GetMethods()
                     where
                         method.Name == nameof(ParallelHelper.For2D) &&

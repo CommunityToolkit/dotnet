@@ -118,7 +118,7 @@ namespace CommunityToolkit.Mvvm.Messaging
                 mapping ??= new RecipientsTable();
 
                 // Get or create the handlers dictionary for the target recipient
-                var map = Unsafe.As<DictionarySlim<TToken, object>>(mapping.GetValue(recipient, static _ => new DictionarySlim<TToken, object>()));
+                DictionarySlim<TToken, object>? map = Unsafe.As<DictionarySlim<TToken, object>>(mapping.GetValue(recipient, static _ => new DictionarySlim<TToken, object>()));
 
                 // Add the new registration entry
                 ref object? registeredHandler = ref map.GetOrAddValueRef(token);
@@ -138,7 +138,7 @@ namespace CommunityToolkit.Mvvm.Messaging
         {
             lock (this.recipientsMap)
             {
-                var enumerator = this.recipientsMap.GetEnumerator();
+                DictionarySlim<Type2, RecipientsTable>.Enumerator enumerator = this.recipientsMap.GetEnumerator();
 
                 // Traverse all the existing conditional tables and remove all the ones
                 // with the target recipient as key. We don't perform a cleanup here,
@@ -156,7 +156,7 @@ namespace CommunityToolkit.Mvvm.Messaging
         {
             lock (this.recipientsMap)
             {
-                var enumerator = this.recipientsMap.GetEnumerator();
+                DictionarySlim<Type2, RecipientsTable>.Enumerator enumerator = this.recipientsMap.GetEnumerator();
 
                 // Same as above, with the difference being that this time we only go through
                 // the conditional tables having a matching token type as key, and that we
@@ -219,7 +219,7 @@ namespace CommunityToolkit.Mvvm.Messaging
                 // handlers with a matching token, and their corresponding recipients.
                 foreach (KeyValuePair<object, IDictionarySlim> pair in table)
                 {
-                    var map = Unsafe.As<DictionarySlim<TToken, object>>(pair.Value);
+                    DictionarySlim<TToken, object>? map = Unsafe.As<DictionarySlim<TToken, object>>(pair.Value);
 
                     if (map.TryGetValue(token, out object? handler))
                     {
@@ -306,7 +306,7 @@ namespace CommunityToolkit.Mvvm.Messaging
             using ArrayPoolBufferWriter<Type2> type2s = ArrayPoolBufferWriter<Type2>.Create();
             using ArrayPoolBufferWriter<object> emptyRecipients = ArrayPoolBufferWriter<object>.Create();
 
-            var enumerator = this.recipientsMap.GetEnumerator();
+            DictionarySlim<Type2, RecipientsTable>.Enumerator enumerator = this.recipientsMap.GetEnumerator();
 
             // First, we go through all the currently registered pairs of token and message types.
             // These represents all the combinations of generic arguments with at least one registered

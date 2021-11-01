@@ -51,7 +51,7 @@ namespace UnitTests.HighPerformance
                 1, 2, 3, 4, 5, 6
             };
 
-            ReadOnlyMemory2D<int> memory2d = new ReadOnlyMemory2D<int>(array, 1, 2, 2, 1);
+            ReadOnlyMemory2D<int> memory2d = new(array, 1, 2, 2, 1);
 
             Assert.IsFalse(memory2d.IsEmpty);
             Assert.AreEqual(memory2d.Length, 4);
@@ -63,14 +63,14 @@ namespace UnitTests.HighPerformance
             // Here we check to ensure a covariant array conversion is allowed for ReadOnlyMemory2D<T>
             _ = new ReadOnlyMemory2D<object>(new string[1], 1, 1);
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, -99, 1, 1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, 0, -10, 1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, 0, 1, 1, -1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, 0, 1, -100, 1));
-            Assert.ThrowsException<ArgumentException>(() => new ReadOnlyMemory2D<int>(array, 0, 2, 4, 0));
-            Assert.ThrowsException<ArgumentException>(() => new ReadOnlyMemory2D<int>(array, 0, 3, 3, 0));
-            Assert.ThrowsException<ArgumentException>(() => new ReadOnlyMemory2D<int>(array, 1, 2, 3, 0));
-            Assert.ThrowsException<ArgumentException>(() => new ReadOnlyMemory2D<int>(array, 0, 10, 1, 120));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, -99, 1, 1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, 0, -10, 1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, 0, 1, 1, -1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, 0, 1, -100, 1));
+            _ = Assert.ThrowsException<ArgumentException>(() => new ReadOnlyMemory2D<int>(array, 0, 2, 4, 0));
+            _ = Assert.ThrowsException<ArgumentException>(() => new ReadOnlyMemory2D<int>(array, 0, 3, 3, 0));
+            _ = Assert.ThrowsException<ArgumentException>(() => new ReadOnlyMemory2D<int>(array, 1, 2, 3, 0));
+            _ = Assert.ThrowsException<ArgumentException>(() => new ReadOnlyMemory2D<int>(array, 0, 10, 1, 120));
         }
 
         [TestCategory("ReadOnlyMemory2DT")]
@@ -83,7 +83,7 @@ namespace UnitTests.HighPerformance
                 { 4, 5, 6 }
             };
 
-            ReadOnlyMemory2D<int> memory2d = new ReadOnlyMemory2D<int>(array);
+            ReadOnlyMemory2D<int> memory2d = new(array);
 
             Assert.IsFalse(memory2d.IsEmpty);
             Assert.AreEqual(memory2d.Length, 6);
@@ -105,7 +105,7 @@ namespace UnitTests.HighPerformance
                 { 4, 5, 6 }
             };
 
-            ReadOnlyMemory2D<int> memory2d = new ReadOnlyMemory2D<int>(array, 0, 1, 2, 2);
+            ReadOnlyMemory2D<int> memory2d = new(array, 0, 1, 2, 2);
 
             Assert.IsFalse(memory2d.IsEmpty);
             Assert.AreEqual(memory2d.Length, 4);
@@ -116,7 +116,7 @@ namespace UnitTests.HighPerformance
 
             _ = new ReadOnlyMemory2D<object>(new string[1, 2]);
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<object>(new string[1, 2], 0, 0, 2, 2));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<object>(new string[1, 2], 0, 0, 2, 2));
         }
 
         [TestCategory("ReadOnlyMemory2DT")]
@@ -135,7 +135,7 @@ namespace UnitTests.HighPerformance
                 }
             };
 
-            ReadOnlyMemory2D<int> memory2d = new ReadOnlyMemory2D<int>(array, 1);
+            ReadOnlyMemory2D<int> memory2d = new(array, 1);
 
             Assert.IsFalse(memory2d.IsEmpty);
             Assert.AreEqual(memory2d.Length, 6);
@@ -144,9 +144,9 @@ namespace UnitTests.HighPerformance
             Assert.AreEqual(memory2d.Span[0, 1], 20);
             Assert.AreEqual(memory2d.Span[1, 2], 60);
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, -1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, 20));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, 2));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, -1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, 20));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, 2));
         }
 
         [TestCategory("ReadOnlyMemory2DT")]
@@ -165,7 +165,7 @@ namespace UnitTests.HighPerformance
                 }
             };
 
-            ReadOnlyMemory2D<int> memory2d = new ReadOnlyMemory2D<int>(array, 1, 0, 1, 2, 2);
+            ReadOnlyMemory2D<int> memory2d = new(array, 1, 0, 1, 2, 2);
 
             Assert.IsFalse(memory2d.IsEmpty);
             Assert.AreEqual(memory2d.Length, 4);
@@ -174,15 +174,15 @@ namespace UnitTests.HighPerformance
             Assert.AreEqual(memory2d.Span[0, 0], 20);
             Assert.AreEqual(memory2d.Span[1, 1], 60);
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, -1, 1, 1, 1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, 1, -1, 1, 1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, 1, 1, -1, 1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, 1, 1, 1, -1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, 1, 1, 1, 1, -1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, 2, 0, 0, 2, 3));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, 0, 0, 1, 2, 3));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, 0, 0, 0, 2, 4));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, 0, 0, 0, 3, 3));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, -1, 1, 1, 1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, 1, -1, 1, 1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, 1, 1, -1, 1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, 1, 1, 1, -1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, 1, 1, 1, 1, -1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, 2, 0, 0, 2, 3));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, 0, 0, 1, 2, 3));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, 0, 0, 0, 2, 4));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, 0, 0, 0, 3, 3));
         }
 
 #if !WINDOWS_UWP
@@ -204,14 +204,14 @@ namespace UnitTests.HighPerformance
             Assert.AreEqual(memory2d.Span[0, 0], 2);
             Assert.AreEqual(memory2d.Span[1, 1], 6);
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => memory.AsMemory2D(-99, 1, 1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => memory.AsMemory2D(0, -10, 1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => memory.AsMemory2D(0, 1, 1, -1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => memory.AsMemory2D(0, 1, -100, 1));
-            Assert.ThrowsException<ArgumentException>(() => memory.AsMemory2D(0, 2, 4, 0));
-            Assert.ThrowsException<ArgumentException>(() => memory.AsMemory2D(0, 3, 3, 0));
-            Assert.ThrowsException<ArgumentException>(() => memory.AsMemory2D(1, 2, 3, 0));
-            Assert.ThrowsException<ArgumentException>(() => memory.AsMemory2D(0, 10, 1, 120));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => memory.AsMemory2D(-99, 1, 1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => memory.AsMemory2D(0, -10, 1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => memory.AsMemory2D(0, 1, 1, -1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => memory.AsMemory2D(0, 1, -100, 1));
+            _ = Assert.ThrowsException<ArgumentException>(() => memory.AsMemory2D(0, 2, 4, 0));
+            _ = Assert.ThrowsException<ArgumentException>(() => memory.AsMemory2D(0, 3, 3, 0));
+            _ = Assert.ThrowsException<ArgumentException>(() => memory.AsMemory2D(1, 2, 3, 0));
+            _ = Assert.ThrowsException<ArgumentException>(() => memory.AsMemory2D(0, 10, 1, 120));
         }
 #endif
 
@@ -225,7 +225,7 @@ namespace UnitTests.HighPerformance
                 { 4, 5, 6 }
             };
 
-            ReadOnlyMemory2D<int> memory2d = new ReadOnlyMemory2D<int>(array);
+            ReadOnlyMemory2D<int> memory2d = new(array);
 
             ReadOnlyMemory2D<int> slice1 = memory2d.Slice(1, 1, 1, 2);
 
@@ -244,17 +244,17 @@ namespace UnitTests.HighPerformance
             Assert.AreEqual(slice2.Span[1, 0], 5);
             Assert.AreEqual(slice2.Span[1, 1], 6);
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array).Slice(-1, 1, 1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array).Slice(1, -1, 1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array).Slice(1, 1, 1, -1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array).Slice(1, 1, -1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array).Slice(10, 1, 1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array).Slice(1, 12, 1, 12));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array).Slice(1, 1, 55, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array).Slice(0, 0, 2, 4));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array).Slice(0, 0, 3, 3));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array).Slice(0, 1, 2, 3));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array).Slice(1, 0, 2, 3));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array).Slice(-1, 1, 1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array).Slice(1, -1, 1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array).Slice(1, 1, 1, -1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array).Slice(1, 1, -1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array).Slice(10, 1, 1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array).Slice(1, 12, 1, 12));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array).Slice(1, 1, 55, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array).Slice(0, 0, 2, 4));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array).Slice(0, 0, 3, 3));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array).Slice(0, 1, 2, 3));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array).Slice(1, 0, 2, 3));
         }
 
         [TestCategory("ReadOnlyMemory2DT")]
@@ -267,7 +267,7 @@ namespace UnitTests.HighPerformance
                 { 4, 5, 6 }
             };
 
-            ReadOnlyMemory2D<int> memory2d = new ReadOnlyMemory2D<int>(array);
+            ReadOnlyMemory2D<int> memory2d = new(array);
 
             ReadOnlyMemory2D<int> slice1 = memory2d.Slice(0, 0, 2, 2);
 
@@ -303,7 +303,7 @@ namespace UnitTests.HighPerformance
                 { 4, 5, 6 }
             };
 
-            ReadOnlyMemory2D<int> memory2d = new ReadOnlyMemory2D<int>(array);
+            ReadOnlyMemory2D<int> memory2d = new(array);
 
             bool success = memory2d.TryGetMemory(out ReadOnlyMemory<int> memory);
 
@@ -323,7 +323,7 @@ namespace UnitTests.HighPerformance
         {
             int[] array = { 1, 2, 3, 4 };
 
-            ReadOnlyMemory2D<int> memory2d = new ReadOnlyMemory2D<int>(array, 2, 2);
+            ReadOnlyMemory2D<int> memory2d = new(array, 2, 2);
 
             bool success = memory2d.TryGetMemory(out ReadOnlyMemory<int> memory);
 
@@ -355,9 +355,9 @@ namespace UnitTests.HighPerformance
         {
             int[] array = { 1, 2, 3, 4 };
 
-            ReadOnlyMemory2D<int> memory2d = new ReadOnlyMemory2D<int>(array, 2, 2);
+            ReadOnlyMemory2D<int> memory2d = new(array, 2, 2);
 
-            using var pin = memory2d.Pin();
+            using System.Buffers.MemoryHandle pin = memory2d.Pin();
 
             Assert.AreEqual(((int*)pin.Pointer)[0], 1);
             Assert.AreEqual(((int*)pin.Pointer)[3], 4);
@@ -369,9 +369,9 @@ namespace UnitTests.HighPerformance
         {
             int[] array = { 1, 2, 3, 4 };
 
-            ReadOnlyMemory2D<int> memory2d = new ReadOnlyMemory2D<int>(array, 2, 2);
+            ReadOnlyMemory2D<int> memory2d = new(array, 2, 2);
 
-            using var pin = memory2d.Pin();
+            using System.Buffers.MemoryHandle pin = memory2d.Pin();
 
             Assert.AreEqual(((int*)pin.Pointer)[0], 1);
             Assert.AreEqual(((int*)pin.Pointer)[3], 4);
@@ -387,7 +387,7 @@ namespace UnitTests.HighPerformance
                 { 4, 5, 6 }
             };
 
-            ReadOnlyMemory2D<int> memory2d = new ReadOnlyMemory2D<int>(array);
+            ReadOnlyMemory2D<int> memory2d = new(array);
 
             int[,] copy = memory2d.ToArray();
 
@@ -407,7 +407,7 @@ namespace UnitTests.HighPerformance
                 { 4, 5, 6 }
             };
 
-            ReadOnlyMemory2D<int> memory2d = new ReadOnlyMemory2D<int>(array, 0, 0, 2, 2);
+            ReadOnlyMemory2D<int> memory2d = new(array, 0, 0, 2, 2);
 
             int[,] copy = memory2d.ToArray();
 
@@ -433,7 +433,7 @@ namespace UnitTests.HighPerformance
                 { 4, 5, 6 }
             };
 
-            ReadOnlyMemory2D<int> readOnlyMemory2D = new ReadOnlyMemory2D<int>(array);
+            ReadOnlyMemory2D<int> readOnlyMemory2D = new(array);
 
             Assert.IsFalse(readOnlyMemory2D.Equals(null));
             Assert.IsFalse(readOnlyMemory2D.Equals(new ReadOnlyMemory2D<int>(array, 0, 1, 2, 2)));
@@ -458,7 +458,7 @@ namespace UnitTests.HighPerformance
                 { 4, 5, 6 }
             };
 
-            ReadOnlyMemory2D<int> memory2d = new ReadOnlyMemory2D<int>(array);
+            ReadOnlyMemory2D<int> memory2d = new(array);
 
             int a = memory2d.GetHashCode(), b = memory2d.GetHashCode();
 
@@ -479,7 +479,7 @@ namespace UnitTests.HighPerformance
                 { 4, 5, 6 }
             };
 
-            ReadOnlyMemory2D<int> memory2d = new ReadOnlyMemory2D<int>(array);
+            ReadOnlyMemory2D<int> memory2d = new(array);
 
             string text = memory2d.ToString();
 

@@ -33,14 +33,14 @@ namespace CommunityToolkit.HighPerformance.Streams
 
             if (MemoryMarshal.TryGetArray(memory, out ArraySegment<byte> segment))
             {
-                var arraySpanSource = new ArrayOwner(segment.Array!, segment.Offset, segment.Count);
+                ArrayOwner arraySpanSource = new(segment.Array!, segment.Offset, segment.Count);
 
                 return new MemoryStream<ArrayOwner>(arraySpanSource, isReadOnly);
             }
 
-            if (MemoryMarshal.TryGetMemoryManager<byte, MemoryManager<byte>>(memory, out var memoryManager, out int start, out int length))
+            if (MemoryMarshal.TryGetMemoryManager<byte, MemoryManager<byte>>(memory, out MemoryManager<byte>? memoryManager, out int start, out int length))
             {
-                MemoryManagerOwner memoryManagerSpanSource = new MemoryManagerOwner(memoryManager, start, length);
+                MemoryManagerOwner memoryManagerSpanSource = new(memoryManager, start, length);
 
                 return new MemoryStream<MemoryManagerOwner>(memoryManagerSpanSource, isReadOnly);
             }
@@ -67,14 +67,14 @@ namespace CommunityToolkit.HighPerformance.Streams
 
             if (MemoryMarshal.TryGetArray(memory, out ArraySegment<byte> segment))
             {
-                var arraySpanSource = new ArrayOwner(segment.Array!, segment.Offset, segment.Count);
+                ArrayOwner arraySpanSource = new(segment.Array!, segment.Offset, segment.Count);
 
                 return new IMemoryOwnerStream<ArrayOwner>(arraySpanSource, memoryOwner);
             }
 
-            if (MemoryMarshal.TryGetMemoryManager<byte, MemoryManager<byte>>(memory, out var memoryManager, out int start, out int length))
+            if (MemoryMarshal.TryGetMemoryManager<byte, MemoryManager<byte>>(memory, out MemoryManager<byte>? memoryManager, out int start, out int length))
             {
-                MemoryManagerOwner memoryManagerSpanSource = new MemoryManagerOwner(memoryManager, start, length);
+                MemoryManagerOwner memoryManagerSpanSource = new(memoryManager, start, length);
 
                 return new IMemoryOwnerStream<MemoryManagerOwner>(memoryManagerSpanSource, memoryOwner);
             }

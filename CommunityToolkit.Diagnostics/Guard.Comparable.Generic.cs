@@ -178,8 +178,8 @@ namespace CommunityToolkit.Diagnostics
             }
             else
             {
-                Span<byte> valueBytes = new Span<byte>(Unsafe.AsPointer(ref value), sizeof(T));
-                Span<byte> targetBytes = new Span<byte>(Unsafe.AsPointer(ref target), sizeof(T));
+                Span<byte> valueBytes = new(Unsafe.AsPointer(ref value), sizeof(T));
+                Span<byte> targetBytes = new(Unsafe.AsPointer(ref target), sizeof(T));
 
                 if (valueBytes.SequenceEqual(targetBytes))
                 {

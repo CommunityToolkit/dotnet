@@ -56,23 +56,23 @@ namespace UnitTests.Diagnostics
         [DataRow(typeof(Win32Exception))]
         public void Test_ThrowHelper_Throw(Type exceptionType)
         {
-            var methods = (
+            MethodInfo[]? methods = (
                 from method in typeof(ThrowHelper).GetMethods(BindingFlags.Public | BindingFlags.Static)
                 where method.Name == $"Throw{exceptionType.Name}" &&
                       !method.IsGenericMethod
                 select method).ToArray();
 
-            foreach (var method in methods)
+            foreach (MethodInfo? method in methods)
             {
                 // Prepare the parameters with the default value
-                var parameters = (
+                object[]? parameters = (
                     from parameter in method.GetParameters()
                     select DefaultValues[parameter.ParameterType]).ToArray();
 
                 // Invoke the throw method
                 try
                 {
-                    method.Invoke(null, parameters);
+                    _ = method.Invoke(null, parameters);
                 }
                 catch (TargetInvocationException e)
                 {
@@ -107,23 +107,23 @@ namespace UnitTests.Diagnostics
         [DataRow(typeof(Win32Exception))]
         public void Test_ThrowHelper_Generic_Throw(Type exceptionType)
         {
-            var methods = (
+            MethodInfo[]? methods = (
                 from method in typeof(ThrowHelper).GetMethods(BindingFlags.Public | BindingFlags.Static)
                 where method.Name == $"Throw{exceptionType.Name}" &&
                       method.IsGenericMethod
                 select method).ToArray();
 
-            foreach (var method in methods)
+            foreach (MethodInfo? method in methods)
             {
                 // Prepare the parameters with the default value
-                var parameters = (
+                object[]? parameters = (
                     from parameter in method.GetParameters()
                     select DefaultValues[parameter.ParameterType]).ToArray();
 
                 // Invoke with value type
                 try
                 {
-                    method.MakeGenericMethod(typeof(int)).Invoke(null, parameters);
+                    _ = method.MakeGenericMethod(typeof(int)).Invoke(null, parameters);
                 }
                 catch (TargetInvocationException e)
                 {
@@ -133,7 +133,7 @@ namespace UnitTests.Diagnostics
                 // Invoke with reference type
                 try
                 {
-                    method.MakeGenericMethod(typeof(string)).Invoke(null, parameters);
+                    _ = method.MakeGenericMethod(typeof(string)).Invoke(null, parameters);
                 }
                 catch (TargetInvocationException e)
                 {

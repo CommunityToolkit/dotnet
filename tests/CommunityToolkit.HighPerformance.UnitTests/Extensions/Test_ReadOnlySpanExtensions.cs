@@ -20,7 +20,7 @@ namespace UnitTests.HighPerformance.Extensions
         [TestMethod]
         public void Test_ReadOnlySpanExtensions_DangerousGetReference()
         {
-            using var owner = CreateRandomData<int>(12, default);
+            using Shared.Buffers.Internals.UnmanagedSpanOwner<int>? owner = CreateRandomData<int>(12, default);
 
             ReadOnlySpan<int> data = owner.GetSpan();
 
@@ -34,7 +34,7 @@ namespace UnitTests.HighPerformance.Extensions
         [TestMethod]
         public void Test_ReadOnlySpanExtensions_DangerousGetReferenceAt_Zero()
         {
-            using var owner = CreateRandomData<int>(12, default);
+            using Shared.Buffers.Internals.UnmanagedSpanOwner<int>? owner = CreateRandomData<int>(12, default);
 
             ReadOnlySpan<int> data = owner.GetSpan();
 
@@ -48,7 +48,7 @@ namespace UnitTests.HighPerformance.Extensions
         [TestMethod]
         public void Test_ReadOnlySpanExtensions_DangerousGetReferenceAt_Index()
         {
-            using var owner = CreateRandomData<int>(12, default);
+            using Shared.Buffers.Internals.UnmanagedSpanOwner<int>? owner = CreateRandomData<int>(12, default);
 
             ReadOnlySpan<int> data = owner.GetSpan();
 
@@ -102,19 +102,19 @@ namespace UnitTests.HighPerformance.Extensions
         {
             static void Test<T>()
             {
-                Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-                {
-                    T? a = default;
+                _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
+                  {
+                      T? a = default;
 
-                    default(ReadOnlySpan<T?>).IndexOf(in a);
-                });
+                      _ = default(ReadOnlySpan<T?>).IndexOf(in a);
+                  });
 
-                Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-                {
-                    ReadOnlySpan<T?> data = new T?[] { default };
+                _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
+                  {
+                      ReadOnlySpan<T?> data = new T?[] { default };
 
-                    data.Slice(1).IndexOf(in data[0]);
-                });
+                      _ = data.Slice(1).IndexOf(in data[0]);
+                  });
             }
 
             Test<byte>();
@@ -154,29 +154,29 @@ namespace UnitTests.HighPerformance.Extensions
             static void Test<T>()
             {
                 // Before start
-                Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-                {
-                    ReadOnlySpan<T?> data = new T?[] { default, default, default, default };
+                _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
+                  {
+                      ReadOnlySpan<T?> data = new T?[] { default, default, default, default };
 
-                    data.Slice(1).IndexOf(in data[0]);
-                });
+                      _ = data.Slice(1).IndexOf(in data[0]);
+                  });
 
                 // After end
-                Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-                {
-                    ReadOnlySpan<T?> data = new T?[] { default, default, default, default };
+                _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
+                  {
+                      ReadOnlySpan<T?> data = new T?[] { default, default, default, default };
 
-                    data.Slice(0, 2).IndexOf(in data[2]);
-                });
+                      _ = data.Slice(0, 2).IndexOf(in data[2]);
+                  });
 
                 // Local variable
-                Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-                {
-                    var dummy = new T?[] { default };
-                    ReadOnlySpan<T?> data = new T?[] { default, default, default, default };
+                _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
+                  {
+                      T?[]? dummy = new T?[] { default };
+                      ReadOnlySpan<T?> data = new T?[] { default, default, default, default };
 
-                    data.IndexOf(in dummy[0]);
-                });
+                      _ = data.IndexOf(in dummy[0]);
+                  });
             }
 
             Test<byte>();
@@ -195,7 +195,7 @@ namespace UnitTests.HighPerformance.Extensions
 
             int i = 0;
 
-            foreach (var item in data.Enumerate())
+            foreach (CommunityToolkit.HighPerformance.Enumerables.ReadOnlySpanEnumerable<int>.Item item in data.Enumerate())
             {
                 Assert.IsTrue(Unsafe.AreSame(ref Unsafe.AsRef(data[i]), ref Unsafe.AsRef(item.Value)));
                 Assert.AreEqual(i, item.Index);
@@ -210,7 +210,7 @@ namespace UnitTests.HighPerformance.Extensions
         {
             ReadOnlySpan<int> data = Array.Empty<int>();
 
-            foreach (var item in data.Enumerate())
+            foreach (CommunityToolkit.HighPerformance.Enumerables.ReadOnlySpanEnumerable<int>.Item item in data.Enumerate())
             {
                 Assert.Fail("Empty source sequence");
             }
@@ -222,14 +222,14 @@ namespace UnitTests.HighPerformance.Extensions
         {
             string text = string.Empty;
 
-            var result = new List<string>();
+            List<string>? result = new();
 
-            foreach (var token in text.AsSpan().Tokenize(','))
+            foreach (ReadOnlySpan<char> token in text.AsSpan().Tokenize(','))
             {
                 result.Add(new string(token.ToArray()));
             }
 
-            var tokens = text.Split(',');
+            string[]? tokens = text.Split(',');
 
             CollectionAssert.AreEqual(result, tokens);
         }
@@ -240,14 +240,14 @@ namespace UnitTests.HighPerformance.Extensions
         {
             string text = "name,surname,city,year,profession,age";
 
-            var result = new List<string>();
+            List<string>? result = new();
 
-            foreach (var token in text.AsSpan().Tokenize(','))
+            foreach (ReadOnlySpan<char> token in text.AsSpan().Tokenize(','))
             {
                 result.Add(new string(token.ToArray()));
             }
 
-            var tokens = text.Split(',');
+            string[]? tokens = text.Split(',');
 
             CollectionAssert.AreEqual(result, tokens);
         }
@@ -258,14 +258,14 @@ namespace UnitTests.HighPerformance.Extensions
         {
             string text = ",name,,city,,,profession,,age,,";
 
-            var result = new List<string>();
+            List<string>? result = new();
 
-            foreach (var token in text.AsSpan().Tokenize(','))
+            foreach (ReadOnlySpan<char> token in text.AsSpan().Tokenize(','))
             {
                 result.Add(new string(token.ToArray()));
             }
 
-            var tokens = text.Split(',');
+            string[]? tokens = text.Split(',');
 
             CollectionAssert.AreEqual(result, tokens);
         }

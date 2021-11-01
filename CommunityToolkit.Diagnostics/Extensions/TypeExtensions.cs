@@ -44,7 +44,7 @@ namespace CommunityToolkit.Diagnostics
         /// <summary>
         /// A thread-safe mapping of precomputed string representation of types.
         /// </summary>
-        private static readonly ConditionalWeakTable<Type, string> DisplayNames = new ConditionalWeakTable<Type, string>();
+        private static readonly ConditionalWeakTable<Type, string> DisplayNames = new();
 
         /// <summary>
         /// Returns a simple string representation of a type.
@@ -66,8 +66,8 @@ namespace CommunityToolkit.Diagnostics
                 // Array types are displayed as Foo[]
                 if (type.IsArray)
                 {
-                    var elementType = type.GetElementType()!;
-                    var rank = type.GetArrayRank();
+                    Type? elementType = type.GetElementType()!;
+                    int rank = type.GetArrayRank();
 
                     return $"{FormatDisplayString(elementType, 0, elementType.GetGenericArguments())}[{new string(',', rank - 1)}]";
                 }
@@ -80,12 +80,12 @@ namespace CommunityToolkit.Diagnostics
                 // the offset within the array of generic arguments for the whole constructed type.
                 if (type.IsGenericType())
                 {
-                    var genericTypeDefinition = type.GetGenericTypeDefinition();
+                    Type? genericTypeDefinition = type.GetGenericTypeDefinition();
 
                     // Nullable<T> types are displayed as T?
                     if (genericTypeDefinition == typeof(Nullable<>))
                     {
-                        var nullableArguments = type.GetGenericArguments();
+                        Type[]? nullableArguments = type.GetGenericArguments();
 
                         return $"{FormatDisplayString(nullableArguments[0], 0, nullableArguments)}?";
                     }
@@ -100,7 +100,7 @@ namespace CommunityToolkit.Diagnostics
                         genericTypeDefinition == typeof(ValueTuple<,,,,,,>) ||
                         genericTypeDefinition == typeof(ValueTuple<,,,,,,,>))
                     {
-                        var formattedTypes = type.GetGenericArguments().Select(t => FormatDisplayString(t, 0, t.GetGenericArguments()));
+                        IEnumerable<string>? formattedTypes = type.GetGenericArguments().Select(t => FormatDisplayString(t, 0, t.GetGenericArguments()));
 
                         return $"({string.Join(", ", formattedTypes)})";
                     }
@@ -112,11 +112,11 @@ namespace CommunityToolkit.Diagnostics
                 if (type.Name.Contains('`'))
                 {
                     // Retrieve the current generic arguments for the current type (leaf or not)
-                    var tokens = type.Name.Split('`');
-                    var genericArgumentsCount = int.Parse(tokens[1]);
-                    var typeArgumentsOffset = typeArguments.Length - genericTypeOffset - genericArgumentsCount;
-                    var currentTypeArguments = typeArguments.Slice(typeArgumentsOffset, genericArgumentsCount).ToArray();
-                    var formattedTypes = currentTypeArguments.Select(t => FormatDisplayString(t, 0, t.GetGenericArguments()));
+                    string[]? tokens = type.Name.Split('`');
+                    int genericArgumentsCount = int.Parse(tokens[1]);
+                    int typeArgumentsOffset = typeArguments.Length - genericTypeOffset - genericArgumentsCount;
+                    Type[]? currentTypeArguments = typeArguments.Slice(typeArgumentsOffset, genericArgumentsCount).ToArray();
+                    IEnumerable<string>? formattedTypes = currentTypeArguments.Select(t => FormatDisplayString(t, 0, t.GetGenericArguments()));
 
                     // Standard generic types are displayed as Foo<T>
                     displayName = $"{tokens[0]}<{string.Join(", ", formattedTypes)}>";
@@ -133,14 +133,14 @@ namespace CommunityToolkit.Diagnostics
                 // If the type is nested, recursively format the hierarchy as well
                 if (type.IsNested)
                 {
-                    var openDeclaringType = type.DeclaringType!;
-                    var rootGenericArguments = typeArguments.Slice(0, typeArguments.Length - genericTypeOffset).ToArray();
+                    Type? openDeclaringType = type.DeclaringType!;
+                    Type[]? rootGenericArguments = typeArguments.Slice(0, typeArguments.Length - genericTypeOffset).ToArray();
 
                     // If the declaring type is generic, we need to reconstruct the closed type
                     // manually, as the declaring type instance doesn't retain type information.
                     if (rootGenericArguments.Length > 0)
                     {
-                        var closedDeclaringType = openDeclaringType.GetGenericTypeDefinition().MakeGenericType(rootGenericArguments);
+                        Type? closedDeclaringType = openDeclaringType.GetGenericTypeDefinition().MakeGenericType(rootGenericArguments);
 
                         return $"{FormatDisplayString(closedDeclaringType, genericTypeOffset, typeArguments)}.{displayName}";
                     }

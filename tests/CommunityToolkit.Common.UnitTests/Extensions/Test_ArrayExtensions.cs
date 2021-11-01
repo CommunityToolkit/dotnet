@@ -24,7 +24,7 @@ namespace UnitTests.Extensions
                 new int[] { 7 }
             };
 
-            var col = array.GetColumn(1).ToArray();
+            int[]? col = array.GetColumn(1).ToArray();
 
             CollectionAssert.AreEquivalent(new int[] { 2, 3, 0 }, col);
         }
@@ -40,15 +40,15 @@ namespace UnitTests.Extensions
                 new int[] { 7 }
             };
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-            {
-                array.GetColumn(-1).ToArray();
-            });
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
+              {
+                  _ = array.GetColumn(-1).ToArray();
+              });
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-            {
-                array.GetColumn(3).ToArray();
-            });
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
+              {
+                  _ = array.GetColumn(3).ToArray();
+              });
         }
 
         [TestCategory("ArrayExtensions")]

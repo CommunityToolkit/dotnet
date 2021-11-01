@@ -55,9 +55,9 @@ namespace CommunityToolkit.Common.Collections
         public static ObservableGroup<TKey, TValue>? FirstOrDefault<TKey, TValue>(this ObservableGroupedCollection<TKey, TValue> source, TKey key)
             where TKey : notnull
         {
-            if (source.TryGetList(out var list))
+            if (source.TryGetList(out List<ObservableGroup<TKey, TValue>>? list))
             {
-                foreach (var group in list)
+                foreach (ObservableGroup<TKey, TValue>? group in list)
                 {
                     if (EqualityComparer<TKey>.Default.Equals(group.Key, key))
                     {
@@ -113,7 +113,7 @@ namespace CommunityToolkit.Common.Collections
             int index)
             where TKey : notnull
         {
-            var group = source.FirstOrDefault(key);
+            ObservableGroup<TKey, TValue>? group = source.FirstOrDefault(key);
 
             if (group is null ||
                 (uint)index >= (uint)group.Count)
@@ -171,7 +171,7 @@ namespace CommunityToolkit.Common.Collections
             IEnumerable<TValue> collection)
             where TKey : notnull
         {
-            var group = new ObservableGroup<TKey, TValue>(key, collection);
+            ObservableGroup<TKey, TValue>? group = new(key, collection);
             source.Add(group);
 
             return group;
@@ -193,7 +193,7 @@ namespace CommunityToolkit.Common.Collections
             TValue item)
             where TKey : notnull
         {
-            var group = source.FirstOrDefault(key);
+            ObservableGroup<TKey, TValue>? group = source.FirstOrDefault(key);
 
             if (group is null)
             {
@@ -225,7 +225,7 @@ namespace CommunityToolkit.Common.Collections
             TValue item)
             where TKey : notnull
         {
-            var existingGroup = source.First(key);
+            ObservableGroup<TKey, TValue>? existingGroup = source.First(key);
             existingGroup.Insert(index, item);
 
             return existingGroup;
@@ -250,7 +250,7 @@ namespace CommunityToolkit.Common.Collections
             TValue item)
             where TKey : notnull
         {
-            var existingGroup = source.First(key);
+            ObservableGroup<TKey, TValue>? existingGroup = source.First(key);
             existingGroup[index] = item;
 
             return existingGroup;
@@ -269,10 +269,10 @@ namespace CommunityToolkit.Common.Collections
             TKey key)
             where TKey : notnull
         {
-            if (source.TryGetList(out var list))
+            if (source.TryGetList(out List<ObservableGroup<TKey, TValue>>? list))
             {
-                var index = 0;
-                foreach (var group in list)
+                int index = 0;
+                foreach (ObservableGroup<TKey, TValue>? group in list)
                 {
                     if (EqualityComparer<TKey>.Default.Equals(group.Key, key))
                     {
@@ -290,8 +290,8 @@ namespace CommunityToolkit.Common.Collections
                 [MethodImpl(MethodImplOptions.NoInlining)]
                 static void RemoveGroupWithLinq(ObservableGroupedCollection<TKey, TValue> source, TKey key)
                 {
-                    var index = 0;
-                    foreach (var group in source)
+                    int index = 0;
+                    foreach (ObservableGroup<TKey, TValue>? group in source)
                     {
                         if (EqualityComparer<TKey>.Default.Equals(group.Key, key))
                         {
@@ -324,10 +324,10 @@ namespace CommunityToolkit.Common.Collections
             bool removeGroupIfEmpty = true)
             where TKey : notnull
         {
-            if (source.TryGetList(out var list))
+            if (source.TryGetList(out List<ObservableGroup<TKey, TValue>>? list))
             {
-                var index = 0;
-                foreach (var group in list)
+                int index = 0;
+                foreach (ObservableGroup<TKey, TValue>? group in list)
                 {
                     if (EqualityComparer<TKey>.Default.Equals(group.Key, key))
                     {
@@ -354,8 +354,8 @@ namespace CommunityToolkit.Common.Collections
                     TValue item,
                     bool removeGroupIfEmpty)
                 {
-                    var index = 0;
-                    foreach (var group in source)
+                    int index = 0;
+                    foreach (ObservableGroup<TKey, TValue>? group in source)
                     {
                         if (EqualityComparer<TKey>.Default.Equals(group.Key, key))
                         {
@@ -395,10 +395,10 @@ namespace CommunityToolkit.Common.Collections
             bool removeGroupIfEmpty = true)
             where TKey : notnull
         {
-            if (source.TryGetList(out var list))
+            if (source.TryGetList(out List<ObservableGroup<TKey, TValue>>? list))
             {
-                var groupIndex = 0;
-                foreach (var group in list)
+                int groupIndex = 0;
+                foreach (ObservableGroup<TKey, TValue>? group in list)
                 {
                     if (EqualityComparer<TKey>.Default.Equals(group.Key, key))
                     {
@@ -425,8 +425,8 @@ namespace CommunityToolkit.Common.Collections
                     int index,
                     bool removeGroupIfEmpty)
                 {
-                    var groupIndex = 0;
-                    foreach (var group in source)
+                    int groupIndex = 0;
+                    foreach (ObservableGroup<TKey, TValue>? group in source)
                     {
                         if (EqualityComparer<TKey>.Default.Equals(group.Key, key))
                         {

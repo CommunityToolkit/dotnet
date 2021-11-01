@@ -11,7 +11,7 @@ namespace UnitTests.HighPerformance.Shared.Buffers
     {
         private readonly ArrayPool<T> pool = ArrayPool<T>.Create();
 
-        private readonly HashSet<T[]> arrays = new HashSet<T[]>();
+        private readonly HashSet<T[]> arrays = new();
 
         /// <summary>
         /// Gets the collection of currently rented out arrays
@@ -23,7 +23,7 @@ namespace UnitTests.HighPerformance.Shared.Buffers
         {
             T[] array = this.pool.Rent(minimumLength);
 
-            this.arrays.Add(array);
+            _ = this.arrays.Add(array);
 
             return array;
         }
@@ -31,7 +31,7 @@ namespace UnitTests.HighPerformance.Shared.Buffers
         /// <inheritdoc/>
         public override void Return(T[] array, bool clearArray = false)
         {
-            this.arrays.Remove(array);
+            _ = this.arrays.Remove(array);
 
             this.pool.Return(array, clearArray);
         }

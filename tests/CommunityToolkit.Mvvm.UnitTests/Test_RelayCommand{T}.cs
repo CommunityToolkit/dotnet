@@ -19,12 +19,12 @@ namespace UnitTests.Mvvm
         {
             string? text = string.Empty;
 
-            var command = new RelayCommand<string>(s => text = s);
+            RelayCommand<string>? command = new(s => text = s);
 
             Assert.IsTrue(command.CanExecute("Text"));
             Assert.IsTrue(command.CanExecute(null));
 
-            Assert.ThrowsException<InvalidCastException>(() => command.CanExecute(new object()));
+            _ = Assert.ThrowsException<InvalidCastException>(() => command.CanExecute(new object()));
 
             (object?, EventArgs?) args = default;
 
@@ -50,12 +50,12 @@ namespace UnitTests.Mvvm
         {
             string? text = string.Empty;
 
-            var command = new RelayCommand<string>(s => text = s, s => s != null);
+            RelayCommand<string>? command = new(s => text = s, s => s != null);
 
             Assert.IsTrue(command.CanExecute("Text"));
             Assert.IsFalse(command.CanExecute(null));
 
-            Assert.ThrowsException<InvalidCastException>(() => command.CanExecute(new object()));
+            _ = Assert.ThrowsException<InvalidCastException>(() => command.CanExecute(new object()));
 
             command.Execute((object)"Hello");
 
@@ -72,15 +72,15 @@ namespace UnitTests.Mvvm
         {
             int n = 0;
 
-            var command = new RelayCommand<int>(i => n = i);
+            RelayCommand<int>? command = new(i => n = i);
 
             Assert.IsFalse(command.CanExecute(null));
-            Assert.ThrowsException<NullReferenceException>(() => command.Execute(null));
+            _ = Assert.ThrowsException<NullReferenceException>(() => command.Execute(null));
 
             command = new RelayCommand<int>(i => n = i, i => i > 0);
 
             Assert.IsFalse(command.CanExecute(null));
-            Assert.ThrowsException<NullReferenceException>(() => command.Execute(null));
+            _ = Assert.ThrowsException<NullReferenceException>(() => command.Execute(null));
         }
     }
 }

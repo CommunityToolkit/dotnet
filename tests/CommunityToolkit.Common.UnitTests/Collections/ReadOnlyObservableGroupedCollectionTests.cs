@@ -21,8 +21,8 @@ namespace UnitTests.Collections
         [TestMethod]
         public void Ctor_WithEmptySource_ShoudInitializeObject()
         {
-            var source = new ObservableGroupedCollection<string, int>();
-            var readOnlyGroup = new ReadOnlyObservableGroupedCollection<string, int>(source);
+            ObservableGroupedCollection<string, int>? source = new();
+            ReadOnlyObservableGroupedCollection<string, int>? readOnlyGroup = new(source);
 
             Assert.AreEqual(readOnlyGroup.Count, 0);
             CollectionAssert.AreEqual(readOnlyGroup, Array.Empty<int>());
@@ -32,13 +32,13 @@ namespace UnitTests.Collections
         [TestMethod]
         public void Ctor_WithObservableGroupedCollection_ShoudInitializeObject()
         {
-            var groups = new List<IGrouping<string, int>>
+            List<IGrouping<string, int>>? groups = new()
             {
                 new IntGroup("A", new[] { 1, 3, 5 }),
                 new IntGroup("B", new[] { 2, 4, 6 }),
             };
-            var source = new ObservableGroupedCollection<string, int>(groups);
-            var readOnlyGroup = new ReadOnlyObservableGroupedCollection<string, int>(source);
+            ObservableGroupedCollection<string, int>? source = new(groups);
+            ReadOnlyObservableGroupedCollection<string, int>? readOnlyGroup = new(source);
 
             Assert.AreEqual(readOnlyGroup.Count, 2);
 
@@ -53,12 +53,12 @@ namespace UnitTests.Collections
         [TestMethod]
         public void Ctor_WithListOfIGroupingSource_ShoudInitializeObject()
         {
-            var source = new List<IGrouping<string, int>>
+            List<IGrouping<string, int>>? source = new()
             {
                 new IntGroup("A", new[] { 1, 3, 5 }),
                 new IntGroup("B", new[] { 2, 4, 6 }),
             };
-            var readOnlyGroup = new ReadOnlyObservableGroupedCollection<string, int>(source);
+            ReadOnlyObservableGroupedCollection<string, int>? readOnlyGroup = new(source);
 
             Assert.AreEqual(readOnlyGroup.Count, 2);
 
@@ -73,12 +73,12 @@ namespace UnitTests.Collections
         [TestMethod]
         public void Ctor_WithListOfReadOnlyObservableGroupSource_ShoudInitializeObject()
         {
-            var source = new List<ReadOnlyObservableGroup<string, int>>
+            List<ReadOnlyObservableGroup<string, int>>? source = new()
             {
                 new ReadOnlyObservableGroup<string, int>("A", new[] { 1, 3, 5 }),
                 new ReadOnlyObservableGroup<string, int>("B", new[] { 2, 4, 6 }),
             };
-            var readOnlyGroup = new ReadOnlyObservableGroupedCollection<string, int>(source);
+            ReadOnlyObservableGroupedCollection<string, int>? readOnlyGroup = new(source);
 
             Assert.AreEqual(readOnlyGroup.Count, 2);
 
@@ -93,23 +93,23 @@ namespace UnitTests.Collections
         [TestMethod]
         public void IListImplementation_Properties_ShoudReturnExpectedValues()
         {
-            var groups = new List<IGrouping<string, int>>
+            List<IGrouping<string, int>>? groups = new()
             {
                 new IntGroup("A", new[] { 1, 3, 5 }),
                 new IntGroup("B", new[] { 2, 4, 6 }),
             };
-            var source = new ObservableGroupedCollection<string, int>(groups);
-            var readOnlyGroup = new ReadOnlyObservableGroupedCollection<string, int>(source);
-            var list = (IList)readOnlyGroup;
+            ObservableGroupedCollection<string, int>? source = new(groups);
+            ReadOnlyObservableGroupedCollection<string, int>? readOnlyGroup = new(source);
+            IList? list = (IList)readOnlyGroup;
 
             Assert.AreEqual(list.Count, 2);
 
-            var group0 = (ReadOnlyObservableGroup<string, int>)list[0]!;
+            ReadOnlyObservableGroup<string, int>? group0 = (ReadOnlyObservableGroup<string, int>)list[0]!;
 
             Assert.AreEqual(group0.Key, "A");
             CollectionAssert.AreEqual(group0, new[] { 1, 3, 5 });
 
-            var group1 = (ReadOnlyObservableGroup<string, int>)list[1]!;
+            ReadOnlyObservableGroup<string, int>? group1 = (ReadOnlyObservableGroup<string, int>)list[1]!;
 
             Assert.AreEqual(group1.Key, "B");
             CollectionAssert.AreEqual(group1, new[] { 2, 4, 6 });
@@ -124,25 +124,25 @@ namespace UnitTests.Collections
         [TestMethod]
         public void IListImplementation_MutableMethods_ShoudThrow()
         {
-            var groups = new List<IGrouping<string, int>>
+            List<IGrouping<string, int>>? groups = new()
             {
                 new IntGroup("A", new[] { 1, 3, 5 }),
                 new IntGroup("B", new[] { 2, 4, 6 }),
             };
-            var source = new ObservableGroupedCollection<string, int>(groups);
-            var readOnlyGroup = new ReadOnlyObservableGroupedCollection<string, int>(source);
-            var list = (IList)readOnlyGroup;
+            ObservableGroupedCollection<string, int>? source = new(groups);
+            ReadOnlyObservableGroupedCollection<string, int>? readOnlyGroup = new(source);
+            IList? list = (IList)readOnlyGroup;
 
-            var testGroup = new ReadOnlyObservableGroup<string, int>("test", new ObservableCollection<int>());
+            ReadOnlyObservableGroup<string, int>? testGroup = new("test", new ObservableCollection<int>());
 
-            Assert.ThrowsException<NotSupportedException>(() => list.Add(testGroup));
-            Assert.ThrowsException<NotSupportedException>(() => list.Clear());
-            Assert.ThrowsException<NotSupportedException>(() => list.Insert(2, testGroup));
-            Assert.ThrowsException<NotSupportedException>(() => list.Remove(testGroup));
-            Assert.ThrowsException<NotSupportedException>(() => list.RemoveAt(2));
-            Assert.ThrowsException<NotSupportedException>(() => list[2] = testGroup);
+            _ = Assert.ThrowsException<NotSupportedException>(() => list.Add(testGroup));
+            _ = Assert.ThrowsException<NotSupportedException>(() => list.Clear());
+            _ = Assert.ThrowsException<NotSupportedException>(() => list.Insert(2, testGroup));
+            _ = Assert.ThrowsException<NotSupportedException>(() => list.Remove(testGroup));
+            _ = Assert.ThrowsException<NotSupportedException>(() => list.RemoveAt(2));
+            _ = Assert.ThrowsException<NotSupportedException>(() => list[2] = testGroup);
 
-            var array = new object[5];
+            object[]? array = new object[5];
 
             // This line should not throw
             list.CopyTo(array, 0);
@@ -156,19 +156,19 @@ namespace UnitTests.Collections
         [DataRow(2)]
         public void IListImplementation_IndexOf_ShoudReturnExpectedValue(int groupIndex)
         {
-            var groups = new List<IGrouping<string, int>>
+            List<IGrouping<string, int>>? groups = new()
             {
                 new IntGroup("A", new[] { 1, 3, 5 }),
                 new IntGroup("B", new[] { 2, 4, 6 }),
                 new IntGroup("C", new[] { 7, 8, 9 }),
             };
-            var source = new ObservableGroupedCollection<string, int>(groups);
-            var readOnlyGroup = new ReadOnlyObservableGroupedCollection<string, int>(source);
-            var list = (IList)readOnlyGroup;
+            ObservableGroupedCollection<string, int>? source = new(groups);
+            ReadOnlyObservableGroupedCollection<string, int>? readOnlyGroup = new(source);
+            IList? list = (IList)readOnlyGroup;
 
-            var groupToSearch = groupIndex >= 0 ? list[groupIndex] : null;
+            object? groupToSearch = groupIndex >= 0 ? list[groupIndex] : null;
 
-            var index = list.IndexOf(groupToSearch);
+            int index = list.IndexOf(groupToSearch);
 
             Assert.AreEqual(index, groupIndex);
         }
@@ -180,18 +180,18 @@ namespace UnitTests.Collections
         [DataRow(1, true)]
         public void IListImplementation_Contains_ShoudReturnExpectedValue(int groupIndex, bool expectedResult)
         {
-            var groups = new List<IGrouping<string, int>>
+            List<IGrouping<string, int>>? groups = new()
             {
                 new IntGroup("A", new[] { 1, 3, 5 }),
                 new IntGroup("B", new[] { 2, 4, 6 }),
             };
-            var source = new ObservableGroupedCollection<string, int>(groups);
-            var readOnlyGroup = new ReadOnlyObservableGroupedCollection<string, int>(source);
-            var list = (IList)readOnlyGroup;
+            ObservableGroupedCollection<string, int>? source = new(groups);
+            ReadOnlyObservableGroupedCollection<string, int>? readOnlyGroup = new(source);
+            IList? list = (IList)readOnlyGroup;
 
-            var groupToSearch = groupIndex >= 0 ? list[groupIndex] : null;
+            object? groupToSearch = groupIndex >= 0 ? list[groupIndex] : null;
 
-            var result = list.Contains(groupToSearch);
+            bool result = list.Contains(groupToSearch);
 
             Assert.AreEqual(result, expectedResult);
         }
@@ -203,16 +203,16 @@ namespace UnitTests.Collections
         public void AddGroupInSource_ShouldAddGroup(int sourceInitialItemsCount, int expectedInsertionIndex)
         {
             NotifyCollectionChangedEventArgs? collectionChangedEventArgs = null;
-            var collectionChangedEventsCount = 0;
-            var isCountPropertyChangedEventRaised = false;
-            var itemsList = new[] { 1, 2, 3 };
-            var source = new ObservableGroupedCollection<string, int>();
-            for (var i = 0; i < sourceInitialItemsCount; i++)
+            int collectionChangedEventsCount = 0;
+            bool isCountPropertyChangedEventRaised = false;
+            int[]? itemsList = new[] { 1, 2, 3 };
+            ObservableGroupedCollection<string, int>? source = new();
+            for (int i = 0; i < sourceInitialItemsCount; i++)
             {
                 source.Add(new ObservableGroup<string, int>($"group {i}", Enumerable.Empty<int>()));
             }
 
-            var readOnlyGroup = new ReadOnlyObservableGroupedCollection<string, int>(source);
+            ReadOnlyObservableGroupedCollection<string, int>? readOnlyGroup = new(source);
             ((INotifyCollectionChanged)readOnlyGroup).CollectionChanged += (s, e) =>
             {
                 collectionChangedEventArgs = e;
@@ -222,7 +222,7 @@ namespace UnitTests.Collections
 
             source.Add(new ObservableGroup<string, int>("Add", itemsList));
 
-            var expectedReadOnlyGroupCount = sourceInitialItemsCount + 1;
+            int expectedReadOnlyGroupCount = sourceInitialItemsCount + 1;
 
             Assert.AreEqual(readOnlyGroup.Count, expectedReadOnlyGroupCount);
 
@@ -246,15 +246,15 @@ namespace UnitTests.Collections
         public void InsertGroupInSource_ShouldAddGroup(int insertionIndex)
         {
             NotifyCollectionChangedEventArgs? collectionChangedEventArgs = null;
-            var collectionChangedEventsCount = 0;
-            var isCountPropertyChangedEventRaised = false;
-            var itemsList = new[] { 1, 2, 3 };
-            var source = new ObservableGroupedCollection<string, int>
+            int collectionChangedEventsCount = 0;
+            bool isCountPropertyChangedEventRaised = false;
+            int[]? itemsList = new[] { 1, 2, 3 };
+            ObservableGroupedCollection<string, int>? source = new()
             {
                 new ObservableGroup<string, int>("Group0", new[] { 10, 20, 30 }),
                 new ObservableGroup<string, int>("Group1", new[] { 40, 50, 60 })
             };
-            var readOnlyGroup = new ReadOnlyObservableGroupedCollection<string, int>(source);
+            ReadOnlyObservableGroupedCollection<string, int>? readOnlyGroup = new(source);
             ((INotifyCollectionChanged)readOnlyGroup).CollectionChanged += (s, e) =>
             {
                 collectionChangedEventArgs = e;
@@ -283,17 +283,17 @@ namespace UnitTests.Collections
         public void RemoveGroupInSource_ShoudRemoveGroup()
         {
             NotifyCollectionChangedEventArgs? collectionChangedEventArgs = null;
-            var collectionChangedEventsCount = 0;
-            var isCountPropertyChangedEventRaised = false;
-            var aItemsList = new[] { 1, 2, 3 };
-            var bItemsList = new[] { 2, 4, 6 };
-            var groups = new List<IGrouping<string, int>>
+            int collectionChangedEventsCount = 0;
+            bool isCountPropertyChangedEventRaised = false;
+            int[]? aItemsList = new[] { 1, 2, 3 };
+            int[]? bItemsList = new[] { 2, 4, 6 };
+            List<IGrouping<string, int>>? groups = new()
             {
                 new IntGroup("A", aItemsList),
                 new IntGroup("B", bItemsList),
             };
-            var source = new ObservableGroupedCollection<string, int>(groups);
-            var readOnlyGroup = new ReadOnlyObservableGroupedCollection<string, int>(source);
+            ObservableGroupedCollection<string, int>? source = new(groups);
+            ReadOnlyObservableGroupedCollection<string, int>? readOnlyGroup = new(source);
             ((INotifyCollectionChanged)readOnlyGroup).CollectionChanged += (s, e) =>
             {
                 collectionChangedEventArgs = e;
@@ -324,17 +324,17 @@ namespace UnitTests.Collections
         public void MoveGroupInSource_ShoudMoveGroup(int oldIndex, int newIndex)
         {
             NotifyCollectionChangedEventArgs? collectionChangedEventArgs = null;
-            var collectionChangedEventsCount = 0;
-            var isCountPropertyChangedEventRaised = false;
-            var aItemsList = new[] { 1, 2, 3 };
-            var bItemsList = new[] { 2, 4, 6 };
-            var groups = new List<IGrouping<string, int>>
+            int collectionChangedEventsCount = 0;
+            bool isCountPropertyChangedEventRaised = false;
+            int[]? aItemsList = new[] { 1, 2, 3 };
+            int[]? bItemsList = new[] { 2, 4, 6 };
+            List<IGrouping<string, int>>? groups = new()
             {
                 new IntGroup("A", aItemsList),
                 new IntGroup("B", bItemsList),
             };
-            var source = new ObservableGroupedCollection<string, int>(groups);
-            var readOnlyGroup = new ReadOnlyObservableGroupedCollection<string, int>(source);
+            ObservableGroupedCollection<string, int>? source = new(groups);
+            ReadOnlyObservableGroupedCollection<string, int>? readOnlyGroup = new(source);
             ((INotifyCollectionChanged)readOnlyGroup).CollectionChanged += (s, e) =>
             {
                 collectionChangedEventArgs = e;
@@ -366,17 +366,17 @@ namespace UnitTests.Collections
         public void ClearSource_ShoudClear()
         {
             NotifyCollectionChangedEventArgs? collectionChangedEventArgs = null;
-            var collectionChangedEventsCount = 0;
-            var isCountPropertyChangedEventRaised = false;
-            var aItemsList = new[] { 1, 2, 3 };
-            var bItemsList = new[] { 2, 4, 6 };
-            var groups = new List<IGrouping<string, int>>
+            int collectionChangedEventsCount = 0;
+            bool isCountPropertyChangedEventRaised = false;
+            int[]? aItemsList = new[] { 1, 2, 3 };
+            int[]? bItemsList = new[] { 2, 4, 6 };
+            List<IGrouping<string, int>>? groups = new()
             {
                 new IntGroup("A", aItemsList),
                 new IntGroup("B", bItemsList),
             };
-            var source = new ObservableGroupedCollection<string, int>(groups);
-            var readOnlyGroup = new ReadOnlyObservableGroupedCollection<string, int>(source);
+            ObservableGroupedCollection<string, int>? source = new(groups);
+            ReadOnlyObservableGroupedCollection<string, int>? readOnlyGroup = new(source);
             ((INotifyCollectionChanged)readOnlyGroup).CollectionChanged += (s, e) =>
             {
                 collectionChangedEventArgs = e;
@@ -402,18 +402,18 @@ namespace UnitTests.Collections
         public void ReplaceGroupInSource_ShoudReplaceGroup()
         {
             NotifyCollectionChangedEventArgs? collectionChangedEventArgs = null;
-            var collectionChangedEventsCount = 0;
-            var isCountPropertyChangedEventRaised = false;
-            var aItemsList = new[] { 1, 2, 3 };
-            var bItemsList = new[] { 2, 4, 6 };
-            var cItemsList = new[] { 7, 8, 9 };
-            var groups = new List<IGrouping<string, int>>
+            int collectionChangedEventsCount = 0;
+            bool isCountPropertyChangedEventRaised = false;
+            int[]? aItemsList = new[] { 1, 2, 3 };
+            int[]? bItemsList = new[] { 2, 4, 6 };
+            int[]? cItemsList = new[] { 7, 8, 9 };
+            List<IGrouping<string, int>>? groups = new()
             {
                 new IntGroup("A", aItemsList),
                 new IntGroup("B", bItemsList),
             };
-            var source = new ObservableGroupedCollection<string, int>(groups);
-            var readOnlyGroup = new ReadOnlyObservableGroupedCollection<string, int>(source);
+            ObservableGroupedCollection<string, int>? source = new(groups);
+            ReadOnlyObservableGroupedCollection<string, int>? readOnlyGroup = new(source);
             ((INotifyCollectionChanged)readOnlyGroup).CollectionChanged += (s, e) =>
             {
                 collectionChangedEventArgs = e;
@@ -442,7 +442,7 @@ namespace UnitTests.Collections
 
         private static bool IsAddEventValid(NotifyCollectionChangedEventArgs args, IEnumerable<int> expectedGroupItems, int addIndex)
         {
-            var newItems = args.NewItems?.Cast<IEnumerable<int>>();
+            IEnumerable<IEnumerable<int>>? newItems = args.NewItems?.Cast<IEnumerable<int>>();
             return args.Action == NotifyCollectionChangedAction.Add &&
                     args.NewStartingIndex == addIndex &&
                     args.OldItems == null &&
@@ -452,7 +452,7 @@ namespace UnitTests.Collections
 
         private static bool IsRemoveEventValid(NotifyCollectionChangedEventArgs args, IEnumerable<int> expectedGroupItems, int oldIndex)
         {
-            var oldItems = args.OldItems?.Cast<IEnumerable<int>>();
+            IEnumerable<IEnumerable<int>>? oldItems = args.OldItems?.Cast<IEnumerable<int>>();
             return args.Action == NotifyCollectionChangedAction.Remove &&
                     args.NewItems == null &&
                     args.OldStartingIndex == oldIndex &&
@@ -462,8 +462,8 @@ namespace UnitTests.Collections
 
         private static bool IsMoveEventValid(NotifyCollectionChangedEventArgs args, IEnumerable<int> expectedGroupItems, int oldIndex, int newIndex)
         {
-            var oldItems = args.OldItems?.Cast<IEnumerable<int>>();
-            var newItems = args.NewItems?.Cast<IEnumerable<int>>();
+            IEnumerable<IEnumerable<int>>? oldItems = args.OldItems?.Cast<IEnumerable<int>>();
+            IEnumerable<IEnumerable<int>>? newItems = args.NewItems?.Cast<IEnumerable<int>>();
             return args.Action == NotifyCollectionChangedAction.Move &&
                     args.OldStartingIndex == oldIndex &&
                     args.NewStartingIndex == newIndex &&
@@ -475,8 +475,8 @@ namespace UnitTests.Collections
 
         private static bool IsReplaceEventValid(NotifyCollectionChangedEventArgs args, IEnumerable<int> expectedRemovedItems, IEnumerable<int> expectedAddItems)
         {
-            var oldItems = args.OldItems?.Cast<IEnumerable<int>>();
-            var newItems = args.NewItems?.Cast<IEnumerable<int>>();
+            IEnumerable<IEnumerable<int>>? oldItems = args.OldItems?.Cast<IEnumerable<int>>();
+            IEnumerable<IEnumerable<int>>? newItems = args.NewItems?.Cast<IEnumerable<int>>();
             return args.Action == NotifyCollectionChangedAction.Replace &&
                     oldItems?.Count() == 1 &&
                     Enumerable.SequenceEqual(oldItems.ElementAt(0), expectedRemovedItems) &&

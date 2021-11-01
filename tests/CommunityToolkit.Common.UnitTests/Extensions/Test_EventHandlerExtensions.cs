@@ -16,20 +16,20 @@ namespace UnitTests.Extensions
         [TestMethod]
         public void Test_EventHandlerExtensions_GettingDeferralCausesAwait()
         {
-            var tsc = new TaskCompletionSource<bool>();
+            TaskCompletionSource<bool>? tsc = new();
 
-            var testClass = new TestClass();
+            TestClass? testClass = new();
 
             testClass.TestEvent += async (s, e) =>
             {
-                var deferral = e.GetDeferral();
+                EventDeferral? deferral = e.GetDeferral();
 
-                await tsc.Task;
+                _ = await tsc.Task;
 
                 deferral.Complete();
             };
 
-            var handlersTask = testClass.RaiseTestEvent();
+            Task? handlersTask = testClass.RaiseTestEvent();
 
             Assert.IsFalse(handlersTask.IsCompleted);
 
@@ -42,16 +42,16 @@ namespace UnitTests.Extensions
         [TestMethod]
         public void Test_EventHandlerExtensions_NotGettingDeferralCausesNoAwait()
         {
-            var tsc = new TaskCompletionSource<bool>();
+            TaskCompletionSource<bool>? tsc = new();
 
-            var testClass = new TestClass();
+            TestClass? testClass = new();
 
             testClass.TestEvent += async (s, e) =>
             {
-                await tsc.Task;
+                _ = await tsc.Task;
             };
 
-            var handlersTask = testClass.RaiseTestEvent();
+            Task? handlersTask = testClass.RaiseTestEvent();
 
             Assert.IsTrue(handlersTask.IsCompleted);
 
@@ -62,19 +62,19 @@ namespace UnitTests.Extensions
         [TestMethod]
         public void Test_EventHandlerExtensions_UsingDeferralCausesAwait()
         {
-            var tsc = new TaskCompletionSource<bool>();
+            TaskCompletionSource<bool>? tsc = new();
 
-            var testClass = new TestClass();
+            TestClass? testClass = new();
 
             testClass.TestEvent += async (s, e) =>
             {
                 using (e.GetDeferral())
                 {
-                    await tsc.Task;
+                    _ = await tsc.Task;
                 }
             };
 
-            var handlersTask = testClass.RaiseTestEvent();
+            Task? handlersTask = testClass.RaiseTestEvent();
 
             Assert.IsFalse(handlersTask.IsCompleted);
 
@@ -89,33 +89,33 @@ namespace UnitTests.Extensions
         [DataRow(1, 0)]
         public void Test_EventHandlerExtensions_MultipleHandlersCauseAwait(int firstToReleaseDeferral, int lastToReleaseDeferral)
         {
-            var tsc = new[]
+            TaskCompletionSource<bool>[]? tsc = new[]
             {
                 new TaskCompletionSource<bool>(),
                 new TaskCompletionSource<bool>()
             };
 
-            var testClass = new TestClass();
+            TestClass? testClass = new();
 
             testClass.TestEvent += async (s, e) =>
             {
-                var deferral = e.GetDeferral();
+                EventDeferral? deferral = e.GetDeferral();
 
-                await tsc[0].Task;
+                _ = await tsc[0].Task;
 
                 deferral.Complete();
             };
 
             testClass.TestEvent += async (s, e) =>
             {
-                var deferral = e.GetDeferral();
+                EventDeferral? deferral = e.GetDeferral();
 
-                await tsc[1].Task;
+                _ = await tsc[1].Task;
 
                 deferral.Complete();
             };
 
-            var handlersTask = testClass.RaiseTestEvent();
+            Task? handlersTask = testClass.RaiseTestEvent();
 
             Assert.IsFalse(handlersTask.IsCompleted);
 

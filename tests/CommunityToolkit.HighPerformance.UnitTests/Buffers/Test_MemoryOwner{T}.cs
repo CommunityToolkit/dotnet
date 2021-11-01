@@ -19,7 +19,7 @@ namespace UnitTests.HighPerformance.Buffers
         [TestMethod]
         public void Test_MemoryOwnerOfT_AllocateAndGetMemoryAndSpan()
         {
-            using var buffer = MemoryOwner<int>.Allocate(127);
+            using MemoryOwner<int>? buffer = MemoryOwner<int>.Allocate(127);
 
             Assert.IsTrue(buffer.Length == 127);
             Assert.IsTrue(buffer.Memory.Length == 127);
@@ -35,9 +35,9 @@ namespace UnitTests.HighPerformance.Buffers
         [TestMethod]
         public void Test_MemoryOwnerOfT_AllocateFromCustomPoolAndGetMemoryAndSpan()
         {
-            var pool = new TrackingArrayPool<int>();
+            TrackingArrayPool<int>? pool = new();
 
-            using (var buffer = MemoryOwner<int>.Allocate(127, pool))
+            using (MemoryOwner<int>? buffer = MemoryOwner<int>.Allocate(127, pool))
             {
                 Assert.AreEqual(pool.RentedArrays.Count, 1);
 
@@ -59,7 +59,7 @@ namespace UnitTests.HighPerformance.Buffers
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void Test_MemoryOwnerOfT_InvalidRequestedSize()
         {
-            using var buffer = MemoryOwner<int>.Allocate(-1);
+            using MemoryOwner<int>? buffer = MemoryOwner<int>.Allocate(-1);
 
             Assert.Fail("You shouldn't be here");
         }
@@ -69,7 +69,7 @@ namespace UnitTests.HighPerformance.Buffers
         [ExpectedException(typeof(ObjectDisposedException))]
         public void Test_MemoryOwnerOfT_DisposedMemory()
         {
-            var buffer = MemoryOwner<int>.Allocate(127);
+            MemoryOwner<int>? buffer = MemoryOwner<int>.Allocate(127);
 
             buffer.Dispose();
 
@@ -81,7 +81,7 @@ namespace UnitTests.HighPerformance.Buffers
         [ExpectedException(typeof(ObjectDisposedException))]
         public void Test_MemoryOwnerOfT_DisposedSpan()
         {
-            var buffer = MemoryOwner<int>.Allocate(127);
+            MemoryOwner<int>? buffer = MemoryOwner<int>.Allocate(127);
 
             buffer.Dispose();
 
@@ -92,7 +92,7 @@ namespace UnitTests.HighPerformance.Buffers
         [TestMethod]
         public void Test_MemoryOwnerOfT_MultipleDispose()
         {
-            var buffer = MemoryOwner<int>.Allocate(127);
+            MemoryOwner<int>? buffer = MemoryOwner<int>.Allocate(127);
 
             buffer.Dispose();
             buffer.Dispose();
@@ -108,17 +108,17 @@ namespace UnitTests.HighPerformance.Buffers
         [TestMethod]
         public void Test_MemoryOwnerOfT_PooledBuffersAndClear()
         {
-            using (var buffer = MemoryOwner<int>.Allocate(127))
+            using (MemoryOwner<int>? buffer = MemoryOwner<int>.Allocate(127))
             {
                 buffer.Span.Fill(42);
             }
 
-            using (var buffer = MemoryOwner<int>.Allocate(127))
+            using (MemoryOwner<int>? buffer = MemoryOwner<int>.Allocate(127))
             {
                 Assert.IsTrue(buffer.Span.ToArray().All(i => i == 42));
             }
 
-            using (var buffer = MemoryOwner<int>.Allocate(127, AllocationMode.Clear))
+            using (MemoryOwner<int>? buffer = MemoryOwner<int>.Allocate(127, AllocationMode.Clear))
             {
                 Assert.IsTrue(buffer.Span.ToArray().All(i => i == 0));
             }
@@ -128,7 +128,7 @@ namespace UnitTests.HighPerformance.Buffers
         [TestMethod]
         public void Test_MemoryOwnerOfT_AllocateAndGetArray()
         {
-            var buffer = MemoryOwner<int>.Allocate(127);
+            MemoryOwner<int>? buffer = MemoryOwner<int>.Allocate(127);
 
             // Here we allocate a MemoryOwner<T> instance with a requested size of 127, which means it
             // internally requests an array of size 127 from ArrayPool<T>.Shared. We then get the array
@@ -136,19 +136,19 @@ namespace UnitTests.HighPerformance.Buffers
             // not null, is of size >= the requested one (since ArrayPool<T> by definition returns an
             // array that is at least of the requested size), and that the offset and count properties
             // match our input values (same length, and offset at 0 since the buffer was not sliced).
-            var segment = buffer.DangerousGetArray();
+            ArraySegment<int> segment = buffer.DangerousGetArray();
 
             Assert.IsNotNull(segment.Array);
             Assert.IsTrue(segment.Array.Length >= buffer.Length);
             Assert.AreEqual(segment.Offset, 0);
             Assert.AreEqual(segment.Count, buffer.Length);
 
-            var second = buffer.Slice(10, 80);
+            MemoryOwner<int>? second = buffer.Slice(10, 80);
 
             // The original buffer instance is disposed here, because calling Slice transfers
             // the ownership of the internal buffer to the new instance (this is documented in
             // XML docs for the MemoryOwner<T>.Slice method).
-            Assert.ThrowsException<ObjectDisposedException>(() => buffer.DangerousGetArray());
+            _ = Assert.ThrowsException<ObjectDisposedException>(() => buffer.DangerousGetArray());
 
             segment = second.DangerousGetArray();
 
@@ -160,7 +160,7 @@ namespace UnitTests.HighPerformance.Buffers
 
             second.Dispose();
 
-            Assert.ThrowsException<ObjectDisposedException>(() => second.DangerousGetArray());
+            _ = Assert.ThrowsException<ObjectDisposedException>(() => second.DangerousGetArray());
         }
     }
 }

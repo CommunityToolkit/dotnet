@@ -65,7 +65,7 @@ namespace UnitTests.HighPerformance.Helpers
         [Pure]
         private static int[,] CreateRandomData2D(int height, int width)
         {
-            var random = new Random((height * 33) + width);
+            Random? random = new((height * 33) + width);
 
             int[,] data = new int[height, width];
 

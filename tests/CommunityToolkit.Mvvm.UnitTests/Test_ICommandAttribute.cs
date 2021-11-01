@@ -20,7 +20,7 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public async Task Test_ICommandAttribute_RelayCommand()
         {
-            var model = new MyViewModel();
+            MyViewModel? model = new();
 
             Assert.AreEqual(model.Counter, 0);
 

@@ -19,7 +19,7 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_INotifyPropertyChanged_Events()
         {
-            var model = new SampleModel();
+            SampleModel? model = new();
 
             (PropertyChangedEventArgs, int) changed = default;
 
@@ -61,13 +61,13 @@ namespace UnitTests.Mvvm
             // This just needs to check that it compiles
             _ = nameof(SampleModelWithoutHelpers.PropertyChanged);
 
-            var methods = typeof(SampleModelWithoutHelpers).GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
+            MethodInfo[]? methods = typeof(SampleModelWithoutHelpers).GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
 
             Assert.AreEqual(methods.Length, 2);
             Assert.AreEqual(methods[0].Name, "OnPropertyChanged");
             Assert.AreEqual(methods[1].Name, "OnPropertyChanged");
 
-            var types = typeof(SampleModelWithoutHelpers).GetNestedTypes(BindingFlags.NonPublic);
+            System.Type[]? types = typeof(SampleModelWithoutHelpers).GetNestedTypes(BindingFlags.NonPublic);
 
             Assert.AreEqual(types.Length, 0);
         }

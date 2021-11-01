@@ -182,10 +182,10 @@ namespace CommunityToolkit.HighPerformance.Helpers
 
             int batchSize = 1 + ((count - 1) / numBatches);
 
-            var actionInvoker = new ActionInvoker<TAction>(start, end, batchSize, action);
+            ActionInvoker<TAction> actionInvoker = new(start, end, batchSize, action);
 
             // Run the batched operations in parallel
-            Parallel.For(
+            _ = Parallel.For(
                 0,
                 numBatches,
                 new ParallelOptions { MaxDegreeOfParallelism = numBatches },

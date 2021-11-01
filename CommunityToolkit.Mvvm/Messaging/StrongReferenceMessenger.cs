@@ -233,7 +233,7 @@ namespace CommunityToolkit.Mvvm.Messaging
                 // matches with the token type currently in use, and operate on those instances.
                 foreach (object obj in maps.AsSpan(0, i))
                 {
-                    var map = Unsafe.As<IDictionarySlim<Recipient, IDictionarySlim<TToken>>>(obj);
+                    IDictionarySlim<Recipient, IDictionarySlim<TToken>>? map = Unsafe.As<IDictionarySlim<Recipient, IDictionarySlim<TToken>>>(obj);
 
                     // We don't need whether or not the map contains the recipient, as the
                     // sequence of maps has already been copied from the set containing all
@@ -366,7 +366,7 @@ namespace CommunityToolkit.Mvvm.Messaging
                 // handlers for different tokens. We can reuse the same variable
                 // to count the number of matching handlers to invoke later on.
                 // This will be the array slice with valid handler in the rented buffer.
-                var mappingEnumerator = mapping!.GetEnumerator();
+                DictionarySlim<Recipient, DictionarySlim<TToken, object>>.Enumerator mappingEnumerator = mapping!.GetEnumerator();
 
                 // Explicit enumerator usage here as we're using a custom one
                 // that doesn't expose the single standard Current property.

@@ -20,7 +20,7 @@ namespace UnitTests.Mvvm
         {
             int ticks = 0;
 
-            var command = new AsyncRelayCommand(async () =>
+            AsyncRelayCommand? command = new(async () =>
             {
                 await Task.Delay(1000);
                 ticks++;
@@ -70,7 +70,7 @@ namespace UnitTests.Mvvm
         {
             int ticks = 0;
 
-            var command = new AsyncRelayCommand(
+            AsyncRelayCommand? command = new(
                 () =>
             {
                 ticks++;
@@ -98,7 +98,7 @@ namespace UnitTests.Mvvm
         {
             int ticks = 0;
 
-            var command = new AsyncRelayCommand(
+            AsyncRelayCommand? command = new(
                 () =>
             {
                 ticks++;
@@ -124,14 +124,14 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public async Task Test_AsyncRelayCommand_WithCancellation()
         {
-            TaskCompletionSource<object?> tcs = new TaskCompletionSource<object?>();
+            TaskCompletionSource<object?> tcs = new();
 
             // We need to test the cancellation support here, so we use the overload with an input
             // parameter, which is a cancellation token. The token is the one that is internally managed
             // by the AsyncRelayCommand instance, and canceled when using IAsyncRelayCommand.Cancel().
-            var command = new AsyncRelayCommand(token => tcs.Task);
+            AsyncRelayCommand? command = new(token => tcs.Task);
 
-            List<PropertyChangedEventArgs> args = new List<PropertyChangedEventArgs>();
+            List<PropertyChangedEventArgs> args = new();
 
             command.PropertyChanged += (s, e) => args.Add(e);
 

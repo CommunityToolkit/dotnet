@@ -21,7 +21,7 @@ namespace UnitTests.HighPerformance
         public void Test_NullableReadOnlyRefOfT_CreateNullableReadOnlyRefOfT_Ok()
         {
             int value = 1;
-            var reference = new NullableReadOnlyRef<int>(value);
+            NullableReadOnlyRef<int> reference = new(value);
 
             Assert.IsTrue(reference.HasValue);
             Assert.IsTrue(Unsafe.AreSame(ref value, ref Unsafe.AsRef(reference.Value)));
@@ -53,7 +53,7 @@ namespace UnitTests.HighPerformance
         public void Test_NullableReadOnlyRefOfT_CreateNullableReadOnlyRefOfT_ImplicitRefCast()
         {
             int value = 42;
-            var reference = new Ref<int>(ref value);
+            Ref<int> reference = new(ref value);
             NullableReadOnlyRef<int> nullableRef = reference;
 
             Assert.IsTrue(nullableRef.HasValue);
@@ -65,7 +65,7 @@ namespace UnitTests.HighPerformance
         public void Test_NullableReadOnlyRefOfT_CreateNullableReadOnlyRefOfT_ImplicitReadOnlyRefCast()
         {
             int value = 42;
-            var reference = new ReadOnlyRef<int>(value);
+            ReadOnlyRef<int> reference = new(value);
             NullableReadOnlyRef<int> nullableRef = reference;
 
             Assert.IsTrue(nullableRef.HasValue);
@@ -77,7 +77,7 @@ namespace UnitTests.HighPerformance
         public void Test_NullableReadOnlyRefOfT_CreateNullableReadOnlyRefOfT_ImplicitNullableRefCast()
         {
             int value = 42;
-            var reference = new NullableRef<int>(ref value);
+            NullableRef<int> reference = new(ref value);
             NullableReadOnlyRef<int> nullableRef = reference;
 
             Assert.IsTrue(nullableRef.HasValue);
@@ -89,7 +89,7 @@ namespace UnitTests.HighPerformance
         public void Test_NullableReadOnlyRefOfT_CreateNullableReadOnlyRefOfT_ExplicitCastOfT()
         {
             int value = 42;
-            var reference = new NullableRef<int>(ref value);
+            NullableRef<int> reference = new(ref value);
 
             Assert.AreEqual(value, (int)reference);
         }

@@ -349,7 +349,7 @@ namespace CommunityToolkit.Mvvm.ComponentModel
             // instance. This will result in no further allocations after the first time this method is called for a given
             // generic type. We only pay the cost of the virtual call to the delegate, but this is not performance critical
             // code and that overhead would still be much lower than the rest of the method anyway, so that's fine.
-            return SetPropertyAndNotifyOnCompletion(taskNotifier ??= new(), newValue, static _ => { }, propertyName);
+            return SetPropertyAndNotifyOnCompletion(taskNotifier ??= new TaskNotifier(), newValue, static _ => { }, propertyName);
         }
 
         /// <summary>
@@ -371,7 +371,7 @@ namespace CommunityToolkit.Mvvm.ComponentModel
         /// </remarks>
         protected bool SetPropertyAndNotifyOnCompletion([NotNull] ref TaskNotifier? taskNotifier, Task? newValue, Action<Task?> callback, [CallerMemberName] string? propertyName = null)
         {
-            return SetPropertyAndNotifyOnCompletion(taskNotifier ??= new(), newValue, callback, propertyName);
+            return SetPropertyAndNotifyOnCompletion(taskNotifier ??= new TaskNotifier(), newValue, callback, propertyName);
         }
 
         /// <summary>
@@ -410,7 +410,7 @@ namespace CommunityToolkit.Mvvm.ComponentModel
         /// </remarks>
         protected bool SetPropertyAndNotifyOnCompletion<T>([NotNull] ref TaskNotifier<T>? taskNotifier, Task<T>? newValue, [CallerMemberName] string? propertyName = null)
         {
-            return SetPropertyAndNotifyOnCompletion(taskNotifier ??= new(), newValue, static _ => { }, propertyName);
+            return SetPropertyAndNotifyOnCompletion(taskNotifier ??= new TaskNotifier<T>(), newValue, static _ => { }, propertyName);
         }
 
         /// <summary>
@@ -433,7 +433,7 @@ namespace CommunityToolkit.Mvvm.ComponentModel
         /// </remarks>
         protected bool SetPropertyAndNotifyOnCompletion<T>([NotNull] ref TaskNotifier<T>? taskNotifier, Task<T>? newValue, Action<Task<T>?> callback, [CallerMemberName] string? propertyName = null)
         {
-            return SetPropertyAndNotifyOnCompletion(taskNotifier ??= new(), newValue, callback, propertyName);
+            return SetPropertyAndNotifyOnCompletion(taskNotifier ??= new TaskNotifier<T>(), newValue, callback, propertyName);
         }
 
         /// <summary>

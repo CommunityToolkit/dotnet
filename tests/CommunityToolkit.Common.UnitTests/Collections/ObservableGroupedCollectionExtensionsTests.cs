@@ -16,12 +16,12 @@ namespace UnitTests.Collections
         [TestMethod]
         public void First_WhenGroupExists_ShouldReturnFirstGroup()
         {
-            var groupedCollection = new ObservableGroupedCollection<string, int>();
-            groupedCollection.AddGroup("A", 23);
-            var target = groupedCollection.AddGroup("B", 10);
-            groupedCollection.AddGroup("B", 42);
+            ObservableGroupedCollection<string, int>? groupedCollection = new();
+            _ = groupedCollection.AddGroup("A", 23);
+            ObservableGroup<string, int>? target = groupedCollection.AddGroup("B", 10);
+            _ = groupedCollection.AddGroup("B", 42);
 
-            var result = groupedCollection.First("B");
+            ObservableGroup<string, int>? result = groupedCollection.First("B");
 
             Assert.AreSame(result, target);
         }
@@ -31,8 +31,8 @@ namespace UnitTests.Collections
         [ExpectedException(typeof(InvalidOperationException))]
         public void First_WhenGroupDoesNotExist_ShouldThrow()
         {
-            var groupedCollection = new ObservableGroupedCollection<string, int>();
-            groupedCollection.AddGroup("A", 23);
+            ObservableGroupedCollection<string, int>? groupedCollection = new();
+            _ = groupedCollection.AddGroup("A", 23);
 
             _ = groupedCollection.First("I do not exist");
         }
@@ -41,12 +41,12 @@ namespace UnitTests.Collections
         [TestMethod]
         public void FirstOrDefault_WhenGroupExists_ShouldReturnFirstGroup()
         {
-            var groupedCollection = new ObservableGroupedCollection<string, int>();
-            groupedCollection.AddGroup("A", 23);
-            var target = groupedCollection.AddGroup("B", 10);
-            groupedCollection.AddGroup("B", 42);
+            ObservableGroupedCollection<string, int>? groupedCollection = new();
+            _ = groupedCollection.AddGroup("A", 23);
+            ObservableGroup<string, int>? target = groupedCollection.AddGroup("B", 10);
+            _ = groupedCollection.AddGroup("B", 42);
 
-            var result = groupedCollection.FirstOrDefault("B");
+            ObservableGroup<string, int>? result = groupedCollection.FirstOrDefault("B");
 
             Assert.AreSame(result, target);
         }
@@ -55,10 +55,10 @@ namespace UnitTests.Collections
         [TestMethod]
         public void FirstOrDefault_WhenGroupDoesNotExist_ShouldReturnNull()
         {
-            var groupedCollection = new ObservableGroupedCollection<string, int>();
-            groupedCollection.AddGroup("A", 23);
+            ObservableGroupedCollection<string, int>? groupedCollection = new();
+            _ = groupedCollection.AddGroup("A", 23);
 
-            var result = groupedCollection.FirstOrDefault("I do not exist");
+            ObservableGroup<string, int>? result = groupedCollection.FirstOrDefault("I do not exist");
 
             Assert.IsNull(result);
         }
@@ -67,12 +67,12 @@ namespace UnitTests.Collections
         [TestMethod]
         public void ElementAt_WhenGroupExistsAndIndexInRange_ShouldReturnFirstGroupValue()
         {
-            var groupedCollection = new ObservableGroupedCollection<string, int>();
-            groupedCollection.AddGroup("A", 23);
-            groupedCollection.AddGroup("B", 10, 11, 12);
-            groupedCollection.AddGroup("B", 42);
+            ObservableGroupedCollection<string, int>? groupedCollection = new();
+            _ = groupedCollection.AddGroup("A", 23);
+            _ = groupedCollection.AddGroup("B", 10, 11, 12);
+            _ = groupedCollection.AddGroup("B", 42);
 
-            var result = groupedCollection.ElementAt("B", 2);
+            int result = groupedCollection.ElementAt("B", 2);
 
             Assert.AreEqual(result, 12);
         }
@@ -84,10 +84,10 @@ namespace UnitTests.Collections
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void ElementAt_WhenGroupExistsAndIndexOutOfRange_ShouldReturnThrow(int index)
         {
-            var groupedCollection = new ObservableGroupedCollection<string, int>();
-            groupedCollection.AddGroup("A", 23);
-            groupedCollection.AddGroup("B", 10, 11, 12);
-            groupedCollection.AddGroup("B", 42);
+            ObservableGroupedCollection<string, int>? groupedCollection = new();
+            _ = groupedCollection.AddGroup("A", 23);
+            _ = groupedCollection.AddGroup("B", 10, 11, 12);
+            _ = groupedCollection.AddGroup("B", 42);
 
             _ = groupedCollection.ElementAt("B", index);
         }
@@ -97,8 +97,8 @@ namespace UnitTests.Collections
         [ExpectedException(typeof(InvalidOperationException))]
         public void ElementAt_WhenGroupDoesNotExist_ShouldThrow()
         {
-            var groupedCollection = new ObservableGroupedCollection<string, int>();
-            groupedCollection.AddGroup("A", 23);
+            ObservableGroupedCollection<string, int>? groupedCollection = new();
+            _ = groupedCollection.AddGroup("A", 23);
 
             _ = groupedCollection.ElementAt("I do not exist", 0);
         }
@@ -107,12 +107,12 @@ namespace UnitTests.Collections
         [TestMethod]
         public void ElementAtOrDefault_WhenGroupExistsAndIndexInRange_ShouldReturnValue()
         {
-            var groupedCollection = new ObservableGroupedCollection<string, int>();
-            groupedCollection.AddGroup("A", 23);
-            groupedCollection.AddGroup("B", 10, 11, 12);
-            groupedCollection.AddGroup("B", 42);
+            ObservableGroupedCollection<string, int>? groupedCollection = new();
+            _ = groupedCollection.AddGroup("A", 23);
+            _ = groupedCollection.AddGroup("B", 10, 11, 12);
+            _ = groupedCollection.AddGroup("B", 42);
 
-            var result = groupedCollection.ElementAt("B", 2);
+            int result = groupedCollection.ElementAt("B", 2);
 
             Assert.AreEqual(result, 12);
         }
@@ -123,12 +123,12 @@ namespace UnitTests.Collections
         [DataRow(3)]
         public void ElementAtOrDefault_WhenGroupExistsAndIndexOutOfRange_ShouldReturnDefaultValue(int index)
         {
-            var groupedCollection = new ObservableGroupedCollection<string, int>();
-            groupedCollection.AddGroup("A", 23);
-            groupedCollection.AddGroup("B", 10, 11, 12);
-            groupedCollection.AddGroup("B", 42);
+            ObservableGroupedCollection<string, int>? groupedCollection = new();
+            _ = groupedCollection.AddGroup("A", 23);
+            _ = groupedCollection.AddGroup("B", 10, 11, 12);
+            _ = groupedCollection.AddGroup("B", 42);
 
-            var result = groupedCollection.ElementAtOrDefault("B", index);
+            int result = groupedCollection.ElementAtOrDefault("B", index);
 
             Assert.AreEqual(result, 0);
         }
@@ -137,10 +137,10 @@ namespace UnitTests.Collections
         [TestMethod]
         public void ElementAtOrDefault_WhenGroupDoesNotExist_ShouldReturnDefaultValue()
         {
-            var groupedCollection = new ObservableGroupedCollection<string, int>();
-            groupedCollection.AddGroup("A", 23);
+            ObservableGroupedCollection<string, int>? groupedCollection = new();
+            _ = groupedCollection.AddGroup("A", 23);
 
-            var result = groupedCollection.ElementAtOrDefault("I do not exist", 0);
+            int result = groupedCollection.ElementAtOrDefault("I do not exist", 0);
 
             Assert.AreEqual(result, 0);
         }
@@ -149,9 +149,9 @@ namespace UnitTests.Collections
         [TestMethod]
         public void AddGroup_WithItem_ShouldAddGroup()
         {
-            var groupedCollection = new ObservableGroupedCollection<string, int>();
+            ObservableGroupedCollection<string, int>? groupedCollection = new();
 
-            var addedGroup = groupedCollection.AddGroup("new key", 23);
+            ObservableGroup<string, int>? addedGroup = groupedCollection.AddGroup("new key", 23);
 
             Assert.IsNotNull(addedGroup);
             Assert.AreEqual(addedGroup.Key, "new key");
@@ -163,9 +163,9 @@ namespace UnitTests.Collections
         [TestMethod]
         public void AddGroup_WithCollection_ShouldAddGroup()
         {
-            var groupedCollection = new ObservableGroupedCollection<string, int>();
+            ObservableGroupedCollection<string, int>? groupedCollection = new();
 
-            var addedGroup = groupedCollection.AddGroup("new key", new[] { 23, 10, 42 });
+            ObservableGroup<string, int>? addedGroup = groupedCollection.AddGroup("new key", new[] { 23, 10, 42 });
 
             Assert.IsNotNull(addedGroup);
             Assert.AreEqual(addedGroup.Key, "new key");
@@ -177,9 +177,9 @@ namespace UnitTests.Collections
         [TestMethod]
         public void AddGroup_WithParamsCollection_ShouldAddGroup()
         {
-            var groupedCollection = new ObservableGroupedCollection<string, int>();
+            ObservableGroupedCollection<string, int>? groupedCollection = new();
 
-            var addedGroup = groupedCollection.AddGroup("new key", 23, 10, 42);
+            ObservableGroup<string, int>? addedGroup = groupedCollection.AddGroup("new key", 23, 10, 42);
 
             Assert.IsNotNull(addedGroup);
             Assert.AreEqual(addedGroup.Key, "new key");
@@ -191,9 +191,9 @@ namespace UnitTests.Collections
         [TestMethod]
         public void AddItem_WhenTargetGroupDoesNotExists_ShouldCreateAndAddNewGroup()
         {
-            var groupedCollection = new ObservableGroupedCollection<string, int>();
+            ObservableGroupedCollection<string, int>? groupedCollection = new();
 
-            var addedGroup = groupedCollection.AddItem("new key", 23);
+            ObservableGroup<string, int>? addedGroup = groupedCollection.AddItem("new key", 23);
 
             Assert.IsNotNull(addedGroup);
             Assert.AreEqual(addedGroup.Key, "new key");
@@ -205,12 +205,12 @@ namespace UnitTests.Collections
         [TestMethod]
         public void AddItem_WhenSingleTargetGroupAlreadyExists_ShouldAddItemToExistingGroup()
         {
-            var groupedCollection = new ObservableGroupedCollection<string, int>();
-            groupedCollection.AddGroup("A", 1, 2, 3);
-            var targetGroup = groupedCollection.AddGroup("B", 4, 5, 6);
-            groupedCollection.AddGroup("C", 7, 8);
+            ObservableGroupedCollection<string, int>? groupedCollection = new();
+            _ = groupedCollection.AddGroup("A", 1, 2, 3);
+            ObservableGroup<string, int>? targetGroup = groupedCollection.AddGroup("B", 4, 5, 6);
+            _ = groupedCollection.AddGroup("C", 7, 8);
 
-            var addedGroup = groupedCollection.AddItem("B", 23);
+            ObservableGroup<string, int>? addedGroup = groupedCollection.AddItem("B", 23);
 
             Assert.AreSame(addedGroup, targetGroup);
             Assert.AreEqual(addedGroup.Key, "B");
@@ -232,13 +232,13 @@ namespace UnitTests.Collections
         [TestMethod]
         public void AddItem_WhenSeveralTargetGroupsAlreadyExist_ShouldAddItemToFirstExistingGroup()
         {
-            var groupedCollection = new ObservableGroupedCollection<string, int>();
-            groupedCollection.AddGroup("A", 1, 2, 3);
-            var targetGroup = groupedCollection.AddGroup("B", 4, 5, 6);
-            groupedCollection.AddGroup("B", 7, 8, 9);
-            groupedCollection.AddGroup("C", 10, 11);
+            ObservableGroupedCollection<string, int>? groupedCollection = new();
+            _ = groupedCollection.AddGroup("A", 1, 2, 3);
+            ObservableGroup<string, int>? targetGroup = groupedCollection.AddGroup("B", 4, 5, 6);
+            _ = groupedCollection.AddGroup("B", 7, 8, 9);
+            _ = groupedCollection.AddGroup("C", 10, 11);
 
-            var addedGroup = groupedCollection.AddItem("B", 23);
+            ObservableGroup<string, int>? addedGroup = groupedCollection.AddItem("B", 23);
 
             Assert.AreSame(addedGroup, targetGroup);
             Assert.AreEqual(addedGroup.Key, "B");
@@ -264,10 +264,10 @@ namespace UnitTests.Collections
         [ExpectedException(typeof(InvalidOperationException))]
         public void InsertItem_WhenGroupDoesNotExist_ShouldThrow()
         {
-            var groupedCollection = new ObservableGroupedCollection<string, int>();
-            groupedCollection.AddGroup("A", 1, 2, 3);
+            ObservableGroupedCollection<string, int>? groupedCollection = new();
+            _ = groupedCollection.AddGroup("A", 1, 2, 3);
 
-            groupedCollection.InsertItem("I do not exist", 0, 23);
+            _ = groupedCollection.InsertItem("I do not exist", 0, 23);
         }
 
         [TestCategory("Collections")]
@@ -277,10 +277,10 @@ namespace UnitTests.Collections
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void InsertItem_WhenIndexOutOfRange_ShouldThrow(int index)
         {
-            var groupedCollection = new ObservableGroupedCollection<string, int>();
-            groupedCollection.AddGroup("A", 1, 2, 3);
+            ObservableGroupedCollection<string, int>? groupedCollection = new();
+            _ = groupedCollection.AddGroup("A", 1, 2, 3);
 
-            groupedCollection.InsertItem("A", index, 23);
+            _ = groupedCollection.InsertItem("A", index, 23);
         }
 
         [TestCategory("Collections")]
@@ -290,12 +290,12 @@ namespace UnitTests.Collections
         [DataRow(3, new[] { 1, 2, 3, 23 })]
         public void InsertItem_WithValidIndex_WithSeveralGroups_ShoudInsertItemInFirstGroup(int index, int[] expecteGroupValues)
         {
-            var groupedCollection = new ObservableGroupedCollection<string, int>();
-            groupedCollection.AddGroup("A", 4, 5);
-            var targetGroup = groupedCollection.AddGroup("B", 1, 2, 3);
-            groupedCollection.AddGroup("B", 6, 7);
+            ObservableGroupedCollection<string, int>? groupedCollection = new();
+            _ = groupedCollection.AddGroup("A", 4, 5);
+            ObservableGroup<string, int>? targetGroup = groupedCollection.AddGroup("B", 1, 2, 3);
+            _ = groupedCollection.AddGroup("B", 6, 7);
 
-            var group = groupedCollection.InsertItem("B", index, 23);
+            ObservableGroup<string, int>? group = groupedCollection.InsertItem("B", index, 23);
 
             Assert.AreSame(group, targetGroup);
 
@@ -316,10 +316,10 @@ namespace UnitTests.Collections
         [ExpectedException(typeof(InvalidOperationException))]
         public void SetItem_WhenGroupDoesNotExist_ShouldThrow()
         {
-            var groupedCollection = new ObservableGroupedCollection<string, int>();
-            groupedCollection.AddGroup("A", 1, 2, 3);
+            ObservableGroupedCollection<string, int>? groupedCollection = new();
+            _ = groupedCollection.AddGroup("A", 1, 2, 3);
 
-            groupedCollection.SetItem("I do not exist", 0, 23);
+            _ = groupedCollection.SetItem("I do not exist", 0, 23);
         }
 
         [TestCategory("Collections")]
@@ -329,10 +329,10 @@ namespace UnitTests.Collections
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void SetItem_WhenIndexOutOfRange_ShouldThrow(int index)
         {
-            var groupedCollection = new ObservableGroupedCollection<string, int>();
-            groupedCollection.AddGroup("A", 1, 2, 3);
+            ObservableGroupedCollection<string, int>? groupedCollection = new();
+            _ = groupedCollection.AddGroup("A", 1, 2, 3);
 
-            groupedCollection.SetItem("A", index, 23);
+            _ = groupedCollection.SetItem("A", index, 23);
         }
 
         [TestCategory("Collections")]
@@ -342,12 +342,12 @@ namespace UnitTests.Collections
         [DataRow(2, new[] { 1, 2, 23 })]
         public void SetItem_WithValidIndex_WithSeveralGroups_ShouldReplaceItemInFirstGroup(int index, int[] expectedGroupValues)
         {
-            var groupedCollection = new ObservableGroupedCollection<string, int>();
-            groupedCollection.AddGroup("A", 4, 5);
-            var targetGroup = groupedCollection.AddGroup("B", 1, 2, 3);
-            groupedCollection.AddGroup("B", 6, 7);
+            ObservableGroupedCollection<string, int>? groupedCollection = new();
+            _ = groupedCollection.AddGroup("A", 4, 5);
+            ObservableGroup<string, int>? targetGroup = groupedCollection.AddGroup("B", 1, 2, 3);
+            _ = groupedCollection.AddGroup("B", 6, 7);
 
-            var group = groupedCollection.SetItem("B", index, 23);
+            ObservableGroup<string, int>? group = groupedCollection.SetItem("B", index, 23);
 
             Assert.AreSame(group, targetGroup);
 
@@ -367,8 +367,8 @@ namespace UnitTests.Collections
         [TestMethod]
         public void RemoveGroup_WhenGroupDoesNotExists_ShouldDoNothing()
         {
-            var groupedCollection = new ObservableGroupedCollection<string, int>();
-            groupedCollection.AddGroup("A", 1, 2, 3);
+            ObservableGroupedCollection<string, int>? groupedCollection = new();
+            _ = groupedCollection.AddGroup("A", 1, 2, 3);
 
             groupedCollection.RemoveGroup("I do not exist");
 
@@ -381,9 +381,9 @@ namespace UnitTests.Collections
         [TestMethod]
         public void RemoveGroup_WhenSingleGroupExists_ShouldRemoveGroup()
         {
-            var groupedCollection = new ObservableGroupedCollection<string, int>();
-            groupedCollection.AddGroup("A", 1, 2, 3);
-            groupedCollection.AddGroup("B", 4, 5, 6);
+            ObservableGroupedCollection<string, int>? groupedCollection = new();
+            _ = groupedCollection.AddGroup("A", 1, 2, 3);
+            _ = groupedCollection.AddGroup("B", 4, 5, 6);
 
             groupedCollection.RemoveGroup("B");
 
@@ -396,10 +396,10 @@ namespace UnitTests.Collections
         [TestMethod]
         public void RemoveGroup_WhenSeveralGroupsExist_ShouldRemoveFirstGroup()
         {
-            var groupedCollection = new ObservableGroupedCollection<string, int>();
-            groupedCollection.AddGroup("A", 1, 2, 3);
-            groupedCollection.AddGroup("B", 4, 5, 6);
-            groupedCollection.AddGroup("B", 7, 8);
+            ObservableGroupedCollection<string, int>? groupedCollection = new();
+            _ = groupedCollection.AddGroup("A", 1, 2, 3);
+            _ = groupedCollection.AddGroup("B", 4, 5, 6);
+            _ = groupedCollection.AddGroup("B", 7, 8);
 
             groupedCollection.RemoveGroup("B");
 
@@ -418,9 +418,9 @@ namespace UnitTests.Collections
         [DataRow(false)]
         public void RemoveItem_WhenGroupDoesNotExist_ShouldDoNothing(bool removeGroupIfEmpty)
         {
-            var groupedCollection = new ObservableGroupedCollection<string, int>();
-            groupedCollection.AddGroup("A", 1, 2, 3);
-            groupedCollection.AddGroup("B", 4, 5, 6);
+            ObservableGroupedCollection<string, int>? groupedCollection = new();
+            _ = groupedCollection.AddGroup("A", 1, 2, 3);
+            _ = groupedCollection.AddGroup("B", 4, 5, 6);
 
             groupedCollection.RemoveItem("I do not exist", 8, removeGroupIfEmpty);
 
@@ -439,9 +439,9 @@ namespace UnitTests.Collections
         [DataRow(false)]
         public void RemoveItem_WhenGroupExistsAndItemDoesNotExist_ShouldDoNothing(bool removeGroupIfEmpty)
         {
-            var groupedCollection = new ObservableGroupedCollection<string, int>();
-            groupedCollection.AddGroup("A", 1, 2, 3);
-            groupedCollection.AddGroup("B", 4, 5, 6);
+            ObservableGroupedCollection<string, int>? groupedCollection = new();
+            _ = groupedCollection.AddGroup("A", 1, 2, 3);
+            _ = groupedCollection.AddGroup("B", 4, 5, 6);
 
             groupedCollection.RemoveItem("B", 8, removeGroupIfEmpty);
 
@@ -460,9 +460,9 @@ namespace UnitTests.Collections
         [DataRow(false)]
         public void RemoveItem_WhenGroupAndItemExist_ShouldRemoveItemFromGroup(bool removeGroupIfEmpty)
         {
-            var groupedCollection = new ObservableGroupedCollection<string, int>();
-            groupedCollection.AddGroup("A", 1, 2, 3);
-            groupedCollection.AddGroup("B", 4, 5, 6);
+            ObservableGroupedCollection<string, int>? groupedCollection = new();
+            _ = groupedCollection.AddGroup("A", 1, 2, 3);
+            _ = groupedCollection.AddGroup("B", 4, 5, 6);
 
             groupedCollection.RemoveItem("B", 5, removeGroupIfEmpty);
 
@@ -481,9 +481,9 @@ namespace UnitTests.Collections
         [DataRow(false, false)]
         public void RemoveItem_WhenRemovingLastItem_ShouldRemoveGroupIfRequired(bool removeGroupIfEmpty, bool expectGroupRemoved)
         {
-            var groupedCollection = new ObservableGroupedCollection<string, int>();
-            groupedCollection.AddGroup("A", 1, 2, 3);
-            groupedCollection.AddGroup("B", 4);
+            ObservableGroupedCollection<string, int>? groupedCollection = new();
+            _ = groupedCollection.AddGroup("A", 1, 2, 3);
+            _ = groupedCollection.AddGroup("B", 4);
 
             groupedCollection.RemoveItem("B", 4, removeGroupIfEmpty);
 

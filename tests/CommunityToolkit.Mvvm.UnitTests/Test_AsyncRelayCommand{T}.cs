@@ -20,7 +20,7 @@ namespace UnitTests.Mvvm
         {
             int ticks = 0;
 
-            var command = new AsyncRelayCommand<string>(async s =>
+            AsyncRelayCommand<string>? command = new(async s =>
             {
                 await Task.Delay(1000);
                 ticks = int.Parse(s!);
@@ -60,7 +60,7 @@ namespace UnitTests.Mvvm
 
             Assert.AreEqual(ticks, 2);
 
-            Assert.ThrowsException<InvalidCastException>(() => command.Execute(new object()));
+            _ = Assert.ThrowsException<InvalidCastException>(() => command.Execute(new object()));
         }
 
         [TestCategory("Mvvm")]
@@ -69,7 +69,7 @@ namespace UnitTests.Mvvm
         {
             int ticks = 0;
 
-            var command = new AsyncRelayCommand<string>(
+            AsyncRelayCommand<string>? command = new(
                 s =>
             {
                 ticks = int.Parse(s!);
@@ -94,7 +94,7 @@ namespace UnitTests.Mvvm
         {
             int ticks = 0;
 
-            var command = new AsyncRelayCommand<string>(
+            AsyncRelayCommand<string>? command = new(
                 s =>
             {
                 ticks = int.Parse(s!);
@@ -119,14 +119,14 @@ namespace UnitTests.Mvvm
         {
             int n = 0;
 
-            var command = new AsyncRelayCommand<int>(i =>
+            AsyncRelayCommand<int>? command = new(i =>
             {
                 n = i;
                 return Task.CompletedTask;
             });
 
             Assert.IsFalse(command.CanExecute(null));
-            Assert.ThrowsException<NullReferenceException>(() => command.Execute(null));
+            _ = Assert.ThrowsException<NullReferenceException>(() => command.Execute(null));
 
             command = new AsyncRelayCommand<int>(
                 i =>
@@ -136,7 +136,7 @@ namespace UnitTests.Mvvm
             }, i => i > 0);
 
             Assert.IsFalse(command.CanExecute(null));
-            Assert.ThrowsException<NullReferenceException>(() => command.Execute(null));
+            _ = Assert.ThrowsException<NullReferenceException>(() => command.Execute(null));
         }
     }
 }

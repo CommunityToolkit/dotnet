@@ -20,8 +20,8 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_Messenger_RequestMessage_Ok(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
-            var recipient = new object();
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+            object? recipient = new();
             object? test = null;
 
             void Receive(object recipient, NumberRequestMessage m)
@@ -50,7 +50,7 @@ namespace UnitTests.Mvvm
         [ExpectedException(typeof(InvalidOperationException))]
         public void Test_Messenger_RequestMessage_Fail_NoReply(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
 
             int result = messenger.Send<NumberRequestMessage>();
         }
@@ -62,8 +62,8 @@ namespace UnitTests.Mvvm
         [ExpectedException(typeof(InvalidOperationException))]
         public void Test_Messenger_RequestMessage_Fail_MultipleReplies(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
-            var recipient = new object();
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+            object? recipient = new();
 
             void Receive(object recipient, NumberRequestMessage m)
             {
@@ -88,8 +88,8 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public async Task Test_Messenger_AsyncRequestMessage_Ok_Sync(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
-            var recipient = new object();
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+            object? recipient = new();
 
             void Receive(object recipient, AsyncNumberRequestMessage m)
             {
@@ -115,8 +115,8 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public async Task Test_Messenger_AsyncRequestMessage_Ok_Async(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
-            var recipient = new object();
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+            object? recipient = new();
 
             async Task<int> GetNumberAsync()
             {
@@ -150,7 +150,7 @@ namespace UnitTests.Mvvm
         [ExpectedException(typeof(InvalidOperationException))]
         public async Task Test_Messenger_AsyncRequestMessage_Fail_NoReply(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
 
             int result = await messenger.Send<AsyncNumberRequestMessage>();
         }
@@ -162,8 +162,8 @@ namespace UnitTests.Mvvm
         [ExpectedException(typeof(InvalidOperationException))]
         public async Task Test_Messenger_AsyncRequestMessage_Fail_MultipleReplies(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
-            var recipient = new object();
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+            object? recipient = new();
 
             void Receive(object recipient, AsyncNumberRequestMessage m)
             {
@@ -188,8 +188,8 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_Messenger_CollectionRequestMessage_Ok_NoReplies(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
-            var recipient = new object();
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+            object? recipient = new();
 
             void Receive(object recipient, NumbersCollectionRequestMessage m)
             {
@@ -197,7 +197,7 @@ namespace UnitTests.Mvvm
 
             messenger.Register<NumbersCollectionRequestMessage>(recipient, Receive);
 
-            var results = messenger.Send<NumbersCollectionRequestMessage>().Responses;
+            IReadOnlyCollection<int>? results = messenger.Send<NumbersCollectionRequestMessage>().Responses;
 
             Assert.AreEqual(results.Count, 0);
 
@@ -210,11 +210,11 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_Messenger_CollectionRequestMessage_Ok_MultipleReplies(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
             object
-                recipient1 = new object(),
-                recipient2 = new object(),
-                recipient3 = new object();
+                recipient1 = new(),
+                recipient2 = new(),
+                recipient3 = new();
             object?
                 r1 = null,
                 r2 = null,
@@ -242,9 +242,9 @@ namespace UnitTests.Mvvm
             messenger.Register<NumbersCollectionRequestMessage>(recipient2, Receive2);
             messenger.Register<NumbersCollectionRequestMessage>(recipient3, Receive3);
 
-            List<int> responses = new List<int>();
+            List<int> responses = new();
 
-            foreach (var response in messenger.Send<NumbersCollectionRequestMessage>())
+            foreach (int response in messenger.Send<NumbersCollectionRequestMessage>())
             {
                 responses.Add(response);
             }
@@ -266,8 +266,8 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public async Task Test_Messenger_AsyncCollectionRequestMessage_Ok_NoReplies(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
-            var recipient = new object();
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+            object? recipient = new();
 
             void Receive(object recipient, AsyncNumbersCollectionRequestMessage m)
             {
@@ -275,7 +275,7 @@ namespace UnitTests.Mvvm
 
             messenger.Register<AsyncNumbersCollectionRequestMessage>(recipient, Receive);
 
-            var results = await messenger.Send<AsyncNumbersCollectionRequestMessage>().GetResponsesAsync();
+            IReadOnlyCollection<int>? results = await messenger.Send<AsyncNumbersCollectionRequestMessage>().GetResponsesAsync();
 
             Assert.AreEqual(results.Count, 0);
 
@@ -288,12 +288,12 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public async Task Test_Messenger_AsyncCollectionRequestMessage_Ok_MultipleReplies(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
             object
-                recipient1 = new object(),
-                recipient2 = new object(),
-                recipient3 = new object(),
-                recipient4 = new object();
+                recipient1 = new(),
+                recipient2 = new(),
+                recipient3 = new(),
+                recipient4 = new();
 
             async Task<int> GetNumberAsync()
             {
@@ -312,7 +312,7 @@ namespace UnitTests.Mvvm
             messenger.Register<AsyncNumbersCollectionRequestMessage>(recipient3, Receive3);
             messenger.Register<AsyncNumbersCollectionRequestMessage>(recipient4, Receive4);
 
-            var responses = await messenger.Send<AsyncNumbersCollectionRequestMessage>().GetResponsesAsync();
+            IReadOnlyCollection<int>? responses = await messenger.Send<AsyncNumbersCollectionRequestMessage>().GetResponsesAsync();
 
             CollectionAssert.AreEquivalent(responses.ToArray(), new[] { 1, 2, 3, 3 });
 
@@ -328,12 +328,12 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public async Task Test_Messenger_AsyncCollectionRequestMessage_Ok_MultipleReplies_Enumerate(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type)!;
+            IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
             object
-                recipient1 = new object(),
-                recipient2 = new object(),
-                recipient3 = new object(),
-                recipient4 = new object();
+                recipient1 = new(),
+                recipient2 = new(),
+                recipient3 = new(),
+                recipient4 = new();
 
             async Task<int> GetNumberAsync()
             {
@@ -352,9 +352,9 @@ namespace UnitTests.Mvvm
             messenger.Register<AsyncNumbersCollectionRequestMessage>(recipient3, Receive3);
             messenger.Register<AsyncNumbersCollectionRequestMessage>(recipient4, Receive4);
 
-            List<int> responses = new List<int>();
+            List<int> responses = new();
 
-            await foreach (var response in messenger.Send<AsyncNumbersCollectionRequestMessage>())
+            await foreach (int response in messenger.Send<AsyncNumbersCollectionRequestMessage>())
             {
                 responses.Add(response);
             }

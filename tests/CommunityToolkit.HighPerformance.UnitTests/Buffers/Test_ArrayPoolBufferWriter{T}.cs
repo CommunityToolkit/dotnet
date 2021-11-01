@@ -38,7 +38,7 @@ namespace UnitTests.HighPerformance.Buffers
         [DataRow(3 * 1024 * 1024, 4 * 1024 * 1024)]
         public void Test_ArrayPoolBufferWriterOfT_BufferSize(int request, int expected)
         {
-            using var writer = new ArrayPoolBufferWriter<byte>();
+            using ArrayPoolBufferWriter<byte>? writer = new();
 
             // Request a Span<T> of a specified size and discard it. We're just invoking this
             // method to force the ArrayPoolBufferWriter<T> instance to internally resize the
@@ -49,7 +49,7 @@ namespace UnitTests.HighPerformance.Buffers
             // done to prevent repeated allocations of arrays in some scenarios.
             _ = writer.GetSpan(request);
 
-            var arrayFieldInfo = typeof(ArrayPoolBufferWriter<byte>).GetField("array", BindingFlags.Instance | BindingFlags.NonPublic);
+            FieldInfo? arrayFieldInfo = typeof(ArrayPoolBufferWriter<byte>).GetField("array", BindingFlags.Instance | BindingFlags.NonPublic);
 
             byte[] array = (byte[])arrayFieldInfo!.GetValue(writer)!;
 
@@ -60,7 +60,7 @@ namespace UnitTests.HighPerformance.Buffers
         [TestMethod]
         public void Test_ArrayPoolBufferWriterOfT_AllocateAndGetMemoryAndSpan()
         {
-            var writer = new ArrayPoolBufferWriter<byte>();
+            ArrayPoolBufferWriter<byte>? writer = new();
 
             Assert.AreEqual(writer.Capacity, 256);
             Assert.AreEqual(writer.FreeCapacity, 256);
@@ -80,27 +80,27 @@ namespace UnitTests.HighPerformance.Buffers
             Assert.AreEqual(writer.WrittenMemory.Length, 43);
             Assert.AreEqual(writer.WrittenSpan.Length, 43);
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => writer.Advance(-1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => writer.GetMemory(-1));
-            Assert.ThrowsException<ArgumentException>(() => writer.Advance(1024));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => writer.Advance(-1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => writer.GetMemory(-1));
+            _ = Assert.ThrowsException<ArgumentException>(() => writer.Advance(1024));
 
             writer.Dispose();
 
-            Assert.ThrowsException<ObjectDisposedException>(() => writer.WrittenMemory);
-            Assert.ThrowsException<ObjectDisposedException>(() => writer.WrittenSpan.Length);
-            Assert.ThrowsException<ObjectDisposedException>(() => writer.Capacity);
-            Assert.ThrowsException<ObjectDisposedException>(() => writer.FreeCapacity);
-            Assert.ThrowsException<ObjectDisposedException>(() => writer.Clear());
-            Assert.ThrowsException<ObjectDisposedException>(() => writer.Advance(1));
+            _ = Assert.ThrowsException<ObjectDisposedException>(() => writer.WrittenMemory);
+            _ = Assert.ThrowsException<ObjectDisposedException>(() => writer.WrittenSpan.Length);
+            _ = Assert.ThrowsException<ObjectDisposedException>(() => writer.Capacity);
+            _ = Assert.ThrowsException<ObjectDisposedException>(() => writer.FreeCapacity);
+            _ = Assert.ThrowsException<ObjectDisposedException>(() => writer.Clear());
+            _ = Assert.ThrowsException<ObjectDisposedException>(() => writer.Advance(1));
         }
 
         [TestCategory("ArrayPoolBufferWriterOfT")]
         [TestMethod]
         public void Test_ArrayPoolBufferWriterOfT_AllocateFromCustomPoolAndGetMemoryAndSpan()
         {
-            var pool = new TrackingArrayPool<byte>();
+            TrackingArrayPool<byte>? pool = new();
 
-            using (var writer = new ArrayPoolBufferWriter<byte>(pool))
+            using (ArrayPoolBufferWriter<byte>? writer = new(pool))
             {
                 Assert.AreEqual(pool.RentedArrays.Count, 1);
 
@@ -122,18 +122,18 @@ namespace UnitTests.HighPerformance.Buffers
                 Assert.AreEqual(writer.WrittenMemory.Length, 43);
                 Assert.AreEqual(writer.WrittenSpan.Length, 43);
 
-                Assert.ThrowsException<ArgumentOutOfRangeException>(() => writer.Advance(-1));
-                Assert.ThrowsException<ArgumentOutOfRangeException>(() => writer.GetMemory(-1));
-                Assert.ThrowsException<ArgumentException>(() => writer.Advance(1024));
+                _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => writer.Advance(-1));
+                _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => writer.GetMemory(-1));
+                _ = Assert.ThrowsException<ArgumentException>(() => writer.Advance(1024));
 
                 writer.Dispose();
 
-                Assert.ThrowsException<ObjectDisposedException>(() => writer.WrittenMemory);
-                Assert.ThrowsException<ObjectDisposedException>(() => writer.WrittenSpan.Length);
-                Assert.ThrowsException<ObjectDisposedException>(() => writer.Capacity);
-                Assert.ThrowsException<ObjectDisposedException>(() => writer.FreeCapacity);
-                Assert.ThrowsException<ObjectDisposedException>(() => writer.Clear());
-                Assert.ThrowsException<ObjectDisposedException>(() => writer.Advance(1));
+                _ = Assert.ThrowsException<ObjectDisposedException>(() => writer.WrittenMemory);
+                _ = Assert.ThrowsException<ObjectDisposedException>(() => writer.WrittenSpan.Length);
+                _ = Assert.ThrowsException<ObjectDisposedException>(() => writer.Capacity);
+                _ = Assert.ThrowsException<ObjectDisposedException>(() => writer.FreeCapacity);
+                _ = Assert.ThrowsException<ObjectDisposedException>(() => writer.Clear());
+                _ = Assert.ThrowsException<ObjectDisposedException>(() => writer.Advance(1));
             }
 
             Assert.AreEqual(pool.RentedArrays.Count, 0);
@@ -144,7 +144,7 @@ namespace UnitTests.HighPerformance.Buffers
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void Test_ArrayPoolBufferWriterOfT_InvalidRequestedSize()
         {
-            var writer = new ArrayPoolBufferWriter<byte>(-1);
+            ArrayPoolBufferWriter<byte>? writer = new(-1);
 
             Assert.Fail("You shouldn't be here");
         }
@@ -153,7 +153,7 @@ namespace UnitTests.HighPerformance.Buffers
         [TestMethod]
         public void Test_ArrayPoolBufferWriterOfT_Clear()
         {
-            using var writer = new ArrayPoolBufferWriter<byte>();
+            using ArrayPoolBufferWriter<byte>? writer = new();
 
             Span<byte> span = writer.GetSpan(4).Slice(0, 4);
 
@@ -176,7 +176,7 @@ namespace UnitTests.HighPerformance.Buffers
         [TestMethod]
         public void Test_ArrayPoolBufferWriterOfT_MultipleDispose()
         {
-            var writer = new ArrayPoolBufferWriter<byte>();
+            ArrayPoolBufferWriter<byte>? writer = new();
 
             writer.Dispose();
             writer.Dispose();
@@ -190,8 +190,8 @@ namespace UnitTests.HighPerformance.Buffers
         {
             const int GuidSize = 16;
 
-            var writer = new ArrayPoolBufferWriter<byte>();
-            var guid = Guid.NewGuid();
+            ArrayPoolBufferWriter<byte>? writer = new();
+            Guid guid = Guid.NewGuid();
 
             // Here we first get a stream with the extension targeting ArrayPoolBufferWriter<T>.
             // This will wrap it into a custom internal stream type and produce a write-only
@@ -211,7 +211,7 @@ namespace UnitTests.HighPerformance.Buffers
 
                 byte[] result = new byte[GuidSize];
 
-                stream.Read(result, 0, result.Length);
+                _ = stream.Read(result, 0, result.Length);
 
                 // Read the guid data and ensure it matches our initial guid
                 Assert.IsTrue(new Guid(result).Equals(guid));
@@ -225,7 +225,7 @@ namespace UnitTests.HighPerformance.Buffers
             writer.Dispose();
 
             // Now check that the writer is actually disposed instead
-            Assert.ThrowsException<ObjectDisposedException>(() => writer.Capacity);
+            _ = Assert.ThrowsException<ObjectDisposedException>(() => writer.Capacity);
         }
     }
 }

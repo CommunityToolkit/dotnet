@@ -22,8 +22,8 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_ObservableRecipientAttribute_Events()
         {
-            var model = new Person();
-            var args = new List<PropertyChangedEventArgs>();
+            Person? model = new();
+            List<PropertyChangedEventArgs>? args = new();
 
             model.PropertyChanged += (s, e) => args.Add(e);
 
@@ -77,7 +77,7 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_ObservableRecipientAttribute_AbstractConstructors()
         {
-            var ctors = typeof(AbstractPerson).GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic);
+            ConstructorInfo[]? ctors = typeof(AbstractPerson).GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic);
 
             Assert.AreEqual(ctors.Length, 2);
             Assert.IsTrue(ctors.All(static ctor => ctor.IsFamily));
@@ -92,7 +92,7 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_ObservableRecipientAttribute_NonAbstractConstructors()
         {
-            var ctors = typeof(NonAbstractPerson).GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            ConstructorInfo[]? ctors = typeof(NonAbstractPerson).GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
             Assert.AreEqual(ctors.Length, 2);
             Assert.IsTrue(ctors.All(static ctor => ctor.IsPublic));

@@ -35,8 +35,8 @@ namespace UnitTests.HighPerformance.Streams
             Assert.IsFalse(stream.CanRead);
             Assert.IsFalse(stream.CanSeek);
             Assert.IsFalse(stream.CanWrite);
-            Assert.ThrowsException<ObjectDisposedException>(() => stream.Length);
-            Assert.ThrowsException<ObjectDisposedException>(() => stream.Position);
+            _ = Assert.ThrowsException<ObjectDisposedException>(() => stream.Length);
+            _ = Assert.ThrowsException<ObjectDisposedException>(() => stream.Position);
         }
 
         [TestCategory("MemoryStream")]
@@ -51,29 +51,29 @@ namespace UnitTests.HighPerformance.Streams
 
             Assert.AreEqual(stream.Position, 42);
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Position = -1);
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Position = 120);
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Position = -1);
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Position = 120);
 
-            stream.Seek(0, SeekOrigin.Begin);
+            _ = stream.Seek(0, SeekOrigin.Begin);
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Seek(-1, SeekOrigin.Begin));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Seek(120, SeekOrigin.Begin));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Seek(-1, SeekOrigin.Begin));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Seek(120, SeekOrigin.Begin));
 
             Assert.AreEqual(stream.Position, 0);
 
-            stream.Seek(-1, SeekOrigin.End);
+            _ = stream.Seek(-1, SeekOrigin.End);
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Seek(20, SeekOrigin.End));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Seek(-120, SeekOrigin.End));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Seek(20, SeekOrigin.End));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Seek(-120, SeekOrigin.End));
 
             Assert.AreEqual(stream.Position, stream.Length - 1);
 
-            stream.Seek(42, SeekOrigin.Begin);
-            stream.Seek(20, SeekOrigin.Current);
-            stream.Seek(-30, SeekOrigin.Current);
+            _ = stream.Seek(42, SeekOrigin.Begin);
+            _ = stream.Seek(20, SeekOrigin.Current);
+            _ = stream.Seek(-30, SeekOrigin.Current);
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Seek(-64, SeekOrigin.Current));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Seek(80, SeekOrigin.Current));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Seek(-64, SeekOrigin.Current));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Seek(80, SeekOrigin.Current));
 
             Assert.AreEqual(stream.Position, 32);
         }
@@ -88,7 +88,7 @@ namespace UnitTests.HighPerformance.Streams
                 temp = new byte[1];
             ReadOnlyMemory<byte> memory = array;
 
-            using var stream = memory.AsStream();
+            using Stream? stream = memory.AsStream();
 
             for (int i = 0; i < array.Length; i++)
             {
@@ -104,13 +104,13 @@ namespace UnitTests.HighPerformance.Streams
             stream.Position = stream.Position;
             Assert.AreEqual(stream.Position, array.Length);
 
-            stream.Seek(array.Length, SeekOrigin.Begin);
+            _ = stream.Seek(array.Length, SeekOrigin.Begin);
             Assert.AreEqual(stream.Position, array.Length);
 
-            stream.Seek(0, SeekOrigin.Current);
+            _ = stream.Seek(0, SeekOrigin.Current);
             Assert.AreEqual(stream.Position, array.Length);
 
-            stream.Seek(0, SeekOrigin.End);
+            _ = stream.Seek(0, SeekOrigin.End);
             Assert.AreEqual(stream.Position, array.Length);
         }
 
@@ -136,15 +136,15 @@ namespace UnitTests.HighPerformance.Streams
             Assert.AreEqual(stream.Position, data.Length);
             Assert.IsTrue(data.AsSpan().SequenceEqual(result));
 
-            Assert.ThrowsException<ArgumentNullException>(() => stream.Write(null!, 0, 10));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Write(data, -1, 10));
-            Assert.ThrowsException<ArgumentException>(() => stream.Write(data, 200, 10));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Write(data, 0, -24));
-            Assert.ThrowsException<ArgumentException>(() => stream.Write(data, 0, 200));
+            _ = Assert.ThrowsException<ArgumentNullException>(() => stream.Write(null!, 0, 10));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Write(data, -1, 10));
+            _ = Assert.ThrowsException<ArgumentException>(() => stream.Write(data, 200, 10));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Write(data, 0, -24));
+            _ = Assert.ThrowsException<ArgumentException>(() => stream.Write(data, 0, 200));
 
             stream.Dispose();
 
-            Assert.ThrowsException<ObjectDisposedException>(() => stream.Write(data, 0, data.Length));
+            _ = Assert.ThrowsException<ObjectDisposedException>(() => stream.Write(data, 0, data.Length));
         }
 
         [TestCategory("MemoryStream")]
@@ -169,15 +169,15 @@ namespace UnitTests.HighPerformance.Streams
             Assert.AreEqual(stream.Position, data.Length);
             Assert.IsTrue(data.AsSpan().SequenceEqual(result));
 
-            await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => stream.WriteAsync(null!, 0, 10));
-            await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(() => stream.WriteAsync(data, -1, 10));
-            await Assert.ThrowsExceptionAsync<ArgumentException>(() => stream.WriteAsync(data, 200, 10));
-            await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(() => stream.WriteAsync(data, 0, -24));
-            await Assert.ThrowsExceptionAsync<ArgumentException>(() => stream.WriteAsync(data, 0, 200));
+            _ = await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => stream.WriteAsync(null!, 0, 10));
+            _ = await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(() => stream.WriteAsync(data, -1, 10));
+            _ = await Assert.ThrowsExceptionAsync<ArgumentException>(() => stream.WriteAsync(data, 200, 10));
+            _ = await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(() => stream.WriteAsync(data, 0, -24));
+            _ = await Assert.ThrowsExceptionAsync<ArgumentException>(() => stream.WriteAsync(data, 0, 200));
 
             stream.Dispose();
 
-            await Assert.ThrowsExceptionAsync<ObjectDisposedException>(() => stream.WriteAsync(data, 0, data.Length));
+            _ = await Assert.ThrowsExceptionAsync<ObjectDisposedException>(() => stream.WriteAsync(data, 0, data.Length));
         }
 
         [TestCategory("MemoryStream")]
@@ -189,7 +189,7 @@ namespace UnitTests.HighPerformance.Streams
 
             ReadOnlySpan<byte> data = stackalloc byte[] { 1, 128, 255, 32 };
 
-            foreach (var item in data.Enumerate())
+            foreach (CommunityToolkit.HighPerformance.Enumerables.ReadOnlySpanEnumerable<byte>.Item item in data.Enumerate())
             {
                 Assert.AreEqual(stream.Position, item.Index);
 
@@ -210,7 +210,7 @@ namespace UnitTests.HighPerformance.Streams
             Assert.AreEqual(stream.Position, data.Length);
             Assert.IsTrue(data.SequenceEqual(result));
 
-            Assert.ThrowsException<ArgumentException>(() => stream.WriteByte(128));
+            _ = Assert.ThrowsException<ArgumentException>(() => stream.WriteByte(128));
 
             int exitCode = stream.ReadByte();
 
@@ -274,7 +274,7 @@ namespace UnitTests.HighPerformance.Streams
         [Pure]
         internal static byte[] CreateRandomData(int count)
         {
-            var random = new Random(DateTime.Now.Ticks.GetHashCode());
+            Random? random = new(DateTime.Now.Ticks.GetHashCode());
 
             byte[] data = new byte[count];
 

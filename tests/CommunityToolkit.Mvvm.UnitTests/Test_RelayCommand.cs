@@ -17,7 +17,7 @@ namespace UnitTests.Mvvm
         {
             int ticks = 0;
 
-            var command = new RelayCommand(() => ticks++);
+            RelayCommand? command = new(() => ticks++);
 
             Assert.IsTrue(command.CanExecute(null));
             Assert.IsTrue(command.CanExecute(new object()));
@@ -46,7 +46,7 @@ namespace UnitTests.Mvvm
         {
             int ticks = 0;
 
-            var command = new RelayCommand(() => ticks++, () => true);
+            RelayCommand? command = new(() => ticks++, () => true);
 
             Assert.IsTrue(command.CanExecute(null));
             Assert.IsTrue(command.CanExecute(new object()));
@@ -66,7 +66,7 @@ namespace UnitTests.Mvvm
         {
             int ticks = 0;
 
-            var command = new RelayCommand(() => ticks++, () => false);
+            RelayCommand? command = new(() => ticks++, () => false);
 
             Assert.IsFalse(command.CanExecute(null));
             Assert.IsFalse(command.CanExecute(new object()));

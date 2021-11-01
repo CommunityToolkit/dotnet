@@ -16,7 +16,7 @@ namespace UnitTests.Collections
         [TestMethod]
         public void Ctor_ShouldHaveExpectedValues()
         {
-            var groupCollection = new ObservableGroupedCollection<string, int>();
+            ObservableGroupedCollection<string, int>? groupCollection = new();
 
             Assert.AreEqual(groupCollection.Count, 0);
         }
@@ -25,12 +25,12 @@ namespace UnitTests.Collections
         [TestMethod]
         public void Ctor_WithGroups_ShouldHaveExpectedValues()
         {
-            var groups = new List<IGrouping<string, int>>
+            List<IGrouping<string, int>>? groups = new()
             {
                 new IntGroup("A", new[] { 1, 3, 5 }),
                 new IntGroup("B", new[] { 2, 4, 6 }),
             };
-            var groupCollection = new ObservableGroupedCollection<string, int>(groups);
+            ObservableGroupedCollection<string, int>? groupCollection = new(groups);
 
             Assert.AreEqual(groupCollection.Count, 2);
 

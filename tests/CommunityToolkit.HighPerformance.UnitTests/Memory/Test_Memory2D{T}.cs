@@ -62,7 +62,7 @@ namespace UnitTests.HighPerformance
 
             // Create a memory over a 1D array with 2D data in row-major order. This tests
             // the T[] array constructor for Memory2D<T> with custom size and pitch.
-            Memory2D<int> memory2d = new Memory2D<int>(array, 1, 2, 2, 1);
+            Memory2D<int> memory2d = new(array, 1, 2, 2, 1);
 
             Assert.IsFalse(memory2d.IsEmpty);
             Assert.AreEqual(memory2d.Length, 4);
@@ -73,15 +73,15 @@ namespace UnitTests.HighPerformance
 
             // Also ensure the right exceptions are thrown with invalid parameters, such as
             // negative indices, indices out of range, values that are too big, etc.
-            Assert.ThrowsException<ArrayTypeMismatchException>(() => new Memory2D<object>(new string[1], 1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, -99, 1, 1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 0, -10, 1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 0, 1, 1, -1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 0, 1, -100, 1));
-            Assert.ThrowsException<ArgumentException>(() => new Memory2D<int>(array, 0, 2, 4, 0));
-            Assert.ThrowsException<ArgumentException>(() => new Memory2D<int>(array, 0, 3, 3, 0));
-            Assert.ThrowsException<ArgumentException>(() => new Memory2D<int>(array, 1, 2, 3, 0));
-            Assert.ThrowsException<ArgumentException>(() => new Memory2D<int>(array, 0, 10, 1, 120));
+            _ = Assert.ThrowsException<ArrayTypeMismatchException>(() => new Memory2D<object>(new string[1], 1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, -99, 1, 1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 0, -10, 1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 0, 1, 1, -1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 0, 1, -100, 1));
+            _ = Assert.ThrowsException<ArgumentException>(() => new Memory2D<int>(array, 0, 2, 4, 0));
+            _ = Assert.ThrowsException<ArgumentException>(() => new Memory2D<int>(array, 0, 3, 3, 0));
+            _ = Assert.ThrowsException<ArgumentException>(() => new Memory2D<int>(array, 1, 2, 3, 0));
+            _ = Assert.ThrowsException<ArgumentException>(() => new Memory2D<int>(array, 0, 10, 1, 120));
         }
 
         [TestCategory("Memory2DT")]
@@ -95,7 +95,7 @@ namespace UnitTests.HighPerformance
             };
 
             // Test the constructor taking a T[,] array that is mapped directly (no slicing)
-            Memory2D<int> memory2d = new Memory2D<int>(array);
+            Memory2D<int> memory2d = new(array);
 
             Assert.IsFalse(memory2d.IsEmpty);
             Assert.AreEqual(memory2d.Length, 6);
@@ -106,7 +106,7 @@ namespace UnitTests.HighPerformance
 
             // Here we test the check for covariance: we can't create a Memory2D<T> from a U[,] array
             // where U is assignable to T (as in, U : T). This would cause a type safety violation on write.
-            Assert.ThrowsException<ArrayTypeMismatchException>(() => new Memory2D<object>(new string[1, 2]));
+            _ = Assert.ThrowsException<ArrayTypeMismatchException>(() => new Memory2D<object>(new string[1, 2]));
         }
 
         [TestCategory("Memory2DT")]
@@ -120,7 +120,7 @@ namespace UnitTests.HighPerformance
             };
 
             // Same as above, but this time we also slice the memory to test the other constructor
-            Memory2D<int> memory2d = new Memory2D<int>(array, 0, 1, 2, 2);
+            Memory2D<int> memory2d = new(array, 0, 1, 2, 2);
 
             Assert.IsFalse(memory2d.IsEmpty);
             Assert.AreEqual(memory2d.Length, 4);
@@ -129,7 +129,7 @@ namespace UnitTests.HighPerformance
             Assert.AreEqual(memory2d.Span[0, 0], 2);
             Assert.AreEqual(memory2d.Span[1, 1], 6);
 
-            Assert.ThrowsException<ArrayTypeMismatchException>(() => new Memory2D<object>(new string[1, 2], 0, 0, 2, 2));
+            _ = Assert.ThrowsException<ArrayTypeMismatchException>(() => new Memory2D<object>(new string[1, 2], 0, 0, 2, 2));
         }
 
         [TestCategory("Memory2DT")]
@@ -149,7 +149,7 @@ namespace UnitTests.HighPerformance
             };
 
             // Same as above, but we test the constructor taking a layer within a 3D array
-            Memory2D<int> memory2d = new Memory2D<int>(array, 1);
+            Memory2D<int> memory2d = new(array, 1);
 
             Assert.IsFalse(memory2d.IsEmpty);
             Assert.AreEqual(memory2d.Length, 6);
@@ -159,9 +159,9 @@ namespace UnitTests.HighPerformance
             Assert.AreEqual(memory2d.Span[1, 2], 60);
 
             // A couple of tests for invalid parameters, ie. layers out of range
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, -1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 2));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 20));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, -1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 2));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 20));
         }
 
         [TestCategory("Memory2DT")]
@@ -184,7 +184,7 @@ namespace UnitTests.HighPerformance
             // a Memory<int> instance from a slice in the layer at depth 1 in our 3D array, and with an area
             // starting at coorsinates (0, 1), with a height of 2 and width of 2. So we want to wrap the
             // square with items [20, 30, 50, 60] in the second layer of the 3D array above.
-            Memory2D<int> memory2d = new Memory2D<int>(array, 1, 0, 1, 2, 2);
+            Memory2D<int> memory2d = new(array, 1, 0, 1, 2, 2);
 
             Assert.IsFalse(memory2d.IsEmpty);
             Assert.AreEqual(memory2d.Length, 4);
@@ -194,15 +194,15 @@ namespace UnitTests.HighPerformance
             Assert.AreEqual(memory2d.Span[1, 1], 60);
 
             // Same as above, testing a few cases with invalid parameters
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, -1, 1, 1, 1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 1, -1, 1, 1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 1, 1, -1, 1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 1, 1, 1, -1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 1, 1, 1, 1, -1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 2, 0, 0, 2, 3));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 0, 0, 1, 2, 3));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 0, 0, 0, 2, 4));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 0, 0, 0, 3, 3));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, -1, 1, 1, 1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 1, -1, 1, 1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 1, 1, -1, 1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 1, 1, 1, -1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 1, 1, 1, 1, -1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 2, 0, 0, 2, 3));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 0, 0, 1, 2, 3));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 0, 0, 0, 2, 4));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 0, 0, 0, 3, 3));
         }
 
 #if !WINDOWS_UWP
@@ -228,14 +228,14 @@ namespace UnitTests.HighPerformance
             Assert.AreEqual(memory2d.Span[0, 0], 2);
             Assert.AreEqual(memory2d.Span[1, 1], 6);
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => memory.AsMemory2D(-99, 1, 1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => memory.AsMemory2D(0, -10, 1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => memory.AsMemory2D(0, 1, 1, -1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => memory.AsMemory2D(0, 1, -100, 1));
-            Assert.ThrowsException<ArgumentException>(() => memory.AsMemory2D(0, 2, 4, 0));
-            Assert.ThrowsException<ArgumentException>(() => memory.AsMemory2D(0, 3, 3, 0));
-            Assert.ThrowsException<ArgumentException>(() => memory.AsMemory2D(1, 2, 3, 0));
-            Assert.ThrowsException<ArgumentException>(() => memory.AsMemory2D(0, 10, 1, 120));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => memory.AsMemory2D(-99, 1, 1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => memory.AsMemory2D(0, -10, 1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => memory.AsMemory2D(0, 1, 1, -1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => memory.AsMemory2D(0, 1, -100, 1));
+            _ = Assert.ThrowsException<ArgumentException>(() => memory.AsMemory2D(0, 2, 4, 0));
+            _ = Assert.ThrowsException<ArgumentException>(() => memory.AsMemory2D(0, 3, 3, 0));
+            _ = Assert.ThrowsException<ArgumentException>(() => memory.AsMemory2D(1, 2, 3, 0));
+            _ = Assert.ThrowsException<ArgumentException>(() => memory.AsMemory2D(0, 10, 1, 120));
         }
 #endif
 
@@ -249,7 +249,7 @@ namespace UnitTests.HighPerformance
                 { 4, 5, 6 }
             };
 
-            Memory2D<int> memory2d = new Memory2D<int>(array);
+            Memory2D<int> memory2d = new(array);
 
             // Test a slice from a Memory2D<T> with valid parameters
             Memory2D<int> slice1 = memory2d.Slice(1, 1, 1, 2);
@@ -273,17 +273,17 @@ namespace UnitTests.HighPerformance
             Assert.AreEqual(slice2.Span[1, 1], 6);
 
             // A few invalid slicing operations, with out of range parameters
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(-1, 1, 1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(1, -1, 1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(1, 1, 1, -1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(1, 1, -1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(10, 1, 1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(1, 12, 1, 12));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(1, 1, 55, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(0, 0, 2, 4));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(0, 0, 3, 3));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(0, 1, 2, 3));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(1, 0, 2, 3));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(-1, 1, 1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(1, -1, 1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(1, 1, 1, -1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(1, 1, -1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(10, 1, 1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(1, 12, 1, 12));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(1, 1, 55, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(0, 0, 2, 4));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(0, 0, 3, 3));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(0, 1, 2, 3));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(1, 0, 2, 3));
         }
 
         [TestCategory("Memory2DT")]
@@ -296,7 +296,7 @@ namespace UnitTests.HighPerformance
                 { 4, 5, 6 }
             };
 
-            Memory2D<int> memory2d = new Memory2D<int>(array);
+            Memory2D<int> memory2d = new(array);
 
             // Mostly the same test as above, just with different parameters
             Memory2D<int> slice1 = memory2d.Slice(0, 0, 2, 2);
@@ -333,7 +333,7 @@ namespace UnitTests.HighPerformance
                 { 4, 5, 6 }
             };
 
-            Memory2D<int> memory2d = new Memory2D<int>(array);
+            Memory2D<int> memory2d = new(array);
 
             // Here we test that we can get a Memory<T> from a 2D one when the underlying
             // data is contiguous. Note that in this case this can only work on runtimes
@@ -357,7 +357,7 @@ namespace UnitTests.HighPerformance
         {
             int[] array = { 1, 2, 3, 4 };
 
-            Memory2D<int> memory2d = new Memory2D<int>(array, 2, 2);
+            Memory2D<int> memory2d = new(array, 2, 2);
 
             // Same test as above, but this will always succeed on all runtimes,
             // as creating a Memory<T> from a 1D array is always supported.
@@ -396,9 +396,9 @@ namespace UnitTests.HighPerformance
 
             // We create a Memory2D<T> from an array and verify that pinning this
             // instance correctly returns a pointer to the right array element.
-            Memory2D<int> memory2d = new Memory2D<int>(array, 2, 2);
+            Memory2D<int> memory2d = new(array, 2, 2);
 
-            using var pin = memory2d.Pin();
+            using System.Buffers.MemoryHandle pin = memory2d.Pin();
 
             Assert.AreEqual(((int*)pin.Pointer)[0], 1);
             Assert.AreEqual(((int*)pin.Pointer)[3], 4);
@@ -411,9 +411,9 @@ namespace UnitTests.HighPerformance
             int[] array = { 1, 2, 3, 4 };
 
             // Same as above, but we test with a sliced Memory2D<T> instance
-            Memory2D<int> memory2d = new Memory2D<int>(array, 2, 2);
+            Memory2D<int> memory2d = new(array, 2, 2);
 
-            using var pin = memory2d.Pin();
+            using System.Buffers.MemoryHandle pin = memory2d.Pin();
 
             Assert.AreEqual(((int*)pin.Pointer)[0], 1);
             Assert.AreEqual(((int*)pin.Pointer)[3], 4);
@@ -431,7 +431,7 @@ namespace UnitTests.HighPerformance
 
             // Here we create a Memory2D<T> instance from a 2D array and then verify that
             // calling ToArray() creates an array that matches the contents of the first.
-            Memory2D<int> memory2d = new Memory2D<int>(array);
+            Memory2D<int> memory2d = new(array);
 
             int[,] copy = memory2d.ToArray();
 
@@ -452,7 +452,7 @@ namespace UnitTests.HighPerformance
             };
 
             // Same as above, but with a sliced Memory2D<T> instance
-            Memory2D<int> memory2d = new Memory2D<int>(array, 0, 0, 2, 2);
+            Memory2D<int> memory2d = new(array, 0, 0, 2, 2);
 
             int[,] copy = memory2d.ToArray();
 
@@ -480,7 +480,7 @@ namespace UnitTests.HighPerformance
 
             // Here we want to verify that the Memory2D<T>.Equals method works correctly. This is true
             // when the wrapped instance is the same, and the various internal offsets and sizes match.
-            Memory2D<int> memory2d = new Memory2D<int>(array);
+            Memory2D<int> memory2d = new(array);
 
             Assert.IsFalse(memory2d.Equals(null));
             Assert.IsFalse(memory2d.Equals(new Memory2D<int>(array, 0, 1, 2, 2)));
@@ -507,7 +507,7 @@ namespace UnitTests.HighPerformance
                 { 4, 5, 6 }
             };
 
-            Memory2D<int> memory2d = new Memory2D<int>(array);
+            Memory2D<int> memory2d = new(array);
 
             // Ensure that the GetHashCode method is repeatable
             int a = memory2d.GetHashCode(), b = memory2d.GetHashCode();
@@ -530,7 +530,7 @@ namespace UnitTests.HighPerformance
                 { 4, 5, 6 }
             };
 
-            Memory2D<int> memory2d = new Memory2D<int>(array);
+            Memory2D<int> memory2d = new(array);
 
             // Here we just want to verify that the type is nicely printed as expected, along with the size
             string text = memory2d.ToString();

@@ -16,7 +16,7 @@ namespace UnitTests.HighPerformance.Extensions
         [TestMethod]
         public void Test_DangerousGetObjectDataByteOffset()
         {
-            var a = new TestClass { Number = 42, Character = 'a', Text = "Hello" };
+            TestClass? a = new() { Number = 42, Character = 'a', Text = "Hello" };
 
             IntPtr ptr = ObjectMarshal.DangerousGetObjectDataByteOffset(a, ref a.Number);
 
@@ -86,8 +86,8 @@ namespace UnitTests.HighPerformance.Extensions
         [TestMethod]
         public void TestBoxOfT_CustomStruct()
         {
-            var a = new TestStruct { Number = 42, Character = 'a', Text = "Hello" };
-            var b = new TestStruct { Number = 38293, Character = 'z', Text = "World" };
+            TestStruct a = new() { Number = 42, Character = 'a', Text = "Hello" };
+            TestStruct b = new() { Number = 38293, Character = 'z', Text = "World" };
 
             Test(a);
             Test(b);

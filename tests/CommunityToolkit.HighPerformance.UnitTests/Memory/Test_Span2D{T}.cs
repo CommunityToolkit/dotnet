@@ -77,9 +77,9 @@ namespace UnitTests.HighPerformance
             Assert.AreEqual(span[5], 101);
 
             // A few cases with invalid indices
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => Span2D<int>.DangerousCreate(ref Unsafe.AsRef<int>(null), -1, 0, 0));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => Span2D<int>.DangerousCreate(ref Unsafe.AsRef<int>(null), 1, -2, 0));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => Span2D<int>.DangerousCreate(ref Unsafe.AsRef<int>(null), 1, 0, -5));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => Span2D<int>.DangerousCreate(ref Unsafe.AsRef<int>(null), -1, 0, 0));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => Span2D<int>.DangerousCreate(ref Unsafe.AsRef<int>(null), 1, -2, 0));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => Span2D<int>.DangerousCreate(ref Unsafe.AsRef<int>(null), 1, 0, -5));
         }
 #endif
 
@@ -98,7 +98,7 @@ namespace UnitTests.HighPerformance
             };
 
             // Same as above, but creating a Span2D<T> from a raw pointer
-            Span2D<int> span2d = new Span2D<int>(ptr, 2, 3, 0);
+            Span2D<int> span2d = new(ptr, 2, 3, 0);
 
             Assert.IsFalse(span2d.IsEmpty);
             Assert.AreEqual(span2d.Length, 6);
@@ -111,10 +111,10 @@ namespace UnitTests.HighPerformance
             Assert.AreEqual(ptr[0], 99);
             Assert.AreEqual(ptr[5], 101);
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>((void*)0, -1, 0, 0));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>((void*)0, 1, -2, 0));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>((void*)0, 1, 0, -5));
-            Assert.ThrowsException<ArgumentException>(() => new Span2D<string>((void*)0, 2, 2, 0));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>((void*)0, -1, 0, 0));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>((void*)0, 1, -2, 0));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>((void*)0, 1, 0, -5));
+            _ = Assert.ThrowsException<ArgumentException>(() => new Span2D<string>((void*)0, 2, 2, 0));
         }
 
         [TestCategory("Span2DT")]
@@ -127,7 +127,7 @@ namespace UnitTests.HighPerformance
             };
 
             // Same as above, but wrapping a 1D array with data in row-major order
-            Span2D<int> span2d = new Span2D<int>(array, 1, 2, 2, 1);
+            Span2D<int> span2d = new(array, 1, 2, 2, 1);
 
             Assert.IsFalse(span2d.IsEmpty);
             Assert.AreEqual(span2d.Length, 4);
@@ -142,12 +142,12 @@ namespace UnitTests.HighPerformance
 
             // The first check fails due to the array covariance test mentioned in the Memory2D<T> tests.
             // The others just validate a number of cases with invalid arguments (eg. out of range).
-            Assert.ThrowsException<ArrayTypeMismatchException>(() => new Span2D<object>(new string[1], 1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, -99, 1, 1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 0, -10, 1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 0, 1, 1, -1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 0, 1, -100, 1));
-            Assert.ThrowsException<ArgumentException>(() => new Span2D<int>(array, 0, 10, 1, 120));
+            _ = Assert.ThrowsException<ArrayTypeMismatchException>(() => new Span2D<object>(new string[1], 1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, -99, 1, 1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 0, -10, 1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 0, 1, 1, -1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 0, 1, -100, 1));
+            _ = Assert.ThrowsException<ArgumentException>(() => new Span2D<int>(array, 0, 10, 1, 120));
         }
 
         [TestCategory("Span2DT")]
@@ -161,7 +161,7 @@ namespace UnitTests.HighPerformance
             };
 
             // Same as above, but directly wrapping a 2D array
-            Span2D<int> span2d = new Span2D<int>(array);
+            Span2D<int> span2d = new(array);
 
             Assert.IsFalse(span2d.IsEmpty);
             Assert.AreEqual(span2d.Length, 6);
@@ -174,7 +174,7 @@ namespace UnitTests.HighPerformance
             Assert.AreEqual(array[0, 1], 99);
             Assert.AreEqual(array[1, 2], 101);
 
-            Assert.ThrowsException<ArrayTypeMismatchException>(() => new Span2D<object>(new string[1, 2]));
+            _ = Assert.ThrowsException<ArrayTypeMismatchException>(() => new Span2D<object>(new string[1, 2]));
         }
 
         [TestCategory("Span2DT")]
@@ -188,7 +188,7 @@ namespace UnitTests.HighPerformance
             };
 
             // Same as above, but with a custom slicing over the target 2D array
-            Span2D<int> span2d = new Span2D<int>(array, 0, 1, 2, 2);
+            Span2D<int> span2d = new(array, 0, 1, 2, 2);
 
             Assert.IsFalse(span2d.IsEmpty);
             Assert.AreEqual(span2d.Length, 4);
@@ -201,7 +201,7 @@ namespace UnitTests.HighPerformance
             Assert.AreEqual(array[0, 1], 99);
             Assert.AreEqual(array[1, 2], 101);
 
-            Assert.ThrowsException<ArrayTypeMismatchException>(() => new Span2D<object>(new string[1, 2], 0, 0, 2, 2));
+            _ = Assert.ThrowsException<ArrayTypeMismatchException>(() => new Span2D<object>(new string[1, 2], 0, 0, 2, 2));
         }
 
         [TestCategory("Span2DT")]
@@ -221,7 +221,7 @@ namespace UnitTests.HighPerformance
             };
 
             // Here we wrap a layer in a 3D array instead, the rest is the same
-            Span2D<int> span2d = new Span2D<int>(array, 1);
+            Span2D<int> span2d = new(array, 1);
 
             Assert.IsFalse(span2d.IsEmpty);
             Assert.AreEqual(span2d.Length, 6);
@@ -235,8 +235,8 @@ namespace UnitTests.HighPerformance
             Assert.AreEqual(array[1, 0, 1], 99);
             Assert.AreEqual(array[1, 1, 2], 101);
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, -1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 20));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, -1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 20));
         }
 
         [TestCategory("Span2DT")]
@@ -256,7 +256,7 @@ namespace UnitTests.HighPerformance
             };
 
             // Same as above, but also slicing a target 2D area in the 3D array layer
-            Span2D<int> span2d = new Span2D<int>(array, 1, 0, 1, 2, 2);
+            Span2D<int> span2d = new(array, 1, 0, 1, 2, 2);
 
             Assert.IsFalse(span2d.IsEmpty);
             Assert.AreEqual(span2d.Length, 4);
@@ -270,11 +270,11 @@ namespace UnitTests.HighPerformance
             Assert.AreEqual(array[1, 0, 2], 99);
             Assert.AreEqual(array[1, 1, 2], 101);
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, -1, 1, 1, 1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 1, -1, 1, 1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 1, 1, -1, 1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 1, 1, 1, -1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 1, 1, 1, 1, -1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, -1, 1, 1, 1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 1, -1, 1, 1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 1, 1, -1, 1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 1, 1, 1, -1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 1, 1, 1, 1, -1));
         }
 
         [TestCategory("Span2DT")]
@@ -289,7 +289,7 @@ namespace UnitTests.HighPerformance
 
             // Tests for the Fill and Clear APIs for Span2D<T>. These should fill
             // or clear the entire wrapped 2D array (just like eg. Span<T>.Fill).
-            Span2D<int> span2d = new Span2D<int>(array);
+            Span2D<int> span2d = new(array);
 
             span2d.Fill(42);
 
@@ -312,7 +312,7 @@ namespace UnitTests.HighPerformance
 
             // Same as above, but with an initial slicing as well to ensure
             // these method work correctly with different internal offsets
-            Span2D<int> span2d = new Span2D<int>(array, 0, 0, 0, 0);
+            Span2D<int> span2d = new(array, 0, 0, 0, 0);
 
             span2d.Fill(42);
 
@@ -334,7 +334,7 @@ namespace UnitTests.HighPerformance
             };
 
             // Same as above, just with different slicing to a target smaller 2D area
-            Span2D<int> span2d = new Span2D<int>(array, 0, 1, 2, 2);
+            Span2D<int> span2d = new(array, 0, 1, 2, 2);
 
             span2d.Fill(42);
 
@@ -379,7 +379,7 @@ namespace UnitTests.HighPerformance
                 { 4, 5, 6 }
             };
 
-            Span2D<int> span2d = new Span2D<int>(array);
+            Span2D<int> span2d = new(array);
 
             int[] target = new int[array.Length];
 
@@ -390,7 +390,7 @@ namespace UnitTests.HighPerformance
             CollectionAssert.AreEqual(array, target);
 
             // Exception due to the target span being too small for the source Span2D<T> instance
-            Assert.ThrowsException<ArgumentException>(() => new Span2D<int>(array).CopyTo(Span<int>.Empty));
+            _ = Assert.ThrowsException<ArgumentException>(() => new Span2D<int>(array).CopyTo(Span<int>.Empty));
         }
 
         [TestCategory("Span2DT")]
@@ -404,7 +404,7 @@ namespace UnitTests.HighPerformance
             };
 
             // Same as above, but with different initial slicing
-            Span2D<int> span2d = new Span2D<int>(array, 0, 1, 2, 2);
+            Span2D<int> span2d = new(array, 0, 1, 2, 2);
 
             int[] target = new int[4];
 
@@ -414,8 +414,8 @@ namespace UnitTests.HighPerformance
 
             CollectionAssert.AreEqual(target, expected);
 
-            Assert.ThrowsException<ArgumentException>(() => new Span2D<int>(array).CopyTo(Span<int>.Empty));
-            Assert.ThrowsException<ArgumentException>(() => new Span2D<int>(array, 0, 1, 2, 2).CopyTo(Span<int>.Empty));
+            _ = Assert.ThrowsException<ArgumentException>(() => new Span2D<int>(array).CopyTo(Span<int>.Empty));
+            _ = Assert.ThrowsException<ArgumentException>(() => new Span2D<int>(array, 0, 1, 2, 2).CopyTo(Span<int>.Empty));
         }
 
         [TestCategory("Span2DT")]
@@ -428,7 +428,7 @@ namespace UnitTests.HighPerformance
                 { 4, 5, 6 }
             };
 
-            Span2D<int> span2d = new Span2D<int>(array);
+            Span2D<int> span2d = new(array);
 
             int[,] target = new int[2, 3];
 
@@ -438,7 +438,7 @@ namespace UnitTests.HighPerformance
 
             CollectionAssert.AreEqual(array, target);
 
-            Assert.ThrowsException<ArgumentException>(() => new Span2D<int>(array).CopyTo(Span2D<int>.Empty));
+            _ = Assert.ThrowsException<ArgumentException>(() => new Span2D<int>(array).CopyTo(Span2D<int>.Empty));
         }
 
         [TestCategory("Span2DT")]
@@ -452,7 +452,7 @@ namespace UnitTests.HighPerformance
             };
 
             // Same as above, but with extra initial slicing
-            Span2D<int> span2d = new Span2D<int>(array, 0, 1, 2, 2);
+            Span2D<int> span2d = new(array, 0, 1, 2, 2);
 
             int[,] target = new int[2, 2];
 
@@ -466,7 +466,7 @@ namespace UnitTests.HighPerformance
 
             CollectionAssert.AreEqual(target, expected);
 
-            Assert.ThrowsException<ArgumentException>(() => new Span2D<int>(array).CopyTo(new Span2D<int>(target)));
+            _ = Assert.ThrowsException<ArgumentException>(() => new Span2D<int>(array).CopyTo(new Span2D<int>(target)));
         }
 
         [TestCategory("Span2DT")]
@@ -479,7 +479,7 @@ namespace UnitTests.HighPerformance
                 { 4, 5, 6 }
             };
 
-            Span2D<int> span2d = new Span2D<int>(array);
+            Span2D<int> span2d = new(array);
 
             int[] target = new int[array.Length];
 
@@ -503,7 +503,7 @@ namespace UnitTests.HighPerformance
             };
 
             // Same as above, but copying to a 2D array with the safe TryCopyTo method
-            Span2D<int> span2d = new Span2D<int>(array);
+            Span2D<int> span2d = new(array);
 
             int[,] target = new int[2, 3];
 
@@ -534,7 +534,7 @@ namespace UnitTests.HighPerformance
                 { 4, 5, 6 }
             };
 
-            Span2D<int> span2d = new Span2D<int>(array);
+            Span2D<int> span2d = new(array);
 
             ref int r0 = ref span2d.GetPinnableReference();
 
@@ -557,7 +557,7 @@ namespace UnitTests.HighPerformance
                 { 4, 5, 6 }
             };
 
-            Span2D<int> span2d = new Span2D<int>(array);
+            Span2D<int> span2d = new(array);
 
             ref int r0 = ref span2d.DangerousGetReference();
 
@@ -571,7 +571,7 @@ namespace UnitTests.HighPerformance
         {
             int[,] array = new int[4, 4];
 
-            Span2D<int> span2d = new Span2D<int>(array);
+            Span2D<int> span2d = new(array);
 
             ref int arrayRef = ref array[1, 3];
             ref int span2dRef = ref span2d[1, ^1];
@@ -585,7 +585,7 @@ namespace UnitTests.HighPerformance
         {
             int[,] array = new int[4, 4];
 
-            Span2D<int> span2d = new Span2D<int>(array);
+            Span2D<int> span2d = new(array);
 
             ref int arrayRef = ref array[2, 1];
             ref int span2dRef = ref span2d[^2, ^3];
@@ -600,7 +600,7 @@ namespace UnitTests.HighPerformance
         {
             int[,] array = new int[4, 4];
 
-            Span2D<int> span2d = new Span2D<int>(array);
+            Span2D<int> span2d = new(array);
 
             ref int span2dRef = ref span2d[^6, 2];
         }
@@ -611,7 +611,7 @@ namespace UnitTests.HighPerformance
         {
             int[,] array = new int[4, 4];
 
-            Span2D<int> span2d = new Span2D<int>(array);
+            Span2D<int> span2d = new(array);
             Span2D<int> slice = span2d[1.., 1..];
 
             Assert.AreEqual(slice.Length, 9);
@@ -625,7 +625,7 @@ namespace UnitTests.HighPerformance
         {
             int[,] array = new int[4, 4];
 
-            Span2D<int> span2d = new Span2D<int>(array);
+            Span2D<int> span2d = new(array);
             Span2D<int> slice = span2d[0..^2, 1..^1];
 
             Assert.AreEqual(slice.Length, 4);
@@ -640,7 +640,7 @@ namespace UnitTests.HighPerformance
         {
             int[,] array = new int[4, 4];
 
-            Span2D<int> span2d = new Span2D<int>(array);
+            Span2D<int> span2d = new(array);
             _ = span2d[0..6, 2..^1];
 
             Assert.Fail();
@@ -660,7 +660,7 @@ namespace UnitTests.HighPerformance
             // Here we have a number of tests that just take an initial 2D array, create a Span2D<T>,
             // perform a number of slicing operations and then validate the parameters for the resulting
             // instances, and that the indexer works correctly and maps to the right original elements.
-            Span2D<int> span2d = new Span2D<int>(array);
+            Span2D<int> span2d = new(array);
 
             Span2D<int> slice1 = span2d.Slice(1, 1, 1, 2);
 
@@ -680,13 +680,13 @@ namespace UnitTests.HighPerformance
             Assert.AreEqual(slice2[1, 1], 6);
 
             // Some checks for invalid arguments
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).Slice(-1, 1, 1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).Slice(1, -1, 1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).Slice(1, 1, 1, -1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).Slice(1, 1, -1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).Slice(10, 1, 1, 1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).Slice(1, 12, 1, 12));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).Slice(1, 1, 55, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).Slice(-1, 1, 1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).Slice(1, -1, 1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).Slice(1, 1, 1, -1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).Slice(1, 1, -1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).Slice(10, 1, 1, 1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).Slice(1, 12, 1, 12));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).Slice(1, 1, 55, 1));
         }
 
         [TestCategory("Span2DT")]
@@ -699,7 +699,7 @@ namespace UnitTests.HighPerformance
                 { 4, 5, 6 }
             };
 
-            Span2D<int> span2d = new Span2D<int>(array);
+            Span2D<int> span2d = new(array);
 
             // Same as above, but with some different slicing
             Span2D<int> slice1 = span2d.Slice(0, 0, 2, 2);
@@ -737,7 +737,7 @@ namespace UnitTests.HighPerformance
                 { 4, 5, 6 }
             };
 
-            Span2D<int> span2d = new Span2D<int>(array);
+            Span2D<int> span2d = new(array);
 
             // Here we create a Span2D<T> from a 2D array and want to get a Span<T> from
             // a specific row. This is only supported on runtimes with fast Span<T> support
@@ -754,8 +754,8 @@ namespace UnitTests.HighPerformance
                 ref span[2],
                 ref array[1, 2]));
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetRowSpan(-1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetRowSpan(5));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetRowSpan(-1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetRowSpan(5));
         }
 #endif
 
@@ -765,7 +765,7 @@ namespace UnitTests.HighPerformance
         {
             int[] array = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-            Span2D<int> span2d = new Span2D<int>(array, 3, 3);
+            Span2D<int> span2d = new(array, 3, 3);
 
             bool success = span2d.TryGetSpan(out Span<int> span);
 
@@ -809,7 +809,7 @@ namespace UnitTests.HighPerformance
         public void Test_Span2DT_TryGetSpan_From1DArray_4()
         {
             int[] array = new int[128];
-            Span2D<int> span2d = new Span2D<int>(array, 8, 16);
+            Span2D<int> span2d = new(array, 8, 16);
 
             bool success = span2d.TryGetSpan(out Span<int> span);
 
@@ -828,7 +828,7 @@ namespace UnitTests.HighPerformance
                 { 4, 5, 6 }
             };
 
-            Span2D<int> span2d = new Span2D<int>(array);
+            Span2D<int> span2d = new(array);
 
             // This API tries to get a Span<T> for the entire contents of Span2D<T>.
             // This only works on runtimes if the underlying data is contiguous
@@ -859,7 +859,7 @@ namespace UnitTests.HighPerformance
 
             // Same as above, but this will always fail because we're creating
             // a Span2D<T> wrapping non contiguous data (the pitch is not 0).
-            Span2D<int> span2d = new Span2D<int>(array, 0, 0, 2, 2);
+            Span2D<int> span2d = new(array, 0, 0, 2, 2);
 
             bool success = span2d.TryGetSpan(out Span<int> span);
 
@@ -879,7 +879,7 @@ namespace UnitTests.HighPerformance
 
             // Here we create a Span2D<T> and verify that ToArray() produces
             // a 2D array that is identical to the original one being wrapped.
-            Span2D<int> span2d = new Span2D<int>(array);
+            Span2D<int> span2d = new(array);
 
             int[,] copy = span2d.ToArray();
 
@@ -900,7 +900,7 @@ namespace UnitTests.HighPerformance
             };
 
             // Same as above, but with extra initial slicing
-            Span2D<int> span2d = new Span2D<int>(array, 0, 0, 2, 2);
+            Span2D<int> span2d = new(array, 0, 0, 2, 2);
 
             int[,] copy = span2d.ToArray();
 
@@ -927,7 +927,7 @@ namespace UnitTests.HighPerformance
                 { 4, 5, 6 }
             };
 
-            Span2D<int> span2d = new Span2D<int>(array);
+            Span2D<int> span2d = new(array);
 
             // Span2D<T>.Equals always throw (this mirrors the behavior of Span<T>.Equals)
             _ = span2d.Equals(null);
@@ -944,7 +944,7 @@ namespace UnitTests.HighPerformance
                 { 4, 5, 6 }
             };
 
-            Span2D<int> span2d = new Span2D<int>(array);
+            Span2D<int> span2d = new(array);
 
             // Same as above, this always throws
             _ = span2d.GetHashCode();
@@ -960,7 +960,7 @@ namespace UnitTests.HighPerformance
                 { 4, 5, 6 }
             };
 
-            Span2D<int> span2d = new Span2D<int>(array);
+            Span2D<int> span2d = new(array);
 
             // Verify that we get the nicely formatted string
             string text = span2d.ToString();
@@ -982,15 +982,15 @@ namespace UnitTests.HighPerformance
 
             // Create two Span2D<T> instances wrapping the same array with the same
             // parameters, and verify that the equality operators work correctly.
-            Span2D<int> span2d_1 = new Span2D<int>(array);
-            Span2D<int> span2d_2 = new Span2D<int>(array);
+            Span2D<int> span2d_1 = new(array);
+            Span2D<int> span2d_2 = new(array);
 
             Assert.IsTrue(span2d_1 == span2d_2);
             Assert.IsFalse(span2d_1 == Span2D<int>.Empty);
             Assert.IsTrue(Span2D<int>.Empty == Span2D<int>.Empty);
 
             // Same as above, but verify that a sliced span is not reported as equal
-            Span2D<int> span2d_3 = new Span2D<int>(array, 0, 0, 2, 2);
+            Span2D<int> span2d_3 = new(array, 0, 0, 2, 2);
 
             Assert.IsFalse(span2d_1 == span2d_3);
             Assert.IsFalse(span2d_3 == Span2D<int>.Empty);
@@ -1009,7 +1009,7 @@ namespace UnitTests.HighPerformance
             // Verify that an explicit constructor and the implicit conversion
             // operator generate an identical Span2D<T> instance from the array.
             Span2D<int> span2d_1 = array;
-            Span2D<int> span2d_2 = new Span2D<int>(array);
+            Span2D<int> span2d_2 = new(array);
 
             Assert.IsTrue(span2d_1 == span2d_2);
         }
@@ -1031,9 +1031,9 @@ namespace UnitTests.HighPerformance
 
             CollectionAssert.AreEqual(enumerable.ToArray(), expected);
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetRow(-1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetRow(2));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetRow(1000));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetRow(-1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetRow(2));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetRow(1000));
         }
 
         [TestCategory("Span2DT")]
@@ -1053,9 +1053,9 @@ namespace UnitTests.HighPerformance
 
             CollectionAssert.AreEqual(enumerable.ToArray(), expected);
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 2, 3, 0).GetRow(-1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 2, 3, 0).GetRow(2));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 2, 3, 0).GetRow(1000));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 2, 3, 0).GetRow(-1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 2, 3, 0).GetRow(2));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 2, 3, 0).GetRow(1000));
         }
 
         [TestCategory("Span2DT")]
@@ -1075,9 +1075,9 @@ namespace UnitTests.HighPerformance
 
             CollectionAssert.AreEqual(enumerable.ToArray(), expected);
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetColumn(-1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetColumn(3));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetColumn(1000));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetColumn(-1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetColumn(3));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetColumn(1000));
         }
 
         [TestCategory("Span2DT")]
@@ -1097,9 +1097,9 @@ namespace UnitTests.HighPerformance
 
             CollectionAssert.AreEqual(enumerable.ToArray(), expected);
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 2, 3, 0).GetColumn(-1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 2, 3, 0).GetColumn(3));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 2, 3, 0).GetColumn(1000));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 2, 3, 0).GetColumn(-1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 2, 3, 0).GetColumn(3));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 2, 3, 0).GetColumn(1000));
         }
 
         [TestCategory("Span2DT")]
@@ -1118,7 +1118,7 @@ namespace UnitTests.HighPerformance
             // Here we want to test the Span2D<T> enumerator. We create a Span2D<T> instance over
             // a given section of the initial 2D array, then iterate over it and store the items
             // into a temporary array. We then just compare the contents to ensure they match.
-            foreach (ref var item in new Span2D<int>(array, 0, 1, 2, 2))
+            foreach (ref int item in new Span2D<int>(array, 0, 1, 2, 2))
             {
                 // Check the reference to ensure it points to the right original item
                 Assert.IsTrue(Unsafe.AreSame(
@@ -1148,7 +1148,7 @@ namespace UnitTests.HighPerformance
             int i = 0;
 
             // Same test as above, but wrapping a raw pointer
-            foreach (ref var item in new Span2D<int>(array + 1, 2, 2, 1))
+            foreach (ref int item in new Span2D<int>(array + 1, 2, 2, 1))
             {
                 // Check the reference again
                 Assert.IsTrue(Unsafe.AreSame(
@@ -1167,7 +1167,7 @@ namespace UnitTests.HighPerformance
         [TestMethod]
         public void Test_Span2DT_GetEnumerator_Empty()
         {
-            var enumerator = Span2D<int>.Empty.GetEnumerator();
+            Span2D<int>.Enumerator enumerator = Span2D<int>.Empty.GetEnumerator();
 
             // Ensure that an enumerator from an empty Span2D<T> can't move next
             Assert.IsFalse(enumerator.MoveNext());

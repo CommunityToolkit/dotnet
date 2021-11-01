@@ -57,7 +57,7 @@ namespace CommunityToolkit.Mvvm.Messaging.Internals
             }
 
             // Add the key to the list of weak references to track it
-            this.keys.AddFirst(new WeakReference<TKey>(key));
+            _ = this.keys.AddFirst(new WeakReference<TKey>(key));
 
             return value;
         }

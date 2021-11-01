@@ -20,7 +20,7 @@ namespace UnitTests.HighPerformance.Buffers
         {
             Memory<byte> memory = new byte[256];
 
-            var writer = new MemoryBufferWriter<byte>(memory);
+            MemoryBufferWriter<byte>? writer = new(memory);
 
             Assert.AreEqual(writer.Capacity, 256);
             Assert.AreEqual(writer.FreeCapacity, 256);
@@ -45,11 +45,11 @@ namespace UnitTests.HighPerformance.Buffers
             Assert.AreEqual(memory.Length - 43, writer.GetSpan(22).Length);
             Assert.AreEqual(memory.Length - 43, writer.GetMemory(22).Length);
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => writer.Advance(-1));
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => writer.GetMemory(-1));
-            Assert.ThrowsException<ArgumentException>(() => writer.GetSpan(1024));
-            Assert.ThrowsException<ArgumentException>(() => writer.GetMemory(1024));
-            Assert.ThrowsException<ArgumentException>(() => writer.Advance(1024));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => writer.Advance(-1));
+            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => writer.GetMemory(-1));
+            _ = Assert.ThrowsException<ArgumentException>(() => writer.GetSpan(1024));
+            _ = Assert.ThrowsException<ArgumentException>(() => writer.GetMemory(1024));
+            _ = Assert.ThrowsException<ArgumentException>(() => writer.Advance(1024));
         }
 
         [TestCategory("MemoryBufferWriterOfT")]
@@ -58,7 +58,7 @@ namespace UnitTests.HighPerformance.Buffers
         {
             Memory<byte> memory = new byte[256];
 
-            var writer = new MemoryBufferWriter<byte>(memory);
+            MemoryBufferWriter<byte>? writer = new(memory);
 
             Span<byte> span = writer.GetSpan(4).Slice(0, 4);
 
