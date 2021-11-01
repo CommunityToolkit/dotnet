@@ -23,14 +23,14 @@ namespace UnitTests.Mvvm
             var command = new AsyncRelayCommand<string>(async s =>
             {
                 await Task.Delay(1000);
-                ticks = int.Parse(s);
+                ticks = int.Parse(s!);
                 await Task.Delay(1000);
             });
 
             Assert.IsTrue(command.CanExecute(null));
             Assert.IsTrue(command.CanExecute("1"));
 
-            (object, EventArgs) args = default;
+            (object?, EventArgs?) args = default;
 
             command.CanExecuteChanged += (s, e) => args = (s, e);
 
@@ -72,7 +72,7 @@ namespace UnitTests.Mvvm
             var command = new AsyncRelayCommand<string>(
                 s =>
             {
-                ticks = int.Parse(s);
+                ticks = int.Parse(s!);
                 return Task.CompletedTask;
             }, s => true);
 
@@ -97,7 +97,7 @@ namespace UnitTests.Mvvm
             var command = new AsyncRelayCommand<string>(
                 s =>
             {
-                ticks = int.Parse(s);
+                ticks = int.Parse(s!);
                 return Task.CompletedTask;
             }, s => false);
 

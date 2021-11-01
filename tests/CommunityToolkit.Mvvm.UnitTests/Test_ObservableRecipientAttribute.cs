@@ -55,12 +55,12 @@ namespace UnitTests.Mvvm
                 Messenger = WeakReferenceMessenger.Default;
             }
 
-            private string name;
+            private string? name;
 
             [MinLength(4)]
             [MaxLength(20)]
             [Required]
-            public string Name
+            public string? Name
             {
                 get => this.name;
                 set => SetProperty(ref this.name, value, true);

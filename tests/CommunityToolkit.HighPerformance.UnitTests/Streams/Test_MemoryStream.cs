@@ -136,7 +136,7 @@ namespace UnitTests.HighPerformance.Streams
             Assert.AreEqual(stream.Position, data.Length);
             Assert.IsTrue(data.AsSpan().SequenceEqual(result));
 
-            Assert.ThrowsException<ArgumentNullException>(() => stream.Write(null, 0, 10));
+            Assert.ThrowsException<ArgumentNullException>(() => stream.Write(null!, 0, 10));
             Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Write(data, -1, 10));
             Assert.ThrowsException<ArgumentException>(() => stream.Write(data, 200, 10));
             Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Write(data, 0, -24));
@@ -169,7 +169,7 @@ namespace UnitTests.HighPerformance.Streams
             Assert.AreEqual(stream.Position, data.Length);
             Assert.IsTrue(data.AsSpan().SequenceEqual(result));
 
-            await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => stream.WriteAsync(null, 0, 10));
+            await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => stream.WriteAsync(null!, 0, 10));
             await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(() => stream.WriteAsync(data, -1, 10));
             await Assert.ThrowsExceptionAsync<ArgumentException>(() => stream.WriteAsync(data, 200, 10));
             await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(() => stream.WriteAsync(data, 0, -24));

@@ -63,7 +63,7 @@ namespace UnitTests.HighPerformance.Streams
 
             try
             {
-                stream.Write(null, 0, 10);
+                stream.Write(null!, 0, 10);
             }
             catch (ArgumentNullException e) when (e.GetType() == typeof(ArgumentNullException))
             {

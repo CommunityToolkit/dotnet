@@ -15,11 +15,9 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Features>Strict</Features>
-    <Nullable>Disable</Nullable>
-    <LangVersion>Latest</LangVersion>
-    <DefaultLanguage>en-US</DefaultLanguage>
-    <NoPackageAnalysis>true</NoPackageAnalysis>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>10.0</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup>

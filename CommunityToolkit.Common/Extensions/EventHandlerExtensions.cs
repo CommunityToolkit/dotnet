@@ -22,7 +22,7 @@ namespace CommunityToolkit.Common.Deferred
         /// <param name="sender">Sender of the event.</param>
         /// <param name="eventArgs"><see cref="EventArgs"/> instance.</param>
         /// <returns><see cref="Task"/> to wait on deferred event handler.</returns>
-        public static Task InvokeAsync<T>(this EventHandler<T> eventHandler, object sender, T eventArgs)
+        public static Task InvokeAsync<T>(this EventHandler<T>? eventHandler, object sender, T eventArgs)
             where T : DeferredEventArgs
         {
             return InvokeAsync(eventHandler, sender, eventArgs, CancellationToken.None);
@@ -37,7 +37,7 @@ namespace CommunityToolkit.Common.Deferred
         /// <param name="eventArgs"><see cref="EventArgs"/> instance.</param>
         /// <param name="cancellationToken"><see cref="CancellationToken"/> option.</param>
         /// <returns><see cref="Task"/> to wait on deferred event handler.</returns>
-        public static Task InvokeAsync<T>(this EventHandler<T> eventHandler, object sender, T eventArgs, CancellationToken cancellationToken)
+        public static Task InvokeAsync<T>(this EventHandler<T>? eventHandler, object sender, T eventArgs, CancellationToken cancellationToken)
             where T : DeferredEventArgs
         {
             if (eventHandler == null)

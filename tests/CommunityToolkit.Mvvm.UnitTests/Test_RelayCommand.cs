@@ -22,7 +22,7 @@ namespace UnitTests.Mvvm
             Assert.IsTrue(command.CanExecute(null));
             Assert.IsTrue(command.CanExecute(new object()));
 
-            (object, EventArgs) args = default;
+            (object?, EventArgs?) args = default;
 
             command.CanExecuteChanged += (s, e) => args = (s, e);
 

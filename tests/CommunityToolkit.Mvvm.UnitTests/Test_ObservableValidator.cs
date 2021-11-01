@@ -52,7 +52,7 @@ namespace UnitTests.Mvvm
         {
             var model = new Person();
 
-            List<(object Sender, DataErrorsChangedEventArgs Args)> errors = new List<(object, DataErrorsChangedEventArgs)>();
+            List<(object? Sender, DataErrorsChangedEventArgs Args)> errors = new List<(object?, DataErrorsChangedEventArgs)>();
 
             model.ErrorsChanged += (s, e) => errors.Add((s, e));
 
@@ -393,7 +393,7 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_ObservableValidator_CustomValidation()
         {
-            var items = new Dictionary<object, object> { [nameof(CustomValidationModel.A)] = 42 };
+            var items = new Dictionary<object, object?> { [nameof(CustomValidationModel.A)] = 42 };
             var model = new CustomValidationModel(items);
             var events = new List<DataErrorsChangedEventArgs>();
 
@@ -470,7 +470,7 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(MyDerived2))]
         public void Test_ObservableRecipient_ValidationOnNonValidatableProperties(Type type)
         {
-            MyBase viewmodel = (MyBase)Activator.CreateInstance(type);
+            MyBase viewmodel = (MyBase)Activator.CreateInstance(type)!;
 
             viewmodel.ValidateAll();
         }
@@ -482,7 +482,7 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(MyDerived2))]
         public void Test_ObservableRecipient_ValidationOnNonValidatableProperties_WithFallback(Type type)
         {
-            MyBase viewmodel = (MyBase)Activator.CreateInstance(type);
+            MyBase viewmodel = (MyBase)Activator.CreateInstance(type)!;
 
             MethodInfo[] staticMethods = typeof(ObservableValidator).GetMethods(BindingFlags.Static | BindingFlags.NonPublic);
             MethodInfo validationMethod = staticMethods.Single(static m => m.Name.Contains("GetValidationActionFallback"));
@@ -493,18 +493,18 @@ namespace UnitTests.Mvvm
 
         public class Person : ObservableValidator
         {
-            private string name;
+            private string? name;
 
             [MinLength(4)]
             [MaxLength(20)]
             [Required]
-            public string Name
+            public string? Name
             {
                 get => this.name;
                 set => SetProperty(ref this.name, value, true);
             }
 
-            public bool TrySetName(string value, out IReadOnlyCollection<ValidationResult> errors)
+            public bool TrySetName(string? value, out IReadOnlyCollection<ValidationResult> errors)
             {
                 return TrySetProperty(ref name, value, out errors, nameof(Name));
             }
@@ -518,7 +518,7 @@ namespace UnitTests.Mvvm
                 set => SetProperty(ref this.age, value, true);
             }
 
-            public new void ClearErrors(string propertyName)
+            public new void ClearErrors(string? propertyName)
             {
                 base.ClearErrors(propertyName);
             }
@@ -529,7 +529,7 @@ namespace UnitTests.Mvvm
             [MinLength(4)]
             [MaxLength(20)]
             [Required]
-            public string Name { get; set; }
+            public string? Name { get; set; }
 
             [Range(18, 100)]
             public int Age { get; set; }
@@ -582,15 +582,15 @@ namespace UnitTests.Mvvm
 
             public string PropertyName { get; }
 
-            protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+            protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
             {
                 object
                     instance = validationContext.ObjectInstance,
-                    otherValue = instance.GetType().GetProperty(PropertyName).GetValue(instance);
+                    otherValue = instance.GetType().GetProperty(PropertyName)!.GetValue(instance)!;
 
-                if (((IComparable)value).CompareTo(otherValue) > 0)
+                if (((IComparable)value!).CompareTo(otherValue) > 0)
                 {
-                    return ValidationResult.Success;
+                    return ValidationResult.Success!;
                 }
 
                 return new ValidationResult("The current value is smaller than the other one");
@@ -603,7 +603,7 @@ namespace UnitTests.Mvvm
         /// </summary>
         public class CustomValidationModel : ObservableValidator
         {
-            public CustomValidationModel(IDictionary<object, object> items)
+            public CustomValidationModel(IDictionary<object, object?> items)
                 : base(items)
             {
             }
@@ -621,9 +621,9 @@ namespace UnitTests.Mvvm
             {
                 Assert.AreEqual(context.MemberName, nameof(A));
 
-                if ((int)context.Items[nameof(A)] == 42)
+                if ((int)context.Items[nameof(A)]! == 42)
                 {
-                    return ValidationResult.Success;
+                    return ValidationResult.Success!;
                 }
 
                 return new ValidationResult("Missing the magic number");
@@ -656,11 +656,11 @@ namespace UnitTests.Mvvm
                 this.service = service;
             }
 
-            private string name;
+            private string? name;
 
             [MaxLength(25, ErrorMessage = "The name is too long")]
             [CustomValidation(typeof(ValidationWithServiceModel), nameof(ValidateName))]
-            public string Name
+            public string? Name
             {
                 get => this.name;
                 set => SetProperty(ref this.name, value, true);
@@ -672,7 +672,7 @@ namespace UnitTests.Mvvm
 
                 if (isValid)
                 {
-                    return ValidationResult.Success;
+                    return ValidationResult.Success!;
                 }
 
                 return new ValidationResult("The name contains invalid characters");
@@ -690,19 +690,19 @@ namespace UnitTests.Mvvm
                 ValidateAllProperties();
             }
 
-            private string stringMayNotBeEmpty;
+            private string? stringMayNotBeEmpty;
 
             [Required(AllowEmptyStrings = false, ErrorMessage = "FIRST: {0}.")]
-            public string StringMayNotBeEmpty
+            public string? StringMayNotBeEmpty
             {
                 get => this.stringMayNotBeEmpty;
                 set => SetProperty(ref this.stringMayNotBeEmpty, value, true);
             }
 
-            private string anotherRequiredField;
+            private string? anotherRequiredField;
 
             [Required(AllowEmptyStrings = false, ErrorMessage = "SECOND: {0}.")]
-            public string AnotherRequiredField
+            public string? AnotherRequiredField
             {
                 get => this.anotherRequiredField;
                 set => SetProperty(ref this.anotherRequiredField, value, true);
@@ -721,7 +721,7 @@ namespace UnitTests.Mvvm
 
         public class MyDerived2 : MyBase
         {
-            public string Name { get; set; }
+            public string? Name { get; set; }
 
             public int SomeRandomproperty { get; set; }
         }

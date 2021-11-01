@@ -54,9 +54,9 @@ namespace UnitTests.Mvvm
 
         public class SampleModel<T> : ObservableObject
         {
-            private T data;
+            private T? data;
 
-            public T Data
+            public T? Data
             {
                 get => data;
                 set => SetProperty(ref data, value);
@@ -69,8 +69,8 @@ namespace UnitTests.Mvvm
         {
             var model = new WrappingModelWithProperty(new Person { Name = "Alice" });
 
-            (PropertyChangingEventArgs, string) changing = default;
-            (PropertyChangedEventArgs, string) changed = default;
+            (PropertyChangingEventArgs?, string?) changing = default;
+            (PropertyChangedEventArgs?, string?) changed = default;
 
             model.PropertyChanging += (s, e) =>
             {
@@ -97,7 +97,7 @@ namespace UnitTests.Mvvm
 
         public class Person
         {
-            public string Name { get; set; }
+            public string? Name { get; set; }
         }
 
         public class WrappingModelWithProperty : ObservableObject
@@ -111,7 +111,7 @@ namespace UnitTests.Mvvm
 
             public Person PersonProxy => Person;
 
-            public string Name
+            public string? Name
             {
                 get => Person.Name;
                 set => SetProperty(Person.Name, value, Person, (person, name) => person.Name = name);
@@ -124,8 +124,8 @@ namespace UnitTests.Mvvm
         {
             var model = new WrappingModelWithField(new Person { Name = "Alice" });
 
-            (PropertyChangingEventArgs, string) changing = default;
-            (PropertyChangedEventArgs, string) changed = default;
+            (PropertyChangingEventArgs?, string?) changing = default;
+            (PropertyChangedEventArgs?, string?) changed = default;
 
             model.PropertyChanging += (s, e) =>
             {
@@ -161,7 +161,7 @@ namespace UnitTests.Mvvm
 
             public Person PersonProxy => this.person;
 
-            public string Name
+            public string? Name
             {
                 get => this.person.Name;
                 set => SetProperty(this.person.Name, value, this.person, (person, name) => person.Name = name);
@@ -178,8 +178,8 @@ namespace UnitTests.Mvvm
                 var tcs = new TaskCompletionSource<int>();
                 var task = tcs.Task;
 
-                (PropertyChangingEventArgs, Task<int>) changing = default;
-                (PropertyChangedEventArgs, Task<int>) changed = default;
+                (PropertyChangingEventArgs?, Task<int>?) changing = default;
+                (PropertyChangedEventArgs?, Task<int>?) changed = default;
 
                 model.PropertyChanging += (s, e) =>
                 {
@@ -221,9 +221,9 @@ namespace UnitTests.Mvvm
 
         public class SampleModelWithTask<T> : ObservableObject
         {
-            private TaskNotifier<T> data;
+            private TaskNotifier<T>? data;
 
-            public Task<T> Data
+            public Task<T>? Data
             {
                 get => data;
                 set => SetPropertyAndNotifyOnCompletion(ref data, value);

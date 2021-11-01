@@ -19,7 +19,7 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_ObservableRecipient_Activation(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type);
+            var messenger = (IMessenger)Activator.CreateInstance(type)!;
             var viewmodel = new SomeRecipient<int>(messenger);
 
             Assert.IsFalse(viewmodel.IsActivatedCheck);
@@ -41,7 +41,7 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_ObservableRecipient_IsSame(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type);
+            var messenger = (IMessenger)Activator.CreateInstance(type)!;
             var viewmodel = new SomeRecipient<int>(messenger);
 
             Assert.AreSame(viewmodel.CurrentMessenger, messenger);
@@ -62,7 +62,7 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_ObservableRecipient_Injection(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type);
+            var messenger = (IMessenger)Activator.CreateInstance(type)!;
             var viewmodel = new SomeRecipient<int>(messenger);
 
             Assert.AreSame(viewmodel.CurrentMessenger, messenger);
@@ -74,10 +74,10 @@ namespace UnitTests.Mvvm
         [DataRow(typeof(WeakReferenceMessenger))]
         public void Test_ObservableRecipient_Broadcast(Type type)
         {
-            var messenger = (IMessenger)Activator.CreateInstance(type);
+            var messenger = (IMessenger)Activator.CreateInstance(type)!;
             var viewmodel = new SomeRecipient<int>(messenger);
 
-            PropertyChangedMessage<int> message = null;
+            PropertyChangedMessage<int>? message = null;
 
             messenger.Register<PropertyChangedMessage<int>>(messenger, (r, m) => message = m);
 
@@ -103,9 +103,9 @@ namespace UnitTests.Mvvm
 
             public IMessenger CurrentMessenger => Messenger;
 
-            private T data;
+            private T? data;
 
-            public T Data
+            public T? Data
             {
                 get => data;
                 set => SetProperty(ref data, value, true);

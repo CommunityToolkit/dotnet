@@ -33,7 +33,7 @@ namespace UnitTests.Mvvm
             Assert.IsFalse(command.CanBeCanceled);
             Assert.IsFalse(command.IsCancellationRequested);
 
-            (object, EventArgs) args = default;
+            (object?, EventArgs?) args = default;
 
             command.CanExecuteChanged += (s, e) => args = (s, e);
 
@@ -124,7 +124,7 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public async Task Test_AsyncRelayCommand_WithCancellation()
         {
-            TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
+            TaskCompletionSource<object?> tcs = new TaskCompletionSource<object?>();
 
             // We need to test the cancellation support here, so we use the overload with an input
             // parameter, which is a cancellation token. The token is the one that is internally managed

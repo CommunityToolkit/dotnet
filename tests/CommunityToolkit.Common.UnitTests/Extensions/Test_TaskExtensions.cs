@@ -36,7 +36,7 @@ namespace UnitTests.Extensions
         [TestMethod]
         public void Test_TaskExtensions_Generic_ReferenceType()
         {
-            TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
+            TaskCompletionSource<string?> tcs = new TaskCompletionSource<string?>();
 
             Assert.AreEqual(null, tcs.Task.GetResultOrDefault());
 
@@ -81,9 +81,9 @@ namespace UnitTests.Extensions
         [TestMethod]
         public async Task Test_TaskExtensions_ResultOrDefault_FromAsyncTaskMethodBuilder()
         {
-            var tcs = new TaskCompletionSource<object>();
+            var tcs = new TaskCompletionSource<object?>();
 
-            Task<string> taskFromBuilder = GetTaskFromAsyncMethodBuilder("Test", tcs);
+            Task<string?> taskFromBuilder = GetTaskFromAsyncMethodBuilder("Test", tcs);
 
             Assert.IsNull(((Task)taskFromBuilder).GetResultOrDefault());
             Assert.IsNull(taskFromBuilder.GetResultOrDefault());
@@ -125,7 +125,7 @@ namespace UnitTests.Extensions
         [TestMethod]
         public void Test_TaskExtensions_ResultOrDefault_OfT_String()
         {
-            TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
+            TaskCompletionSource<string?> tcs = new TaskCompletionSource<string?>();
 
             Assert.AreEqual(null, tcs.Task.GetResultOrDefault());
 
@@ -133,13 +133,13 @@ namespace UnitTests.Extensions
 
             Assert.AreEqual(null, tcs.Task.GetResultOrDefault());
 
-            tcs = new TaskCompletionSource<string>();
+            tcs = new TaskCompletionSource<string?>();
 
             tcs.SetException(new InvalidOperationException("Test"));
 
             Assert.AreEqual(null, tcs.Task.GetResultOrDefault());
 
-            tcs = new TaskCompletionSource<string>();
+            tcs = new TaskCompletionSource<string?>();
 
             tcs.SetResult("Hello world");
 
@@ -150,7 +150,7 @@ namespace UnitTests.Extensions
         // System.Runtime.CompilerServices.AsyncTaskMethodBuilder<TResult>.AsyncStateMachineBox<TStateMachine>.
         // See https://source.dot.net/#System.Private.CoreLib/AsyncTaskMethodBuilderT.cs,f8f35fd356112b30.
         // This is needed to verify that the extension also works when the input Task<T> is of a derived type.
-        private static async Task<T> GetTaskFromAsyncMethodBuilder<T>(T result, TaskCompletionSource<object> tcs)
+        private static async Task<T?> GetTaskFromAsyncMethodBuilder<T>(T? result, TaskCompletionSource<object?> tcs)
         {
             await tcs.Task;
 

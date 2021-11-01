@@ -104,14 +104,14 @@ namespace UnitTests.HighPerformance.Extensions
             {
                 Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
                 {
-                    T a = default;
+                    T? a = default;
 
-                    default(ReadOnlySpan<T>).IndexOf(in a);
+                    default(ReadOnlySpan<T?>).IndexOf(in a);
                 });
 
                 Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
                 {
-                    ReadOnlySpan<T> data = new T[] { default };
+                    ReadOnlySpan<T?> data = new T?[] { default };
 
                     data.Slice(1).IndexOf(in data[0]);
                 });
@@ -131,7 +131,7 @@ namespace UnitTests.HighPerformance.Extensions
         {
             static void Test<T>()
             {
-                ReadOnlySpan<T> data = new T[] { default, default, default, default };
+                ReadOnlySpan<T?> data = new T?[] { default, default, default, default };
 
                 for (int i = 0; i < data.Length; i++)
                 {
@@ -156,7 +156,7 @@ namespace UnitTests.HighPerformance.Extensions
                 // Before start
                 Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
                 {
-                    ReadOnlySpan<T> data = new T[] { default, default, default, default };
+                    ReadOnlySpan<T?> data = new T?[] { default, default, default, default };
 
                     data.Slice(1).IndexOf(in data[0]);
                 });
@@ -164,7 +164,7 @@ namespace UnitTests.HighPerformance.Extensions
                 // After end
                 Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
                 {
-                    ReadOnlySpan<T> data = new T[] { default, default, default, default };
+                    ReadOnlySpan<T?> data = new T?[] { default, default, default, default };
 
                     data.Slice(0, 2).IndexOf(in data[2]);
                 });
@@ -172,8 +172,8 @@ namespace UnitTests.HighPerformance.Extensions
                 // Local variable
                 Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
                 {
-                    var dummy = new T[] { default };
-                    ReadOnlySpan<T> data = new T[] { default, default, default, default };
+                    var dummy = new T?[] { default };
+                    ReadOnlySpan<T?> data = new T?[] { default, default, default, default };
 
                     data.IndexOf(in dummy[0]);
                 });

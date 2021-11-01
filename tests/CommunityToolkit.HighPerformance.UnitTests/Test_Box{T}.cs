@@ -69,7 +69,7 @@ namespace UnitTests.HighPerformance
         private static void Test<T>(T value, T test)
             where T : struct, IEquatable<T>
         {
-            Box<T> box = value;
+            Box<T>? box = value;
 
             Assert.AreEqual(box.GetReference(), value);
             Assert.AreEqual(box.ToString(), value.ToString());

@@ -130,7 +130,7 @@ namespace UnitTests.Extensions
 
         private class TestClass
         {
-            public event EventHandler<DeferredEventArgs> TestEvent;
+            public event EventHandler<DeferredEventArgs>? TestEvent;
 
             public Task RaiseTestEvent() => TestEvent.InvokeAsync(this, new DeferredEventArgs());
         }

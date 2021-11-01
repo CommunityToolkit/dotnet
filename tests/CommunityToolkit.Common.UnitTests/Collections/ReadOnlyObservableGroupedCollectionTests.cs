@@ -104,12 +104,12 @@ namespace UnitTests.Collections
 
             Assert.AreEqual(list.Count, 2);
 
-            var group0 = (ReadOnlyObservableGroup<string, int>)list[0];
+            var group0 = (ReadOnlyObservableGroup<string, int>)list[0]!;
 
             Assert.AreEqual(group0.Key, "A");
             CollectionAssert.AreEqual(group0, new[] { 1, 3, 5 });
 
-            var group1 = (ReadOnlyObservableGroup<string, int>)list[1];
+            var group1 = (ReadOnlyObservableGroup<string, int>)list[1]!;
 
             Assert.AreEqual(group1.Key, "B");
             CollectionAssert.AreEqual(group1, new[] { 2, 4, 6 });
@@ -202,7 +202,7 @@ namespace UnitTests.Collections
         [DataRow(3, 3)]
         public void AddGroupInSource_ShouldAddGroup(int sourceInitialItemsCount, int expectedInsertionIndex)
         {
-            NotifyCollectionChangedEventArgs collectionChangedEventArgs = null;
+            NotifyCollectionChangedEventArgs? collectionChangedEventArgs = null;
             var collectionChangedEventsCount = 0;
             var isCountPropertyChangedEventRaised = false;
             var itemsList = new[] { 1, 2, 3 };
@@ -245,7 +245,7 @@ namespace UnitTests.Collections
         [DataRow(2)]
         public void InsertGroupInSource_ShouldAddGroup(int insertionIndex)
         {
-            NotifyCollectionChangedEventArgs collectionChangedEventArgs = null;
+            NotifyCollectionChangedEventArgs? collectionChangedEventArgs = null;
             var collectionChangedEventsCount = 0;
             var isCountPropertyChangedEventRaised = false;
             var itemsList = new[] { 1, 2, 3 };
@@ -282,7 +282,7 @@ namespace UnitTests.Collections
         [TestMethod]
         public void RemoveGroupInSource_ShoudRemoveGroup()
         {
-            NotifyCollectionChangedEventArgs collectionChangedEventArgs = null;
+            NotifyCollectionChangedEventArgs? collectionChangedEventArgs = null;
             var collectionChangedEventsCount = 0;
             var isCountPropertyChangedEventRaised = false;
             var aItemsList = new[] { 1, 2, 3 };
@@ -323,7 +323,7 @@ namespace UnitTests.Collections
         [DataRow(0, 1)]
         public void MoveGroupInSource_ShoudMoveGroup(int oldIndex, int newIndex)
         {
-            NotifyCollectionChangedEventArgs collectionChangedEventArgs = null;
+            NotifyCollectionChangedEventArgs? collectionChangedEventArgs = null;
             var collectionChangedEventsCount = 0;
             var isCountPropertyChangedEventRaised = false;
             var aItemsList = new[] { 1, 2, 3 };
@@ -365,7 +365,7 @@ namespace UnitTests.Collections
         [TestMethod]
         public void ClearSource_ShoudClear()
         {
-            NotifyCollectionChangedEventArgs collectionChangedEventArgs = null;
+            NotifyCollectionChangedEventArgs? collectionChangedEventArgs = null;
             var collectionChangedEventsCount = 0;
             var isCountPropertyChangedEventRaised = false;
             var aItemsList = new[] { 1, 2, 3 };
@@ -401,7 +401,7 @@ namespace UnitTests.Collections
         [TestMethod]
         public void ReplaceGroupInSource_ShoudReplaceGroup()
         {
-            NotifyCollectionChangedEventArgs collectionChangedEventArgs = null;
+            NotifyCollectionChangedEventArgs? collectionChangedEventArgs = null;
             var collectionChangedEventsCount = 0;
             var isCountPropertyChangedEventRaised = false;
             var aItemsList = new[] { 1, 2, 3 };

@@ -18,7 +18,7 @@ namespace UnitTests.HighPerformance.Extensions
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void Test_ArrayExtensions_InvalidSize()
         {
-            int[] array = null;
+            int[]? array = null;
 
             ArrayPool<int>.Shared.Resize(ref array, -1);
         }
@@ -27,7 +27,7 @@ namespace UnitTests.HighPerformance.Extensions
         [TestMethod]
         public void Test_ArrayExtensions_NewArray()
         {
-            int[] array = null;
+            int[]? array = null;
 
             ArrayPool<int>.Shared.Resize(ref array, 10);
 

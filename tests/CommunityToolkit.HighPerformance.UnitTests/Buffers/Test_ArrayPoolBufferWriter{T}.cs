@@ -51,9 +51,9 @@ namespace UnitTests.HighPerformance.Buffers
 
             var arrayFieldInfo = typeof(ArrayPoolBufferWriter<byte>).GetField("array", BindingFlags.Instance | BindingFlags.NonPublic);
 
-            byte[] array = (byte[])arrayFieldInfo!.GetValue(writer);
+            byte[] array = (byte[])arrayFieldInfo!.GetValue(writer)!;
 
-            Assert.AreEqual(array!.Length, expected);
+            Assert.AreEqual(array.Length, expected);
         }
 
         [TestCategory("ArrayPoolBufferWriterOfT")]

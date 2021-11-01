@@ -50,9 +50,9 @@ namespace UnitTests.Mvvm
             IRecipient<MessageA>,
             IRecipient<MessageB>
         {
-            public MessageA A { get; private set; }
+            public MessageA? A { get; private set; }
 
-            public MessageB B { get; private set; }
+            public MessageB? B { get; private set; }
 
             public void Receive(MessageA message)
             {

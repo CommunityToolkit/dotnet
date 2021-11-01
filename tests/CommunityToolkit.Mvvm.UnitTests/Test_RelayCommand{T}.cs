@@ -17,7 +17,7 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_RelayCommandOfT_AlwaysEnabled()
         {
-            string text = string.Empty;
+            string? text = string.Empty;
 
             var command = new RelayCommand<string>(s => text = s);
 
@@ -26,7 +26,7 @@ namespace UnitTests.Mvvm
 
             Assert.ThrowsException<InvalidCastException>(() => command.CanExecute(new object()));
 
-            (object, EventArgs) args = default;
+            (object?, EventArgs?) args = default;
 
             command.CanExecuteChanged += (s, e) => args = (s, e);
 
@@ -48,7 +48,7 @@ namespace UnitTests.Mvvm
         [TestMethod]
         public void Test_RelayCommand_WithCanExecuteFunction()
         {
-            string text = string.Empty;
+            string? text = string.Empty;
 
             var command = new RelayCommand<string>(s => text = s, s => s != null);
 

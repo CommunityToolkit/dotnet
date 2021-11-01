@@ -23,7 +23,7 @@ namespace UnitTests.HighPerformance.Extensions
                 T? nullable = before;
                 ref T reference = ref nullable.DangerousGetValueOrDefaultReference();
 
-                Assert.AreEqual(nullable.Value, before);
+                Assert.AreEqual(nullable!.Value, before);
 
                 reference = after;
 

@@ -60,7 +60,7 @@ namespace UnitTests.HighPerformance.Streams
             Assert.IsTrue(writer.WrittenSpan.SequenceEqual(data));
 
             // A few tests with invalid inputs (null buffers, invalid indices, etc.)
-            Assert.ThrowsException<ArgumentNullException>(() => stream.Write(null, 0, 10));
+            Assert.ThrowsException<ArgumentNullException>(() => stream.Write(null!, 0, 10));
             Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Write(data, -1, 10));
             Assert.ThrowsException<ArgumentException>(() => stream.Write(data, 200, 10));
             Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Write(data, 0, -24));
@@ -86,7 +86,7 @@ namespace UnitTests.HighPerformance.Streams
             Assert.AreEqual(writer.WrittenCount, data.Length);
             Assert.IsTrue(writer.WrittenSpan.SequenceEqual(data));
 
-            await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => stream.WriteAsync(null, 0, 10));
+            await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => stream.WriteAsync(null!, 0, 10));
             await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(() => stream.WriteAsync(data, -1, 10));
             await Assert.ThrowsExceptionAsync<ArgumentException>(() => stream.WriteAsync(data, 200, 10));
             await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(() => stream.WriteAsync(data, 0, -24));
@@ -99,7 +99,6 @@ namespace UnitTests.HighPerformance.Streams
 
         [TestCategory("IBufferWriterStream")]
         [TestMethod]
-        [SuppressMessage("StyleCop.CSharp.LayoutRules", "SA1500", Justification = "Array initialization")]
         public void Test_IBufferWriterStream_WriteByte()
         {
             ArrayPoolBufferWriter<byte> writer = new ArrayPoolBufferWriter<byte>();

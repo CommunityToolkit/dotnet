@@ -39,11 +39,9 @@ namespace UnitTests.HighPerformance.Extensions
 
         internal class TestClass
         {
-#pragma warning disable SA1401 // Fields should be private
             public int Number;
             public char Character;
-            public string Text;
-#pragma warning restore SA1401
+            public string? Text;
         }
 
         [TestCategory("ObjectMarshal")]
