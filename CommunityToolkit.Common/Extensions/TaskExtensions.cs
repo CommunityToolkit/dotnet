@@ -31,9 +31,9 @@ public static class TaskExtensions
         // Check if the instance is a completed Task
         if (
 #if NETSTANDARD2_1
-                task.IsCompletedSuccessfully
+            task.IsCompletedSuccessfully
 #else
-                task.Status == TaskStatus.RanToCompletion
+            task.Status == TaskStatus.RanToCompletion
 #endif
             )
         {
@@ -51,9 +51,9 @@ public static class TaskExtensions
                 // runtime-specific type that inherits from Task<T>.
                 PropertyInfo? propertyInfo =
 #if NETSTANDARD1_4
-                        task.GetType().GetRuntimeProperty(nameof(Task<object>.Result));
+                task.GetType().GetRuntimeProperty(nameof(Task<object>.Result));
 #else
-                        task.GetType().GetProperty(nameof(Task<object>.Result));
+                task.GetType().GetProperty(nameof(Task<object>.Result));
 #endif
 
                 // Return the result, if possible
@@ -76,7 +76,7 @@ public static class TaskExtensions
     public static T? GetResultOrDefault<T>(this Task<T?> task)
     {
 #if NETSTANDARD2_1
-            return task.IsCompletedSuccessfully ? task.Result : default;
+        return task.IsCompletedSuccessfully ? task.Result : default;
 #else
         return task.Status == TaskStatus.RanToCompletion ? task.Result : default;
 #endif

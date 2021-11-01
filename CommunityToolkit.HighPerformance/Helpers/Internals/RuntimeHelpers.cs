@@ -70,7 +70,7 @@ internal static class RuntimeHelpers
         // int.MaxValue. There's not much we can do in this specific case.
         return (nint)(uint)array.Length;
 #else
-            return (nint)array.LongLength;
+        return (nint)array.LongLength;
 #endif
     }
 
@@ -86,7 +86,7 @@ internal static class RuntimeHelpers
 #if NETSTANDARD1_4
         return (nint)(uint)array.Length;
 #else
-            return (nint)array.LongLength;
+        return (nint)array.LongLength;
 #endif
     }
 

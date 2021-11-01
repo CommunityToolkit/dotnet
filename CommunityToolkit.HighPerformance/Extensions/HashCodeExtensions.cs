@@ -8,27 +8,26 @@ using System;
 using System.Runtime.CompilerServices;
 using CommunityToolkit.HighPerformance.Helpers;
 
-namespace CommunityToolkit.HighPerformance
+namespace CommunityToolkit.HighPerformance;
+
+/// <summary>
+/// Helpers for working with the <see cref="HashCode"/> type.
+/// </summary>
+public static class HashCodeExtensions
 {
     /// <summary>
-    /// Helpers for working with the <see cref="HashCode"/> type.
+    /// Adds a sequence of <typeparamref name="T"/> values to the hash code.
     /// </summary>
-    public static class HashCodeExtensions
+    /// <typeparam name="T">The type of elements in the input <see cref="ReadOnlySpan{T}"/> instance.</typeparam>
+    /// <param name="hashCode">The input <see cref="HashCode"/> instance.</param>
+    /// <param name="span">The input <see cref="ReadOnlySpan{T}"/> instance.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Add<T>(ref this HashCode hashCode, ReadOnlySpan<T> span)
+        where T : notnull
     {
-        /// <summary>
-        /// Adds a sequence of <typeparamref name="T"/> values to the hash code.
-        /// </summary>
-        /// <typeparam name="T">The type of elements in the input <see cref="ReadOnlySpan{T}"/> instance.</typeparam>
-        /// <param name="hashCode">The input <see cref="HashCode"/> instance.</param>
-        /// <param name="span">The input <see cref="ReadOnlySpan{T}"/> instance.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Add<T>(ref this HashCode hashCode, ReadOnlySpan<T> span)
-            where T : notnull
-        {
-            int hash = HashCode<T>.CombineValues(span);
+        int hash = HashCode<T>.CombineValues(span);
 
-            hashCode.Add(hash);
-        }
+        hashCode.Add(hash);
     }
 }
 

@@ -78,27 +78,27 @@ public static class SpinLockExtensions
     }
 
 #if NETSTANDARD2_1_OR_GREATER
-        /// <summary>
-        /// Enters a specified <see cref="SpinLock"/> instance and returns a wrapper to use to release the lock.
-        /// This extension should be used though a <see langword="using"/> block or statement:
-        /// <code>
-        /// SpinLock spinLock = new SpinLock();
-        ///
-        /// using (spinLock.Enter())
-        /// {
-        ///     // Thread-safe code here...
-        /// }
-        /// </code>
-        /// The compiler will take care of releasing the SpinLock when the code goes out of that <see langword="using"/> scope.
-        /// </summary>
-        /// <param name="spinLock">The target <see cref="SpinLock"/> to use</param>
-        /// <returns>A wrapper type that will release <paramref name="spinLock"/> when its <see cref="System.IDisposable.Dispose"/> method is called.</returns>
-        /// <remarks>The returned <see cref="Lock"/> value shouldn't be used directly: use this extension in a <see langword="using"/> block or statement.</remarks>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Lock Enter(ref this SpinLock spinLock)
-        {
-            return new(ref spinLock);
-        }
+    /// <summary>
+    /// Enters a specified <see cref="SpinLock"/> instance and returns a wrapper to use to release the lock.
+    /// This extension should be used though a <see langword="using"/> block or statement:
+    /// <code>
+    /// SpinLock spinLock = new SpinLock();
+    ///
+    /// using (spinLock.Enter())
+    /// {
+    ///     // Thread-safe code here...
+    /// }
+    /// </code>
+    /// The compiler will take care of releasing the SpinLock when the code goes out of that <see langword="using"/> scope.
+    /// </summary>
+    /// <param name="spinLock">The target <see cref="SpinLock"/> to use</param>
+    /// <returns>A wrapper type that will release <paramref name="spinLock"/> when its <see cref="System.IDisposable.Dispose"/> method is called.</returns>
+    /// <remarks>The returned <see cref="Lock"/> value shouldn't be used directly: use this extension in a <see langword="using"/> block or statement.</remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Lock Enter(ref this SpinLock spinLock)
+    {
+        return new(ref spinLock);
+    }
 #else
     /// <summary>
     /// Enters a specified <see cref="SpinLock"/> instance and returns a wrapper to use to release the lock.
@@ -144,18 +144,18 @@ public static class SpinLockExtensions
         private readonly bool lockTaken;
 
 #if NETSTANDARD2_1_OR_GREATER
-            /// <summary>
-            /// Initializes a new instance of the <see cref="Lock"/> struct.
-            /// </summary>
-            /// <param name="spinLock">The target <see cref="SpinLock"/> to use.</param>
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public Lock(ref SpinLock spinLock)
-            {
-                this.spinLock = new Ref<SpinLock>(ref spinLock);
-                this.lockTaken = false;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Lock"/> struct.
+        /// </summary>
+        /// <param name="spinLock">The target <see cref="SpinLock"/> to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Lock(ref SpinLock spinLock)
+        {
+            this.spinLock = new Ref<SpinLock>(ref spinLock);
+            this.lockTaken = false;
 
-                spinLock.Enter(ref this.lockTaken);
-            }
+            spinLock.Enter(ref this.lockTaken);
+        }
 #else
         /// <summary>
         /// Initializes a new instance of the <see cref="Lock"/> struct.

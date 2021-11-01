@@ -72,7 +72,7 @@ internal sealed class ProxyMemoryManager<TFrom, TTo> : MemoryManager<TTo>, IMemo
         int shiftedOffset = byteOffset / Unsafe.SizeOf<TFrom>();
         int remainder = byteOffset - (shiftedOffset * Unsafe.SizeOf<TFrom>());
 #else
-            int shiftedOffset = Math.DivRem(byteOffset, Unsafe.SizeOf<TFrom>(), out int remainder);
+        int shiftedOffset = Math.DivRem(byteOffset, Unsafe.SizeOf<TFrom>(), out int remainder);
 #endif
 
         if (remainder != 0)

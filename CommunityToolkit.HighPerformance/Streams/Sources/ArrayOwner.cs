@@ -66,9 +66,9 @@ internal readonly struct ArrayOwner : ISpanOwner
         get
         {
 #if NETSTANDARD2_1_OR_GREATER
-                ref byte r0 = ref this.array.DangerousGetReferenceAt(this.offset);
+            ref byte r0 = ref this.array.DangerousGetReferenceAt(this.offset);
 
-                return MemoryMarshal.CreateSpan(ref r0, this.length);
+            return MemoryMarshal.CreateSpan(ref r0, this.length);
 #else
             return this.array.AsSpan(this.offset, this.length);
 #endif

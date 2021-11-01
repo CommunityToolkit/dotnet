@@ -330,180 +330,180 @@ public readonly struct ReadOnlyMemory2D<T> : IEquatable<ReadOnlyMemory2D<T>>
     }
 
 #if NETSTANDARD2_1_OR_GREATER
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ReadOnlyMemory2D{T}"/> struct.
-        /// </summary>
-        /// <param name="memoryManager">The target <see cref="MemoryManager{T}"/> to wrap.</param>
-        /// <param name="height">The height of the resulting 2D area.</param>
-        /// <param name="width">The width of each row in the resulting 2D area.</param>
-        /// <exception cref="ArgumentException">
-        /// Thrown when either <paramref name="height"/> or <paramref name="width"/> are invalid.
-        /// </exception>
-        /// <remarks>The total area must match the length of <paramref name="memoryManager"/>.</remarks>
-        public ReadOnlyMemory2D(MemoryManager<T> memoryManager, int height, int width)
-            : this(memoryManager, 0, height, width, 0)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ReadOnlyMemory2D{T}"/> struct.
+    /// </summary>
+    /// <param name="memoryManager">The target <see cref="MemoryManager{T}"/> to wrap.</param>
+    /// <param name="height">The height of the resulting 2D area.</param>
+    /// <param name="width">The width of each row in the resulting 2D area.</param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when either <paramref name="height"/> or <paramref name="width"/> are invalid.
+    /// </exception>
+    /// <remarks>The total area must match the length of <paramref name="memoryManager"/>.</remarks>
+    public ReadOnlyMemory2D(MemoryManager<T> memoryManager, int height, int width)
+        : this(memoryManager, 0, height, width, 0)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ReadOnlyMemory2D{T}"/> struct.
+    /// </summary>
+    /// <param name="memoryManager">The target <see cref="MemoryManager{T}"/> to wrap.</param>
+    /// <param name="offset">The initial offset within <paramref name="memoryManager"/>.</param>
+    /// <param name="height">The height of the resulting 2D area.</param>
+    /// <param name="width">The width of each row in the resulting 2D area.</param>
+    /// <param name="pitch">The pitch in the resulting 2D area.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when one of the input parameters is out of range.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the requested area is outside of bounds for <paramref name="memoryManager"/>.
+    /// </exception>
+    public ReadOnlyMemory2D(MemoryManager<T> memoryManager, int offset, int height, int width, int pitch)
+    {
+        int length = memoryManager.GetSpan().Length;
+
+        if ((uint)offset > (uint)length)
         {
+            ThrowHelper.ThrowArgumentOutOfRangeExceptionForOffset();
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ReadOnlyMemory2D{T}"/> struct.
-        /// </summary>
-        /// <param name="memoryManager">The target <see cref="MemoryManager{T}"/> to wrap.</param>
-        /// <param name="offset">The initial offset within <paramref name="memoryManager"/>.</param>
-        /// <param name="height">The height of the resulting 2D area.</param>
-        /// <param name="width">The width of each row in the resulting 2D area.</param>
-        /// <param name="pitch">The pitch in the resulting 2D area.</param>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// Thrown when one of the input parameters is out of range.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// Thrown when the requested area is outside of bounds for <paramref name="memoryManager"/>.
-        /// </exception>
-        public ReadOnlyMemory2D(MemoryManager<T> memoryManager, int offset, int height, int width, int pitch)
+        if (height < 0)
         {
-            int length = memoryManager.GetSpan().Length;
+            ThrowHelper.ThrowArgumentOutOfRangeExceptionForHeight();
+        }
 
-            if ((uint)offset > (uint)length)
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeExceptionForOffset();
-            }
+        if (width < 0)
+        {
+            ThrowHelper.ThrowArgumentOutOfRangeExceptionForWidth();
+        }
 
-            if (height < 0)
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeExceptionForHeight();
-            }
+        if (pitch < 0)
+        {
+            ThrowHelper.ThrowArgumentOutOfRangeExceptionForPitch();
+        }
 
-            if (width < 0)
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeExceptionForWidth();
-            }
+        if (width == 0 || height == 0)
+        {
+            this = default;
 
-            if (pitch < 0)
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeExceptionForPitch();
-            }
+            return;
+        }
 
-            if (width == 0 || height == 0)
-            {
-                this = default;
+        int area = OverflowHelper.ComputeInt32Area(height, width, pitch);
+        int remaining = length - offset;
 
-                return;
-            }
+        if (area > remaining)
+        {
+            ThrowHelper.ThrowArgumentException();
+        }
 
-            int area = OverflowHelper.ComputeInt32Area(height, width, pitch);
-            int remaining = length - offset;
+        this.instance = memoryManager;
+        this.offset = (nint)(uint)offset;
+        this.height = height;
+        this.width = width;
+        this.pitch = pitch;
+    }
 
-            if (area > remaining)
-            {
-                ThrowHelper.ThrowArgumentException();
-            }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ReadOnlyMemory2D{T}"/> struct.
+    /// </summary>
+    /// <param name="memory">The target <see cref="Memory{T}"/> to wrap.</param>
+    /// <param name="height">The height of the resulting 2D area.</param>
+    /// <param name="width">The width of each row in the resulting 2D area.</param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when either <paramref name="height"/> or <paramref name="width"/> are invalid.
+    /// </exception>
+    /// <remarks>The total area must match the length of <paramref name="memory"/>.</remarks>
+    internal ReadOnlyMemory2D(ReadOnlyMemory<T> memory, int height, int width)
+        : this(memory, 0, height, width, 0)
+    {
+    }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ReadOnlyMemory2D{T}"/> struct.
+    /// </summary>
+    /// <param name="memory">The target <see cref="ReadOnlyMemory{T}"/> to wrap.</param>
+    /// <param name="offset">The initial offset within <paramref name="memory"/>.</param>
+    /// <param name="height">The height of the resulting 2D area.</param>
+    /// <param name="width">The width of each row in the resulting 2D area.</param>
+    /// <param name="pitch">The pitch in the resulting 2D area.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when one of the input parameters is out of range.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the requested area is outside of bounds for <paramref name="memory"/>.
+    /// </exception>
+    internal ReadOnlyMemory2D(ReadOnlyMemory<T> memory, int offset, int height, int width, int pitch)
+    {
+        if ((uint)offset > (uint)memory.Length)
+        {
+            ThrowHelper.ThrowArgumentOutOfRangeExceptionForOffset();
+        }
+
+        if (height < 0)
+        {
+            ThrowHelper.ThrowArgumentOutOfRangeExceptionForHeight();
+        }
+
+        if (width < 0)
+        {
+            ThrowHelper.ThrowArgumentOutOfRangeExceptionForWidth();
+        }
+
+        if (pitch < 0)
+        {
+            ThrowHelper.ThrowArgumentOutOfRangeExceptionForPitch();
+        }
+
+        if (width == 0 || height == 0)
+        {
+            this = default;
+
+            return;
+        }
+
+        int area = OverflowHelper.ComputeInt32Area(height, width, pitch);
+        int remaining = memory.Length - offset;
+
+        if (area > remaining)
+        {
+            ThrowHelper.ThrowArgumentException();
+        }
+
+        // Check the supported underlying objects, like in Memory2D<T>
+        if (typeof(T) == typeof(char) &&
+            MemoryMarshal.TryGetString(Unsafe.As<ReadOnlyMemory<T>, ReadOnlyMemory<char>>(ref memory), out string? text, out int textStart, out _))
+        {
+            ref char r0 = ref text.DangerousGetReferenceAt(textStart + offset);
+
+            this.instance = text;
+            this.offset = ObjectMarshal.DangerousGetObjectDataByteOffset(text, ref r0);
+        }
+        else if (MemoryMarshal.TryGetArray(memory, out ArraySegment<T> segment))
+        {
+            T[] array = segment.Array!;
+
+            this.instance = array;
+            this.offset = ObjectMarshal.DangerousGetObjectDataByteOffset(array, ref array.DangerousGetReferenceAt(segment.Offset + offset));
+        }
+        else if (MemoryMarshal.TryGetMemoryManager(memory, out MemoryManager<T>? memoryManager, out int memoryManagerStart, out _))
+        {
             this.instance = memoryManager;
-            this.offset = (nint)(uint)offset;
-            this.height = height;
-            this.width = width;
-            this.pitch = pitch;
+            this.offset = (nint)(uint)(memoryManagerStart + offset);
         }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ReadOnlyMemory2D{T}"/> struct.
-        /// </summary>
-        /// <param name="memory">The target <see cref="Memory{T}"/> to wrap.</param>
-        /// <param name="height">The height of the resulting 2D area.</param>
-        /// <param name="width">The width of each row in the resulting 2D area.</param>
-        /// <exception cref="ArgumentException">
-        /// Thrown when either <paramref name="height"/> or <paramref name="width"/> are invalid.
-        /// </exception>
-        /// <remarks>The total area must match the length of <paramref name="memory"/>.</remarks>
-        internal ReadOnlyMemory2D(ReadOnlyMemory<T> memory, int height, int width)
-            : this(memory, 0, height, width, 0)
+        else
         {
+            ThrowHelper.ThrowArgumentExceptionForUnsupportedType();
+
+            this.instance = null;
+            this.offset = default;
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ReadOnlyMemory2D{T}"/> struct.
-        /// </summary>
-        /// <param name="memory">The target <see cref="ReadOnlyMemory{T}"/> to wrap.</param>
-        /// <param name="offset">The initial offset within <paramref name="memory"/>.</param>
-        /// <param name="height">The height of the resulting 2D area.</param>
-        /// <param name="width">The width of each row in the resulting 2D area.</param>
-        /// <param name="pitch">The pitch in the resulting 2D area.</param>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// Thrown when one of the input parameters is out of range.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// Thrown when the requested area is outside of bounds for <paramref name="memory"/>.
-        /// </exception>
-        internal ReadOnlyMemory2D(ReadOnlyMemory<T> memory, int offset, int height, int width, int pitch)
-        {
-            if ((uint)offset > (uint)memory.Length)
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeExceptionForOffset();
-            }
-
-            if (height < 0)
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeExceptionForHeight();
-            }
-
-            if (width < 0)
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeExceptionForWidth();
-            }
-
-            if (pitch < 0)
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeExceptionForPitch();
-            }
-
-            if (width == 0 || height == 0)
-            {
-                this = default;
-
-                return;
-            }
-
-            int area = OverflowHelper.ComputeInt32Area(height, width, pitch);
-            int remaining = memory.Length - offset;
-
-            if (area > remaining)
-            {
-                ThrowHelper.ThrowArgumentException();
-            }
-
-            // Check the supported underlying objects, like in Memory2D<T>
-            if (typeof(T) == typeof(char) &&
-                MemoryMarshal.TryGetString(Unsafe.As<ReadOnlyMemory<T>, ReadOnlyMemory<char>>(ref memory), out string? text, out int textStart, out _))
-            {
-                ref char r0 = ref text.DangerousGetReferenceAt(textStart + offset);
-
-                this.instance = text;
-                this.offset = ObjectMarshal.DangerousGetObjectDataByteOffset(text, ref r0);
-            }
-            else if (MemoryMarshal.TryGetArray(memory, out ArraySegment<T> segment))
-            {
-                T[] array = segment.Array!;
-
-                this.instance = array;
-                this.offset = ObjectMarshal.DangerousGetObjectDataByteOffset(array, ref array.DangerousGetReferenceAt(segment.Offset + offset));
-            }
-            else if (MemoryMarshal.TryGetMemoryManager(memory, out MemoryManager<T>? memoryManager, out int memoryManagerStart, out _))
-            {
-                this.instance = memoryManager;
-                this.offset = (nint)(uint)(memoryManagerStart + offset);
-            }
-            else
-            {
-                ThrowHelper.ThrowArgumentExceptionForUnsupportedType();
-
-                this.instance = null;
-                this.offset = default;
-            }
-
-            this.height = height;
-            this.width = width;
-            this.pitch = pitch;
-        }
+        this.height = height;
+        this.width = width;
+        this.pitch = pitch;
+    }
 #endif
 
     /// <summary>
@@ -614,20 +614,20 @@ public readonly struct ReadOnlyMemory2D<T> : IEquatable<ReadOnlyMemory2D<T>>
             if (this.instance is not null)
             {
 #if NETSTANDARD2_1_OR_GREATER
-                    if (this.instance is MemoryManager<T> memoryManager)
-                    {
-                        ref T r0 = ref memoryManager.GetSpan().DangerousGetReference();
-                        ref T r1 = ref Unsafe.Add(ref r0, this.offset);
+                if (this.instance is MemoryManager<T> memoryManager)
+                {
+                    ref T r0 = ref memoryManager.GetSpan().DangerousGetReference();
+                    ref T r1 = ref Unsafe.Add(ref r0, this.offset);
 
-                        return new ReadOnlySpan2D<T>(in r1, this.height, this.width, this.pitch);
-                    }
-                    else
-                    {
-                        // This handles both arrays and strings
-                        ref T r0 = ref ObjectMarshal.DangerousGetObjectDataReferenceAt<T>(this.instance, this.offset);
+                    return new ReadOnlySpan2D<T>(in r1, this.height, this.width, this.pitch);
+                }
+                else
+                {
+                    // This handles both arrays and strings
+                    ref T r0 = ref ObjectMarshal.DangerousGetObjectDataReferenceAt<T>(this.instance, this.offset);
 
-                        return new ReadOnlySpan2D<T>(in r0, this.height, this.width, this.pitch);
-                    }
+                    return new ReadOnlySpan2D<T>(in r0, this.height, this.width, this.pitch);
+                }
 #else
                 return new ReadOnlySpan2D<T>(this.instance, this.offset, this.height, this.width, this.pitch);
 #endif
@@ -638,26 +638,26 @@ public readonly struct ReadOnlyMemory2D<T> : IEquatable<ReadOnlyMemory2D<T>>
     }
 
 #if NETSTANDARD2_1_OR_GREATER
-        /// <summary>
-        /// Slices the current instance with the specified parameters.
-        /// </summary>
-        /// <param name="rows">The target range of rows to select.</param>
-        /// <param name="columns">The target range of columns to select.</param>
-        /// <exception cref="ArgumentException">
-        /// Thrown when either <paramref name="rows"/> or <paramref name="columns"/> are invalid.
-        /// </exception>
-        /// <returns>A new <see cref="ReadOnlyMemory2D{T}"/> instance representing a slice of the current one.</returns>
-        public ReadOnlyMemory2D<T> this[Range rows, Range columns]
+    /// <summary>
+    /// Slices the current instance with the specified parameters.
+    /// </summary>
+    /// <param name="rows">The target range of rows to select.</param>
+    /// <param name="columns">The target range of columns to select.</param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when either <paramref name="rows"/> or <paramref name="columns"/> are invalid.
+    /// </exception>
+    /// <returns>A new <see cref="ReadOnlyMemory2D{T}"/> instance representing a slice of the current one.</returns>
+    public ReadOnlyMemory2D<T> this[Range rows, Range columns]
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                (int row, int height) = rows.GetOffsetAndLength(this.height);
-                (int column, int width) = columns.GetOffsetAndLength(this.width);
+            (int row, int height) = rows.GetOffsetAndLength(this.height);
+            (int column, int width) = columns.GetOffsetAndLength(this.width);
 
-                return Slice(row, column, height, width);
-            }
+            return Slice(row, column, height, width);
         }
+    }
 #endif
 
     /// <summary>
@@ -809,11 +809,11 @@ public readonly struct ReadOnlyMemory2D<T> : IEquatable<ReadOnlyMemory2D<T>>
                 memory = array.AsMemory(index, this.height * this.width);
             }
 #if NETSTANDARD2_1_OR_GREATER
-                else if (this.instance.GetType() == typeof(T[,]) ||
-                         this.instance.GetType() == typeof(T[,,]))
-                {
-                    memory = new RawObjectMemoryManager<T>(this.instance, this.offset, this.height * this.width).Memory;
-                }
+            else if (this.instance.GetType() == typeof(T[,]) ||
+                        this.instance.GetType() == typeof(T[,,]))
+            {
+                memory = new RawObjectMemoryManager<T>(this.instance, this.offset, this.height * this.width).Memory;
+            }
 #endif
             else
             {
@@ -874,12 +874,12 @@ public readonly struct ReadOnlyMemory2D<T> : IEquatable<ReadOnlyMemory2D<T>>
         if (this.instance is not null)
         {
 #if !NETSTANDARD1_4
-                return HashCode.Combine(
-                    RuntimeHelpers.GetHashCode(this.instance),
-                    this.offset,
-                    this.height,
-                    this.width,
-                    this.pitch);
+            return HashCode.Combine(
+                RuntimeHelpers.GetHashCode(this.instance),
+                this.offset,
+                this.height,
+                this.width,
+                this.pitch);
 #else
             Span<int> values = stackalloc int[]
             {

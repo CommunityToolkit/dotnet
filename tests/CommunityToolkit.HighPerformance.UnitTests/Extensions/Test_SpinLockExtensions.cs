@@ -47,11 +47,11 @@ public class Test_SpinLockExtensions
             for (int j = 0; j < 10; j++)
             {
 #if WINDOWS_UWP
-                    using (SpinLockExtensions.Enter(spinLockOwner, ref spinLockOwner.Lock))
+                using (SpinLockExtensions.Enter(spinLockOwner, ref spinLockOwner.Lock))
 #else
-                    using (spinLockOwner.Lock.Enter())
+                using (spinLockOwner.Lock.Enter())
 #endif
-                    {
+                {
                     sum++;
                 }
             }

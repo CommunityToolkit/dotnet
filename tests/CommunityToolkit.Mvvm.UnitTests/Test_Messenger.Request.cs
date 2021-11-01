@@ -52,7 +52,7 @@ public partial class Test_Messenger
     {
         IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
 
-        int result = messenger.Send<NumberRequestMessage>();
+        _ = messenger.Send<NumberRequestMessage>();
     }
 
     [TestCategory("Mvvm")]
@@ -65,7 +65,7 @@ public partial class Test_Messenger
         IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
         object? recipient = new();
 
-        void Receive(object recipient, NumberRequestMessage m)
+        static void Receive(object recipient, NumberRequestMessage m)
         {
             m.Reply(42);
             m.Reply(42);
@@ -91,7 +91,7 @@ public partial class Test_Messenger
         IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
         object? recipient = new();
 
-        void Receive(object recipient, AsyncNumberRequestMessage m)
+        static void Receive(object recipient, AsyncNumberRequestMessage m)
         {
             Assert.IsFalse(m.HasReceivedResponse);
 
@@ -152,7 +152,7 @@ public partial class Test_Messenger
     {
         IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
 
-        int result = await messenger.Send<AsyncNumberRequestMessage>();
+        _ = await messenger.Send<AsyncNumberRequestMessage>();
     }
 
     [TestCategory("Mvvm")]
@@ -165,7 +165,7 @@ public partial class Test_Messenger
         IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
         object? recipient = new();
 
-        void Receive(object recipient, AsyncNumberRequestMessage m)
+        static void Receive(object recipient, AsyncNumberRequestMessage m)
         {
             m.Reply(42);
             m.Reply(42);
@@ -191,7 +191,7 @@ public partial class Test_Messenger
         IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
         object? recipient = new();
 
-        void Receive(object recipient, NumbersCollectionRequestMessage m)
+        static void Receive(object recipient, NumbersCollectionRequestMessage m)
         {
         }
 
@@ -267,7 +267,7 @@ public partial class Test_Messenger
         IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
         object? recipient = new();
 
-        void Receive(object recipient, AsyncNumbersCollectionRequestMessage m)
+        static void Receive(object recipient, AsyncNumbersCollectionRequestMessage m)
         {
         }
 

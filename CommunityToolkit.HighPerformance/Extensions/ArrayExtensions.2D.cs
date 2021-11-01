@@ -33,10 +33,10 @@ public static partial class ArrayExtensions
     public static ref T DangerousGetReference<T>(this T[,] array)
     {
 #if NETCOREAPP3_1
-            RawArray2DData? arrayData = Unsafe.As<RawArray2DData>(array)!;
-            ref T r0 = ref Unsafe.As<byte, T>(ref arrayData.Data);
+        RawArray2DData? arrayData = Unsafe.As<RawArray2DData>(array)!;
+        ref T r0 = ref Unsafe.As<byte, T>(ref arrayData.Data);
 
-            return ref r0;
+        return ref r0;
 #else
         IntPtr offset = RuntimeHelpers.GetArray2DDataByteOffset<T>();
 
@@ -63,12 +63,12 @@ public static partial class ArrayExtensions
     public static ref T DangerousGetReferenceAt<T>(this T[,] array, int i, int j)
     {
 #if NETCOREAPP3_1
-            RawArray2DData? arrayData = Unsafe.As<RawArray2DData>(array)!;
-            nint offset = ((nint)(uint)i * (nint)(uint)arrayData.Width) + (nint)(uint)j;
-            ref T r0 = ref Unsafe.As<byte, T>(ref arrayData.Data);
-            ref T ri = ref Unsafe.Add(ref r0, offset);
+        RawArray2DData? arrayData = Unsafe.As<RawArray2DData>(array)!;
+        nint offset = ((nint)(uint)i * (nint)(uint)arrayData.Width) + (nint)(uint)j;
+        ref T r0 = ref Unsafe.As<byte, T>(ref arrayData.Data);
+        ref T ri = ref Unsafe.Add(ref r0, offset);
 
-            return ref ri;
+        return ref ri;
 #else
         int width = array.GetLength(1);
         nint index = ((nint)(uint)i * (nint)(uint)width) + (nint)(uint)j;
@@ -81,26 +81,26 @@ public static partial class ArrayExtensions
     }
 
 #if NETCOREAPP3_1
-        // Description adapted from CoreCLR: see https://source.dot.net/#System.Private.CoreLib/src/System/Runtime/CompilerServices/RuntimeHelpers.CoreCLR.cs,285.
-        // CLR 2D arrays are laid out in memory as follows:
-        // [ sync block || pMethodTable || Length (padded to IntPtr) || HxW || HxW bounds || array data .. ]
-        //                 ^                                                                 ^
-        //                 |                                                                 \-- ref Unsafe.As<RawArray2DData>(array).Data
-        //                 \-- array
-        // The length is always padded to IntPtr just like with SZ arrays.
-        // The total data padding is therefore 20 bytes on x86 (4 + 4 + 4 + 4 + 4), or 24 bytes on x64.
-        [StructLayout(LayoutKind.Sequential)]
-        private sealed class RawArray2DData
-        {
+    // Description adapted from CoreCLR: see https://source.dot.net/#System.Private.CoreLib/src/System/Runtime/CompilerServices/RuntimeHelpers.CoreCLR.cs,285.
+    // CLR 2D arrays are laid out in memory as follows:
+    // [ sync block || pMethodTable || Length (padded to IntPtr) || HxW || HxW bounds || array data .. ]
+    //                 ^                                                                 ^
+    //                 |                                                                 \-- ref Unsafe.As<RawArray2DData>(array).Data
+    //                 \-- array
+    // The length is always padded to IntPtr just like with SZ arrays.
+    // The total data padding is therefore 20 bytes on x86 (4 + 4 + 4 + 4 + 4), or 24 bytes on x64.
+    [StructLayout(LayoutKind.Sequential)]
+    private sealed class RawArray2DData
+    {
 #pragma warning disable CS0649 // Unassigned fields
-            public IntPtr Length;
-            public int Height;
-            public int Width;
-            public int HeightLowerBound;
-            public int WidthLowerBound;
-            public byte Data;
+        public IntPtr Length;
+        public int Height;
+        public int Width;
+        public int HeightLowerBound;
+        public int WidthLowerBound;
+        public byte Data;
 #pragma warning restore CS0649
-        }
+    }
 #endif
 
     /// <summary>
@@ -131,9 +131,9 @@ public static partial class ArrayExtensions
         int width = array.GetLength(1);
 
 #if NETSTANDARD2_1_OR_GREATER
-            ref T r0 = ref array.DangerousGetReferenceAt(row, 0);
+        ref T r0 = ref array.DangerousGetReferenceAt(row, 0);
 
-            return new RefEnumerable<T>(ref r0, width, 1);
+        return new RefEnumerable<T>(ref r0, width, 1);
 #else
         ref T r0 = ref array.DangerousGetReferenceAt(row, 0);
         IntPtr offset = ObjectMarshal.DangerousGetObjectDataByteOffset(array, ref r0);
@@ -185,9 +185,9 @@ public static partial class ArrayExtensions
         int height = array.GetLength(0);
 
 #if NETSTANDARD2_1_OR_GREATER
-            ref T r0 = ref array.DangerousGetReferenceAt(0, column);
+        ref T r0 = ref array.DangerousGetReferenceAt(0, column);
 
-            return new RefEnumerable<T>(ref r0, height, width);
+        return new RefEnumerable<T>(ref r0, height, width);
 #else
         ref T r0 = ref array.DangerousGetReferenceAt(0, column);
         IntPtr offset = ObjectMarshal.DangerousGetObjectDataByteOffset(array, ref r0);
@@ -271,114 +271,114 @@ public static partial class ArrayExtensions
     }
 
 #if NETSTANDARD2_1_OR_GREATER
-        /// <summary>
-        /// Returns a <see cref="Span{T}"/> over a row in a given 2D <typeparamref name="T"/> array instance.
-        /// </summary>
-        /// <typeparam name="T">The type of elements in the input 2D <typeparamref name="T"/> array instance.</typeparam>
-        /// <param name="array">The input <typeparamref name="T"/> array instance.</param>
-        /// <param name="row">The target row to retrieve (0-based index).</param>
-        /// <returns>A <see cref="Span{T}"/> with the items from the target row within <paramref name="array"/>.</returns>
-        /// <exception cref="ArrayTypeMismatchException">Thrown when <paramref name="array"/> doesn't match <typeparamref name="T"/>.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="row"/> is invalid.</exception>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Span<T> GetRowSpan<T>(this T[,] array, int row)
+    /// <summary>
+    /// Returns a <see cref="Span{T}"/> over a row in a given 2D <typeparamref name="T"/> array instance.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the input 2D <typeparamref name="T"/> array instance.</typeparam>
+    /// <param name="array">The input <typeparamref name="T"/> array instance.</param>
+    /// <param name="row">The target row to retrieve (0-based index).</param>
+    /// <returns>A <see cref="Span{T}"/> with the items from the target row within <paramref name="array"/>.</returns>
+    /// <exception cref="ArrayTypeMismatchException">Thrown when <paramref name="array"/> doesn't match <typeparamref name="T"/>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="row"/> is invalid.</exception>
+    [Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Span<T> GetRowSpan<T>(this T[,] array, int row)
+    {
+        if (array.IsCovariant())
         {
-            if (array.IsCovariant())
-            {
-                ThrowArrayTypeMismatchException();
-            }
-
-            if ((uint)row >= (uint)array.GetLength(0))
-            {
-                ThrowArgumentOutOfRangeExceptionForRow();
-            }
-
-            ref T r0 = ref array.DangerousGetReferenceAt(row, 0);
-
-            return MemoryMarshal.CreateSpan(ref r0, array.GetLength(1));
+            ThrowArrayTypeMismatchException();
         }
 
-        /// <summary>
-        /// Returns a <see cref="Memory{T}"/> over a row in a given 2D <typeparamref name="T"/> array instance.
-        /// </summary>
-        /// <typeparam name="T">The type of elements in the input 2D <typeparamref name="T"/> array instance.</typeparam>
-        /// <param name="array">The input <typeparamref name="T"/> array instance.</param>
-        /// <param name="row">The target row to retrieve (0-based index).</param>
-        /// <returns>A <see cref="Memory{T}"/> with the items from the target row within <paramref name="array"/>.</returns>
-        /// <exception cref="ArrayTypeMismatchException">Thrown when <paramref name="array"/> doesn't match <typeparamref name="T"/>.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="row"/> is invalid.</exception>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Memory<T> GetRowMemory<T>(this T[,] array, int row)
+        if ((uint)row >= (uint)array.GetLength(0))
         {
-            if (array.IsCovariant())
-            {
-                ThrowArrayTypeMismatchException();
-            }
-
-            if ((uint)row >= (uint)array.GetLength(0))
-            {
-                ThrowArgumentOutOfRangeExceptionForRow();
-            }
-
-            ref T r0 = ref array.DangerousGetReferenceAt(row, 0);
-            IntPtr offset = ObjectMarshal.DangerousGetObjectDataByteOffset(array, ref r0);
-
-            return new RawObjectMemoryManager<T>(array, offset, array.GetLength(1)).Memory;
+            ThrowArgumentOutOfRangeExceptionForRow();
         }
 
-        /// <summary>
-        /// Creates a new <see cref="Memory{T}"/> over an input 2D <typeparamref name="T"/> array.
-        /// </summary>
-        /// <typeparam name="T">The type of elements in the input 2D <typeparamref name="T"/> array instance.</typeparam>
-        /// <param name="array">The input 2D <typeparamref name="T"/> array instance.</param>
-        /// <returns>A <see cref="Memory{T}"/> instance with the values of <paramref name="array"/>.</returns>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Memory<T> AsMemory<T>(this T[,]? array)
+        ref T r0 = ref array.DangerousGetReferenceAt(row, 0);
+
+        return MemoryMarshal.CreateSpan(ref r0, array.GetLength(1));
+    }
+
+    /// <summary>
+    /// Returns a <see cref="Memory{T}"/> over a row in a given 2D <typeparamref name="T"/> array instance.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the input 2D <typeparamref name="T"/> array instance.</typeparam>
+    /// <param name="array">The input <typeparamref name="T"/> array instance.</param>
+    /// <param name="row">The target row to retrieve (0-based index).</param>
+    /// <returns>A <see cref="Memory{T}"/> with the items from the target row within <paramref name="array"/>.</returns>
+    /// <exception cref="ArrayTypeMismatchException">Thrown when <paramref name="array"/> doesn't match <typeparamref name="T"/>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="row"/> is invalid.</exception>
+    [Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Memory<T> GetRowMemory<T>(this T[,] array, int row)
+    {
+        if (array.IsCovariant())
         {
-            if (array is null)
-            {
-                return default;
-            }
-
-            if (array.IsCovariant())
-            {
-                ThrowArrayTypeMismatchException();
-            }
-
-            IntPtr offset = RuntimeHelpers.GetArray2DDataByteOffset<T>();
-            int length = array.Length;
-
-            return new RawObjectMemoryManager<T>(array, offset, length).Memory;
+            ThrowArrayTypeMismatchException();
         }
 
-        /// <summary>
-        /// Creates a new <see cref="Span{T}"/> over an input 2D <typeparamref name="T"/> array.
-        /// </summary>
-        /// <typeparam name="T">The type of elements in the input 2D <typeparamref name="T"/> array instance.</typeparam>
-        /// <param name="array">The input 2D <typeparamref name="T"/> array instance.</param>
-        /// <returns>A <see cref="Span{T}"/> instance with the values of <paramref name="array"/>.</returns>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Span<T> AsSpan<T>(this T[,]? array)
+        if ((uint)row >= (uint)array.GetLength(0))
         {
-            if (array is null)
-            {
-                return default;
-            }
-
-            if (array.IsCovariant())
-            {
-                ThrowArrayTypeMismatchException();
-            }
-
-            ref T r0 = ref array.DangerousGetReference();
-            int length = array.Length;
-
-            return MemoryMarshal.CreateSpan(ref r0, length);
+            ThrowArgumentOutOfRangeExceptionForRow();
         }
+
+        ref T r0 = ref array.DangerousGetReferenceAt(row, 0);
+        IntPtr offset = ObjectMarshal.DangerousGetObjectDataByteOffset(array, ref r0);
+
+        return new RawObjectMemoryManager<T>(array, offset, array.GetLength(1)).Memory;
+    }
+
+    /// <summary>
+    /// Creates a new <see cref="Memory{T}"/> over an input 2D <typeparamref name="T"/> array.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the input 2D <typeparamref name="T"/> array instance.</typeparam>
+    /// <param name="array">The input 2D <typeparamref name="T"/> array instance.</param>
+    /// <returns>A <see cref="Memory{T}"/> instance with the values of <paramref name="array"/>.</returns>
+    [Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Memory<T> AsMemory<T>(this T[,]? array)
+    {
+        if (array is null)
+        {
+            return default;
+        }
+
+        if (array.IsCovariant())
+        {
+            ThrowArrayTypeMismatchException();
+        }
+
+        IntPtr offset = RuntimeHelpers.GetArray2DDataByteOffset<T>();
+        int length = array.Length;
+
+        return new RawObjectMemoryManager<T>(array, offset, length).Memory;
+    }
+
+    /// <summary>
+    /// Creates a new <see cref="Span{T}"/> over an input 2D <typeparamref name="T"/> array.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the input 2D <typeparamref name="T"/> array instance.</typeparam>
+    /// <param name="array">The input 2D <typeparamref name="T"/> array instance.</param>
+    /// <returns>A <see cref="Span{T}"/> instance with the values of <paramref name="array"/>.</returns>
+    [Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Span<T> AsSpan<T>(this T[,]? array)
+    {
+        if (array is null)
+        {
+            return default;
+        }
+
+        if (array.IsCovariant())
+        {
+            ThrowArrayTypeMismatchException();
+        }
+
+        ref T r0 = ref array.DangerousGetReference();
+        int length = array.Length;
+
+        return MemoryMarshal.CreateSpan(ref r0, length);
+    }
 #endif
 
     /// <summary>

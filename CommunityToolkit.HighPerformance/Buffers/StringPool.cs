@@ -772,7 +772,7 @@ public sealed class StringPool
 #if NETSTANDARD1_4
         return span.GetDjb2HashCode();
 #else
-            return HashCode<char>.Combine(span);
+        return HashCode<char>.Combine(span);
 #endif
     }
 

@@ -26,7 +26,7 @@ internal static class BitOperations
     public static int RoundUpPowerOfTwo(int x)
     {
 #if NETCOREAPP3_1 || NET5_0
-            return 1 << (32 - LeadingZeroCount((uint)(x - 1)));
+        return 1 << (32 - LeadingZeroCount((uint)(x - 1)));
 #else
         x--;
         x |= x >> 1;

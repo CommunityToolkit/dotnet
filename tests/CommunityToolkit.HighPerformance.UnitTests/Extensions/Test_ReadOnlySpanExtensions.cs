@@ -211,7 +211,7 @@ public partial class Test_ReadOnlySpanExtensions
     {
         ReadOnlySpan<int> data = Array.Empty<int>();
 
-        foreach (HighPerformance.Enumerables.ReadOnlySpanEnumerable<int>.Item item in data.Enumerate())
+        foreach (HighPerformance.Enumerables.ReadOnlySpanEnumerable<int>.Item _ in data.Enumerate())
         {
             Assert.Fail("Empty source sequence");
         }

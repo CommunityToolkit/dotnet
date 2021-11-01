@@ -32,10 +32,10 @@ public static partial class ArrayExtensions
     public static ref T DangerousGetReference<T>(this T[,,] array)
     {
 #if NETCOREAPP3_1
-            RawArray3DData? arrayData = Unsafe.As<RawArray3DData>(array)!;
-            ref T r0 = ref Unsafe.As<byte, T>(ref arrayData.Data);
+        RawArray3DData? arrayData = Unsafe.As<RawArray3DData>(array)!;
+        ref T r0 = ref Unsafe.As<byte, T>(ref arrayData.Data);
 
-            return ref r0;
+        return ref r0;
 #else
         IntPtr offset = RuntimeHelpers.GetArray3DDataByteOffset<T>();
 
@@ -63,12 +63,12 @@ public static partial class ArrayExtensions
     public static ref T DangerousGetReferenceAt<T>(this T[,,] array, int i, int j, int k)
     {
 #if NETCOREAPP3_1
-            RawArray3DData? arrayData = Unsafe.As<RawArray3DData>(array)!;
-            nint offset =
-                ((nint)(uint)i * (nint)(uint)arrayData.Height * (nint)(uint)arrayData.Width) +
-                ((nint)(uint)j * (nint)(uint)arrayData.Width) + (nint)(uint)k;
-            ref T r0 = ref Unsafe.As<byte, T>(ref arrayData.Data);
-            ref T ri = ref Unsafe.Add(ref r0, offset);
+        RawArray3DData? arrayData = Unsafe.As<RawArray3DData>(array)!;
+        nint offset =
+            ((nint)(uint)i * (nint)(uint)arrayData.Height * (nint)(uint)arrayData.Width) +
+            ((nint)(uint)j * (nint)(uint)arrayData.Width) + (nint)(uint)k;
+        ref T r0 = ref Unsafe.As<byte, T>(ref arrayData.Data);
+        ref T ri = ref Unsafe.Add(ref r0, offset);
 
         return ref ri;
 #else
@@ -86,135 +86,135 @@ public static partial class ArrayExtensions
     }
 
 #if NETCOREAPP3_1
-        // See description for this in the 2D partial file.
-        // Using the CHW naming scheme here (like with RGB images).
-        [StructLayout(LayoutKind.Sequential)]
-        private sealed class RawArray3DData
-        {
+    // See description for this in the 2D partial file.
+    // Using the CHW naming scheme here (like with RGB images).
+    [StructLayout(LayoutKind.Sequential)]
+    private sealed class RawArray3DData
+    {
 #pragma warning disable CS0649 // Unassigned fields
-            public IntPtr Length;
-            public int Channel;
-            public int Height;
-            public int Width;
-            public int ChannelLowerBound;
-            public int HeightLowerBound;
-            public int WidthLowerBound;
-            public byte Data;
+        public IntPtr Length;
+        public int Channel;
+        public int Height;
+        public int Width;
+        public int ChannelLowerBound;
+        public int HeightLowerBound;
+        public int WidthLowerBound;
+        public byte Data;
 #pragma warning restore CS0649
-        }
+    }
 #endif
 
 #if NETSTANDARD2_1_OR_GREATER
-        /// <summary>
-        /// Creates a new <see cref="Memory{T}"/> over an input 3D <typeparamref name="T"/> array.
-        /// </summary>
-        /// <typeparam name="T">The type of elements in the input 3D <typeparamref name="T"/> array instance.</typeparam>
-        /// <param name="array">The input 3D <typeparamref name="T"/> array instance.</param>
-        /// <returns>A <see cref="Memory{T}"/> instance with the values of <paramref name="array"/>.</returns>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Memory<T> AsMemory<T>(this T[,,]? array)
+    /// <summary>
+    /// Creates a new <see cref="Memory{T}"/> over an input 3D <typeparamref name="T"/> array.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the input 3D <typeparamref name="T"/> array instance.</typeparam>
+    /// <param name="array">The input 3D <typeparamref name="T"/> array instance.</param>
+    /// <returns>A <see cref="Memory{T}"/> instance with the values of <paramref name="array"/>.</returns>
+    [Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Memory<T> AsMemory<T>(this T[,,]? array)
+    {
+        if (array is null)
         {
-            if (array is null)
-            {
-                return default;
-            }
-
-            if (array.IsCovariant())
-            {
-                ThrowArrayTypeMismatchException();
-            }
-
-            IntPtr offset = RuntimeHelpers.GetArray3DDataByteOffset<T>();
-            int length = array.Length;
-
-            return new RawObjectMemoryManager<T>(array, offset, length).Memory;
+            return default;
         }
 
-        /// <summary>
-        /// Creates a new <see cref="Span{T}"/> over an input 3D <typeparamref name="T"/> array.
-        /// </summary>
-        /// <typeparam name="T">The type of elements in the input 3D <typeparamref name="T"/> array instance.</typeparam>
-        /// <param name="array">The input 3D <typeparamref name="T"/> array instance.</param>
-        /// <returns>A <see cref="Span{T}"/> instance with the values of <paramref name="array"/>.</returns>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Span<T> AsSpan<T>(this T[,,]? array)
+        if (array.IsCovariant())
         {
-            if (array is null)
-            {
-                return default;
-            }
-
-            if (array.IsCovariant())
-            {
-                ThrowArrayTypeMismatchException();
-            }
-
-            ref T r0 = ref array.DangerousGetReference();
-            int length = array.Length;
-
-            return MemoryMarshal.CreateSpan(ref r0, length);
+            ThrowArrayTypeMismatchException();
         }
 
-        /// <summary>
-        /// Creates a new instance of the <see cref="Span{T}"/> struct wrapping a layer in a 3D array.
-        /// </summary>
-        /// <typeparam name="T">The type of elements in the input 3D <typeparamref name="T"/> array instance.</typeparam>
-        /// <param name="array">The given 3D array to wrap.</param>
-        /// <param name="depth">The target layer to map within <paramref name="array"/>.</param>
-        /// <exception cref="ArrayTypeMismatchException">Thrown when <paramref name="array"/> doesn't match <typeparamref name="T"/>.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="depth"/> is invalid.</exception>
-        /// <returns>A <see cref="Span{T}"/> instance wrapping the target layer within <paramref name="array"/>.</returns>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Span<T> AsSpan<T>(this T[,,] array, int depth)
+        IntPtr offset = RuntimeHelpers.GetArray3DDataByteOffset<T>();
+        int length = array.Length;
+
+        return new RawObjectMemoryManager<T>(array, offset, length).Memory;
+    }
+
+    /// <summary>
+    /// Creates a new <see cref="Span{T}"/> over an input 3D <typeparamref name="T"/> array.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the input 3D <typeparamref name="T"/> array instance.</typeparam>
+    /// <param name="array">The input 3D <typeparamref name="T"/> array instance.</param>
+    /// <returns>A <see cref="Span{T}"/> instance with the values of <paramref name="array"/>.</returns>
+    [Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Span<T> AsSpan<T>(this T[,,]? array)
+    {
+        if (array is null)
         {
-            if (array.IsCovariant())
-            {
-                ThrowArrayTypeMismatchException();
-            }
-
-            if ((uint)depth >= (uint)array.GetLength(0))
-            {
-                ThrowArgumentOutOfRangeExceptionForDepth();
-            }
-
-            ref T r0 = ref array.DangerousGetReferenceAt(depth, 0, 0);
-            int length = checked(array.GetLength(1) * array.GetLength(2));
-
-            return MemoryMarshal.CreateSpan(ref r0, length);
+            return default;
         }
 
-        /// <summary>
-        /// Creates a new instance of the <see cref="Memory{T}"/> struct wrapping a layer in a 3D array.
-        /// </summary>
-        /// <typeparam name="T">The type of elements in the input 3D <typeparamref name="T"/> array instance.</typeparam>
-        /// <param name="array">The given 3D array to wrap.</param>
-        /// <param name="depth">The target layer to map within <paramref name="array"/>.</param>
-        /// <exception cref="ArrayTypeMismatchException">Thrown when <paramref name="array"/> doesn't match <typeparamref name="T"/>.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="depth"/> is invalid.</exception>
-        /// <returns>A <see cref="Memory{T}"/> instance wrapping the target layer within <paramref name="array"/>.</returns>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Memory<T> AsMemory<T>(this T[,,] array, int depth)
+        if (array.IsCovariant())
         {
-            if (array.IsCovariant())
-            {
-                ThrowArrayTypeMismatchException();
-            }
-
-            if ((uint)depth >= (uint)array.GetLength(0))
-            {
-                ThrowArgumentOutOfRangeExceptionForDepth();
-            }
-
-            ref T r0 = ref array.DangerousGetReferenceAt(depth, 0, 0);
-            IntPtr offset = ObjectMarshal.DangerousGetObjectDataByteOffset(array, ref r0);
-            int length = checked(array.GetLength(1) * array.GetLength(2));
-
-            return new RawObjectMemoryManager<T>(array, offset, length).Memory;
+            ThrowArrayTypeMismatchException();
         }
+
+        ref T r0 = ref array.DangerousGetReference();
+        int length = array.Length;
+
+        return MemoryMarshal.CreateSpan(ref r0, length);
+    }
+
+    /// <summary>
+    /// Creates a new instance of the <see cref="Span{T}"/> struct wrapping a layer in a 3D array.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the input 3D <typeparamref name="T"/> array instance.</typeparam>
+    /// <param name="array">The given 3D array to wrap.</param>
+    /// <param name="depth">The target layer to map within <paramref name="array"/>.</param>
+    /// <exception cref="ArrayTypeMismatchException">Thrown when <paramref name="array"/> doesn't match <typeparamref name="T"/>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="depth"/> is invalid.</exception>
+    /// <returns>A <see cref="Span{T}"/> instance wrapping the target layer within <paramref name="array"/>.</returns>
+    [Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Span<T> AsSpan<T>(this T[,,] array, int depth)
+    {
+        if (array.IsCovariant())
+        {
+            ThrowArrayTypeMismatchException();
+        }
+
+        if ((uint)depth >= (uint)array.GetLength(0))
+        {
+            ThrowArgumentOutOfRangeExceptionForDepth();
+        }
+
+        ref T r0 = ref array.DangerousGetReferenceAt(depth, 0, 0);
+        int length = checked(array.GetLength(1) * array.GetLength(2));
+
+        return MemoryMarshal.CreateSpan(ref r0, length);
+    }
+
+    /// <summary>
+    /// Creates a new instance of the <see cref="Memory{T}"/> struct wrapping a layer in a 3D array.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the input 3D <typeparamref name="T"/> array instance.</typeparam>
+    /// <param name="array">The given 3D array to wrap.</param>
+    /// <param name="depth">The target layer to map within <paramref name="array"/>.</param>
+    /// <exception cref="ArrayTypeMismatchException">Thrown when <paramref name="array"/> doesn't match <typeparamref name="T"/>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="depth"/> is invalid.</exception>
+    /// <returns>A <see cref="Memory{T}"/> instance wrapping the target layer within <paramref name="array"/>.</returns>
+    [Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Memory<T> AsMemory<T>(this T[,,] array, int depth)
+    {
+        if (array.IsCovariant())
+        {
+            ThrowArrayTypeMismatchException();
+        }
+
+        if ((uint)depth >= (uint)array.GetLength(0))
+        {
+            ThrowArgumentOutOfRangeExceptionForDepth();
+        }
+
+        ref T r0 = ref array.DangerousGetReferenceAt(depth, 0, 0);
+        IntPtr offset = ObjectMarshal.DangerousGetObjectDataByteOffset(array, ref r0);
+        int length = checked(array.GetLength(1) * array.GetLength(2));
+
+        return new RawObjectMemoryManager<T>(array, offset, length).Memory;
+    }
 #endif
 
     /// <summary>

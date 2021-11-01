@@ -840,9 +840,9 @@ public class Test_Span2DT
         bool success = span2d.TryGetSpan(out Span<int> span);
 
 #if WINDOWS_UWP
-            // Can't get a Span<T> over a T[,] array on UWP
-            Assert.IsFalse(success);
-            Assert.AreEqual(span.Length, 0);
+        // Can't get a Span<T> over a T[,] array on UWP
+        Assert.IsFalse(success);
+        Assert.AreEqual(span.Length, 0);
 #else
         Assert.IsTrue(success);
         Assert.AreEqual(span.Length, span2d.Length);

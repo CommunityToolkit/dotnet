@@ -52,11 +52,11 @@ internal sealed class ArrayMemoryManager<TFrom, TTo> : MemoryManager<TTo>, IMemo
     public override Span<TTo> GetSpan()
     {
 #if NETSTANDARD2_1_OR_GREATER
-            ref TFrom r0 = ref this.array.DangerousGetReferenceAt(this.offset);
-            ref TTo r1 = ref Unsafe.As<TFrom, TTo>(ref r0);
-            int length = RuntimeHelpers.ConvertLength<TFrom, TTo>(this.length);
+        ref TFrom r0 = ref this.array.DangerousGetReferenceAt(this.offset);
+        ref TTo r1 = ref Unsafe.As<TFrom, TTo>(ref r0);
+        int length = RuntimeHelpers.ConvertLength<TFrom, TTo>(this.length);
 
-            return MemoryMarshal.CreateSpan(ref r1, length);
+        return MemoryMarshal.CreateSpan(ref r1, length);
 #else
         Span<TFrom> span = this.array.AsSpan(this.offset, this.length);
 

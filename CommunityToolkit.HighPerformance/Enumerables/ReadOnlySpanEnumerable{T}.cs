@@ -66,11 +66,11 @@ public ref struct ReadOnlySpanEnumerable<T>
         get
         {
 #if NETSTANDARD2_1_OR_GREATER
-                ref T r0 = ref MemoryMarshal.GetReference(this.span);
-                ref T ri = ref Unsafe.Add(ref r0, (nint)(uint)this.index);
+            ref T r0 = ref MemoryMarshal.GetReference(this.span);
+            ref T ri = ref Unsafe.Add(ref r0, (nint)(uint)this.index);
 
-                // See comment in SpanEnumerable<T> about this
-                return new Item(ref ri, this.index);
+            // See comment in SpanEnumerable<T> about this
+            return new Item(ref ri, this.index);
 #else
             return new Item(this.span, this.index);
 #endif
@@ -89,16 +89,16 @@ public ref struct ReadOnlySpanEnumerable<T>
         private readonly ReadOnlySpan<T> span;
 
 #if NETSTANDARD2_1_OR_GREATER
-            /// <summary>
-            /// Initializes a new instance of the <see cref="Item"/> struct.
-            /// </summary>
-            /// <param name="value">A reference to the target value.</param>
-            /// <param name="index">The index of the target value.</param>
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public Item(ref T value, int index)
-            {
-                this.span = MemoryMarshal.CreateReadOnlySpan(ref value, index);
-            }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Item"/> struct.
+        /// </summary>
+        /// <param name="value">A reference to the target value.</param>
+        /// <param name="index">The index of the target value.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Item(ref T value, int index)
+        {
+            this.span = MemoryMarshal.CreateReadOnlySpan(ref value, index);
+        }
 #else
         /// <summary>
         /// The current index within <see cref="span"/>.
@@ -127,7 +127,7 @@ public ref struct ReadOnlySpanEnumerable<T>
             get
             {
 #if NETSTANDARD2_1_OR_GREATER
-                    return ref MemoryMarshal.GetReference(this.span);
+                return ref MemoryMarshal.GetReference(this.span);
 #else
                 ref T r0 = ref MemoryMarshal.GetReference(this.span);
                 ref T ri = ref Unsafe.Add(ref r0, (nint)(uint)this.index);
@@ -146,7 +146,7 @@ public ref struct ReadOnlySpanEnumerable<T>
             get
             {
 #if NETSTANDARD2_1_OR_GREATER
-                    return this.span.Length;
+                return this.span.Length;
 #else
                 return this.index;
 #endif

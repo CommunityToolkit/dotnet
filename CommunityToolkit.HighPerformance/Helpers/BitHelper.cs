@@ -234,10 +234,10 @@ public static class BitHelper
     public static uint ExtractRange(uint value, byte start, byte length)
     {
 #if NETCOREAPP3_1 || NET5_0
-            if (Bmi1.IsSupported)
-            {
-                return Bmi1.BitFieldExtract(value, start, length);
-            }
+        if (Bmi1.IsSupported)
+        {
+            return Bmi1.BitFieldExtract(value, start, length);
+        }
 #endif
 
         return (value >> start) & ((1u << length) - 1u);
@@ -281,10 +281,10 @@ public static class BitHelper
         uint storeMask = (flags & highBits) << start;
 
 #if NETCOREAPP3_1 || NET5_0
-            if (Bmi1.IsSupported)
-            {
-                return Bmi1.AndNot(loadMask, value) | storeMask;
-            }
+        if (Bmi1.IsSupported)
+        {
+            return Bmi1.AndNot(loadMask, value) | storeMask;
+        }
 #endif
 
         return (~loadMask & value) | storeMask;
@@ -401,10 +401,10 @@ public static class BitHelper
     public static ulong ExtractRange(ulong value, byte start, byte length)
     {
 #if NETCOREAPP3_1 || NET5_0
-            if (Bmi1.X64.IsSupported)
-            {
-                return Bmi1.X64.BitFieldExtract(value, start, length);
-            }
+        if (Bmi1.X64.IsSupported)
+        {
+            return Bmi1.X64.BitFieldExtract(value, start, length);
+        }
 #endif
 
         return (value >> start) & ((1ul << length) - 1ul);
@@ -448,10 +448,10 @@ public static class BitHelper
         ulong storeMask = (flags & highBits) << start;
 
 #if NETCOREAPP3_1 || NET5_0
-            if (Bmi1.X64.IsSupported)
-            {
-                return Bmi1.X64.AndNot(loadMask, value) | storeMask;
-            }
+        if (Bmi1.X64.IsSupported)
+        {
+            return Bmi1.X64.AndNot(loadMask, value) | storeMask;
+        }
 #endif
 
         return (~loadMask & value) | storeMask;

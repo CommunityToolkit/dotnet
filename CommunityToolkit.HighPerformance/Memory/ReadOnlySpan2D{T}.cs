@@ -30,10 +30,10 @@ namespace CommunityToolkit.HighPerformance;
 public readonly ref partial struct ReadOnlySpan2D<T>
 {
 #if NETSTANDARD2_1_OR_GREATER
-        /// <summary>
-        /// The <see cref="ReadOnlySpan{T}"/> instance pointing to the first item in the target memory area.
-        /// </summary>
-        private readonly ReadOnlySpan<T> span;
+    /// <summary>
+    /// The <see cref="ReadOnlySpan{T}"/> instance pointing to the first item in the target memory area.
+    /// </summary>
+    private readonly ReadOnlySpan<T> span;
 #else
     /// <summary>
     /// The target <see cref="object"/> instance, if present.
@@ -62,20 +62,20 @@ public readonly ref partial struct ReadOnlySpan2D<T>
     private readonly int stride;
 
 #if NETSTANDARD2_1_OR_GREATER
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ReadOnlySpan2D{T}"/> struct with the specified parameters.
-        /// </summary>
-        /// <param name="value">The reference to the first <typeparamref name="T"/> item to map.</param>
-        /// <param name="height">The height of the 2D memory area to map.</param>
-        /// <param name="width">The width of the 2D memory area to map.</param>
-        /// <param name="pitch">The pitch of the 2D memory area to map (the distance between each row).</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal ReadOnlySpan2D(in T value, int height, int width, int pitch)
-        {
-            this.span = MemoryMarshal.CreateReadOnlySpan(ref Unsafe.AsRef(value), height);
-            this.width = width;
-            this.stride = width + pitch;
-        }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ReadOnlySpan2D{T}"/> struct with the specified parameters.
+    /// </summary>
+    /// <param name="value">The reference to the first <typeparamref name="T"/> item to map.</param>
+    /// <param name="height">The height of the 2D memory area to map.</param>
+    /// <param name="width">The width of the 2D memory area to map.</param>
+    /// <param name="pitch">The pitch of the 2D memory area to map (the distance between each row).</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal ReadOnlySpan2D(in T value, int height, int width, int pitch)
+    {
+        this.span = MemoryMarshal.CreateReadOnlySpan(ref Unsafe.AsRef(value), height);
+        this.width = width;
+        this.stride = width + pitch;
+    }
 #endif
 
     /// <summary>
@@ -111,7 +111,7 @@ public readonly ref partial struct ReadOnlySpan2D<T>
         OverflowHelper.EnsureIsInNativeIntRange(height, width, pitch);
 
 #if NETSTANDARD2_1_OR_GREATER
-            this.span = new ReadOnlySpan<T>(pointer, height);
+        this.span = new ReadOnlySpan<T>(pointer, height);
 #else
         this.instance = null;
         this.offset = (IntPtr)pointer;
@@ -208,7 +208,7 @@ public readonly ref partial struct ReadOnlySpan2D<T>
         }
 
 #if NETSTANDARD2_1_OR_GREATER
-            this.span = MemoryMarshal.CreateReadOnlySpan(ref array.DangerousGetReferenceAt(offset), height);
+        this.span = MemoryMarshal.CreateReadOnlySpan(ref array.DangerousGetReferenceAt(offset), height);
 #else
         this.instance = array;
         this.offset = ObjectMarshal.DangerousGetObjectDataByteOffset(array, ref array.DangerousGetReferenceAt(offset));
@@ -232,7 +232,7 @@ public readonly ref partial struct ReadOnlySpan2D<T>
         }
 
 #if NETSTANDARD2_1_OR_GREATER
-            this.span = MemoryMarshal.CreateReadOnlySpan(ref array.DangerousGetReference(), array.GetLength(0));
+        this.span = MemoryMarshal.CreateReadOnlySpan(ref array.DangerousGetReference(), array.GetLength(0));
 #else
         this.instance = array;
         this.offset = ObjectMarshal.DangerousGetObjectDataByteOffset(array, ref array.DangerousGetReferenceAt(0, 0));
@@ -291,7 +291,7 @@ public readonly ref partial struct ReadOnlySpan2D<T>
         }
 
 #if NETSTANDARD2_1_OR_GREATER
-            this.span = MemoryMarshal.CreateReadOnlySpan(ref array.DangerousGetReferenceAt(row, column), height);
+        this.span = MemoryMarshal.CreateReadOnlySpan(ref array.DangerousGetReferenceAt(row, column), height);
 #else
         this.instance = array;
         this.offset = ObjectMarshal.DangerousGetObjectDataByteOffset(array, ref array.DangerousGetReferenceAt(row, column));
@@ -315,7 +315,7 @@ public readonly ref partial struct ReadOnlySpan2D<T>
         }
 
 #if NETSTANDARD2_1_OR_GREATER
-            this.span = MemoryMarshal.CreateReadOnlySpan(ref array.DangerousGetReferenceAt(depth, 0, 0), array.GetLength(1));
+        this.span = MemoryMarshal.CreateReadOnlySpan(ref array.DangerousGetReferenceAt(depth, 0, 0), array.GetLength(1));
 #else
         this.instance = array;
         this.offset = ObjectMarshal.DangerousGetObjectDataByteOffset(array, ref array.DangerousGetReferenceAt(depth, 0, 0));
@@ -365,7 +365,7 @@ public readonly ref partial struct ReadOnlySpan2D<T>
         }
 
 #if NETSTANDARD2_1_OR_GREATER
-            this.span = MemoryMarshal.CreateReadOnlySpan(ref array.DangerousGetReferenceAt(depth, row, column), height);
+        this.span = MemoryMarshal.CreateReadOnlySpan(ref array.DangerousGetReferenceAt(depth, row, column), height);
 #else
         this.instance = array;
         this.offset = ObjectMarshal.DangerousGetObjectDataByteOffset(array, ref array.DangerousGetReferenceAt(depth, row, column));
@@ -376,109 +376,108 @@ public readonly ref partial struct ReadOnlySpan2D<T>
     }
 
 #if NETSTANDARD2_1_OR_GREATER
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ReadOnlySpan2D{T}"/> struct.
-        /// </summary>
-        /// <param name="span">The target <see cref="ReadOnlySpan{T}"/> to wrap.</param>
-        /// <param name="height">The height of the resulting 2D area.</param>
-        /// <param name="width">The width of each row in the resulting 2D area.</param>
-        /// <exception cref="ArgumentException">
-        /// Thrown when either <paramref name="height"/> or <paramref name="width"/> are invalid.
-        /// </exception>
-        /// <remarks>The total area must match the length of <paramref name="span"/>.</remarks>
-        internal ReadOnlySpan2D(ReadOnlySpan<T> span, int height, int width)
-            : this(span, 0, height, width, 0)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ReadOnlySpan2D{T}"/> struct.
+    /// </summary>
+    /// <param name="span">The target <see cref="ReadOnlySpan{T}"/> to wrap.</param>
+    /// <param name="height">The height of the resulting 2D area.</param>
+    /// <param name="width">The width of each row in the resulting 2D area.</param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when either <paramref name="height"/> or <paramref name="width"/> are invalid.
+    /// </exception>
+    /// <remarks>The total area must match the length of <paramref name="span"/>.</remarks>
+    internal ReadOnlySpan2D(ReadOnlySpan<T> span, int height, int width)
+        : this(span, 0, height, width, 0)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ReadOnlySpan2D{T}"/> struct.
+    /// </summary>
+    /// <param name="span">The target <see cref="ReadOnlySpan{T}"/> to wrap.</param>
+    /// <param name="offset">The initial offset within <paramref name="span"/>.</param>
+    /// <param name="height">The height of the resulting 2D area.</param>
+    /// <param name="width">The width of each row in the resulting 2D area.</param>
+    /// <param name="pitch">The pitch in the resulting 2D area.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when one of the input parameters is out of range.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the requested area is outside of bounds for <paramref name="span"/>.
+    /// </exception>
+    internal ReadOnlySpan2D(ReadOnlySpan<T> span, int offset, int height, int width, int pitch)
+    {
+        if ((uint)offset > (uint)span.Length)
         {
+            ThrowHelper.ThrowArgumentOutOfRangeExceptionForOffset();
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ReadOnlySpan2D{T}"/> struct.
-        /// </summary>
-        /// <param name="span">The target <see cref="ReadOnlySpan{T}"/> to wrap.</param>
-        /// <param name="offset">The initial offset within <paramref name="span"/>.</param>
-        /// <param name="height">The height of the resulting 2D area.</param>
-        /// <param name="width">The width of each row in the resulting 2D area.</param>
-        /// <param name="pitch">The pitch in the resulting 2D area.</param>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// Thrown when one of the input parameters is out of range.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// Thrown when the requested area is outside of bounds for <paramref name="span"/>.
-        /// </exception>
-        internal ReadOnlySpan2D(ReadOnlySpan<T> span, int offset, int height, int width, int pitch)
+        if (height < 0)
         {
-            if ((uint)offset > (uint)span.Length)
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeExceptionForOffset();
-            }
-
-            if (height < 0)
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeExceptionForHeight();
-            }
-
-            if (width < 0)
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeExceptionForWidth();
-            }
-
-            if (pitch < 0)
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeExceptionForPitch();
-            }
-
-            if (width == 0 || height == 0)
-            {
-                this = default;
-
-                return;
-            }
-
-            int
-                area = OverflowHelper.ComputeInt32Area(height, width, pitch),
-                remaining = span.Length - offset;
-
-            if (area > remaining)
-            {
-                ThrowHelper.ThrowArgumentException();
-            }
-
-            this.span = MemoryMarshal.CreateSpan(ref span.DangerousGetReferenceAt(offset), height);
-            this.width = width;
-            this.stride = width + pitch;
+            ThrowHelper.ThrowArgumentOutOfRangeExceptionForHeight();
         }
 
-        /// <summary>
-        /// Creates a new instance of the <see cref="ReadOnlySpan2D{T}"/> struct with the specified parameters.
-        /// </summary>
-        /// <param name="value">The reference to the first <typeparamref name="T"/> item to map.</param>
-        /// <param name="height">The height of the 2D memory area to map.</param>
-        /// <param name="width">The width of the 2D memory area to map.</param>
-        /// <param name="pitch">The pitch of the 2D memory area to map (the distance between each row).</param>
-        /// <returns>A <see cref="ReadOnlySpan2D{T}"/> instance with the specified parameters.</returns>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when one of the parameters are negative.</exception>
-        [Pure]
-        public static ReadOnlySpan2D<T> DangerousCreate(in T value, int height, int width, int pitch)
+        if (width < 0)
         {
-            if (width < 0)
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeExceptionForWidth();
-            }
-
-            if (height < 0)
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeExceptionForHeight();
-            }
-
-            if (pitch < 0)
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeExceptionForPitch();
-            }
-
-            OverflowHelper.EnsureIsInNativeIntRange(height, width, pitch);
-
-            return new ReadOnlySpan2D<T>(in value, height, width, pitch);
+            ThrowHelper.ThrowArgumentOutOfRangeExceptionForWidth();
         }
+
+        if (pitch < 0)
+        {
+            ThrowHelper.ThrowArgumentOutOfRangeExceptionForPitch();
+        }
+
+        if (width == 0 || height == 0)
+        {
+            this = default;
+
+            return;
+        }
+
+        int area = OverflowHelper.ComputeInt32Area(height, width, pitch);
+        int remaining = span.Length - offset;
+
+        if (area > remaining)
+        {
+            ThrowHelper.ThrowArgumentException();
+        }
+
+        this.span = MemoryMarshal.CreateSpan(ref span.DangerousGetReferenceAt(offset), height);
+        this.width = width;
+        this.stride = width + pitch;
+    }
+
+    /// <summary>
+    /// Creates a new instance of the <see cref="ReadOnlySpan2D{T}"/> struct with the specified parameters.
+    /// </summary>
+    /// <param name="value">The reference to the first <typeparamref name="T"/> item to map.</param>
+    /// <param name="height">The height of the 2D memory area to map.</param>
+    /// <param name="width">The width of the 2D memory area to map.</param>
+    /// <param name="pitch">The pitch of the 2D memory area to map (the distance between each row).</param>
+    /// <returns>A <see cref="ReadOnlySpan2D{T}"/> instance with the specified parameters.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when one of the parameters are negative.</exception>
+    [Pure]
+    public static ReadOnlySpan2D<T> DangerousCreate(in T value, int height, int width, int pitch)
+    {
+        if (width < 0)
+        {
+            ThrowHelper.ThrowArgumentOutOfRangeExceptionForWidth();
+        }
+
+        if (height < 0)
+        {
+            ThrowHelper.ThrowArgumentOutOfRangeExceptionForHeight();
+        }
+
+        if (pitch < 0)
+        {
+            ThrowHelper.ThrowArgumentOutOfRangeExceptionForPitch();
+        }
+
+        OverflowHelper.EnsureIsInNativeIntRange(height, width, pitch);
+
+        return new ReadOnlySpan2D<T>(in value, height, width, pitch);
+    }
 #endif
 
     /// <summary>
@@ -513,7 +512,7 @@ public readonly ref partial struct ReadOnlySpan2D<T>
         get
         {
 #if NETSTANDARD2_1_OR_GREATER
-                return this.span.Length;
+            return this.span.Length;
 #else
             return this.height;
 #endif
@@ -554,41 +553,41 @@ public readonly ref partial struct ReadOnlySpan2D<T>
     }
 
 #if NETSTANDARD2_1_OR_GREATER
-        /// <summary>
-        /// Gets the element at the specified zero-based indices.
-        /// </summary>
-        /// <param name="row">The target row to get the element from.</param>
-        /// <param name="column">The target column to get the element from.</param>
-        /// <returns>A reference to the element at the specified indices.</returns>
-        /// <exception cref="IndexOutOfRangeException">
-        /// Thrown when either <paramref name="row"/> or <paramref name="column"/> are invalid.
-        /// </exception>
-        public ref readonly T this[Index row, Index column]
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => ref this[row.GetOffset(Height), column.GetOffset(this.width)];
-        }
+    /// <summary>
+    /// Gets the element at the specified zero-based indices.
+    /// </summary>
+    /// <param name="row">The target row to get the element from.</param>
+    /// <param name="column">The target column to get the element from.</param>
+    /// <returns>A reference to the element at the specified indices.</returns>
+    /// <exception cref="IndexOutOfRangeException">
+    /// Thrown when either <paramref name="row"/> or <paramref name="column"/> are invalid.
+    /// </exception>
+    public ref readonly T this[Index row, Index column]
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => ref this[row.GetOffset(Height), column.GetOffset(this.width)];
+    }
 
-        /// <summary>
-        /// Slices the current instance with the specified parameters.
-        /// </summary>
-        /// <param name="rows">The target range of rows to select.</param>
-        /// <param name="columns">The target range of columns to select.</param>
-        /// <exception cref="ArgumentException">
-        /// Thrown when either <paramref name="rows"/> or <paramref name="columns"/> are invalid.
-        /// </exception>
-        /// <returns>A new <see cref="ReadOnlySpan2D{T}"/> instance representing a slice of the current one.</returns>
-        public ReadOnlySpan2D<T> this[Range rows, Range columns]
+    /// <summary>
+    /// Slices the current instance with the specified parameters.
+    /// </summary>
+    /// <param name="rows">The target range of rows to select.</param>
+    /// <param name="columns">The target range of columns to select.</param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when either <paramref name="rows"/> or <paramref name="columns"/> are invalid.
+    /// </exception>
+    /// <returns>A new <see cref="ReadOnlySpan2D{T}"/> instance representing a slice of the current one.</returns>
+    public ReadOnlySpan2D<T> this[Range rows, Range columns]
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                (int row, int height) = rows.GetOffsetAndLength(Height);
-                (int column, int width) = columns.GetOffsetAndLength(this.width);
+            (int row, int height) = rows.GetOffsetAndLength(Height);
+            (int column, int width) = columns.GetOffsetAndLength(this.width);
 
-                return Slice(row, column, height, width);
-            }
+            return Slice(row, column, height, width);
         }
+    }
 #endif
 
     /// <summary>
@@ -618,10 +617,10 @@ public readonly ref partial struct ReadOnlySpan2D<T>
 
             // Copy each row individually
 #if NETSTANDARD2_1_OR_GREATER
-                for (int i = 0, j = 0; i < Height; i++, j += this.width)
-                {
-                    GetRowSpan(i).CopyTo(destination.Slice(j));
-                }
+            for (int i = 0, j = 0; i < Height; i++, j += this.width)
+            {
+                GetRowSpan(i).CopyTo(destination.Slice(j));
+            }
 #else
             int height = Height;
             nint width = (nint)(uint)this.width;
@@ -674,10 +673,10 @@ public readonly ref partial struct ReadOnlySpan2D<T>
         {
             // Copy each row individually
 #if NETSTANDARD2_1_OR_GREATER
-                for (int i = 0; i < Height; i++)
-                {
-                    GetRowSpan(i).CopyTo(destination.GetRowSpan(i));
-                }
+            for (int i = 0; i < Height; i++)
+            {
+                GetRowSpan(i).CopyTo(destination.GetRowSpan(i));
+            }
 #else
             int height = Height;
             nint width = (nint)(uint)this.width;
@@ -751,7 +750,7 @@ public readonly ref partial struct ReadOnlySpan2D<T>
         if (Length != 0)
         {
 #if NETSTANDARD2_1_OR_GREATER
-                r0 = ref MemoryMarshal.GetReference(this.span);
+            r0 = ref MemoryMarshal.GetReference(this.span);
 #else
             r0 = ref RuntimeHelpers.GetObjectDataAtOffsetOrPointerReference<T>(this.instance, this.offset);
 #endif
@@ -769,7 +768,7 @@ public readonly ref partial struct ReadOnlySpan2D<T>
     public ref T DangerousGetReference()
     {
 #if NETSTANDARD2_1_OR_GREATER
-            return ref MemoryMarshal.GetReference(this.span);
+        return ref MemoryMarshal.GetReference(this.span);
 #else
         return ref RuntimeHelpers.GetObjectDataAtOffsetOrPointerReference<T>(this.instance, this.offset);
 #endif
@@ -786,7 +785,7 @@ public readonly ref partial struct ReadOnlySpan2D<T>
     public ref T DangerousGetReferenceAt(int i, int j)
     {
 #if NETSTANDARD2_1_OR_GREATER
-            ref T r0 = ref MemoryMarshal.GetReference(this.span);
+        ref T r0 = ref MemoryMarshal.GetReference(this.span);
 #else
         ref T r0 = ref RuntimeHelpers.GetObjectDataAtOffsetOrPointerReference<T>(this.instance, this.offset);
 #endif
@@ -834,9 +833,9 @@ public readonly ref partial struct ReadOnlySpan2D<T>
         int pitch = this.stride - width;
 
 #if NETSTANDARD2_1_OR_GREATER
-            ref T r0 = ref this.span.DangerousGetReferenceAt(shift);
+        ref T r0 = ref this.span.DangerousGetReferenceAt(shift);
 
-            return new ReadOnlySpan2D<T>(in r0, height, width, pitch);
+        return new ReadOnlySpan2D<T>(in r0, height, width, pitch);
 #else
         IntPtr offset = this.offset + (shift * (nint)(uint)Unsafe.SizeOf<T>());
 
@@ -845,24 +844,24 @@ public readonly ref partial struct ReadOnlySpan2D<T>
     }
 
 #if NETSTANDARD2_1_OR_GREATER
-        /// <summary>
-        /// Gets a <see cref="ReadOnlySpan{T}"/> for a specified row.
-        /// </summary>
-        /// <param name="row">The index of the target row to retrieve.</param>
-        /// <exception cref="ArgumentOutOfRangeException">Throw when <paramref name="row"/> is out of range.</exception>
-        /// <returns>The resulting row <see cref="ReadOnlySpan{T}"/>.</returns>
-        [Pure]
-        public ReadOnlySpan<T> GetRowSpan(int row)
+    /// <summary>
+    /// Gets a <see cref="ReadOnlySpan{T}"/> for a specified row.
+    /// </summary>
+    /// <param name="row">The index of the target row to retrieve.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Throw when <paramref name="row"/> is out of range.</exception>
+    /// <returns>The resulting row <see cref="ReadOnlySpan{T}"/>.</returns>
+    [Pure]
+    public ReadOnlySpan<T> GetRowSpan(int row)
+    {
+        if ((uint)row >= (uint)Height)
         {
-            if ((uint)row >= (uint)Height)
-            {
-                ThrowHelper.ThrowArgumentOutOfRangeExceptionForRow();
-            }
-
-            ref T r0 = ref DangerousGetReferenceAt(row, 0);
-
-            return MemoryMarshal.CreateReadOnlySpan(ref r0, this.width);
+            ThrowHelper.ThrowArgumentOutOfRangeExceptionForRow();
         }
+
+        ref T r0 = ref DangerousGetReferenceAt(row, 0);
+
+        return MemoryMarshal.CreateReadOnlySpan(ref r0, this.width);
+    }
 #endif
 
     /// <summary>
@@ -877,9 +876,9 @@ public readonly ref partial struct ReadOnlySpan2D<T>
             Length <= int.MaxValue)
         {
 #if NETSTANDARD2_1_OR_GREATER
-                span = MemoryMarshal.CreateReadOnlySpan(ref MemoryMarshal.GetReference(this.span), (int)Length);
+            span = MemoryMarshal.CreateReadOnlySpan(ref MemoryMarshal.GetReference(this.span), (int)Length);
 
-                return true;
+            return true;
 #else
             // An empty Span2D<T> is still valid
             if (IsEmpty)
@@ -928,7 +927,7 @@ public readonly ref partial struct ReadOnlySpan2D<T>
         T[,] array = new T[Height, this.width];
 
 #if NETSTANDARD2_1_OR_GREATER
-            CopyTo(array.AsSpan());
+        CopyTo(array.AsSpan());
 #else
         // Skip the initialization if the array is empty
         if (Length > 0)
@@ -989,14 +988,15 @@ public readonly ref partial struct ReadOnlySpan2D<T>
     {
         return
 #if NETSTANDARD2_1_OR_GREATER
-                left.span == right.span &&
+            left.span == right.span &&
 #else
-                ReferenceEquals(left.instance, right.instance) &&
-            left.offset == right.offset &&
-            left.height == right.height &&
+            ReferenceEquals(
+                left.instance, right.instance) &&
+                left.offset == right.offset &&
+                left.height == right.height &&
 #endif
                 left.width == right.width &&
-            left.stride == right.stride;
+                left.stride == right.stride;
     }
 
     /// <summary>
@@ -1023,7 +1023,7 @@ public readonly ref partial struct ReadOnlySpan2D<T>
     public static implicit operator ReadOnlySpan2D<T>(Span2D<T> span)
     {
 #if NETSTANDARD2_1_OR_GREATER
-            return new ReadOnlySpan2D<T>(in span.DangerousGetReference(), span.Height, span.Width, span.Stride - span.Width);
+        return new ReadOnlySpan2D<T>(in span.DangerousGetReference(), span.Height, span.Width, span.Stride - span.Width);
 #else
         return new ReadOnlySpan2D<T>(span.Instance!, span.Offset, span.Height, span.Width, span.Stride - span.Width);
 #endif

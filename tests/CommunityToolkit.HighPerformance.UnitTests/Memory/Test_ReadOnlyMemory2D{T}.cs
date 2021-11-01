@@ -305,8 +305,8 @@ public class Test_ReadOnlyMemory2DT
         bool success = memory2d.TryGetMemory(out ReadOnlyMemory<int> memory);
 
 #if WINDOWS_UWP
-            Assert.IsFalse(success);
-            Assert.IsTrue(memory.IsEmpty);
+        Assert.IsFalse(success);
+        Assert.IsTrue(memory.IsEmpty);
 #else
         Assert.IsTrue(success);
         Assert.AreEqual(memory.Length, array.Length);

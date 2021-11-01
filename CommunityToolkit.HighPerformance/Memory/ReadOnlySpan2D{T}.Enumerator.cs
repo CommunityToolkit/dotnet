@@ -38,7 +38,7 @@ public readonly ref partial struct ReadOnlySpan2D<T>
         ref T r1 = ref Unsafe.Add(ref r0, startIndex);
 
 #if NETSTANDARD2_1_OR_GREATER
-            return new ReadOnlyRefEnumerable<T>(in r1, Width, 1);
+        return new ReadOnlyRefEnumerable<T>(in r1, Width, 1);
 #else
         IntPtr offset = RuntimeHelpers.GetObjectDataOrReferenceByteOffset(this.instance, ref r1);
 
@@ -65,7 +65,7 @@ public readonly ref partial struct ReadOnlySpan2D<T>
         ref T r1 = ref Unsafe.Add(ref r0, (nint)(uint)column);
 
 #if NETSTANDARD2_1_OR_GREATER
-            return new ReadOnlyRefEnumerable<T>(in r1, Height, this.stride);
+        return new ReadOnlyRefEnumerable<T>(in r1, Height, this.stride);
 #else
         IntPtr offset = RuntimeHelpers.GetObjectDataOrReferenceByteOffset(this.instance, ref r1);
 
@@ -89,11 +89,11 @@ public readonly ref partial struct ReadOnlySpan2D<T>
     public ref struct Enumerator
     {
 #if NETSTANDARD2_1_OR_GREATER
-            /// <summary>
-            /// The <see cref="ReadOnlySpan{T}"/> instance pointing to the first item in the target memory area.
-            /// </summary>
-            /// <remarks>Just like in <see cref="ReadOnlySpan2D{T}"/>, the length is the height of the 2D region.</remarks>
-            private readonly ReadOnlySpan<T> span;
+        /// <summary>
+        /// The <see cref="ReadOnlySpan{T}"/> instance pointing to the first item in the target memory area.
+        /// </summary>
+        /// <remarks>Just like in <see cref="ReadOnlySpan2D{T}"/>, the length is the height of the 2D region.</remarks>
+        private readonly ReadOnlySpan<T> span;
 #else
         /// <summary>
         /// The target <see cref="object"/> instance, if present.
@@ -138,7 +138,7 @@ public readonly ref partial struct ReadOnlySpan2D<T>
         internal Enumerator(ReadOnlySpan2D<T> span)
         {
 #if NETSTANDARD2_1_OR_GREATER
-                this.span = span.span;
+            this.span = span.span;
 #else
             this.instance = span.instance;
             this.offset = span.offset;
@@ -172,7 +172,7 @@ public readonly ref partial struct ReadOnlySpan2D<T>
             this.x = 0;
 
 #if NETSTANDARD2_1_OR_GREATER
-                return ++this.y < this.span.Length;
+            return ++this.y < this.span.Length;
 #else
             return ++this.y < this.height;
 #endif
@@ -187,7 +187,7 @@ public readonly ref partial struct ReadOnlySpan2D<T>
             get
             {
 #if NETSTANDARD2_1_OR_GREATER
-                    ref T r0 = ref MemoryMarshal.GetReference(this.span);
+                ref T r0 = ref MemoryMarshal.GetReference(this.span);
 #else
                 ref T r0 = ref RuntimeHelpers.GetObjectDataAtOffsetOrPointerReference<T>(this.instance, this.offset);
 #endif

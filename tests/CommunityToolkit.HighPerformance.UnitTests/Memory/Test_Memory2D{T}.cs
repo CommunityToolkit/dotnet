@@ -339,8 +339,8 @@ public class Test_Memory2DT
         bool success = memory2d.TryGetMemory(out Memory<int> memory);
 
 #if WINDOWS_UWP
-            Assert.IsFalse(success);
-            Assert.IsTrue(memory.IsEmpty);
+        Assert.IsFalse(success);
+        Assert.IsTrue(memory.IsEmpty);
 #else
         Assert.IsTrue(success);
         Assert.AreEqual(memory.Length, array.Length);

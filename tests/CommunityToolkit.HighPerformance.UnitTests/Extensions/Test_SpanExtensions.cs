@@ -163,7 +163,7 @@ public class Test_SpanExtensions
     {
         Span<int> data = Array.Empty<int>();
 
-        foreach (HighPerformance.Enumerables.SpanEnumerable<int>.Item item in data.Enumerate())
+        foreach (HighPerformance.Enumerables.SpanEnumerable<int>.Item _ in data.Enumerate())
         {
             Assert.Fail("Empty source sequence");
         }

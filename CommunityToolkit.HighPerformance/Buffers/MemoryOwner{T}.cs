@@ -183,18 +183,18 @@ public sealed class MemoryOwner<T> : IMemoryOwner<T>
             }
 
 #if NETCOREAPP3_1_OR_GREATER
-                ref T r0 = ref array!.DangerousGetReferenceAt(this.start);
+            ref T r0 = ref array!.DangerousGetReferenceAt(this.start);
 
-                // On .NET Core runtimes, we can manually create a span from the starting reference to
-                // skip the argument validations, which include an explicit null check, covariance check
-                // for the array and the actual validation for the starting offset and target length. We
-                // only do this on .NET Core as we can leverage the runtime-specific array layout to get
-                // a fast access to the initial element, which makes this trick worth it. Otherwise, on
-                // runtimes where we would need to at least access a static field to retrieve the base
-                // byte offset within an SZ array object, we can get better performance by just using the
-                // default Span<T> constructor and paying the cost of the extra conditional branches,
-                // especially if T is a value type, in which case the covariance check is JIT removed.
-                return MemoryMarshal.CreateSpan(ref r0, this.length);
+            // On .NET Core runtimes, we can manually create a span from the starting reference to
+            // skip the argument validations, which include an explicit null check, covariance check
+            // for the array and the actual validation for the starting offset and target length. We
+            // only do this on .NET Core as we can leverage the runtime-specific array layout to get
+            // a fast access to the initial element, which makes this trick worth it. Otherwise, on
+            // runtimes where we would need to at least access a static field to retrieve the base
+            // byte offset within an SZ array object, we can get better performance by just using the
+            // default Span<T> constructor and paying the cost of the extra conditional branches,
+            // especially if T is a value type, in which case the covariance check is JIT removed.
+            return MemoryMarshal.CreateSpan(ref r0, this.length);
 #else
             return new Span<T>(array!, this.start, this.length);
 #endif

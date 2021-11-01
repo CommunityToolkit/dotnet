@@ -19,39 +19,39 @@ namespace CommunityToolkit.HighPerformance;
 public readonly ref struct Ref<T>
 {
 #if NETSTANDARD2_1_OR_GREATER
-        /// <summary>
-        /// The 1-length <see cref="Span{T}"/> instance used to track the target <typeparamref name="T"/> value.
-        /// </summary>
-        internal readonly Span<T> Span;
+    /// <summary>
+    /// The 1-length <see cref="Span{T}"/> instance used to track the target <typeparamref name="T"/> value.
+    /// </summary>
+    internal readonly Span<T> Span;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Ref{T}"/> struct.
-        /// </summary>
-        /// <param name="value">The reference to the target <typeparamref name="T"/> value.</param>
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Ref{T}"/> struct.
+    /// </summary>
+    /// <param name="value">The reference to the target <typeparamref name="T"/> value.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Ref(ref T value)
+    {
+        Span = MemoryMarshal.CreateSpan(ref value, 1);
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Ref{T}"/> struct.
+    /// </summary>
+    /// <param name="pointer">The pointer to the target value.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public unsafe Ref(void* pointer)
+        : this(ref Unsafe.AsRef<T>(pointer))
+    {
+    }
+
+    /// <summary>
+    /// Gets the <typeparamref name="T"/> reference represented by the current <see cref="Ref{T}"/> instance.
+    /// </summary>
+    public ref T Value
+    {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Ref(ref T value)
-        {
-            Span = MemoryMarshal.CreateSpan(ref value, 1);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Ref{T}"/> struct.
-        /// </summary>
-        /// <param name="pointer">The pointer to the target value.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe Ref(void* pointer)
-            : this(ref Unsafe.AsRef<T>(pointer))
-        {
-        }
-
-        /// <summary>
-        /// Gets the <typeparamref name="T"/> reference represented by the current <see cref="Ref{T}"/> instance.
-        /// </summary>
-        public ref T Value
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => ref MemoryMarshal.GetReference(Span);
-        }
+        get => ref MemoryMarshal.GetReference(Span);
+    }
 #else
     /// <summary>
     /// The owner <see cref="object"/> the current instance belongs to

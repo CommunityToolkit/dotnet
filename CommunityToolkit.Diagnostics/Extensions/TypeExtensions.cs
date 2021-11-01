@@ -193,7 +193,7 @@ public static class TypeExtensions
 #if NETSTANDARD1_4
         return type.GetTypeInfo().IsGenericType;
 #else
-            return type.IsGenericType;
+        return type.IsGenericType;
 #endif
     }
 

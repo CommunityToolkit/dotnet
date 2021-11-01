@@ -67,49 +67,49 @@ public static class SpanExtensions
     }
 
 #if NETSTANDARD2_1_OR_GREATER
-        /// <summary>
-        /// Returns a <see cref="Span2D{T}"/> instance wrapping the underlying data for the given <see cref="Span{T}"/> instance.
-        /// </summary>
-        /// <typeparam name="T">The type of items in the input <see cref="Span{T}"/> instance.</typeparam>
-        /// <param name="span">The input <see cref="Span{T}"/> instance.</param>
-        /// <param name="height">The height of the resulting 2D area.</param>
-        /// <param name="width">The width of each row in the resulting 2D area.</param>
-        /// <returns>The resulting <see cref="Span2D{T}"/> instance.</returns>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// Thrown when one of the input parameters is out of range.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// Thrown when the requested area is outside of bounds for <paramref name="span"/>.
-        /// </exception>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Span2D<T> AsSpan2D<T>(this Span<T> span, int height, int width)
-        {
-            return new(span, height, width);
-        }
+    /// <summary>
+    /// Returns a <see cref="Span2D{T}"/> instance wrapping the underlying data for the given <see cref="Span{T}"/> instance.
+    /// </summary>
+    /// <typeparam name="T">The type of items in the input <see cref="Span{T}"/> instance.</typeparam>
+    /// <param name="span">The input <see cref="Span{T}"/> instance.</param>
+    /// <param name="height">The height of the resulting 2D area.</param>
+    /// <param name="width">The width of each row in the resulting 2D area.</param>
+    /// <returns>The resulting <see cref="Span2D{T}"/> instance.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when one of the input parameters is out of range.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the requested area is outside of bounds for <paramref name="span"/>.
+    /// </exception>
+    [Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Span2D<T> AsSpan2D<T>(this Span<T> span, int height, int width)
+    {
+        return new(span, height, width);
+    }
 
-        /// <summary>
-        /// Returns a <see cref="Span2D{T}"/> instance wrapping the underlying data for the given <see cref="Span{T}"/> instance.
-        /// </summary>
-        /// <typeparam name="T">The type of items in the input <see cref="Span{T}"/> instance.</typeparam>
-        /// <param name="span">The input <see cref="Span{T}"/> instance.</param>
-        /// <param name="offset">The initial offset within <paramref name="span"/>.</param>
-        /// <param name="height">The height of the resulting 2D area.</param>
-        /// <param name="width">The width of each row in the resulting 2D area.</param>
-        /// <param name="pitch">The pitch in the resulting 2D area.</param>
-        /// <returns>The resulting <see cref="Span2D{T}"/> instance.</returns>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// Thrown when one of the input parameters is out of range.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// Thrown when the requested area is outside of bounds for <paramref name="span"/>.
-        /// </exception>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Span2D<T> AsSpan2D<T>(this Span<T> span, int offset, int height, int width, int pitch)
-        {
-            return new(span, offset, height, width, pitch);
-        }
+    /// <summary>
+    /// Returns a <see cref="Span2D{T}"/> instance wrapping the underlying data for the given <see cref="Span{T}"/> instance.
+    /// </summary>
+    /// <typeparam name="T">The type of items in the input <see cref="Span{T}"/> instance.</typeparam>
+    /// <param name="span">The input <see cref="Span{T}"/> instance.</param>
+    /// <param name="offset">The initial offset within <paramref name="span"/>.</param>
+    /// <param name="height">The height of the resulting 2D area.</param>
+    /// <param name="width">The width of each row in the resulting 2D area.</param>
+    /// <param name="pitch">The pitch in the resulting 2D area.</param>
+    /// <returns>The resulting <see cref="Span2D{T}"/> instance.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when one of the input parameters is out of range.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the requested area is outside of bounds for <paramref name="span"/>.
+    /// </exception>
+    [Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Span2D<T> AsSpan2D<T>(this Span<T> span, int offset, int height, int width, int pitch)
+    {
+        return new(span, offset, height, width, pitch);
+    }
 #endif
 
     /// <summary>

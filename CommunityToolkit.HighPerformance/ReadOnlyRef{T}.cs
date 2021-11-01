@@ -19,51 +19,51 @@ namespace CommunityToolkit.HighPerformance;
 public readonly ref struct ReadOnlyRef<T>
 {
 #if NETSTANDARD2_1_OR_GREATER
-        /// <summary>
-        /// The 1-length <see cref="ReadOnlySpan{T}"/> instance used to track the target <typeparamref name="T"/> value.
-        /// </summary>
-        internal readonly ReadOnlySpan<T> Span;
+    /// <summary>
+    /// The 1-length <see cref="ReadOnlySpan{T}"/> instance used to track the target <typeparamref name="T"/> value.
+    /// </summary>
+    internal readonly ReadOnlySpan<T> Span;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ReadOnlyRef{T}"/> struct.
-        /// </summary>
-        /// <param name="value">The readonly reference to the target <typeparamref name="T"/> value.</param>
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ReadOnlyRef{T}"/> struct.
+    /// </summary>
+    /// <param name="value">The readonly reference to the target <typeparamref name="T"/> value.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ReadOnlyRef(in T value)
+    {
+        ref T r0 = ref Unsafe.AsRef(value);
+
+        Span = MemoryMarshal.CreateReadOnlySpan(ref r0, 1);
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ReadOnlyRef{T}"/> struct.
+    /// </summary>
+    /// <param name="pointer">The pointer to the target value.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public unsafe ReadOnlyRef(void* pointer)
+        : this(in Unsafe.AsRef<T>(pointer))
+    {
+    }
+
+    /// <summary>
+    /// Gets the readonly <typeparamref name="T"/> reference represented by the current <see cref="Ref{T}"/> instance.
+    /// </summary>
+    public ref readonly T Value
+    {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadOnlyRef(in T value)
-        {
-            ref T r0 = ref Unsafe.AsRef(value);
+        get => ref MemoryMarshal.GetReference(Span);
+    }
 
-            Span = MemoryMarshal.CreateReadOnlySpan(ref r0, 1);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ReadOnlyRef{T}"/> struct.
-        /// </summary>
-        /// <param name="pointer">The pointer to the target value.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe ReadOnlyRef(void* pointer)
-            : this(in Unsafe.AsRef<T>(pointer))
-        {
-        }
-
-        /// <summary>
-        /// Gets the readonly <typeparamref name="T"/> reference represented by the current <see cref="Ref{T}"/> instance.
-        /// </summary>
-        public ref readonly T Value
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => ref MemoryMarshal.GetReference(Span);
-        }
-
-        /// <summary>
-        /// Implicitly converts a <see cref="Ref{T}"/> instance into a <see cref="ReadOnlyRef{T}"/> one.
-        /// </summary>
-        /// <param name="reference">The input <see cref="Ref{T}"/> instance.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static implicit operator ReadOnlyRef<T>(Ref<T> reference)
-        {
-            return new(in reference.Value);
-        }
+    /// <summary>
+    /// Implicitly converts a <see cref="Ref{T}"/> instance into a <see cref="ReadOnlyRef{T}"/> one.
+    /// </summary>
+    /// <param name="reference">The input <see cref="Ref{T}"/> instance.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator ReadOnlyRef<T>(Ref<T> reference)
+    {
+        return new(in reference.Value);
+    }
 #else
     /// <summary>
     /// The owner <see cref="object"/> the current instance belongs to

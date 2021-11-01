@@ -14,77 +14,77 @@ namespace CommunityToolkit.HighPerformance.Helpers;
 public static partial class ParallelHelper
 {
 #if NETSTANDARD2_1_OR_GREATER
-        /// <summary>
-        /// Executes a specified action in an optimized parallel loop.
-        /// </summary>
-        /// <typeparam name="TAction">The type of action (implementing <see cref="IAction"/>) to invoke for each iteration index.</typeparam>
-        /// <param name="range">The iteration range.</param>
-        /// <remarks>None of the bounds of <paramref name="range"/> can start from an end.</remarks>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void For<TAction>(Range range)
-            where TAction : struct, IAction
+    /// <summary>
+    /// Executes a specified action in an optimized parallel loop.
+    /// </summary>
+    /// <typeparam name="TAction">The type of action (implementing <see cref="IAction"/>) to invoke for each iteration index.</typeparam>
+    /// <param name="range">The iteration range.</param>
+    /// <remarks>None of the bounds of <paramref name="range"/> can start from an end.</remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void For<TAction>(Range range)
+        where TAction : struct, IAction
+    {
+        For(range, default(TAction), 1);
+    }
+
+    /// <summary>
+    /// Executes a specified action in an optimized parallel loop.
+    /// </summary>
+    /// <typeparam name="TAction">The type of action (implementing <see cref="IAction"/>) to invoke for each iteration index.</typeparam>
+    /// <param name="range">The iteration range.</param>
+    /// <param name="minimumActionsPerThread">
+    /// The minimum number of actions to run per individual thread. Set to 1 if all invocations
+    /// should be parallelized, or to a greater number if each individual invocation is fast
+    /// enough that it is more efficient to set a lower bound per each running thread.
+    /// </param>
+    /// <remarks>None of the bounds of <paramref name="range"/> can start from an end.</remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void For<TAction>(Range range, int minimumActionsPerThread)
+        where TAction : struct, IAction
+    {
+        For(range, default(TAction), minimumActionsPerThread);
+    }
+
+    /// <summary>
+    /// Executes a specified action in an optimized parallel loop.
+    /// </summary>
+    /// <typeparam name="TAction">The type of action (implementing <see cref="IAction"/>) to invoke for each iteration index.</typeparam>
+    /// <param name="range">The iteration range.</param>
+    /// <param name="action">The <typeparamref name="TAction"/> instance representing the action to invoke.</param>
+    /// <remarks>None of the bounds of <paramref name="range"/> can start from an end.</remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void For<TAction>(Range range, in TAction action)
+        where TAction : struct, IAction
+    {
+        For(range, action, 1);
+    }
+
+    /// <summary>
+    /// Executes a specified action in an optimized parallel loop.
+    /// </summary>
+    /// <typeparam name="TAction">The type of action (implementing <see cref="IAction"/>) to invoke for each iteration index.</typeparam>
+    /// <param name="range">The iteration range.</param>
+    /// <param name="action">The <typeparamref name="TAction"/> instance representing the action to invoke.</param>
+    /// <param name="minimumActionsPerThread">
+    /// The minimum number of actions to run per individual thread. Set to 1 if all invocations
+    /// should be parallelized, or to a greater number if each individual invocation is fast
+    /// enough that it is more efficient to set a lower bound per each running thread.
+    /// </param>
+    /// <remarks>None of the bounds of <paramref name="range"/> can start from an end.</remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void For<TAction>(Range range, in TAction action, int minimumActionsPerThread)
+        where TAction : struct, IAction
+    {
+        if (range.Start.IsFromEnd || range.End.IsFromEnd)
         {
-            For(range, default(TAction), 1);
+            ThrowArgumentExceptionForRangeIndexFromEnd(nameof(range));
         }
 
-        /// <summary>
-        /// Executes a specified action in an optimized parallel loop.
-        /// </summary>
-        /// <typeparam name="TAction">The type of action (implementing <see cref="IAction"/>) to invoke for each iteration index.</typeparam>
-        /// <param name="range">The iteration range.</param>
-        /// <param name="minimumActionsPerThread">
-        /// The minimum number of actions to run per individual thread. Set to 1 if all invocations
-        /// should be parallelized, or to a greater number if each individual invocation is fast
-        /// enough that it is more efficient to set a lower bound per each running thread.
-        /// </param>
-        /// <remarks>None of the bounds of <paramref name="range"/> can start from an end.</remarks>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void For<TAction>(Range range, int minimumActionsPerThread)
-            where TAction : struct, IAction
-        {
-            For(range, default(TAction), minimumActionsPerThread);
-        }
+        int start = range.Start.Value;
+        int end = range.End.Value;
 
-        /// <summary>
-        /// Executes a specified action in an optimized parallel loop.
-        /// </summary>
-        /// <typeparam name="TAction">The type of action (implementing <see cref="IAction"/>) to invoke for each iteration index.</typeparam>
-        /// <param name="range">The iteration range.</param>
-        /// <param name="action">The <typeparamref name="TAction"/> instance representing the action to invoke.</param>
-        /// <remarks>None of the bounds of <paramref name="range"/> can start from an end.</remarks>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void For<TAction>(Range range, in TAction action)
-            where TAction : struct, IAction
-        {
-            For(range, action, 1);
-        }
-
-        /// <summary>
-        /// Executes a specified action in an optimized parallel loop.
-        /// </summary>
-        /// <typeparam name="TAction">The type of action (implementing <see cref="IAction"/>) to invoke for each iteration index.</typeparam>
-        /// <param name="range">The iteration range.</param>
-        /// <param name="action">The <typeparamref name="TAction"/> instance representing the action to invoke.</param>
-        /// <param name="minimumActionsPerThread">
-        /// The minimum number of actions to run per individual thread. Set to 1 if all invocations
-        /// should be parallelized, or to a greater number if each individual invocation is fast
-        /// enough that it is more efficient to set a lower bound per each running thread.
-        /// </param>
-        /// <remarks>None of the bounds of <paramref name="range"/> can start from an end.</remarks>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void For<TAction>(Range range, in TAction action, int minimumActionsPerThread)
-            where TAction : struct, IAction
-        {
-            if (range.Start.IsFromEnd || range.End.IsFromEnd)
-            {
-                ThrowArgumentExceptionForRangeIndexFromEnd(nameof(range));
-            }
-
-            int start = range.Start.Value;
-            int end = range.End.Value;
-
-            For(start, end, action, minimumActionsPerThread);
-        }
+        For(start, end, action, minimumActionsPerThread);
+    }
 #endif
 
     /// <summary>

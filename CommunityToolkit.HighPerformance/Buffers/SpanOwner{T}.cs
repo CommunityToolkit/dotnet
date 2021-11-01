@@ -148,9 +148,9 @@ public readonly ref struct SpanOwner<T>
         get
         {
 #if NETCOREAPP3_1_OR_GREATER
-                ref T r0 = ref array!.DangerousGetReference();
+            ref T r0 = ref array!.DangerousGetReference();
 
-                return MemoryMarshal.CreateSpan(ref r0, this.length);
+            return MemoryMarshal.CreateSpan(ref r0, this.length);
 #else
             return new Span<T>(this.array, 0, this.length);
 #endif

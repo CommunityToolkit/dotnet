@@ -167,24 +167,24 @@ public static class StreamExtensions
     /// <returns>The <typeparamref name="T"/> value read from <paramref name="stream"/>.</returns>
     /// <exception cref="InvalidOperationException">Thrown if <paramref name="stream"/> reaches the end.</exception>
 #if NETSTANDARD2_1_OR_GREATER
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
     public static T Read<T>(this Stream stream)
         where T : unmanaged
     {
 #if NETSTANDARD2_1_OR_GREATER
-            T result = default;
-            int length = Unsafe.SizeOf<T>();
+        T result = default;
+        int length = Unsafe.SizeOf<T>();
 
-            unsafe
+        unsafe
+        {
+            if (stream.Read(new Span<byte>(&result, length)) != length)
             {
-                if (stream.Read(new Span<byte>(&result, length)) != length)
-                {
-                    ThrowInvalidOperationExceptionForEndOfStream();
-                }
+                ThrowInvalidOperationExceptionForEndOfStream();
             }
+        }
 
-            return result;
+        return result;
 #else
         int length = Unsafe.SizeOf<T>();
         byte[] buffer = ArrayPool<byte>.Shared.Rent(length);
@@ -212,19 +212,19 @@ public static class StreamExtensions
     /// <param name="stream">The target <see cref="Stream"/> instance to write to.</param>
     /// <param name="value">The input value to write to <paramref name="stream"/>.</param>
 #if NETSTANDARD2_1_OR_GREATER
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
     public static void Write<T>(this Stream stream, in T value)
         where T : unmanaged
     {
 #if NETSTANDARD2_1_OR_GREATER
-            ref T r0 = ref Unsafe.AsRef(value);
-            ref byte r1 = ref Unsafe.As<T, byte>(ref r0);
-            int length = Unsafe.SizeOf<T>();
+        ref T r0 = ref Unsafe.AsRef(value);
+        ref byte r1 = ref Unsafe.As<T, byte>(ref r0);
+        int length = Unsafe.SizeOf<T>();
 
-            ReadOnlySpan<byte> span = MemoryMarshal.CreateReadOnlySpan(ref r1, length);
+        ReadOnlySpan<byte> span = MemoryMarshal.CreateReadOnlySpan(ref r1, length);
 
-            stream.Write(span);
+        stream.Write(span);
 #else
         int length = Unsafe.SizeOf<T>();
         byte[] buffer = ArrayPool<byte>.Shared.Rent(length);

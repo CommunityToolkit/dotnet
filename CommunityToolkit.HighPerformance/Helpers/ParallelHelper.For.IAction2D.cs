@@ -15,84 +15,84 @@ namespace CommunityToolkit.HighPerformance.Helpers;
 public static partial class ParallelHelper
 {
 #if NETSTANDARD2_1_OR_GREATER
-        /// <summary>
-        /// Executes a specified action in an optimized parallel loop.
-        /// </summary>
-        /// <typeparam name="TAction">The type of action (implementing <see cref="IAction2D"/>) to invoke for each pair of iteration indices.</typeparam>
-        /// <param name="i">The <see cref="Range"/> value indicating the iteration range for the outer loop.</param>
-        /// <param name="j">The <see cref="Range"/> value indicating the iteration range for the inner loop.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void For2D<TAction>(Range i, Range j)
-            where TAction : struct, IAction2D
+    /// <summary>
+    /// Executes a specified action in an optimized parallel loop.
+    /// </summary>
+    /// <typeparam name="TAction">The type of action (implementing <see cref="IAction2D"/>) to invoke for each pair of iteration indices.</typeparam>
+    /// <param name="i">The <see cref="Range"/> value indicating the iteration range for the outer loop.</param>
+    /// <param name="j">The <see cref="Range"/> value indicating the iteration range for the inner loop.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void For2D<TAction>(Range i, Range j)
+        where TAction : struct, IAction2D
+    {
+        For2D(i, j, default(TAction), 1);
+    }
+
+    /// <summary>
+    /// Executes a specified action in an optimized parallel loop.
+    /// </summary>
+    /// <typeparam name="TAction">The type of action (implementing <see cref="IAction2D"/>) to invoke for each pair of iteration indices.</typeparam>
+    /// <param name="i">The <see cref="Range"/> value indicating the iteration range for the outer loop.</param>
+    /// <param name="j">The <see cref="Range"/> value indicating the iteration range for the inner loop.</param>
+    /// <param name="minimumActionsPerThread">
+    /// The minimum number of actions to run per individual thread. Set to 1 if all invocations
+    /// should be parallelized, or to a greater number if each individual invocation is fast
+    /// enough that it is more efficient to set a lower bound per each running thread.
+    /// </param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void For2D<TAction>(Range i, Range j, int minimumActionsPerThread)
+        where TAction : struct, IAction2D
+    {
+        For2D(i, j, default(TAction), minimumActionsPerThread);
+    }
+
+    /// <summary>
+    /// Executes a specified action in an optimized parallel loop.
+    /// </summary>
+    /// <typeparam name="TAction">The type of action (implementing <see cref="IAction2D"/>) to invoke for each pair of iteration indices.</typeparam>
+    /// <param name="i">The <see cref="Range"/> value indicating the iteration range for the outer loop.</param>
+    /// <param name="j">The <see cref="Range"/> value indicating the iteration range for the inner loop.</param>
+    /// <param name="action">The <typeparamref name="TAction"/> instance representing the action to invoke.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void For2D<TAction>(Range i, Range j, in TAction action)
+        where TAction : struct, IAction2D
+    {
+        For2D(i, j, action, 1);
+    }
+
+    /// <summary>
+    /// Executes a specified action in an optimized parallel loop.
+    /// </summary>
+    /// <typeparam name="TAction">The type of action (implementing <see cref="IAction2D"/>) to invoke for each pair of iteration indices.</typeparam>
+    /// <param name="i">The <see cref="Range"/> value indicating the iteration range for the outer loop.</param>
+    /// <param name="j">The <see cref="Range"/> value indicating the iteration range for the inner loop.</param>
+    /// <param name="action">The <typeparamref name="TAction"/> instance representing the action to invoke.</param>
+    /// <param name="minimumActionsPerThread">
+    /// The minimum number of actions to run per individual thread. Set to 1 if all invocations
+    /// should be parallelized, or to a greater number if each individual invocation is fast
+    /// enough that it is more efficient to set a lower bound per each running thread.
+    /// </param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void For2D<TAction>(Range i, Range j, in TAction action, int minimumActionsPerThread)
+        where TAction : struct, IAction2D
+    {
+        if (i.Start.IsFromEnd || i.End.IsFromEnd)
         {
-            For2D(i, j, default(TAction), 1);
+            ThrowArgumentExceptionForRangeIndexFromEnd(nameof(i));
         }
 
-        /// <summary>
-        /// Executes a specified action in an optimized parallel loop.
-        /// </summary>
-        /// <typeparam name="TAction">The type of action (implementing <see cref="IAction2D"/>) to invoke for each pair of iteration indices.</typeparam>
-        /// <param name="i">The <see cref="Range"/> value indicating the iteration range for the outer loop.</param>
-        /// <param name="j">The <see cref="Range"/> value indicating the iteration range for the inner loop.</param>
-        /// <param name="minimumActionsPerThread">
-        /// The minimum number of actions to run per individual thread. Set to 1 if all invocations
-        /// should be parallelized, or to a greater number if each individual invocation is fast
-        /// enough that it is more efficient to set a lower bound per each running thread.
-        /// </param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void For2D<TAction>(Range i, Range j, int minimumActionsPerThread)
-            where TAction : struct, IAction2D
+        if (j.Start.IsFromEnd || j.End.IsFromEnd)
         {
-            For2D(i, j, default(TAction), minimumActionsPerThread);
+            ThrowArgumentExceptionForRangeIndexFromEnd(nameof(j));
         }
 
-        /// <summary>
-        /// Executes a specified action in an optimized parallel loop.
-        /// </summary>
-        /// <typeparam name="TAction">The type of action (implementing <see cref="IAction2D"/>) to invoke for each pair of iteration indices.</typeparam>
-        /// <param name="i">The <see cref="Range"/> value indicating the iteration range for the outer loop.</param>
-        /// <param name="j">The <see cref="Range"/> value indicating the iteration range for the inner loop.</param>
-        /// <param name="action">The <typeparamref name="TAction"/> instance representing the action to invoke.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void For2D<TAction>(Range i, Range j, in TAction action)
-            where TAction : struct, IAction2D
-        {
-            For2D(i, j, action, 1);
-        }
+        int top = i.Start.Value;
+        int bottom = i.End.Value;
+        int left = j.Start.Value;
+        int right = j.End.Value;
 
-        /// <summary>
-        /// Executes a specified action in an optimized parallel loop.
-        /// </summary>
-        /// <typeparam name="TAction">The type of action (implementing <see cref="IAction2D"/>) to invoke for each pair of iteration indices.</typeparam>
-        /// <param name="i">The <see cref="Range"/> value indicating the iteration range for the outer loop.</param>
-        /// <param name="j">The <see cref="Range"/> value indicating the iteration range for the inner loop.</param>
-        /// <param name="action">The <typeparamref name="TAction"/> instance representing the action to invoke.</param>
-        /// <param name="minimumActionsPerThread">
-        /// The minimum number of actions to run per individual thread. Set to 1 if all invocations
-        /// should be parallelized, or to a greater number if each individual invocation is fast
-        /// enough that it is more efficient to set a lower bound per each running thread.
-        /// </param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void For2D<TAction>(Range i, Range j, in TAction action, int minimumActionsPerThread)
-            where TAction : struct, IAction2D
-        {
-            if (i.Start.IsFromEnd || i.End.IsFromEnd)
-            {
-                ThrowArgumentExceptionForRangeIndexFromEnd(nameof(i));
-            }
-
-            if (j.Start.IsFromEnd || j.End.IsFromEnd)
-            {
-                ThrowArgumentExceptionForRangeIndexFromEnd(nameof(j));
-            }
-
-            int top = i.Start.Value;
-            int bottom = i.End.Value;
-            int left = j.Start.Value;
-            int right = j.End.Value;
-
-            For2D(top, bottom, left, right, action, minimumActionsPerThread);
-        }
+        For2D(top, bottom, left, right, action, minimumActionsPerThread);
+    }
 #endif
 
     /// <summary>

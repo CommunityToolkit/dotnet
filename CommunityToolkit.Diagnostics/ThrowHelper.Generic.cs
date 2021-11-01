@@ -247,111 +247,111 @@ public static partial class ThrowHelper
     }
 
 #if !NETSTANDARD1_4
-        /// <summary>
-        /// Throws a new <see cref="COMException"/>.
-        /// </summary>
-        /// <typeparam name="T">The type of expected result.</typeparam>
-        /// <exception cref="COMException">Thrown with no parameters.</exception>
-        /// <returns>This method always throws, so it actually never returns a value.</returns>
-        [DoesNotReturn]
-        public static T ThrowCOMException<T>()
-        {
-            throw new COMException();
-        }
+    /// <summary>
+    /// Throws a new <see cref="COMException"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of expected result.</typeparam>
+    /// <exception cref="COMException">Thrown with no parameters.</exception>
+    /// <returns>This method always throws, so it actually never returns a value.</returns>
+    [DoesNotReturn]
+    public static T ThrowCOMException<T>()
+    {
+        throw new COMException();
+    }
 
-        /// <summary>
-        /// Throws a new <see cref="COMException"/>.
-        /// </summary>
-        /// <typeparam name="T">The type of expected result.</typeparam>
-        /// <param name="message">The message to include in the exception.</param>
-        /// <exception cref="COMException">Thrown with the specified parameter.</exception>
-        /// <returns>This method always throws, so it actually never returns a value.</returns>
-        [DoesNotReturn]
-        public static T ThrowCOMException<T>(string? message)
-        {
-            throw new COMException(message);
-        }
+    /// <summary>
+    /// Throws a new <see cref="COMException"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of expected result.</typeparam>
+    /// <param name="message">The message to include in the exception.</param>
+    /// <exception cref="COMException">Thrown with the specified parameter.</exception>
+    /// <returns>This method always throws, so it actually never returns a value.</returns>
+    [DoesNotReturn]
+    public static T ThrowCOMException<T>(string? message)
+    {
+        throw new COMException(message);
+    }
 
-        /// <summary>
-        /// Throws a new <see cref="COMException"/>.
-        /// </summary>
-        /// <typeparam name="T">The type of expected result.</typeparam>
-        /// <param name="message">The argument name.</param>
-        /// <param name="innerException">The inner <see cref="Exception"/> to include.</param>
-        /// <exception cref="COMException">Thrown with the specified parameters.</exception>
-        /// <returns>This method always throws, so it actually never returns a value.</returns>
-        [DoesNotReturn]
-        public static T ThrowCOMException<T>(string? message, Exception? innerException)
-        {
-            throw new COMException(message, innerException);
-        }
+    /// <summary>
+    /// Throws a new <see cref="COMException"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of expected result.</typeparam>
+    /// <param name="message">The argument name.</param>
+    /// <param name="innerException">The inner <see cref="Exception"/> to include.</param>
+    /// <exception cref="COMException">Thrown with the specified parameters.</exception>
+    /// <returns>This method always throws, so it actually never returns a value.</returns>
+    [DoesNotReturn]
+    public static T ThrowCOMException<T>(string? message, Exception? innerException)
+    {
+        throw new COMException(message, innerException);
+    }
 
-        /// <summary>
-        /// Throws a new <see cref="COMException"/>.
-        /// </summary>
-        /// <typeparam name="T">The type of expected result.</typeparam>
-        /// <param name="message">The argument name.</param>
-        /// <param name="error">The HRESULT of the errror to include.</param>
-        /// <exception cref="COMException">Thrown with the specified parameters.</exception>
-        /// <returns>This method always throws, so it actually never returns a value.</returns>
-        [DoesNotReturn]
-        public static T ThrowCOMException<T>(string? message, int error)
-        {
-            throw new COMException(message, error);
-        }
+    /// <summary>
+    /// Throws a new <see cref="COMException"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of expected result.</typeparam>
+    /// <param name="message">The argument name.</param>
+    /// <param name="error">The HRESULT of the errror to include.</param>
+    /// <exception cref="COMException">Thrown with the specified parameters.</exception>
+    /// <returns>This method always throws, so it actually never returns a value.</returns>
+    [DoesNotReturn]
+    public static T ThrowCOMException<T>(string? message, int error)
+    {
+        throw new COMException(message, error);
+    }
 
-        /// <summary>
-        /// Throws a new <see cref="ExternalException"/>.
-        /// </summary>
-        /// <typeparam name="T">The type of expected result.</typeparam>
-        /// <exception cref="ExternalException">Thrown with no parameters.</exception>
-        /// <returns>This method always throws, so it actually never returns a value.</returns>
-        [DoesNotReturn]
-        public static T ThrowExternalException<T>()
-        {
-            throw new ExternalException();
-        }
+    /// <summary>
+    /// Throws a new <see cref="ExternalException"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of expected result.</typeparam>
+    /// <exception cref="ExternalException">Thrown with no parameters.</exception>
+    /// <returns>This method always throws, so it actually never returns a value.</returns>
+    [DoesNotReturn]
+    public static T ThrowExternalException<T>()
+    {
+        throw new ExternalException();
+    }
 
-        /// <summary>
-        /// Throws a new <see cref="ExternalException"/>.
-        /// </summary>
-        /// <typeparam name="T">The type of expected result.</typeparam>
-        /// <param name="message">The message to include in the exception.</param>
-        /// <exception cref="ExternalException">Thrown with the specified parameter.</exception>
-        /// <returns>This method always throws, so it actually never returns a value.</returns>
-        [DoesNotReturn]
-        public static T ThrowExternalException<T>(string? message)
-        {
-            throw new ExternalException(message);
-        }
+    /// <summary>
+    /// Throws a new <see cref="ExternalException"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of expected result.</typeparam>
+    /// <param name="message">The message to include in the exception.</param>
+    /// <exception cref="ExternalException">Thrown with the specified parameter.</exception>
+    /// <returns>This method always throws, so it actually never returns a value.</returns>
+    [DoesNotReturn]
+    public static T ThrowExternalException<T>(string? message)
+    {
+        throw new ExternalException(message);
+    }
 
-        /// <summary>
-        /// Throws a new <see cref="ExternalException"/>.
-        /// </summary>
-        /// <typeparam name="T">The type of expected result.</typeparam>
-        /// <param name="message">The argument name.</param>
-        /// <param name="innerException">The inner <see cref="Exception"/> to include.</param>
-        /// <exception cref="ExternalException">Thrown with the specified parameters.</exception>
-        /// <returns>This method always throws, so it actually never returns a value.</returns>
-        [DoesNotReturn]
-        public static T ThrowExternalException<T>(string? message, Exception? innerException)
-        {
-            throw new ExternalException(message, innerException);
-        }
+    /// <summary>
+    /// Throws a new <see cref="ExternalException"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of expected result.</typeparam>
+    /// <param name="message">The argument name.</param>
+    /// <param name="innerException">The inner <see cref="Exception"/> to include.</param>
+    /// <exception cref="ExternalException">Thrown with the specified parameters.</exception>
+    /// <returns>This method always throws, so it actually never returns a value.</returns>
+    [DoesNotReturn]
+    public static T ThrowExternalException<T>(string? message, Exception? innerException)
+    {
+        throw new ExternalException(message, innerException);
+    }
 
-        /// <summary>
-        /// Throws a new <see cref="ExternalException"/>.
-        /// </summary>
-        /// <typeparam name="T">The type of expected result.</typeparam>
-        /// <param name="message">The argument name.</param>
-        /// <param name="error">The HRESULT of the errror to include.</param>
-        /// <exception cref="ExternalException">Thrown with the specified parameters.</exception>
-        /// <returns>This method always throws, so it actually never returns a value.</returns>
-        [DoesNotReturn]
-        public static T ThrowExternalException<T>(string? message, int error)
-        {
-            throw new ExternalException(message, error);
-        }
+    /// <summary>
+    /// Throws a new <see cref="ExternalException"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of expected result.</typeparam>
+    /// <param name="message">The argument name.</param>
+    /// <param name="error">The HRESULT of the errror to include.</param>
+    /// <exception cref="ExternalException">Thrown with the specified parameters.</exception>
+    /// <returns>This method always throws, so it actually never returns a value.</returns>
+    [DoesNotReturn]
+    public static T ThrowExternalException<T>(string? message, int error)
+    {
+        throw new ExternalException(message, error);
+    }
 #endif
 
     /// <summary>
@@ -394,44 +394,44 @@ public static partial class ThrowHelper
     }
 
 #if !NETSTANDARD1_4
-        /// <summary>
-        /// Throws a new <see cref="InsufficientMemoryException"/>.
-        /// </summary>
-        /// <typeparam name="T">The type of expected result.</typeparam>
-        /// <exception cref="InsufficientMemoryException">Thrown with no parameters.</exception>
-        /// <returns>This method always throws, so it actually never returns a value.</returns>
-        [DoesNotReturn]
-        public static T ThrowInsufficientMemoryException<T>()
-        {
-            throw new InsufficientMemoryException();
-        }
+    /// <summary>
+    /// Throws a new <see cref="InsufficientMemoryException"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of expected result.</typeparam>
+    /// <exception cref="InsufficientMemoryException">Thrown with no parameters.</exception>
+    /// <returns>This method always throws, so it actually never returns a value.</returns>
+    [DoesNotReturn]
+    public static T ThrowInsufficientMemoryException<T>()
+    {
+        throw new InsufficientMemoryException();
+    }
 
-        /// <summary>
-        /// Throws a new <see cref="InsufficientMemoryException"/>.
-        /// </summary>
-        /// <typeparam name="T">The type of expected result.</typeparam>
-        /// <param name="message">The message to include in the exception.</param>
-        /// <exception cref="InsufficientMemoryException">Thrown with the specified parameter.</exception>
-        /// <returns>This method always throws, so it actually never returns a value.</returns>
-        [DoesNotReturn]
-        public static T ThrowInsufficientMemoryException<T>(string? message)
-        {
-            throw new InsufficientMemoryException(message);
-        }
+    /// <summary>
+    /// Throws a new <see cref="InsufficientMemoryException"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of expected result.</typeparam>
+    /// <param name="message">The message to include in the exception.</param>
+    /// <exception cref="InsufficientMemoryException">Thrown with the specified parameter.</exception>
+    /// <returns>This method always throws, so it actually never returns a value.</returns>
+    [DoesNotReturn]
+    public static T ThrowInsufficientMemoryException<T>(string? message)
+    {
+        throw new InsufficientMemoryException(message);
+    }
 
-        /// <summary>
-        /// Throws a new <see cref="InsufficientMemoryException"/>.
-        /// </summary>
-        /// <typeparam name="T">The type of expected result.</typeparam>
-        /// <param name="message">The message to include in the exception.</param>
-        /// <param name="innerException">The inner <see cref="Exception"/> to include.</param>
-        /// <exception cref="InsufficientMemoryException">Thrown with the specified parameter.</exception>
-        /// <returns>This method always throws, so it actually never returns a value.</returns>
-        [DoesNotReturn]
-        public static T ThrowInsufficientMemoryException<T>(string? message, Exception? innerException)
-        {
-            throw new InsufficientMemoryException(message, innerException);
-        }
+    /// <summary>
+    /// Throws a new <see cref="InsufficientMemoryException"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of expected result.</typeparam>
+    /// <param name="message">The message to include in the exception.</param>
+    /// <param name="innerException">The inner <see cref="Exception"/> to include.</param>
+    /// <exception cref="InsufficientMemoryException">Thrown with the specified parameter.</exception>
+    /// <returns>This method always throws, so it actually never returns a value.</returns>
+    [DoesNotReturn]
+    public static T ThrowInsufficientMemoryException<T>(string? message, Exception? innerException)
+    {
+        throw new InsufficientMemoryException(message, innerException);
+    }
 #endif
 
     /// <summary>
@@ -591,19 +591,19 @@ public static partial class ThrowHelper
     }
 
 #if !NETSTANDARD1_4
-        /// <summary>
-        /// Throws a new <see cref="MissingFieldException"/>.
-        /// </summary>
-        /// <typeparam name="T">The type of expected result.</typeparam>
-        /// <param name="className">The target class being inspected.</param>
-        /// <param name="fieldName">The target field being retrieved.</param>
-        /// <exception cref="MissingFieldException">Thrown with the specified parameters.</exception>
-        /// <returns>This method always throws, so it actually never returns a value.</returns>
-        [DoesNotReturn]
-        public static T ThrowMissingFieldException<T>(string? className, string? fieldName)
-        {
-            throw new MissingFieldException(className, fieldName);
-        }
+    /// <summary>
+    /// Throws a new <see cref="MissingFieldException"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of expected result.</typeparam>
+    /// <param name="className">The target class being inspected.</param>
+    /// <param name="fieldName">The target field being retrieved.</param>
+    /// <exception cref="MissingFieldException">Thrown with the specified parameters.</exception>
+    /// <returns>This method always throws, so it actually never returns a value.</returns>
+    [DoesNotReturn]
+    public static T ThrowMissingFieldException<T>(string? className, string? fieldName)
+    {
+        throw new MissingFieldException(className, fieldName);
+    }
 #endif
 
     /// <summary>
@@ -646,19 +646,19 @@ public static partial class ThrowHelper
     }
 
 #if !NETSTANDARD1_4
-        /// <summary>
-        /// Throws a new <see cref="MissingMemberException"/>.
-        /// </summary>
-        /// <typeparam name="T">The type of expected result.</typeparam>
-        /// <param name="className">The target class being inspected.</param>
-        /// <param name="memberName">The target member being retrieved.</param>
-        /// <exception cref="MissingMemberException">Thrown with the specified parameters.</exception>
-        /// <returns>This method always throws, so it actually never returns a value.</returns>
-        [DoesNotReturn]
-        public static T ThrowMissingMemberException<T>(string? className, string? memberName)
-        {
-            throw new MissingMemberException(className, memberName);
-        }
+    /// <summary>
+    /// Throws a new <see cref="MissingMemberException"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of expected result.</typeparam>
+    /// <param name="className">The target class being inspected.</param>
+    /// <param name="memberName">The target member being retrieved.</param>
+    /// <exception cref="MissingMemberException">Thrown with the specified parameters.</exception>
+    /// <returns>This method always throws, so it actually never returns a value.</returns>
+    [DoesNotReturn]
+    public static T ThrowMissingMemberException<T>(string? className, string? memberName)
+    {
+        throw new MissingMemberException(className, memberName);
+    }
 #endif
 
     /// <summary>
@@ -701,19 +701,19 @@ public static partial class ThrowHelper
     }
 
 #if !NETSTANDARD1_4
-        /// <summary>
-        /// Throws a new <see cref="MissingMethodException"/>.
-        /// </summary>
-        /// <typeparam name="T">The type of expected result.</typeparam>
-        /// <param name="className">The target class being inspected.</param>
-        /// <param name="methodName">The target method being retrieved.</param>
-        /// <exception cref="MissingMethodException">Thrown with the specified parameters.</exception>
-        /// <returns>This method always throws, so it actually never returns a value.</returns>
-        [DoesNotReturn]
-        public static T ThrowMissingMethodException<T>(string? className, string? methodName)
-        {
-            throw new MissingMethodException(className, methodName);
-        }
+    /// <summary>
+    /// Throws a new <see cref="MissingMethodException"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of expected result.</typeparam>
+    /// <param name="className">The target class being inspected.</param>
+    /// <param name="methodName">The target method being retrieved.</param>
+    /// <exception cref="MissingMethodException">Thrown with the specified parameters.</exception>
+    /// <returns>This method always throws, so it actually never returns a value.</returns>
+    [DoesNotReturn]
+    public static T ThrowMissingMethodException<T>(string? className, string? methodName)
+    {
+        throw new MissingMethodException(className, methodName);
+    }
 #endif
 
     /// <summary>

@@ -142,7 +142,7 @@ public class Test_ArrayPoolBufferWriterOfT
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_ArrayPoolBufferWriterOfT_InvalidRequestedSize()
     {
-        ArrayPoolBufferWriter<byte>? writer = new(-1);
+        _ = new ArrayPoolBufferWriter<byte>(-1);
 
         Assert.Fail("You shouldn't be here");
     }

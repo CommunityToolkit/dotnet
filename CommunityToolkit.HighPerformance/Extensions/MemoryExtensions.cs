@@ -17,49 +17,49 @@ namespace CommunityToolkit.HighPerformance;
 public static class MemoryExtensions
 {
 #if NETSTANDARD2_1_OR_GREATER
-        /// <summary>
-        /// Returns a <see cref="Memory2D{T}"/> instance wrapping the underlying data for the given <see cref="Memory{T}"/> instance.
-        /// </summary>
-        /// <typeparam name="T">The type of items in the input <see cref="Memory{T}"/> instance.</typeparam>
-        /// <param name="memory">The input <see cref="Memory{T}"/> instance.</param>
-        /// <param name="height">The height of the resulting 2D area.</param>
-        /// <param name="width">The width of each row in the resulting 2D area.</param>
-        /// <returns>The resulting <see cref="Memory2D{T}"/> instance.</returns>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// Thrown when one of the input parameters is out of range.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// Thrown when the requested area is outside of bounds for <paramref name="memory"/>.
-        /// </exception>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Memory2D<T> AsMemory2D<T>(this Memory<T> memory, int height, int width)
-        {
-            return new(memory, height, width);
-        }
+    /// <summary>
+    /// Returns a <see cref="Memory2D{T}"/> instance wrapping the underlying data for the given <see cref="Memory{T}"/> instance.
+    /// </summary>
+    /// <typeparam name="T">The type of items in the input <see cref="Memory{T}"/> instance.</typeparam>
+    /// <param name="memory">The input <see cref="Memory{T}"/> instance.</param>
+    /// <param name="height">The height of the resulting 2D area.</param>
+    /// <param name="width">The width of each row in the resulting 2D area.</param>
+    /// <returns>The resulting <see cref="Memory2D{T}"/> instance.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when one of the input parameters is out of range.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the requested area is outside of bounds for <paramref name="memory"/>.
+    /// </exception>
+    [Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Memory2D<T> AsMemory2D<T>(this Memory<T> memory, int height, int width)
+    {
+        return new(memory, height, width);
+    }
 
-        /// <summary>
-        /// Returns a <see cref="Memory2D{T}"/> instance wrapping the underlying data for the given <see cref="Memory{T}"/> instance.
-        /// </summary>
-        /// <typeparam name="T">The type of items in the input <see cref="Memory{T}"/> instance.</typeparam>
-        /// <param name="memory">The input <see cref="Memory{T}"/> instance.</param>
-        /// <param name="offset">The initial offset within <paramref name="memory"/>.</param>
-        /// <param name="height">The height of the resulting 2D area.</param>
-        /// <param name="width">The width of each row in the resulting 2D area.</param>
-        /// <param name="pitch">The pitch in the resulting 2D area.</param>
-        /// <returns>The resulting <see cref="Memory2D{T}"/> instance.</returns>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// Thrown when one of the input parameters is out of range.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// Thrown when the requested area is outside of bounds for <paramref name="memory"/>.
-        /// </exception>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Memory2D<T> AsMemory2D<T>(this Memory<T> memory, int offset, int height, int width, int pitch)
-        {
-            return new(memory, offset, height, width, pitch);
-        }
+    /// <summary>
+    /// Returns a <see cref="Memory2D{T}"/> instance wrapping the underlying data for the given <see cref="Memory{T}"/> instance.
+    /// </summary>
+    /// <typeparam name="T">The type of items in the input <see cref="Memory{T}"/> instance.</typeparam>
+    /// <param name="memory">The input <see cref="Memory{T}"/> instance.</param>
+    /// <param name="offset">The initial offset within <paramref name="memory"/>.</param>
+    /// <param name="height">The height of the resulting 2D area.</param>
+    /// <param name="width">The width of each row in the resulting 2D area.</param>
+    /// <param name="pitch">The pitch in the resulting 2D area.</param>
+    /// <returns>The resulting <see cref="Memory2D{T}"/> instance.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when one of the input parameters is out of range.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the requested area is outside of bounds for <paramref name="memory"/>.
+    /// </exception>
+    [Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Memory2D<T> AsMemory2D<T>(this Memory<T> memory, int offset, int height, int width, int pitch)
+    {
+        return new(memory, offset, height, width, pitch);
+    }
 #endif
 
     /// <summary>
