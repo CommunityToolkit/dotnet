@@ -52,7 +52,11 @@ public partial class Test_Messenger
     {
         IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
 
-        _ = messenger.Send<NumberRequestMessage>();
+        NumberRequestMessage message = messenger.Send<NumberRequestMessage>();
+
+        Assert.IsFalse(message.HasReceivedResponse);
+
+        _ = message.Response;
     }
 
     [TestCategory("Mvvm")]
@@ -152,7 +156,11 @@ public partial class Test_Messenger
     {
         IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
 
-        _ = await messenger.Send<AsyncNumberRequestMessage>();
+        AsyncNumberRequestMessage message = messenger.Send<AsyncNumberRequestMessage>();
+
+        Assert.IsFalse(message.HasReceivedResponse);
+
+        _ = await message.Response;
     }
 
     [TestCategory("Mvvm")]
