@@ -14,6 +14,39 @@ namespace UnitTests.Extensions
     {
         [TestCategory("TaskExtensions")]
         [TestMethod]
+        public void Test_TaskExtensions_NonGeneric_CompletedTask()
+        {
+            _ = Task.CompletedTask.GetResultOrDefault();
+        }
+
+        [TestCategory("TaskExtensions")]
+        [TestMethod]
+        public void Test_TaskExtensions_Generic_ValueType()
+        {
+            TaskCompletionSource<int> tcs = new TaskCompletionSource<int>();
+
+            Assert.AreEqual(0, tcs.Task.GetResultOrDefault());
+
+            tcs.SetResult(42);
+
+            Assert.AreEqual(42, tcs.Task.GetResultOrDefault());
+        }
+
+        [TestCategory("TaskExtensions")]
+        [TestMethod]
+        public void Test_TaskExtensions_Generic_ReferenceType()
+        {
+            TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
+
+            Assert.AreEqual(null, tcs.Task.GetResultOrDefault());
+
+            tcs.SetResult(nameof(Test_TaskExtensions_Generic_ReferenceType));
+
+            Assert.AreEqual(nameof(Test_TaskExtensions_Generic_ReferenceType), tcs.Task.GetResultOrDefault());
+        }
+
+        [TestCategory("TaskExtensions")]
+        [TestMethod]
         public void Test_TaskExtensions_ResultOrDefault()
         {
             TaskCompletionSource<int> tcs = new TaskCompletionSource<int>();
