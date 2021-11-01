@@ -1,6 +1,6 @@
 <Project>
 
-  <Import Project="$(BuildToolsDirectory)Windows.Toolkit.Common.targets" />
+  <Import Project="$(BuildToolsDirectory)Community.Toolkit.Common.targets" />
 
   <Target Name="AddCommitHashToAssemblyAttributes" BeforeTargets="GetAssemblyAttributes">
     <ItemGroup>

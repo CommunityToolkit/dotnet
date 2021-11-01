@@ -5,7 +5,7 @@
     <BuildToolsDirectory>$(RepositoryDirectory)build\</BuildToolsDirectory>
   </PropertyGroup>
 
-  <Import Project="$(BuildToolsDirectory)Windows.Toolkit.Common.props" />
+  <Import Project="$(BuildToolsDirectory)Community.Toolkit.Common.props" />
 
   <Choose>
     <When Condition="$(IsCoreProject)">

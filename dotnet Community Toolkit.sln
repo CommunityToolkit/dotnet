@@ -59,8 +59,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{CD16E790
 		build\SignClientSettings.json = build\SignClientSettings.json
 		build\StyleXaml.bat = build\StyleXaml.bat
 		build\UpdateHeaders.bat = build\UpdateHeaders.bat
-		build\Windows.Toolkit.Common.props = build\Windows.Toolkit.Common.props
-		build\Windows.Toolkit.Common.targets = build\Windows.Toolkit.Common.targets
+		build\Community.Toolkit.Common.props = build\Community.Toolkit.Common.props
+		build\Community.Toolkit.Common.targets = build\Community.Toolkit.Common.targets
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{11CB82CB-F72A-4690-9C0F-0AD5303C79B6}"
