@@ -623,4 +623,64 @@ public partial class Test_Guard
     {
         Guard.IsNotBetweenOrEqualTo(3, 0, 4, nameof(Test_Guard_IsNotBetweenOrEqualTo_Fail));
     }
+
+    [TestCategory("Guard")]
+    [TestMethod]
+    public void Test_Guard_CallerArgumentExpression_1()
+    {
+        string? thisStringShouldNotBeNull = null;
+
+        try
+        {
+            Guard.IsNotNull(thisStringShouldNotBeNull);
+        }
+        catch (ArgumentNullException e)
+        {
+            Assert.AreEqual(e.ParamName, nameof(thisStringShouldNotBeNull));
+
+            return;
+        }
+
+        Assert.Fail();
+    }
+
+    [TestCategory("Guard")]
+    [TestMethod]
+    public void Test_Guard_CallerArgumentExpression_2()
+    {
+        int thisIndexIsOutOfRange = 42;
+
+        try
+        {
+            Guard.IsInRangeFor(thisIndexIsOutOfRange, "Hello world");
+        }
+        catch (ArgumentOutOfRangeException e)
+        {
+            Assert.AreEqual(e.ParamName, nameof(thisIndexIsOutOfRange));
+
+            return;
+        }
+
+        Assert.Fail();
+    }
+
+    [TestCategory("Guard")]
+    [TestMethod]
+    public void Test_Guard_CallerArgumentExpression_3()
+    {
+        int[] thisArrayShouldNotBeShorterThan10 = Array.Empty<int>();
+
+        try
+        {
+            Guard.HasSizeGreaterThanOrEqualTo(thisArrayShouldNotBeShorterThan10, 10);
+        }
+        catch (ArgumentException e)
+        {
+            Assert.AreEqual(e.ParamName, nameof(thisArrayShouldNotBeShorterThan10));
+
+            return;
+        }
+
+        Assert.Fail();
+    }
 }
