@@ -24,7 +24,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="span"/> is != 0.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsEmpty<T>(Span<T> span, string name)
+        public static void IsEmpty<T>(Span<T> span, [CallerArgumentExpression("span")] string name = "")
         {
             if (span.Length == 0)
             {
@@ -42,7 +42,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="span"/> is == 0.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsNotEmpty<T>(Span<T> span, string name)
+        public static void IsNotEmpty<T>(Span<T> span, [CallerArgumentExpression("span")] string name = "")
         {
             if (span.Length != 0)
             {
@@ -61,7 +61,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="span"/> is != <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeEqualTo<T>(Span<T> span, int size, string name)
+        public static void HasSizeEqualTo<T>(Span<T> span, int size, [CallerArgumentExpression("span")] string name = "")
         {
             if (span.Length == size)
             {
@@ -80,7 +80,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="span"/> is == <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeNotEqualTo<T>(Span<T> span, int size, string name)
+        public static void HasSizeNotEqualTo<T>(Span<T> span, int size, [CallerArgumentExpression("span")] string name = "")
         {
             if (span.Length != size)
             {
@@ -99,7 +99,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="span"/> is &lt;= <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeGreaterThan<T>(Span<T> span, int size, string name)
+        public static void HasSizeGreaterThan<T>(Span<T> span, int size, [CallerArgumentExpression("span")] string name = "")
         {
             if (span.Length > size)
             {
@@ -118,7 +118,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="span"/> is &lt; <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeGreaterThanOrEqualTo<T>(Span<T> span, int size, string name)
+        public static void HasSizeGreaterThanOrEqualTo<T>(Span<T> span, int size, [CallerArgumentExpression("span")] string name = "")
         {
             if (span.Length >= size)
             {
@@ -137,7 +137,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="span"/> is >= <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeLessThan<T>(Span<T> span, int size, string name)
+        public static void HasSizeLessThan<T>(Span<T> span, int size, [CallerArgumentExpression("span")] string name = "")
         {
             if (span.Length < size)
             {
@@ -156,7 +156,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="span"/> is > <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeLessThanOrEqualTo<T>(Span<T> span, int size, string name)
+        public static void HasSizeLessThanOrEqualTo<T>(Span<T> span, int size, [CallerArgumentExpression("span")] string name = "")
         {
             if (span.Length <= size)
             {
@@ -175,7 +175,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="source"/> is != the one of <paramref name="destination"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeEqualTo<T>(Span<T> source, Span<T> destination, string name)
+        public static void HasSizeEqualTo<T>(Span<T> source, Span<T> destination, [CallerArgumentExpression("source")] string name = "")
         {
             if (source.Length == destination.Length)
             {
@@ -194,7 +194,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="source"/> is > the one of <paramref name="destination"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeLessThanOrEqualTo<T>(Span<T> source, Span<T> destination, string name)
+        public static void HasSizeLessThanOrEqualTo<T>(Span<T> source, Span<T> destination, [CallerArgumentExpression("source")] string name = "")
         {
             if (source.Length <= destination.Length)
             {
@@ -213,7 +213,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is not valid to access <paramref name="span"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsInRangeFor<T>(int index, Span<T> span, string name)
+        public static void IsInRangeFor<T>(int index, Span<T> span, [CallerArgumentExpression("index")] string name = "")
         {
             if ((uint)index < (uint)span.Length)
             {
@@ -232,7 +232,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is valid to access <paramref name="span"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsNotInRangeFor<T>(int index, Span<T> span, string name)
+        public static void IsNotInRangeFor<T>(int index, Span<T> span, [CallerArgumentExpression("index")] string name = "")
         {
             if ((uint)index >= (uint)span.Length)
             {
@@ -250,7 +250,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="span"/> is != 0.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsEmpty<T>(ReadOnlySpan<T> span, string name)
+        public static void IsEmpty<T>(ReadOnlySpan<T> span, [CallerArgumentExpression("span")] string name = "")
         {
             if (span.Length == 0)
             {
@@ -268,7 +268,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="span"/> is == 0.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsNotEmpty<T>(ReadOnlySpan<T> span, string name)
+        public static void IsNotEmpty<T>(ReadOnlySpan<T> span, [CallerArgumentExpression("span")] string name = "")
         {
             if (span.Length != 0)
             {
@@ -287,7 +287,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="span"/> is != <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeEqualTo<T>(ReadOnlySpan<T> span, int size, string name)
+        public static void HasSizeEqualTo<T>(ReadOnlySpan<T> span, int size, [CallerArgumentExpression("span")] string name = "")
         {
             if (span.Length == size)
             {
@@ -306,7 +306,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="span"/> is == <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeNotEqualTo<T>(ReadOnlySpan<T> span, int size, string name)
+        public static void HasSizeNotEqualTo<T>(ReadOnlySpan<T> span, int size, [CallerArgumentExpression("span")] string name = "")
         {
             if (span.Length != size)
             {
@@ -325,7 +325,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="span"/> is &lt;= <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeGreaterThan<T>(ReadOnlySpan<T> span, int size, string name)
+        public static void HasSizeGreaterThan<T>(ReadOnlySpan<T> span, int size, [CallerArgumentExpression("span")] string name = "")
         {
             if (span.Length > size)
             {
@@ -344,7 +344,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="span"/> is &lt; <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeGreaterThanOrEqualTo<T>(ReadOnlySpan<T> span, int size, string name)
+        public static void HasSizeGreaterThanOrEqualTo<T>(ReadOnlySpan<T> span, int size, [CallerArgumentExpression("span")] string name = "")
         {
             if (span.Length >= size)
             {
@@ -363,7 +363,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="span"/> is >= <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeLessThan<T>(ReadOnlySpan<T> span, int size, string name)
+        public static void HasSizeLessThan<T>(ReadOnlySpan<T> span, int size, [CallerArgumentExpression("span")] string name = "")
         {
             if (span.Length < size)
             {
@@ -382,7 +382,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="span"/> is > <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeLessThanOrEqualTo<T>(ReadOnlySpan<T> span, int size, string name)
+        public static void HasSizeLessThanOrEqualTo<T>(ReadOnlySpan<T> span, int size, [CallerArgumentExpression("span")] string name = "")
         {
             if (span.Length <= size)
             {
@@ -401,7 +401,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="source"/> is != the one of <paramref name="destination"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeEqualTo<T>(ReadOnlySpan<T> source, Span<T> destination, string name)
+        public static void HasSizeEqualTo<T>(ReadOnlySpan<T> source, Span<T> destination, [CallerArgumentExpression("source")] string name = "")
         {
             if (source.Length == destination.Length)
             {
@@ -420,7 +420,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="source"/> is > the one of <paramref name="destination"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeLessThanOrEqualTo<T>(ReadOnlySpan<T> source, Span<T> destination, string name)
+        public static void HasSizeLessThanOrEqualTo<T>(ReadOnlySpan<T> source, Span<T> destination, [CallerArgumentExpression("source")] string name = "")
         {
             if (source.Length <= destination.Length)
             {
@@ -439,7 +439,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is not valid to access <paramref name="span"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsInRangeFor<T>(int index, ReadOnlySpan<T> span, string name)
+        public static void IsInRangeFor<T>(int index, ReadOnlySpan<T> span, [CallerArgumentExpression("index")] string name = "")
         {
             if ((uint)index < (uint)span.Length)
             {
@@ -458,7 +458,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is valid to access <paramref name="span"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsNotInRangeFor<T>(int index, ReadOnlySpan<T> span, string name)
+        public static void IsNotInRangeFor<T>(int index, ReadOnlySpan<T> span, [CallerArgumentExpression("index")] string name = "")
         {
             if ((uint)index >= (uint)span.Length)
             {
@@ -476,7 +476,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="memory"/> is != 0.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsEmpty<T>(Memory<T> memory, string name)
+        public static void IsEmpty<T>(Memory<T> memory, [CallerArgumentExpression("memory")] string name = "")
         {
             if (memory.Length == 0)
             {
@@ -494,7 +494,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="memory"/> is == 0.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsNotEmpty<T>(Memory<T> memory, string name)
+        public static void IsNotEmpty<T>(Memory<T> memory, [CallerArgumentExpression("memory")] string name = "")
         {
             if (memory.Length != 0)
             {
@@ -513,7 +513,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="memory"/> is != <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeEqualTo<T>(Memory<T> memory, int size, string name)
+        public static void HasSizeEqualTo<T>(Memory<T> memory, int size, [CallerArgumentExpression("memory")] string name = "")
         {
             if (memory.Length == size)
             {
@@ -532,7 +532,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="memory"/> is == <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeNotEqualTo<T>(Memory<T> memory, int size, string name)
+        public static void HasSizeNotEqualTo<T>(Memory<T> memory, int size, [CallerArgumentExpression("memory")] string name = "")
         {
             if (memory.Length != size)
             {
@@ -551,7 +551,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="memory"/> is &lt;= <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeGreaterThan<T>(Memory<T> memory, int size, string name)
+        public static void HasSizeGreaterThan<T>(Memory<T> memory, int size, [CallerArgumentExpression("memory")] string name = "")
         {
             if (memory.Length > size)
             {
@@ -570,7 +570,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="memory"/> is &lt; <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeGreaterThanOrEqualTo<T>(Memory<T> memory, int size, string name)
+        public static void HasSizeGreaterThanOrEqualTo<T>(Memory<T> memory, int size, [CallerArgumentExpression("memory")] string name = "")
         {
             if (memory.Length >= size)
             {
@@ -589,7 +589,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="memory"/> is >= <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeLessThan<T>(Memory<T> memory, int size, string name)
+        public static void HasSizeLessThan<T>(Memory<T> memory, int size, [CallerArgumentExpression("memory")] string name = "")
         {
             if (memory.Length < size)
             {
@@ -608,7 +608,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="memory"/> is > <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeLessThanOrEqualTo<T>(Memory<T> memory, int size, string name)
+        public static void HasSizeLessThanOrEqualTo<T>(Memory<T> memory, int size, [CallerArgumentExpression("memory")] string name = "")
         {
             if (memory.Length <= size)
             {
@@ -627,7 +627,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="source"/> is != the one of <paramref name="destination"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeEqualTo<T>(Memory<T> source, Memory<T> destination, string name)
+        public static void HasSizeEqualTo<T>(Memory<T> source, Memory<T> destination, [CallerArgumentExpression("source")] string name = "")
         {
             if (source.Length == destination.Length)
             {
@@ -646,7 +646,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="source"/> is > the one of <paramref name="destination"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeLessThanOrEqualTo<T>(Memory<T> source, Memory<T> destination, string name)
+        public static void HasSizeLessThanOrEqualTo<T>(Memory<T> source, Memory<T> destination, [CallerArgumentExpression("source")] string name = "")
         {
             if (source.Length <= destination.Length)
             {
@@ -665,7 +665,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is not valid to access <paramref name="memory"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsInRangeFor<T>(int index, Memory<T> memory, string name)
+        public static void IsInRangeFor<T>(int index, Memory<T> memory, [CallerArgumentExpression("index")] string name = "")
         {
             if ((uint)index < (uint)memory.Length)
             {
@@ -684,7 +684,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is valid to access <paramref name="memory"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsNotInRangeFor<T>(int index, Memory<T> memory, string name)
+        public static void IsNotInRangeFor<T>(int index, Memory<T> memory, [CallerArgumentExpression("index")] string name = "")
         {
             if ((uint)index >= (uint)memory.Length)
             {
@@ -702,7 +702,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="memory"/> is != 0.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsEmpty<T>(ReadOnlyMemory<T> memory, string name)
+        public static void IsEmpty<T>(ReadOnlyMemory<T> memory, [CallerArgumentExpression("memory")] string name = "")
         {
             if (memory.Length == 0)
             {
@@ -720,7 +720,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="memory"/> is == 0.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsNotEmpty<T>(ReadOnlyMemory<T> memory, string name)
+        public static void IsNotEmpty<T>(ReadOnlyMemory<T> memory, [CallerArgumentExpression("memory")] string name = "")
         {
             if (memory.Length != 0)
             {
@@ -739,7 +739,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="memory"/> is != <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeEqualTo<T>(ReadOnlyMemory<T> memory, int size, string name)
+        public static void HasSizeEqualTo<T>(ReadOnlyMemory<T> memory, int size, [CallerArgumentExpression("memory")] string name = "")
         {
             if (memory.Length == size)
             {
@@ -758,7 +758,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="memory"/> is == <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeNotEqualTo<T>(ReadOnlyMemory<T> memory, int size, string name)
+        public static void HasSizeNotEqualTo<T>(ReadOnlyMemory<T> memory, int size, [CallerArgumentExpression("memory")] string name = "")
         {
             if (memory.Length != size)
             {
@@ -777,7 +777,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="memory"/> is &lt;= <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeGreaterThan<T>(ReadOnlyMemory<T> memory, int size, string name)
+        public static void HasSizeGreaterThan<T>(ReadOnlyMemory<T> memory, int size, [CallerArgumentExpression("memory")] string name = "")
         {
             if (memory.Length > size)
             {
@@ -796,7 +796,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="memory"/> is &lt; <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeGreaterThanOrEqualTo<T>(ReadOnlyMemory<T> memory, int size, string name)
+        public static void HasSizeGreaterThanOrEqualTo<T>(ReadOnlyMemory<T> memory, int size, [CallerArgumentExpression("memory")] string name = "")
         {
             if (memory.Length >= size)
             {
@@ -815,7 +815,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="memory"/> is >= <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeLessThan<T>(ReadOnlyMemory<T> memory, int size, string name)
+        public static void HasSizeLessThan<T>(ReadOnlyMemory<T> memory, int size, [CallerArgumentExpression("memory")] string name = "")
         {
             if (memory.Length < size)
             {
@@ -834,7 +834,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="memory"/> is > <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeLessThanOrEqualTo<T>(ReadOnlyMemory<T> memory, int size, string name)
+        public static void HasSizeLessThanOrEqualTo<T>(ReadOnlyMemory<T> memory, int size, [CallerArgumentExpression("memory")] string name = "")
         {
             if (memory.Length <= size)
             {
@@ -853,7 +853,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="source"/> is != the one of <paramref name="destination"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeEqualTo<T>(ReadOnlyMemory<T> source, Memory<T> destination, string name)
+        public static void HasSizeEqualTo<T>(ReadOnlyMemory<T> source, Memory<T> destination, [CallerArgumentExpression("source")] string name = "")
         {
             if (source.Length == destination.Length)
             {
@@ -872,7 +872,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="source"/> is > the one of <paramref name="destination"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeLessThanOrEqualTo<T>(ReadOnlyMemory<T> source, Memory<T> destination, string name)
+        public static void HasSizeLessThanOrEqualTo<T>(ReadOnlyMemory<T> source, Memory<T> destination, [CallerArgumentExpression("source")] string name = "")
         {
             if (source.Length <= destination.Length)
             {
@@ -891,7 +891,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is not valid to access <paramref name="memory"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsInRangeFor<T>(int index, ReadOnlyMemory<T> memory, string name)
+        public static void IsInRangeFor<T>(int index, ReadOnlyMemory<T> memory, [CallerArgumentExpression("index")] string name = "")
         {
             if ((uint)index < (uint)memory.Length)
             {
@@ -910,7 +910,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is valid to access <paramref name="memory"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsNotInRangeFor<T>(int index, ReadOnlyMemory<T> memory, string name)
+        public static void IsNotInRangeFor<T>(int index, ReadOnlyMemory<T> memory, [CallerArgumentExpression("index")] string name = "")
         {
             if ((uint)index >= (uint)memory.Length)
             {
@@ -928,7 +928,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="array"/> is != 0.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsEmpty<T>(T[] array, string name)
+        public static void IsEmpty<T>(T[] array, [CallerArgumentExpression("array")] string name = "")
         {
             if (array.Length == 0)
             {
@@ -946,7 +946,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="array"/> is == 0.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsNotEmpty<T>(T[] array, string name)
+        public static void IsNotEmpty<T>(T[] array, [CallerArgumentExpression("array")] string name = "")
         {
             if (array.Length != 0)
             {
@@ -965,7 +965,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="array"/> is != <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeEqualTo<T>(T[] array, int size, string name)
+        public static void HasSizeEqualTo<T>(T[] array, int size, [CallerArgumentExpression("array")] string name = "")
         {
             if (array.Length == size)
             {
@@ -984,7 +984,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="array"/> is == <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeNotEqualTo<T>(T[] array, int size, string name)
+        public static void HasSizeNotEqualTo<T>(T[] array, int size, [CallerArgumentExpression("array")] string name = "")
         {
             if (array.Length != size)
             {
@@ -1003,7 +1003,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="array"/> is &lt;= <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeGreaterThan<T>(T[] array, int size, string name)
+        public static void HasSizeGreaterThan<T>(T[] array, int size, [CallerArgumentExpression("array")] string name = "")
         {
             if (array.Length > size)
             {
@@ -1022,7 +1022,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="array"/> is &lt; <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeGreaterThanOrEqualTo<T>(T[] array, int size, string name)
+        public static void HasSizeGreaterThanOrEqualTo<T>(T[] array, int size, [CallerArgumentExpression("array")] string name = "")
         {
             if (array.Length >= size)
             {
@@ -1041,7 +1041,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="array"/> is >= <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeLessThan<T>(T[] array, int size, string name)
+        public static void HasSizeLessThan<T>(T[] array, int size, [CallerArgumentExpression("array")] string name = "")
         {
             if (array.Length < size)
             {
@@ -1060,7 +1060,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="array"/> is > <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeLessThanOrEqualTo<T>(T[] array, int size, string name)
+        public static void HasSizeLessThanOrEqualTo<T>(T[] array, int size, [CallerArgumentExpression("array")] string name = "")
         {
             if (array.Length <= size)
             {
@@ -1079,7 +1079,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="source"/> is != the one of <paramref name="destination"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeEqualTo<T>(T[] source, T[] destination, string name)
+        public static void HasSizeEqualTo<T>(T[] source, T[] destination, [CallerArgumentExpression("source")] string name = "")
         {
             if (source.Length == destination.Length)
             {
@@ -1098,7 +1098,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="source"/> is > the one of <paramref name="destination"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeLessThanOrEqualTo<T>(T[] source, T[] destination, string name)
+        public static void HasSizeLessThanOrEqualTo<T>(T[] source, T[] destination, [CallerArgumentExpression("source")] string name = "")
         {
             if (source.Length <= destination.Length)
             {
@@ -1117,7 +1117,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is not valid to access <paramref name="array"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsInRangeFor<T>(int index, T[] array, string name)
+        public static void IsInRangeFor<T>(int index, T[] array, [CallerArgumentExpression("index")] string name = "")
         {
             if ((uint)index < (uint)array.Length)
             {
@@ -1136,7 +1136,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is valid to access <paramref name="array"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsNotInRangeFor<T>(int index, T[] array, string name)
+        public static void IsNotInRangeFor<T>(int index, T[] array, [CallerArgumentExpression("index")] string name = "")
         {
             if ((uint)index >= (uint)array.Length)
             {
@@ -1154,7 +1154,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="list"/> is != 0.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsEmpty<T>(List<T> list, string name)
+        public static void IsEmpty<T>(List<T> list, [CallerArgumentExpression("list")] string name = "")
         {
             if (list.Count == 0)
             {
@@ -1172,7 +1172,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="list"/> is == 0.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsNotEmpty<T>(List<T> list, string name)
+        public static void IsNotEmpty<T>(List<T> list, [CallerArgumentExpression("list")] string name = "")
         {
             if (list.Count != 0)
             {
@@ -1191,7 +1191,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="list"/> is != <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeEqualTo<T>(List<T> list, int size, string name)
+        public static void HasSizeEqualTo<T>(List<T> list, int size, [CallerArgumentExpression("list")] string name = "")
         {
             if (list.Count == size)
             {
@@ -1210,7 +1210,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="list"/> is == <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeNotEqualTo<T>(List<T> list, int size, string name)
+        public static void HasSizeNotEqualTo<T>(List<T> list, int size, [CallerArgumentExpression("list")] string name = "")
         {
             if (list.Count != size)
             {
@@ -1229,7 +1229,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="list"/> is &lt;= <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeGreaterThan<T>(List<T> list, int size, string name)
+        public static void HasSizeGreaterThan<T>(List<T> list, int size, [CallerArgumentExpression("list")] string name = "")
         {
             if (list.Count > size)
             {
@@ -1248,7 +1248,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="list"/> is &lt; <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeGreaterThanOrEqualTo<T>(List<T> list, int size, string name)
+        public static void HasSizeGreaterThanOrEqualTo<T>(List<T> list, int size, [CallerArgumentExpression("list")] string name = "")
         {
             if (list.Count >= size)
             {
@@ -1267,7 +1267,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="list"/> is >= <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeLessThan<T>(List<T> list, int size, string name)
+        public static void HasSizeLessThan<T>(List<T> list, int size, [CallerArgumentExpression("list")] string name = "")
         {
             if (list.Count < size)
             {
@@ -1286,7 +1286,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="list"/> is > <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeLessThanOrEqualTo<T>(List<T> list, int size, string name)
+        public static void HasSizeLessThanOrEqualTo<T>(List<T> list, int size, [CallerArgumentExpression("list")] string name = "")
         {
             if (list.Count <= size)
             {
@@ -1305,7 +1305,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="source"/> is != the one of <paramref name="destination"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeEqualTo<T>(List<T> source, List<T> destination, string name)
+        public static void HasSizeEqualTo<T>(List<T> source, List<T> destination, [CallerArgumentExpression("source")] string name = "")
         {
             if (source.Count == destination.Count)
             {
@@ -1324,7 +1324,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="source"/> is > the one of <paramref name="destination"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeLessThanOrEqualTo<T>(List<T> source, List<T> destination, string name)
+        public static void HasSizeLessThanOrEqualTo<T>(List<T> source, List<T> destination, [CallerArgumentExpression("source")] string name = "")
         {
             if (source.Count <= destination.Count)
             {
@@ -1343,7 +1343,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is not valid to access <paramref name="list"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsInRangeFor<T>(int index, List<T> list, string name)
+        public static void IsInRangeFor<T>(int index, List<T> list, [CallerArgumentExpression("index")] string name = "")
         {
             if ((uint)index < (uint)list.Count)
             {
@@ -1362,7 +1362,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is valid to access <paramref name="list"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsNotInRangeFor<T>(int index, List<T> list, string name)
+        public static void IsNotInRangeFor<T>(int index, List<T> list, [CallerArgumentExpression("index")] string name = "")
         {
             if ((uint)index >= (uint)list.Count)
             {
@@ -1380,7 +1380,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="collection"/> is != 0.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsEmpty<T>(ICollection<T> collection, string name)
+        public static void IsEmpty<T>(ICollection<T> collection, [CallerArgumentExpression("collection")] string name = "")
         {
             if (collection.Count == 0)
             {
@@ -1398,7 +1398,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="collection"/> is == 0.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsNotEmpty<T>(ICollection<T> collection, string name)
+        public static void IsNotEmpty<T>(ICollection<T> collection, [CallerArgumentExpression("collection")] string name = "")
         {
             if (collection.Count != 0)
             {
@@ -1417,7 +1417,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="collection"/> is != <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeEqualTo<T>(ICollection<T> collection, int size, string name)
+        public static void HasSizeEqualTo<T>(ICollection<T> collection, int size, [CallerArgumentExpression("collection")] string name = "")
         {
             if (collection.Count == size)
             {
@@ -1436,7 +1436,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="collection"/> is == <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeNotEqualTo<T>(ICollection<T> collection, int size, string name)
+        public static void HasSizeNotEqualTo<T>(ICollection<T> collection, int size, [CallerArgumentExpression("collection")] string name = "")
         {
             if (collection.Count != size)
             {
@@ -1455,7 +1455,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="collection"/> is &lt;= <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeGreaterThan<T>(ICollection<T> collection, int size, string name)
+        public static void HasSizeGreaterThan<T>(ICollection<T> collection, int size, [CallerArgumentExpression("collection")] string name = "")
         {
             if (collection.Count > size)
             {
@@ -1474,7 +1474,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="collection"/> is &lt; <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeGreaterThanOrEqualTo<T>(ICollection<T> collection, int size, string name)
+        public static void HasSizeGreaterThanOrEqualTo<T>(ICollection<T> collection, int size, [CallerArgumentExpression("collection")] string name = "")
         {
             if (collection.Count >= size)
             {
@@ -1493,7 +1493,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="collection"/> is >= <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeLessThan<T>(ICollection<T> collection, int size, string name)
+        public static void HasSizeLessThan<T>(ICollection<T> collection, int size, [CallerArgumentExpression("collection")] string name = "")
         {
             if (collection.Count < size)
             {
@@ -1512,7 +1512,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="collection"/> is > <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeLessThanOrEqualTo<T>(ICollection<T> collection, int size, string name)
+        public static void HasSizeLessThanOrEqualTo<T>(ICollection<T> collection, int size, [CallerArgumentExpression("collection")] string name = "")
         {
             if (collection.Count <= size)
             {
@@ -1531,7 +1531,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="source"/> is != the one of <paramref name="destination"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeEqualTo<T>(ICollection<T> source, ICollection<T> destination, string name)
+        public static void HasSizeEqualTo<T>(ICollection<T> source, ICollection<T> destination, [CallerArgumentExpression("source")] string name = "")
         {
             if (source.Count == destination.Count)
             {
@@ -1550,7 +1550,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="source"/> is > the one of <paramref name="destination"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeLessThanOrEqualTo<T>(ICollection<T> source, ICollection<T> destination, string name)
+        public static void HasSizeLessThanOrEqualTo<T>(ICollection<T> source, ICollection<T> destination, [CallerArgumentExpression("source")] string name = "")
         {
             if (source.Count <= destination.Count)
             {
@@ -1569,7 +1569,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is not valid to access <paramref name="collection"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsInRangeFor<T>(int index, ICollection<T> collection, string name)
+        public static void IsInRangeFor<T>(int index, ICollection<T> collection, [CallerArgumentExpression("index")] string name = "")
         {
             if ((uint)index < (uint)collection.Count)
             {
@@ -1588,7 +1588,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is valid to access <paramref name="collection"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsNotInRangeFor<T>(int index, ICollection<T> collection, string name)
+        public static void IsNotInRangeFor<T>(int index, ICollection<T> collection, [CallerArgumentExpression("index")] string name = "")
         {
             if ((uint)index >= (uint)collection.Count)
             {
@@ -1606,7 +1606,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="collection"/> is != 0.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsEmpty<T>(IReadOnlyCollection<T> collection, string name)
+        public static void IsEmpty<T>(IReadOnlyCollection<T> collection, [CallerArgumentExpression("collection")] string name = "")
         {
             if (collection.Count == 0)
             {
@@ -1624,7 +1624,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="collection"/> is == 0.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsNotEmpty<T>(IReadOnlyCollection<T> collection, string name)
+        public static void IsNotEmpty<T>(IReadOnlyCollection<T> collection, [CallerArgumentExpression("collection")] string name = "")
         {
             if (collection.Count != 0)
             {
@@ -1643,7 +1643,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="collection"/> is != <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeEqualTo<T>(IReadOnlyCollection<T> collection, int size, string name)
+        public static void HasSizeEqualTo<T>(IReadOnlyCollection<T> collection, int size, [CallerArgumentExpression("collection")] string name = "")
         {
             if (collection.Count == size)
             {
@@ -1662,7 +1662,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="collection"/> is == <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeNotEqualTo<T>(IReadOnlyCollection<T> collection, int size, string name)
+        public static void HasSizeNotEqualTo<T>(IReadOnlyCollection<T> collection, int size, [CallerArgumentExpression("collection")] string name = "")
         {
             if (collection.Count != size)
             {
@@ -1681,7 +1681,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="collection"/> is &lt;= <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeGreaterThan<T>(IReadOnlyCollection<T> collection, int size, string name)
+        public static void HasSizeGreaterThan<T>(IReadOnlyCollection<T> collection, int size, [CallerArgumentExpression("collection")] string name = "")
         {
             if (collection.Count > size)
             {
@@ -1700,7 +1700,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="collection"/> is &lt; <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeGreaterThanOrEqualTo<T>(IReadOnlyCollection<T> collection, int size, string name)
+        public static void HasSizeGreaterThanOrEqualTo<T>(IReadOnlyCollection<T> collection, int size, [CallerArgumentExpression("collection")] string name = "")
         {
             if (collection.Count >= size)
             {
@@ -1719,7 +1719,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="collection"/> is >= <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeLessThan<T>(IReadOnlyCollection<T> collection, int size, string name)
+        public static void HasSizeLessThan<T>(IReadOnlyCollection<T> collection, int size, [CallerArgumentExpression("collection")] string name = "")
         {
             if (collection.Count < size)
             {
@@ -1738,7 +1738,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="collection"/> is > <paramref name="size"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeLessThanOrEqualTo<T>(IReadOnlyCollection<T> collection, int size, string name)
+        public static void HasSizeLessThanOrEqualTo<T>(IReadOnlyCollection<T> collection, int size, [CallerArgumentExpression("collection")] string name = "")
         {
             if (collection.Count <= size)
             {
@@ -1757,7 +1757,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="source"/> is != the one of <paramref name="destination"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeEqualTo<T>(IReadOnlyCollection<T> source, ICollection<T> destination, string name)
+        public static void HasSizeEqualTo<T>(IReadOnlyCollection<T> source, ICollection<T> destination, [CallerArgumentExpression("source")] string name = "")
         {
             if (source.Count == destination.Count)
             {
@@ -1776,7 +1776,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentException">Thrown if the size of <paramref name="source"/> is > the one of <paramref name="destination"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void HasSizeLessThanOrEqualTo<T>(IReadOnlyCollection<T> source, ICollection<T> destination, string name)
+        public static void HasSizeLessThanOrEqualTo<T>(IReadOnlyCollection<T> source, ICollection<T> destination, [CallerArgumentExpression("source")] string name = "")
         {
             if (source.Count <= destination.Count)
             {
@@ -1795,7 +1795,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is not valid to access <paramref name="collection"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsInRangeFor<T>(int index, IReadOnlyCollection<T> collection, string name)
+        public static void IsInRangeFor<T>(int index, IReadOnlyCollection<T> collection, [CallerArgumentExpression("index")] string name = "")
         {
             if ((uint)index < (uint)collection.Count)
             {
@@ -1814,7 +1814,7 @@ namespace CommunityToolkit.Diagnostics
         /// <param name="name">The name of the input parameter being tested.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is valid to access <paramref name="collection"/>.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void IsNotInRangeFor<T>(int index, IReadOnlyCollection<T> collection, string name)
+        public static void IsNotInRangeFor<T>(int index, IReadOnlyCollection<T> collection, [CallerArgumentExpression("index")] string name = "")
         {
             if ((uint)index >= (uint)collection.Count)
             {

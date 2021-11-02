@@ -20,7 +20,7 @@ public static partial class Guard
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="task"/> is not in a completed state.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsCompleted(Task task, string name)
+    public static void IsCompleted(Task task, [CallerArgumentExpression("task")] string name = "")
     {
         if (task.IsCompleted)
         {
@@ -37,7 +37,7 @@ public static partial class Guard
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="task"/> is in a completed state.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsNotCompleted(Task task, string name)
+    public static void IsNotCompleted(Task task, [CallerArgumentExpression("task")] string name = "")
     {
         if (!task.IsCompleted)
         {
@@ -54,7 +54,7 @@ public static partial class Guard
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="task"/> has not been completed successfully.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsCompletedSuccessfully(Task task, string name)
+    public static void IsCompletedSuccessfully(Task task, [CallerArgumentExpression("task")] string name = "")
     {
         if (task.Status == TaskStatus.RanToCompletion)
         {
@@ -71,7 +71,7 @@ public static partial class Guard
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="task"/> has been completed successfully.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsNotCompletedSuccessfully(Task task, string name)
+    public static void IsNotCompletedSuccessfully(Task task, [CallerArgumentExpression("task")] string name = "")
     {
         if (task.Status != TaskStatus.RanToCompletion)
         {
@@ -88,7 +88,7 @@ public static partial class Guard
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="task"/> is not faulted.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsFaulted(Task task, string name)
+    public static void IsFaulted(Task task, [CallerArgumentExpression("task")] string name = "")
     {
         if (task.IsFaulted)
         {
@@ -105,7 +105,7 @@ public static partial class Guard
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="task"/> is faulted.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsNotFaulted(Task task, string name)
+    public static void IsNotFaulted(Task task, [CallerArgumentExpression("task")] string name = "")
     {
         if (!task.IsFaulted)
         {
@@ -122,7 +122,7 @@ public static partial class Guard
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="task"/> is not canceled.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsCanceled(Task task, string name)
+    public static void IsCanceled(Task task, [CallerArgumentExpression("task")] string name = "")
     {
         if (task.IsCanceled)
         {
@@ -139,7 +139,7 @@ public static partial class Guard
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="task"/> is canceled.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsNotCanceled(Task task, string name)
+    public static void IsNotCanceled(Task task, [CallerArgumentExpression("task")] string name = "")
     {
         if (!task.IsCanceled)
         {
@@ -157,7 +157,7 @@ public static partial class Guard
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="task"/> doesn't match <paramref name="status"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void HasStatusEqualTo(Task task, TaskStatus status, string name)
+    public static void HasStatusEqualTo(Task task, TaskStatus status, [CallerArgumentExpression("task")] string name = "")
     {
         if (task.Status == status)
         {
@@ -175,7 +175,7 @@ public static partial class Guard
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="task"/> matches <paramref name="status"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void HasStatusNotEqualTo(Task task, TaskStatus status, string name)
+    public static void HasStatusNotEqualTo(Task task, TaskStatus status, [CallerArgumentExpression("task")] string name = "")
     {
         if (task.Status != status)
         {

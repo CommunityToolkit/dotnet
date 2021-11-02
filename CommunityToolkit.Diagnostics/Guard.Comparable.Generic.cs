@@ -21,7 +21,7 @@ public static partial class Guard
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is not <see langword="default"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsDefault<T>(T value, string name)
+    public static void IsDefault<T>(T value, [CallerArgumentExpression("value")] string name = "")
         where T : struct, IEquatable<T>
     {
         if (value.Equals(default))
@@ -40,7 +40,7 @@ public static partial class Guard
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is <see langword="default"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsNotDefault<T>(T value, string name)
+    public static void IsNotDefault<T>(T value, [CallerArgumentExpression("value")] string name = "")
         where T : struct, IEquatable<T>
     {
         if (!value.Equals(default))
@@ -61,7 +61,7 @@ public static partial class Guard
     /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is != <paramref name="target"/>.</exception>
     /// <remarks>The method is generic to avoid boxing the parameters, if they are value types.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsEqualTo<T>(T value, T target, string name)
+    public static void IsEqualTo<T>(T value, T target, [CallerArgumentExpression("value")] string name = "")
         where T : notnull, IEquatable<T>
     {
         if (value.Equals(target))
@@ -82,7 +82,7 @@ public static partial class Guard
     /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is == <paramref name="target"/>.</exception>
     /// <remarks>The method is generic to avoid boxing the parameters, if they are value types.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsNotEqualTo<T>(T value, T target, string name)
+    public static void IsNotEqualTo<T>(T value, T target, [CallerArgumentExpression("value")] string name = "")
         where T : notnull, IEquatable<T>
     {
         if (!value.Equals(target))
@@ -102,7 +102,7 @@ public static partial class Guard
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is not a bitwise match for <paramref name="target"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static unsafe void IsBitwiseEqualTo<T>(T value, T target, string name)
+    public static unsafe void IsBitwiseEqualTo<T>(T value, T target, [CallerArgumentExpression("value")] string name = "")
         where T : unmanaged
     {
         // Include some fast paths if the input type is of size 1, 2, 4, 8, or 16.
@@ -218,7 +218,7 @@ public static partial class Guard
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is >= <paramref name="maximum"/>.</exception>
     /// <remarks>The method is generic to avoid boxing the parameters, if they are value types.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsLessThan<T>(T value, T maximum, string name)
+    public static void IsLessThan<T>(T value, T maximum, [CallerArgumentExpression("value")] string name = "")
         where T : notnull, IComparable<T>
     {
         if (value.CompareTo(maximum) < 0)
@@ -239,7 +239,7 @@ public static partial class Guard
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is > <paramref name="maximum"/>.</exception>
     /// <remarks>The method is generic to avoid boxing the parameters, if they are value types.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsLessThanOrEqualTo<T>(T value, T maximum, string name)
+    public static void IsLessThanOrEqualTo<T>(T value, T maximum, [CallerArgumentExpression("value")] string name = "")
         where T : notnull, IComparable<T>
     {
         if (value.CompareTo(maximum) <= 0)
@@ -260,7 +260,7 @@ public static partial class Guard
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is &lt;= <paramref name="minimum"/>.</exception>
     /// <remarks>The method is generic to avoid boxing the parameters, if they are value types.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsGreaterThan<T>(T value, T minimum, string name)
+    public static void IsGreaterThan<T>(T value, T minimum, [CallerArgumentExpression("value")] string name = "")
         where T : notnull, IComparable<T>
     {
         if (value.CompareTo(minimum) > 0)
@@ -281,7 +281,7 @@ public static partial class Guard
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is &lt; <paramref name="minimum"/>.</exception>
     /// <remarks>The method is generic to avoid boxing the parameters, if they are value types.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsGreaterThanOrEqualTo<T>(T value, T minimum, string name)
+    public static void IsGreaterThanOrEqualTo<T>(T value, T minimum, [CallerArgumentExpression("value")] string name = "")
         where T : notnull, IComparable<T>
     {
         if (value.CompareTo(minimum) >= 0)
@@ -306,7 +306,7 @@ public static partial class Guard
     /// The method is generic to avoid boxing the parameters, if they are value types.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsInRange<T>(T value, T minimum, T maximum, string name)
+    public static void IsInRange<T>(T value, T minimum, T maximum, [CallerArgumentExpression("value")] string name = "")
         where T : notnull, IComparable<T>
     {
         if (value.CompareTo(minimum) >= 0 && value.CompareTo(maximum) < 0)
@@ -331,7 +331,7 @@ public static partial class Guard
     /// The method is generic to avoid boxing the parameters, if they are value types.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsNotInRange<T>(T value, T minimum, T maximum, string name)
+    public static void IsNotInRange<T>(T value, T minimum, T maximum, [CallerArgumentExpression("value")] string name = "")
         where T : notnull, IComparable<T>
     {
         if (value.CompareTo(minimum) < 0 || value.CompareTo(maximum) >= 0)
@@ -356,7 +356,7 @@ public static partial class Guard
     /// The method is generic to avoid boxing the parameters, if they are value types.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsBetween<T>(T value, T minimum, T maximum, string name)
+    public static void IsBetween<T>(T value, T minimum, T maximum, [CallerArgumentExpression("value")] string name = "")
         where T : notnull, IComparable<T>
     {
         if (value.CompareTo(minimum) > 0 && value.CompareTo(maximum) < 0)
@@ -381,7 +381,7 @@ public static partial class Guard
     /// The method is generic to avoid boxing the parameters, if they are value types.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsNotBetween<T>(T value, T minimum, T maximum, string name)
+    public static void IsNotBetween<T>(T value, T minimum, T maximum, [CallerArgumentExpression("value")] string name = "")
         where T : notnull, IComparable<T>
     {
         if (value.CompareTo(minimum) <= 0 || value.CompareTo(maximum) >= 0)
@@ -406,7 +406,7 @@ public static partial class Guard
     /// The method is generic to avoid boxing the parameters, if they are value types.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsBetweenOrEqualTo<T>(T value, T minimum, T maximum, string name)
+    public static void IsBetweenOrEqualTo<T>(T value, T minimum, T maximum, [CallerArgumentExpression("value")] string name = "")
         where T : notnull, IComparable<T>
     {
         if (value.CompareTo(minimum) >= 0 && value.CompareTo(maximum) <= 0)
@@ -431,7 +431,7 @@ public static partial class Guard
     /// The method is generic to avoid boxing the parameters, if they are value types.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsNotBetweenOrEqualTo<T>(T value, T minimum, T maximum, string name)
+    public static void IsNotBetweenOrEqualTo<T>(T value, T minimum, T maximum, [CallerArgumentExpression("value")] string name = "")
         where T : notnull, IComparable<T>
     {
         if (value.CompareTo(minimum) < 0 || value.CompareTo(maximum) > 0)
