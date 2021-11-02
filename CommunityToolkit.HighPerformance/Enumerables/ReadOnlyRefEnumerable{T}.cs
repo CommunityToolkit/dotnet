@@ -441,6 +441,7 @@ public readonly ref struct ReadOnlyRefEnumerable<T>
         }
     }
 
+#if NETSTANDARD2_1_OR_GREATER
     /// <summary>
     /// Throws an <see cref="ArgumentOutOfRangeException"/> when the "length" parameter is invalid.
     /// </summary>
@@ -456,6 +457,7 @@ public readonly ref struct ReadOnlyRefEnumerable<T>
     {
         throw new ArgumentOutOfRangeException("step");
     }
+#endif
 
     /// <summary>
     /// Throws an <see cref="ArgumentException"/> when the target span is too short.
