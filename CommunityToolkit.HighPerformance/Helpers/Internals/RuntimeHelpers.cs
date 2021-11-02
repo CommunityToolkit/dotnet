@@ -64,14 +64,7 @@ internal static class RuntimeHelpers
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static nint GetArrayNativeLength<T>(T[] array)
     {
-#if NETSTANDARD1_4
-        // .NET Standard 1.4 doesn't include the API to get the long length, so
-        // we just cast the length and throw in case the array is larger than
-        // int.MaxValue. There's not much we can do in this specific case.
-        return (nint)(uint)array.Length;
-#else
         return (nint)array.LongLength;
-#endif
     }
 
     /// <summary>
@@ -83,11 +76,7 @@ internal static class RuntimeHelpers
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static nint GetArrayNativeLength(Array array)
     {
-#if NETSTANDARD1_4
-        return (nint)(uint)array.Length;
-#else
         return (nint)array.LongLength;
-#endif
     }
 
     /// <summary>

@@ -2,8 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#if !NETSTANDARD1_4
-
 using System;
 using System.Runtime.CompilerServices;
 using CommunityToolkit.HighPerformance.Helpers;
@@ -30,5 +28,3 @@ public static class HashCodeExtensions
         hashCode.Add(hash);
     }
 }
-
-#endif

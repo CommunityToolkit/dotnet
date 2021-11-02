@@ -6,9 +6,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-#if !NETSTANDARD1_4
 using System.Runtime.InteropServices;
-#endif
 using System.Threading;
 
 namespace CommunityToolkit.Diagnostics;
@@ -246,7 +244,6 @@ public static partial class ThrowHelper
         throw new ArgumentOutOfRangeException(name, value, message);
     }
 
-#if !NETSTANDARD1_4
     /// <summary>
     /// Throws a new <see cref="COMException"/>.
     /// </summary>
@@ -352,7 +349,6 @@ public static partial class ThrowHelper
     {
         throw new ExternalException(message, error);
     }
-#endif
 
     /// <summary>
     /// Throws a new <see cref="FormatException"/>.
@@ -393,7 +389,6 @@ public static partial class ThrowHelper
         throw new FormatException(message, innerException);
     }
 
-#if !NETSTANDARD1_4
     /// <summary>
     /// Throws a new <see cref="InsufficientMemoryException"/>.
     /// </summary>
@@ -432,7 +427,6 @@ public static partial class ThrowHelper
     {
         throw new InsufficientMemoryException(message, innerException);
     }
-#endif
 
     /// <summary>
     /// Throws a new <see cref="InvalidDataException"/>.
@@ -590,7 +584,6 @@ public static partial class ThrowHelper
         throw new MissingFieldException(message, innerException);
     }
 
-#if !NETSTANDARD1_4
     /// <summary>
     /// Throws a new <see cref="MissingFieldException"/>.
     /// </summary>
@@ -604,7 +597,6 @@ public static partial class ThrowHelper
     {
         throw new MissingFieldException(className, fieldName);
     }
-#endif
 
     /// <summary>
     /// Throws a new <see cref="MissingMemberException"/>.
@@ -645,7 +637,6 @@ public static partial class ThrowHelper
         throw new MissingMemberException(message, innerException);
     }
 
-#if !NETSTANDARD1_4
     /// <summary>
     /// Throws a new <see cref="MissingMemberException"/>.
     /// </summary>
@@ -659,7 +650,6 @@ public static partial class ThrowHelper
     {
         throw new MissingMemberException(className, memberName);
     }
-#endif
 
     /// <summary>
     /// Throws a new <see cref="MissingMethodException"/>.
@@ -700,7 +690,6 @@ public static partial class ThrowHelper
         throw new MissingMethodException(message, innerException);
     }
 
-#if !NETSTANDARD1_4
     /// <summary>
     /// Throws a new <see cref="MissingMethodException"/>.
     /// </summary>
@@ -714,7 +703,6 @@ public static partial class ThrowHelper
     {
         throw new MissingMethodException(className, methodName);
     }
-#endif
 
     /// <summary>
     /// Throws a new <see cref="NotSupportedException"/>.

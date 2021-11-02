@@ -6,9 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
-#if NETSTANDARD1_4
-using System.Reflection;
-#endif
 using System.Runtime.CompilerServices;
 
 namespace CommunityToolkit.Diagnostics;
@@ -78,7 +75,7 @@ public static class TypeExtensions
             // a difference between nested types that are themselves generic, or nested simple
             // types from a generic declaring type. To deal with that, we need to manually track
             // the offset within the array of generic arguments for the whole constructed type.
-            if (type.IsGenericType())
+            if (type.IsGenericType)
             {
                 Type? genericTypeDefinition = type.GetGenericTypeDefinition();
 
@@ -181,44 +178,4 @@ public static class TypeExtensions
                 return FormatDisplayString(t, 0, t.GetGenericArguments());
         });
     }
-
-    /// <summary>
-    /// Returns whether or not a given type is generic.
-    /// </summary>
-    /// <param name="type">The input type.</param>
-    /// <returns>Whether or not the input type is generic.</returns>
-    [Pure]
-    private static bool IsGenericType(this Type type)
-    {
-#if NETSTANDARD1_4
-        return type.GetTypeInfo().IsGenericType;
-#else
-        return type.IsGenericType;
-#endif
-    }
-
-#if NETSTANDARD1_4
-    /// <summary>
-    /// Returns an array of types representing the generic arguments.
-    /// </summary>
-    /// <param name="type">The input type.</param>
-    /// <returns>An array of types representing the generic arguments.</returns>
-    [Pure]
-    private static Type[] GetGenericArguments(this Type type)
-    {
-        return type.GetTypeInfo().GenericTypeParameters;
-    }
-
-    /// <summary>
-    /// Returns whether <paramref name="type"/> is an instance of <paramref name="value"/>.
-    /// </summary>
-    /// <param name="type">The input type.</param>
-    /// <param name="value">The type to check against.</param>
-    /// <returns><see langword="true"/> if <paramref name="type"/> is an instance of <paramref name="value"/>, <see langword="false"/> otherwise.</returns>
-    [Pure]
-    internal static bool IsInstanceOfType(this Type type, object value)
-    {
-        return type.GetTypeInfo().IsAssignableFrom(value.GetType().GetTypeInfo());
-    }
-#endif
 }

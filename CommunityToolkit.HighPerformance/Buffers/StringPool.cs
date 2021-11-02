@@ -7,9 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using System.Text;
-#if !NETSTANDARD1_4
 using CommunityToolkit.HighPerformance.Helpers;
-#endif
 using BitOperations = CommunityToolkit.HighPerformance.Helpers.Internals.BitOperations;
 
 namespace CommunityToolkit.HighPerformance.Buffers;
@@ -769,11 +767,7 @@ public sealed class StringPool
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static int GetHashCode(ReadOnlySpan<char> span)
     {
-#if NETSTANDARD1_4
-        return span.GetDjb2HashCode();
-#else
         return HashCode<char>.Combine(span);
-#endif
     }
 
     /// <summary>

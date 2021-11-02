@@ -33,9 +33,7 @@ public class EventDeferral : IDisposable
     /// </summary>
     /// <param name="cancellationToken"><see cref="CancellationToken"/>.</param>
     /// <returns><see cref="Task"/>.</returns>
-#if !NETSTANDARD1_4
     [Browsable(false)]
-#endif
     [EditorBrowsable(EditorBrowsableState.Never)]
     [Obsolete("This is an internal only method to be used by EventHandler extension classes, public callers should call GetDeferral() instead on the DeferredEventArgs.")]
     public async Task WaitForCompletion(CancellationToken cancellationToken)

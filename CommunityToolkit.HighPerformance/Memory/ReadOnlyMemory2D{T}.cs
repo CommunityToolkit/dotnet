@@ -873,25 +873,12 @@ public readonly struct ReadOnlyMemory2D<T> : IEquatable<ReadOnlyMemory2D<T>>
     {
         if (this.instance is not null)
         {
-#if !NETSTANDARD1_4
             return HashCode.Combine(
                 RuntimeHelpers.GetHashCode(this.instance),
                 this.offset,
                 this.height,
                 this.width,
                 this.pitch);
-#else
-            Span<int> values = stackalloc int[]
-            {
-                RuntimeHelpers.GetHashCode(this.instance),
-                this.offset.GetHashCode(),
-                this.height,
-                this.width,
-                this.pitch
-            };
-
-            return values.GetDjb2HashCode();
-#endif
         }
 
         return 0;

@@ -49,12 +49,7 @@ public static class TaskExtensions
                 // Furthermore, doing this also makes the method flexible enough to
                 // cases whether the input Task<T> is actually an instance of some
                 // runtime-specific type that inherits from Task<T>.
-                PropertyInfo? propertyInfo =
-#if NETSTANDARD1_4
-                task.GetType().GetRuntimeProperty(nameof(Task<object>.Result));
-#else
-                task.GetType().GetProperty(nameof(Task<object>.Result));
-#endif
+                PropertyInfo? propertyInfo = task.GetType().GetProperty(nameof(Task<object>.Result));
 
                 // Return the result, if possible
                 return propertyInfo?.GetValue(task);

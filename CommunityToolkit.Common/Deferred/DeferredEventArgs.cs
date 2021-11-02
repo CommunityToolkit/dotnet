@@ -40,9 +40,7 @@ public class DeferredEventArgs : EventArgs
     /// additional usage within extensions for the UWP based TypedEventHandler extensions.
     /// </summary>
     /// <returns>Internal EventDeferral reference</returns>
-#if !NETSTANDARD1_4
     [Browsable(false)]
-#endif
     [EditorBrowsable(EditorBrowsableState.Never)]
     [Obsolete("This is an internal only method to be used by EventHandler extension classes, public callers should call GetDeferral() instead.")]
     public EventDeferral? GetCurrentDeferralAndReset()
