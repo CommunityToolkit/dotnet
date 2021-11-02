@@ -468,6 +468,7 @@ public partial class Test_Messenger
         Assert.IsTrue(messenger.IsRegistered<MessageA>(recipient));
     }
 
+#if NETCOREAPP // Auto-trimming is disabled on .NET Framework
     [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_Messenger_AutoCleanup()
@@ -515,6 +516,7 @@ public partial class Test_Messenger
 
         GC.KeepAlive(messenger);
     }
+#endif
 
     [TestCategory("Mvvm")]
     [TestMethod]
