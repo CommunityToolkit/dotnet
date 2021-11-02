@@ -3,12 +3,11 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-#if !WINDOWS_UWP
+#if NETCOREAPP
 using System.Buffers;
 #endif
 using System.IO;
 using System.Runtime.CompilerServices;
-using CommunityToolkit.HighPerformance;
 using CommunityToolkit.HighPerformance.Buffers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

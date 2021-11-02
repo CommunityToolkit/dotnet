@@ -47,7 +47,7 @@ public class Test_Span2DT
         Assert.AreEqual(empty4.Height, 0);
     }
 
-#if !WINDOWS_UWP
+#if NETCOREAPP
     [TestCategory("Span2DT")]
     [TestMethod]
     public unsafe void Test_Span2DT_RefConstructor()
@@ -728,7 +728,7 @@ public class Test_Span2DT
         Assert.AreEqual(slice3[0, 0], 5);
     }
 
-#if !WINDOWS_UWP
+#if NETCOREAPP
     [TestCategory("Span2DT")]
     [TestMethod]
     public void Test_Span2DT_GetRowSpan()
@@ -835,12 +835,12 @@ public class Test_Span2DT
         // This API tries to get a Span<T> for the entire contents of Span2D<T>.
         // This only works on runtimes if the underlying data is contiguous
         // and of a size that can fit into a single Span<T>. In this specific test,
-        // this is not expected to work on UWP because it can't create a Span<T>
-        // from a 2D array (reasons explained in the comments for the test above).
+        // this is not expected to work on .NET Standard 2.0 because it can't create a
+        // Span<T> from a 2D array (reasons explained in the comments for the test above).
         bool success = span2d.TryGetSpan(out Span<int> span);
 
-#if WINDOWS_UWP
-        // Can't get a Span<T> over a T[,] array on UWP
+#if NETFRAMEWORK
+        // Can't get a Span<T> over a T[,] array on .NET Standard 2.0
         Assert.IsFalse(success);
         Assert.AreEqual(span.Length, 0);
 #else

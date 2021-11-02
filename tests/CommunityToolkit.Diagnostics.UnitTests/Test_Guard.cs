@@ -217,7 +217,7 @@ public partial class Test_Guard
     public void Test_Guard_IsBitwiseEqualTo_Ok()
     {
         Guard.IsBitwiseEqualTo(byte.MaxValue, byte.MaxValue, nameof(Test_Guard_IsBitwiseEqualTo_Ok));
-        Guard.IsBitwiseEqualTo(MathF.PI, MathF.PI, nameof(Test_Guard_IsBitwiseEqualTo_Ok));
+        Guard.IsBitwiseEqualTo((float)Math.PI, (float)Math.PI, nameof(Test_Guard_IsBitwiseEqualTo_Ok));
         Guard.IsBitwiseEqualTo(double.Epsilon, double.Epsilon, nameof(Test_Guard_IsBitwiseEqualTo_Ok));
 
         Guid guid = Guid.NewGuid();
@@ -413,8 +413,8 @@ public partial class Test_Guard
     {
         Guard.IsLessThanOrEqualTo(1, 2, nameof(Test_Guard_IsLessThanOrEqualTo_Ok));
         Guard.IsLessThanOrEqualTo(1, 1, nameof(Test_Guard_IsLessThanOrEqualTo_Ok));
-        Guard.IsLessThanOrEqualTo(0.1f, MathF.PI, nameof(Test_Guard_IsLessThanOrEqualTo_Ok));
-        Guard.IsLessThanOrEqualTo(MathF.PI, MathF.PI, nameof(Test_Guard_IsLessThanOrEqualTo_Ok));
+        Guard.IsLessThanOrEqualTo(0.1f, (float)Math.PI, nameof(Test_Guard_IsLessThanOrEqualTo_Ok));
+        Guard.IsLessThanOrEqualTo((float)Math.PI, (float)Math.PI, nameof(Test_Guard_IsLessThanOrEqualTo_Ok));
         Guard.IsLessThanOrEqualTo(DateTime.Today, DateTime.MaxValue, nameof(Test_Guard_IsLessThanOrEqualTo_Ok));
         Guard.IsLessThanOrEqualTo(DateTime.MaxValue, DateTime.MaxValue, nameof(Test_Guard_IsLessThanOrEqualTo_Ok));
     }
@@ -458,8 +458,8 @@ public partial class Test_Guard
     {
         Guard.IsGreaterThanOrEqualTo(2, 1, nameof(Test_Guard_IsGreaterThanOrEqualTo_Ok));
         Guard.IsGreaterThanOrEqualTo(1, 1, nameof(Test_Guard_IsGreaterThanOrEqualTo_Ok));
-        Guard.IsGreaterThanOrEqualTo(MathF.PI, 1, nameof(Test_Guard_IsGreaterThanOrEqualTo_Ok));
-        Guard.IsGreaterThanOrEqualTo(MathF.PI, MathF.PI, nameof(Test_Guard_IsGreaterThanOrEqualTo_Ok));
+        Guard.IsGreaterThanOrEqualTo((float)Math.PI, 1, nameof(Test_Guard_IsGreaterThanOrEqualTo_Ok));
+        Guard.IsGreaterThanOrEqualTo((float)Math.PI, (float)Math.PI, nameof(Test_Guard_IsGreaterThanOrEqualTo_Ok));
         Guard.IsGreaterThanOrEqualTo(DateTime.MaxValue, DateTime.Today, nameof(Test_Guard_IsGreaterThanOrEqualTo_Ok));
         Guard.IsGreaterThanOrEqualTo(DateTime.MaxValue, DateTime.MaxValue, nameof(Test_Guard_IsGreaterThanOrEqualTo_Ok));
     }

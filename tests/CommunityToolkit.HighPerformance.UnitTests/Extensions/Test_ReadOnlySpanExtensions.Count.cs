@@ -42,7 +42,7 @@ public partial class Test_ReadOnlySpanExtensions
     {
         TestForType((int)37438941, CreateRandomData);
         TestForType((uint)37438941, CreateRandomData);
-        TestForType(MathF.PI, CreateRandomData);
+        TestForType((float)Math.PI, CreateRandomData);
     }
 
     [TestCategory("ReadOnlySpanExtensions")]

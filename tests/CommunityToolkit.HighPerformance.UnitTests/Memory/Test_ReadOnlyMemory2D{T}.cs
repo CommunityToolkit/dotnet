@@ -3,9 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-#if !WINDOWS_UWP
 using System.Runtime.CompilerServices;
-#endif
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommunityToolkit.HighPerformance.UnitTests;
@@ -182,7 +180,7 @@ public class Test_ReadOnlyMemory2DT
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, 0, 0, 0, 3, 3));
     }
 
-#if !WINDOWS_UWP
+#if NETCOREAPP
     [TestCategory("ReadOnlyMemory2DT")]
     [TestMethod]
     public void Test_ReadOnlyMemory2DT_ReadOnlyMemoryConstructor()
@@ -304,7 +302,7 @@ public class Test_ReadOnlyMemory2DT
 
         bool success = memory2d.TryGetMemory(out ReadOnlyMemory<int> memory);
 
-#if WINDOWS_UWP
+#if NETFRAMEWORK
         Assert.IsFalse(success);
         Assert.IsTrue(memory.IsEmpty);
 #else
@@ -329,7 +327,7 @@ public class Test_ReadOnlyMemory2DT
         Assert.AreEqual(memory.Span[2], 3);
     }
 
-#if !WINDOWS_UWP
+#if NETCOREAPP
     [TestCategory("ReadOnlyMemory2DT")]
     [TestMethod]
     public void Test_ReadOnlyMemory2DT_TryGetReadOnlyMemory_3()

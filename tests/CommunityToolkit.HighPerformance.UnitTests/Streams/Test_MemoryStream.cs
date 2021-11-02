@@ -222,9 +222,8 @@ public partial class Test_MemoryStream
 
         Memory<byte> data = CreateRandomData(64);
 
-        // This will use the extension when on .NET Standard 2.0,
-        // as the Stream class doesn't have Spam<T> or Memory<T>
-        // public APIs there. This is the case eg. on UWP as well.
+        // This will use the extension when on .NET Standard 2.0, as the
+        // Stream class doesn't have Spam<T> or Memory<T> public APIs there.
         stream.Write(data.Span);
 
         Assert.AreEqual(stream.Position, data.Length);

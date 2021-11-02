@@ -46,7 +46,7 @@ public class Test_SpinLockExtensions
         {
             for (int j = 0; j < 10; j++)
             {
-#if WINDOWS_UWP
+#if NETFRAMEWORK
                 using (SpinLockExtensions.Enter(spinLockOwner, ref spinLockOwner.Lock))
 #else
                 using (spinLockOwner.Lock.Enter())

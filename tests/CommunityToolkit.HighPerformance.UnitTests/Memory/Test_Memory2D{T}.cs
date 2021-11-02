@@ -3,9 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-#if !WINDOWS_UWP
 using System.Runtime.CompilerServices;
-#endif
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommunityToolkit.HighPerformance.UnitTests;
@@ -202,7 +200,7 @@ public class Test_Memory2DT
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 0, 0, 0, 3, 3));
     }
 
-#if !WINDOWS_UWP
+#if NETCOREAPP
     [TestCategory("Memory2DT")]
     [TestMethod]
     public void Test_Memory2DT_MemoryConstructor()
@@ -338,7 +336,7 @@ public class Test_Memory2DT
         // Memory<T> (or a Span<T> too, for that matter) from a 2D array.
         bool success = memory2d.TryGetMemory(out Memory<int> memory);
 
-#if WINDOWS_UWP
+#if NETFRAMEWORK
         Assert.IsFalse(success);
         Assert.IsTrue(memory.IsEmpty);
 #else
@@ -365,7 +363,7 @@ public class Test_Memory2DT
         Assert.AreEqual(memory.Span[2], 3);
     }
 
-#if !WINDOWS_UWP
+#if NETCOREAPP
     [TestCategory("Memory2DT")]
     [TestMethod]
     public void Test_Memory2DT_TryGetMemory_3()

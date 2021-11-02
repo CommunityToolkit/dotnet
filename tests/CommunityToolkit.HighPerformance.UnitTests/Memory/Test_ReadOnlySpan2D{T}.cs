@@ -36,7 +36,7 @@ public class Test_ReadOnlySpan2DT
         Assert.AreEqual(empty2.Height, 0);
     }
 
-#if !WINDOWS_UWP
+#if NETCOREAPP
     [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public unsafe void Test_ReadOnlySpan2DT_RefConstructor()
@@ -559,7 +559,7 @@ public class Test_ReadOnlySpan2DT
         Assert.AreEqual(slice3[0, 0], 5);
     }
 
-#if !WINDOWS_UWP
+#if NETCOREAPP
     [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_GetRowReadOnlySpan()
@@ -644,8 +644,8 @@ public class Test_ReadOnlySpan2DT
 
         bool success = span2d.TryGetSpan(out ReadOnlySpan<int> span);
 
-#if WINDOWS_UWP
-        // Can't get a ReadOnlySpan<T> over a T[,] array on UWP
+#if NETFRAMEWORK
+        // Can't get a ReadOnlySpan<T> over a T[,] array on .NET Standard 2.0
         Assert.IsFalse(success);
         Assert.AreEqual(span.Length, 0);
 #else
