@@ -141,20 +141,9 @@ Task("BuildProjects")
     .Does(() =>
 {
     Information("\nBuilding Solution");
-    var buildSettings = new MSBuildSettings
-    {
-        MaxCpuCount = 0,
-        PlatformTarget = PlatformTarget.MSIL
-    }
-    .SetConfiguration(configuration)
-    .WithTarget("Restore");
-
-    MSBuild(Solution, buildSettings);
-
-    EnsureDirectoryExists(nupkgDir);
 
     // Build once with normal dependency ordering
-    buildSettings = new MSBuildSettings
+    var buildSettings = new MSBuildSettings
     {
         MaxCpuCount = 0,
         PlatformTarget = PlatformTarget.MSIL
@@ -164,6 +153,8 @@ Task("BuildProjects")
     .WithProperty("GenerateLibraryLayout", "true");
 
     MSBuild(Solution, buildSettings);
+
+    EnsureDirectoryExists(nupkgDir);
 });
 
 Task("InheritDoc")
