@@ -15,55 +15,56 @@ variables:
   BuildConfiguration: Release
 
 jobs:
-### BUILD ###
 - job: BuildBits
   timeoutInMinutes: 60
 
+  # Setup
+
   steps:
   - task: BatchScript@1
+    displayName: Setup environment variables
     inputs:
       filename: "C:\\Program Files\\Microsoft Visual Studio\\2022\\Preview\\Common7\\Tools\\VsDevCmd.bat"
       arguments: -no_logo
       modifyEnvironment: true
-    displayName: Setup Environment Variables
 
   - task: NuGetToolInstaller@0
-    displayName: Use NuGet 5.6.0
+    displayName: Install NuGet 5.6.0
     inputs:
       versionSpec: 5.6.0
 
   - task: DotNetCoreCLI@2
+    displayName: Install NBGV tool
     inputs:
       command: custom
       custom: tool
       arguments: install --tool-path . nbgv
-    displayName: Install NBGV tool
 
   - script: nbgv cloud
-    displayName: Set Version
+    displayName: Set NBGV version
 
   - powershell: .\build\build.ps1 -Target Build
-    displayName: Build
+    displayName: Run build script
 
-  ### Unit Tests ###
+  # Unit tests
 
   - powershell: .\build\build.ps1 -Target Test
-    displayName: Test
+    displayName: Run unit tests
 
   - task: PublishTestResults@2
+    displayName: Publish test results
     inputs:
       testResultsFormat: 'VSTest'
       testResultsFiles: '**/VsTestResults*.trx'
-    displayName: Publish Test Results
     condition: always()
 
-  ### Package ###
+  # Package
 
   - powershell: .\build\build.ps1 -Target Package
     displayName: Package
 
   - task: PowerShell@2
-    displayName: Authenticode Sign Packages
+    displayName: Authenticode sign packages
     inputs:
       filePath: build/Sign-Package.ps1
     env:
@@ -73,7 +74,7 @@ jobs:
     condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
 
   - task: PublishPipelineArtifact@1
-    displayName: Publish Package Artifacts
+    displayName: Publish package artifacts
     inputs:
       targetPath: .\bin\nupkg
       artifactName: Packages

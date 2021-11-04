@@ -98,7 +98,7 @@ void RetrieveVersion()
 {
     Information("\nRetrieving version...");
     Version = GitVersioningGetVersion().NuGetPackageVersion;
-    Information("\nBuild Version: " + Version);
+    Information("\nBuild version: " + Version);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -111,7 +111,7 @@ Task("Clean")
 {
     if(DirectoryExists(binDir))
     {
-        Information("\nCleaning Working Directory");
+        Information("\nCleaning working directory");
         CleanDirectory(binDir);
     }
     else
@@ -129,7 +129,7 @@ Task("Verify")
 });
 
 Task("Version")
-    .Description("Updates the version information in all Projects")
+    .Description("Updates the version information in all projects")
     .Does(() =>
 {
     RetrieveVersion();
@@ -140,7 +140,7 @@ Task("BuildProjects")
     .IsDependentOn("Version")
     .Does(() =>
 {
-    Information("\nBuilding Solution");
+    Information("\nBuilding solution");
 
     // Build once with normal dependency ordering
     var buildSettings = new MSBuildSettings
@@ -194,7 +194,7 @@ Task("Build")
     .IsDependentOn("InheritDoc");
 
 Task("Package")
-    .Description("Pack the NuPkg")
+    .Description("Pack the NuGet packages")
     .Does(() =>
 {
     // Invoke the pack target in the end
@@ -211,10 +211,12 @@ Task("Package")
     MSBuild(Solution, buildSettings);
 });
 
-public string getMSTestAdapterPath(){
+public string getMSTestAdapterPath()
+{
     var nugetPaths = GetDirectories("./tools/MSTest.TestAdapter*/build/_common");
 
-    if(nugetPaths.Count == 0){
+    if(nugetPaths.Count == 0)
+    {
         throw new Exception(
             "Cannot locate the MSTest test adapter. " +
             "You might need to add '#tool nuget:?package=MSTest.TestAdapter&version=2.1.0' " +
@@ -225,10 +227,10 @@ public string getMSTestAdapterPath(){
 }
 
 Task("Test")
-    .Description("Runs all Unit Tests")
+    .Description("Runs all unit tests")
     .Does(() =>
 {
-    Information("\nRunning Unit Tests");
+    Information("\nRunning unit tests");
     var vswhere = VSWhereLatest(new VSWhereLatestSettings
     {
         IncludePrerelease = true
@@ -244,7 +246,7 @@ Task("Test")
     VSTest(baseDir + $"/**/{configuration}/**/UnitTests.*.appxrecipe", testSettings);
 }).DoesForEach(GetFiles(baseDir + "/**/*.UnitTests.csproj"), (file) =>
 {
-    Information("\nRunning Unit Tests");
+    Information("\nRunning unit tests");
     var testSettings = new DotNetCoreTestSettings
     {
         Configuration = configuration,
