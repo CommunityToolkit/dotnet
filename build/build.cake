@@ -30,16 +30,11 @@ var inheritDocVersion = "2.5.2";
 
 var baseDir = MakeAbsolute(Directory("../")).ToString();
 var buildDir = baseDir + "/build";
-var Solution = baseDir + "/Windows Community Toolkit.sln";
+var Solution = baseDir + "/dotnet Community Toolkit.sln";
 var toolsDir = buildDir + "/tools";
 
 var binDir = baseDir + "/bin";
 var nupkgDir = binDir + "/nupkg";
-
-var taefBinDir = baseDir + $"/UITests/UITests.Tests.TAEF/bin/{configuration}/netcoreapp3.1/win10-x86";
-
-var styler = toolsDir + "/XamlStyler.Console/tools/xstyler.exe";
-var stylerFile = baseDir + "/settings.xamlstyler";
 
 string Version = null;
 
@@ -131,8 +126,6 @@ Task("Verify")
     .Does(() =>
 {
     VerifyHeaders(false);
-
-    StartPowershellFile("./Find-WindowsSDKVersions.ps1");
 });
 
 Task("Version")
@@ -247,32 +240,20 @@ Task("Test")
     Information("\nRunning Unit Tests");
     var vswhere = VSWhereLatest(new VSWhereLatestSettings
     {
-        IncludePrerelease = false
+        IncludePrerelease = true
     });
 
     var testSettings = new VSTestSettings
     {
         ToolPath = vswhere + "/Common7/IDE/CommonExtensions/Microsoft/TestWindow/vstest.console.exe",
         TestAdapterPath = getMSTestAdapterPath(),
-        ArgumentCustomization = arg => arg.Append("/logger:trx;LogFileName=VsTestResultsUwp.trx /framework:FrameworkUap10"),
+        ArgumentCustomization = arg => arg.Append("/logger:trx;LogFileName=VsTestResults.trx"),
     };
 
     VSTest(baseDir + $"/**/{configuration}/**/UnitTests.*.appxrecipe", testSettings);
-}).DoesForEach(GetFiles(baseDir + "/**/UnitTests.*NetCore.csproj"), (file) =>
+}).DoesForEach(GetFiles(baseDir + "/**/*.UnitTests.csproj"), (file) =>
 {
-    Information("\nRunning NetCore Unit Tests");
-    var testSettings = new DotNetCoreTestSettings
-    {
-        Configuration = configuration,
-        NoBuild = true,
-        Loggers = new[] { "trx;LogFilePrefix=VsTestResults" },
-        Verbosity = DotNetCoreVerbosity.Normal,
-        ArgumentCustomization = arg => arg.Append($"-s {baseDir}/.runsettings /p:Platform=AnyCPU"),
-    };
-    DotNetCoreTest(file.FullPath, testSettings);
-}).DoesForEach(GetFiles(baseDir + "/**/UnitTests.SourceGenerators.csproj"), (file) =>
-{
-    Information("\nRunning NetCore Source Generator Unit Tests");
+    Information("\nRunning Unit Tests");
     var testSettings = new DotNetCoreTestSettings
     {
         Configuration = configuration,
@@ -283,52 +264,6 @@ Task("Test")
     };
     DotNetCoreTest(file.FullPath, testSettings);
 }).DeferOnError();
-
-Task("UITest")
-    .Description("Runs all UI Tests")
-    .DoesForEach(GetFiles(taefBinDir + "/**/UITests.Tests.TAEF.dll"), (file) =>
-{
-    Information("\nRunning TAEF Interaction Tests");
-
-    var result = StartProcess(System.IO.Path.GetDirectoryName(file.FullPath) + "/TE.exe", file.FullPath + " /screenCaptureOnError /enableWttLogging /logFile:UITestResults.wtl");
-    if (result != 0)
-    {
-        throw new InvalidOperationException("TAEF Tests failed!");
-    }
-}).DeferOnError();
-
-Task("SmokeTest")
-    .Description("Runs all Smoke Tests")
-    .IsDependentOn("Version")
-    .Does(() =>
-{
-    // Need to do full NuGet restore here to grab proper UWP dependencies...
-    NuGetRestore(baseDir + "/SmokeTests/SmokeTest.csproj");
-
-    var buildSettings = new MSBuildSettings()
-    {
-        Restore = true,
-    }
-    .WithProperty("NuGetPackageVersion", Version);
-
-    MSBuild(baseDir + "/SmokeTests/SmokeTests.proj", buildSettings);
-}).DeferOnError();
-
-Task("MSTestUITest")
-    .Description("Runs UITests using MSTest")
-    .DoesForEach(GetFiles(baseDir + "/**/UITests.*.MSTest.csproj"), (file) =>
-{
-    Information("\nRunning UI Interaction Tests");
-
-    var testSettings = new DotNetCoreTestSettings
-    {
-        Configuration = configuration,
-        NoBuild = true,
-        Loggers = new[] { "trx;LogFilePrefix=VsTestResults" },
-        Verbosity = DotNetCoreVerbosity.Normal
-    };
-    DotNetCoreTest(file.FullPath, testSettings);
-});
 
 //////////////////////////////////////////////////////////////////////
 // TASK TARGETS
@@ -337,7 +272,6 @@ Task("MSTestUITest")
 Task("Default")
     .IsDependentOn("Build")
     .IsDependentOn("Test")
-    .IsDependentOn("UITest")
     .IsDependentOn("Package");
 
 Task("UpdateHeaders")
@@ -345,30 +279,6 @@ Task("UpdateHeaders")
     .Does(() =>
 {
     VerifyHeaders(true);
-});
-
-Task("StyleXaml")
-    .Description("Ensures XAML Formatting is Clean")
-    .Does(() =>
-{
-    Information("\nDownloading XamlStyler...");
-    var installSettings = new NuGetInstallSettings
-    {
-        ExcludeVersion  = true,
-        OutputDirectory = toolsDir
-    };
-
-    NuGetInstall(new[] {"xamlstyler.console"}, installSettings);
-
-    Func<IFileSystemInfo, bool> exclude_objDir =
-        fileSystemInfo => !fileSystemInfo.Path.Segments.Contains("obj");
-
-    var files = GetFiles(baseDir + "/**/*.xaml", new GlobberSettings { Predicate = exclude_objDir });
-    Information("\nChecking " + files.Count() + " file(s) for XAML Structure");
-    foreach(var file in files)
-    {
-        StartProcess(styler, "-f \"" + file + "\" -c \"" + stylerFile + "\"");
-    }
 });
 
 //////////////////////////////////////////////////////////////////////
