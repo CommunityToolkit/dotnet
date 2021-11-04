@@ -11,46 +11,48 @@ pr:
 pool:
   vmImage: windows-2022
 
-variables:
-  BuildConfiguration: Release
-
 jobs:
 - job: BuildBits
   timeoutInMinutes: 60
-
-  # Setup
-
   steps:
-  - task: BatchScript@1
-    displayName: Setup environment variables
-    inputs:
-      filename: "C:\\Program Files\\Microsoft Visual Studio\\2022\\Preview\\Common7\\Tools\\VsDevCmd.bat"
-      arguments: -no_logo
-      modifyEnvironment: true
 
+  # Install NuGet
   - task: NuGetToolInstaller@0
     displayName: Install NuGet 5.6.0
     inputs:
       versionSpec: 5.6.0
 
+  # Install NerdBank GitVersioning
   - task: DotNetCoreCLI@2
     displayName: Install NBGV tool
     inputs:
       command: custom
       custom: tool
       arguments: install --tool-path . nbgv
-
   - script: nbgv cloud
     displayName: Set NBGV version
 
-  - powershell: .\build\build.ps1 -Target Build
-    displayName: Run build script
+  # Verify headers
+  - powershell: .\build\build.ps1 -Target Verify
+    displayName: Verify headers
 
-  # Unit tests
+  # Build solution
+  - powershell: dotnet build -c Release
+    displayName: Build solution
 
-  - powershell: .\build\build.ps1 -Target Test
-    displayName: Run unit tests
+  # Run .NET 5 tests
+  - powershell: dotnet test --logger "trx;LogFileName=VsTestResultsNet5.trx" --framework net5.0 --configuration Release
+    displayName: Run .NET 5 unit tests
 
+  # Run .NET Core 3.1 tests
+  - powershell: dotnet test --logger "trx;LogFileName=VsTestResultsNetCore31.trx" --framework netcoreapp3.1 --configuration Release
+    displayName: Run .NET Core 3.1 unit tests
+
+  # Run .NET Framework 4.7.2 tests
+  - powershell: dotnet test --logger "trx;LogFileName=VsTestResultsNet472.trx" --framework net472 --configuration Release
+    displayName: Run .NET Framework 4.7.2 unit tests
+
+  # Publish test results
   - task: PublishTestResults@2
     displayName: Publish test results
     inputs:
@@ -58,11 +60,11 @@ jobs:
       testResultsFiles: '**/VsTestResults*.trx'
     condition: always()
 
-  # Package
-
+  # Create the NuGet package(s)
   - powershell: .\build\build.ps1 -Target Package
-    displayName: Package
+    displayName: Create NuGet package(s)
 
+  # Sign package(s)
   - task: PowerShell@2
     displayName: Authenticode sign packages
     inputs:
@@ -73,6 +75,7 @@ jobs:
       ArtifactDirectory: bin\nupkg
     condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
 
+  # Publish build artifacts
   - task: PublishPipelineArtifact@1
     displayName: Publish package artifacts
     inputs:
