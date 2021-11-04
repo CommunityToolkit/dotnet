@@ -106,10 +106,10 @@ public partial class Test_INotifyPropertyChangedAttribute
     [TestMethod]
     public void Test_INotifyPropertyChanged_WithGeneratedProperties_ExternalNetStandard20Assembly()
     {
-        Assert.IsTrue(typeof(INotifyPropertyChanged).IsAssignableFrom(typeof(ExternalAssembly.UnitTests.SampleModelWithINPCAndObservableProperties)));
-        Assert.IsFalse(typeof(INotifyPropertyChanging).IsAssignableFrom(typeof(ExternalAssembly.UnitTests.SampleModelWithINPCAndObservableProperties)));
+        Assert.IsTrue(typeof(INotifyPropertyChanged).IsAssignableFrom(typeof(ExternalAssembly.SampleModelWithINPCAndObservableProperties)));
+        Assert.IsFalse(typeof(INotifyPropertyChanging).IsAssignableFrom(typeof(ExternalAssembly.SampleModelWithINPCAndObservableProperties)));
 
-        ExternalAssembly.UnitTests.SampleModelWithINPCAndObservableProperties model = new();
+        ExternalAssembly.SampleModelWithINPCAndObservableProperties model = new();
         List<PropertyChangedEventArgs> eventArgs = new();
 
         model.PropertyChanged += (s, e) => eventArgs.Add(e);
@@ -118,7 +118,7 @@ public partial class Test_INotifyPropertyChangedAttribute
         model.Y = 66;
 
         Assert.AreEqual(eventArgs.Count, 2);
-        Assert.AreEqual(eventArgs[0].PropertyName, nameof(ExternalAssembly.UnitTests.SampleModelWithINPCAndObservableProperties.X));
-        Assert.AreEqual(eventArgs[1].PropertyName, nameof(ExternalAssembly.UnitTests.SampleModelWithINPCAndObservableProperties.Y));
+        Assert.AreEqual(eventArgs[0].PropertyName, nameof(ExternalAssembly.SampleModelWithINPCAndObservableProperties.X));
+        Assert.AreEqual(eventArgs[1].PropertyName, nameof(ExternalAssembly.SampleModelWithINPCAndObservableProperties.Y));
     }
 }

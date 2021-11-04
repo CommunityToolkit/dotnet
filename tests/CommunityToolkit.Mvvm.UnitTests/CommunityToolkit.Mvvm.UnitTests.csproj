@@ -13,7 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\CommunityToolkit.Mvvm\CommunityToolkit.Mvvm.csproj" />
     <ProjectReference Include="..\..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="contentfiles;build" />
-    <ProjectReference Include="..\CommunityToolkit.Mvvm.ExternalAssembly.UnitTests\CommunityToolkit.Mvvm.ExternalAssembly.UnitTests.csproj" />
+    <ProjectReference Include="..\CommunityToolkit.Mvvm.ExternalAssembly\CommunityToolkit.Mvvm.ExternalAssembly.csproj" />
   </ItemGroup>
 
 </Project>

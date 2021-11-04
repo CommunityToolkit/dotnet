@@ -4,7 +4,7 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace CommunityToolkit.Mvvm.ExternalAssembly.UnitTests;
+namespace CommunityToolkit.Mvvm.ExternalAssembly;
 
 /// <summary>
 /// See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4167.
