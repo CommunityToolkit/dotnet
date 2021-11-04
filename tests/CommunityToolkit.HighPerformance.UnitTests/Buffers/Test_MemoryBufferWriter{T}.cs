@@ -12,7 +12,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Buffers;
 [TestClass]
 public class Test_MemoryBufferWriterOfT
 {
-    [TestCategory("MemoryBufferWriterOfT")]
     [TestMethod]
     public void Test_MemoryBufferWriterOfT_AllocateAndGetMemoryAndSpan()
     {
@@ -50,7 +49,6 @@ public class Test_MemoryBufferWriterOfT
         _ = Assert.ThrowsException<ArgumentException>(() => writer.Advance(1024));
     }
 
-    [TestCategory("MemoryBufferWriterOfT")]
     [TestMethod]
     public void Test_MemoryBufferWriterOfT_Clear()
     {

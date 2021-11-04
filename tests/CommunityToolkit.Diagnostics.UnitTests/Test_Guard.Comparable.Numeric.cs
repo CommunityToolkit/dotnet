@@ -9,7 +9,6 @@ namespace CommunityToolkit.Diagnostics.UnitTests;
 
 public partial class Test_Guard
 {
-    [TestCategory("Guard")]
     [TestMethod]
     [DataRow(0, 20, 10u, false)]
     [DataRow(0, 6, 5u, false)]
@@ -59,7 +58,6 @@ public partial class Test_Guard
         Test(target, value);
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [DataRow(0f, 20f, 10f, false)]
     [DataRow(0f, 6f, 5f, false)]

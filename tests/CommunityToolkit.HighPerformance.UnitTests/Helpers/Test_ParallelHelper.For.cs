@@ -17,7 +17,6 @@ public partial class Test_ParallelHelper
     /// </summary>
     private static ReadOnlySpan<int> TestForCounts => new[] { 0, 1, 7, 128, 255, 256, short.MaxValue, short.MaxValue + 1, 123_938, 1_678_922, 71_890_819 };
 
-    [TestCategory("ParallelHelper")]
     [TestMethod]
     public unsafe void Test_ParallelHelper_ForWithIndices()
     {
@@ -40,7 +39,6 @@ public partial class Test_ParallelHelper
     }
 
 #if NETCOREAPP3_1 || NET5_0
-    [TestCategory("ParallelHelper")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void Test_ParallelHelper_ForInvalidRange_FromEnd()
@@ -48,7 +46,6 @@ public partial class Test_ParallelHelper
         ParallelHelper.For<Assigner>(..^1);
     }
 
-    [TestCategory("ParallelHelper")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void Test_ParallelHelper_ForInvalidRange_RangeAll()
@@ -56,7 +53,6 @@ public partial class Test_ParallelHelper
         ParallelHelper.For<Assigner>(..);
     }
 
-    [TestCategory("ParallelHelper")]
     [TestMethod]
     public unsafe void Test_ParallelHelper_ForWithRanges()
     {

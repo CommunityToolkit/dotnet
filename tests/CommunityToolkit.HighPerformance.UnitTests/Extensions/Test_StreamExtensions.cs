@@ -12,7 +12,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Extensions;
 [TestClass]
 public class Test_StreamExtensions
 {
-    [TestCategory("StreamExtensions")]
     [TestMethod]
     public void Test_StreamExtensions_ReadWrite()
     {

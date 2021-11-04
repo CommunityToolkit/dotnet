@@ -12,7 +12,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Extensions;
 [TestClass]
 public class Test_ObjectMarshal
 {
-    [TestCategory("ObjectMarshal")]
     [TestMethod]
     public void Test_DangerousGetObjectDataByteOffset()
     {
@@ -44,7 +43,6 @@ public class Test_ObjectMarshal
         public string? Text;
     }
 
-    [TestCategory("ObjectMarshal")]
     [TestMethod]
     public void Test_BoxOfT_PrimitiveTypes()
     {
@@ -58,7 +56,6 @@ public class Test_ObjectMarshal
         Test(184013.234324);
     }
 
-    [TestCategory("ObjectMarshal")]
     [TestMethod]
     public void Test_BoxOfT_OtherTypes()
     {
@@ -82,7 +79,6 @@ public class Test_ObjectMarshal
         }
     }
 
-    [TestCategory("ObjectMarshal")]
     [TestMethod]
     public void TestBoxOfT_CustomStruct()
     {

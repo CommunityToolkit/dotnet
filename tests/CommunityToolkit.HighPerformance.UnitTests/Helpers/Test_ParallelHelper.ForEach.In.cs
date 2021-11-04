@@ -14,7 +14,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Helpers;
 
 public partial class Test_ParallelHelper
 {
-    [TestCategory("ParallelHelper")]
     [TestMethod]
     public unsafe void Test_ParallelHelper_ForEach_In()
     {

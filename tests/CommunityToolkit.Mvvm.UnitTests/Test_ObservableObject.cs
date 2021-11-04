@@ -13,7 +13,6 @@ namespace CommunityToolkit.Mvvm.UnitTests;
 [TestClass]
 public class Test_ObservableObject
 {
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_ObservableObject_Events()
     {
@@ -63,7 +62,6 @@ public class Test_ObservableObject
         }
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_ObservableObject_ProxyCrudWithProperty()
     {
@@ -118,7 +116,6 @@ public class Test_ObservableObject
         }
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_ObservableObject_ProxyCrudWithField()
     {
@@ -168,7 +165,6 @@ public class Test_ObservableObject
         }
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public async Task Test_ObservableObject_NotifyTask()
     {

@@ -18,7 +18,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests;
 [TestClass]
 public class Test_ReadOnlyMemory2DT
 {
-    [TestCategory("ReadOnlyMemory2DT")]
     [TestMethod]
     public void Test_ReadOnlyMemory2DT_Empty()
     {
@@ -37,7 +36,6 @@ public class Test_ReadOnlyMemory2DT
         Assert.AreEqual(empty2.Height, 0);
     }
 
-    [TestCategory("ReadOnlyMemory2DT")]
     [TestMethod]
     public void Test_ReadOnlyMemory2DT_Array1DConstructor()
     {
@@ -68,7 +66,6 @@ public class Test_ReadOnlyMemory2DT
         _ = Assert.ThrowsException<ArgumentException>(() => new ReadOnlyMemory2D<int>(array, 0, 10, 1, 120));
     }
 
-    [TestCategory("ReadOnlyMemory2DT")]
     [TestMethod]
     public void Test_ReadOnlyMemory2DT_Array2DConstructor_1()
     {
@@ -90,7 +87,6 @@ public class Test_ReadOnlyMemory2DT
         _ = new ReadOnlyMemory2D<object>(new string[1, 2]);
     }
 
-    [TestCategory("ReadOnlyMemory2DT")]
     [TestMethod]
     public void Test_ReadOnlyMemory2DT_Array2DConstructor_2()
     {
@@ -114,7 +110,6 @@ public class Test_ReadOnlyMemory2DT
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<object>(new string[1, 2], 0, 0, 2, 2));
     }
 
-    [TestCategory("ReadOnlyMemory2DT")]
     [TestMethod]
     public void Test_ReadOnlyMemory2DT_Array3DConstructor_1()
     {
@@ -144,7 +139,6 @@ public class Test_ReadOnlyMemory2DT
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, 2));
     }
 
-    [TestCategory("ReadOnlyMemory2DT")]
     [TestMethod]
     public void Test_ReadOnlyMemory2DT_Array3DConstructor_2()
     {
@@ -181,7 +175,6 @@ public class Test_ReadOnlyMemory2DT
     }
 
 #if NETCOREAPP
-    [TestCategory("ReadOnlyMemory2DT")]
     [TestMethod]
     public void Test_ReadOnlyMemory2DT_ReadOnlyMemoryConstructor()
     {
@@ -210,7 +203,6 @@ public class Test_ReadOnlyMemory2DT
     }
 #endif
 
-    [TestCategory("ReadOnlyMemory2DT")]
     [TestMethod]
     public void Test_ReadOnlyMemory2DT_Slice_1()
     {
@@ -252,7 +244,6 @@ public class Test_ReadOnlyMemory2DT
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array).Slice(1, 0, 2, 3));
     }
 
-    [TestCategory("ReadOnlyMemory2DT")]
     [TestMethod]
     public void Test_ReadOnlyMemory2DT_Slice_2()
     {
@@ -288,7 +279,6 @@ public class Test_ReadOnlyMemory2DT
         Assert.AreEqual(slice3.Span[0, 0], 5);
     }
 
-    [TestCategory("ReadOnlyMemory2DT")]
     [TestMethod]
     public void Test_ReadOnlyMemory2DT_TryGetReadOnlyMemory_1()
     {
@@ -312,7 +302,6 @@ public class Test_ReadOnlyMemory2DT
 #endif
     }
 
-    [TestCategory("ReadOnlyMemory2DT")]
     [TestMethod]
     public void Test_ReadOnlyMemory2DT_TryGetReadOnlyMemory_2()
     {
@@ -328,7 +317,6 @@ public class Test_ReadOnlyMemory2DT
     }
 
 #if NETCOREAPP
-    [TestCategory("ReadOnlyMemory2DT")]
     [TestMethod]
     public void Test_ReadOnlyMemory2DT_TryGetReadOnlyMemory_3()
     {
@@ -344,7 +332,6 @@ public class Test_ReadOnlyMemory2DT
     }
 #endif
 
-    [TestCategory("ReadOnlyMemory2DT")]
     [TestMethod]
     public unsafe void Test_ReadOnlyMemory2DT_Pin_1()
     {
@@ -358,7 +345,6 @@ public class Test_ReadOnlyMemory2DT
         Assert.AreEqual(((int*)pin.Pointer)[3], 4);
     }
 
-    [TestCategory("ReadOnlyMemory2DT")]
     [TestMethod]
     public unsafe void Test_ReadOnlyMemory2DT_Pin_2()
     {
@@ -372,7 +358,6 @@ public class Test_ReadOnlyMemory2DT
         Assert.AreEqual(((int*)pin.Pointer)[3], 4);
     }
 
-    [TestCategory("ReadOnlyMemory2DT")]
     [TestMethod]
     public void Test_ReadOnlyMemory2DT_ToArray_1()
     {
@@ -392,7 +377,6 @@ public class Test_ReadOnlyMemory2DT
         CollectionAssert.AreEqual(array, copy);
     }
 
-    [TestCategory("ReadOnlyMemory2DT")]
     [TestMethod]
     public void Test_ReadOnlyMemory2DT_ToArray_2()
     {
@@ -418,7 +402,6 @@ public class Test_ReadOnlyMemory2DT
         CollectionAssert.AreEqual(expected, copy);
     }
 
-    [TestCategory("ReadOnlyMemory2DT")]
     [TestMethod]
     public void Test_ReadOnlyMemory2DT_Equals()
     {
@@ -441,7 +424,6 @@ public class Test_ReadOnlyMemory2DT
         Assert.IsFalse(readOnlyMemory2D.Equals((object)memory2d.Slice(0, 1, 2, 2)));
     }
 
-    [TestCategory("ReadOnlyMemory2DT")]
     [TestMethod]
     public void Test_ReadOnlyMemory2DT_GetHashCode()
     {
@@ -465,7 +447,6 @@ public class Test_ReadOnlyMemory2DT
         Assert.AreNotEqual(a, c);
     }
 
-    [TestCategory("ReadOnlyMemory2DT")]
     [TestMethod]
     public void Test_ReadOnlyMemory2DT_ToString()
     {

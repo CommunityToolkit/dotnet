@@ -11,7 +11,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Helpers;
 
 public partial class Test_ParallelHelper
 {
-    [TestCategory("ParallelHelper")]
     [TestMethod]
     public void Test_ParallelHelper_ParameterName_ThrowArgumentOutOfRangeExceptionForInvalidMinimumActionsPerThread()
     {
@@ -42,7 +41,6 @@ public partial class Test_ParallelHelper
         Assert.Fail("Failed to raise correct exception");
     }
 
-    [TestCategory("ParallelHelper")]
     [TestMethod]
     public void Test_ParallelHelper_ParameterName_ThrowArgumentOutOfRangeExceptionForStartGreaterThanEnd()
     {
@@ -73,7 +71,6 @@ public partial class Test_ParallelHelper
         Assert.Fail("Failed to raise correct exception");
     }
 
-    [TestCategory("ParallelHelper")]
     [TestMethod]
     public void Test_ParallelHelper_ParameterName_ThrowArgumentOutOfRangeExceptionForTopGreaterThanBottom()
     {
@@ -104,7 +101,6 @@ public partial class Test_ParallelHelper
         Assert.Fail("Failed to raise correct exception");
     }
 
-    [TestCategory("ParallelHelper")]
     [TestMethod]
     public void Test_ParallelHelper_ParameterName_ThrowArgumentOutOfRangeExceptionForLeftGreaterThanRight()
     {

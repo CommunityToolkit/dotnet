@@ -11,7 +11,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Extensions;
 [TestClass]
 public class Test_IMemoryOwnerExtensions
 {
-    [TestCategory("IMemoryOwnerExtensions")]
     [TestMethod]
     public void Test_IMemoryOwnerExtensions_EmptyIMemoryOwnerStream()
     {
@@ -25,7 +24,6 @@ public class Test_IMemoryOwnerExtensions
         Assert.IsTrue(stream.CanWrite);
     }
 
-    [TestCategory("IMemoryOwnerExtensions")]
     [TestMethod]
     public void Test_MemoryExtensions_IMemoryOwnerStream()
     {
@@ -38,7 +36,6 @@ public class Test_IMemoryOwnerExtensions
         Assert.IsTrue(stream.CanWrite);
     }
 
-    [TestCategory("IMemoryOwnerExtensions")]
     [TestMethod]
     public void Test_MemoryExtensions_IMemoryOwnerStream_DoesNotAlterExistingData()
     {

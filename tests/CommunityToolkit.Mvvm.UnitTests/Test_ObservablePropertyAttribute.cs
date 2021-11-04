@@ -16,7 +16,6 @@ namespace CommunityToolkit.Mvvm.UnitTests;
 [TestClass]
 public partial class Test_ObservablePropertyAttribute
 {
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_ObservablePropertyAttribute_Events()
     {
@@ -56,7 +55,6 @@ public partial class Test_ObservablePropertyAttribute
     }
 
     // See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4225
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_ObservablePropertyAttributeWithinRegion_Events()
     {
@@ -96,7 +94,6 @@ public partial class Test_ObservablePropertyAttribute
     }
 
     // See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4225
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_ObservablePropertyAttributeRightBelowRegion_Events()
     {
@@ -135,7 +132,6 @@ public partial class Test_ObservablePropertyAttribute
         Assert.AreEqual(changed.Item2, "Bob");
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_AlsoNotifyChangeForAttribute_Events()
     {
@@ -151,7 +147,6 @@ public partial class Test_ObservablePropertyAttribute
         CollectionAssert.AreEqual(new[] { nameof(model.Name), nameof(model.FullName), nameof(model.Alias), nameof(model.Surname), nameof(model.FullName), nameof(model.Alias) }, propertyNames);
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_ValidationAttributes()
     {
@@ -197,7 +192,6 @@ public partial class Test_ObservablePropertyAttribute
     }
 
     // See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4216
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_ObservablePropertyWithValueNamedField()
     {
@@ -215,7 +209,6 @@ public partial class Test_ObservablePropertyAttribute
     }
 
     // See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4216
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_ObservablePropertyWithValueNamedField_WithValidationAttributes()
     {
@@ -233,7 +226,6 @@ public partial class Test_ObservablePropertyAttribute
     }
 
     // See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4184
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_GeneratedPropertiesWithValidationAttributesOverFields()
     {

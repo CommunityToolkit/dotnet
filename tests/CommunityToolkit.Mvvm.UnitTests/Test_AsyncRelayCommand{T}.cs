@@ -12,7 +12,6 @@ namespace CommunityToolkit.Mvvm.UnitTests;
 [TestClass]
 public class Test_AsyncRelayCommandOfT
 {
-    [TestCategory("Mvvm")]
     [TestMethod]
     public async Task Test_AsyncRelayCommandOfT_AlwaysEnabled()
     {
@@ -61,7 +60,6 @@ public class Test_AsyncRelayCommandOfT
         _ = Assert.ThrowsException<InvalidCastException>(() => command.Execute(new object()));
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_AsyncRelayCommandOfT_WithCanExecuteFunctionTrue()
     {
@@ -86,7 +84,6 @@ public class Test_AsyncRelayCommandOfT
         Assert.AreEqual(ticks, 2);
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_AsyncRelayCommandOfT_WithCanExecuteFunctionFalse()
     {
@@ -111,7 +108,6 @@ public class Test_AsyncRelayCommandOfT
         Assert.AreEqual(ticks, 0);
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_AsyncRelayCommandOfT_NullWithValueType()
     {

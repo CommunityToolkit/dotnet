@@ -11,7 +11,6 @@ namespace CommunityToolkit.Mvvm.UnitTests;
 [TestClass]
 public class Test_RelayCommandOfT
 {
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_RelayCommandOfT_AlwaysEnabled()
     {
@@ -42,7 +41,6 @@ public class Test_RelayCommandOfT
         Assert.AreEqual(text, null);
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_RelayCommand_WithCanExecuteFunction()
     {
@@ -64,7 +62,6 @@ public class Test_RelayCommandOfT
         Assert.AreEqual(text, "Hello");
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_RelayCommand_NullWithValueType()
     {

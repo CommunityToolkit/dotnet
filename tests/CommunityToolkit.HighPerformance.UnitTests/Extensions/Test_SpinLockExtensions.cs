@@ -11,7 +11,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Extensions;
 [TestClass]
 public class Test_SpinLockExtensions
 {
-    [TestCategory("SpinLockExtensions")]
     [TestMethod]
     public unsafe void Test_ArrayExtensions_Pointer()
     {
@@ -34,7 +33,6 @@ public class Test_SpinLockExtensions
         Assert.AreEqual(sum, 1000 * 10);
     }
 
-    [TestCategory("SpinLockExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_Ref()
     {

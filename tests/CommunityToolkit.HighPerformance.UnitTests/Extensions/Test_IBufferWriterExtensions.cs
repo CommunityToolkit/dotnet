@@ -16,7 +16,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Extensions;
 [TestClass]
 public class Test_IBufferWriterExtensions
 {
-    [TestCategory("IBufferWriterExtensions")]
     [TestMethod]
     public void Test_IBufferWriterExtensions_WriteReadOverBytes()
     {
@@ -47,14 +46,12 @@ public class Test_IBufferWriterExtensions
         Assert.AreEqual(guid, reader.Read<Guid>());
     }
 
-    [TestCategory("IBufferWriterExtensions")]
     [TestMethod]
     public void Test_IBufferWriterExtensions_WriteReadItem_Guid()
     {
         Test_IBufferWriterExtensions_WriteReadItem(Guid.NewGuid(), Guid.NewGuid());
     }
 
-    [TestCategory("IBufferWriterExtensions")]
     [TestMethod]
     public void Test_IBufferWriterExtensions_WriteReadItem_String()
     {
@@ -77,7 +74,6 @@ public class Test_IBufferWriterExtensions
         Assert.AreEqual(b, span[1]);
     }
 
-    [TestCategory("IBufferWriterExtensions")]
     [TestMethod]
     public void Test_IBufferWriterExtensions_WriteReadOverBytes_ReadOnlySpan()
     {
@@ -101,7 +97,6 @@ public class Test_IBufferWriterExtensions
         Assert.IsTrue(span.SequenceEqual(buffer.AsSpan().AsBytes()));
     }
 
-    [TestCategory("IBufferWriterExtensions")]
     [TestMethod]
     public void Test_IBufferWriterExtensions_WriteReadOverItems_ReadOnlySpan()
     {

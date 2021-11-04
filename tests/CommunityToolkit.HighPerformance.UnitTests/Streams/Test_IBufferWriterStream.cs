@@ -14,7 +14,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Streams;
 [TestClass]
 public class Test_IBufferWriterStream
 {
-    [TestCategory("IBufferWriterStream")]
     [TestMethod]
     public void Test_IBufferWriterStream_Lifecycle()
     {
@@ -41,7 +40,6 @@ public class Test_IBufferWriterStream
         _ = Assert.ThrowsException<NotSupportedException>(() => stream.Position);
     }
 
-    [TestCategory("IBufferWriterStream")]
     [TestMethod]
     public void Test_IBufferWriterStream_Write_Array()
     {
@@ -69,7 +67,6 @@ public class Test_IBufferWriterStream
         _ = Assert.ThrowsException<ObjectDisposedException>(() => stream.Write(data, 0, data.Length));
     }
 
-    [TestCategory("IBufferWriterStream")]
     [TestMethod]
     public async Task Test_IBufferWriterStream_WriteAsync_Array()
     {
@@ -95,7 +92,6 @@ public class Test_IBufferWriterStream
         _ = await Assert.ThrowsExceptionAsync<ObjectDisposedException>(() => stream.WriteAsync(data, 0, data.Length));
     }
 
-    [TestCategory("IBufferWriterStream")]
     [TestMethod]
     public void Test_IBufferWriterStream_WriteByte()
     {
@@ -121,7 +117,6 @@ public class Test_IBufferWriterStream
         _ = Assert.ThrowsException<NotSupportedException>(() => stream.ReadByte());
     }
 
-    [TestCategory("IBufferWriterStream")]
     [TestMethod]
     public void Test_IBufferWriterStream_Write_Span()
     {
@@ -138,7 +133,6 @@ public class Test_IBufferWriterStream
         Assert.IsTrue(data.Span.SequenceEqual(writer.WrittenSpan));
     }
 
-    [TestCategory("IBufferWriterStream")]
     [TestMethod]
     public async Task Test_IBufferWriterStream_WriteAsync_Memory()
     {

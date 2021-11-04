@@ -12,7 +12,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Streams;
 [TestClass]
 public class Test_IMemoryOwnerStream
 {
-    [TestCategory("IMemoryOwnerStream")]
     [TestMethod]
     public void Test_IMemoryOwnerStream_Lifecycle()
     {

@@ -17,7 +17,6 @@ namespace CommunityToolkit.Mvvm.UnitTests;
 [TestClass]
 public class Test_ObservableValidator
 {
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_ObservableValidator_HasErrors()
     {
@@ -46,7 +45,6 @@ public class Test_ObservableValidator
         Assert.AreEqual(args[3].PropertyName, nameof(INotifyDataErrorInfo.HasErrors));
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_ObservableValidator_ErrorsChanged()
     {
@@ -85,7 +83,6 @@ public class Test_ObservableValidator
         Assert.AreEqual(errors.Count, 0);
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_ObservableValidator_GetErrors()
     {
@@ -132,7 +129,6 @@ public class Test_ObservableValidator
         Assert.IsFalse(errors.Any(e => e.MemberNames.First().Equals(nameof(Person.Age))));
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow("", false)]
     [DataRow("No", false)]
@@ -156,7 +152,6 @@ public class Test_ObservableValidator
         }
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_ObservableValidator_TrySetProperty()
     {
@@ -210,7 +205,6 @@ public class Test_ObservableValidator
         Assert.AreEqual(model.Name, "This is fine");
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_ObservableValidator_ValidateProperty()
     {
@@ -264,7 +258,6 @@ public class Test_ObservableValidator
         Assert.IsFalse(model.HasErrors);
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_ObservableValidator_ClearErrors()
     {
@@ -300,7 +293,6 @@ public class Test_ObservableValidator
         Assert.IsTrue(events[1].PropertyName == nameof(Person.Name));
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_ObservableValidator_ValidateAllProperties()
     {
@@ -342,7 +334,6 @@ public class Test_ObservableValidator
         Assert.IsTrue(events.Any(e => e.PropertyName == nameof(Person.Age)));
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_ObservableValidator_ValidateAllProperties_WithFallback()
     {
@@ -389,7 +380,6 @@ public class Test_ObservableValidator
         Assert.IsTrue(events.Any(e => e.PropertyName == nameof(Person.Age)));
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_ObservableValidator_CustomValidation()
     {
@@ -405,7 +395,6 @@ public class Test_ObservableValidator
         Assert.AreEqual(events.Count, 0);
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_ObservableValidator_CustomValidationWithInjectedService()
     {
@@ -441,7 +430,6 @@ public class Test_ObservableValidator
         Assert.AreEqual(model.GetErrors(nameof(ValidationWithServiceModel.Name)).ToArray().Length, 2);
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_ObservableValidator_ValidationWithFormattedDisplayName()
     {
@@ -464,7 +452,6 @@ public class Test_ObservableValidator
     }
 
     // See: https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4272
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(ObservableValidatorBase))]
     [DataRow(typeof(ObservableValidatorDerived))]
@@ -476,7 +463,6 @@ public class Test_ObservableValidator
     }
 
     // See: https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4272
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(ObservableValidatorBase))]
     [DataRow(typeof(ObservableValidatorDerived))]

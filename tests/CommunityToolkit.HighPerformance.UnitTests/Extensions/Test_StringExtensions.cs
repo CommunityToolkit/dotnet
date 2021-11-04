@@ -12,7 +12,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Extensions;
 [TestClass]
 public class Test_StringExtensions
 {
-    [TestCategory("StringExtensions")]
     [TestMethod]
     public void Test_StringExtensions_DangerousGetReference()
     {
@@ -24,7 +23,6 @@ public class Test_StringExtensions
         Assert.IsTrue(Unsafe.AreSame(ref r0, ref r1));
     }
 
-    [TestCategory("StringExtensions")]
     [TestMethod]
     public void Test_StringExtensions_DangerousGetReferenceAt_Zero()
     {
@@ -36,7 +34,6 @@ public class Test_StringExtensions
         Assert.IsTrue(Unsafe.AreSame(ref r0, ref r1));
     }
 
-    [TestCategory("StringExtensions")]
     [TestMethod]
     public void Test_StringExtensions_DangerousGetReferenceAt_Index()
     {

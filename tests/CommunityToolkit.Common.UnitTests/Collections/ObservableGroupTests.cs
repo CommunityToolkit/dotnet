@@ -12,7 +12,6 @@ namespace CommunityToolkit.Common.UnitTests.Collections;
 [TestClass]
 public class ObservableGroupTests
 {
-    [TestCategory("Collections")]
     [TestMethod]
     public void Ctor_ShouldHaveExpectedState()
     {
@@ -22,7 +21,6 @@ public class ObservableGroupTests
         Assert.AreEqual(group.Count, 0);
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     public void Ctor_WithGrouping_ShouldHaveExpectedState()
     {
@@ -33,7 +31,6 @@ public class ObservableGroupTests
         CollectionAssert.AreEqual(group, new[] { 1, 2, 3 });
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     public void Ctor_WithCollection_ShouldHaveExpectedState()
     {
@@ -44,7 +41,6 @@ public class ObservableGroupTests
         CollectionAssert.AreEqual(group, new[] { 1, 2, 3 });
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     public void Add_ShouldRaiseEvent()
     {
@@ -60,7 +56,6 @@ public class ObservableGroupTests
         Assert.IsTrue(collectionChangedEventRaised);
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     public void Update_ShouldRaiseEvent()
     {
@@ -76,7 +71,6 @@ public class ObservableGroupTests
         Assert.IsTrue(collectionChangedEventRaised);
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     public void Remove_ShouldRaiseEvent()
     {
@@ -92,7 +86,6 @@ public class ObservableGroupTests
         Assert.IsTrue(collectionChangedEventRaised);
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     public void Clear_ShouldRaiseEvent()
     {
@@ -108,7 +101,6 @@ public class ObservableGroupTests
         Assert.IsTrue(collectionChangedEventRaised);
     }
 
-    [TestCategory("Collections")]
     [DataTestMethod]
     [DataRow(0)]
     [DataRow(3)]

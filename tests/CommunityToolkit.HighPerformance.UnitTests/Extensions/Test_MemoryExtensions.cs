@@ -15,7 +15,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Extensions;
 [TestClass]
 public class Test_MemoryExtensions
 {
-    [TestCategory("MemoryExtensions")]
     [TestMethod]
     public void Test_MemoryExtensions_Cast_Empty()
     {
@@ -49,7 +48,6 @@ public class Test_MemoryExtensions
         Assert.IsTrue(mc5.IsEmpty);
     }
 
-    [TestCategory("MemoryExtensions")]
     [TestMethod]
     public void Test_MemoryExtensions_Cast_TooShort()
     {
@@ -72,7 +70,6 @@ public class Test_MemoryExtensions
         Assert.AreEqual(mc3.Length, 2);
     }
 
-    [TestCategory("MemoryExtensions")]
     [TestMethod]
     public void Test_MemoryExtensions_FromArray_CastFromByte()
     {
@@ -94,7 +91,6 @@ public class Test_MemoryExtensions
             ref Unsafe.As<float, byte>(ref spanOfFloats[0])));
     }
 
-    [TestCategory("MemoryExtensions")]
     [TestMethod]
     public void Test_MemoryExtensions_FromArray_CastToByte()
     {
@@ -116,7 +112,6 @@ public class Test_MemoryExtensions
             ref Unsafe.As<byte, float>(ref spanOfBytes[0])));
     }
 
-    [TestCategory("MemoryExtensions")]
     [TestMethod]
     public void Test_MemoryExtensions_FromArray_CastToShort()
     {
@@ -135,7 +130,6 @@ public class Test_MemoryExtensions
             ref Unsafe.As<short, float>(ref spanOfShorts[0])));
     }
 
-    [TestCategory("MemoryExtensions")]
     [TestMethod]
     public void Test_MemoryExtensions_FromArray_CastFromByteAndBack()
     {
@@ -167,7 +161,6 @@ public class Test_MemoryExtensions
         Assert.IsTrue(span1 == span2);
     }
 
-    [TestCategory("MemoryExtensions")]
     [TestMethod]
     public void Test_MemoryExtensions_Cast_TooShort_WithSlice()
     {
@@ -189,7 +182,6 @@ public class Test_MemoryExtensions
         Assert.AreEqual(mc3.Length, 2);
     }
 
-    [TestCategory("MemoryExtensions")]
     [TestMethod]
     public void Test_MemoryExtensions_FromArray_CastFromByte_WithSlice()
     {
@@ -209,7 +201,6 @@ public class Test_MemoryExtensions
             ref Unsafe.As<float, byte>(ref spanOfFloats[0])));
     }
 
-    [TestCategory("MemoryExtensions")]
     [TestMethod]
     public void Test_MemoryExtensions_FromArray_CastToByte_WithSlice()
     {
@@ -228,7 +219,6 @@ public class Test_MemoryExtensions
             ref Unsafe.As<byte, float>(ref spanOfBytes[0])));
     }
 
-    [TestCategory("MemoryExtensions")]
     [TestMethod]
     public void Test_MemoryExtensions_FromArray_CastToShort_WithSlice()
     {
@@ -248,7 +238,6 @@ public class Test_MemoryExtensions
             ref Unsafe.As<short, float>(ref spanOfShorts[0])));
     }
 
-    [TestCategory("MemoryExtensions")]
     [TestMethod]
     public void Test_MemoryExtensions_FromArray_CastFromByteAndBack_WithSlice()
     {
@@ -274,7 +263,6 @@ public class Test_MemoryExtensions
         Assert.IsTrue(span1 == span2);
     }
 
-    [TestCategory("MemoryExtensions")]
     [TestMethod]
     public void Test_MemoryExtensions_FromMemoryManager_CastFromByte()
     {
@@ -296,7 +284,6 @@ public class Test_MemoryExtensions
             ref Unsafe.As<float, byte>(ref spanOfFloats[0])));
     }
 
-    [TestCategory("MemoryExtensions")]
     [TestMethod]
     public void Test_MemoryExtensions_FromMemoryManager_CastToByte()
     {
@@ -315,7 +302,6 @@ public class Test_MemoryExtensions
             ref Unsafe.As<byte, float>(ref spanOfBytes[0])));
     }
 
-    [TestCategory("MemoryExtensions")]
     [TestMethod]
     public void Test_MemoryExtensions_FromMemoryManager_CastToShort()
     {
@@ -334,7 +320,6 @@ public class Test_MemoryExtensions
             ref Unsafe.As<short, float>(ref spanOfShorts[0])));
     }
 
-    [TestCategory("MemoryExtensions")]
     [TestMethod]
     public void Test_MemoryExtensions_FromMemoryManager_CastFromByteAndBack()
     {
@@ -361,7 +346,6 @@ public class Test_MemoryExtensions
         Assert.IsTrue(span1 == span2);
     }
 
-    [TestCategory("MemoryExtensions")]
     [TestMethod]
     public void Test_MemoryExtensions_FromMemoryManager_CastFromByte_WithSlice()
     {
@@ -380,7 +364,6 @@ public class Test_MemoryExtensions
             ref Unsafe.As<float, byte>(ref spanOfFloats[0])));
     }
 
-    [TestCategory("MemoryExtensions")]
     [TestMethod]
     public void Test_MemoryExtensions_FromMemoryManager_CastToByte_WithSlice()
     {
@@ -399,7 +382,6 @@ public class Test_MemoryExtensions
             ref Unsafe.As<byte, float>(ref spanOfBytes[0])));
     }
 
-    [TestCategory("MemoryExtensions")]
     [TestMethod]
     public void Test_MemoryExtensions_FromMemoryManager_CastToShort_WithSlice()
     {
@@ -418,7 +400,6 @@ public class Test_MemoryExtensions
             ref Unsafe.As<short, float>(ref spanOfShorts[0])));
     }
 
-    [TestCategory("MemoryExtensions")]
     [TestMethod]
     public void Test_MemoryExtensions_FromMemoryManager_CastFromByteAndBack_WithSlice()
     {
@@ -444,7 +425,6 @@ public class Test_MemoryExtensions
         Assert.IsTrue(span1 == span2);
     }
 
-    [TestCategory("MemoryExtensions")]
     [TestMethod]
     [DataRow(64, 0, 0)]
     [DataRow(64, 4, 0)]
@@ -475,7 +455,6 @@ public class Test_MemoryExtensions
         Assert.IsTrue(p1 == p2);
     }
 
-    [TestCategory("MemoryExtensions")]
     [TestMethod]
     [DataRow(64, 0, 0)]
     [DataRow(64, 4, 0)]
@@ -501,7 +480,6 @@ public class Test_MemoryExtensions
         Assert.IsTrue(p1 == p2);
     }
 
-    [TestCategory("MemoryExtensions")]
     [TestMethod]
     public void Test_MemoryExtensions_FromString_CastFromByteAndBack()
     {
@@ -528,7 +506,6 @@ public class Test_MemoryExtensions
         Assert.IsTrue(span1 == span2);
     }
 
-    [TestCategory("MemoryExtensions")]
     [TestMethod]
     [DataRow(64, 0, 0)]
     [DataRow(64, 4, 0)]
@@ -567,7 +544,6 @@ public class Test_MemoryExtensions
         }
     }
 
-    [TestCategory("MemoryExtensions")]
     [TestMethod]
     public void Test_MemoryExtensions_EmptyMemoryStream()
     {
@@ -581,7 +557,6 @@ public class Test_MemoryExtensions
         Assert.IsTrue(stream.CanWrite);
     }
 
-    [TestCategory("MemoryExtensions")]
     [TestMethod]
     public void Test_MemoryExtensions_MemoryStream()
     {

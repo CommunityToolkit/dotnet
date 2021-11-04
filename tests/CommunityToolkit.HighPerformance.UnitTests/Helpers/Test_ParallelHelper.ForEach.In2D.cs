@@ -11,7 +11,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Helpers;
 
 public partial class Test_ParallelHelper
 {
-    [TestCategory("ParallelHelper")]
     [TestMethod]
     [DataRow(1, 1, 0, 0, 1, 1)]
     [DataRow(1, 2, 0, 0, 1, 2)]

@@ -10,7 +10,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Extensions;
 [TestClass]
 public class Test_BoolExtensions
 {
-    [TestCategory("BoolExtensions")]
     [TestMethod]
     public void Test_BoolExtensions_True()
     {
@@ -20,7 +19,6 @@ public class Test_BoolExtensions
         Assert.AreEqual(1, (DateTime.Now.Year > 0).ToByte(), nameof(Test_BoolExtensions_True));
     }
 
-    [TestCategory("BoolExtensions")]
     [TestMethod]
     public void Test_BoolExtensions_False()
     {
@@ -28,7 +26,6 @@ public class Test_BoolExtensions
         Assert.AreEqual(0, (DateTime.Now.Year > 3000).ToByte(), nameof(Test_BoolExtensions_False));
     }
 
-    [TestCategory("BoolExtensions")]
     [TestMethod]
     [DataRow(true, -1)]
     [DataRow(false, 0)]
@@ -37,7 +34,6 @@ public class Test_BoolExtensions
         Assert.AreEqual(value.ToBitwiseMask32(), result);
     }
 
-    [TestCategory("BoolExtensions")]
     [TestMethod]
     [DataRow(true, -1)]
     [DataRow(false, 0)]

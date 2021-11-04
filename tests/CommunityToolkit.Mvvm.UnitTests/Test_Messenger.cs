@@ -15,7 +15,6 @@ namespace CommunityToolkit.Mvvm.UnitTests;
 [TestClass]
 public partial class Test_Messenger
 {
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -27,7 +26,6 @@ public partial class Test_Messenger
         messenger.Unregister<MessageA>(recipient);
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -39,7 +37,6 @@ public partial class Test_Messenger
         messenger.Unregister<MessageA, string>(recipient, nameof(MessageA));
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -51,7 +48,6 @@ public partial class Test_Messenger
         messenger.UnregisterAll(recipient, nameof(MessageA));
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -63,7 +59,6 @@ public partial class Test_Messenger
         messenger.UnregisterAll(recipient);
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -79,7 +74,6 @@ public partial class Test_Messenger
         Assert.IsFalse(messenger.IsRegistered<MessageA>(recipient));
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -95,7 +89,6 @@ public partial class Test_Messenger
         Assert.IsFalse(messenger.IsRegistered<MessageA, string>(recipient, nameof(MessageA)));
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -111,7 +104,6 @@ public partial class Test_Messenger
         Assert.IsFalse(messenger.IsRegistered<MessageA, string>(recipient, nameof(MessageA)));
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -127,7 +119,6 @@ public partial class Test_Messenger
         Assert.IsFalse(messenger.IsRegistered<MessageA, string>(recipient, nameof(MessageA)));
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -167,7 +158,6 @@ public partial class Test_Messenger
         Assert.IsNull(result);
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -197,7 +187,6 @@ public partial class Test_Messenger
         Assert.IsNull(result);
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -227,7 +216,6 @@ public partial class Test_Messenger
         Assert.IsNull(result);
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -244,7 +232,6 @@ public partial class Test_Messenger
         });
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -261,7 +248,6 @@ public partial class Test_Messenger
         });
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -276,7 +262,6 @@ public partial class Test_Messenger
         // recipient has no declared handlers so there's nothing to do
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -309,7 +294,6 @@ public partial class Test_Messenger
         Assert.IsFalse(messenger.IsRegistered<MessageB>(recipient));
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -346,7 +330,6 @@ public partial class Test_Messenger
         Assert.IsFalse(messenger.IsRegistered<MessageB>(recipient));
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -364,7 +347,6 @@ public partial class Test_Messenger
         Assert.AreEqual(number, 42);
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger), false)]
     [DataRow(typeof(WeakReferenceMessenger), true)]
@@ -396,7 +378,6 @@ public partial class Test_Messenger
         GC.KeepAlive(messenger);
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -416,7 +397,6 @@ public partial class Test_Messenger
         Assert.IsFalse(messenger.IsRegistered<MessageB>(recipient));
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -432,7 +412,6 @@ public partial class Test_Messenger
         Assert.AreSame(default1, default2);
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -469,7 +448,6 @@ public partial class Test_Messenger
     }
 
 #if NETCOREAPP // Auto-trimming is disabled on .NET Framework
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_Messenger_AutoCleanup()
     {
@@ -518,7 +496,6 @@ public partial class Test_Messenger
     }
 #endif
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -566,7 +543,6 @@ public partial class Test_Messenger
     }
 
     // See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4081
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]

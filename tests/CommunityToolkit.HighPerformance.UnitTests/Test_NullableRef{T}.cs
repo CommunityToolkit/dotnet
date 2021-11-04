@@ -13,7 +13,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests;
 [TestClass]
 public class Test_NullableRefOfT
 {
-    [TestCategory("NullableRefOfT")]
     [TestMethod]
     public void Test_NullableRefOfT_CreateNullableRefOfT_Ok()
     {
@@ -28,7 +27,6 @@ public class Test_NullableRefOfT
         Assert.AreEqual(value, 2);
     }
 
-    [TestCategory("NullableRefOfT")]
     [TestMethod]
     public void Test_NullableRefOfT_CreateNullableRefOfT_Null()
     {
@@ -39,7 +37,6 @@ public class Test_NullableRefOfT
         Assert.IsFalse(NullableRef<string>.Null.HasValue);
     }
 
-    [TestCategory("NullableRefOfT")]
     [TestMethod]
     [ExpectedException(typeof(InvalidOperationException))]
     public void Test_NullableRefOfT_CreateNullableRefOfT_Null_Exception()
@@ -49,7 +46,6 @@ public class Test_NullableRefOfT
         _ = reference.Value;
     }
 
-    [TestCategory("NullableRefOfT")]
     [TestMethod]
     public void Test_NullableRefOfT_CreateNullableRefOfT_ImplicitRefCast()
     {
@@ -61,7 +57,6 @@ public class Test_NullableRefOfT
         Assert.IsTrue(Unsafe.AreSame(ref reference.Value, ref nullableRef.Value));
     }
 
-    [TestCategory("NullableRefOfT")]
     [TestMethod]
     public void Test_NullableRefOfT_CreateNullableRefOfT_ExplicitCastOfT()
     {
@@ -71,7 +66,6 @@ public class Test_NullableRefOfT
         Assert.AreEqual(value, (int)reference);
     }
 
-    [TestCategory("NullableRefOfT")]
     [TestMethod]
     [ExpectedException(typeof(InvalidOperationException))]
     public void Test_NullableRefOfT_CreateNullableRefOfT_ExplicitCastOfT_Exception()

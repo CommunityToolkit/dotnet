@@ -18,7 +18,6 @@ public partial class Test_ReadOnlySpanExtensions
     /// </summary>
     private static ReadOnlySpan<int> TestCounts => new[] { 0, 1, 7, 128, 255, 256, short.MaxValue, short.MaxValue + 1, 123_938, 1_678_922, 71_890_819 };
 
-    [TestCategory("ReadOnlySpanExtensions")]
     [TestMethod]
     public void Test_ReadOnlySpanExtensions_RandomCount8()
     {
@@ -27,7 +26,6 @@ public partial class Test_ReadOnlySpanExtensions
         TestForType(true, CreateRandomData);
     }
 
-    [TestCategory("ReadOnlySpanExtensions")]
     [TestMethod]
     public void Test_ReadOnlySpanExtensions_RandomCount16()
     {
@@ -36,7 +34,6 @@ public partial class Test_ReadOnlySpanExtensions
         TestForType((char)4712, CreateRandomData);
     }
 
-    [TestCategory("ReadOnlySpanExtensions")]
     [TestMethod]
     public void Test_ReadOnlySpanExtensions_RandomCount32()
     {
@@ -45,7 +42,6 @@ public partial class Test_ReadOnlySpanExtensions
         TestForType((float)Math.PI, CreateRandomData);
     }
 
-    [TestCategory("ReadOnlySpanExtensions")]
     [TestMethod]
     public void Test_ReadOnlySpanExtensions_RandomCount64()
     {
@@ -54,7 +50,6 @@ public partial class Test_ReadOnlySpanExtensions
         TestForType(Math.PI, CreateRandomData);
     }
 
-    [TestCategory("ReadOnlySpanExtensions")]
     [TestMethod]
     public void Test_ReadOnlySpanExtensions_RandomCountManaged()
     {
@@ -124,7 +119,6 @@ public partial class Test_ReadOnlySpanExtensions
         }
     }
 
-    [TestCategory("ReadOnlySpanExtensions")]
     [TestMethod]
     public void Test_ReadOnlySpanExtensions_FilledCount8()
     {
@@ -133,7 +127,6 @@ public partial class Test_ReadOnlySpanExtensions
         TestForType(true, (count, _) => CreateFilledData(count, true));
     }
 
-    [TestCategory("ReadOnlySpanExtensions")]
     [TestMethod]
     public void Test_ReadOnlySpanExtensions_FilledCount16()
     {
@@ -142,7 +135,6 @@ public partial class Test_ReadOnlySpanExtensions
         TestForType((char)4712, (count, _) => CreateFilledData(count, (char)4712));
     }
 
-    [TestCategory("ReadOnlySpanExtensions")]
     [TestMethod]
     public void Test_ReadOnlySpanExtensions_FilledCount32()
     {
@@ -150,7 +142,6 @@ public partial class Test_ReadOnlySpanExtensions
         TestForType((uint)37438941, (count, _) => CreateFilledData(count, (uint)37438941));
     }
 
-    [TestCategory("ReadOnlySpanExtensions")]
     [TestMethod]
     public void Test_ReadOnlySpanExtensions_FilledCount64()
     {

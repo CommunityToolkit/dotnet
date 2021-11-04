@@ -10,7 +10,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Helpers;
 [TestClass]
 public class Test_BitHelper
 {
-    [TestCategory("BitHelper")]
     [TestMethod]
     public void Test_BitHelper_HasFlag_UInt32()
     {
@@ -25,7 +24,6 @@ public class Test_BitHelper
         Assert.IsTrue(BitHelper.HasFlag(value, 31));
     }
 
-    [TestCategory("BitHelper")]
     [TestMethod]
     [DataRow(0, true)]
     [DataRow(1, false)]
@@ -48,7 +46,6 @@ public class Test_BitHelper
         Assert.AreEqual(flag, BitHelper.HasLookupFlag(value, index));
     }
 
-    [TestCategory("BitHelper")]
     [TestMethod]
     [DataRow('+', true)]
     [DataRow('-', true)]
@@ -77,7 +74,6 @@ public class Test_BitHelper
         Assert.AreEqual(flag, BitHelper.HasLookupFlag(mask, x, 40));
     }
 
-    [TestCategory("BitHelper")]
     [TestMethod]
     [DataRow(0x0000_0000u, true)]
     [DataRow(0x0000_0001u, true)]
@@ -97,7 +93,6 @@ public class Test_BitHelper
         Assert.AreEqual(result, BitHelper.HasZeroByte(x));
     }
 
-    [TestCategory("BitHelper")]
     [TestMethod]
     [DataRow(0x0000_0000_0000_0000ul, true)]
     [DataRow(0x0000_0000_0000_0001ul, true)]
@@ -114,7 +109,6 @@ public class Test_BitHelper
         Assert.AreEqual(result, BitHelper.HasZeroByte(x));
     }
 
-    [TestCategory("BitHelper")]
     [TestMethod]
     [DataRow(0x0000_0000u, 0x7B, false)]
     [DataRow(0x0000_0001u, 0x7B, false)]
@@ -136,7 +130,6 @@ public class Test_BitHelper
         Assert.AreEqual(result, BitHelper.HasByteEqualTo(x, unchecked((byte)target)));
     }
 
-    [TestCategory("BitHelper")]
     [TestMethod]
     [DataRow(0x0000_0000_0000_0000u, 0x7B, false)]
     [DataRow(0x0000_0000_0000_0001u, 0x7B, false)]
@@ -158,7 +151,6 @@ public class Test_BitHelper
         Assert.AreEqual(result, BitHelper.HasByteEqualTo(x, unchecked((byte)target)));
     }
 
-    [TestCategory("BitHelper")]
     [TestMethod]
     public void Test_BitHelper_SetFlag_UInt32()
     {
@@ -168,7 +160,6 @@ public class Test_BitHelper
         Assert.AreEqual(unchecked((uint)int.MinValue), BitHelper.SetFlag(0u, 31, true));
     }
 
-    [TestCategory("BitHelper")]
     [TestMethod]
     [DataRow(0u, (byte)0, (byte)0, 0u)]
     [DataRow(uint.MaxValue, (byte)0, (byte)8, 255u)]
@@ -182,7 +173,6 @@ public class Test_BitHelper
         Assert.AreEqual(result, BitHelper.ExtractRange(value, start, length));
     }
 
-    [TestCategory("BitHelper")]
     [TestMethod]
     [DataRow((byte)0, (byte)0, 0u)]
     [DataRow((byte)0, (byte)8, 255u)]
@@ -207,7 +197,6 @@ public class Test_BitHelper
         Assert.AreEqual(restored, value);
     }
 
-    [TestCategory("BitHelper")]
     [TestMethod]
     public void Test_UInt64Extensions_HasFlag()
     {
@@ -225,7 +214,6 @@ public class Test_BitHelper
         Assert.IsTrue(BitHelper.HasFlag(value, 63));
     }
 
-    [TestCategory("BitHelper")]
     [TestMethod]
     [DataRow('+', true)]
     [DataRow('-', true)]
@@ -256,7 +244,6 @@ public class Test_BitHelper
         Assert.AreEqual(flag, BitHelper.HasLookupFlag(mask, x, 40));
     }
 
-    [TestCategory("BitHelper")]
     [TestMethod]
     public void Test_UInt64Extensions_SetFlag()
     {
@@ -267,7 +254,6 @@ public class Test_BitHelper
         Assert.AreEqual(1ul << 63, BitHelper.SetFlag(0ul, 63, true));
     }
 
-    [TestCategory("BitHelper")]
     [TestMethod]
     [DataRow(0u, (byte)0, (byte)0, 0u)]
     [DataRow(uint.MaxValue, (byte)0, (byte)8, 255u)]
@@ -288,7 +274,6 @@ public class Test_BitHelper
         Assert.AreEqual(result, BitHelper.ExtractRange(value, start, length));
     }
 
-    [TestCategory("BitHelper")]
     [TestMethod]
     [DataRow((byte)0, (byte)0, 0u)]
     [DataRow((byte)0, (byte)8, 255ul)]

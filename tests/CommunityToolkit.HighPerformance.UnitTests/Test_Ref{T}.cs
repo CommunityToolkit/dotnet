@@ -10,7 +10,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests;
 [TestClass]
 public class Test_RefOfT
 {
-    [TestCategory("RefOfT")]
     [TestMethod]
 #if NETFRAMEWORK
     public void Test_RefOfT_CreateRefOfT()

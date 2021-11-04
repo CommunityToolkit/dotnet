@@ -13,7 +13,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Buffers;
 [TestClass]
 public class Test_MemoryOwnerOfT
 {
-    [TestCategory("MemoryOwnerOfT")]
     [TestMethod]
     public void Test_MemoryOwnerOfT_AllocateAndGetMemoryAndSpan()
     {
@@ -29,7 +28,6 @@ public class Test_MemoryOwnerOfT
         Assert.IsTrue(buffer.Span.ToArray().All(i => i == 42));
     }
 
-    [TestCategory("MemoryOwnerOfT")]
     [TestMethod]
     public void Test_MemoryOwnerOfT_AllocateFromCustomPoolAndGetMemoryAndSpan()
     {
@@ -52,7 +50,6 @@ public class Test_MemoryOwnerOfT
         Assert.AreEqual(pool.RentedArrays.Count, 0);
     }
 
-    [TestCategory("MemoryOwnerOfT")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_MemoryOwnerOfT_InvalidRequestedSize()
@@ -62,7 +59,6 @@ public class Test_MemoryOwnerOfT
         Assert.Fail("You shouldn't be here");
     }
 
-    [TestCategory("MemoryOwnerOfT")]
     [TestMethod]
     [ExpectedException(typeof(ObjectDisposedException))]
     public void Test_MemoryOwnerOfT_DisposedMemory()
@@ -74,7 +70,6 @@ public class Test_MemoryOwnerOfT
         _ = buffer.Memory;
     }
 
-    [TestCategory("MemoryOwnerOfT")]
     [TestMethod]
     [ExpectedException(typeof(ObjectDisposedException))]
     public void Test_MemoryOwnerOfT_DisposedSpan()
@@ -86,7 +81,6 @@ public class Test_MemoryOwnerOfT
         _ = buffer.Span;
     }
 
-    [TestCategory("MemoryOwnerOfT")]
     [TestMethod]
     public void Test_MemoryOwnerOfT_MultipleDispose()
     {
@@ -102,7 +96,6 @@ public class Test_MemoryOwnerOfT
         // by accident doesn't cause issues, and just does nothing.
     }
 
-    [TestCategory("MemoryOwnerOfT")]
     [TestMethod]
     public void Test_MemoryOwnerOfT_PooledBuffersAndClear()
     {
@@ -122,7 +115,6 @@ public class Test_MemoryOwnerOfT
         }
     }
 
-    [TestCategory("MemoryOwnerOfT")]
     [TestMethod]
     public void Test_MemoryOwnerOfT_AllocateAndGetArray()
     {

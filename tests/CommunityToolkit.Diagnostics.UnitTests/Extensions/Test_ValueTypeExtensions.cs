@@ -9,7 +9,6 @@ namespace CommunityToolkit.Diagnostics.UnitTests.Extensions;
 [TestClass]
 public class Test_ValueTypeExtensions
 {
-    [TestCategory("ValueTypeExtensions")]
     [TestMethod]
     public void Test_ValueTypeExtensions_ToHexString()
     {

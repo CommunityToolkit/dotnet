@@ -14,7 +14,6 @@ namespace CommunityToolkit.Mvvm.UnitTests;
 [TestClass]
 public class Test_AsyncRelayCommand
 {
-    [TestCategory("Mvvm")]
     [TestMethod]
     public async Task Test_AsyncRelayCommand_AlwaysEnabled()
     {
@@ -64,7 +63,6 @@ public class Test_AsyncRelayCommand
         Assert.AreEqual(ticks, 2);
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_AsyncRelayCommand_WithCanExecuteFunctionTrue()
     {
@@ -92,7 +90,6 @@ public class Test_AsyncRelayCommand
         Assert.AreEqual(ticks, 2);
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_AsyncRelayCommand_WithCanExecuteFunctionFalse()
     {
@@ -120,7 +117,6 @@ public class Test_AsyncRelayCommand
         Assert.AreEqual(ticks, 0);
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public async Task Test_AsyncRelayCommand_WithCancellation()
     {

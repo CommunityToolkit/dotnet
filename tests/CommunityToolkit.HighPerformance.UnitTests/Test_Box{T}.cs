@@ -10,7 +10,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests;
 [TestClass]
 public class Test_BoxOfT
 {
-    [TestCategory("BoxOfT")]
     [TestMethod]
     public void Test_BoxOfT_PrimitiveTypes()
     {
@@ -23,7 +22,6 @@ public class Test_BoxOfT
         Test(184013.234324, 14124.23423);
     }
 
-    [TestCategory("BoxOfT")]
     [TestMethod]
     public void Test_BoxOfT_OtherTypes()
     {
@@ -47,7 +45,6 @@ public class Test_BoxOfT
         }
     }
 
-    [TestCategory("BoxOfT")]
     [TestMethod]
     public void TestBoxOfT_CustomStruct()
     {

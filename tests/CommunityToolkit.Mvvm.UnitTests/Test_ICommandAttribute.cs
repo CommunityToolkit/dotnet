@@ -12,7 +12,6 @@ namespace CommunityToolkit.Mvvm.UnitTests;
 [TestClass]
 public partial class Test_ICommandAttribute
 {
-    [TestCategory("Mvvm")]
     [TestMethod]
     public async Task Test_ICommandAttribute_RelayCommand()
     {

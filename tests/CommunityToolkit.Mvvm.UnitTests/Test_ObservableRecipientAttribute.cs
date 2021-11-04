@@ -16,7 +16,6 @@ namespace CommunityToolkit.Mvvm.UnitTests;
 [TestClass]
 public partial class Test_ObservableRecipientAttribute
 {
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_ObservableRecipientAttribute_Events()
     {
@@ -71,7 +70,6 @@ public partial class Test_ObservableRecipientAttribute
         }
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_ObservableRecipientAttribute_AbstractConstructors()
     {
@@ -86,7 +84,6 @@ public partial class Test_ObservableRecipientAttribute
     {
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_ObservableRecipientAttribute_NonAbstractConstructors()
     {

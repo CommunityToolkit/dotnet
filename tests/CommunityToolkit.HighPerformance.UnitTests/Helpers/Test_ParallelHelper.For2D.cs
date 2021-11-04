@@ -26,7 +26,6 @@ public partial class Test_ParallelHelper
         new Size(4039, 11231)
     };
 
-    [TestCategory("ParallelHelper")]
     [TestMethod]
     public unsafe void Test_ParallelHelper_For2DWithIndices()
     {
@@ -52,7 +51,6 @@ public partial class Test_ParallelHelper
     }
 
 #if NETCOREAPP3_1 || NET5_0
-    [TestCategory("ParallelHelper")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void Test_ParallelHelper_For2DInvalidRange_FromEnd()
@@ -60,7 +58,6 @@ public partial class Test_ParallelHelper
         ParallelHelper.For2D<Assigner2D>(..^1, ..4);
     }
 
-    [TestCategory("ParallelHelper")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void Test_ParallelHelper_For2DInvalidRange_RangeAll()
@@ -68,7 +65,6 @@ public partial class Test_ParallelHelper
         ParallelHelper.For2D<Assigner2D>(..5, ..);
     }
 
-    [TestCategory("ParallelHelper")]
     [TestMethod]
     public unsafe void Test_ParallelHelper_For2DWithRanges()
     {

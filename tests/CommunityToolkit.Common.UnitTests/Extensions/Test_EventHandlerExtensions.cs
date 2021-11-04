@@ -12,7 +12,6 @@ namespace CommunityToolkit.Common.UnitTests.Extensions;
 [TestClass]
 public class Test_EventHandlerExtensions
 {
-    [TestCategory("Deferred")]
     [TestMethod]
     public void Test_EventHandlerExtensions_GettingDeferralCausesAwait()
     {
@@ -38,7 +37,6 @@ public class Test_EventHandlerExtensions
         Assert.IsTrue(handlersTask.IsCompleted);
     }
 
-    [TestCategory("Deferred")]
     [TestMethod]
     public void Test_EventHandlerExtensions_NotGettingDeferralCausesNoAwait()
     {
@@ -58,7 +56,6 @@ public class Test_EventHandlerExtensions
         tsc.SetResult(true);
     }
 
-    [TestCategory("Deferred")]
     [TestMethod]
     public void Test_EventHandlerExtensions_UsingDeferralCausesAwait()
     {
@@ -83,7 +80,6 @@ public class Test_EventHandlerExtensions
         Assert.IsTrue(handlersTask.IsCompleted);
     }
 
-    [TestCategory("Deferred")]
     [DataTestMethod]
     [DataRow(0, 1)]
     [DataRow(1, 0)]

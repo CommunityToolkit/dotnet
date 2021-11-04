@@ -12,7 +12,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Streams;
 
 public partial class Test_MemoryStream
 {
-    [TestCategory("MemoryStream")]
     [TestMethod]
     public void Test_MemoryStream_ParameterName_ThrowArgumentExceptionForPosition()
     {
@@ -32,7 +31,6 @@ public partial class Test_MemoryStream
         Assert.Fail("Failed to raise correct exception");
     }
 
-    [TestCategory("MemoryStream")]
     [TestMethod]
     public void Test_MemoryStream_ParameterName_ThrowArgumentExceptionForSeekOrigin()
     {
@@ -55,7 +53,6 @@ public partial class Test_MemoryStream
         Assert.Fail("Failed to raise correct exception");
     }
 
-    [TestCategory("MemoryStream")]
     [TestMethod]
     public void Test_MemoryStream_ParameterName_ThrowArgumentNullExceptionForNullBuffer()
     {
@@ -86,7 +83,6 @@ public partial class Test_MemoryStream
         Assert.Fail("Failed to raise correct exception");
     }
 
-    [TestCategory("MemoryStream")]
     [TestMethod]
     public void Test_MemoryStream_ParameterName_ThrowArgumentOutOfRangeExceptionForNegativeOffset()
     {
@@ -117,7 +113,6 @@ public partial class Test_MemoryStream
         Assert.Fail("Failed to raise correct exception");
     }
 
-    [TestCategory("MemoryStream")]
     [TestMethod]
     public void Test_MemoryStream_ParameterName_ThrowArgumentOutOfRangeExceptionForNegativeCount()
     {
@@ -148,7 +143,6 @@ public partial class Test_MemoryStream
         Assert.Fail("Failed to raise correct exception");
     }
 
-    [TestCategory("MemoryStream")]
     [TestMethod]
     public void Test_MemoryStream_ParameterName_ThrowArgumentExceptionForExceededBufferSize()
     {

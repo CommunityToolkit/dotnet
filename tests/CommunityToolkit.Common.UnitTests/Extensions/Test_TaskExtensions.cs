@@ -11,14 +11,12 @@ namespace CommunityToolkit.Common.UnitTests.Extensions;
 [TestClass]
 public class Test_TaskExtensions
 {
-    [TestCategory("TaskExtensions")]
     [TestMethod]
     public void Test_TaskExtensions_NonGeneric_CompletedTask()
     {
         _ = Task.CompletedTask.GetResultOrDefault();
     }
 
-    [TestCategory("TaskExtensions")]
     [TestMethod]
     public void Test_TaskExtensions_Generic_ValueType()
     {
@@ -31,7 +29,6 @@ public class Test_TaskExtensions
         Assert.AreEqual(42, tcs.Task.GetResultOrDefault());
     }
 
-    [TestCategory("TaskExtensions")]
     [TestMethod]
     public void Test_TaskExtensions_Generic_ReferenceType()
     {
@@ -44,7 +41,6 @@ public class Test_TaskExtensions
         Assert.AreEqual(nameof(Test_TaskExtensions_Generic_ReferenceType), tcs.Task.GetResultOrDefault());
     }
 
-    [TestCategory("TaskExtensions")]
     [TestMethod]
     public void Test_TaskExtensions_ResultOrDefault()
     {
@@ -69,14 +65,12 @@ public class Test_TaskExtensions
         Assert.AreEqual(42, ((Task)tcs.Task).GetResultOrDefault());
     }
 
-    [TestCategory("TaskExtensions")]
     [TestMethod]
     public void Test_TaskExtensions_ResultOrDefault_FromTaskCompleted()
     {
         Assert.AreEqual(null, Task.CompletedTask.GetResultOrDefault());
     }
 
-    [TestCategory("TaskExtensions")]
     [TestMethod]
     public async Task Test_TaskExtensions_ResultOrDefault_FromAsyncTaskMethodBuilder()
     {
@@ -95,7 +89,6 @@ public class Test_TaskExtensions
         Assert.AreEqual(taskFromBuilder.GetResultOrDefault(), "Test");
     }
 
-    [TestCategory("TaskExtensions")]
     [TestMethod]
     public void Test_TaskExtensions_ResultOrDefault_OfT_Int32()
     {
@@ -120,7 +113,6 @@ public class Test_TaskExtensions
         Assert.AreEqual(42, tcs.Task.GetResultOrDefault());
     }
 
-    [TestCategory("TaskExtensions")]
     [TestMethod]
     public void Test_TaskExtensions_ResultOrDefault_OfT_String()
     {

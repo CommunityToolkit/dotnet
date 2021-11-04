@@ -17,7 +17,6 @@ namespace CommunityToolkit.Common.UnitTests.Collections;
 [TestClass]
 public class ReadOnlyObservableGroupedCollectionTests
 {
-    [TestCategory("Collections")]
     [TestMethod]
     public void Ctor_WithEmptySource_ShoudInitializeObject()
     {
@@ -28,7 +27,6 @@ public class ReadOnlyObservableGroupedCollectionTests
         CollectionAssert.AreEqual(readOnlyGroup, Array.Empty<int>());
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     public void Ctor_WithObservableGroupedCollection_ShoudInitializeObject()
     {
@@ -49,7 +47,6 @@ public class ReadOnlyObservableGroupedCollectionTests
         CollectionAssert.AreEquivalent(readOnlyGroup.ElementAt(1), new[] { 2, 4, 6 });
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     public void Ctor_WithListOfIGroupingSource_ShoudInitializeObject()
     {
@@ -69,7 +66,6 @@ public class ReadOnlyObservableGroupedCollectionTests
         CollectionAssert.AreEquivalent(readOnlyGroup.ElementAt(1), new[] { 2, 4, 6 });
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     public void Ctor_WithListOfReadOnlyObservableGroupSource_ShoudInitializeObject()
     {
@@ -89,7 +85,6 @@ public class ReadOnlyObservableGroupedCollectionTests
         CollectionAssert.AreEqual(readOnlyGroup.ElementAt(1), new[] { 2, 4, 6 });
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     public void IListImplementation_Properties_ShoudReturnExpectedValues()
     {
@@ -120,7 +115,6 @@ public class ReadOnlyObservableGroupedCollectionTests
         Assert.IsFalse(list.IsSynchronized);
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     public void IListImplementation_MutableMethods_ShoudThrow()
     {
@@ -148,7 +142,6 @@ public class ReadOnlyObservableGroupedCollectionTests
         list.CopyTo(array, 0);
     }
 
-    [TestCategory("Collections")]
     [DataTestMethod]
     [DataRow(-1)]
     [DataRow(0)]
@@ -173,7 +166,6 @@ public class ReadOnlyObservableGroupedCollectionTests
         Assert.AreEqual(index, groupIndex);
     }
 
-    [TestCategory("Collections")]
     [DataTestMethod]
     [DataRow(-1, false)]
     [DataRow(0, true)]
@@ -196,7 +188,6 @@ public class ReadOnlyObservableGroupedCollectionTests
         Assert.AreEqual(result, expectedResult);
     }
 
-    [TestCategory("Collections")]
     [DataTestMethod]
     [DataRow(0, 0)]
     [DataRow(3, 3)]
@@ -238,7 +229,6 @@ public class ReadOnlyObservableGroupedCollectionTests
         Assert.IsTrue(isAddEventValid);
     }
 
-    [TestCategory("Collections")]
     [DataTestMethod]
     [DataRow(0)]
     [DataRow(1)]
@@ -278,7 +268,6 @@ public class ReadOnlyObservableGroupedCollectionTests
         Assert.IsTrue(isAddEventValid);
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     public void RemoveGroupInSource_ShoudRemoveGroup()
     {
@@ -317,7 +306,6 @@ public class ReadOnlyObservableGroupedCollectionTests
         Assert.IsTrue(isRemoveEventValid);
     }
 
-    [TestCategory("Collections")]
     [DataTestMethod]
     [DataRow(1, 0)]
     [DataRow(0, 1)]
@@ -361,7 +349,6 @@ public class ReadOnlyObservableGroupedCollectionTests
         Assert.IsTrue(isMoveEventValid);
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     public void ClearSource_ShoudClear()
     {
@@ -397,7 +384,6 @@ public class ReadOnlyObservableGroupedCollectionTests
         Assert.IsTrue(isResetEventValid);
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     public void ReplaceGroupInSource_ShoudReplaceGroup()
     {

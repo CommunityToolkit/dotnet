@@ -13,7 +13,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests;
 [TestClass]
 public class Test_NullableReadOnlyRefOfT
 {
-    [TestCategory("NullableReadOnlyRefOfT")]
     [TestMethod]
     public void Test_NullableReadOnlyRefOfT_CreateNullableReadOnlyRefOfT_Ok()
     {
@@ -24,7 +23,6 @@ public class Test_NullableReadOnlyRefOfT
         Assert.IsTrue(Unsafe.AreSame(ref value, ref Unsafe.AsRef(reference.Value)));
     }
 
-    [TestCategory("NullableReadOnlyRefOfT")]
     [TestMethod]
     public void Test_NullableReadOnlyRefOfT_CreateNullableReadOnlyRefOfT_Null()
     {
@@ -35,7 +33,6 @@ public class Test_NullableReadOnlyRefOfT
         Assert.IsFalse(NullableReadOnlyRef<string>.Null.HasValue);
     }
 
-    [TestCategory("NullableReadOnlyRefOfT")]
     [TestMethod]
     [ExpectedException(typeof(InvalidOperationException))]
     public void Test_NullableReadOnlyRefOfT_CreateNullableReadOnlyRefOfT_Null_Exception()
@@ -45,7 +42,6 @@ public class Test_NullableReadOnlyRefOfT
         _ = reference.Value;
     }
 
-    [TestCategory("NullableReadOnlyRefOfT")]
     [TestMethod]
     public void Test_NullableReadOnlyRefOfT_CreateNullableReadOnlyRefOfT_ImplicitRefCast()
     {
@@ -57,7 +53,6 @@ public class Test_NullableReadOnlyRefOfT
         Assert.IsTrue(Unsafe.AreSame(ref reference.Value, ref Unsafe.AsRef(nullableRef.Value)));
     }
 
-    [TestCategory("NullableReadOnlyRefOfT")]
     [TestMethod]
     public void Test_NullableReadOnlyRefOfT_CreateNullableReadOnlyRefOfT_ImplicitReadOnlyRefCast()
     {
@@ -69,7 +64,6 @@ public class Test_NullableReadOnlyRefOfT
         Assert.IsTrue(Unsafe.AreSame(ref Unsafe.AsRef(reference.Value), ref Unsafe.AsRef(nullableRef.Value)));
     }
 
-    [TestCategory("NullableReadOnlyRefOfT")]
     [TestMethod]
     public void Test_NullableReadOnlyRefOfT_CreateNullableReadOnlyRefOfT_ImplicitNullableRefCast()
     {
@@ -81,7 +75,6 @@ public class Test_NullableReadOnlyRefOfT
         Assert.IsTrue(Unsafe.AreSame(ref reference.Value, ref Unsafe.AsRef(nullableRef.Value)));
     }
 
-    [TestCategory("NullableReadOnlyRefOfT")]
     [TestMethod]
     public void Test_NullableReadOnlyRefOfT_CreateNullableReadOnlyRefOfT_ExplicitCastOfT()
     {
@@ -91,7 +84,6 @@ public class Test_NullableReadOnlyRefOfT
         Assert.AreEqual(value, (int)reference);
     }
 
-    [TestCategory("NullableReadOnlyRefOfT")]
     [TestMethod]
     [ExpectedException(typeof(InvalidOperationException))]
     public void Test_NullableReadOnlyRefOfT_CreateNullableReadOnlyRefOfT_ExplicitCastOfT_Exception()

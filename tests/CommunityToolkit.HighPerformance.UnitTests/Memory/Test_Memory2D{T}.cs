@@ -11,7 +11,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests;
 [TestClass]
 public class Test_Memory2DT
 {
-    [TestCategory("Memory2DT")]
     [TestMethod]
     public void Test_Memory2DT_Empty()
     {
@@ -46,7 +45,6 @@ public class Test_Memory2DT
         Assert.AreEqual(empty4.Height, 0);
     }
 
-    [TestCategory("Memory2DT")]
     [TestMethod]
     public void Test_Memory2DT_Array1DConstructor()
     {
@@ -79,7 +77,6 @@ public class Test_Memory2DT
         _ = Assert.ThrowsException<ArgumentException>(() => new Memory2D<int>(array, 0, 10, 1, 120));
     }
 
-    [TestCategory("Memory2DT")]
     [TestMethod]
     public void Test_Memory2DT_Array2DConstructor_1()
     {
@@ -104,7 +101,6 @@ public class Test_Memory2DT
         _ = Assert.ThrowsException<ArrayTypeMismatchException>(() => new Memory2D<object>(new string[1, 2]));
     }
 
-    [TestCategory("Memory2DT")]
     [TestMethod]
     public void Test_Memory2DT_Array2DConstructor_2()
     {
@@ -127,7 +123,6 @@ public class Test_Memory2DT
         _ = Assert.ThrowsException<ArrayTypeMismatchException>(() => new Memory2D<object>(new string[1, 2], 0, 0, 2, 2));
     }
 
-    [TestCategory("Memory2DT")]
     [TestMethod]
     public void Test_Memory2DT_Array3DConstructor_1()
     {
@@ -159,7 +154,6 @@ public class Test_Memory2DT
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 20));
     }
 
-    [TestCategory("Memory2DT")]
     [TestMethod]
     public void Test_Memory2DT_Array3DConstructor_2()
     {
@@ -201,7 +195,6 @@ public class Test_Memory2DT
     }
 
 #if NETCOREAPP
-    [TestCategory("Memory2DT")]
     [TestMethod]
     public void Test_Memory2DT_MemoryConstructor()
     {
@@ -234,7 +227,6 @@ public class Test_Memory2DT
     }
 #endif
 
-    [TestCategory("Memory2DT")]
     [TestMethod]
     public void Test_Memory2DT_Slice_1()
     {
@@ -281,7 +273,6 @@ public class Test_Memory2DT
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(1, 0, 2, 3));
     }
 
-    [TestCategory("Memory2DT")]
     [TestMethod]
     public void Test_Memory2DT_Slice_2()
     {
@@ -318,7 +309,6 @@ public class Test_Memory2DT
         Assert.AreEqual(slice3.Span[0, 0], 5);
     }
 
-    [TestCategory("Memory2DT")]
     [TestMethod]
     public void Test_Memory2DT_TryGetMemory_1()
     {
@@ -346,7 +336,6 @@ public class Test_Memory2DT
 #endif
     }
 
-    [TestCategory("Memory2DT")]
     [TestMethod]
     public void Test_Memory2DT_TryGetMemory_2()
     {
@@ -364,7 +353,6 @@ public class Test_Memory2DT
     }
 
 #if NETCOREAPP
-    [TestCategory("Memory2DT")]
     [TestMethod]
     public void Test_Memory2DT_TryGetMemory_3()
     {
@@ -383,7 +371,6 @@ public class Test_Memory2DT
     }
 #endif
 
-    [TestCategory("Memory2DT")]
     [TestMethod]
     public unsafe void Test_Memory2DT_Pin_1()
     {
@@ -399,7 +386,6 @@ public class Test_Memory2DT
         Assert.AreEqual(((int*)pin.Pointer)[3], 4);
     }
 
-    [TestCategory("Memory2DT")]
     [TestMethod]
     public unsafe void Test_Memory2DT_Pin_2()
     {
@@ -414,7 +400,6 @@ public class Test_Memory2DT
         Assert.AreEqual(((int*)pin.Pointer)[3], 4);
     }
 
-    [TestCategory("Memory2DT")]
     [TestMethod]
     public void Test_Memory2DT_ToArray_1()
     {
@@ -436,7 +421,6 @@ public class Test_Memory2DT
         CollectionAssert.AreEqual(array, copy);
     }
 
-    [TestCategory("Memory2DT")]
     [TestMethod]
     public void Test_Memory2DT_ToArray_2()
     {
@@ -463,7 +447,6 @@ public class Test_Memory2DT
         CollectionAssert.AreEqual(expected, copy);
     }
 
-    [TestCategory("Memory2DT")]
     [TestMethod]
     public void Test_Memory2DT_Equals()
     {
@@ -489,7 +472,6 @@ public class Test_Memory2DT
         Assert.IsFalse(memory2d.Equals(readOnlyMemory2d.Slice(0, 1, 2, 2)));
     }
 
-    [TestCategory("Memory2DT")]
     [TestMethod]
     public void Test_Memory2DT_GetHashCode()
     {
@@ -516,7 +498,6 @@ public class Test_Memory2DT
         Assert.AreNotEqual(a, c);
     }
 
-    [TestCategory("Memory2DT")]
     [TestMethod]
     public void Test_Memory2DT_ToString()
     {

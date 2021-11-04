@@ -13,7 +13,6 @@ namespace CommunityToolkit.Mvvm.UnitTests;
 [TestClass]
 public class Test_ObservableRecipient
 {
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -35,7 +34,6 @@ public class Test_ObservableRecipient
         Assert.IsFalse(viewmodel.CurrentMessenger.IsRegistered<SampleMessage>(viewmodel));
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -47,7 +45,6 @@ public class Test_ObservableRecipient
         Assert.AreSame(viewmodel.CurrentMessenger, messenger);
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_ObservableRecipient_Default()
     {
@@ -56,7 +53,6 @@ public class Test_ObservableRecipient
         Assert.AreSame(viewmodel.CurrentMessenger, WeakReferenceMessenger.Default);
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -68,7 +64,6 @@ public class Test_ObservableRecipient
         Assert.AreSame(viewmodel.CurrentMessenger, messenger);
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]

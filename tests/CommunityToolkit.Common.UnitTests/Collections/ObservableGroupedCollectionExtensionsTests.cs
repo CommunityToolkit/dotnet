@@ -12,7 +12,6 @@ namespace CommunityToolkit.Common.UnitTests.Collections;
 [TestClass]
 public class ObservableGroupedCollectionExtensionsTests
 {
-    [TestCategory("Collections")]
     [TestMethod]
     public void First_WhenGroupExists_ShouldReturnFirstGroup()
     {
@@ -26,7 +25,6 @@ public class ObservableGroupedCollectionExtensionsTests
         Assert.AreSame(result, target);
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     [ExpectedException(typeof(InvalidOperationException))]
     public void First_WhenGroupDoesNotExist_ShouldThrow()
@@ -37,7 +35,6 @@ public class ObservableGroupedCollectionExtensionsTests
         _ = groupedCollection.First("I do not exist");
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     public void FirstOrDefault_WhenGroupExists_ShouldReturnFirstGroup()
     {
@@ -51,7 +48,6 @@ public class ObservableGroupedCollectionExtensionsTests
         Assert.AreSame(result, target);
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     public void FirstOrDefault_WhenGroupDoesNotExist_ShouldReturnNull()
     {
@@ -63,7 +59,6 @@ public class ObservableGroupedCollectionExtensionsTests
         Assert.IsNull(result);
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     public void ElementAt_WhenGroupExistsAndIndexInRange_ShouldReturnFirstGroupValue()
     {
@@ -77,7 +72,6 @@ public class ObservableGroupedCollectionExtensionsTests
         Assert.AreEqual(result, 12);
     }
 
-    [TestCategory("Collections")]
     [DataTestMethod]
     [DataRow(-1)]
     [DataRow(3)]
@@ -92,7 +86,6 @@ public class ObservableGroupedCollectionExtensionsTests
         _ = groupedCollection.ElementAt("B", index);
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     [ExpectedException(typeof(InvalidOperationException))]
     public void ElementAt_WhenGroupDoesNotExist_ShouldThrow()
@@ -103,7 +96,6 @@ public class ObservableGroupedCollectionExtensionsTests
         _ = groupedCollection.ElementAt("I do not exist", 0);
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     public void ElementAtOrDefault_WhenGroupExistsAndIndexInRange_ShouldReturnValue()
     {
@@ -117,7 +109,6 @@ public class ObservableGroupedCollectionExtensionsTests
         Assert.AreEqual(result, 12);
     }
 
-    [TestCategory("Collections")]
     [DataTestMethod]
     [DataRow(-1)]
     [DataRow(3)]
@@ -133,7 +124,6 @@ public class ObservableGroupedCollectionExtensionsTests
         Assert.AreEqual(result, 0);
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     public void ElementAtOrDefault_WhenGroupDoesNotExist_ShouldReturnDefaultValue()
     {
@@ -145,7 +135,6 @@ public class ObservableGroupedCollectionExtensionsTests
         Assert.AreEqual(result, 0);
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     public void AddGroup_WithItem_ShouldAddGroup()
     {
@@ -159,7 +148,6 @@ public class ObservableGroupedCollectionExtensionsTests
         CollectionAssert.AreEqual(groupedCollection, new[] { addedGroup });
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     public void AddGroup_WithCollection_ShouldAddGroup()
     {
@@ -173,7 +161,6 @@ public class ObservableGroupedCollectionExtensionsTests
         CollectionAssert.AreEqual(groupedCollection, new[] { addedGroup });
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     public void AddGroup_WithParamsCollection_ShouldAddGroup()
     {
@@ -187,7 +174,6 @@ public class ObservableGroupedCollectionExtensionsTests
         CollectionAssert.AreEqual(groupedCollection, new[] { addedGroup });
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     public void AddItem_WhenTargetGroupDoesNotExists_ShouldCreateAndAddNewGroup()
     {
@@ -201,7 +187,6 @@ public class ObservableGroupedCollectionExtensionsTests
         CollectionAssert.AreEqual(groupedCollection, new[] { addedGroup });
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     public void AddItem_WhenSingleTargetGroupAlreadyExists_ShouldAddItemToExistingGroup()
     {
@@ -228,7 +213,6 @@ public class ObservableGroupedCollectionExtensionsTests
         CollectionAssert.AreEqual(groupedCollection.ElementAt(2), new[] { 7, 8 });
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     public void AddItem_WhenSeveralTargetGroupsAlreadyExist_ShouldAddItemToFirstExistingGroup()
     {
@@ -259,7 +243,6 @@ public class ObservableGroupedCollectionExtensionsTests
         CollectionAssert.AreEqual(groupedCollection.ElementAt(3), new[] { 10, 11 });
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     [ExpectedException(typeof(InvalidOperationException))]
     public void InsertItem_WhenGroupDoesNotExist_ShouldThrow()
@@ -270,7 +253,6 @@ public class ObservableGroupedCollectionExtensionsTests
         _ = groupedCollection.InsertItem("I do not exist", 0, 23);
     }
 
-    [TestCategory("Collections")]
     [DataTestMethod]
     [DataRow(-1)]
     [DataRow(4)]
@@ -283,7 +265,6 @@ public class ObservableGroupedCollectionExtensionsTests
         _ = groupedCollection.InsertItem("A", index, 23);
     }
 
-    [TestCategory("Collections")]
     [DataTestMethod]
     [DataRow(0, new[] { 23, 1, 2, 3 })]
     [DataRow(1, new[] { 1, 23, 2, 3 })]
@@ -311,7 +292,6 @@ public class ObservableGroupedCollectionExtensionsTests
         CollectionAssert.AreEqual(groupedCollection.ElementAt(2), new[] { 6, 7 });
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     [ExpectedException(typeof(InvalidOperationException))]
     public void SetItem_WhenGroupDoesNotExist_ShouldThrow()
@@ -322,7 +302,6 @@ public class ObservableGroupedCollectionExtensionsTests
         _ = groupedCollection.SetItem("I do not exist", 0, 23);
     }
 
-    [TestCategory("Collections")]
     [DataTestMethod]
     [DataRow(-1)]
     [DataRow(3)]
@@ -335,7 +314,6 @@ public class ObservableGroupedCollectionExtensionsTests
         _ = groupedCollection.SetItem("A", index, 23);
     }
 
-    [TestCategory("Collections")]
     [DataTestMethod]
     [DataRow(0, new[] { 23, 2, 3 })]
     [DataRow(1, new[] { 1, 23, 3 })]
@@ -363,7 +341,6 @@ public class ObservableGroupedCollectionExtensionsTests
         CollectionAssert.AreEqual(groupedCollection.ElementAt(2), new[] { 6, 7 });
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     public void RemoveGroup_WhenGroupDoesNotExists_ShouldDoNothing()
     {
@@ -377,7 +354,6 @@ public class ObservableGroupedCollectionExtensionsTests
         CollectionAssert.AreEqual(groupedCollection.ElementAt(0), new[] { 1, 2, 3 });
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     public void RemoveGroup_WhenSingleGroupExists_ShouldRemoveGroup()
     {
@@ -392,7 +368,6 @@ public class ObservableGroupedCollectionExtensionsTests
         CollectionAssert.AreEqual(groupedCollection.ElementAt(0), new[] { 1, 2, 3 });
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     public void RemoveGroup_WhenSeveralGroupsExist_ShouldRemoveFirstGroup()
     {
@@ -412,7 +387,6 @@ public class ObservableGroupedCollectionExtensionsTests
         CollectionAssert.AreEqual(groupedCollection.ElementAt(1), new[] { 7, 8 });
     }
 
-    [TestCategory("Collections")]
     [DataTestMethod]
     [DataRow(true)]
     [DataRow(false)]
@@ -433,7 +407,6 @@ public class ObservableGroupedCollectionExtensionsTests
         CollectionAssert.AreEqual(groupedCollection.ElementAt(1), new[] { 4, 5, 6 });
     }
 
-    [TestCategory("Collections")]
     [DataTestMethod]
     [DataRow(true)]
     [DataRow(false)]
@@ -454,7 +427,6 @@ public class ObservableGroupedCollectionExtensionsTests
         CollectionAssert.AreEqual(groupedCollection.ElementAt(1), new[] { 4, 5, 6 });
     }
 
-    [TestCategory("Collections")]
     [DataTestMethod]
     [DataRow(true)]
     [DataRow(false)]
@@ -475,7 +447,6 @@ public class ObservableGroupedCollectionExtensionsTests
         CollectionAssert.AreEqual(groupedCollection.ElementAt(1), new[] { 4, 6 });
     }
 
-    [TestCategory("Collections")]
     [DataTestMethod]
     [DataRow(true, true)]
     [DataRow(false, false)]

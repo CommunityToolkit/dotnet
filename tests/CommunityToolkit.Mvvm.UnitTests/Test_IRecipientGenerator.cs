@@ -13,7 +13,6 @@ namespace CommunityToolkit.Mvvm.UnitTests;
 [TestClass]
 public partial class Test_IRecipientGenerator
 {
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_IRecipientGenerator_GeneratedRegistration()
     {

@@ -19,7 +19,6 @@ public class Test_HashCodeOfT
     /// </summary>
     private static ReadOnlySpan<int> TestCounts => new[] { 0, 1, 7, 128, 255, 256, short.MaxValue, short.MaxValue + 1, 123_938, 1_678_922, 71_890_819 };
 
-    [TestCategory("HashCodeOfT")]
     [TestMethod]
     public void Test_HashCodeOfT_VectorSupportedTypes_TestRepeatCount8()
     {
@@ -28,7 +27,6 @@ public class Test_HashCodeOfT
         TestForType<bool>();
     }
 
-    [TestCategory("HashCodeOfT")]
     [TestMethod]
     public void Test_HashCodeOfT_VectorSupportedTypes_TestRepeatCount16()
     {
@@ -36,7 +34,6 @@ public class Test_HashCodeOfT
         TestForType<short>();
     }
 
-    [TestCategory("HashCodeOfT")]
     [TestMethod]
     public void Test_HashCodeOfT_VectorSupportedTypes_TestRepeatCount32()
     {
@@ -45,7 +42,6 @@ public class Test_HashCodeOfT
         TestForType<float>();
     }
 
-    [TestCategory("HashCodeOfT")]
     [TestMethod]
     public void Test_HashCodeOfT_VectorSupportedTypes_TestRepeatCount64()
     {
@@ -54,7 +50,6 @@ public class Test_HashCodeOfT
         TestForType<double>();
     }
 
-    [TestCategory("HashCodeOfT")]
     [TestMethod]
     public void Test_HashCodeOfT_VectorUnsupportedTypes_TestRepeat()
     {
@@ -62,7 +57,6 @@ public class Test_HashCodeOfT
     }
 
 #if NETCOREAPP3_1 || NET5_0
-    [TestCategory("HashCodeOfT")]
     [TestMethod]
     public void Test_HashCodeOfT_ManagedType_TestRepeat()
     {

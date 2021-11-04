@@ -10,7 +10,6 @@ namespace CommunityToolkit.Diagnostics.UnitTests;
 [TestClass]
 public partial class Test_Guard
 {
-    [TestCategory("Guard")]
     [TestMethod]
     public void Test_Guard_IsNull_Ok()
     {
@@ -18,7 +17,6 @@ public partial class Test_Guard
         Guard.IsNull<int>(null, nameof(Test_Guard_IsNull_Ok));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsNull_ClassFail()
@@ -26,7 +24,6 @@ public partial class Test_Guard
         Guard.IsNull(new object(), nameof(Test_Guard_IsNull_ClassFail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsNull_StructFail()
@@ -34,7 +31,6 @@ public partial class Test_Guard
         Guard.IsNull<int>(7, nameof(Test_Guard_IsNull_StructFail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     public void Test_Guard_IsNotNull_Ok()
     {
@@ -42,7 +38,6 @@ public partial class Test_Guard
         Guard.IsNotNull<int>(7, nameof(Test_Guard_IsNotNull_Ok));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentNullException))]
     public void Test_Guard_IsNotNull_ClassFail()
@@ -50,7 +45,6 @@ public partial class Test_Guard
         Guard.IsNotNull<object>(null, nameof(Test_Guard_IsNotNull_ClassFail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentNullException))]
     public void Test_Guard_IsNotNull_StructFail()
@@ -58,7 +52,6 @@ public partial class Test_Guard
         Guard.IsNotNull<int>(null, nameof(Test_Guard_IsNotNull_StructFail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     public void Test_Guard_IsOfT_Ok()
     {
@@ -66,7 +59,6 @@ public partial class Test_Guard
         Guard.IsOfType<int>(7, nameof(Test_Guard_IsOfT_Ok));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsOfT_Fail()
@@ -74,7 +66,6 @@ public partial class Test_Guard
         Guard.IsOfType<string>(7, nameof(Test_Guard_IsOfT_Fail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     public void Test_Guard_IsOfType_Ok()
     {
@@ -82,7 +73,6 @@ public partial class Test_Guard
         Guard.IsOfType(7, typeof(int), nameof(Test_Guard_IsOfType_Ok));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsOfType_Fail()
@@ -90,14 +80,12 @@ public partial class Test_Guard
         Guard.IsOfType(7, typeof(string), nameof(Test_Guard_IsOfType_Fail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     public void Test_Guard_IsAssignableToT_Ok()
     {
         Guard.IsAssignableToType<string>("Hello", nameof(Test_Guard_IsAssignableToT_Ok));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsAssignableToT_Fail()
@@ -105,14 +93,12 @@ public partial class Test_Guard
         Guard.IsAssignableToType<string>(7, nameof(Test_Guard_IsAssignableToT_Fail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     public void Test_Guard_IsAssignableToType_Ok()
     {
         Guard.IsAssignableToType("Hello", typeof(string), nameof(Test_Guard_IsAssignableToType_Ok));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsAssignableToType_Fail()
@@ -120,7 +106,6 @@ public partial class Test_Guard
         Guard.IsAssignableToType(7, typeof(string), nameof(Test_Guard_IsAssignableToType_Fail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     public void Test_Guard_IsNullOrEmpty_Ok()
     {
@@ -128,7 +113,6 @@ public partial class Test_Guard
         Guard.IsNullOrEmpty(string.Empty, nameof(Test_Guard_IsNullOrEmpty_Ok));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsNullOrEmpty_Fail()
@@ -136,14 +120,12 @@ public partial class Test_Guard
         Guard.IsNullOrEmpty("Hello", nameof(Test_Guard_IsNullOrEmpty_Fail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     public void Test_Guard_IsNotNullOrEmpty_Ok()
     {
         Guard.IsNotNullOrEmpty("Hello", nameof(Test_Guard_IsNotNullOrEmpty_Ok));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentNullException))]
     public void Test_Guard_IsNotNullOrEmpty_Null()
@@ -151,7 +133,6 @@ public partial class Test_Guard
         Guard.IsNotNullOrEmpty(null, nameof(Test_Guard_IsNotNullOrEmpty_Null));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsNotNullOrEmpty_Empty()
@@ -159,14 +140,12 @@ public partial class Test_Guard
         Guard.IsNotNullOrEmpty(string.Empty, nameof(Test_Guard_IsNotNullOrEmpty_Empty));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     public void Test_Guard_IsNotNullOrWhiteSpace_Ok()
     {
         Guard.IsNotNullOrWhiteSpace("Hello", nameof(Test_Guard_IsNotNullOrWhiteSpace_Ok));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentNullException))]
     public void Test_Guard_IsNotNullOrWhiteSpace_Null()
@@ -174,7 +153,6 @@ public partial class Test_Guard
         Guard.IsNotNullOrWhiteSpace(null, nameof(Test_Guard_IsNotNullOrWhiteSpace_Null));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsNotNullOrWhiteSpace_Empty()
@@ -182,14 +160,12 @@ public partial class Test_Guard
         Guard.IsNotNullOrWhiteSpace("  ", nameof(Test_Guard_IsNotNullOrWhiteSpace_Empty));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     public void Test_Guard_IsEqualTo_Ok()
     {
         Guard.IsEqualTo("Hello", "Hello", nameof(Test_Guard_IsEqualTo_Ok));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsEqualTo_Fail()
@@ -197,14 +173,12 @@ public partial class Test_Guard
         Guard.IsEqualTo("Hello", "World", nameof(Test_Guard_IsEqualTo_Fail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     public void Test_Guard_IsNotEqualTo_Ok()
     {
         Guard.IsNotEqualTo("Hello", "World", nameof(Test_Guard_IsNotEqualTo_Ok));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsNotEqualTo_Fail()
@@ -212,7 +186,6 @@ public partial class Test_Guard
         Guard.IsNotEqualTo("Hello", "Hello", nameof(Test_Guard_IsNotEqualTo_Fail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     public void Test_Guard_IsBitwiseEqualTo_Ok()
     {
@@ -228,7 +201,6 @@ public partial class Test_Guard
         Guard.IsBitwiseEqualTo(biggerThanLimit, biggerThanLimit, nameof(Test_Guard_IsBitwiseEqualTo_Ok));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsBitwiseEqualTo_Size8Fail()
@@ -237,7 +209,6 @@ public partial class Test_Guard
         Guard.IsBitwiseEqualTo(DateTime.Now, DateTime.Today, nameof(Test_Guard_IsBitwiseEqualTo_Size8Fail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsBitwiseEqualTo_Size16Fail()
@@ -266,7 +237,6 @@ public partial class Test_Guard
         public ulong D;
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsBitwiseEqualTo_SequenceEqualFail()
@@ -278,7 +248,6 @@ public partial class Test_Guard
         Guard.IsBitwiseEqualTo(biggerThanLimit0, biggerThanLimit1, nameof(Test_Guard_IsBitwiseEqualTo_SequenceEqualFail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     public void Test_Guard_IsReferenceEqualTo_Ok()
     {
@@ -287,7 +256,6 @@ public partial class Test_Guard
         Guard.IsReferenceEqualTo(obj, obj, nameof(Test_Guard_IsReferenceEqualTo_Ok));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsReferenceEqualTo_Fail()
@@ -295,14 +263,12 @@ public partial class Test_Guard
         Guard.IsReferenceEqualTo(new object(), new object(), nameof(Test_Guard_IsReferenceEqualTo_Fail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     public void Test_Guard_IsReferenceNotEqualTo_Ok()
     {
         Guard.IsReferenceNotEqualTo(new object(), new object(), nameof(Test_Guard_IsReferenceEqualTo_Fail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsReferenceNotEqualTo_Fail()
@@ -312,7 +278,6 @@ public partial class Test_Guard
         Guard.IsReferenceNotEqualTo(obj, obj, nameof(Test_Guard_IsReferenceEqualTo_Ok));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     public void Test_Guard_IsTrue_Ok()
     {
@@ -320,7 +285,6 @@ public partial class Test_Guard
         Guard.IsTrue(true, nameof(Test_Guard_IsTrue_Ok), "Hello world");
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsTrue_Fail()
@@ -328,7 +292,6 @@ public partial class Test_Guard
         Guard.IsTrue(false, nameof(Test_Guard_IsTrue_Fail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     public void Test_Guard_IsTrue_Fail_WithMessage()
     {
@@ -348,7 +311,6 @@ public partial class Test_Guard
         Assert.Fail();
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     public void Test_Guard_IsFalse_Ok()
     {
@@ -356,7 +318,6 @@ public partial class Test_Guard
         Guard.IsFalse(false, nameof(Test_Guard_IsFalse_Ok), "Hello world");
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsFalse_Fail()
@@ -364,7 +325,6 @@ public partial class Test_Guard
         Guard.IsFalse(true, nameof(Test_Guard_IsFalse_Fail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     public void Test_Guard_IsFalse_Fail_WithMessage()
     {
@@ -382,7 +342,6 @@ public partial class Test_Guard
         Assert.Fail();
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     public void Test_Guard_IsLessThan_Ok()
     {
@@ -391,7 +350,6 @@ public partial class Test_Guard
         Guard.IsLessThan(DateTime.Now, DateTime.MaxValue, nameof(Test_Guard_IsLessThan_Ok));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsLessThan_EqualsFalse()
@@ -399,7 +357,6 @@ public partial class Test_Guard
         Guard.IsLessThan(1, 1, nameof(Test_Guard_IsLessThan_EqualsFalse));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsLessThan_GreaterFalse()
@@ -407,7 +364,6 @@ public partial class Test_Guard
         Guard.IsLessThan(2, 1, nameof(Test_Guard_IsLessThan_GreaterFalse));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     public void Test_Guard_IsLessThanOrEqualTo_Ok()
     {
@@ -419,7 +375,6 @@ public partial class Test_Guard
         Guard.IsLessThanOrEqualTo(DateTime.MaxValue, DateTime.MaxValue, nameof(Test_Guard_IsLessThanOrEqualTo_Ok));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsLessThanOrEqualTo_False()
@@ -427,7 +382,6 @@ public partial class Test_Guard
         Guard.IsLessThanOrEqualTo(2, 1, nameof(Test_Guard_IsLessThanOrEqualTo_False));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     public void Test_Guard_IsGreaterThan_Ok()
     {
@@ -436,7 +390,6 @@ public partial class Test_Guard
         Guard.IsGreaterThan(DateTime.MaxValue, DateTime.Today, nameof(Test_Guard_IsGreaterThan_Ok));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsGreaterThan_EqualsFalse()
@@ -444,7 +397,6 @@ public partial class Test_Guard
         Guard.IsGreaterThan(1, 1, nameof(Test_Guard_IsGreaterThan_EqualsFalse));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsGreaterThan_LowerFalse()
@@ -452,7 +404,6 @@ public partial class Test_Guard
         Guard.IsGreaterThan(1, 2, nameof(Test_Guard_IsGreaterThan_LowerFalse));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     public void Test_Guard_IsGreaterThanOrEqualTo_Ok()
     {
@@ -464,7 +415,6 @@ public partial class Test_Guard
         Guard.IsGreaterThanOrEqualTo(DateTime.MaxValue, DateTime.MaxValue, nameof(Test_Guard_IsGreaterThanOrEqualTo_Ok));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsGreaterThanOrEqualTo_False()
@@ -472,7 +422,6 @@ public partial class Test_Guard
         Guard.IsGreaterThanOrEqualTo(1, 2, nameof(Test_Guard_IsGreaterThanOrEqualTo_False));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     public void Test_Guard_IsInRange_Ok()
     {
@@ -486,7 +435,6 @@ public partial class Test_Guard
         Guard.IsInRange(1, int.MinValue, int.MaxValue, nameof(Test_Guard_IsInRange_Ok));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsInRange_LowerFail()
@@ -494,7 +442,6 @@ public partial class Test_Guard
         Guard.IsInRange(-3, 0, 4, nameof(Test_Guard_IsInRange_LowerFail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsInRange_EqualFail()
@@ -502,7 +449,6 @@ public partial class Test_Guard
         Guard.IsInRange(0, 4, 4, nameof(Test_Guard_IsInRange_EqualFail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsInRange_HigherFail()
@@ -510,7 +456,6 @@ public partial class Test_Guard
         Guard.IsInRange(0, 20, 4, nameof(Test_Guard_IsInRange_HigherFail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     public void Test_Guard_IsNotInRange_Ok()
     {
@@ -520,7 +465,6 @@ public partial class Test_Guard
         Guard.IsNotInRange(-1, 0, 3.14f, nameof(Test_Guard_IsNotInRange_Ok));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsNotInRange_LowerEqualFail()
@@ -528,7 +472,6 @@ public partial class Test_Guard
         Guard.IsNotInRange(0, 0, 4, nameof(Test_Guard_IsNotInRange_LowerEqualFail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsNotInRange_InnerFail()
@@ -536,7 +479,6 @@ public partial class Test_Guard
         Guard.IsNotInRange(2, 0, 4, nameof(Test_Guard_IsNotInRange_InnerFail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     public void Test_Guard_IsInRangeFor_Ok()
     {
@@ -547,7 +489,6 @@ public partial class Test_Guard
         Guard.IsInRangeFor(9, span, nameof(Test_Guard_IsInRangeFor_Ok));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsInRangeFor_LowerFail()
@@ -557,7 +498,6 @@ public partial class Test_Guard
         Guard.IsInRangeFor(-2, span, nameof(Test_Guard_IsInRangeFor_LowerFail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsInRangeFor_EqualFail()
@@ -567,7 +507,6 @@ public partial class Test_Guard
         Guard.IsInRangeFor(10, span, nameof(Test_Guard_IsInRangeFor_EqualFail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsInRangeFor_HigherFail()
@@ -577,7 +516,6 @@ public partial class Test_Guard
         Guard.IsInRangeFor(99, span, nameof(Test_Guard_IsInRangeFor_HigherFail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     public void Test_Guard_IsNotInRangeFor_Ok()
     {
@@ -588,7 +526,6 @@ public partial class Test_Guard
         Guard.IsNotInRangeFor(2222, span, nameof(Test_Guard_IsNotInRangeFor_Ok));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsNotInRangeFor_LowerFail()
@@ -598,7 +535,6 @@ public partial class Test_Guard
         Guard.IsNotInRangeFor(0, span, nameof(Test_Guard_IsNotInRangeFor_LowerFail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsNotInRangeFor_MiddleFail()
@@ -608,7 +544,6 @@ public partial class Test_Guard
         Guard.IsNotInRangeFor(6, span, nameof(Test_Guard_IsNotInRangeFor_MiddleFail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     public void Test_Guard_IsBetween_Ok()
     {
@@ -617,7 +552,6 @@ public partial class Test_Guard
         Guard.IsBetween(1, 0, 3.14, nameof(Test_Guard_IsBetween_Ok));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsBetween_LowerFail()
@@ -625,7 +559,6 @@ public partial class Test_Guard
         Guard.IsBetween(-1, 0, 4, nameof(Test_Guard_IsBetween_LowerFail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsBetween_EqualFail()
@@ -633,7 +566,6 @@ public partial class Test_Guard
         Guard.IsBetween(0, 0, 4, nameof(Test_Guard_IsBetween_EqualFail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsBetween_HigherFail()
@@ -641,7 +573,6 @@ public partial class Test_Guard
         Guard.IsBetween(6, 0, 4, nameof(Test_Guard_IsBetween_HigherFail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     public void Test_Guard_IsNotBetween_Ok()
     {
@@ -650,7 +581,6 @@ public partial class Test_Guard
         Guard.IsNotBetween(-5, 0, 3.14, nameof(Test_Guard_IsNotBetween_Ok));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsNotBetween_Fail()
@@ -658,7 +588,6 @@ public partial class Test_Guard
         Guard.IsNotBetween(1, 0, 4, nameof(Test_Guard_IsNotBetween_Fail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     public void Test_Guard_IsBetweenOrEqualTo_Ok()
     {
@@ -667,7 +596,6 @@ public partial class Test_Guard
         Guard.IsBetweenOrEqualTo(1, 0, 3.14, nameof(Test_Guard_IsBetweenOrEqualTo_Ok));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsBetweenOrEqualTo_LowerFail()
@@ -675,7 +603,6 @@ public partial class Test_Guard
         Guard.IsBetweenOrEqualTo(-1, 0, 4, nameof(Test_Guard_IsBetweenOrEqualTo_LowerFail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsBetweenOrEqualTo_HigherFail()
@@ -683,7 +610,6 @@ public partial class Test_Guard
         Guard.IsBetweenOrEqualTo(6, 0, 4, nameof(Test_Guard_IsBetweenOrEqualTo_HigherFail));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     public void Test_Guard_IsNotBetweenOrEqualTo_Ok()
     {
@@ -691,7 +617,6 @@ public partial class Test_Guard
         Guard.IsNotBetweenOrEqualTo(-10, 0, 10, nameof(Test_Guard_IsNotBetweenOrEqualTo_Ok));
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsNotBetweenOrEqualTo_Fail()

@@ -13,7 +13,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Buffers;
 [TestClass]
 public class Test_SpanOwnerOfT
 {
-    [TestCategory("SpanOwnerOfT")]
     [TestMethod]
     public void Test_SpanOwnerOfT_AllocateAndGetMemoryAndSpan()
     {
@@ -27,7 +26,6 @@ public class Test_SpanOwnerOfT
         Assert.IsTrue(buffer.Span.ToArray().All(i => i == 42));
     }
 
-    [TestCategory("SpanOwnerOfT")]
     [TestMethod]
     public void Test_SpanOwnerOfT_AllocateFromCustomPoolAndGetMemoryAndSpan()
     {
@@ -48,7 +46,6 @@ public class Test_SpanOwnerOfT
         Assert.AreEqual(pool.RentedArrays.Count, 0);
     }
 
-    [TestCategory("SpanOwnerOfT")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_SpanOwnerOfT_InvalidRequestedSize()
@@ -58,7 +55,6 @@ public class Test_SpanOwnerOfT
         Assert.Fail("You shouldn't be here");
     }
 
-    [TestCategory("SpanOwnerOfT")]
     [TestMethod]
     public void Test_SpanOwnerOfT_PooledBuffersAndClear()
     {
@@ -78,7 +74,6 @@ public class Test_SpanOwnerOfT
         }
     }
 
-    [TestCategory("SpanOwnerOfT")]
     [TestMethod]
     public void Test_SpanOwnerOfT_AllocateAndGetArray()
     {

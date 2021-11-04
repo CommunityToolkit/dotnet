@@ -14,7 +14,6 @@ namespace CommunityToolkit.Mvvm.UnitTests;
 
 public partial class Test_Messenger
 {
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -43,7 +42,6 @@ public partial class Test_Messenger
         Assert.AreEqual(result, 42);
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -59,7 +57,6 @@ public partial class Test_Messenger
         _ = message.Response;
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -86,7 +83,6 @@ public partial class Test_Messenger
     {
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -113,7 +109,6 @@ public partial class Test_Messenger
         GC.KeepAlive(recipient);
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -147,7 +142,6 @@ public partial class Test_Messenger
         GC.KeepAlive(recipient);
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -163,7 +157,6 @@ public partial class Test_Messenger
         _ = await message.Response;
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -190,7 +183,6 @@ public partial class Test_Messenger
     {
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -212,7 +204,6 @@ public partial class Test_Messenger
         GC.KeepAlive(recipient);
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -266,7 +257,6 @@ public partial class Test_Messenger
     {
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -288,7 +278,6 @@ public partial class Test_Messenger
         GC.KeepAlive(recipient);
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
@@ -327,7 +316,6 @@ public partial class Test_Messenger
         GC.KeepAlive(recipient4);
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]

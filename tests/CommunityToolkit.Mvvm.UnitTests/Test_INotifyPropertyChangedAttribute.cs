@@ -13,7 +13,6 @@ namespace CommunityToolkit.Mvvm.UnitTests;
 [TestClass]
 public partial class Test_INotifyPropertyChangedAttribute
 {
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_INotifyPropertyChanged_Events()
     {
@@ -49,7 +48,6 @@ public partial class Test_INotifyPropertyChangedAttribute
         }
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_INotifyPropertyChanged_WithoutHelpers()
     {
@@ -75,7 +73,6 @@ public partial class Test_INotifyPropertyChangedAttribute
     {
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_INotifyPropertyChanged_WithGeneratedProperties()
     {
@@ -106,7 +103,6 @@ public partial class Test_INotifyPropertyChangedAttribute
         private int y;
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_INotifyPropertyChanged_WithGeneratedProperties_ExternalNetStandard20Assembly()
     {

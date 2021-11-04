@@ -13,7 +13,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Extensions;
 [TestClass]
 public class Test_SpanExtensions
 {
-    [TestCategory("SpanExtensions")]
     [TestMethod]
     public void Test_SpanExtensions_DangerousGetReference()
     {
@@ -25,7 +24,6 @@ public class Test_SpanExtensions
         Assert.IsTrue(Unsafe.AreSame(ref r0, ref r1));
     }
 
-    [TestCategory("SpanExtensions")]
     [TestMethod]
     public void Test_SpanExtensions_DangerousGetReferenceAt_Zero()
     {
@@ -37,7 +35,6 @@ public class Test_SpanExtensions
         Assert.IsTrue(Unsafe.AreSame(ref r0, ref r1));
     }
 
-    [TestCategory("SpanExtensions")]
     [TestMethod]
     public void Test_SpanExtensions_DangerousGetReferenceAt_Index()
     {
@@ -49,7 +46,6 @@ public class Test_SpanExtensions
         Assert.IsTrue(Unsafe.AreSame(ref r0, ref r1));
     }
 
-    [TestCategory("SpanExtensions")]
     [TestMethod]
     public void Test_SpanExtensions_IndexOf_Empty()
     {
@@ -78,7 +74,6 @@ public class Test_SpanExtensions
         Test<IEnumerable<int>>();
     }
 
-    [TestCategory("SpanExtensions")]
     [TestMethod]
     public void Test_SpanExtensions_IndexOf_NotEmpty()
     {
@@ -100,7 +95,6 @@ public class Test_SpanExtensions
         Test<IEnumerable<int>>();
     }
 
-    [TestCategory("SpanExtensions")]
     [TestMethod]
     public void Test_SpanExtensions_IndexOf_NotEmpty_OutOfRange()
     {
@@ -140,7 +134,6 @@ public class Test_SpanExtensions
         Test<IEnumerable<int>>();
     }
 
-    [TestCategory("SpanExtensions")]
     [TestMethod]
     public void Test_SpanExtensions_Enumerate()
     {
@@ -157,7 +150,6 @@ public class Test_SpanExtensions
         }
     }
 
-    [TestCategory("SpanExtensions")]
     [TestMethod]
     public void Test_SpanExtensions_Enumerate_Empty()
     {
@@ -169,7 +161,6 @@ public class Test_SpanExtensions
         }
     }
 
-    [TestCategory("SpanExtensions")]
     [TestMethod]
     public void Test_SpanExtensions_CopyTo_RefEnumerable()
     {

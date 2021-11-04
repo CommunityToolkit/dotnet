@@ -15,7 +15,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Buffers;
 [TestClass]
 public class Test_StringPool
 {
-    [TestCategory("StringPool")]
     [TestMethod]
     [DataRow(44, 4, 16, 64)]
     [DataRow(76, 8, 16, 128)]
@@ -47,7 +46,6 @@ public class Test_StringPool
         Assert.AreEqual(y, buckets.Length);
     }
 
-    [TestCategory("StringPool")]
     [TestMethod]
     [DataRow(0)]
     [DataRow(-3248234)]
@@ -68,7 +66,6 @@ public class Test_StringPool
         }
     }
 
-    [TestCategory("StringPool")]
     [TestMethod]
     public void Test_StringPool_Add_Empty()
     {
@@ -80,7 +77,6 @@ public class Test_StringPool
         Assert.AreSame(string.Empty, text);
     }
 
-    [TestCategory("StringPool")]
     [TestMethod]
     public void Test_StringPool_Add_Single()
     {
@@ -97,7 +93,6 @@ public class Test_StringPool
         Assert.AreSame(hello, hello2);
     }
 
-    [TestCategory("StringPool")]
     [TestMethod]
     public void Test_StringPool_Add_Misc()
     {
@@ -124,7 +119,6 @@ public class Test_StringPool
         Assert.AreSame(dotnetCommunityToolkit, windowsCommunityToolkit2);
     }
 
-    [TestCategory("StringPool")]
     [TestMethod]
     public void Test_StringPool_Add_Overwrite()
     {
@@ -158,7 +152,6 @@ public class Test_StringPool
         return obj.ToString()!;
     }
 
-    [TestCategory("StringPool")]
     [TestMethod]
     public void Test_StringPool_GetOrAdd_String_Empty()
     {
@@ -167,7 +160,6 @@ public class Test_StringPool
         Assert.AreSame(string.Empty, empty);
     }
 
-    [TestCategory("StringPool")]
     [TestMethod]
     public void Test_StringPool_GetOrAdd_String_Misc()
     {
@@ -194,7 +186,6 @@ public class Test_StringPool
         Assert.AreSame(helloworld, cached);
     }
 
-    [TestCategory("StringPool")]
     [TestMethod]
     public void Test_StringPool_GetOrAdd_ReadOnlySpan_Empty()
     {
@@ -203,7 +194,6 @@ public class Test_StringPool
         Assert.AreSame(string.Empty, empty);
     }
 
-    [TestCategory("StringPool")]
     [TestMethod]
     public void Test_StringPool_GetOrAdd_ReadOnlySpan_Misc()
     {
@@ -237,7 +227,6 @@ public class Test_StringPool
 #endif
     }
 
-    [TestCategory("StringPool")]
     [TestMethod]
     public void Test_StringPool_GetOrAdd_Encoding_Empty()
     {
@@ -246,7 +235,6 @@ public class Test_StringPool
         Assert.AreSame(string.Empty, empty);
     }
 
-    [TestCategory("StringPool")]
     [TestMethod]
     public void Test_StringPool_GetOrAdd_Encoding_Misc()
     {
@@ -272,7 +260,6 @@ public class Test_StringPool
         Assert.AreSame(dotnetCommunityToolkit2, dotnetCommunityToolkit3);
     }
 
-    [TestCategory("StringPool")]
     [TestMethod]
     public void Test_StringPool_GetOrAdd_Overflow()
     {

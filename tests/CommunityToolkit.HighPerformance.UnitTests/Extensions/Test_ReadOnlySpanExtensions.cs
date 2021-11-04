@@ -17,7 +17,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Extensions;
 [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1601", Justification = "Partial test class")]
 public partial class Test_ReadOnlySpanExtensions
 {
-    [TestCategory("ReadOnlySpanExtensions")]
     [TestMethod]
     public void Test_ReadOnlySpanExtensions_DangerousGetReference()
     {
@@ -31,7 +30,6 @@ public partial class Test_ReadOnlySpanExtensions
         Assert.IsTrue(Unsafe.AreSame(ref r0, ref r1));
     }
 
-    [TestCategory("ReadOnlySpanExtensions")]
     [TestMethod]
     public void Test_ReadOnlySpanExtensions_DangerousGetReferenceAt_Zero()
     {
@@ -45,7 +43,6 @@ public partial class Test_ReadOnlySpanExtensions
         Assert.IsTrue(Unsafe.AreSame(ref r0, ref r1));
     }
 
-    [TestCategory("ReadOnlySpanExtensions")]
     [TestMethod]
     public void Test_ReadOnlySpanExtensions_DangerousGetReferenceAt_Index()
     {
@@ -59,7 +56,6 @@ public partial class Test_ReadOnlySpanExtensions
         Assert.IsTrue(Unsafe.AreSame(ref r0, ref r1));
     }
 
-    [TestCategory("ReadOnlySpanExtensions")]
     [TestMethod]
     [DataRow(0)]
     [DataRow(4)]
@@ -97,7 +93,6 @@ public partial class Test_ReadOnlySpanExtensions
         }
     }
 
-    [TestCategory("ReadOnlySpanExtensions")]
     [TestMethod]
     public void Test_ReadOnlySpanExtensions_IndexOf_Empty()
     {
@@ -126,7 +121,6 @@ public partial class Test_ReadOnlySpanExtensions
         Test<IEnumerable<int>>();
     }
 
-    [TestCategory("ReadOnlySpanExtensions")]
     [TestMethod]
     public void Test_ReadOnlySpanExtensions_IndexOf_NotEmpty()
     {
@@ -148,7 +142,6 @@ public partial class Test_ReadOnlySpanExtensions
         Test<IEnumerable<int>>();
     }
 
-    [TestCategory("ReadOnlySpanExtensions")]
     [TestMethod]
     public void Test_ReadOnlySpanExtensions_IndexOf_NotEmpty_OutOfRange()
     {
@@ -188,7 +181,6 @@ public partial class Test_ReadOnlySpanExtensions
         Test<IEnumerable<int>>();
     }
 
-    [TestCategory("ReadOnlySpanExtensions")]
     [TestMethod]
     public void Test_ReadOnlySpanExtensions_Enumerate()
     {
@@ -205,7 +197,6 @@ public partial class Test_ReadOnlySpanExtensions
         }
     }
 
-    [TestCategory("ReadOnlySpanExtensions")]
     [TestMethod]
     public void Test_ReadOnlySpanExtensions_Enumerate_Empty()
     {
@@ -217,7 +208,6 @@ public partial class Test_ReadOnlySpanExtensions
         }
     }
 
-    [TestCategory("ReadOnlySpanExtensions")]
     [TestMethod]
     public void Test_ReadOnlySpanExtensions_Tokenize_Empty()
     {
@@ -235,7 +225,6 @@ public partial class Test_ReadOnlySpanExtensions
         CollectionAssert.AreEqual(result, tokens);
     }
 
-    [TestCategory("ReadOnlySpanExtensions")]
     [TestMethod]
     public void Test_ReadOnlySpanExtensions_Tokenize_Comma()
     {
@@ -253,7 +242,6 @@ public partial class Test_ReadOnlySpanExtensions
         CollectionAssert.AreEqual(result, tokens);
     }
 
-    [TestCategory("ReadOnlySpanExtensions")]
     [TestMethod]
     public void Test_ReadOnlySpanExtensions_Tokenize_CommaWithMissingValues()
     {
@@ -271,7 +259,6 @@ public partial class Test_ReadOnlySpanExtensions
         CollectionAssert.AreEqual(result, tokens);
     }
 
-    [TestCategory("ReadOnlySpanExtensions")]
     [TestMethod]
     public void Test_ReadOnlySpanExtensions_CopyTo_RefEnumerable()
     {

@@ -16,7 +16,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Buffers;
 [TestClass]
 public class Test_ArrayPoolBufferWriterOfT
 {
-    [TestCategory("ArrayPoolBufferWriterOfT")]
     [TestMethod]
     [DataRow(0, 256)] // 256 is the default initial size for ArrayPoolBufferWriter<T>
     [DataRow(4, 256)]
@@ -54,7 +53,6 @@ public class Test_ArrayPoolBufferWriterOfT
         Assert.AreEqual(array.Length, expected);
     }
 
-    [TestCategory("ArrayPoolBufferWriterOfT")]
     [TestMethod]
     public void Test_ArrayPoolBufferWriterOfT_AllocateAndGetMemoryAndSpan()
     {
@@ -92,7 +90,6 @@ public class Test_ArrayPoolBufferWriterOfT
         _ = Assert.ThrowsException<ObjectDisposedException>(() => writer.Advance(1));
     }
 
-    [TestCategory("ArrayPoolBufferWriterOfT")]
     [TestMethod]
     public void Test_ArrayPoolBufferWriterOfT_AllocateFromCustomPoolAndGetMemoryAndSpan()
     {
@@ -137,7 +134,6 @@ public class Test_ArrayPoolBufferWriterOfT
         Assert.AreEqual(pool.RentedArrays.Count, 0);
     }
 
-    [TestCategory("ArrayPoolBufferWriterOfT")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_ArrayPoolBufferWriterOfT_InvalidRequestedSize()
@@ -147,7 +143,6 @@ public class Test_ArrayPoolBufferWriterOfT
         Assert.Fail("You shouldn't be here");
     }
 
-    [TestCategory("ArrayPoolBufferWriterOfT")]
     [TestMethod]
     public void Test_ArrayPoolBufferWriterOfT_Clear()
     {
@@ -170,7 +165,6 @@ public class Test_ArrayPoolBufferWriterOfT
         Assert.IsTrue(span.ToArray().All(b => b == 0));
     }
 
-    [TestCategory("ArrayPoolBufferWriterOfT")]
     [TestMethod]
     public void Test_ArrayPoolBufferWriterOfT_MultipleDispose()
     {
@@ -182,7 +176,6 @@ public class Test_ArrayPoolBufferWriterOfT
         writer.Dispose();
     }
 
-    [TestCategory("ArrayPoolBufferWriterOfT")]
     [TestMethod]
     public void Test_ArrayPoolBufferWriterOfT_AsStream()
     {

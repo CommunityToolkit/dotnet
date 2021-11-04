@@ -11,7 +11,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Extensions;
 [TestClass]
 public class Test_ReadOnlyMemoryExtensions
 {
-    [TestCategory("ReadOnlyMemoryExtensions")]
     [TestMethod]
     public void Test_ReadOnlyMemoryExtensions_EmptyMemoryStream()
     {
@@ -24,7 +23,6 @@ public class Test_ReadOnlyMemoryExtensions
         Assert.IsFalse(stream.CanWrite);
     }
 
-    [TestCategory("ReadOnlyMemoryExtensions")]
     [TestMethod]
     public void Test_ReadOnlyMemoryExtensions_MemoryStream()
     {

@@ -12,7 +12,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Extensions;
 [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1601", Justification = "Partial test class")]
 public partial class Test_ArrayExtensions
 {
-    [TestCategory("ArrayExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_DangerousGetReference()
     {
@@ -30,7 +29,6 @@ public partial class Test_ArrayExtensions
         Assert.IsTrue(Unsafe.AreSame(ref r0, ref r1));
     }
 
-    [TestCategory("ArrayExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_DangerousGetReferenceAt_Zero()
     {
@@ -42,7 +40,6 @@ public partial class Test_ArrayExtensions
         Assert.IsTrue(Unsafe.AreSame(ref r0, ref r1));
     }
 
-    [TestCategory("ArrayExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_DangerousGetReferenceAt_Index()
     {

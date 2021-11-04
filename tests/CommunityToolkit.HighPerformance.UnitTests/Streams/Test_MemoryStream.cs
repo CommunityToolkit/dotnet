@@ -15,7 +15,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Streams;
 [TestClass]
 public partial class Test_MemoryStream
 {
-    [TestCategory("MemoryStream")]
     [TestMethod]
     public void Test_MemoryStream_Lifecycle()
     {
@@ -38,7 +37,6 @@ public partial class Test_MemoryStream
         _ = Assert.ThrowsException<ObjectDisposedException>(() => stream.Position);
     }
 
-    [TestCategory("MemoryStream")]
     [TestMethod]
     public void Test_MemoryStream_Seek()
     {
@@ -78,7 +76,6 @@ public partial class Test_MemoryStream
     }
 
     // See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/3536
-    [TestCategory("MemoryStream")]
     [TestMethod]
     public void Test_MemoryStream_WriteToEndAndRefreshPosition()
     {
@@ -112,7 +109,6 @@ public partial class Test_MemoryStream
         Assert.AreEqual(stream.Position, array.Length);
     }
 
-    [TestCategory("MemoryStream")]
     [TestMethod]
     public void Test_MemoryStream_ReadWrite_Array()
     {
@@ -145,7 +141,6 @@ public partial class Test_MemoryStream
         _ = Assert.ThrowsException<ObjectDisposedException>(() => stream.Write(data, 0, data.Length));
     }
 
-    [TestCategory("MemoryStream")]
     [TestMethod]
     public async Task Test_MemoryStream_ReadWriteAsync_Array()
     {
@@ -178,7 +173,6 @@ public partial class Test_MemoryStream
         _ = await Assert.ThrowsExceptionAsync<ObjectDisposedException>(() => stream.WriteAsync(data, 0, data.Length));
     }
 
-    [TestCategory("MemoryStream")]
     [TestMethod]
     public void Test_MemoryStream_ReadWriteByte()
     {
@@ -214,7 +208,6 @@ public partial class Test_MemoryStream
         Assert.AreEqual(exitCode, -1);
     }
 
-    [TestCategory("MemoryStream")]
     [TestMethod]
     public void Test_MemoryStream_ReadWrite_Span()
     {
@@ -239,7 +232,6 @@ public partial class Test_MemoryStream
         Assert.IsTrue(data.Span.SequenceEqual(result));
     }
 
-    [TestCategory("MemoryStream")]
     [TestMethod]
     public async Task Test_MemoryStream_ReadWriteAsync_Memory()
     {

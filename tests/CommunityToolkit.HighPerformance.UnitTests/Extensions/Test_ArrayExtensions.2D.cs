@@ -11,7 +11,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Extensions;
 
 public partial class Test_ArrayExtensions
 {
-    [TestCategory("ArrayExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_2D_DangerousGetReference_Int()
     {
@@ -29,7 +28,6 @@ public partial class Test_ArrayExtensions
         Assert.IsTrue(Unsafe.AreSame(ref r0, ref r1));
     }
 
-    [TestCategory("ArrayExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_2D_DangerousGetReference_String()
     {
@@ -45,7 +43,6 @@ public partial class Test_ArrayExtensions
         Assert.IsTrue(Unsafe.AreSame(ref r0, ref r1));
     }
 
-    [TestCategory("ArrayExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_2D_DangerousGetReferenceAt_Zero()
     {
@@ -62,7 +59,6 @@ public partial class Test_ArrayExtensions
         Assert.IsTrue(Unsafe.AreSame(ref r0, ref r1));
     }
 
-    [TestCategory("ArrayExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_2D_DangerousGetReferenceAt_Index()
     {
@@ -79,7 +75,6 @@ public partial class Test_ArrayExtensions
         Assert.IsTrue(Unsafe.AreSame(ref r0, ref r1));
     }
 
-    [TestCategory("ArrayExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_2D_AsSpan2DAndFillArrayMid()
     {
@@ -103,7 +98,6 @@ public partial class Test_ArrayExtensions
         CollectionAssert.AreEqual(expected, test);
     }
 
-    [TestCategory("ArrayExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_2D_AsSpan2DAndFillArrayTwice()
     {
@@ -123,7 +117,6 @@ public partial class Test_ArrayExtensions
         CollectionAssert.AreEqual(expected, test);
     }
 
-    [TestCategory("ArrayExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_2D_AsSpan2DAndFillArrayBottomEdgeBoundary()
     {
@@ -142,7 +135,6 @@ public partial class Test_ArrayExtensions
         CollectionAssert.AreEqual(expected, test);
     }
 
-    [TestCategory("ArrayExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_2D_AsSpan2DAndFillArrayBottomRightCornerBoundary()
     {
@@ -162,7 +154,6 @@ public partial class Test_ArrayExtensions
         CollectionAssert.AreEqual(expected, test);
     }
 
-    [TestCategory("ArrayExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_2D_GetRow_Rectangle()
     {
@@ -194,7 +185,6 @@ public partial class Test_ArrayExtensions
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetRow(20));
     }
 
-    [TestCategory("ArrayExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_2D_GetColumn_Rectangle()
     {
@@ -220,7 +210,6 @@ public partial class Test_ArrayExtensions
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetColumn(20));
     }
 
-    [TestCategory("ArrayExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_2D_GetRow_Empty()
     {
@@ -230,7 +219,6 @@ public partial class Test_ArrayExtensions
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetRow(0).ToArray());
     }
 
-    [TestCategory("ArrayExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_2D_GetRowOrColumn_Helpers()
     {
@@ -326,7 +314,6 @@ public partial class Test_ArrayExtensions
         CollectionAssert.AreEqual(array, expected);
     }
 
-    [TestCategory("ArrayExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_2D_ReadOnlyGetRowOrColumn_Helpers()
     {
@@ -371,7 +358,6 @@ public partial class Test_ArrayExtensions
         CollectionAssert.AreEqual(copy, result);
     }
 
-    [TestCategory("ArrayExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_2D_RefEnumerable_Misc()
     {
@@ -425,7 +411,6 @@ public partial class Test_ArrayExtensions
         Assert.IsFalse(shouldBeFalse);
     }
 
-    [TestCategory("ArrayExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_2D_GetColumn_Empty()
     {
@@ -435,7 +420,6 @@ public partial class Test_ArrayExtensions
     }
 
 #if NETCOREAPP3_1 || NET5_0
-    [TestCategory("ArrayExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_2D_AsSpan_Empty()
     {
@@ -448,7 +432,6 @@ public partial class Test_ArrayExtensions
         Assert.IsTrue(span.IsEmpty);
     }
 
-    [TestCategory("ArrayExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_2D_AsSpan_Populated()
     {

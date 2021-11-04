@@ -12,7 +12,6 @@ namespace CommunityToolkit.Common.UnitTests.Extensions;
 [TestClass]
 public class Test_ArrayExtensions
 {
-    [TestCategory("ArrayExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_Jagged_GetColumn()
     {
@@ -28,7 +27,6 @@ public class Test_ArrayExtensions
         CollectionAssert.AreEquivalent(new int[] { 2, 3, 0 }, col);
     }
 
-    [TestCategory("ArrayExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_Jagged_GetColumn_Exception()
     {
@@ -50,7 +48,6 @@ public class Test_ArrayExtensions
             });
     }
 
-    [TestCategory("ArrayExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_Rectangular_ToString()
     {
@@ -68,7 +65,6 @@ public class Test_ArrayExtensions
         Assert.AreEqual("[[5,\t2,\t4]," + Environment.NewLine + " [6,\t3,\t-1]," + Environment.NewLine + " [7,\t0,\t9]]", value);
     }
 
-    [TestCategory("ArrayExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_Jagged_ToString()
     {

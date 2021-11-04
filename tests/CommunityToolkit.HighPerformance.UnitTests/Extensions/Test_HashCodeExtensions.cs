@@ -19,7 +19,6 @@ public class Test_HashCodeExtensions
     /// </summary>
     private static ReadOnlySpan<int> TestCounts => new[] { 0, 1, 7, 128, 255, 256, short.MaxValue, 245_000 };
 
-    [TestCategory("HashCodeOfT")]
     [TestMethod]
     public void Test_HashCodeOfT_VectorSupportedTypes_TestRepeatCount8()
     {
@@ -28,7 +27,6 @@ public class Test_HashCodeExtensions
         TestForType<bool>();
     }
 
-    [TestCategory("HashCodeOfT")]
     [TestMethod]
     public void Test_HashCodeOfT_VectorSupportedTypes_TestRepeatCount16()
     {
@@ -36,7 +34,6 @@ public class Test_HashCodeExtensions
         TestForType<short>();
     }
 
-    [TestCategory("HashCodeOfT")]
     [TestMethod]
     public void Test_HashCodeOfT_VectorSupportedTypes_TestRepeatCount32()
     {
@@ -45,7 +42,6 @@ public class Test_HashCodeExtensions
         TestForType<float>();
     }
 
-    [TestCategory("HashCodeOfT")]
     [TestMethod]
     public void Test_HashCodeOfT_VectorSupportedTypes_TestRepeatCount64()
     {
@@ -54,7 +50,6 @@ public class Test_HashCodeExtensions
         TestForType<double>();
     }
 
-    [TestCategory("HashCodeOfT")]
     [TestMethod]
     public void Test_HashCodeOfT_VectorUnsupportedTypes_TestRepeat()
     {

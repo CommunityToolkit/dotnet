@@ -11,7 +11,6 @@ namespace CommunityToolkit.Diagnostics.UnitTests.Extensions;
 [TestClass]
 public class Test_TypeExtensions
 {
-    [TestCategory("TypeExtensions")]
     [TestMethod]
     [DataRow("bool", typeof(bool))]
     [DataRow("int", typeof(int))]
@@ -26,7 +25,6 @@ public class Test_TypeExtensions
         Assert.AreEqual(name, type.ToTypeString());
     }
 
-    [TestCategory("TypeExtensions")]
     [TestMethod]
     [DataRow("int?", typeof(int?))]
     [DataRow("System.DateTime?", typeof(DateTime?))]
@@ -43,7 +41,6 @@ public class Test_TypeExtensions
         Assert.AreEqual(name, type.ToTypeString());
     }
 
-    [TestCategory("TypeExtensions")]
     [TestMethod]
     [DataRow("CommunityToolkit.Diagnostics.UnitTests.Extensions.Test_TypeExtensions.Animal", typeof(Animal))]
     [DataRow("CommunityToolkit.Diagnostics.UnitTests.Extensions.Test_TypeExtensions.Animal.Cat", typeof(Animal.Cat))]
@@ -72,7 +69,6 @@ public class Test_TypeExtensions
         Assert.AreEqual(name, type.ToTypeString());
     }
 
-    [TestCategory("TypeExtensions")]
     [TestMethod]
     [DataRow("void*", typeof(void*))]
     [DataRow("int**", typeof(int**))]
@@ -88,7 +84,6 @@ public class Test_TypeExtensions
         Assert.AreEqual(name, type.ToTypeString());
     }
 
-    [TestCategory("TypeExtensions")]
     [TestMethod]
     [DataRow("int&", typeof(int))]
     [DataRow("byte&", typeof(byte))]

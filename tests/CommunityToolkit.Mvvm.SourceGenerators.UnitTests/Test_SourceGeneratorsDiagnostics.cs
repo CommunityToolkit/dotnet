@@ -17,7 +17,6 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.UnitTests;
 [TestClass]
 public class Test_SourceGeneratorsDiagnostics
 {
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void DuplicateINotifyPropertyChangedInterfaceForINotifyPropertyChangedAttributeError_Explicit()
     {
@@ -37,7 +36,6 @@ public class Test_SourceGeneratorsDiagnostics
         VerifyGeneratedDiagnostics<INotifyPropertyChangedGenerator>(source, "MVVMTK0004");
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void DuplicateINotifyPropertyChangedInterfaceForINotifyPropertyChangedAttributeError_Inherited()
     {
@@ -65,7 +63,6 @@ public class Test_SourceGeneratorsDiagnostics
         VerifyGeneratedDiagnostics<INotifyPropertyChangedGenerator>(source, "MVVMTK0004");
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void DuplicateINotifyPropertyChangedInterfaceForObservableObjectAttributeError_Explicit()
     {
@@ -85,7 +82,6 @@ public class Test_SourceGeneratorsDiagnostics
         VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0005");
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void DuplicateINotifyPropertyChangedInterfaceForObservableObjectAttributeError_Inherited()
     {
@@ -112,7 +108,6 @@ public class Test_SourceGeneratorsDiagnostics
         VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0005");
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void DuplicateINotifyPropertyChangingInterfaceForObservableObjectAttributeError_Explicit()
     {
@@ -132,7 +127,6 @@ public class Test_SourceGeneratorsDiagnostics
         VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0006");
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void DuplicateINotifyPropertyChangingInterfaceForObservableObjectAttributeError_Inherited()
     {
@@ -156,7 +150,6 @@ public class Test_SourceGeneratorsDiagnostics
         VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0006");
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void DuplicateObservableRecipientError()
     {
@@ -181,7 +174,6 @@ public class Test_SourceGeneratorsDiagnostics
         VerifyGeneratedDiagnostics<ObservableRecipientGenerator>(source, "MVVMTK0007");
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void MissingBaseObservableObjectFunctionalityError()
     {
@@ -199,7 +191,6 @@ public class Test_SourceGeneratorsDiagnostics
         VerifyGeneratedDiagnostics<ObservableRecipientGenerator>(source, "MVVMTK0008");
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void MissingObservableValidatorInheritanceError()
     {
@@ -221,7 +212,6 @@ public class Test_SourceGeneratorsDiagnostics
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0009");
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void InvalidICommandMethodSignatureError()
     {
@@ -240,7 +230,6 @@ public class Test_SourceGeneratorsDiagnostics
         VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0012");
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void UnsupportedCSharpLanguageVersion_FromINotifyPropertyChangedGenerator()
     {
@@ -260,7 +249,6 @@ public class Test_SourceGeneratorsDiagnostics
             "MVVMTK0013");
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void UnsupportedCSharpLanguageVersion_FromObservableObjectGenerator()
     {
@@ -280,7 +268,6 @@ public class Test_SourceGeneratorsDiagnostics
             "MVVMTK0013");
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void UnsupportedCSharpLanguageVersion_FromObservablePropertyGenerator()
     {
@@ -302,7 +289,6 @@ public class Test_SourceGeneratorsDiagnostics
             "MVVMTK0013");
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void UnsupportedCSharpLanguageVersion_FromObservableValidatorValidateAllPropertiesGenerator()
     {
@@ -323,7 +309,6 @@ public class Test_SourceGeneratorsDiagnostics
             CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)));
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void UnsupportedCSharpLanguageVersion_FromICommandGenerator()
     {
@@ -346,7 +331,6 @@ public class Test_SourceGeneratorsDiagnostics
             "MVVMTK0013");
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void UnsupportedCSharpLanguageVersion_FromIMessengerRegisterAllGenerator()
     {

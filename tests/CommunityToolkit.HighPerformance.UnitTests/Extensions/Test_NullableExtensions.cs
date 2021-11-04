@@ -13,7 +13,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Extensions;
 [TestClass]
 public class Test_NullableExtensions
 {
-    [TestCategory("NullableExtensions")]
     [TestMethod]
     public void Test_NullableExtensions_DangerousGetReference()
     {

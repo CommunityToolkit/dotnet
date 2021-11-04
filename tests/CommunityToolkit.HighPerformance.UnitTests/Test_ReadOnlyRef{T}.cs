@@ -10,7 +10,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests;
 [TestClass]
 public class Test_ReadOnlyRefOfT
 {
-    [TestCategory("ReadOnlyRefOfT")]
     [TestMethod]
 #if NETFRAMEWORK
     public void Test_RefOfT_CreateRefOfT()

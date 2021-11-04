@@ -9,7 +9,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Extensions;
 
 public partial class Test_ArrayExtensions
 {
-    [TestCategory("ArrayExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_3D_DangerousGetReference_Int()
     {
@@ -22,7 +21,6 @@ public partial class Test_ArrayExtensions
         Assert.IsTrue(Unsafe.AreSame(ref r0, ref r1));
     }
 
-    [TestCategory("ArrayExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_3D_DangerousGetReference_String()
     {
@@ -34,7 +32,6 @@ public partial class Test_ArrayExtensions
         Assert.IsTrue(Unsafe.AreSame(ref r0, ref r1));
     }
 
-    [TestCategory("ArrayExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_3D_DangerousGetReferenceAt_Zero()
     {
@@ -46,7 +43,6 @@ public partial class Test_ArrayExtensions
         Assert.IsTrue(Unsafe.AreSame(ref r0, ref r1));
     }
 
-    [TestCategory("ArrayExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_3D_DangerousGetReferenceAt_Index()
     {

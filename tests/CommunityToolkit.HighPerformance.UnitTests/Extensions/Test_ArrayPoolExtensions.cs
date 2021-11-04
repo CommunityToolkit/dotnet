@@ -13,7 +13,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Extensions;
 [TestClass]
 public class Test_ArrayPoolExtensions
 {
-    [TestCategory("ArrayPoolExtensions")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_ArrayExtensions_InvalidSize()
@@ -23,7 +22,6 @@ public class Test_ArrayPoolExtensions
         ArrayPool<int>.Shared.Resize(ref array, -1);
     }
 
-    [TestCategory("ArrayPoolExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_NewArray()
     {
@@ -35,7 +33,6 @@ public class Test_ArrayPoolExtensions
         Assert.IsTrue(array.Length >= 10);
     }
 
-    [TestCategory("ArrayPoolExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_SameSize()
     {
@@ -47,7 +44,6 @@ public class Test_ArrayPoolExtensions
         Assert.AreSame(array, backup);
     }
 
-    [TestCategory("ArrayPoolExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_Expand()
     {
@@ -63,7 +59,6 @@ public class Test_ArrayPoolExtensions
         Assert.IsTrue(array.AsSpan(0, 16).ToArray().All(i => i == 7));
     }
 
-    [TestCategory("ArrayPoolExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_Shrink()
     {
@@ -79,7 +74,6 @@ public class Test_ArrayPoolExtensions
         Assert.IsTrue(array.AsSpan(0, 16).ToArray().All(i => i == 7));
     }
 
-    [TestCategory("ArrayPoolExtensions")]
     [TestMethod]
     public void Test_ArrayExtensions_Clear()
     {

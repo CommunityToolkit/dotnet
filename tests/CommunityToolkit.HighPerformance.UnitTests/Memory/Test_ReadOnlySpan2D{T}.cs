@@ -17,7 +17,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests;
 [TestClass]
 public class Test_ReadOnlySpan2DT
 {
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_Empty()
     {
@@ -37,7 +36,6 @@ public class Test_ReadOnlySpan2DT
     }
 
 #if NETCOREAPP
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public unsafe void Test_ReadOnlySpan2DT_RefConstructor()
     {
@@ -66,7 +64,6 @@ public class Test_ReadOnlySpan2DT
     }
 #endif
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public unsafe void Test_ReadOnlySpan2DT_PtrConstructor()
     {
@@ -95,7 +92,6 @@ public class Test_ReadOnlySpan2DT
         _ = Assert.ThrowsException<ArgumentException>(() => new ReadOnlySpan2D<string>((void*)0, 2, 2, 0));
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_Array1DConstructor()
     {
@@ -123,7 +119,6 @@ public class Test_ReadOnlySpan2DT
         _ = Assert.ThrowsException<ArgumentException>(() => new ReadOnlySpan2D<int>(array, 0, 10, 1, 120));
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_Array2DConstructor_1()
     {
@@ -145,7 +140,6 @@ public class Test_ReadOnlySpan2DT
         _ = new ReadOnlySpan2D<object>(new string[1, 2]);
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_Array2DConstructor_2()
     {
@@ -169,7 +163,6 @@ public class Test_ReadOnlySpan2DT
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<object>(new string[1, 2], 0, 0, 2, 2));
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_Array3DConstructor_1()
     {
@@ -199,7 +192,6 @@ public class Test_ReadOnlySpan2DT
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 20));
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_Array3DConstructor_2()
     {
@@ -232,7 +224,6 @@ public class Test_ReadOnlySpan2DT
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 1, 1, 1, 1, -1));
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_CopyTo_1()
     {
@@ -253,7 +244,6 @@ public class Test_ReadOnlySpan2DT
         _ = Assert.ThrowsException<ArgumentException>(() => new ReadOnlySpan2D<int>(array).CopyTo(Span<int>.Empty));
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_CopyTo_2()
     {
@@ -276,7 +266,6 @@ public class Test_ReadOnlySpan2DT
         _ = Assert.ThrowsException<ArgumentException>(() => new ReadOnlySpan2D<int>(array).CopyTo(Span<int>.Empty));
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_CopyTo2D_1()
     {
@@ -297,7 +286,6 @@ public class Test_ReadOnlySpan2DT
         _ = Assert.ThrowsException<ArgumentException>(() => new ReadOnlySpan2D<int>(array).CopyTo(Span2D<int>.Empty));
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_CopyTo2D_2()
     {
@@ -324,7 +312,6 @@ public class Test_ReadOnlySpan2DT
         _ = Assert.ThrowsException<ArgumentException>(() => new ReadOnlySpan2D<int>(array).CopyTo(new Span2D<int>(target)));
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_TryCopyTo()
     {
@@ -342,7 +329,6 @@ public class Test_ReadOnlySpan2DT
         Assert.IsFalse(span2d.TryCopyTo(Span<int>.Empty));
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_TryCopyTo2D()
     {
@@ -360,7 +346,6 @@ public class Test_ReadOnlySpan2DT
         Assert.IsFalse(span2d.TryCopyTo(Span2D<int>.Empty));
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public unsafe void Test_ReadOnlySpan2DT_GetPinnableReference()
     {
@@ -381,7 +366,6 @@ public class Test_ReadOnlySpan2DT
         Assert.IsTrue(Unsafe.AreSame(ref r0, ref array[0, 0]));
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public unsafe void Test_ReadOnlySpan2DT_DangerousGetReference()
     {
@@ -403,7 +387,6 @@ public class Test_ReadOnlySpan2DT
     }
 
 #if NETCOREAPP3_1_OR_GREATER
-    [TestCategory("Span2DT")]
     [TestMethod]
     public unsafe void Test_ReadOnlySpan2DT_Index_Indexer_1()
     {
@@ -417,7 +400,6 @@ public class Test_ReadOnlySpan2DT
         Assert.IsTrue(Unsafe.AreSame(ref arrayRef, ref Unsafe.AsRef(in span2dRef)));
     }
 
-    [TestCategory("Span2DT")]
     [TestMethod]
     public unsafe void Test_ReadOnlySpan2DT_Index_Indexer_2()
     {
@@ -431,7 +413,6 @@ public class Test_ReadOnlySpan2DT
         Assert.IsTrue(Unsafe.AreSame(ref arrayRef, ref Unsafe.AsRef(in span2dRef)));
     }
 
-    [TestCategory("Span2DT")]
     [TestMethod]
     [ExpectedException(typeof(IndexOutOfRangeException))]
     public unsafe void Test_ReadOnlySpan2DT_Index_Indexer_Fail()
@@ -443,7 +424,6 @@ public class Test_ReadOnlySpan2DT
         ref readonly int span2dRef = ref span2d[^6, 2];
     }
 
-    [TestCategory("Span2DT")]
     [TestMethod]
     public unsafe void Test_ReadOnlySpan2DT_Range_Indexer_1()
     {
@@ -457,7 +437,6 @@ public class Test_ReadOnlySpan2DT
         Assert.IsTrue(Unsafe.AreSame(ref array[3, 3], ref Unsafe.AsRef(in slice[2, 2])));
     }
 
-    [TestCategory("Span2DT")]
     [TestMethod]
     public unsafe void Test_ReadOnlySpan2DT_Range_Indexer_2()
     {
@@ -471,7 +450,6 @@ public class Test_ReadOnlySpan2DT
         Assert.IsTrue(Unsafe.AreSame(ref array[1, 2], ref Unsafe.AsRef(in slice[1, 1])));
     }
 
-    [TestCategory("Span2DT")]
     [TestMethod]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public unsafe void Test_ReadOnlySpan2DT_Range_Indexer_Fail()
@@ -485,7 +463,6 @@ public class Test_ReadOnlySpan2DT
     }
 #endif
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_Slice_1()
     {
@@ -523,7 +500,6 @@ public class Test_ReadOnlySpan2DT
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).Slice(1, 1, 55, 1));
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_Slice_2()
     {
@@ -560,7 +536,6 @@ public class Test_ReadOnlySpan2DT
     }
 
 #if NETCOREAPP
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_GetRowReadOnlySpan()
     {
@@ -586,7 +561,6 @@ public class Test_ReadOnlySpan2DT
     }
 #endif
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_TryGetSpan_From1DArray_1()
     {
@@ -601,7 +575,6 @@ public class Test_ReadOnlySpan2DT
         Assert.IsTrue(Unsafe.AreSame(ref array[0], ref Unsafe.AsRef(in span[0])));
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_TryGetSpan_From1DArray_2()
     {
@@ -616,7 +589,6 @@ public class Test_ReadOnlySpan2DT
         Assert.IsTrue(Unsafe.AreSame(ref array[3], ref Unsafe.AsRef(in span[0])));
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_TryGetSpan_From1DArray_3()
     {
@@ -630,7 +602,6 @@ public class Test_ReadOnlySpan2DT
         Assert.AreEqual(span.Length, 0);
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_TryGetReadOnlySpan_From2DArray_1()
     {
@@ -654,7 +625,6 @@ public class Test_ReadOnlySpan2DT
 #endif
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_TryGetReadOnlySpan_From2DArray_2()
     {
@@ -672,7 +642,6 @@ public class Test_ReadOnlySpan2DT
         Assert.IsTrue(span.IsEmpty);
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_ToArray_1()
     {
@@ -692,7 +661,6 @@ public class Test_ReadOnlySpan2DT
         CollectionAssert.AreEqual(array, copy);
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_ToArray_2()
     {
@@ -718,7 +686,6 @@ public class Test_ReadOnlySpan2DT
         CollectionAssert.AreEqual(expected, copy);
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     [ExpectedException(typeof(NotSupportedException))]
     public void Test_ReadOnlySpan2DT_Equals()
@@ -734,7 +701,6 @@ public class Test_ReadOnlySpan2DT
         _ = span2d.Equals(null);
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     [ExpectedException(typeof(NotSupportedException))]
     public void Test_ReadOnlySpan2DT_GetHashCode()
@@ -750,7 +716,6 @@ public class Test_ReadOnlySpan2DT
         _ = span2d.GetHashCode();
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_ToString()
     {
@@ -769,7 +734,6 @@ public class Test_ReadOnlySpan2DT
         Assert.AreEqual(text, expected);
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_opEquals()
     {
@@ -792,7 +756,6 @@ public class Test_ReadOnlySpan2DT
         Assert.IsFalse(span2d_3 == ReadOnlySpan2D<int>.Empty);
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_ImplicitCast()
     {
@@ -808,7 +771,6 @@ public class Test_ReadOnlySpan2DT
         Assert.IsTrue(span2d_1 == span2d_2);
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_GetRow()
     {
@@ -837,7 +799,6 @@ public class Test_ReadOnlySpan2DT
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).GetRow(1000));
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public unsafe void Test_ReadOnlySpan2DT_Pointer_GetRow()
     {
@@ -868,7 +829,6 @@ public class Test_ReadOnlySpan2DT
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 2, 3, 0).GetRow(1000));
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_GetColumn()
     {
@@ -895,7 +855,6 @@ public class Test_ReadOnlySpan2DT
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).GetColumn(1000));
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public unsafe void Test_ReadOnlySpan2DT_Pointer_GetColumn()
     {
@@ -926,7 +885,6 @@ public class Test_ReadOnlySpan2DT
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 2, 3, 0).GetColumn(1000));
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_GetEnumerator()
     {
@@ -949,7 +907,6 @@ public class Test_ReadOnlySpan2DT
         CollectionAssert.AreEqual(result, expected);
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public unsafe void Test_ReadOnlySpan2DT_Pointer_GetEnumerator()
     {
@@ -976,7 +933,6 @@ public class Test_ReadOnlySpan2DT
         CollectionAssert.AreEqual(result, expected);
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_GetEnumerator_Empty()
     {
@@ -985,7 +941,6 @@ public class Test_ReadOnlySpan2DT
         Assert.IsFalse(enumerator.MoveNext());
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_ReadOnlyRefEnumerable_Misc()
     {
@@ -1041,7 +996,6 @@ public class Test_ReadOnlySpan2DT
         Assert.IsFalse(shouldBeFalse);
     }
 
-    [TestCategory("ReadOnlySpan2DT")]
     [TestMethod]
     public void Test_ReadOnlySpan2DT_ReadOnlyRefEnumerable_Cast()
     {

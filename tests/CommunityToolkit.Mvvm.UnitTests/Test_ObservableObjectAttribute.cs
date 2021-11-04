@@ -11,7 +11,6 @@ namespace CommunityToolkit.Mvvm.UnitTests;
 [TestClass]
 public partial class Test_ObservableObjectAttribute
 {
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_ObservableObjectAttribute_Events()
     {
@@ -50,7 +49,6 @@ public partial class Test_ObservableObjectAttribute
         Assert.AreEqual(changed.Item2, 42);
     }
 
-    [TestCategory("Mvvm")]
     [TestMethod]
     public void Test_ObservableObjectAttribute_OnSealedClass_Events()
     {

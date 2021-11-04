@@ -29,7 +29,6 @@ public class Test_ThrowHelper
         [typeof(CancellationToken)] = default(CancellationToken)
     };
 
-    [TestCategory("Guard")]
     [TestMethod]
     [DataRow(typeof(ArrayTypeMismatchException))]
     [DataRow(typeof(ArgumentException))]
@@ -80,7 +79,6 @@ public class Test_ThrowHelper
         }
     }
 
-    [TestCategory("Guard")]
     [TestMethod]
     [DataRow(typeof(ArrayTypeMismatchException))]
     [DataRow(typeof(ArgumentException))]

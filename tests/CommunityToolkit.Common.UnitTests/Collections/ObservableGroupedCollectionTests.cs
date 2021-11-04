@@ -12,7 +12,6 @@ namespace CommunityToolkit.Common.UnitTests.Collections;
 [TestClass]
 public class ObservableGroupedCollectionTests
 {
-    [TestCategory("Collections")]
     [TestMethod]
     public void Ctor_ShouldHaveExpectedValues()
     {
@@ -21,7 +20,6 @@ public class ObservableGroupedCollectionTests
         Assert.AreEqual(groupCollection.Count, 0);
     }
 
-    [TestCategory("Collections")]
     [TestMethod]
     public void Ctor_WithGroups_ShouldHaveExpectedValues()
     {

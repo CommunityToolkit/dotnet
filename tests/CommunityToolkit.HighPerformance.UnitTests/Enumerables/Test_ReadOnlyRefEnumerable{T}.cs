@@ -14,7 +14,6 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Enumerables;
 [TestClass]
 public class Test_ReadOnlyRefEnumerable
 {
-    [TestCategory("ReadOnlyRefEnumerable")]
     [TestMethod]
     [DataRow(1, 1, new[] { 1 })]
     [DataRow(4, 1, new[] { 1, 2, 3, 4 })]
@@ -37,7 +36,6 @@ public class Test_ReadOnlyRefEnumerable
         CollectionAssert.AreEqual(result, values);
     }
 
-    [TestCategory("ReadOnlyRefEnumerable")]
     [TestMethod]
     [DataRow(-44, 10)]
     [DataRow(10, -14)]
@@ -48,7 +46,6 @@ public class Test_ReadOnlyRefEnumerable
         _ = ReadOnlyRefEnumerable<int>.DangerousCreate(in Unsafe.NullRef<int>(), length, step);
     }
 
-    [TestCategory("ReadOnlyRefEnumerable")]
     [TestMethod]
     [DataRow(1, new[] { 1 })]
     [DataRow(1, new[] { 1, 2, 3, 4 })]
@@ -72,7 +69,6 @@ public class Test_ReadOnlyRefEnumerable
         }
     }
 
-    [TestCategory("ReadOnlyRefEnumerable")]
     [TestMethod]
     public void Test_ReadOnlyRefEnumerable_Indexer_ThrowsIndexOutOfRange()
     {
@@ -86,7 +82,6 @@ public class Test_ReadOnlyRefEnumerable
     }
 
 #if NETCOREAPP3_1_OR_GREATER
-    [TestCategory("ReadOnlyRefEnumerable")]
     [TestMethod]
     [DataRow(1, new[] { 1 })]
     [DataRow(1, new[] { 1, 2, 3, 4 })]
@@ -110,7 +105,6 @@ public class Test_ReadOnlyRefEnumerable
         }
     }
 
-    [TestCategory("ReadOnlyRefEnumerable")]
     [TestMethod]
     public void Test_ReadOnlyRefEnumerable_Index_Indexer_ThrowsIndexOutOfRange()
     {
