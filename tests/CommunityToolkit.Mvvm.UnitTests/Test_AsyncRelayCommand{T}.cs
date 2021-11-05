@@ -132,4 +132,53 @@ public class Test_AsyncRelayCommandOfT
         Assert.IsFalse(command.CanExecute(null));
         _ = Assert.ThrowsException<NullReferenceException>(() => command.Execute(null));
     }
+
+    [TestMethod]
+    public async Task Test_AsyncRelayCommandOfT_WithConcurrencyControl()
+    {
+        TaskCompletionSource<object?> tcs = new();
+
+        AsyncRelayCommand<string> command = new(async s => await tcs.Task, allowConcurrentExecutions: false);
+
+        Assert.IsTrue(command.CanExecute(null));
+        Assert.IsTrue(command.CanExecute("1"));
+
+        (object?, EventArgs?) args = default;
+
+        command.CanExecuteChanged += (s, e) => args = (s, e);
+
+        command.NotifyCanExecuteChanged();
+
+        Assert.AreSame(args.Item1, command);
+        Assert.AreSame(args.Item2, EventArgs.Empty);
+
+        Assert.IsNull(command.ExecutionTask);
+        Assert.IsFalse(command.IsRunning);
+
+        Task task = command.ExecuteAsync((object)"42");
+
+        Assert.IsNotNull(command.ExecutionTask);
+        Assert.AreSame(command.ExecutionTask, task);
+        Assert.IsTrue(command.IsRunning);
+
+        // The command can't be executed now, as there's a pending operation
+        Assert.IsFalse(command.CanExecute(null));
+        Assert.IsFalse(command.CanExecute("2"));
+
+        Assert.IsFalse(command.CanBeCanceled);
+        Assert.IsFalse(command.IsCancellationRequested);
+
+        Task newTask = command.ExecuteAsync(null);
+
+        // Execution failed, so a completed task was returned
+        Assert.AreSame(newTask, Task.CompletedTask);
+
+        tcs.SetResult(null);
+
+        await task;
+
+        Assert.IsFalse(command.IsRunning);
+
+        _ = Assert.ThrowsException<InvalidCastException>(() => command.Execute(new object()));
+    }
 }
