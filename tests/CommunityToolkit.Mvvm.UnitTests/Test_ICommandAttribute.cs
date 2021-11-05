@@ -15,7 +15,7 @@ public partial class Test_ICommandAttribute
     [TestMethod]
     public async Task Test_ICommandAttribute_RelayCommand()
     {
-        MyViewModel? model = new();
+        MyViewModel model = new();
 
         model.IncrementCounterCommand.Execute(null);
 
@@ -214,8 +214,50 @@ public partial class Test_ICommandAttribute
         Assert.AreEqual(model.Counter, 1);
     }
 
+    [TestMethod]
+    public async Task Test_ICommandAttribute_ConcurrencyControl_AsyncRelayCommand()
+    {
+        TaskCompletionSource<object?> tcs = new();
+
+        MyViewModel model = new() { ExternalTask = tcs.Task };
+
+        Task task = model.AwaitForExternalTaskCommand.ExecuteAsync(null);
+
+        Assert.IsTrue(model.AwaitForExternalTaskCommand.IsRunning);
+        Assert.IsFalse(model.AwaitForExternalTaskCommand.CanExecute(null));
+
+        tcs.SetResult(null);
+
+        await task;
+
+        Assert.IsFalse(model.AwaitForExternalTaskCommand.IsRunning);
+        Assert.IsTrue(model.AwaitForExternalTaskCommand.CanExecute(null));
+    }
+
+    [TestMethod]
+    public async Task Test_ICommandAttribute_ConcurrencyControl_AsyncRelayCommandOfT()
+    {
+        MyViewModel model = new();
+
+        TaskCompletionSource<object?> tcs = new();
+
+        Task task = model.AwaitForInputTaskCommand.ExecuteAsync(tcs.Task);
+
+        Assert.IsTrue(model.AwaitForInputTaskCommand.IsRunning);
+        Assert.IsFalse(model.AwaitForInputTaskCommand.CanExecute(null));
+
+        tcs.SetResult(null);
+
+        await task;
+
+        Assert.IsFalse(model.AwaitForInputTaskCommand.IsRunning);
+        Assert.IsTrue(model.AwaitForInputTaskCommand.CanExecute(null));
+    }
+
     public sealed partial class MyViewModel
     {
+        public Task? ExternalTask { get; set; }
+
         public int Counter { get; private set; }
 
         /// <summary>This is a single line summary.</summary>
@@ -277,6 +319,18 @@ public partial class Test_ICommandAttribute
             await Task.Delay(50);
 
             Counter += count;
+        }
+
+        [ICommand(AllowConcurrentExecutions = false)]
+        private async Task AwaitForExternalTaskAsync()
+        {
+            await ExternalTask!;
+        }
+
+        [ICommand(AllowConcurrentExecutions = false)]
+        private async Task AwaitForInputTaskAsync(Task task)
+        {
+            await task;
         }
     }
     

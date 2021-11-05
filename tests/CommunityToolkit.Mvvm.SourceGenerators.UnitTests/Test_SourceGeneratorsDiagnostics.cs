@@ -357,6 +357,26 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
+    public void InvalidICommandAllowConcurrentExecutionsSettings()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.Input;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel
+                {
+                    [ICommand(AllowConcurrentExecutions = false)]
+                    private void GreetUser(User user)
+                    {
+                    }
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0014");
+    }
+
+    [TestMethod]
     public void InvalidCanExecuteMemberName()
     {
         string source = @"

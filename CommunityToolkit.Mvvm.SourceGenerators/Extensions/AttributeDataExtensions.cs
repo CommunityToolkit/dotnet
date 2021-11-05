@@ -55,10 +55,9 @@ internal static class AttributeDataExtensions
     {
         foreach (KeyValuePair<string, TypedConstant> properties in attributeData.NamedArguments)
         {
-            if (properties.Key == name &&
-                properties.Value.Value is T argumentValue)
+            if (properties.Key == name)
             {
-                value = argumentValue;
+                value = (T?)properties.Value.Value;
 
                 return true;
             }
