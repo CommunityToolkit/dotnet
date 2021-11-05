@@ -176,38 +176,36 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand
                 return;
             }
 
-            bool isAlreadyCompletedOrNull = value?.IsCompleted ?? true;
-
             this.executionTask = value;
 
             PropertyChanged?.Invoke(this, ExecutionTaskChangedEventArgs);
             PropertyChanged?.Invoke(this, IsRunningChangedEventArgs);
             PropertyChanged?.Invoke(this, CanBeCanceledChangedEventArgs);
 
-            if (isAlreadyCompletedOrNull)
+            if (value?.IsCompleted ?? true)
             {
                 return;
             }
 
-            async void MonitorTask()
+            static async void MonitorTask(AsyncRelayCommand @this, Task task)
             {
                 try
                 {
-                    await value!;
+                    await task;
                 }
                 catch
                 {
                 }
 
-                if (ReferenceEquals(this.executionTask, value))
+                if (ReferenceEquals(@this.executionTask, task))
                 {
-                    PropertyChanged?.Invoke(this, ExecutionTaskChangedEventArgs);
-                    PropertyChanged?.Invoke(this, IsRunningChangedEventArgs);
-                    PropertyChanged?.Invoke(this, CanBeCanceledChangedEventArgs);
+                    @this.PropertyChanged?.Invoke(@this, ExecutionTaskChangedEventArgs);
+                    @this.PropertyChanged?.Invoke(@this, IsRunningChangedEventArgs);
+                    @this.PropertyChanged?.Invoke(@this, CanBeCanceledChangedEventArgs);
                 }
             }
 
-            MonitorTask();
+            MonitorTask(this, value!);
         }
     }
 
