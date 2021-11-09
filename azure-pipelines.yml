@@ -61,7 +61,7 @@ jobs:
     condition: always()
 
   # Create the NuGet package(s)
-  - powershell: .\build\build.ps1 -Target Package
+  - powershell: dotnet pack --configuration Release
     displayName: Create NuGet package(s)
 
   # Sign package(s)
