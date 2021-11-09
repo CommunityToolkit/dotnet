@@ -18,7 +18,7 @@ $nupkgs = Get-ChildItem $Env:ArtifactDirectory\*.nupkg -recurse | Select-Object 
 foreach ($nupkg in $nupkgs) {
   Write-Host "Submitting $nupkg for signing"
 
-  .\SignClient 'sign' -c $appSettings -i $nupkg -r $Env:SignClientUser -s $Env:SignClientSecret -n 'Windows Community Toolkit' -d 'Windows Community Toolkit' -u 'https://developer.microsoft.com/en-us/windows/uwp-community-toolkit'
+  .\SignClient 'sign' -c $appSettings -i $nupkg -r $Env:SignClientUser -s $Env:SignClientSecret -n '.NET Community Toolkit' -d '.NET Community Toolkit' -u 'https://developer.microsoft.com/en-us/windows/uwp-community-toolkit'
   if ($LASTEXITCODE -ne 0) {
     exit 1
   }
