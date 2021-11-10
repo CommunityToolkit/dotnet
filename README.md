@@ -32,8 +32,7 @@ Check out our [Preview Packages Wiki Page](https://github.com/CommunityToolkit/d
 
 ## 📄 Code of Conduct
 
-This project has adopted the code of conduct defined by the [Contributor Covenant](http://contributor-covenant.org/)
-to clarify expected behavior in our community.
+This project has adopted the code of conduct defined by the [Contributor Covenant](http://contributor-covenant.org/) to clarify expected behavior in our community.
 For more information see the [.NET Foundation Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## 🏢 .NET Foundation
