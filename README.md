@@ -5,7 +5,7 @@
 
 | Target | Branch | Status | Recommended package version |
 | ------ | ------ | ------ | ------ |
-| Production | rel/7.0.2 | [![Build Status](https://dev.azure.com/dotnet/CommunityToolkit/_apis/build/status/Toolkit-CI?branchName=rel/7.0.2)](https://dev.azure.com/dotnet/CommunityToolkit/_build/latest?definitionId=10&branchName=rel/7.0.2) | [![NuGet](https://img.shields.io/nuget/v/Microsoft.Toolkit.Uwp.svg)](https://www.nuget.org/profiles/Microsoft.Toolkit) |
+| Production | rel/7.1.1 | [![Build Status](https://dev.azure.com/dotnet/CommunityToolkit/_apis/build/status/Toolkit-CI?branchName=rel/7.1.1)](https://dev.azure.com/dotnet/CommunityToolkit/_build/latest?definitionId=10&branchName=rel/7.1.1) | [![NuGet](https://img.shields.io/nuget/v/Microsoft.Toolkit.svg)](https://www.nuget.org/profiles/Microsoft.Toolkit) |
 | Previews | main | [![Build Status](https://dev.azure.com/dotnet/CommunityToolkit/_apis/build/status/Toolkit-CI?branchName=main)](https://dev.azure.com/dotnet/CommunityToolkit/_build/latest?definitionId=10) | [![DevOps](https://vsrm.dev.azure.com/dotnet/_apis/public/Release/badge/696bc9fd-f160-4e97-a1bd-7cbbb3b58f66/1/1)](https://dev.azure.com/dotnet/CommunityToolkit/_packaging?_a=feed&feed=CommunityToolkit-MainLatest) |
 
 ## 🙌 Getting Started
@@ -32,10 +32,17 @@ Check out our [Preview Packages Wiki Page](https://github.com/CommunityToolkit/d
 
 ## 📄 Code of Conduct
 
-This project has adopted the code of conduct defined by the [Contributor Covenant](http://contributor-covenant.org/)
-to clarify expected behavior in our community.
+This project has adopted the code of conduct defined by the [Contributor Covenant](http://contributor-covenant.org/) to clarify expected behavior in our community.
 For more information see the [.NET Foundation Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## 🏢 .NET Foundation
 
 This project is supported by the [.NET Foundation](http://dotnetfoundation.org).
+
+## Contributors
+
+<a href="https://github.com/CommunityToolkit/dotnet/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=CommunityToolkit/dotnet" />
+</a>
+
+Made with [contrib.rocks](https://contrib.rocks).
