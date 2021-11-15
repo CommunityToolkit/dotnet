@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Reflection;
 
 namespace CommunityToolkit.Common.Helpers;
 
@@ -21,12 +20,9 @@ public class SystemSerializer : IObjectSerializer
     /// <returns>Deserialized value or default value.</returns>
     public T Deserialize<T>(string value)
     {
-        Type? type = typeof(T);
-        TypeInfo? typeInfo = type.GetTypeInfo();
-
-        if (typeInfo.IsPrimitive || type == typeof(string))
+        if (typeof(T).IsPrimitive || typeof(T) == typeof(string))
         {
-            return (T)Convert.ChangeType(value, type);
+            return (T)Convert.ChangeType(value, typeof(T));
         }
 
         throw new NotSupportedException("This serializer can only handle primitive types and strings. Please implement your own IObjectSerializer for more complex scenarios.");

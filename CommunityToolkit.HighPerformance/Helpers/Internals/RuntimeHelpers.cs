@@ -184,12 +184,12 @@ internal static class RuntimeHelpers
     private static bool IsReferenceOrContainsReferences(Type type)
     {
         // Common case, for primitive types
-        if (type.GetTypeInfo().IsPrimitive)
+        if (type.IsPrimitive)
         {
             return false;
         }
 
-        if (!type.GetTypeInfo().IsValueType)
+        if (!type.IsValueType)
         {
             return true;
         }
@@ -200,19 +200,14 @@ internal static class RuntimeHelpers
             type = nullableType;
         }
 
-        if (type.GetTypeInfo().IsEnum)
+        if (type.IsEnum)
         {
             return false;
         }
 
         // Complex struct, recursively inspect all fields
-        foreach (FieldInfo field in type.GetTypeInfo().DeclaredFields)
+        foreach (FieldInfo field in type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
         {
-            if (field.IsStatic)
-            {
-                continue;
-            }
-
             if (IsReferenceOrContainsReferences(field.FieldType))
             {
                 return true;
