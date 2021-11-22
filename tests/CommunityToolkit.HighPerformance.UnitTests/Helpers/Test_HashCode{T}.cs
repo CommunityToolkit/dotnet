@@ -56,7 +56,7 @@ public class Test_HashCodeOfT
         TestForType<char>();
     }
 
-#if NETCOREAPP3_1 || NET6_0_OR_GREATER
+#if NETCOREAPP3_1_OR_GREATER
     [TestMethod]
     public void Test_HashCodeOfT_ManagedType_TestRepeat()
     {
