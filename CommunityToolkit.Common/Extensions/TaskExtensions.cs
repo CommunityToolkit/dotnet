@@ -39,7 +39,7 @@ public static class TaskExtensions
         {
             // We need an explicit check to ensure the input task is not the cached
             // Task.CompletedTask instance, because that can internally be stored as
-            // a Task<T> for some given T (eg. on .NET 5 it's VoidTaskResult), which
+            // a Task<T> for some given T (eg. on .NET 6 it's VoidTaskResult), which
             // would cause the following code to return that result instead of null.
             if (task != Task.CompletedTask)
             {
