@@ -40,9 +40,9 @@ jobs:
   - powershell: dotnet build -c Release
     displayName: Build solution
 
-  # Run .NET 5 tests
-  - powershell: dotnet test --logger "trx;LogFileName=VsTestResultsNet5.trx" --framework net5.0 --configuration Release
-    displayName: Run .NET 5 unit tests
+  # Run .NET 6 tests
+  - powershell: dotnet test --logger "trx;LogFileName=VsTestResultsNet6.trx" --framework net6.0 --configuration Release
+    displayName: Run .NET 6 unit tests
 
   # Run .NET Core 3.1 tests
   - powershell: dotnet test --logger "trx;LogFileName=VsTestResultsNetCore31.trx" --framework netcoreapp3.1 --configuration Release
