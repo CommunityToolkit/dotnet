@@ -419,7 +419,7 @@ public partial class Test_ArrayExtensions
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetColumn(0).ToArray());
     }
 
-#if NETCOREAPP3_1 || NET5_0
+#if NETCOREAPP3_1 || NET6_0_OR_GREATER
     [TestMethod]
     public void Test_ArrayExtensions_2D_AsSpan_Empty()
     {

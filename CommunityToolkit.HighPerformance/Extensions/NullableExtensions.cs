@@ -2,11 +2,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-// This extension is restricted to the .NET 5 because it shares the same BCL
+// This extension is restricted to the .NET 6 because it shares the same BCL
 // across all targets, ensuring that the layout of our Nullable<T> mapping type
 // will be correct. Exposing this API on older targets (especially .NET Standard)
 // is not guaranteed to be correct and could result in invalid memory accesses.
-#if NET5_0
+
+#if NET6_0_OR_GREATER
 
 using System;
 using System.Runtime.CompilerServices;
