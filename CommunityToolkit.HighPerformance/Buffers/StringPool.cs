@@ -8,7 +8,11 @@ using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using System.Text;
 using CommunityToolkit.HighPerformance.Helpers;
+#if NET6_0_OR_GREATER
+using BitOperations = System.Numerics.BitOperations;
+#else
 using BitOperations = CommunityToolkit.HighPerformance.Helpers.Internals.BitOperations;
+#endif
 
 namespace CommunityToolkit.HighPerformance.Buffers;
 
@@ -66,13 +70,13 @@ public sealed class StringPool
         minimumSize = Math.Max(minimumSize, MinimumSize);
 
         // Calculates the rounded up factors for a specific size/factor pair
-        static void FindFactors(int size, int factor, out int x, out int y)
+        static void FindFactors(int size, int factor, out uint x, out uint y)
         {
             double a = Math.Sqrt((double)size / factor);
             double b = factor * a;
 
-            x = BitOperations.RoundUpPowerOfTwo((int)a);
-            y = BitOperations.RoundUpPowerOfTwo((int)b);
+            x = BitOperations.RoundUpToPowerOf2((uint)a);
+            y = BitOperations.RoundUpToPowerOf2((uint)b);
         }
 
         // We want to find two powers of 2 factors that produce a number
@@ -84,13 +88,13 @@ public sealed class StringPool
         // as well as the multithreading performance when locking on maps.
         // We still want to contraint this number to avoid situations where we
         // have a way too high number of maps compared to total size.
-        FindFactors(minimumSize, 2, out int x2, out int y2);
-        FindFactors(minimumSize, 3, out int x3, out int y3);
-        FindFactors(minimumSize, 4, out int x4, out int y4);
+        FindFactors(minimumSize, 2, out uint x2, out uint y2);
+        FindFactors(minimumSize, 3, out uint x3, out uint y3);
+        FindFactors(minimumSize, 4, out uint x4, out uint y4);
 
-        int p2 = x2 * y2;
-        int p3 = x3 * y3;
-        int p4 = x4 * y4;
+        uint p2 = x2 * y2;
+        uint p3 = x3 * y3;
+        uint p4 = x4 * y4;
 
         if (p3 < p2)
         {
@@ -113,12 +117,12 @@ public sealed class StringPool
         // This lets us lock on each individual maps when retrieving a string instance.
         foreach (ref FixedSizePriorityMap map in span)
         {
-            map = new FixedSizePriorityMap(y2);
+            map = new FixedSizePriorityMap((int)y2);
         }
 
-        this.numberOfMaps = x2;
+        this.numberOfMaps = (int)x2;
 
-        Size = p2;
+        Size = (int)p2;
     }
 
     /// <summary>

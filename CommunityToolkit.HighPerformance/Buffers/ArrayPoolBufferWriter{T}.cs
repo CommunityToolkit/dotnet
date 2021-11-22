@@ -9,7 +9,11 @@ using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using CommunityToolkit.HighPerformance.Buffers.Views;
-using CommunityToolkit.HighPerformance.Helpers.Internals;
+#if NET6_0_OR_GREATER
+using BitOperations = System.Numerics.BitOperations;
+#else
+using BitOperations = CommunityToolkit.HighPerformance.Helpers.Internals.BitOperations;
+#endif
 
 namespace CommunityToolkit.HighPerformance.Buffers;
 
@@ -283,7 +287,7 @@ public sealed class ArrayPoolBufferWriter<T> : IBuffer<T>, IMemoryOwner<T>
     [MethodImpl(MethodImplOptions.NoInlining)]
     private void ResizeBuffer(int sizeHint)
     {
-        int minimumSize = this.index + sizeHint;
+        uint minimumSize = (uint)this.index + (uint)sizeHint;
 
         // The ArrayPool<T> class has a maximum threshold of 1024 * 1024 for the maximum length of
         // pooled arrays, and once this is exceeded it will just allocate a new array every time
@@ -292,10 +296,10 @@ public sealed class ArrayPoolBufferWriter<T> : IBuffer<T>, IMemoryOwner<T>
         // use is bigger than that threshold don't end up causing a resize every single time.
         if (minimumSize > 1024 * 1024)
         {
-            minimumSize = BitOperations.RoundUpPowerOfTwo(minimumSize);
+            minimumSize = BitOperations.RoundUpToPowerOf2(minimumSize);
         }
 
-        this.pool.Resize(ref this.array, minimumSize);
+        this.pool.Resize(ref this.array, (int)minimumSize);
     }
 
     /// <inheritdoc/>
