@@ -2,9 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Diagnostics.Contracts;
+#if !NET6_0_OR_GREATER
+
 using System.Runtime.CompilerServices;
-#if NETCOREAPP3_1 || NET5_0
+#if NETCOREAPP3_1
+using System.Runtime.Intrinsics.X86;
 using static System.Numerics.BitOperations;
 #endif
 
@@ -17,26 +19,42 @@ namespace CommunityToolkit.HighPerformance.Helpers.Internals;
 internal static class BitOperations
 {
     /// <summary>
-    /// Rounds up an <see cref="int"/> value to a power of 2.
+    /// Round the given integral value up to a power of 2.
     /// </summary>
-    /// <param name="x">The input value to round up.</param>
-    /// <returns>The smallest power of two greater than or equal to <paramref name="x"/>.</returns>
-    [Pure]
+    /// <param name="value">The value.</param>
+    /// <returns>
+    /// The smallest power of 2 which is greater than or equal to <paramref name="value"/>.
+    /// If <paramref name="value"/> is 0 or the result overflows, returns 0.
+    /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int RoundUpPowerOfTwo(int x)
+    public static unsafe uint RoundUpToPowerOf2(uint value)
     {
-#if NETCOREAPP3_1 || NET5_0
-        return 1 << (32 - LeadingZeroCount((uint)(x - 1)));
-#else
-        x--;
-        x |= x >> 1;
-        x |= x >> 2;
-        x |= x >> 4;
-        x |= x >> 8;
-        x |= x >> 16;
-        x++;
+#if NETCOREAPP3_1
+        if (Lzcnt.IsSupported)
+        {
+            if (sizeof(nint) == 8)
+            {
+                return (uint)(0x1_0000_0000ul >> LeadingZeroCount(value - 1));
+            }
+            else
+            {
+                int shift = 32 - LeadingZeroCount(value - 1);
 
-        return x;
+                return (1u ^ (uint)(shift >> 5)) << shift;
+            }
+        }
 #endif
+
+        // Based on https://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
+        --value;
+        value |= value >> 1;
+        value |= value >> 2;
+        value |= value >> 4;
+        value |= value >> 8;
+        value |= value >> 16;
+
+        return value + 1;
     }
 }
+
+#endif

@@ -16,7 +16,7 @@ namespace CommunityToolkit.Common.Deferred;
 /// </summary>
 public class EventDeferral : IDisposable
 {
-    //// TODO: If/when .NET 5 is base, we can upgrade to non-generic version
+    //// TODO: If/when .NET 6 is base, we can upgrade to non-generic version
     private readonly TaskCompletionSource<object?> _taskCompletionSource = new();
 
     internal EventDeferral()

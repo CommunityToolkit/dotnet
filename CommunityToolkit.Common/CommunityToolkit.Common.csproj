@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard2.1;net5.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -14,8 +14,8 @@
     <PackageTags>Incremental;Loading;Collection;IncrementalLoadingCollection;String;Array;Extensions;Helpers</PackageTags>
   </PropertyGroup>
 
-  <!-- .NET Standard 2.1 and .NET 5 already have [NotNullIfNotNull] and [NotNullWhen] -->
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net5.0'">
+  <!-- .NET Standard 2.1 and .NET 6 already have [NotNullIfNotNull] and [NotNullWhen] -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
     <DefineConstants>NETSTANDARD2_1_OR_GREATER</DefineConstants>
   </PropertyGroup>
 

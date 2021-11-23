@@ -28,7 +28,7 @@ public static class StringExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref char DangerousGetReference(this string text)
     {
-#if NETCOREAPP3_1 || NET5_0
+#if NETCOREAPP3_1_OR_GREATER
         return ref Unsafe.AsRef(text.GetPinnableReference());
 #else
         return ref MemoryMarshal.GetReference(text.AsSpan());
@@ -46,7 +46,7 @@ public static class StringExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref char DangerousGetReferenceAt(this string text, int i)
     {
-#if NETCOREAPP3_1 || NET5_0
+#if NETCOREAPP3_1_OR_GREATER
         ref char r0 = ref Unsafe.AsRef(text.GetPinnableReference());
 #else
         ref char r0 = ref MemoryMarshal.GetReference(text.AsSpan());

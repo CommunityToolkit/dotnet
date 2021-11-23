@@ -50,7 +50,7 @@ public partial class Test_ParallelHelper
         }
     }
 
-#if NETCOREAPP3_1 || NET5_0
+#if NETCOREAPP3_1_OR_GREATER
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void Test_ParallelHelper_For2DInvalidRange_FromEnd()
