@@ -79,6 +79,7 @@ internal static class RuntimeHelpers
         return (nint)array.LongLength;
     }
 
+#if !NETCOREAPP3_1_OR_GREATER
     /// <summary>
     /// Gets the byte offset to the first <typeparamref name="T"/> element in a SZ array.
     /// </summary>
@@ -90,6 +91,7 @@ internal static class RuntimeHelpers
     {
         return TypeInfo<T>.ArrayDataByteOffset;
     }
+#endif
 
     /// <summary>
     /// Gets the byte offset to the first <typeparamref name="T"/> element in a 2D array.

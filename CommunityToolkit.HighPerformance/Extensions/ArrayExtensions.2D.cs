@@ -32,7 +32,9 @@ public static partial class ArrayExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref T DangerousGetReference<T>(this T[,] array)
     {
-#if NETCOREAPP3_1
+#if NET6_0_OR_GREATER
+        return ref Unsafe.As<byte, T>(ref MemoryMarshal.GetArrayDataReference(array));
+#elif NETCOREAPP3_1
         RawArray2DData? arrayData = Unsafe.As<RawArray2DData>(array)!;
         ref T r0 = ref Unsafe.As<byte, T>(ref arrayData.Data);
 
@@ -62,7 +64,14 @@ public static partial class ArrayExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref T DangerousGetReferenceAt<T>(this T[,] array, int i, int j)
     {
-#if NETCOREAPP3_1
+#if NET6_0_OR_GREATER
+        int width = array.GetLength(1);
+        nint index = ((nint)(uint)i * (nint)(uint)width) + (nint)(uint)j;
+        ref T r0 = ref Unsafe.As<byte, T>(ref MemoryMarshal.GetArrayDataReference(array));
+        ref T ri = ref Unsafe.Add(ref r0, index);
+
+        return ref ri;
+#elif NETCOREAPP3_1
         RawArray2DData? arrayData = Unsafe.As<RawArray2DData>(array)!;
         nint offset = ((nint)(uint)i * (nint)(uint)arrayData.Width) + (nint)(uint)j;
         ref T r0 = ref Unsafe.As<byte, T>(ref arrayData.Data);
