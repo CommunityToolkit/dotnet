@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using Microsoft.Collections.Extensions;
 using CommunityToolkit.Mvvm.Messaging.Internals;
-#if NETSTANDARD2_0
+#if NETSTANDARD2_0 || NET6_0_OR_GREATER
 using RecipientsTable = CommunityToolkit.Mvvm.Messaging.Internals.ConditionalWeakTable2<object, Microsoft.Collections.Extensions.IDictionarySlim>;
 #else
 using RecipientsTable = System.Runtime.CompilerServices.ConditionalWeakTable<object, Microsoft.Collections.Extensions.IDictionarySlim>;
