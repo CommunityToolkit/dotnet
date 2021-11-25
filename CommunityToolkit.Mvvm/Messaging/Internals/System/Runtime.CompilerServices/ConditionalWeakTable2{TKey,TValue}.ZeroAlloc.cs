@@ -22,7 +22,7 @@ namespace CommunityToolkit.Mvvm.Messaging.Internals;
 /// </summary>
 /// <typeparam name="TKey">Tke key of items to store in the table.</typeparam>
 /// <typeparam name="TValue">The values to store in the table.</typeparam>
-internal sealed class ConditionalWeakTable2<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
+internal sealed class ConditionalWeakTable2<TKey, TValue>
     where TKey : class
     where TValue : class?
 {
@@ -108,28 +108,20 @@ internal sealed class ConditionalWeakTable2<TKey, TValue> : IEnumerable<KeyValue
     }
 
     /// <inheritdoc/>
-    IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
+    public Enumerator GetEnumerator()
     {
         lock (this.lockObject)
         {
             Container c = this.container;
 
-            return c is null || c.FirstFreeEntry == 0 ?
-                ((IEnumerable<KeyValuePair<TKey, TValue>>)Array.Empty<KeyValuePair<TKey, TValue>>()).GetEnumerator() :
-                new Enumerator(this);
+            return c is null || c.FirstFreeEntry == 0 ? default : new Enumerator(this);
         }
     }
 
-    /// <inheritdoc/>
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return ((IEnumerable<KeyValuePair<TKey, TValue>>)this).GetEnumerator();
-    }
-
     /// <summary>
-    /// Provides an enumerator for the table.
+    /// Provides an enumerator for the current <see cref="ConditionalWeakTable2{TKey, TValue}"/> instance.
     /// </summary>
-    private sealed class Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
+    public ref struct Enumerator
     {
         /// <summary>
         /// Parent table, set to null when disposed.
@@ -165,13 +157,10 @@ internal sealed class ConditionalWeakTable2<TKey, TValue> : IEnumerable<KeyValue
             // Store the max index to be enumerated
             this.maxIndexInclusive = table.container.FirstFreeEntry - 1;
             this.currentIndex = -1;
+            this.current = default;
         }
 
-        ~Enumerator()
-        {
-            Dispose();
-        }
-
+        /// <inheritdoc cref="IDisposable.Dispose"/>
         public void Dispose()
         {
             // Use an interlocked operation to ensure that only one thread can get access
@@ -188,15 +177,13 @@ internal sealed class ConditionalWeakTable2<TKey, TValue> : IEnumerable<KeyValue
                 {
                     table.activeEnumeratorRefCount--;
                 }
-
-                // Finalization is purely to decrement the ref count.  We can suppress it now
-                GC.SuppressFinalize(this);
             }
         }
 
+        /// <inheritdoc cref="IEnumerator.MoveNext"/>
         public bool MoveNext()
         {
-            // Start by getting the current table.  If it's already been disposed, it will be null
+            // Start by getting the current table. If it's already been disposed, it will be null
             ConditionalWeakTable2<TKey, TValue>? table = this.table;
 
             if (table != null)
@@ -232,12 +219,10 @@ internal sealed class ConditionalWeakTable2<TKey, TValue> : IEnumerable<KeyValue
             return false;
         }
 
-        public KeyValuePair<TKey, TValue> Current => this.current;
-
-        object? IEnumerator.Current => Current;
-
-        public void Reset()
+        public KeyValuePair<TKey, TValue> Current
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => this.current;
         }
     }
 
