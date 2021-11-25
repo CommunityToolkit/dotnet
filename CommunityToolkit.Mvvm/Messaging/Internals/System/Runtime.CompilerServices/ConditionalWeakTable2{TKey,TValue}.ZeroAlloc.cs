@@ -42,11 +42,6 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
     private volatile Container container;
 
     /// <summary>
-    /// The number of outstanding enumerators on the table
-    /// </summary>
-    private int activeEnumeratorRefCount;
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="ConditionalWeakTable2{TKey, TValue}"/> class.
     /// </summary>
     public ConditionalWeakTable2()
@@ -99,7 +94,7 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
             }
             else
             {
-                // Verified in-lock that we won the race to add the key. Add it now.
+                // Verified in-lock that we won the race to add the key. Add it now
                 CreateEntry(key, newValue);
 
                 return newValue;
@@ -152,8 +147,6 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
             // Store a reference to the parent table and increase its active enumerator count
             this.table = table;
 
-            table.activeEnumeratorRefCount++;
-
             // Store the max index to be enumerated
             this.maxIndexInclusive = table.container.FirstFreeEntry - 1;
             this.currentIndex = -1;
@@ -171,12 +164,6 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
             {
                 // Ensure we don't keep the last current alive unnecessarily
                 this.current = default;
-
-                // Decrement the ref count that was incremented when constructed
-                lock (table.lockObject)
-                {
-                    table.activeEnumeratorRefCount--;
-                }
             }
         }
 
@@ -485,30 +472,26 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
             bool hasExpiredEntries = false;
             int newSize = this.buckets.Length;
 
-            if (this.parent is null || this.parent.activeEnumeratorRefCount == 0)
+            // If any expired or removed keys exist, we won't resize
+            for (int entriesIndex = 0; entriesIndex < this.entries.Length; entriesIndex++)
             {
-                // If any expired or removed keys exist, we won't resize. If there any active
-                // enumerators, though, we don't want to compact and thus have no expired entries.
-                for (int entriesIndex = 0; entriesIndex < this.entries.Length; entriesIndex++)
+                ref Entry entry = ref this.entries[entriesIndex];
+
+                if (entry.HashCode == -1)
                 {
-                    ref Entry entry = ref this.entries[entriesIndex];
+                    // the entry was removed
+                    hasExpiredEntries = true;
+                    break;
+                }
 
-                    if (entry.HashCode == -1)
-                    {
-                        // the entry was removed
-                        hasExpiredEntries = true;
-                        break;
-                    }
+                if (entry.depHnd.IsAllocated &&
+                    // entry.depHnd.UnsafeGetTarget() is null)
+                    entry.depHnd.Target is null)
+                {
+                    // the entry has expired
+                    hasExpiredEntries = true;
 
-                    if (entry.depHnd.IsAllocated &&
-                        // entry.depHnd.UnsafeGetTarget() is null)
-                        entry.depHnd.Target is null)
-                    {
-                        // the entry has expired
-                        hasExpiredEntries = true;
-
-                        break;
-                    }
+                    break;
                 }
             }
 
@@ -534,61 +517,35 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
 
             Entry[] newEntries = new Entry[newSize];
             int newEntriesIndex = 0;
-            bool activeEnumerators = this.parent != null && this.parent.activeEnumeratorRefCount > 0;
 
-            // Migrate existing entries to the new table.
-            if (activeEnumerators)
+            // There are no active enumerators, which means we want to compact by removing expired/removed entries
+            for (int entriesIndex = 0; entriesIndex < this.entries.Length; entriesIndex++)
             {
-                // There's at least one active enumerator, which means we don't want to
-                // remove any expired/removed entries, in order to not affect existing
-                // entries indices.  Copy over the entries while rebuilding the buckets list,
-                // as the buckets are dependent on the buckets list length, which is changing.
-                for (; newEntriesIndex < this.entries.Length; newEntriesIndex++)
+                ref Entry oldEntry = ref this.entries[entriesIndex];
+                int hashCode = oldEntry.HashCode;
+                DependentHandle depHnd = oldEntry.depHnd;
+
+                if (hashCode != -1 && depHnd.IsAllocated)
                 {
-                    ref Entry oldEntry = ref this.entries[newEntriesIndex];
-                    ref Entry newEntry = ref newEntries[newEntriesIndex];
-                    int hashCode = oldEntry.HashCode;
-
-                    newEntry.HashCode = hashCode;
-                    newEntry.depHnd = oldEntry.depHnd;
-
-                    int bucket = hashCode & (newBuckets.Length - 1);
-
-                    newEntry.Next = newBuckets[bucket];
-                    newBuckets[bucket] = newEntriesIndex;
-                }
-            }
-            else
-            {
-                // There are no active enumerators, which means we want to compact by removing expired/removed entries.
-                for (int entriesIndex = 0; entriesIndex < this.entries.Length; entriesIndex++)
-                {
-                    ref Entry oldEntry = ref this.entries[entriesIndex];
-                    int hashCode = oldEntry.HashCode;
-                    DependentHandle depHnd = oldEntry.depHnd;
-
-                    if (hashCode != -1 && depHnd.IsAllocated)
+                    // if (depHnd.UnsafeGetTarget() is not null)
+                    if (depHnd.Target is not null)
                     {
-                        // if (depHnd.UnsafeGetTarget() is not null)
-                        if (depHnd.Target is not null)
-                        {
-                            ref Entry newEntry = ref newEntries[newEntriesIndex];
+                        ref Entry newEntry = ref newEntries[newEntriesIndex];
 
-                            // Entry is used and has not expired. Link it into the appropriate bucket list.
-                            newEntry.HashCode = hashCode;
-                            newEntry.depHnd = depHnd;
+                        // Entry is used and has not expired. Link it into the appropriate bucket list
+                        newEntry.HashCode = hashCode;
+                        newEntry.depHnd = depHnd;
 
-                            int bucket = hashCode & (newBuckets.Length - 1);
+                        int bucket = hashCode & (newBuckets.Length - 1);
 
-                            newEntry.Next = newBuckets[bucket];
-                            newBuckets[bucket] = newEntriesIndex;
-                            newEntriesIndex++;
-                        }
-                        else
-                        {
-                            // Pretend the item was removed, so that this container's finalizer will clean up this dependent handle.
-                            Volatile.Write(ref oldEntry.HashCode, -1);
-                        }
+                        newEntry.Next = newBuckets[bucket];
+                        newBuckets[bucket] = newEntriesIndex;
+                        newEntriesIndex++;
+                    }
+                    else
+                    {
+                        // Pretend the item was removed, so that this container's finalizer will clean up this dependent handle
+                        Volatile.Write(ref oldEntry.HashCode, -1);
                     }
                 }
             }
@@ -599,19 +556,10 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
             // to the new one, which will keep the new container alive as long as the old one is.
             Container newContainer = new(this.parent!, newBuckets, newEntries, newEntriesIndex);
 
-            if (activeEnumerators)
-            {
-                // If there are active enumerators, both the old container and the new container may be storing
-                // the same entries with -1 hash codes, which the finalizer will clean up even if the container
-                // is not the active container for the table. To prevent that, we want to stop the old container
-                // from being finalized, as it no longer has any responsibility for any cleanup.
-                GC.SuppressFinalize(this);
-            }
-
             // Once this is set, the old container's finalizer will not free transferred dependent handles
             this.oldKeepAlive = newContainer;
 
-            // Ensure we don't get finalized while accessing DependentHandles.
+            // Ensure we don't get finalized while accessing DependentHandles
             GC.KeepAlive(this);
 
             return newContainer;
