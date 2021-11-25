@@ -12,8 +12,6 @@ using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
-#pragma warning disable CA1816
-
 namespace CommunityToolkit.Mvvm.Messaging.Internals;
 
 /// <summary>
@@ -105,12 +103,17 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
     /// <inheritdoc/>
     public Enumerator GetEnumerator()
     {
-        lock (this.lockObject)
-        {
-            Container c = this.container;
+        // This is an optimization specific for this custom table that relies on the way the enumerator is being
+        // used within the messenger type. Specifically, enumerators are always used in a using block, meaning
+        // Dispose() is always guaranteed to be executed. Given we cannot remove the internal lock for the table
+        // as it's needed to ensure consistency in case a container is resurrected (see below), the solution to
+        // speedup iteration is to avoid taking and releasing a lock repeatedly every single time MoveNext() is
+        // invoked. This is fine in this specific scenario because we're the only users of the enumerators so
+        // there's no concern about blocking other threads while enumerating. So here we just preemptively take
+        // a lock for the entire lifetime of the enumerator, and just release it once once we're done.
+        Monitor.Enter(this.lockObject);
 
-            return c is null || c.FirstFreeEntry == 0 ? default : new Enumerator(this);
-        }
+        return new Enumerator(this);
     }
 
     /// <summary>
@@ -121,7 +124,7 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
         /// <summary>
         /// Parent table, set to null when disposed.
         /// </summary>
-        private ConditionalWeakTable2<TKey, TValue>? table;
+        private ConditionalWeakTable2<TKey, TValue> table;
 
         /// <summary>
         /// Last index in the container that should be enumerated.
@@ -147,58 +150,58 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
             // Store a reference to the parent table and increase its active enumerator count
             this.table = table;
 
-            // Store the max index to be enumerated
-            this.maxIndexInclusive = table.container.FirstFreeEntry - 1;
-            this.currentIndex = -1;
-            this.current = default;
+            Container c = table.container;
+
+            if (c is null || c.FirstFreeEntry == 0)
+            {
+                // The max index is the same as the current to prevent enumeration
+                this.maxIndexInclusive = -1;
+                this.currentIndex = -1;
+                this.current = default;
+            }
+            else
+            {
+                // Store the max index to be enumerated
+                this.maxIndexInclusive = table.container.FirstFreeEntry - 1;
+                this.currentIndex = -1;
+                this.current = default;
+            }
         }
 
         /// <inheritdoc cref="IDisposable.Dispose"/>
         public void Dispose()
         {
-            // Use an interlocked operation to ensure that only one thread can get access
-            // to the _table for disposal and thus only decrement the ref count once
-            ConditionalWeakTable2<TKey, TValue>? table = Interlocked.Exchange(ref this.table, null);
+            // Release the lock
+            Monitor.Exit(this.table.lockObject);
 
-            if (table != null)
-            {
-                // Ensure we don't keep the last current alive unnecessarily
-                this.current = default;
-            }
+            this.table = null!;
+
+            // Ensure we don't keep the last current alive unnecessarily
+            this.current = default;
         }
 
         /// <inheritdoc cref="IEnumerator.MoveNext"/>
         public bool MoveNext()
         {
-            // Start by getting the current table. If it's already been disposed, it will be null
-            ConditionalWeakTable2<TKey, TValue>? table = this.table;
+            // From the table, we have to get the current container. This could have changed
+            // since we grabbed the enumerator, but the index-to-pair mapping should not have
+            // due to there being at least one active enumerator. If the table (or rather its
+            // container at the time) has already been finalized, this will be null.
+            Container c = this.table.container;
 
-            if (table != null)
+            if (c != null)
             {
-                // Once have the table, we need to lock to synchronize with other operations on the table, like adding
-                lock (table.lockObject)
+                // We have the container. Find the next entry to return, if there is one. We need to loop as we
+                // may try to get an entry that's already been removed or collected, in which case we try again.
+                while (this.currentIndex < this.maxIndexInclusive)
                 {
-                    // From the table, we have to get the current container. This could have changed
-                    // since we grabbed the enumerator, but the index-to-pair mapping should not have
-                    // due to there being at least one active enumerator. If the table (or rather its
-                    // container at the time) has already been finalized, this will be null.
-                    Container c = table.container;
+                    this.currentIndex++;
 
-                    if (c != null)
+                    if (c.TryGetEntry(this.currentIndex, out TKey? key, out TValue? value))
                     {
-                        // We have the container. Find the next entry to return, if there is one. We need to loop as we
-                        // may try to get an entry that's already been removed or collected, in which case we try again.
-                        while (this.currentIndex < this.maxIndexInclusive)
-                        {
-                            this.currentIndex++;
+                        this.current = new KeyValuePair<TKey, TValue>(key, value);
 
-                            if (c.TryGetEntry(this.currentIndex, out TKey? key, out TValue? value))
-                            {
-                                this.current = new KeyValuePair<TKey, TValue>(key, value);
-
-                                return true;
-                            }
-                        }
+                        return true;
                     }
                 }
             }
