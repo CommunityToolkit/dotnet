@@ -297,29 +297,25 @@ internal class Dictionary2<TKey, TValue> : IDictionary2<TKey, TValue>
         /// <inheritdoc cref="IEnumerator.MoveNext"/>
         public bool MoveNext()
         {
-            if (this.count == 0)
+            while ((uint)this.index < (uint)this.count)
             {
-                return false;
+                // We need to preemptively increment the current index so that we still correctly keep track
+                // of the current position in the dictionary even if the users doesn't access any of the
+                // available properties in the enumerator. As this is a possibility, we can't rely on one of
+                // them to increment the index before MoveNext is invoked again. We ditch the standard enumerator
+                // API surface here to expose the Key/Value properties directly and minimize the memory copies.
+                // For the same reason, we also removed the KeyValuePair<TKey, TValue> field here, and instead
+                // rely on the properties lazily accessing the target instances directly from the current entry
+                // pointed at by the index property (adjusted backwards to account for the increment here).
+                if (this.entries![this.index++].Next >= -1)
+                {
+                    return true;
+                }
             }
 
-            this.count--;
+            this.index = this.count + 1;
 
-            Entry[] entries = this.entries;
-
-            // Here we traverse from the current offset until we find the next valid item.
-            // We need to preemptively increment the current index so that we still correctly keep track
-            // of the current position in the dictionary even if the users doesn't access any of the
-            // available properties in the enumerator. As this is a possibility, we can't rely on one of
-            // them to increment the index before MoveNext is invoked again. We ditch the standard enumerator
-            // API surface here to expose the Key/Value properties directly and minimize the memory copies.
-            // For the same reason, we also removed the KeyValuePair<TKey, TValue> field here, and instead
-            // rely on the properties lazily accessing the target instances directly from the current entry
-            // pointed at by the index property (adjusted backwards to account for the increment here).
-            while (entries[this.index++].Next < -1)
-            {
-            }
-
-            return true;
+            return false;
         }
 
         /// <summary>
