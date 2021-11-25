@@ -4,13 +4,11 @@
 
 #if NETSTANDARD2_0
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
-using System.Runtime.CompilerServices;
 
-namespace CommunityToolkit.Mvvm.Messaging.Internals;
+namespace System.Runtime.CompilerServices;
 
 /// <summary>
 /// A wrapper for <see cref="ConditionalWeakTable{TKey,TValue}"/>

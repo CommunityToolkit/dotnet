@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using Microsoft.Collections.Extensions;
 using CommunityToolkit.Mvvm.Messaging.Internals;
 
 namespace CommunityToolkit.Mvvm.Messaging;
@@ -24,19 +23,19 @@ public sealed class StrongReferenceMessenger : IMessenger
 {
     // This messenger uses the following logic to link stored instances together:
     // --------------------------------------------------------------------------------------------------------
-    // DictionarySlim<Recipient, HashSet<IMapping>> recipientsMap;
-    //                    |                   \________________[*]IDictionarySlim<Recipient, IDictionarySlim<TToken>>
-    //                    |                                             \____________/_________                /
-    //                    |   ________(recipients registrations)____________________/          \              /
-    //                    |  /                       ____(channel registrations)________________\____________/
-    //                    | /                       /                                            \
-    // DictionarySlim<Recipient, DictionarySlim<TToken, MessageHandler<TRecipient, TMessage>>> mapping = Mapping<TMessage, TToken>
-    //                                            /                                   /          /
-    //                      ___(Type2.TToken)____/                                   /          /
-    //                     /________________(Type2.TMessage)________________________/          /
-    //                    /       ____________________________________________________________/
-    //                   /       /
-    // DictionarySlim<Type2, IMapping> typesMap;
+    //   Dictionary2<Recipient, HashSet<IMapping>> recipientsMap;
+    //                 |                   \________________[*]IDictionary2<Recipient, IDictionary2<TToken>>
+    //                 |                                             \____________/_________                /
+    //                 |   ________(recipients registrations)____________________/          \              /
+    //                 |  /                       ____(channel registrations)________________\____________/
+    //                 | /                       /                                            \
+    //    Dictionary2<Recipient, Dictionary2<TToken, MessageHandler<TRecipient, TMessage>>> mapping = Mapping<TMessage, TToken>
+    //                                         /                                   /          /
+    //                   ___(Type2.TToken)____/                                   /          /
+    //                  /________________(Type2.TMessage)________________________/          /
+    //                 /       ____________________________________________________________/
+    //                /       /
+    // Dictionary2<Type2, IMapping> typesMap;
     // --------------------------------------------------------------------------------------------------------
     // Each combination of <TMessage, TToken> results in a concrete Mapping<TMessage, TToken> type, which holds the references
     // from registered recipients to handlers. The handlers are stored in a <TToken, MessageHandler<object, TMessage>> dictionary,
@@ -58,7 +57,7 @@ public sealed class StrongReferenceMessenger : IMessenger
     // to know in advance the type of message or token being used for the registration, and without having to
     // use reflection. This is the same approach used in the types map, as we expose saved items as IMapping values too.
     // Note that each mapping stored in the associated set for each recipient also indirectly implements
-    // IDictionarySlim<Recipient, Token>, with any token type currently in use by that recipient. This allows to retrieve
+    // IDictionary2<Recipient, Token>, with any token type currently in use by that recipient. This allows to retrieve
     // the type-closed mappings of registered handlers with a given token type, for any message type, for every receiver,
     // again without having to use reflection. This shared map is used to unregister messages from a given recipients
     // either unconditionally, by message type, by token, or for a specific pair of message type and token value.
@@ -72,17 +71,17 @@ public sealed class StrongReferenceMessenger : IMessenger
     /// so that all the existing handlers can be removed without having to dynamically create
     /// the generic types for the containers of the various dictionaries mapping the handlers.
     /// </remarks>
-    private readonly DictionarySlim<Recipient, HashSet<IMapping>> recipientsMap = new();
+    private readonly Dictionary2<Recipient, HashSet<IMapping>> recipientsMap = new();
 
     /// <summary>
     /// The <see cref="Mapping{TMessage,TToken}"/> instance for types combination.
     /// </summary>
     /// <remarks>
-    /// The values are just of type <see cref="IDictionarySlim{T}"/> as we don't know the type parameters in advance.
+    /// The values are just of type <see cref="IDictionary2{T}"/> as we don't know the type parameters in advance.
     /// Each method relies on <see cref="GetOrAddMapping{TMessage,TToken}"/> to get the type-safe instance
     /// of the <see cref="Mapping{TMessage,TToken}"/> class for each pair of generic arguments in use.
     /// </remarks>
-    private readonly DictionarySlim<Type2, IMapping> typesMap = new();
+    private readonly Dictionary2<Type2, IMapping> typesMap = new();
 
     /// <summary>
     /// Gets the default <see cref="StrongReferenceMessenger"/> instance.
@@ -118,9 +117,9 @@ public sealed class StrongReferenceMessenger : IMessenger
             // Get the <TMessage, TToken> registration list for this recipient
             Mapping<TMessage, TToken> mapping = GetOrAddMapping<TMessage, TToken>();
             Recipient key = new(recipient);
-            ref DictionarySlim<TToken, object>? map = ref mapping.GetOrAddValueRef(key);
+            ref Dictionary2<TToken, object>? map = ref mapping.GetOrAddValueRef(key);
 
-            map ??= new DictionarySlim<TToken, object>();
+            map ??= new Dictionary2<TToken, object>();
 
             // Add the new registration entry
             ref object? registeredHandler = ref map.GetOrAddValueRef(token);
@@ -218,7 +217,7 @@ public sealed class StrongReferenceMessenger : IMessenger
             foreach (IMapping item in set)
             {
                 // Select all mappings using the same token type
-                if (item is IDictionarySlim<Recipient, IDictionarySlim<TToken>> mapping)
+                if (item is IDictionary2<Recipient, IDictionary2<TToken>> mapping)
                 {
                     maps[i++] = mapping;
                 }
@@ -233,12 +232,12 @@ public sealed class StrongReferenceMessenger : IMessenger
             // matches with the token type currently in use, and operate on those instances.
             foreach (object obj in maps.AsSpan(0, i))
             {
-                IDictionarySlim<Recipient, IDictionarySlim<TToken>>? handlersMap = Unsafe.As<IDictionarySlim<Recipient, IDictionarySlim<TToken>>>(obj);
+                IDictionary2<Recipient, IDictionary2<TToken>>? handlersMap = Unsafe.As<IDictionary2<Recipient, IDictionary2<TToken>>>(obj);
 
                 // We don't need whether or not the map contains the recipient, as the
                 // sequence of maps has already been copied from the set containing all
                 // the mappings for the target recipients: it is guaranteed to be here.
-                IDictionarySlim<TToken> holder = handlersMap[key];
+                IDictionary2<TToken> holder = handlersMap[key];
 
                 // Try to remove the registered handler for the input token,
                 // for the current message type (unknown from here).
@@ -309,7 +308,7 @@ public sealed class StrongReferenceMessenger : IMessenger
 
             Recipient key = new(recipient);
 
-            if (!mapping.TryGetValue(key, out DictionarySlim<TToken, object>? dictionary))
+            if (!mapping.TryGetValue(key, out Dictionary2<TToken, object>? dictionary))
             {
                 return;
             }
@@ -386,7 +385,7 @@ public sealed class StrongReferenceMessenger : IMessenger
             // handlers for different tokens. We can reuse the same variable
             // to count the number of matching handlers to invoke later on.
             // This will be the array slice with valid handler in the rented buffer.
-            DictionarySlim<Recipient, DictionarySlim<TToken, object>>.Enumerator mappingEnumerator = mapping!.GetEnumerator();
+            Dictionary2<Recipient, Dictionary2<TToken, object>>.Enumerator mappingEnumerator = mapping!.GetEnumerator();
 
             // Explicit enumerator usage here as we're using a custom one
             // that doesn't expose the single standard Current property.
@@ -510,7 +509,7 @@ public sealed class StrongReferenceMessenger : IMessenger
     /// This type is defined for simplicity and as a workaround for the lack of support for using type aliases
     /// over open generic types in C# (using type aliases can only be used for concrete, closed types).
     /// </remarks>
-    private sealed class Mapping<TMessage, TToken> : DictionarySlim<Recipient, DictionarySlim<TToken, object>>, IMapping
+    private sealed class Mapping<TMessage, TToken> : Dictionary2<Recipient, Dictionary2<TToken, object>>, IMapping
         where TMessage : class
         where TToken : IEquatable<TToken>
     {
@@ -530,7 +529,7 @@ public sealed class StrongReferenceMessenger : IMessenger
     /// An interface for the <see cref="Mapping{TMessage,TToken}"/> type which allows to retrieve the type
     /// arguments from a given generic instance without having any prior knowledge about those arguments.
     /// </summary>
-    private interface IMapping : IDictionarySlim<Recipient>
+    private interface IMapping : IDictionary2<Recipient>
     {
         /// <summary>
         /// Gets the <see cref="Type2"/> instance representing the current type arguments.

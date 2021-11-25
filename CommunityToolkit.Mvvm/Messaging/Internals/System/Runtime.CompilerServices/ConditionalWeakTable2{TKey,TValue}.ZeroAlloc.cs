@@ -4,15 +4,13 @@
 
 #if NET6_0_OR_GREATER
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime;
-using System.Runtime.CompilerServices;
 using System.Threading;
+using CommunityToolkit.Mvvm.Messaging;
 
-namespace CommunityToolkit.Mvvm.Messaging.Internals;
+namespace System.Runtime.CompilerServices;
 
 /// <summary>
 /// A custom <see cref="ConditionalWeakTable{TKey, TValue}"/> instance that is specifically optimized to be used

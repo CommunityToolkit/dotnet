@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
@@ -10,7 +11,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Internals;
-using Microsoft.Collections.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommunityToolkit.Mvvm.UnitTests;
@@ -504,8 +504,8 @@ public partial class Test_Messenger
     public void Test_StrongReferenceMessenger_AutoTrimming_UnregisterAll()
     {
         StrongReferenceMessenger messenger = new();
-        IDictionarySlim recipientsMap = (IDictionarySlim)typeof(StrongReferenceMessenger).GetField("recipientsMap", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(messenger)!;
-        IDictionarySlim<Type2, object> typesMap = (IDictionarySlim<Type2, object>)typeof(StrongReferenceMessenger).GetField("typesMap", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(messenger)!;
+        IDictionary2 recipientsMap = (IDictionary2)typeof(StrongReferenceMessenger).GetField("recipientsMap", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(messenger)!;
+        IDictionary2<Type2, object> typesMap = (IDictionary2<Type2, object>)typeof(StrongReferenceMessenger).GetField("typesMap", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(messenger)!;
 
         RecipientWithSomeMessages recipientA = new();
         RecipientWithSomeMessages recipientB = new();
@@ -556,8 +556,8 @@ public partial class Test_Messenger
     public void Test_StrongReferenceMessenger_AutoTrimming_UnregisterAllWithToken()
     {
         StrongReferenceMessenger messenger = new();
-        IDictionarySlim recipientsMap = (IDictionarySlim)typeof(StrongReferenceMessenger).GetField("recipientsMap", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(messenger)!;
-        IDictionarySlim<Type2, object> typesMap = (IDictionarySlim<Type2, object>)typeof(StrongReferenceMessenger).GetField("typesMap", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(messenger)!;
+        IDictionary2 recipientsMap = (IDictionary2)typeof(StrongReferenceMessenger).GetField("recipientsMap", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(messenger)!;
+        IDictionary2<Type2, object> typesMap = (IDictionary2<Type2, object>)typeof(StrongReferenceMessenger).GetField("typesMap", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(messenger)!;
 
         RecipientWithSomeMessages recipientA = new();
         RecipientWithSomeMessages recipientB = new();
@@ -596,8 +596,8 @@ public partial class Test_Messenger
     public void Test_StrongReferenceMessenger_AutoTrimming_UnregisterAllWithMessageTypeAndToken()
     {
         StrongReferenceMessenger messenger = new();
-        IDictionarySlim recipientsMap = (IDictionarySlim)typeof(StrongReferenceMessenger).GetField("recipientsMap", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(messenger)!;
-        IDictionarySlim<Type2, object> typesMap = (IDictionarySlim<Type2, object>)typeof(StrongReferenceMessenger).GetField("typesMap", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(messenger)!;
+        IDictionary2 recipientsMap = (IDictionary2)typeof(StrongReferenceMessenger).GetField("recipientsMap", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(messenger)!;
+        IDictionary2<Type2, object> typesMap = (IDictionary2<Type2, object>)typeof(StrongReferenceMessenger).GetField("typesMap", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(messenger)!;
 
         RecipientWithSomeMessages recipientA = new();
         RecipientWithSomeMessages recipientB = new();

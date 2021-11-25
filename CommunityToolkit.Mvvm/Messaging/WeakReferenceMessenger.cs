@@ -6,12 +6,11 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using Microsoft.Collections.Extensions;
 using CommunityToolkit.Mvvm.Messaging.Internals;
 #if NETSTANDARD2_0 || NET6_0_OR_GREATER
-using RecipientsTable = CommunityToolkit.Mvvm.Messaging.Internals.ConditionalWeakTable2<object, Microsoft.Collections.Extensions.IDictionarySlim>;
+using RecipientsTable = System.Runtime.CompilerServices.ConditionalWeakTable2<object, System.Collections.Generic.IDictionary2>;
 #else
-using RecipientsTable = System.Runtime.CompilerServices.ConditionalWeakTable<object, Microsoft.Collections.Extensions.IDictionarySlim>;
+using RecipientsTable = System.Runtime.CompilerServices.ConditionalWeakTable<object, System.Collections.Generic.IDictionary2>;
 #endif
 
 namespace CommunityToolkit.Mvvm.Messaging;
@@ -34,13 +33,13 @@ public sealed class WeakReferenceMessenger : IMessenger
 {
     // This messenger uses the following logic to link stored instances together:
     // --------------------------------------------------------------------------------------------------------
-    //                          DictionarySlim<TToken, MessageHandler<TRecipient, TMessage>> mapping
-    //                                           /                                   /          /
-    //                      ___(Type2.TToken)___/                                   /          /
-    //                     /_________________(Type2.TMessage)______________________/          /
-    //                    /                                       ___________________________/
-    //                   /                                       /
-    // DictionarySlim<Type2, ConditionalWeakTable<object, IDictionarySlim>> recipientsMap;
+    //                         Dictionary2<TToken, MessageHandler<TRecipient, TMessage>> mapping
+    //                                        /                                   /         /
+    //                   ___(Type2.TToken)___/                                   /         /
+    //                  /_________________(Type2.TMessage)______________________/         /
+    //                 /                                       __________________________/
+    //                /                                       /
+    // Dictionary2<Type2, ConditionalWeakTable<object, IDictionary2>> recipientsMap;
     // --------------------------------------------------------------------------------------------------------
     // Just like in the strong reference variant, each pair of message and token types is used as a key in the
     // recipients map. In this case, the values in the dictionary are ConditionalWeakTable<,> instances, that
@@ -52,7 +51,7 @@ public sealed class WeakReferenceMessenger : IMessenger
     /// <summary>
     /// The map of currently registered recipients for all message types.
     /// </summary>
-    private readonly DictionarySlim<Type2, RecipientsTable> recipientsMap = new();
+    private readonly Dictionary2<Type2, RecipientsTable> recipientsMap = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WeakReferenceMessenger"/> class.
@@ -95,8 +94,8 @@ public sealed class WeakReferenceMessenger : IMessenger
             // of token and message types. If it exists, check if there is a matching token.
             return
                 this.recipientsMap.TryGetValue(type2, out RecipientsTable? table) &&
-                table.TryGetValue(recipient, out IDictionarySlim? mapping) &&
-                Unsafe.As<DictionarySlim<TToken, object>>(mapping).ContainsKey(token);
+                table.TryGetValue(recipient, out IDictionary2? mapping) &&
+                Unsafe.As<Dictionary2<TToken, object>>(mapping).ContainsKey(token);
         }
     }
 
@@ -116,7 +115,7 @@ public sealed class WeakReferenceMessenger : IMessenger
             mapping ??= new RecipientsTable();
 
             // Get or create the handlers dictionary for the target recipient
-            DictionarySlim<TToken, object>? map = Unsafe.As<DictionarySlim<TToken, object>>(mapping.GetValue(recipient, static _ => new DictionarySlim<TToken, object>()));
+            Dictionary2<TToken, object>? map = Unsafe.As<Dictionary2<TToken, object>>(mapping.GetValue(recipient, static _ => new Dictionary2<TToken, object>()));
 
             // Add the new registration entry
             ref object? registeredHandler = ref map.GetOrAddValueRef(token);
@@ -136,7 +135,7 @@ public sealed class WeakReferenceMessenger : IMessenger
     {
         lock (this.recipientsMap)
         {
-            DictionarySlim<Type2, RecipientsTable>.Enumerator enumerator = this.recipientsMap.GetEnumerator();
+            Dictionary2<Type2, RecipientsTable>.Enumerator enumerator = this.recipientsMap.GetEnumerator();
 
             // Traverse all the existing conditional tables and remove all the ones
             // with the target recipient as key. We don't perform a cleanup here,
@@ -154,7 +153,7 @@ public sealed class WeakReferenceMessenger : IMessenger
     {
         lock (this.recipientsMap)
         {
-            DictionarySlim<Type2, RecipientsTable>.Enumerator enumerator = this.recipientsMap.GetEnumerator();
+            Dictionary2<Type2, RecipientsTable>.Enumerator enumerator = this.recipientsMap.GetEnumerator();
 
             // Same as above, with the difference being that this time we only go through
             // the conditional tables having a matching token type as key, and that we
@@ -162,9 +161,9 @@ public sealed class WeakReferenceMessenger : IMessenger
             while (enumerator.MoveNext())
             {
                 if (enumerator.Key.TToken == typeof(TToken) &&
-                    enumerator.Value.TryGetValue(recipient, out IDictionarySlim? mapping))
+                    enumerator.Value.TryGetValue(recipient, out IDictionary2? mapping))
                 {
-                    _ = Unsafe.As<DictionarySlim<TToken, object>>(mapping).TryRemove(token);
+                    _ = Unsafe.As<Dictionary2<TToken, object>>(mapping).TryRemove(token);
                 }
             }
         }
@@ -182,9 +181,9 @@ public sealed class WeakReferenceMessenger : IMessenger
             // Get the target mapping table for the combination of message and token types,
             // and remove the handler with a matching token (the entire map), if present.
             if (this.recipientsMap.TryGetValue(type2, out RecipientsTable? value) &&
-                value.TryGetValue(recipient, out IDictionarySlim? mapping))
+                value.TryGetValue(recipient, out IDictionary2? mapping))
             {
-                _ = Unsafe.As<DictionarySlim<TToken, object>>(mapping).TryRemove(token);
+                _ = Unsafe.As<Dictionary2<TToken, object>>(mapping).TryRemove(token);
             }
         }
     }
@@ -215,9 +214,9 @@ public sealed class WeakReferenceMessenger : IMessenger
             // to enumerate all the existing recipients for the token and message types pair
             // corresponding to the generic arguments for this invocation, and then track the
             // handlers with a matching token, and their corresponding recipients.
-            foreach (KeyValuePair<object, IDictionarySlim> pair in table)
+            foreach (KeyValuePair<object, IDictionary2> pair in table)
             {
-                DictionarySlim<TToken, object>? map = Unsafe.As<DictionarySlim<TToken, object>>(pair.Value);
+                Dictionary2<TToken, object>? map = Unsafe.As<Dictionary2<TToken, object>>(pair.Value);
 
                 if (map.TryGetValue(token, out object? handler))
                 {
@@ -304,7 +303,7 @@ public sealed class WeakReferenceMessenger : IMessenger
         using ArrayPoolBufferWriter<Type2> type2s = ArrayPoolBufferWriter<Type2>.Create();
         using ArrayPoolBufferWriter<object> emptyRecipients = ArrayPoolBufferWriter<object>.Create();
 
-        DictionarySlim<Type2, RecipientsTable>.Enumerator enumerator = this.recipientsMap.GetEnumerator();
+        Dictionary2<Type2, RecipientsTable>.Enumerator enumerator = this.recipientsMap.GetEnumerator();
 
         // First, we go through all the currently registered pairs of token and message types.
         // These represents all the combinations of generic arguments with at least one registered
@@ -317,7 +316,7 @@ public sealed class WeakReferenceMessenger : IMessenger
 
             // Go through the currently alive recipients to look for those with no handlers left. We track
             // the ones we find to remove them outside of the loop (can't modify during enumeration).
-            foreach (KeyValuePair<object, IDictionarySlim> pair in enumerator.Value)
+            foreach (KeyValuePair<object, IDictionary2> pair in enumerator.Value)
             {
                 if (pair.Value.Count == 0)
                 {
