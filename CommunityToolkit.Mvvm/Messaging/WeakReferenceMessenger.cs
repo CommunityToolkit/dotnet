@@ -119,6 +119,42 @@ public sealed class WeakReferenceMessenger : IMessenger
         where TMessage : class
         where TToken : IEquatable<TToken>
     {
+        Register<TMessage, TToken>(recipient, token, new MessageHandlerDispatcher.For<TRecipient, TMessage>(handler));
+    }
+
+    /// <summary>
+    /// Registers a recipient for a given type of message.
+    /// </summary>
+    /// <typeparam name="TMessage">The type of message to receive.</typeparam>
+    /// <typeparam name="TToken">The type of token to use to pick the messages to receive.</typeparam>
+    /// <param name="recipient">The recipient that will receive the messages.</param>
+    /// <param name="token">A token used to determine the receiving channel to use.</param>
+    /// <exception cref="InvalidOperationException">Thrown when trying to register the same message twice.</exception>
+    /// <remarks>
+    /// This method is a variation of <see cref="Register{TRecipient, TMessage, TToken}(TRecipient, TToken, MessageHandler{TRecipient, TMessage})"/>
+    /// that is specialized for recipients implementing <see cref="IRecipient{TMessage}"/>. See more comments at the top of this type, as well as
+    /// within <see cref="Send{TMessage, TToken}(TMessage, TToken)"/> and in the <see cref="MessageHandlerDispatcher"/> types.
+    /// </remarks>
+    internal void Register<TMessage, TToken>(IRecipient<TMessage> recipient, TToken token)
+        where TMessage : class
+        where TToken : IEquatable<TToken>
+    {
+        Register<TMessage, TToken>(recipient, token, MessageHandlerDispatcher.IRecipient.Instance);
+    }
+
+    /// <summary>
+    /// Registers a recipient for a given type of message.
+    /// </summary>
+    /// <typeparam name="TMessage">The type of message to receive.</typeparam>
+    /// <typeparam name="TToken">The type of token to use to pick the messages to receive.</typeparam>
+    /// <param name="recipient">The recipient that will receive the messages.</param>
+    /// <param name="token">A token used to determine the receiving channel to use.</param>
+    /// <param name="dispatcher">The input <see cref="MessageHandlerDispatcher"/> instance to register.</param>
+    /// <exception cref="InvalidOperationException">Thrown when trying to register the same message twice.</exception>
+    private void Register<TMessage, TToken>(object recipient, TToken token, MessageHandlerDispatcher dispatcher)
+        where TMessage : class
+        where TToken : IEquatable<TToken>
+    {
         lock (this.recipientsMap)
         {
             Type2 type2 = new(typeof(TMessage), typeof(TToken));
@@ -131,7 +167,7 @@ public sealed class WeakReferenceMessenger : IMessenger
             // Fast path for unit tokens
             if (typeof(TToken) == typeof(Unit))
             {
-                if (!mapping.TryAdd(recipient, new MessageHandlerDispatcher.For<TRecipient, TMessage>(handler)))
+                if (!mapping.TryAdd(recipient, dispatcher))
                 {
                     ThrowInvalidOperationExceptionForDuplicateRegistration();
                 }
@@ -150,7 +186,7 @@ public sealed class WeakReferenceMessenger : IMessenger
                 }
 
                 // Store the input handler
-                registeredHandler = new MessageHandlerDispatcher.For<TRecipient, TMessage>(handler);
+                registeredHandler = dispatcher;
             }
         }
     }
