@@ -52,6 +52,28 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
         return this.container.TryGetValueWorker(key, out value);
     }
 
+    /// <summary>
+    /// Tries to add a new pair to the table.
+    /// </summary>
+    /// <param name="key">The key to add.</param>
+    /// <param name="value">The value to associate with key.</param>
+    public bool TryAdd(TKey key, TValue value)
+    {
+        lock (this.lockObject)
+        {
+            int entryIndex = this.container.FindEntry(key, out _);
+
+            if (entryIndex != -1)
+            {
+                return false;
+            }
+
+            CreateEntry(key, value);
+
+            return true;
+        }
+    }
+
     /// <inheritdoc cref="ConditionalWeakTable{TKey, TValue}.Remove(TKey)"/>
     public bool Remove(TKey key)
     {

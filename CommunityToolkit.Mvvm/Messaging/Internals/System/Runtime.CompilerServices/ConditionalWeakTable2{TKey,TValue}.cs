@@ -37,6 +37,35 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
         return this.table.TryGetValue(key, out value);
     }
 
+    /// <summary>
+    /// Tries to add a new pair to the table.
+    /// </summary>
+    /// <param name="key">The key to add.</param>
+    /// <param name="value">The value to associate with key.</param>
+    public bool TryAdd(TKey key, TValue value)
+    {
+        if (!this.table.TryAdd(key, value))
+        {
+            return false;
+        }
+
+        // Check if the list of keys contains the given key.
+        // If it does, we can just stop here and return the result.
+        foreach (WeakReference<TKey> node in this.keys)
+        {
+            if (node.TryGetTarget(out TKey? target) &&
+                ReferenceEquals(target, key))
+            {
+                return true;
+            }
+        }
+
+        // Add the key to the list of weak references to track it
+        _ = this.keys.AddFirst(new WeakReference<TKey>(key));
+
+        return true;
+    }
+
     /// <inheritdoc cref="ConditionalWeakTable{TKey,TValue}.GetValue"/>
     public TValue GetValue(TKey key, ConditionalWeakTable<TKey, TValue>.CreateValueCallback createValueCallback)
     {
@@ -109,7 +138,7 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
             this.isFirstMoveNextPending = true;
         }
 
-        /// <inheritdoc cref="System.Collections.IEnumerator.MoveNext"/>
+        /// <inheritdoc cref="Collections.IEnumerator.MoveNext"/>
         public bool MoveNext()
         {
             LinkedListNode<WeakReference<TKey>>? node;
@@ -150,7 +179,7 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
             return false;
         }
 
-        /// <inheritdoc cref="System.Collections.IEnumerator.MoveNext"/>
+        /// <inheritdoc cref="Collections.IEnumerator.MoveNext"/>
         public readonly KeyValuePair<TKey, TValue> Current
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
