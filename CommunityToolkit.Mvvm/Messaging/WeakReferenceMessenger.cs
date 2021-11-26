@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Threading;
 using CommunityToolkit.Mvvm.Messaging.Internals;
 #if NETSTANDARD2_0 || NET6_0_OR_GREATER
@@ -311,39 +312,7 @@ public sealed class WeakReferenceMessenger : IMessenger
 
         try
         {
-            ReadOnlySpan<object> pairs = bufferWriter.Span;
-
-            for (int j = 0; j < i; j++)
-            {
-                object recipient = pairs[(2 * j) + 1];
-                object handler = pairs[2 * j];
-
-                // This doesn't use reflection: a GetType() call being immediately compared to
-                // a specific type just results in a direct comparison of the method table pointer
-                // with a constant address corresponding to the method table address for that type.
-                // That is, for instance on x64 and assuming handler is in rcx, this will produce:
-                // =============================
-                // L0000: mov rax, 0x7ffcbc87cc98
-                // L000a: cmp [rcx], rax
-                // =============================
-                // Which is extremely fast. The reason for this conditional check in the first place
-                // is that we're doing manual guarded devirtualization: if the handler is the marker
-                // type and not an actual handler then we know that the recipient implements
-                // IRecipient<TMessage>, so we can just cast to it and invoke it directly. This avoids
-                // having to store the proxy callback when registering, and also skips an indirection
-                // (invoking the delegate that then invokes the actual method). Additional note: this
-                // pattern ensures that both casts below do not actually alias incompatible reference
-                // types (as in, they would both succeed if they were safe casts), which lets the code
-                // not rely on undefined behavior to run correctly (ie. we're not aliasing delegates).
-                if (handler.GetType() == typeof(MessageHandlerDispatcher.IRecipient))
-                {
-                    Unsafe.As<IRecipient<TMessage>>(recipient).Receive(message);
-                }
-                else
-                {
-                    Unsafe.As<MessageHandlerDispatcher>(handler).Invoke(recipient, message);
-                }
-            }
+            SendAll(bufferWriter.Span, i, message);
         }
         finally
         {
@@ -351,6 +320,71 @@ public sealed class WeakReferenceMessenger : IMessenger
         }
 
         return message;
+    }
+
+    /// <summary>
+    /// Implements the broadcasting logic for <see cref="Send{TMessage, TToken}(TMessage, TToken)"/>.
+    /// </summary>
+    /// <typeparam name="TMessage"></typeparam>
+    /// <param name="pairs"></param>
+    /// <param name="i"></param>
+    /// <param name="message"></param>
+    /// <remarks>
+    /// This method is not a local function to avoid triggering multiple compilations due to <c>TToken</c>
+    /// potentially being a value type, which results in specialized code due to reified generics. This is
+    /// necessary to work around a Roslyn limitation that causes unnecessary type parameters in local
+    /// functions not to be discarded in the synthesized methods. Additionally, keeping this loop outside
+    /// of the EH block (the <see langword="try"/> block) can help result in slightly better codegen.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void SendAll<TMessage>(ReadOnlySpan<object> pairs, int i, TMessage message)
+        where TMessage : class
+    {
+        // This Slice calls executes bounds checks for the loop below, in case i was somehow wrong.
+        // The rest of the implementation relies on bounds checks removal and loop strength reduction
+        // done manually (which results in a 20% speedup during broadcast), since the JIT is not able
+        // to recognize this pattern. Skipping checks below is a provably safe optimization: the slice
+        // has exactly 2 * i elements (due to this slicing), and each loop iteration processes a pair.
+        // The loops ends when the initial reference reaches the end, and that's incremented by 2 at
+        // the end of each iteration. The target being a span, obviously means the length is constant.
+        ReadOnlySpan<object> slice = pairs.Slice(0, 2 * i);
+
+        ref object sliceStart = ref MemoryMarshal.GetReference(slice);
+        ref object sliceEnd = ref Unsafe.Add(ref sliceStart, slice.Length);
+
+        while (Unsafe.IsAddressLessThan(ref sliceStart, ref sliceEnd))
+        {
+            object handler = sliceStart;
+            object recipient = Unsafe.Add(ref sliceStart, 1);
+
+            // This doesn't use reflection: a GetType() call being immediately compared to
+            // a specific type just results in a direct comparison of the method table pointer
+            // with a constant address corresponding to the method table address for that type.
+            // That is, for instance on x64 and assuming handler is in rcx, this will produce:
+            // =============================
+            // L0000: mov rax, 0x7ffcbc87cc98
+            // L000a: cmp [rcx], rax
+            // =============================
+            // Which is extremely fast. The reason for this conditional check in the first place
+            // is that we're doing manual guarded devirtualization: if the handler is the marker
+            // type and not an actual handler then we know that the recipient implements
+            // IRecipient<TMessage>, so we can just cast to it and invoke it directly. This avoids
+            // having to store the proxy callback when registering, and also skips an indirection
+            // (invoking the delegate that then invokes the actual method). Additional note: this
+            // pattern ensures that both casts below do not actually alias incompatible reference
+            // types (as in, they would both succeed if they were safe casts), which lets the code
+            // not rely on undefined behavior to run correctly (ie. we're not aliasing delegates).
+            if (handler.GetType() == typeof(MessageHandlerDispatcher.IRecipient))
+            {
+                Unsafe.As<IRecipient<TMessage>>(recipient).Receive(message);
+            }
+            else
+            {
+                Unsafe.As<MessageHandlerDispatcher>(handler).Invoke(recipient, message);
+            }
+
+            sliceStart = ref Unsafe.Add(ref sliceStart, 2);
+        }
     }
 
     /// <inheritdoc/>
