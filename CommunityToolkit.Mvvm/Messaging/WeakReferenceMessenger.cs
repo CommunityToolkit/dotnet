@@ -33,12 +33,12 @@ public sealed class WeakReferenceMessenger : IMessenger
 {
     // This messenger uses the following logic to link stored instances together:
     // --------------------------------------------------------------------------------------------------------
-    //                         Dictionary2<TToken, MessageHandler<TRecipient, TMessage>> mapping
-    //                                        /                                   /         /
-    //                   ___(Type2.TToken)___/                                   /         /
-    //                  /_________________(Type2.TMessage)______________________/         /
-    //                 /                                    _____________________________/
-    //                /                                    /                   \_______MessageHandler<TRecipient, TMessage>
+    //                          Dictionary2<TToken, MessageHandlerDispatcher> mapping
+    //                                        /                   /             /
+    //                   ___(Type2.TToken)___/                   /             /         ___(if Type2.TToken is Unit)
+    //                  /_________(Type2.TMessage)______________/             /         /
+    //                 /                                    _________________/___MessageHandler<TRecipient, TMessage>
+    //                /                                    /
     // Dictionary2<Type2, ConditionalWeakTable<object, object>> recipientsMap;
     // --------------------------------------------------------------------------------------------------------
     // Just like in the strong reference variant, each pair of message and token types is used as a key in the
@@ -131,7 +131,7 @@ public sealed class WeakReferenceMessenger : IMessenger
             // Fast path for unit tokens
             if (typeof(TToken) == typeof(Unit))
             {
-                if (!mapping.TryAdd(recipient, handler))
+                if (!mapping.TryAdd(recipient, new MessageHandlerDispatcher.For<TRecipient, TMessage>(handler)))
                 {
                     ThrowInvalidOperationExceptionForDuplicateRegistration();
                 }
@@ -150,7 +150,7 @@ public sealed class WeakReferenceMessenger : IMessenger
                 }
 
                 // Store the input handler
-                registeredHandler = handler;
+                registeredHandler = new MessageHandlerDispatcher.For<TRecipient, TMessage>(handler);
             }
         }
     }
@@ -279,7 +279,34 @@ public sealed class WeakReferenceMessenger : IMessenger
 
             for (int j = 0; j < i; j++)
             {
-                Unsafe.As<MessageHandler<object, TMessage>>(pairs[2 * j])(pairs[(2 * j) + 1], message);
+                object recipient = pairs[(2 * j) + 1];
+                object handler = pairs[2 * j];
+
+                // This doesn't use reflection: a GetType() call being immediately compared to
+                // a specific type just results in a direct comparison of the method table pointer
+                // with a constant address corresponding to the method table address for that type.
+                // That is, for instance on x64 and assuming handler is in rcx, this will produce:
+                // =============================
+                // L0000: mov rax, 0x7ffcbc87cc98
+                // L000a: cmp [rcx], rax
+                // =============================
+                // Which is extremely fast. The reason for this conditional check in the first place
+                // is that we're doing manual guarded devirtualization: if the handler is the marker
+                // type and not an actual handler then we know that the recipient implements
+                // IRecipient<TMessage>, so we can just cast to it and invoke it directly. This avoids
+                // having to store the proxy callback when registering, and also skips an indirection
+                // (invoking the delegate that then invokes the actual method). Additional note: this
+                // pattern ensures that both casts below do not actually alias incompatible reference
+                // types (as in, they would both succeed if they were safe casts), which lets the code
+                // not rely on undefined behavior to run correctly (ie. we're not aliasing delegates).
+                if (handler.GetType() == typeof(MessageHandlerDispatcher.IRecipient))
+                {
+                    Unsafe.As<IRecipient<TMessage>>(recipient).Receive(message);
+                }
+                else
+                {
+                    Unsafe.As<MessageHandlerDispatcher>(handler).Invoke(recipient, message);
+                }
             }
         }
         finally
