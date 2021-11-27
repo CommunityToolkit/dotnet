@@ -157,9 +157,14 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
         private int currentIndex;
 
         /// <summary>
-        /// The current entry set by MoveNext and returned from <see cref="Current"/>.
+        /// The current key, if available.
         /// </summary>
-        private KeyValuePair<TKey, TValue> current;
+        private TKey? key;
+
+        /// <summary>
+        /// The current value, if available.
+        /// </summary>
+        private TValue? value;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Enumerator"/> class.
@@ -170,22 +175,22 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
             // Store a reference to the parent table and increase its active enumerator count
             this.table = table;
 
-            Container c = table.container;
+            Container container = table.container;
 
-            if (c is null || c.FirstFreeEntry == 0)
+            if (container is null || container.FirstFreeEntry == 0)
             {
                 // The max index is the same as the current to prevent enumeration
                 this.maxIndexInclusive = -1;
-                this.currentIndex = -1;
-                this.current = default;
             }
             else
             {
                 // Store the max index to be enumerated
-                this.maxIndexInclusive = table.container.FirstFreeEntry - 1;
-                this.currentIndex = -1;
-                this.current = default;
+                this.maxIndexInclusive = container.FirstFreeEntry - 1;
             }
+
+            this.currentIndex = -1;
+            this.key = null;
+            this.value = null;
         }
 
         /// <inheritdoc cref="IDisposable.Dispose"/>
@@ -197,7 +202,8 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
             this.table = null!;
 
             // Ensure we don't keep the last current alive unnecessarily
-            this.current = default;
+            this.key = null;
+            this.value = null;
         }
 
         /// <inheritdoc cref="IEnumerator.MoveNext"/>
@@ -209,30 +215,44 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
             // container at the time) has already been finalized, this will be null.
             Container c = this.table.container;
 
-            if (c != null)
+            int currentIndex = this.currentIndex;
+            int maxIndexInclusive = this.maxIndexInclusive;
+
+            // We have the container. Find the next entry to return, if there is one. We need to loop as we
+            // may try to get an entry that's already been removed or collected, in which case we try again.
+            while (currentIndex < maxIndexInclusive)
             {
-                // We have the container. Find the next entry to return, if there is one. We need to loop as we
-                // may try to get an entry that's already been removed or collected, in which case we try again.
-                while (this.currentIndex < this.maxIndexInclusive)
+                currentIndex++;
+
+                if (c.TryGetEntry(currentIndex, out this.key, out this.value))
                 {
-                    this.currentIndex++;
+                    this.currentIndex = currentIndex;
 
-                    if (c.TryGetEntry(this.currentIndex, out TKey? key, out TValue? value))
-                    {
-                        this.current = new KeyValuePair<TKey, TValue>(key, value);
-
-                        return true;
-                    }
+                    return true;
                 }
             }
+
+            this.currentIndex = currentIndex;
 
             return false;
         }
 
-        public KeyValuePair<TKey, TValue> Current
+        /// <summary>
+        /// Gets the current key.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public TKey GetKey()
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => this.current;
+            return this.key!;
+        }
+
+        /// <summary>
+        /// Gets the current value.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public TValue GetValue()
+        {
+            return this.value!;
         }
     }
 

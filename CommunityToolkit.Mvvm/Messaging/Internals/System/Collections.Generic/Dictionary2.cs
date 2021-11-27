@@ -321,19 +321,19 @@ internal class Dictionary2<TKey, TValue> : IDictionary2<TKey, TValue>
         /// <summary>
         /// Gets the current key.
         /// </summary>
-        public TKey Key
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public TKey GetKey()
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => this.entries[this.index - 1].Key;
+            return this.entries[this.index - 1].Key;
         }
 
         /// <summary>
         /// Gets the current value.
         /// </summary>
-        public TValue Value
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public TValue GetValue()
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => this.entries[this.index - 1].Value!;
+            return this.entries[this.index - 1].Value!;
         }
     }
 

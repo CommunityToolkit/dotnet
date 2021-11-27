@@ -37,11 +37,7 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
         return this.table.TryGetValue(key, out value);
     }
 
-    /// <summary>
-    /// Tries to add a new pair to the table.
-    /// </summary>
-    /// <param name="key">The key to add.</param>
-    /// <param name="value">The value to associate with key.</param>
+    /// <inheritdoc cref="ConditionalWeakTableExtensions.TryAdd{TKey, TValue}(ConditionalWeakTable{TKey, TValue}, TKey, TValue)"/>
     public bool TryAdd(TKey key, TValue value)
     {
         if (!this.table.TryAdd(key, value))
@@ -116,9 +112,14 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
         private LinkedListNode<WeakReference<TKey>>? node;
 
         /// <summary>
-        /// The current <see cref="KeyValuePair{TKey, TValue}"/> to return.
+        /// The current key, if available.
         /// </summary>
-        private KeyValuePair<TKey, TValue> current;
+        private TKey? key;
+
+        /// <summary>
+        /// The current value, if available.
+        /// </summary>
+        private TValue? value;
 
         /// <summary>
         /// Indicates whether or not <see cref="MoveNext"/> has been called at least once.
@@ -134,8 +135,14 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
         {
             this.owner = owner;
             this.node = null;
-            this.current = default;
+            this.key = null;
+            this.value = null;
             this.isFirstMoveNextPending = true;
+        }
+
+        /// <inheritdoc cref="IDisposable.Dispose"/>
+        public void Dispose()
+        {
         }
 
         /// <inheritdoc cref="Collections.IEnumerator.MoveNext"/>
@@ -163,7 +170,8 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
                     this.owner.table.TryGetValue(target!, out TValue? value))
                 {
                     this.node = node;
-                    this.current = new KeyValuePair<TKey, TValue>(target, value);
+                    this.key = target;
+                    this.value = value;
 
                     return true;
                 }
@@ -179,11 +187,22 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
             return false;
         }
 
-        /// <inheritdoc cref="Collections.IEnumerator.MoveNext"/>
-        public readonly KeyValuePair<TKey, TValue> Current
+        /// <summary>
+        /// Gets the current key.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public TKey GetKey()
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => this.current;
+            return this.key!;
+        }
+
+        /// <summary>
+        /// Gets the current value.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public TValue GetValue()
+        {
+            return this.value!;
         }
     }
 }

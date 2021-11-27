@@ -362,12 +362,15 @@ public class Test_ConditionalWeakTable2
 
         int count = 0;
 
-        foreach (KeyValuePair<object, object> pair in cwt)
+        using (ConditionalWeakTable2<object, object>.Enumerator enumerator = cwt.GetEnumerator())
         {
-            Assert.AreSame(pair.Key, keys[count]);
-            Assert.AreSame(pair.Value, values[count]);
+            while (enumerator.MoveNext())
+            {
+                Assert.AreSame(enumerator.GetKey(), keys[count]);
+                Assert.AreSame(enumerator.GetValue(), values[count]);
 
-            count++;
+                count++;
+            }
         }
 
         Assert.AreEqual(keys.Length, count);
@@ -377,9 +380,12 @@ public class Test_ConditionalWeakTable2
             Assert.IsTrue(cwt.Remove(key));
         }
 
-        foreach (KeyValuePair<object, object> pair in cwt)
+        using (ConditionalWeakTable2<object, object>.Enumerator enumerator = cwt.GetEnumerator())
         {
-            Assert.Fail();
+            while (enumerator.MoveNext())
+            {
+                Assert.Fail();
+            }
         }
 
         GC.KeepAlive(keys);
@@ -391,7 +397,9 @@ public class Test_ConditionalWeakTable2
     {
         ConditionalWeakTable2<object, object> cwt = new();
 
-        foreach (KeyValuePair<object, object> _ in cwt)
+        using ConditionalWeakTable2<object, object>.Enumerator enumerator = cwt.GetEnumerator();
+
+        while (enumerator.MoveNext())
         {
             Assert.Fail();
         }
@@ -411,9 +419,12 @@ public class Test_ConditionalWeakTable2
 
             int count = 0;
 
-            foreach (KeyValuePair<object, object> pair in cwt)
+            using (ConditionalWeakTable2<object, object>.Enumerator enumerator = cwt.GetEnumerator())
             {
-                count++;
+                while (enumerator.MoveNext())
+                {
+                    count++;
+                }
             }
 
             Assert.AreEqual(1, count);
@@ -422,21 +433,24 @@ public class Test_ConditionalWeakTable2
 
             KeyValuePair<object, object>? first = null;
 
-            foreach (KeyValuePair<object, object> pair in cwt)
+            using (ConditionalWeakTable2<object, object>.Enumerator enumerator = cwt.GetEnumerator())
             {
-                if (first is not null)
+                while (enumerator.MoveNext())
                 {
-                    Assert.Fail();
+                    if (first is not null)
+                    {
+                        Assert.Fail();
+                    }
+
+                    first = new KeyValuePair<object, object>(enumerator.GetKey(), enumerator.GetValue());
+
+                    if (count > 0)
+                    {
+                        Assert.Fail();
+                    }
+
+                    count++;
                 }
-
-                first = pair;
-
-                if (count > 0)
-                {
-                    Assert.Fail();
-                }
-
-                count++;
             }
 
             Assert.AreEqual(new KeyValuePair<object, object>(key1, value1), first);
@@ -445,9 +459,12 @@ public class Test_ConditionalWeakTable2
 
             count = 0;
 
-            foreach (KeyValuePair<object, object> pair in cwt)
+            using (ConditionalWeakTable2<object, object>.Enumerator enumerator = cwt.GetEnumerator())
             {
-                count++;
+                while (enumerator.MoveNext())
+                {
+                    count++;
+                }
             }
 
             Assert.AreEqual(0, count);
@@ -462,7 +479,7 @@ public class Test_ConditionalWeakTable2
     {
         ConditionalWeakTable2<object, object> cwt = new();
 
-        using ConditionalWeakTable2<object, object>.Enumerator enumerator = cwt.GetEnumerator();
+        using ConditionalWeakTable2<object, object>.Enumerator enumerator1 = cwt.GetEnumerator();
 
         static void addItem(ConditionalWeakTable2<object, object> t) => t.GetValue(new object(), _ => new object());
 
@@ -475,9 +492,12 @@ public class Test_ConditionalWeakTable2
 
         int count = 0;
 
-        foreach (KeyValuePair<object, object> _ in cwt)
+        using (ConditionalWeakTable2<object, object>.Enumerator enumerator2 = cwt.GetEnumerator())
         {
-            count++;
+            while (enumerator2.MoveNext())
+            {
+                count++;
+            }
         }
 
         Assert.AreEqual(0, count);
@@ -502,7 +522,8 @@ public class Test_ConditionalWeakTable2
             while (enumerator1.MoveNext())
             {
                 Assert.IsTrue(enumerator2.MoveNext());
-                Assert.AreEqual(enumerator1.Current, enumerator2.Current);
+                Assert.AreEqual(enumerator1.GetKey(), enumerator2.GetKey());
+                Assert.AreEqual(enumerator1.GetValue(), enumerator2.GetValue());
             }
 
             Assert.IsFalse(enumerator2.MoveNext());
@@ -531,18 +552,24 @@ public class Test_ConditionalWeakTable2
         {
             count = 0;
 
-            foreach (KeyValuePair<object, object> _ in cwt)
+            using (ConditionalWeakTable2<object, object>.Enumerator enumerator = cwt.GetEnumerator())
             {
-                count++;
+                while (enumerator.MoveNext())
+                {
+                    count++;
+                }
             }
 
             Assert.AreEqual(keys.Length - i, count);
 
             List<KeyValuePair<object, object>> pairs = new();
 
-            foreach (KeyValuePair<object, object> pair in cwt)
+            using (ConditionalWeakTable2<object, object>.Enumerator enumerator = cwt.GetEnumerator())
             {
-                pairs.Add(pair);
+                while (enumerator.MoveNext())
+                {
+                    pairs.Add(new KeyValuePair<object, object>(enumerator.GetKey(), enumerator.GetValue()));
+                }
             }
 
             CollectionAssert.AreEqual(
@@ -554,9 +581,12 @@ public class Test_ConditionalWeakTable2
 
         count = 0;
 
-        foreach (KeyValuePair<object, object> _ in cwt)
+        using (ConditionalWeakTable2<object, object>.Enumerator enumerator = cwt.GetEnumerator())
         {
-            count++;
+            while (enumerator.MoveNext())
+            {
+                count++;
+            }
         }
 
         Assert.AreEqual(0, count);

@@ -392,7 +392,7 @@ public sealed class StrongReferenceMessenger : IMessenger
             while (mappingEnumerator.MoveNext())
             {
                 // Pick the target handler, if the token is a match for the recipient
-                if (mappingEnumerator.Value.TryGetValue(token, out object? handler))
+                if (mappingEnumerator.GetValue().TryGetValue(token, out object? handler))
                 {
                     // This span access should always guaranteed to be valid due to the size of the
                     // array being set according to the current total number of registered handlers,
@@ -400,7 +400,7 @@ public sealed class StrongReferenceMessenger : IMessenger
                     // We're still using a checked span accesses here though to make sure an out of
                     // bounds write can never happen even if an error was present in the logic above.
                     pairs[2 * i] = handler;
-                    pairs[(2 * i) + 1] = mappingEnumerator.Key.Target;
+                    pairs[(2 * i) + 1] = mappingEnumerator.GetKey().Target;
                     i++;
                 }
             }

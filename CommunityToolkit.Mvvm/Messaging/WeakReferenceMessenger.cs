@@ -8,11 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using CommunityToolkit.Mvvm.Messaging.Internals;
-#if NETSTANDARD2_0 || NET6_0_OR_GREATER
 using RecipientsTable = System.Runtime.CompilerServices.ConditionalWeakTable2<object, object>;
-#else
-using RecipientsTable = System.Runtime.CompilerServices.ConditionalWeakTable<object, object>;
-#endif
 
 namespace CommunityToolkit.Mvvm.Messaging;
 
@@ -204,7 +200,7 @@ public sealed class WeakReferenceMessenger : IMessenger
             // as that is responsibility of a separate method defined below.
             while (enumerator.MoveNext())
             {
-                _ = enumerator.Value.Remove(recipient);
+                _ = enumerator.GetValue().Remove(recipient);
             }
         }
     }
@@ -222,13 +218,13 @@ public sealed class WeakReferenceMessenger : IMessenger
             // only try to remove handlers with a matching token, if any.
             while (enumerator.MoveNext())
             {
-                if (enumerator.Key.TToken == typeof(TToken))
+                if (enumerator.GetKey().TToken == typeof(TToken))
                 {
                     if (typeof(TToken) == typeof(Unit))
                     {
-                        _ = enumerator.Value.Remove(recipient);
+                        _ = enumerator.GetValue().Remove(recipient);
                     }
-                    else if (enumerator.Value.TryGetValue(recipient, out object? mapping))
+                    else if (enumerator.GetValue().TryGetValue(recipient, out object? mapping))
                     {
                         _ = Unsafe.As<Dictionary2<TToken, object>>(mapping).TryRemove(token);
                     }
@@ -288,22 +284,24 @@ public sealed class WeakReferenceMessenger : IMessenger
             // to enumerate all the existing recipients for the token and message types pair
             // corresponding to the generic arguments for this invocation, and then track the
             // handlers with a matching token, and their corresponding recipients.
-            foreach (KeyValuePair<object, object> pair in table)
+            using RecipientsTable.Enumerator enumerator = table.GetEnumerator();
+
+            while (enumerator.MoveNext())
             {
                 if (typeof(TToken) == typeof(Unit))
                 {
-                    bufferWriter.Add(pair.Value);
-                    bufferWriter.Add(pair.Key);
+                    bufferWriter.Add(enumerator.GetValue());
+                    bufferWriter.Add(enumerator.GetKey());
                     i++;
                 }
                 else
                 {
-                    Dictionary2<TToken, object>? map = Unsafe.As<Dictionary2<TToken, object>>(pair.Value);
+                    Dictionary2<TToken, object>? map = Unsafe.As<Dictionary2<TToken, object>>(enumerator.GetValue());
 
                     if (map.TryGetValue(token, out object? handler))
                     {
                         bufferWriter.Add(handler);
-                        bufferWriter.Add(pair.Key);
+                        bufferWriter.Add(enumerator.GetKey());
                         i++;
                     }
                 }
@@ -441,23 +439,25 @@ public sealed class WeakReferenceMessenger : IMessenger
         using ArrayPoolBufferWriter<Type2> type2s = ArrayPoolBufferWriter<Type2>.Create();
         using ArrayPoolBufferWriter<object> emptyRecipients = ArrayPoolBufferWriter<object>.Create();
 
-        Dictionary2<Type2, RecipientsTable>.Enumerator enumerator = this.recipientsMap.GetEnumerator();
+        Dictionary2<Type2, RecipientsTable>.Enumerator type2Enumerator = this.recipientsMap.GetEnumerator();
 
         // First, we go through all the currently registered pairs of token and message types.
         // These represents all the combinations of generic arguments with at least one registered
         // handler, with the exception of those with recipients that have already been collected.
-        while (enumerator.MoveNext())
+        while (type2Enumerator.MoveNext())
         {
             emptyRecipients.Reset();
 
             bool hasAtLeastOneHandler = false;
 
-            if (enumerator.Key.TToken == typeof(Unit))
+            if (type2Enumerator.GetKey().TToken == typeof(Unit))
             {
                 // When the token type is unit, there can be no registered recipients with no handlers,
                 // as when the single handler is unsubscribed the recipient is also removed immediately.
                 // Therefore, we need to check that there exists at least one recipient for the message.
-                foreach (KeyValuePair<object, object> pair in enumerator.Value)
+                using RecipientsTable.Enumerator recipientsEnumerator = type2Enumerator.GetValue().GetEnumerator();
+
+                while (recipientsEnumerator.MoveNext())
                 {
                     hasAtLeastOneHandler = true;
 
@@ -468,29 +468,32 @@ public sealed class WeakReferenceMessenger : IMessenger
             {
                 // Go through the currently alive recipients to look for those with no handlers left. We track
                 // the ones we find to remove them outside of the loop (can't modify during enumeration).
-                foreach (KeyValuePair<object, object> pair in enumerator.Value)
+                using (RecipientsTable.Enumerator recipientsEnumerator = type2Enumerator.GetValue().GetEnumerator())
                 {
-                    if (Unsafe.As<IDictionary2>(pair.Value).Count == 0)
+                    while (recipientsEnumerator.MoveNext())
                     {
-                        emptyRecipients.Add(pair.Key);
-                    }
-                    else
-                    {
-                        hasAtLeastOneHandler = true;
+                        if (Unsafe.As<IDictionary2>(recipientsEnumerator.GetValue()).Count == 0)
+                        {
+                            emptyRecipients.Add(recipientsEnumerator.GetKey());
+                        }
+                        else
+                        {
+                            hasAtLeastOneHandler = true;
+                        }
                     }
                 }
 
                 // Remove the handler maps for recipients that are still alive but with no handlers
                 foreach (object recipient in emptyRecipients.Span)
                 {
-                    _ = enumerator.Value.Remove(recipient);
+                    _ = type2Enumerator.GetValue().Remove(recipient);
                 }
             }
 
             // Track the type combinations with no recipients or handlers left
             if (!hasAtLeastOneHandler)
             {
-                type2s.Add(enumerator.Key);
+                type2s.Add(type2Enumerator.GetKey());
             }
         }
 

@@ -23,7 +23,7 @@ internal static class ConditionalWeakTableExtensions
         where TKey : class
         where TValue : class?
     {
-        // There is no way to do this on .NET Standard 2.0 without exception handling
+        // There is no way to do this on .NET Standard 2.0 or 2.1 without exception handling
         try
         {
             table.Add(key, value);
