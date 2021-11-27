@@ -281,7 +281,7 @@ internal class Dictionary2<TKey, TValue> : IDictionary2<TKey, TValue>
         /// <summary>
         /// The current dictionary count.
         /// </summary>
-        private int count;
+        private readonly int count;
 
         /// <summary>
         /// Creates a new <see cref="Enumerator"/> instance.
@@ -358,13 +358,15 @@ internal class Dictionary2<TKey, TValue> : IDictionary2<TKey, TValue>
             }
 
             entry = ref entries[i];
+
             if (entry.HashCode == hashCode && entry.Key.Equals(key))
             {
                 goto ReturnFound;
             }
 
             i = entry.Next;
-        } while (true);
+        }
+        while (true);
 
         ReturnFound:
         ref TValue value = ref entry.Value!;

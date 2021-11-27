@@ -8,7 +8,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using CommunityToolkit.Mvvm.Messaging.Internals;
-using RecipientsTable = System.Runtime.CompilerServices.ConditionalWeakTable2<object, object>;
 
 namespace CommunityToolkit.Mvvm.Messaging;
 
@@ -34,24 +33,34 @@ public sealed class WeakReferenceMessenger : IMessenger
     //                                        /                   /             /
     //                   ___(Type2.TToken)___/                   /             /         ___(if Type2.TToken is Unit)
     //                  /_________(Type2.TMessage)______________/             /         /
-    //                 /                                    _________________/___MessageHandler<TRecipient, TMessage>
+    //                 /                                    _________________/___MessageHandlerDispatcher
     //                /                                    /
     // Dictionary2<Type2, ConditionalWeakTable<object, object>> recipientsMap;
     // --------------------------------------------------------------------------------------------------------
     // Just like in the strong reference variant, each pair of message and token types is used as a key in the
-    // recipients map. In this case, the values in the dictionary are ConditionalWeakTable<,> instances, that
-    // link each registered recipient to a map of currently registered handlers, through a weak reference.
-    // The value in each conditional table can either be Dictionary<TToken, MessageHandler<TRecipient, TMessage>>
-    // or object. The first case is used when any token type other than the default Unit type is used, as in this
-    // case there could be multiple handlers for each recipient that need to be tracked separately. This is done to
-    // use the same unsafe cast as before to allow the generic handler delegates to be invoked without knowing
-    // what type each recipient was registered with, and without the need to use reflection. If the token type is
-    // the default one instead, the handler is directly stored in the table next to each recipient, with no dictionary.
+    // recipients map. In this case, the values in the dictionary are ConditionalWeakTable2<,> instances, that
+    // link each registered recipient to a map of currently registered handlers, through dependent handles. This
+    // ensures that handlers will remain alive as long as their associated recipient is also alive (so there is no
+    // need for users to manually indicate whether a given handler should be kept alive in case it creates a closure).
+    // The value in each conditional table can either be Dictionary2<TToken, MessageHandlerDispatcher> or object. The
+    // first case is used when any token type other than the default Unit type is used, as in this case there could be
+    // multiple handlers for each recipient that need to be tracked separately. In order to invoke all the handlers from
+    // a context where their type parameters is not known, handlers are stored as MessageHandlerDispatcher instances. There
+    // are two possible cases here: either a given instance is of type MessageHandlerDispatcher.For<TRecipient, TMessage>, or
+    // it is of type MessageHandlerDispatcher.IRecipient. The first is the default case: whenever a subscription is done with
+    // a MessageHandler<TRecipient, TToken>, that delegate is wrapped in an instance of this class so that it can keep track
+    // internally of the generic context in use, so that it can be retrieved when the callback is executed. If the subscription
+    // is done directly on a recipient that implements IRecipient<TMessage instead, the dispatcher is a singleton instance that
+    // just acts as marker. Whenever the broadcast method finds it, it will just invoke IRecipient<TMessage.Receive directly
+    // on the target recipient, which avoids the extra indirection on dispatch as well as having to allocate an extra wrapper
+    // type for the handler. Lastly, there is a special case when subscriptions are done through the Unit type, meaning when
+    // the default channel is in use. In this case, each recipient only stores a single MessageHandlerDispatcher instance and
+    // not a whole dictionary, as there can only ever be a single handler for each recipient.
 
     /// <summary>
     /// The map of currently registered recipients for all message types.
     /// </summary>
-    private readonly Dictionary2<Type2, RecipientsTable> recipientsMap = new();
+    private readonly Dictionary2<Type2, ConditionalWeakTable2<object, object>> recipientsMap = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WeakReferenceMessenger"/> class.
@@ -92,7 +101,7 @@ public sealed class WeakReferenceMessenger : IMessenger
 
             // Get the conditional table associated with the target recipient, for the current pair
             // of token and message types. If it exists, check if there is a matching token.
-            if (!this.recipientsMap.TryGetValue(type2, out RecipientsTable? table))
+            if (!this.recipientsMap.TryGetValue(type2, out ConditionalWeakTable2<object, object>? table))
             {
                 return false;
             }
@@ -157,9 +166,9 @@ public sealed class WeakReferenceMessenger : IMessenger
             Type2 type2 = new(typeof(TMessage), typeof(TToken));
 
             // Get the conditional table for the pair of type arguments, or create it if it doesn't exist
-            ref RecipientsTable? mapping = ref this.recipientsMap.GetOrAddValueRef(type2);
+            ref ConditionalWeakTable2<object, object>? mapping = ref this.recipientsMap.GetOrAddValueRef(type2);
 
-            mapping ??= new RecipientsTable();
+            mapping ??= new ConditionalWeakTable2<object, object>();
 
             // Fast path for unit tokens
             if (typeof(TToken) == typeof(Unit))
@@ -193,7 +202,7 @@ public sealed class WeakReferenceMessenger : IMessenger
     {
         lock (this.recipientsMap)
         {
-            Dictionary2<Type2, RecipientsTable>.Enumerator enumerator = this.recipientsMap.GetEnumerator();
+            Dictionary2<Type2, ConditionalWeakTable2<object, object>>.Enumerator enumerator = this.recipientsMap.GetEnumerator();
 
             // Traverse all the existing conditional tables and remove all the ones
             // with the target recipient as key. We don't perform a cleanup here,
@@ -211,7 +220,7 @@ public sealed class WeakReferenceMessenger : IMessenger
     {
         lock (this.recipientsMap)
         {
-            Dictionary2<Type2, RecipientsTable>.Enumerator enumerator = this.recipientsMap.GetEnumerator();
+            Dictionary2<Type2, ConditionalWeakTable2<object, object>>.Enumerator enumerator = this.recipientsMap.GetEnumerator();
 
             // Same as above, with the difference being that this time we only go through
             // the conditional tables having a matching token type as key, and that we
@@ -244,7 +253,7 @@ public sealed class WeakReferenceMessenger : IMessenger
 
             // Get the target mapping table for the combination of message and token types,
             // and remove the handler with a matching token (the entire map), if present.
-            if (this.recipientsMap.TryGetValue(type2, out RecipientsTable? value))
+            if (this.recipientsMap.TryGetValue(type2, out ConditionalWeakTable2<object, object>? value))
             {
                 if (typeof(TToken) == typeof(Unit))
                 {
@@ -271,7 +280,7 @@ public sealed class WeakReferenceMessenger : IMessenger
             Type2 type2 = new(typeof(TMessage), typeof(TToken));
 
             // Try to get the target table
-            if (!this.recipientsMap.TryGetValue(type2, out RecipientsTable? table))
+            if (!this.recipientsMap.TryGetValue(type2, out ConditionalWeakTable2<object, object>? table))
             {
                 return message;
             }
@@ -284,7 +293,7 @@ public sealed class WeakReferenceMessenger : IMessenger
             // to enumerate all the existing recipients for the token and message types pair
             // corresponding to the generic arguments for this invocation, and then track the
             // handlers with a matching token, and their corresponding recipients.
-            using RecipientsTable.Enumerator enumerator = table.GetEnumerator();
+            using ConditionalWeakTable2<object, object>.Enumerator enumerator = table.GetEnumerator();
 
             while (enumerator.MoveNext())
             {
@@ -439,7 +448,7 @@ public sealed class WeakReferenceMessenger : IMessenger
         using ArrayPoolBufferWriter<Type2> type2s = new();
         using ArrayPoolBufferWriter<object> emptyRecipients = new();
 
-        Dictionary2<Type2, RecipientsTable>.Enumerator type2Enumerator = this.recipientsMap.GetEnumerator();
+        Dictionary2<Type2, ConditionalWeakTable2<object, object>>.Enumerator type2Enumerator = this.recipientsMap.GetEnumerator();
 
         // First, we go through all the currently registered pairs of token and message types.
         // These represents all the combinations of generic arguments with at least one registered
@@ -455,7 +464,7 @@ public sealed class WeakReferenceMessenger : IMessenger
                 // When the token type is unit, there can be no registered recipients with no handlers,
                 // as when the single handler is unsubscribed the recipient is also removed immediately.
                 // Therefore, we need to check that there exists at least one recipient for the message.
-                using RecipientsTable.Enumerator recipientsEnumerator = type2Enumerator.GetValue().GetEnumerator();
+                using ConditionalWeakTable2<object, object>.Enumerator recipientsEnumerator = type2Enumerator.GetValue().GetEnumerator();
 
                 while (recipientsEnumerator.MoveNext())
                 {
@@ -468,7 +477,7 @@ public sealed class WeakReferenceMessenger : IMessenger
             {
                 // Go through the currently alive recipients to look for those with no handlers left. We track
                 // the ones we find to remove them outside of the loop (can't modify during enumeration).
-                using (RecipientsTable.Enumerator recipientsEnumerator = type2Enumerator.GetValue().GetEnumerator())
+                using (ConditionalWeakTable2<object, object>.Enumerator recipientsEnumerator = type2Enumerator.GetValue().GetEnumerator())
                 {
                     while (recipientsEnumerator.MoveNext())
                     {

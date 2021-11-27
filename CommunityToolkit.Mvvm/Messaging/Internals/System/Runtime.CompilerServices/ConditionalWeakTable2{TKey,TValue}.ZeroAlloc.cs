@@ -5,7 +5,6 @@
 #if NET6_0_OR_GREATER
 
 using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using CommunityToolkit.Mvvm.Messaging;
@@ -263,14 +262,14 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
     /// <param name="value">The value for the new entry.</param>
     private void CreateEntry(TKey key, TValue value)
     {
-        Container c = this.container;
+        Container container = this.container;
 
-        if (!c.HasCapacity)
+        if (!container.HasCapacity)
         {
-            container = c = c.Resize();
+            this.container = container = container.Resize();
         }
 
-        c.CreateEntryNoResize(key, value);
+        container.CreateEntryNoResize(key, value);
     }
 
     /// <summary>
@@ -359,6 +358,13 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
             this.parent = parent;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Container"/> class.
+        /// </summary>
+        /// <param name="parent">The input <see cref="ConditionalWeakTable2{TKey, TValue}"/> object associated with the current instance.</param>
+        /// <param name="buckets">The array of buckets.</param>
+        /// <param name="entries">The array of entries.</param>
+        /// <param name="firstFreeEntry">The index of the first free entry.</param>
         private Container(ConditionalWeakTable2<TKey, TValue> parent, int[] buckets, Entry[] entries, int firstFreeEntry)
         {
             this.parent = parent;
@@ -367,8 +373,14 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
             this.firstFreeEntry = firstFreeEntry;
         }
 
+        /// <summary>
+        /// Gets the capacity of the current container.
+        /// </summary>
         internal bool HasCapacity => this.firstFreeEntry < this.entries.Length;
 
+        /// <summary>
+        /// Gets the index of the first free entry.
+        /// </summary>
         internal int FirstFreeEntry => this.firstFreeEntry;
 
         /// <summary>
@@ -484,12 +496,17 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
             if (entryIndex != -1)
             {
                 RemoveIndex(entryIndex);
+
                 return true;
             }
 
             return false;
         }
 
+        /// <summary>
+        /// Removes a given entry at a specified index.
+        /// </summary>
+        /// <param name="entryIndex">The index of the entry to remove.</param>
         private void RemoveIndex(int entryIndex)
         {
             ref Entry entry = ref this.entries[entryIndex];
@@ -524,6 +541,7 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
                 {
                     // the entry was removed
                     hasExpiredEntries = true;
+
                     break;
                 }
 
@@ -547,6 +565,11 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
             return Resize(newSize);
         }
 
+        /// <summary>
+        /// Creates a new <see cref="Container"/> of a specified size with the current items.
+        /// </summary>
+        /// <param name="newSize">The new requested size.</param>
+        /// <returns>The new <see cref="Container"/> instance with the requested size.</returns>
         internal Container Resize(int newSize)
         {
             // Reallocate both buckets and entries and rebuild the bucket and entries from scratch.
@@ -608,6 +631,10 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
             return newContainer;
         }
 
+        /// <summary>
+        /// Verifies that the current instance is valid.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown if the current instance is invalid.</exception>
         private void VerifyIntegrity()
         {
             if (this.invalid)
@@ -618,6 +645,9 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
             }
         }
 
+        /// <summary>
+        /// Finalizes the current <see cref="Container"/> instance.
+        /// </summary>
         ~Container()
         {
             // Skip doing anything if the container is invalid, including if somehow
