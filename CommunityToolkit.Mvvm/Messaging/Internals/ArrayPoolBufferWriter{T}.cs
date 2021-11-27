@@ -4,7 +4,6 @@
 
 using System;
 using System.Buffers;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 
 namespace CommunityToolkit.Mvvm.Messaging.Internals;
@@ -31,6 +30,12 @@ internal ref struct ArrayPoolBufferWriter<T>
     private T[] array;
 
     /// <summary>
+    /// The span mapping to <see cref="array"/>.
+    /// </summary>
+    /// <remarks>All writes are done through this to avoid covariance checks.</remarks>
+    private Span<T> span;
+
+    /// <summary>
     /// The starting offset within <see cref="array"/>.
     /// </summary>
     private int index;
@@ -38,12 +43,11 @@ internal ref struct ArrayPoolBufferWriter<T>
     /// <summary>
     /// Creates a new instance of the <see cref="ArrayPoolBufferWriter{T}"/> struct.
     /// </summary>
-    /// <returns>A new <see cref="ArrayPoolBufferWriter{T}"/> instance.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ArrayPoolBufferWriter<T> Create()
+    public ArrayPoolBufferWriter()
     {
-        return new() { array = ArrayPool<T>.Shared.Rent(DefaultInitialBufferSize) };
+        this.span = this.array = ArrayPool<T>.Shared.Rent(DefaultInitialBufferSize);
+        this.index = 0;
     }
 
     /// <summary>
@@ -52,7 +56,7 @@ internal ref struct ArrayPoolBufferWriter<T>
     public ReadOnlySpan<T> Span
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => this.array.AsSpan(0, this.index);
+        get => this.span.Slice(0, this.index);
     }
 
     /// <summary>
@@ -62,12 +66,19 @@ internal ref struct ArrayPoolBufferWriter<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Add(T item)
     {
-        if (this.index == this.array.Length)
-        {
-            ResizeBuffer();
-        }
+        Span<T> span = this.span;
+        int index = this.index;
 
-        this.array[this.index++] = item;
+        if ((uint)index < (uint)span.Length)
+        {
+            span[index] = item;
+
+            this.index = index + 1;
+        }
+        else
+        {
+            ResizeBufferAndAdd(item);
+        }
     }
 
     /// <summary>
@@ -81,10 +92,11 @@ internal ref struct ArrayPoolBufferWriter<T>
     }
 
     /// <summary>
-    /// Resizes <see cref="array"/> when there is no space left for new items.
+    /// Resizes <see cref="array"/> when there is no space left for new items, then adds one
     /// </summary>
+    /// <param name="item">The item to add.</param>
     [MethodImpl(MethodImplOptions.NoInlining)]
-    private void ResizeBuffer()
+    private void ResizeBufferAndAdd(T item)
     {
         T[] rent = ArrayPool<T>.Shared.Rent(this.index << 2);
 
@@ -93,7 +105,9 @@ internal ref struct ArrayPoolBufferWriter<T>
 
         ArrayPool<T>.Shared.Return(this.array);
 
-        this.array = rent;
+        this.span = this.array = rent;
+
+        this.span[this.index++] = item;
     }
 
     /// <inheritdoc cref="IDisposable.Dispose"/>
