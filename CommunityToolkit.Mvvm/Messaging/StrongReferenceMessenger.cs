@@ -233,12 +233,12 @@ public sealed class StrongReferenceMessenger : IMessenger
             // matches with the token type currently in use, and operate on those instances.
             foreach (object obj in maps.AsSpan(0, i))
             {
-                IDictionarySlim<Recipient, IDictionarySlim<TToken>>? map = Unsafe.As<IDictionarySlim<Recipient, IDictionarySlim<TToken>>>(obj);
+                IDictionarySlim<Recipient, IDictionarySlim<TToken>>? handlersMap = Unsafe.As<IDictionarySlim<Recipient, IDictionarySlim<TToken>>>(obj);
 
                 // We don't need whether or not the map contains the recipient, as the
                 // sequence of maps has already been copied from the set containing all
                 // the mappings for the target recipients: it is guaranteed to be here.
-                IDictionarySlim<TToken> holder = map[key];
+                IDictionarySlim<TToken> holder = handlersMap[key];
 
                 // Try to remove the registered handler for the input token,
                 // for the current message type (unknown from here).
@@ -246,18 +246,29 @@ public sealed class StrongReferenceMessenger : IMessenger
                     holder.Count == 0)
                 {
                     // If the map is empty, remove the recipient entirely from its container
-                    _ = map.TryRemove(key);
+                    _ = handlersMap.TryRemove(key);
 
-                    // If no handlers are left at all for the recipient, across all
-                    // message types and token types, remove the set of mappings
-                    // entirely for the current recipient, and lost the strong
-                    // reference to it as well. This is the same situation that
-                    // would've been achieved by just calling UnregisterAll(recipient).
-                    if (map.Count == 0 &&
-                        set.Remove(Unsafe.As<IMapping>(map)) &&
-                        set.Count == 0)
+                    IMapping mapping = Unsafe.As<IMapping>(handlersMap);
+
+                    // This recipient has no registrations left for this combination of token
+                    // and message type, so this mapping can be removed from its associated set.
+                    _ = set.Remove(mapping);
+
+                    // If the resulting set is empty, then this means that there are no more handlers
+                    // left for this recipient for any message or token type, so the recipient can also
+                    // be removed from the map of all existing recipients with at least one handler.
+                    if (set.Count == 0)
                     {
                         _ = this.recipientsMap.TryRemove(key);
+                    }
+
+                    // If no handlers are left at all for any recipient, across all message types and token
+                    // types, remove the set of mappings entirely for the current recipient, and remove the
+                    // strong reference to it as well. This is the same situation that would've been achieved
+                    // by just calling UnregisterAll(recipient).
+                    if (handlersMap.Count == 0)
+                    {
+                        _ = this.typesMap.TryRemove(mapping.TypeArguments);
                     }
                 }
             }
@@ -314,10 +325,19 @@ public sealed class StrongReferenceMessenger : IMessenger
                 // to the current mapping between existing registered recipients (or entire recipients too).
                 _ = mapping.TryRemove(key);
 
+                // If there are no handlers left at all for this type combination, drop it
+                if (mapping.Count == 0)
+                {
+                    _ = this.typesMap.TryRemove(mapping.TypeArguments);
+                }
+
                 HashSet<IMapping> set = this.recipientsMap[key];
 
-                if (set.Remove(mapping) &&
-                    set.Count == 0)
+                // The current mapping no longer has any handlers left for this recipient
+                _ = set.Remove(mapping);
+
+                // If the current recipients has no handlers left at all, remove it
+                if (set.Count == 0)
                 {
                     _ = this.recipientsMap.TryRemove(key);
                 }
