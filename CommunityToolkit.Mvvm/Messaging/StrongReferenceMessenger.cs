@@ -325,13 +325,21 @@ public sealed class StrongReferenceMessenger : IMessenger
                 // to the current mapping between existing registered recipients (or entire recipients too).
                 _ = mapping.TryRemove(key);
 
+                // If there are no handlers left at all for this type combination, drop it
+                if (mapping.Count == 0)
+                {
+                    _ = this.typesMap.TryRemove(mapping.TypeArguments);
+                }
+
                 HashSet<IMapping> set = this.recipientsMap[key];
 
-                if (set.Remove(mapping) &&
-                    set.Count == 0)
+                // The current mapping no longer has any handlers left for this recipient
+                _ = set.Remove(mapping);
+
+                // If the current recipients has no handlers left at all, remove it
+                if (set.Count == 0)
                 {
                     _ = this.recipientsMap.TryRemove(key);
-                    _ = this.typesMap.TryRemove(mapping.TypeArguments);
                 }
             }
         }
