@@ -66,6 +66,11 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     protected void OnPropertyChanging([CallerMemberName] string? propertyName = null)
     {
+        if (Configuration.IsINotifyPropertyChangingDisabled)
+        {
+            return;
+        }
+
         OnPropertyChanging(new PropertyChangingEventArgs(propertyName));
     }
 
