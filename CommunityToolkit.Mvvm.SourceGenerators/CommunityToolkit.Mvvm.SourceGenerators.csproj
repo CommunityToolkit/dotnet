@@ -23,10 +23,10 @@
     <EmbeddedResource Include="EmbeddedResources\NotNullIfNotNullAttribute.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\CommunityToolkit.Mvvm\ComponentModel\ObservableObject.cs" Link="EmbeddedResources\ObservableObject.cs">
+    <EmbeddedResource Include="..\CommunityToolkit.Mvvm\ComponentModel\ObservableRecipient.cs" Link="EmbeddedResources\ObservableRecipient.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\CommunityToolkit.Mvvm\ComponentModel\ObservableRecipient.cs" Link="EmbeddedResources\ObservableRecipient.cs">
+    <EmbeddedResource Include="EmbeddedResources\ObservableObject.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
