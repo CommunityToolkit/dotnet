@@ -14,6 +14,9 @@ public partial class Test_ObservableObjectAttribute
     [TestMethod]
     public void Test_ObservableObjectAttribute_Events()
     {
+        Assert.IsTrue(typeof(INotifyPropertyChanged).IsAssignableFrom(typeof(SampleModel)));
+        Assert.IsTrue(typeof(INotifyPropertyChanging).IsAssignableFrom(typeof(SampleModel)));
+
         SampleModel? model = new();
 
         (PropertyChangingEventArgs, int) changing = default;
@@ -52,6 +55,9 @@ public partial class Test_ObservableObjectAttribute
     [TestMethod]
     public void Test_ObservableObjectAttribute_OnSealedClass_Events()
     {
+        Assert.IsTrue(typeof(INotifyPropertyChanged).IsAssignableFrom(typeof(SampleModelSealed)));
+        Assert.IsTrue(typeof(INotifyPropertyChanging).IsAssignableFrom(typeof(SampleModelSealed)));
+
         SampleModelSealed? model = new();
 
         (PropertyChangingEventArgs, int) changing = default;
