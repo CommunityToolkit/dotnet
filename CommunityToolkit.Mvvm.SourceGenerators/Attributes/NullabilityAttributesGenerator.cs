@@ -49,9 +49,8 @@ public sealed class NullabilityAttributesGenerator : ISourceGenerator
         Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(filename);
         StreamReader reader = new(stream);
 
-        string originalSource = reader.ReadToEnd();
-        string outputSource = originalSource.Replace("NETSTANDARD2_0", "true");
+        string source = reader.ReadToEnd();
 
-        context.AddSource($"{typeFullName}.cs", SourceText.From(outputSource, Encoding.UTF8));
+        context.AddSource($"{typeFullName}.cs", SourceText.From(source, Encoding.UTF8));
     }
 }

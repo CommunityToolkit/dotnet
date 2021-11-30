@@ -17,10 +17,10 @@
     <EmbeddedResource Include="EmbeddedResources\INotifyPropertyChanged.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\CommunityToolkit.Mvvm\Attributes\NotNullAttribute.cs" Link="EmbeddedResources\NotNullAttribute.cs">
+    <EmbeddedResource Include="EmbeddedResources\NotNullAttribute.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\CommunityToolkit.Mvvm\Attributes\NotNullIfNotNullAttribute.cs" Link="EmbeddedResources\NotNullIfNotNullAttribute.cs">
+    <EmbeddedResource Include="EmbeddedResources\NotNullIfNotNullAttribute.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="..\CommunityToolkit.Mvvm\ComponentModel\ObservableObject.cs" Link="EmbeddedResources\ObservableObject.cs">
