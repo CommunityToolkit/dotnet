@@ -21,7 +21,7 @@ public static partial class Guard
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if (<paramref name="value"/> - <paramref name="target"/>) > <paramref name="delta"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsCloseTo(int value, int target, uint delta, string name)
+    public static void IsCloseTo(int value, int target, uint delta, [CallerArgumentExpression("value")] string name = "")
     {
         uint difference;
 
@@ -51,7 +51,7 @@ public static partial class Guard
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if (<paramref name="value"/> - <paramref name="target"/>) &lt;= <paramref name="delta"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsNotCloseTo(int value, int target, uint delta, string name)
+    public static void IsNotCloseTo(int value, int target, uint delta, [CallerArgumentExpression("value")] string name = "")
     {
         uint difference;
 
@@ -81,7 +81,7 @@ public static partial class Guard
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if (<paramref name="value"/> - <paramref name="target"/>) > <paramref name="delta"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsCloseTo(long value, long target, ulong delta, string name)
+    public static void IsCloseTo(long value, long target, ulong delta, [CallerArgumentExpression("value")] string name = "")
     {
         ulong difference;
 
@@ -111,7 +111,7 @@ public static partial class Guard
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if (<paramref name="value"/> - <paramref name="target"/>) &lt;= <paramref name="delta"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsNotCloseTo(long value, long target, ulong delta, string name)
+    public static void IsNotCloseTo(long value, long target, ulong delta, [CallerArgumentExpression("value")] string name = "")
     {
         ulong difference;
 
@@ -141,7 +141,7 @@ public static partial class Guard
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if (<paramref name="value"/> - <paramref name="target"/>) > <paramref name="delta"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsCloseTo(float value, float target, float delta, string name)
+    public static void IsCloseTo(float value, float target, float delta, [CallerArgumentExpression("value")] string name = "")
     {
         if (Math.Abs(value - target) <= delta)
         {
@@ -160,7 +160,7 @@ public static partial class Guard
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if (<paramref name="value"/> - <paramref name="target"/>) &lt;= <paramref name="delta"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsNotCloseTo(float value, float target, float delta, string name)
+    public static void IsNotCloseTo(float value, float target, float delta, [CallerArgumentExpression("value")] string name = "")
     {
         if (Math.Abs(value - target) > delta)
         {
@@ -179,7 +179,7 @@ public static partial class Guard
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if (<paramref name="value"/> - <paramref name="target"/>) > <paramref name="delta"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsCloseTo(double value, double target, double delta, string name)
+    public static void IsCloseTo(double value, double target, double delta, [CallerArgumentExpression("value")] string name = "")
     {
         if (Math.Abs(value - target) <= delta)
         {
@@ -198,7 +198,7 @@ public static partial class Guard
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if (<paramref name="value"/> - <paramref name="target"/>) &lt;= <paramref name="delta"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsNotCloseTo(double value, double target, double delta, string name)
+    public static void IsNotCloseTo(double value, double target, double delta, [CallerArgumentExpression("value")] string name = "")
     {
         if (Math.Abs(value - target) > delta)
         {
@@ -217,7 +217,7 @@ public static partial class Guard
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if (<paramref name="value"/> - <paramref name="target"/>) > <paramref name="delta"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsCloseTo(nint value, nint target, nuint delta, string name)
+    public static void IsCloseTo(nint value, nint target, nuint delta, [CallerArgumentExpression("value")] string name = "")
     {
         nuint difference;
 
@@ -247,7 +247,7 @@ public static partial class Guard
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if (<paramref name="value"/> - <paramref name="target"/>) &lt;= <paramref name="delta"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsNotCloseTo(nint value, nint target, nuint delta, string name)
+    public static void IsNotCloseTo(nint value, nint target, nuint delta, [CallerArgumentExpression("value")] string name = "")
     {
         nuint difference;
 
