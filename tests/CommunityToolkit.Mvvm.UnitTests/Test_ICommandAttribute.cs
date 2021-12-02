@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
@@ -40,6 +42,20 @@ public partial class Test_ICommandAttribute
         await model.DelayAndIncrementCounterWithValueAndTokenCommand.ExecuteAsync(5);
 
         Assert.AreEqual(model.Counter, 18);
+
+        List<Task> tasks = new();
+
+        for (int i = 0; i < 10; i++)
+        {
+            tasks.Add(model.AddValueToListAndDelayCommand.ExecuteAsync(i));
+        }
+
+        // All values should already be in the list, as commands are executed
+        // concurrently. Each invocation should still be pending here, but the
+        // values are added to the list before starting the delay.
+        CollectionAssert.AreEqual(model.Values, Enumerable.Range(0, 10).ToArray());
+
+        await Task.WhenAll(tasks);
     }
 
     [TestMethod]
@@ -260,6 +276,8 @@ public partial class Test_ICommandAttribute
 
         public int Counter { get; private set; }
 
+        public List<int> Values { get; } = new();
+
         /// <summary>This is a single line summary.</summary>
         [ICommand]
         private void IncrementCounter()
@@ -285,6 +303,14 @@ public partial class Test_ICommandAttribute
             await Task.Delay(50);
 
             Counter += 1;
+        }
+
+        [ICommand]
+        private async Task AddValueToListAndDelayAsync(int value)
+        {
+            Values.Add(value);
+
+            await Task.Delay(100);
         }
 
         #region Test region
