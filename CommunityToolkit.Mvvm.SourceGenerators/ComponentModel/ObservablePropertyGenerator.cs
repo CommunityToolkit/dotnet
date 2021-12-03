@@ -181,9 +181,10 @@ public sealed partial class ObservablePropertyGenerator : ISourceGenerator
         string propertyName = GetGeneratedPropertyName(fieldSymbol);
 
         INamedTypeSymbol alsoNotifyChangeForAttributeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.AlsoNotifyChangeForAttribute")!;
+        INamedTypeSymbol alsoNotifyCanExecuteForAttributeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.AlsoNotifyCanExecuteForAttribute")!;
         INamedTypeSymbol? validationAttributeSymbol = context.Compilation.GetTypeByMetadataName("System.ComponentModel.DataAnnotations.ValidationAttribute");
 
-        List<StatementSyntax> dependentPropertyNotificationStatements = new();
+        List<StatementSyntax> dependentNotificationStatements = new();
         List<AttributeSyntax> validationAttributes = new();
 
         foreach (AttributeData attributeData in fieldSymbol.GetAttributes())
@@ -203,8 +204,8 @@ public sealed partial class ObservablePropertyGenerator : ISourceGenerator
                     {
                         propertyChangedNames.Add(dependentPropertyName);
 
-                        // OnPropertyChanged("OtherPropertyName");
-                        dependentPropertyNotificationStatements.Add(ExpressionStatement(
+                        // OnPropertyChanged("<PROPERTY_NAME>");
+                        dependentNotificationStatements.Add(ExpressionStatement(
                             InvocationExpression(IdentifierName("OnPropertyChanged"))
                             .AddArgumentListArguments(Argument(MemberAccessExpression(
                                 SyntaxKind.SimpleMemberAccessExpression,
@@ -225,7 +226,7 @@ public sealed partial class ObservablePropertyGenerator : ISourceGenerator
                             propertyChangedNames.Add(currentPropertyName);
 
                             // Additional property names
-                            dependentPropertyNotificationStatements.Add(ExpressionStatement(
+                            dependentNotificationStatements.Add(ExpressionStatement(
                                 InvocationExpression(IdentifierName("OnPropertyChanged"))
                                 .AddArgumentListArguments(Argument(MemberAccessExpression(
                                     SyntaxKind.SimpleMemberAccessExpression,
@@ -233,6 +234,19 @@ public sealed partial class ObservablePropertyGenerator : ISourceGenerator
                                     IdentifierName($"{currentPropertyName}{nameof(PropertyChangedEventArgs)}"))))));
                         }
                     }
+                }
+            }
+            else if (SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, alsoNotifyCanExecuteForAttributeSymbol))
+            {
+                // Add dependent relay command notifications, if needed
+                foreach (string commandName in attributeData.GetConstructorArguments<string>())
+                {
+                    // <PROPERTY_NAME>.NotifyCanExecuteChanged();
+                    dependentNotificationStatements.Add(ExpressionStatement(
+                        InvocationExpression(MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            IdentifierName(commandName),
+                            IdentifierName("NotifyCanExecuteChanged")))));
                 }
             }
             else if (validationAttributeSymbol is not null &&
@@ -327,7 +341,7 @@ public sealed partial class ObservablePropertyGenerator : ISourceGenerator
                                 .AddArgumentListArguments(
                                     Argument(IdentifierName("value")),
                                     Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(propertyName))))))
-                        .AddStatements(dependentPropertyNotificationStatements.ToArray())));
+                        .AddStatements(dependentNotificationStatements.ToArray())));
             }
         }
         else
@@ -367,7 +381,7 @@ public sealed partial class ObservablePropertyGenerator : ISourceGenerator
                         IdentifierName($"{propertyName}{nameof(PropertyChangedEventArgs)}"))))));
 
             // Add the dependent property notifications at the end
-            updateAndNotificationBlock = updateAndNotificationBlock.AddStatements(dependentPropertyNotificationStatements.ToArray());
+            updateAndNotificationBlock = updateAndNotificationBlock.AddStatements(dependentNotificationStatements.ToArray());
 
             // Generate the inner setter block as follows:
             //
