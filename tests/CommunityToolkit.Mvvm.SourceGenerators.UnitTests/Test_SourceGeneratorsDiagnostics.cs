@@ -356,6 +356,184 @@ public class Test_SourceGeneratorsDiagnostics
             CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)));
     }
 
+    [TestMethod]
+    public void InvalidCanExecuteMemberName()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.Input;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel
+                {
+                    private bool Foo => true;
+
+                    [ICommand(CanExecute = ""Bar"")]
+                    private void GreetUser()
+                    {
+                    }
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0014");
+    }
+
+    [TestMethod]
+    public void MultipleCanExecuteMemberNameMatches()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.Input;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel
+                {
+                    private bool Foo => true;
+
+                    private bool Foo() => true;
+
+                    [ICommand(CanExecute = nameof(Foo))]
+                    private void GreetUser()
+                    {
+                    }
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0015");
+    }
+
+    [TestMethod]
+    public void InvalidCanExecuteMember_NonReadableProperty()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.Input;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel
+                {
+                    private bool Foo { set { } }
+
+                    [ICommand(CanExecute = nameof(Foo))]
+                    private void GreetUser()
+                    {
+                    }
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0016");
+    }
+
+    [TestMethod]
+    public void InvalidCanExecuteMember_PropertyWithInvalidType()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.Input;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel
+                {
+                    private string Foo => ""Hi!"";
+
+                    [ICommand(CanExecute = nameof(Foo))]
+                    private void GreetUser()
+                    {
+                    }
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0016");
+    }
+
+    [TestMethod]
+    public void InvalidCanExecuteMember_MethodWithInvalidType()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.Input;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel
+                {
+                    private string Foo() => ""Hi!"";
+
+                    [ICommand(CanExecute = nameof(Foo))]
+                    private void GreetUser()
+                    {
+                    }
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0016");
+    }
+
+    [TestMethod]
+    public void InvalidCanExecuteMember_MethodWithIncompatibleInputType_MissingInput()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.Input;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel
+                {
+                    private bool Foo(string name) => true;
+
+                    [ICommand(CanExecute = nameof(Foo))]
+                    private void GreetUser()
+                    {
+                    }
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0016");
+    }
+
+    [TestMethod]
+    public void InvalidCanExecuteMember_MethodWithIncompatibleInputType_NonMatchingInputType()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.Input;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel
+                {
+                    private bool Foo(int age) => true;
+
+                    [ICommand(CanExecute = nameof(Foo))]
+                    private void GreetUser(string name)
+                    {
+                    }
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0016");
+    }
+
+    [TestMethod]
+    public void InvalidCanExecuteMember_MethodWithIncompatibleInputType_TooManyInputs()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.Input;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel
+                {
+                    private bool Foo(string name, int age) => true;
+
+                    [ICommand(CanExecute = nameof(Foo))]
+                    private void GreetUser(string name)
+                    {
+                    }
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0016");
+    }
+
     /// <summary>
     /// Verifies the output of a source generator.
     /// </summary>

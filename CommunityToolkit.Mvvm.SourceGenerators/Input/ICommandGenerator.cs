@@ -180,7 +180,7 @@ public sealed partial class ICommandGenerator : ISourceGenerator
             }
             else
             {
-                context.ReportDiagnostic(InvalidCanExecuteMemberName, methodSymbol, memberName, methodSymbol.ContainingType);
+                context.ReportDiagnostic(InvalidCanExecuteMember, methodSymbol, memberName, methodSymbol.ContainingType);
             }
         }
 
@@ -427,6 +427,7 @@ public sealed partial class ICommandGenerator : ISourceGenerator
 
             // If the method has parameters, it has to have a single one matching the command type
             if (canExecuteMethodSymbol.Parameters.Length == 1 &&
+                commandInterfaceTypeSymbol.IsGenericType &&
                 SymbolEqualityComparer.Default.Equals(canExecuteMethodSymbol.Parameters[0].Type, commandInterfaceTypeSymbol.TypeArguments[0]))
             {
                 // Create a method groupd expression again
