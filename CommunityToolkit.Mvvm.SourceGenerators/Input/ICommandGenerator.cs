@@ -18,6 +18,7 @@ using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Microsoft.CodeAnalysis.SymbolDisplayTypeQualificationStyle;
 using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
+using System.Collections.Immutable;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators;
 
@@ -88,7 +89,7 @@ public sealed partial class ICommandGenerator : ISourceGenerator
         ClassDeclarationSyntax? classDeclarationSyntax =
             ClassDeclaration(classDeclarationSymbol.Name)
             .WithModifiers(classDeclaration.Modifiers)
-            .AddMembers(items.Select(item => CreateCommandMembers(context, item.LeadingTrivia, item.MethodSymbol)).SelectMany(static g => g).ToArray());
+            .AddMembers(items.Select(item => CreateCommandMembers(context, classDeclarationSymbol, item.LeadingTrivia, item.MethodSymbol, item.CommandData)).SelectMany(static g => g).ToArray());
 
         TypeDeclarationSyntax typeDeclarationSyntax = classDeclarationSyntax;
 
@@ -125,11 +126,18 @@ public sealed partial class ICommandGenerator : ISourceGenerator
     /// Creates the <see cref="MemberDeclarationSyntax"/> instances for a specified command.
     /// </summary>
     /// <param name="context">The input <see cref="GeneratorExecutionContext"/> instance to use.</param>
+    /// <param name="classDeclarationSymbol">The <see cref="INamedTypeSymbol"/> for the parent type.</param>
     /// <param name="leadingTrivia">The leading trivia for the field to process.</param>
     /// <param name="methodSymbol">The input <see cref="IMethodSymbol"/> instance to process.</param>
+    /// <param name="commandData">The <see cref="AttributeData"/> instance the method was annotated with.</param>
     /// <returns>The <see cref="MemberDeclarationSyntax"/> instances for the input command.</returns>
     [Pure]
-    private static IEnumerable<MemberDeclarationSyntax> CreateCommandMembers(GeneratorExecutionContext context, SyntaxTriviaList leadingTrivia, IMethodSymbol methodSymbol)
+    private static IEnumerable<MemberDeclarationSyntax> CreateCommandMembers(
+        GeneratorExecutionContext context,
+        INamedTypeSymbol classDeclarationSymbol,
+        SyntaxTriviaList leadingTrivia,
+        IMethodSymbol methodSymbol,
+        AttributeData commandData)
     {
         // Get the command member names
         (string fieldName, string propertyName) = GetGeneratedFieldAndPropertyNames(context, methodSymbol);
@@ -138,13 +146,42 @@ public sealed partial class ICommandGenerator : ISourceGenerator
         if (!TryMapCommandTypesFromMethod(
             context,
             methodSymbol,
-            out ITypeSymbol? commandInterfaceTypeSymbol,
-            out ITypeSymbol? commandClassTypeSymbol,
-            out ITypeSymbol? delegateTypeSymbol))
+            out INamedTypeSymbol? commandInterfaceTypeSymbol,
+            out INamedTypeSymbol? commandClassTypeSymbol,
+            out INamedTypeSymbol? delegateTypeSymbol))
         {
             context.ReportDiagnostic(InvalidICommandMethodSignatureError, methodSymbol, methodSymbol.ContainingType, methodSymbol);
 
             return Array.Empty<MemberDeclarationSyntax>();
+        }
+
+        // Prepares the argument to pass the underlying method to invoke
+        ArgumentSyntax[] commandCreationArguments = new[] {
+            Argument(ObjectCreationExpression(IdentifierName(delegateTypeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)))
+            .AddArgumentListArguments(Argument(IdentifierName(methodSymbol.Name))))
+        };
+
+        // Get the can execute member, if any
+        if (commandData.TryGetNamedArgument("CanExecute", out string? memberName))
+        {
+            ImmutableArray<ISymbol> canExecuteSymbols = classDeclarationSymbol.GetMembers(memberName);
+
+            if (canExecuteSymbols.IsEmpty)
+            {
+                context.ReportDiagnostic(InvalidCanExecuteMemberName, methodSymbol, memberName, methodSymbol.ContainingType);
+            }
+            else if (canExecuteSymbols.Length > 1)
+            {
+                context.ReportDiagnostic(MultipleCanExecuteMemberNameMatches, methodSymbol, memberName, methodSymbol.ContainingType);
+            }
+            else if (TryGetCanExecuteExpressionFromSymbol(context, memberName, canExecuteSymbols[0], commandInterfaceTypeSymbol, out ExpressionSyntax? canExecuteExpression))
+            {
+                commandCreationArguments = new ArgumentSyntax[] { commandCreationArguments[0], Argument(canExecuteExpression) };
+            }
+            else
+            {
+                context.ReportDiagnostic(InvalidCanExecuteMemberName, methodSymbol, memberName, methodSymbol.ContainingType);
+            }
         }
 
         // Construct the generated field as follows:
@@ -189,7 +226,7 @@ public sealed partial class ICommandGenerator : ISourceGenerator
         // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
         // [global::System.Diagnostics.DebuggerNonUserCode]
         // [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        // public <COMMAND_TYPE> <COMMAND_PROPERTY_NAME> => <COMMAND_FIELD_NAME> ??= new <RELAY_COMMAND_TYPE>(new <DELEGATE_TYPE>(<METHOD_NAME>));
+        // public <COMMAND_TYPE> <COMMAND_PROPERTY_NAME> => <COMMAND_FIELD_NAME> ??= new <RELAY_COMMAND_TYPE>(new <DELEGATE_TYPE>(<METHOD_NAME>), <OPTIONAL_CAN_EXECUTE_INVOCATION>);
         PropertyDeclarationSyntax propertyDeclaration =
             PropertyDeclaration(
                 IdentifierName(commandInterfaceTypeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)),
@@ -210,9 +247,7 @@ public sealed partial class ICommandGenerator : ISourceGenerator
                         SyntaxKind.CoalesceAssignmentExpression,
                         IdentifierName(fieldName),
                         ObjectCreationExpression(IdentifierName(commandClassTypeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)))
-                        .AddArgumentListArguments(Argument(
-                            ObjectCreationExpression(IdentifierName(delegateTypeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)))
-                            .AddArgumentListArguments(Argument(IdentifierName(methodSymbol.Name))))))))
+                        .AddArgumentListArguments(commandCreationArguments))))
             .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
 
         return new MemberDeclarationSyntax[] { fieldDeclaration, propertyDeclaration };
@@ -254,9 +289,9 @@ public sealed partial class ICommandGenerator : ISourceGenerator
     private static bool TryMapCommandTypesFromMethod(
         GeneratorExecutionContext context,
         IMethodSymbol methodSymbol,
-        [NotNullWhen(true)] out ITypeSymbol? commandInterfaceTypeSymbol,
-        [NotNullWhen(true)] out ITypeSymbol? commandClassTypeSymbol,
-        [NotNullWhen(true)] out ITypeSymbol? delegateTypeSymbol)
+        [NotNullWhen(true)] out INamedTypeSymbol? commandInterfaceTypeSymbol,
+        [NotNullWhen(true)] out INamedTypeSymbol? commandClassTypeSymbol,
+        [NotNullWhen(true)] out INamedTypeSymbol? delegateTypeSymbol)
     {
         // Map <void, void> to IRelayCommand, RelayCommand, Action
         if (methodSymbol.ReturnsVoid && methodSymbol.Parameters.Length == 0)
@@ -337,6 +372,100 @@ public sealed partial class ICommandGenerator : ISourceGenerator
         commandInterfaceTypeSymbol = null;
         commandClassTypeSymbol = null;
         delegateTypeSymbol = null;
+
+        return false;
+    }
+
+    /// <summary>
+    /// Gets the expression for the can execute logic, if possible.
+    /// </summary>
+    /// <param name="context">The input <see cref="GeneratorExecutionContext"/> instance to use.</param>
+    /// <param name="canExecuteMemberName">The name of the can execute member name being used.</param>
+    /// <param name="canExecuteSymbol">The can execute member symbol (either a method or a property).</param>
+    /// <param name="commandInterfaceTypeSymbol">The command interface type symbol.</param>
+    /// <param name="canExecuteExpression">The resulting can execute expression, if available.</param>
+    /// <returns>Whether or not <paramref name="canExecuteExpression"/> was set and the input symbol was valid.</returns>
+    private static bool TryGetCanExecuteExpressionFromSymbol(
+        GeneratorExecutionContext context,
+        string canExecuteMemberName,
+        ISymbol canExecuteSymbol,
+        INamedTypeSymbol commandInterfaceTypeSymbol,
+        [NotNullWhen(true)] out ExpressionSyntax? canExecuteExpression)
+    {
+        if (canExecuteSymbol is IMethodSymbol canExecuteMethodSymbol)
+        {
+            // The return type must always be a bool
+            if (!SymbolEqualityComparer.Default.Equals(canExecuteMethodSymbol.ReturnType, context.Compilation.GetTypeByMetadataName("System.Boolean")))
+            {
+                goto Failure;
+            }
+
+            // Parameterless methods are always valid
+            if (canExecuteMethodSymbol.Parameters.IsEmpty)
+            {
+                // If the command is generic, the input value is ignored
+                if (commandInterfaceTypeSymbol.IsGenericType)
+                {
+                    // Create a lambda expression ignoring the input value:
+                    //
+                    // new <RELAY_COMMAND_TYPE>(<METHOD_EXPRESSION>, _ => <CAN_EXECUTE_METHOD>());
+                    canExecuteExpression =
+                        SimpleLambdaExpression(
+                            Parameter(Identifier(TriviaList(), SyntaxKind.UnderscoreToken, "_", "_", TriviaList())))
+                        .WithExpressionBody(InvocationExpression(IdentifierName(canExecuteMemberName)));
+                }
+                else
+                {
+                    // Create a method groupd expression, which will become:
+                    //
+                    // new <RELAY_COMMAND_TYPE>(<METHOD_EXPRESSION>, <CAN_EXECUTE_METHOD>);
+                    canExecuteExpression = IdentifierName(canExecuteMemberName);
+                }
+
+                return true;
+            }
+
+            // If the method has parameters, it has to have a single one matching the command type
+            if (canExecuteMethodSymbol.Parameters.Length == 1 &&
+                SymbolEqualityComparer.Default.Equals(canExecuteMethodSymbol.Parameters[0].Type, commandInterfaceTypeSymbol.TypeArguments[0]))
+            {
+                // Create a method groupd expression again
+                canExecuteExpression = IdentifierName(canExecuteMemberName);
+
+                return true;
+            }
+        }
+        else if (canExecuteSymbol is IPropertySymbol { GetMethod: not null } canExecutePropertySymbol)
+        {
+            // The property type must always be a bool
+            if (!SymbolEqualityComparer.Default.Equals(canExecutePropertySymbol.Type, context.Compilation.GetTypeByMetadataName("System.Boolean")))
+            {
+                goto Failure;
+            }
+
+            if (commandInterfaceTypeSymbol.IsGenericType)
+            {
+                // Create a lambda expression again, but discarding the input value:
+                //
+                // new <RELAY_COMMAND_TYPE>(<METHOD_EXPRESSION>, _ => <CAN_EXECUTE_PROPERTY>);
+                canExecuteExpression =
+                    SimpleLambdaExpression(
+                        Parameter(Identifier(TriviaList(), SyntaxKind.UnderscoreToken, "_", "_", TriviaList())))
+                    .WithExpressionBody(IdentifierName(canExecuteMemberName));                
+            }
+            else
+            {
+                // Create a lambda expression returning the property value:
+                //
+                // new <RELAY_COMMAND_TYPE>(<METHOD_EXPRESSION>, () => <CAN_EXECUTE_PROPERTY>);
+                canExecuteExpression = ParenthesizedLambdaExpression().WithExpressionBody(IdentifierName(canExecuteMemberName));
+            }
+
+            return true;
+        }
+
+        Failure:
+        canExecuteExpression = null;
 
         return false;
     }

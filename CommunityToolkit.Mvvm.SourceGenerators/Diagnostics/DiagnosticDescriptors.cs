@@ -220,4 +220,52 @@ internal static class DiagnosticDescriptors
         isEnabledByDefault: true,
         description: "The source generator features from the MVVM Toolkit require consuming projects to set the C# language version to at least C# 9.0. Make sure to add <LangVersion>9.0</LangVersion> (or above) to your .csproj file.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a specified <c>CanExecute</c> name has no matching member.
+    /// <para>
+    /// Format: <c>"The CanExecute name must refer to a valid member, but "{0}" has no matches in type {1}"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor InvalidCanExecuteMemberName = new(
+        id: "MVVMTK0014",
+        title: "Invalid ICommand.CanExecute member name",
+        messageFormat: "The CanExecute name must refer to a valid member, but \"{0}\" has no matches in type {1}",
+        category: typeof(ICommandGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "The CanExecute name in [ICommand] must refer to a valid member in its parent type.",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a specified <c>CanExecute</c> name maps to multiple members.
+    /// <para>
+    /// Format: <c>"The CanExecute name must refer to a single member, but "{0}" has multiple matches in type {1}"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor MultipleCanExecuteMemberNameMatches = new(
+        id: "MVVMTK0015",
+        title: "Multiple ICommand.CanExecute member name matches",
+        messageFormat: "The CanExecute name must refer to a single member, but \"{0}\" has multiple matches in type {1}",
+        category: typeof(ICommandGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "Cannot set the CanExecute name in [ICommand] to one that has multiple matches in its parent type (it must refer to a single compatible member).",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a a specified <c>CanExecute</c> name maps to an invalid member.
+    /// <para>
+    /// Format: <c>"The CanExecute name must refer to a compatible member, but no valid members were found for "{0}" in type {1}"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor InvalidCanExecuteMember = new(
+        id: "MVVMTK0016",
+        title: "No valid ICommand.CanExecute member match",
+        messageFormat: "The CanExecute name must refer to a compatible member, but no valid members were found for \"{0}\" in type {1}",
+        category: typeof(ICommandGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "The CanExecute name in [ICommand] must refer to a compatible member (either a property or a method) to be used in a generated command.",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit");
 }

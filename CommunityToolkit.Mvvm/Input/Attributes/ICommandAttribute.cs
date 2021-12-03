@@ -31,7 +31,7 @@ namespace CommunityToolkit.Mvvm.Input;
 /// <code>
 /// partial class MyViewModel
 /// {
-///     private IRelayCommand? greetUserCommand;
+///     private RelayCommand? greetUserCommand;
 ///
 ///     public IRelayCommand GreetUserCommand => greetUserCommand ??= new RelayCommand(GreetUser);
 /// }
@@ -62,4 +62,10 @@ namespace CommunityToolkit.Mvvm.Input;
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
 public sealed class ICommandAttribute : Attribute
 {
+    /// <summary>
+    /// Gets or sets the name of the property or method that will be invoked to check whether the
+    /// generated command can be executed at any given time. The referenced member needs to return
+    /// a <see cref="bool"/> value, and has to have a signature compatible with the target command.
+    /// </summary>
+    public string? CanExecute { get; set; }
 }
