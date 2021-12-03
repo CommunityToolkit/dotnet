@@ -128,6 +128,92 @@ public partial class Test_ICommandAttribute
         Assert.AreEqual(model.Counter, 1);
     }
 
+    [TestMethod]
+    public async Task Test_ICommandAttribute_CanExecute_Async_NoParameters_Property()
+    {
+        CanExecuteViewModel model = new();
+
+        model.Flag = true;
+
+        await model.IncrementCounter_Async_NoParameters_PropertyCommand.ExecuteAsync(null);
+
+        Assert.AreEqual(model.Counter, 1);
+
+        model.Flag = false;
+
+        await model.IncrementCounter_Async_NoParameters_PropertyCommand.ExecuteAsync(null);
+
+        Assert.AreEqual(model.Counter, 1);
+    }
+
+    [TestMethod]
+    public async Task Test_ICommandAttribute_CanExecute_Async_WithParameter_Property()
+    {
+        CanExecuteViewModel model = new();
+
+        model.Flag = true;
+
+        await model.IncrementCounter_Async_WithParameter_PropertyCommand.ExecuteAsync(null);
+
+        Assert.AreEqual(model.Counter, 1);
+
+        model.Flag = false;
+
+        await model.IncrementCounter_Async_WithParameter_PropertyCommand.ExecuteAsync(null);
+
+        Assert.AreEqual(model.Counter, 1);
+    }
+
+    [TestMethod]
+    public async Task Test_ICommandAttribute_CanExecute_Async_NoParameters_MethodWithNoParameters()
+    {
+        CanExecuteViewModel model = new();
+
+        model.Flag = true;
+
+        await model.IncrementCounter_Async_NoParameters_MethodWithNoParametersCommand.ExecuteAsync(null);
+
+        Assert.AreEqual(model.Counter, 1);
+
+        model.Flag = false;
+
+        await model.IncrementCounter_Async_WithParameter_PropertyCommand.ExecuteAsync(null);
+
+        Assert.AreEqual(model.Counter, 1);
+    }
+
+    [TestMethod]
+    public async Task Test_ICommandAttribute_CanExecute_Async_WithParameters_MethodWithNoParameters()
+    {
+        CanExecuteViewModel model = new();
+
+        model.Flag = true;
+
+        await model.IncrementCounter_Async_WithParameters_MethodWithNoParametersCommand.ExecuteAsync(null);
+
+        Assert.AreEqual(model.Counter, 1);
+
+        model.Flag = false;
+
+        await model.IncrementCounter_Async_WithParameter_PropertyCommand.ExecuteAsync(null);
+
+        Assert.AreEqual(model.Counter, 1);
+    }
+
+    [TestMethod]
+    public async Task Test_ICommandAttribute_CanExecute_Async_WithParameters_MethodWithMatchingParameter()
+    {
+        CanExecuteViewModel model = new();
+
+        await model.IncrementCounter_Async_WithParameters_MethodWithMatchingParameterCommand.ExecuteAsync(new User { Name = nameof(CanExecuteViewModel) });
+
+        Assert.AreEqual(model.Counter, 1);
+
+        await model.IncrementCounter_Async_WithParameter_PropertyCommand.ExecuteAsync(new User());
+
+        Assert.AreEqual(model.Counter, 1);
+    }
+
     public sealed partial class MyViewModel
     {
         public int Counter { get; private set; }
@@ -232,6 +318,46 @@ public partial class Test_ICommandAttribute
         private void IncrementCounter_WithParameters_MethodWithMatchingParameter(User user)
         {
             Counter++;
+        }
+
+        [ICommand(CanExecute = nameof(Flag))]
+        private async Task IncrementCounter_Async_NoParameters_Property()
+        {
+            Counter++;
+
+            await Task.Delay(100);
+        }
+
+        [ICommand(CanExecute = nameof(Flag))]
+        private async Task IncrementCounter_Async_WithParameter_Property(User user)
+        {
+            Counter++;
+
+            await Task.Delay(100);
+        }
+
+        [ICommand(CanExecute = nameof(GetFlag1))]
+        private async Task IncrementCounter_Async_NoParameters_MethodWithNoParameters()
+        {
+            Counter++;
+
+            await Task.Delay(100);
+        }
+
+        [ICommand(CanExecute = nameof(GetFlag1))]
+        private async Task IncrementCounter_Async_WithParameters_MethodWithNoParameters(User user)
+        {
+            Counter++;
+
+            await Task.Delay(100);
+        }
+
+        [ICommand(CanExecute = nameof(GetFlag2))]
+        private async Task IncrementCounter_Async_WithParameters_MethodWithMatchingParameter(User user)
+        {
+            Counter++;
+
+            await Task.Delay(100);
         }
     }
 
