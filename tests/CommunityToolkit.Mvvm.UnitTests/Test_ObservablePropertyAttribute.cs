@@ -9,6 +9,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommunityToolkit.Mvvm.UnitTests;
@@ -19,7 +20,7 @@ public partial class Test_ObservablePropertyAttribute
     [TestMethod]
     public void Test_ObservablePropertyAttribute_Events()
     {
-        SampleModel? model = new();
+        SampleModel model = new();
 
         (PropertyChangingEventArgs, int) changing = default;
         (PropertyChangedEventArgs, int) changed = default;
@@ -58,7 +59,7 @@ public partial class Test_ObservablePropertyAttribute
     [TestMethod]
     public void Test_ObservablePropertyAttributeWithinRegion_Events()
     {
-        SampleModel? model = new();
+        SampleModel model = new();
 
         (PropertyChangingEventArgs, int) changing = default;
         (PropertyChangedEventArgs, int) changed = default;
@@ -97,7 +98,7 @@ public partial class Test_ObservablePropertyAttribute
     [TestMethod]
     public void Test_ObservablePropertyAttributeRightBelowRegion_Events()
     {
-        SampleModel? model = new();
+        SampleModel model = new();
 
         (PropertyChangingEventArgs, string?) changing = default;
         (PropertyChangedEventArgs, string?) changed = default;
@@ -135,7 +136,7 @@ public partial class Test_ObservablePropertyAttribute
     [TestMethod]
     public void Test_AlsoNotifyChangeForAttribute_Events()
     {
-        DependentPropertyModel? model = new();
+        DependentPropertyModel model = new();
 
         List<string?> propertyNames = new();
 
@@ -150,7 +151,7 @@ public partial class Test_ObservablePropertyAttribute
     [TestMethod]
     public void Test_ValidationAttributes()
     {
-        PropertyInfo? nameProperty = typeof(MyFormViewModel).GetProperty(nameof(MyFormViewModel.Name))!;
+        PropertyInfo nameProperty = typeof(MyFormViewModel).GetProperty(nameof(MyFormViewModel.Name))!;
 
         Assert.IsNotNull(nameProperty.GetCustomAttribute<RequiredAttribute>());
         Assert.IsNotNull(nameProperty.GetCustomAttribute<MinLengthAttribute>());
@@ -158,17 +159,17 @@ public partial class Test_ObservablePropertyAttribute
         Assert.IsNotNull(nameProperty.GetCustomAttribute<MaxLengthAttribute>());
         Assert.AreEqual(nameProperty.GetCustomAttribute<MaxLengthAttribute>()!.Length, 100);
 
-        PropertyInfo? ageProperty = typeof(MyFormViewModel).GetProperty(nameof(MyFormViewModel.Age))!;
+        PropertyInfo ageProperty = typeof(MyFormViewModel).GetProperty(nameof(MyFormViewModel.Age))!;
 
         Assert.IsNotNull(ageProperty.GetCustomAttribute<RangeAttribute>());
         Assert.AreEqual(ageProperty.GetCustomAttribute<RangeAttribute>()!.Minimum, 0);
         Assert.AreEqual(ageProperty.GetCustomAttribute<RangeAttribute>()!.Maximum, 120);
 
-        PropertyInfo? emailProperty = typeof(MyFormViewModel).GetProperty(nameof(MyFormViewModel.Email))!;
+        PropertyInfo emailProperty = typeof(MyFormViewModel).GetProperty(nameof(MyFormViewModel.Email))!;
 
         Assert.IsNotNull(emailProperty.GetCustomAttribute<EmailAddressAttribute>());
 
-        PropertyInfo? comboProperty = typeof(MyFormViewModel).GetProperty(nameof(MyFormViewModel.IfThisWorksThenThatsGreat))!;
+        PropertyInfo comboProperty = typeof(MyFormViewModel).GetProperty(nameof(MyFormViewModel.IfThisWorksThenThatsGreat))!;
 
         TestValidationAttribute testAttribute = comboProperty.GetCustomAttribute<TestValidationAttribute>()!;
 
@@ -195,7 +196,7 @@ public partial class Test_ObservablePropertyAttribute
     [TestMethod]
     public void Test_ObservablePropertyWithValueNamedField()
     {
-        ModelWithValueProperty? model = new();
+        ModelWithValueProperty model = new();
 
         List<string?> propertyNames = new();
 
@@ -212,7 +213,7 @@ public partial class Test_ObservablePropertyAttribute
     [TestMethod]
     public void Test_ObservablePropertyWithValueNamedField_WithValidationAttributes()
     {
-        ModelWithValuePropertyWithValidation? model = new();
+        ModelWithValuePropertyWithValidation model = new();
 
         List<string?> propertyNames = new();
 
@@ -229,7 +230,7 @@ public partial class Test_ObservablePropertyAttribute
     [TestMethod]
     public void Test_GeneratedPropertiesWithValidationAttributesOverFields()
     {
-        ViewModelWithValidatableGeneratedProperties? model = new();
+        ViewModelWithValidatableGeneratedProperties model = new();
 
         List<string?> propertyNames = new();
 
@@ -252,6 +253,24 @@ public partial class Test_ObservablePropertyAttribute
 
         CollectionAssert.AreEqual(new[] { nameof(ViewModelWithValidatableGeneratedProperties.First) }, validationErrors[0].MemberNames.ToArray());
         CollectionAssert.AreEqual(new[] { nameof(ViewModelWithValidatableGeneratedProperties.Last) }, validationErrors[1].MemberNames.ToArray());
+    }
+
+    [TestMethod]
+    public void Test_AlsoNotifyChangeFor()
+    {
+        DependentPropertyModel model = new();
+
+        List<string?> propertyNames = new();
+        int canExecuteRequests = 0;
+
+        model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
+        model.MyCommand.CanExecuteChanged += (s, e) => canExecuteRequests++;
+
+        model.Surname = "Ross";
+
+        Assert.AreEqual(1, canExecuteRequests);
+
+        CollectionAssert.AreEqual(new[] { nameof(model.Surname), nameof(model.FullName), nameof(model.Alias) }, propertyNames);
     }
 
     public partial class SampleModel : ObservableObject
@@ -283,11 +302,14 @@ public partial class Test_ObservablePropertyAttribute
 
         [ObservableProperty]
         [AlsoNotifyChangeFor(nameof(FullName), nameof(Alias))]
+        [AlsoNotifyCanExecuteFor(nameof(MyCommand))]
         private string? surname;
 
         public string FullName => $"{Name} {Surname}";
 
         public string Alias => $"{Name?.ToLower()}{Surname?.ToLower()}";
+
+        public RelayCommand MyCommand { get; } = new(() => { });
     }
 
     public partial class MyFormViewModel : ObservableValidator
