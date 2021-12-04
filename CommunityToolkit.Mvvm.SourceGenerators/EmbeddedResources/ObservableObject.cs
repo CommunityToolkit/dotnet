@@ -3,12 +3,15 @@
 // See the LICENSE file in the project root for more information.
 
 /// <summary>
-/// A base class for objects implementing <see cref="global::System.ComponentModel.INotifyPropertyChanged"/>.
+/// A base class for objects of which the properties must be observable.
 /// </summary>
-public abstract class INotifyPropertyChanged : global::System.ComponentModel.INotifyPropertyChanged
+public abstract class ObservableObject : global::System.ComponentModel.INotifyPropertyChanged, global::System.ComponentModel.INotifyPropertyChanging
 {
     /// <inheritdoc cref="global::System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/>
     public event global::System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+    /// <inheritdoc cref="global::System.ComponentModel.INotifyPropertyChanging.PropertyChanging"/>
+    public event global::System.ComponentModel.PropertyChangingEventHandler? PropertyChanging;
 
     /// <summary>
     /// Raises the <see cref="PropertyChanged"/> event.
@@ -17,6 +20,15 @@ public abstract class INotifyPropertyChanged : global::System.ComponentModel.INo
     protected virtual void OnPropertyChanged(global::System.ComponentModel.PropertyChangedEventArgs e)
     {
         PropertyChanged?.Invoke(this, e);
+    }
+
+    /// <summary>
+    /// Raises the <see cref="PropertyChanging"/> event.
+    /// </summary>
+    /// <param name="e">The input <see cref="global::System.ComponentModel.PropertyChangingEventArgs"/> instance.</param>
+    protected virtual void OnPropertyChanging(global::System.ComponentModel.PropertyChangingEventArgs e)
+    {
+        PropertyChanging?.Invoke(this, e);
     }
 
     /// <summary>
@@ -29,8 +41,18 @@ public abstract class INotifyPropertyChanged : global::System.ComponentModel.INo
     }
 
     /// <summary>
-    /// Compares the current and new values for a given property. If the value has changed, updates
-    /// the property with the new value, then raises the <see cref="PropertyChanged"/> event.
+    /// Raises the <see cref="PropertyChanging"/> event.
+    /// </summary>
+    /// <param name="propertyName">(optional) The name of the property that changed.</param>
+    protected void OnPropertyChanging([global::System.Runtime.CompilerServices.CallerMemberName] string? propertyName = null)
+    {
+        OnPropertyChanging(new global::System.ComponentModel.PropertyChangingEventArgs(propertyName));
+    }
+
+    /// <summary>
+    /// Compares the current and new values for a given property. If the value has changed,
+    /// raises the <see cref="PropertyChanging"/> event, updates the property with the new
+    /// value, then raises the <see cref="PropertyChanged"/> event.
     /// </summary>
     /// <typeparam name="T">The type of the property that changed.</typeparam>
     /// <param name="field">The field storing the property's value.</param>
@@ -38,7 +60,8 @@ public abstract class INotifyPropertyChanged : global::System.ComponentModel.INo
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
     /// <remarks>
-    /// The <see cref="PropertyChanged"/> event is not raised if the current and new value for the target property are the same.
+    /// The <see cref="PropertyChanging"/> and <see cref="PropertyChanged"/> events are not raised
+    /// if the current and new value for the target property are the same.
     /// </remarks>
     protected bool SetProperty<T>([global::System.Diagnostics.CodeAnalysis.NotNullIfNotNull("newValue")] ref T field, T newValue, [global::System.Runtime.CompilerServices.CallerMemberName] string? propertyName = null)
     {
@@ -46,6 +69,8 @@ public abstract class INotifyPropertyChanged : global::System.ComponentModel.INo
         {
             return false;
         }
+
+        OnPropertyChanging(propertyName);
 
         field = newValue;
 
@@ -55,8 +80,9 @@ public abstract class INotifyPropertyChanged : global::System.ComponentModel.INo
     }
 
     /// <summary>
-    /// Compares the current and new values for a given property. If the value has changed, updates
-    /// the property with the new value, then raises the <see cref="PropertyChanged"/> event.
+    /// Compares the current and new values for a given property. If the value has changed,
+    /// raises the <see cref="PropertyChanging"/> event, updates the property with the new
+    /// value, then raises the <see cref="PropertyChanged"/> event.
     /// See additional notes about this overload in <see cref="SetProperty{T}(ref T,T,string)"/>.
     /// </summary>
     /// <typeparam name="T">The type of the property that changed.</typeparam>
@@ -72,6 +98,8 @@ public abstract class INotifyPropertyChanged : global::System.ComponentModel.INo
             return false;
         }
 
+        OnPropertyChanging(propertyName);
+
         field = newValue;
 
         OnPropertyChanged(propertyName);
@@ -80,8 +108,9 @@ public abstract class INotifyPropertyChanged : global::System.ComponentModel.INo
     }
 
     /// <summary>
-    /// Compares the current and new values for a given property. If the value has changed, updates
-    /// the property with the new value, then raises the <see cref="PropertyChanged"/> event.
+    /// Compares the current and new values for a given property. If the value has changed,
+    /// raises the <see cref="PropertyChanging"/> event, updates the property with the new
+    /// value, then raises the <see cref="PropertyChanged"/> event.
     /// This overload is much less efficient than <see cref="SetProperty{T}(ref T,T,string)"/> and it
     /// should only be used when the former is not viable (eg. when the target property being
     /// updated does not directly expose a backing field that can be passed by reference).
@@ -98,7 +127,8 @@ public abstract class INotifyPropertyChanged : global::System.ComponentModel.INo
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
     /// <remarks>
-    /// The <see cref="PropertyChanged"/> event is not raised if the current and new value for the target property are the same.
+    /// The <see cref="PropertyChanging"/> and <see cref="PropertyChanged"/> events are not raised
+    /// if the current and new value for the target property are the same.
     /// </remarks>
     protected bool SetProperty<T>(T oldValue, T newValue, global::System.Action<T> callback, [global::System.Runtime.CompilerServices.CallerMemberName] string? propertyName = null)
     {
@@ -106,6 +136,8 @@ public abstract class INotifyPropertyChanged : global::System.ComponentModel.INo
         {
             return false;
         }
+
+        OnPropertyChanging(propertyName);
 
         callback(newValue);
 
@@ -115,8 +147,9 @@ public abstract class INotifyPropertyChanged : global::System.ComponentModel.INo
     }
 
     /// <summary>
-    /// Compares the current and new values for a given property. If the value has changed, updates
-    /// the property with the new value, then raises the <see cref="PropertyChanged"/> event.
+    /// Compares the current and new values for a given property. If the value has changed,
+    /// raises the <see cref="PropertyChanging"/> event, updates the property with the new
+    /// value, then raises the <see cref="PropertyChanged"/> event.
     /// See additional notes about this overload in <see cref="SetProperty{T}(T,T,global::System.Action{T},string)"/>.
     /// </summary>
     /// <typeparam name="T">The type of the property that changed.</typeparam>
@@ -133,6 +166,8 @@ public abstract class INotifyPropertyChanged : global::System.ComponentModel.INo
             return false;
         }
 
+        OnPropertyChanging(propertyName);
+
         callback(newValue);
 
         OnPropertyChanged(propertyName);
@@ -142,8 +177,8 @@ public abstract class INotifyPropertyChanged : global::System.ComponentModel.INo
 
     /// <summary>
     /// Compares the current and new values for a given nested property. If the value has changed,
-    /// updates the property and then raises the <see cref="PropertyChanged"/> event.
-    /// The behavior mirrors that of <see cref="SetProperty{T}(ref T,T,string)"/>,
+    /// raises the <see cref="PropertyChanging"/> event, updates the property and then raises the
+    /// <see cref="PropertyChanged"/> event. The behavior mirrors that of <see cref="SetProperty{T}(ref T,T,string)"/>,
     /// with the difference being that this method is used to relay properties from a wrapped model in the
     /// current instance. This type is useful when creating wrapping, bindable objects that operate over
     /// models that lack support for notification (eg. for CRUD operations).
@@ -157,8 +192,8 @@ public abstract class INotifyPropertyChanged : global::System.ComponentModel.INo
     /// We can then use a property to wrap instances of this type into our observable model (which supports
     /// notifications), injecting the notification to the properties of that model, like so:
     /// <code>
-    /// [INotifyPropertyChanged]
-    /// public partial class BindablePerson
+    /// [ObservableObject]
+    /// public class BindablePerson
     /// {
     ///     public Model { get; }
     ///
@@ -178,7 +213,7 @@ public abstract class INotifyPropertyChanged : global::System.ComponentModel.INo
     /// also raise notifications when changed. Note that this method is not meant to be a replacement for
     /// <see cref="SetProperty{T}(ref T,T,string)"/>, and it should only be used when relaying properties to a model that
     /// doesn't support notifications, and only if you can't implement notifications to that model directly (eg. by having
-    /// it implement <see cref="global::System.ComponentModel.INotifyPropertyChanged"/>). The syntax relies on passing the target model and a stateless callback
+    /// it inherit from <see cref="ObservableObject"/>). The syntax relies on passing the target model and a stateless callback
     /// to allow the C# compiler to cache the function, which results in much better performance and no memory usage.
     /// </summary>
     /// <typeparam name="TModel">The type of model whose property (or field) to set.</typeparam>
@@ -190,7 +225,8 @@ public abstract class INotifyPropertyChanged : global::System.ComponentModel.INo
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
     /// <remarks>
-    /// The <see cref="PropertyChanged"/> event is not raised if the current and new value for the target property are the same.
+    /// The <see cref="PropertyChanging"/> and <see cref="PropertyChanged"/> events are not
+    /// raised if the current and new value for the target property are the same.
     /// </remarks>
     protected bool SetProperty<TModel, T>(T oldValue, T newValue, TModel model, global::System.Action<TModel, T> callback, [global::System.Runtime.CompilerServices.CallerMemberName] string? propertyName = null)
         where TModel : class
@@ -199,6 +235,8 @@ public abstract class INotifyPropertyChanged : global::System.ComponentModel.INo
         {
             return false;
         }
+
+        OnPropertyChanging(propertyName);
 
         callback(model, newValue);
 
@@ -209,8 +247,8 @@ public abstract class INotifyPropertyChanged : global::System.ComponentModel.INo
 
     /// <summary>
     /// Compares the current and new values for a given nested property. If the value has changed,
-    /// updates the property and then raises the <see cref="PropertyChanged"/> event.
-    /// The behavior mirrors that of <see cref="SetProperty{T}(ref T,T,string)"/>,
+    /// raises the <see cref="PropertyChanging"/> event, updates the property and then raises the
+    /// <see cref="PropertyChanged"/> event. The behavior mirrors that of <see cref="SetProperty{T}(ref T,T,string)"/>,
     /// with the difference being that this method is used to relay properties from a wrapped model in the
     /// current instance. See additional notes about this overload in <see cref="SetProperty{TModel,T}(T,T,TModel,global::System.Action{TModel,T},string)"/>.
     /// </summary>
@@ -231,6 +269,8 @@ public abstract class INotifyPropertyChanged : global::System.ComponentModel.INo
             return false;
         }
 
+        OnPropertyChanging(propertyName);
+
         callback(model, newValue);
 
         OnPropertyChanged(propertyName);
@@ -239,8 +279,9 @@ public abstract class INotifyPropertyChanged : global::System.ComponentModel.INo
     }
 
     /// <summary>
-    /// Compares the current and new values for a given field (which should be the backing field for a property).
-    /// If the value has changed, updates the field and then raises the <see cref="PropertyChanged"/> event.
+    /// Compares the current and new values for a given field (which should be the backing
+    /// field for a property). If the value has changed, raises the <see cref="PropertyChanging"/>
+    /// event, updates the field and then raises the <see cref="PropertyChanged"/> event.
     /// The behavior mirrors that of <see cref="SetProperty{T}(ref T,T,string)"/>, with the difference being that
     /// this method will also monitor the new value of the property (a generic <see cref="global::System.Threading.Tasks.Task"/>) and will also
     /// raise the <see cref="PropertyChanged"/> again for the target property when it completes.
@@ -265,10 +306,10 @@ public abstract class INotifyPropertyChanged : global::System.ComponentModel.INo
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
     /// <remarks>
-    /// The <see cref="PropertyChanged"/> event is not raised if the current and new value for the target property are
-    /// the same. The return value being <see langword="true"/> only indicates that the new value being assigned to
-    /// <paramref name="taskNotifier"/> is different than the previous one, and it does not mean the new
-    /// <see cref="global::System.Threading.Tasks.Task"/> instance passed as argument is in any particular state.
+    /// The <see cref="PropertyChanging"/> and <see cref="PropertyChanged"/> events are not raised if the current
+    /// and new value for the target property are the same. The return value being <see langword="true"/> only
+    /// indicates that the new value being assigned to <paramref name="taskNotifier"/> is different than the previous one,
+    /// and it does not mean the new <see cref="global::System.Threading.Tasks.Task"/> instance passed as argument is in any particular state.
     /// </remarks>
     protected bool SetPropertyAndNotifyOnCompletion([global::System.Diagnostics.CodeAnalysis.NotNull] ref TaskNotifier? taskNotifier, global::System.Threading.Tasks.Task? newValue, [global::System.Runtime.CompilerServices.CallerMemberName] string? propertyName = null)
     {
@@ -276,8 +317,9 @@ public abstract class INotifyPropertyChanged : global::System.ComponentModel.INo
     }
 
     /// <summary>
-    /// Compares the current and new values for a given field (which should be the backing field for a property).
-    /// If the value has changed, updates the field and then raises the <see cref="PropertyChanged"/> event.
+    /// Compares the current and new values for a given field (which should be the backing
+    /// field for a property). If the value has changed, raises the <see cref="PropertyChanging"/>
+    /// event, updates the field and then raises the <see cref="PropertyChanged"/> event.
     /// This method is just like <see cref="SetPropertyAndNotifyOnCompletion(ref TaskNotifier,global::System.Threading.Tasks.Task,string)"/>,
     /// with the difference being an extra <see cref="global::System.Action{T}"/> parameter with a callback being invoked
     /// either immediately, if the new task has already completed or is <see langword="null"/>, or upon completion.
@@ -288,7 +330,8 @@ public abstract class INotifyPropertyChanged : global::System.ComponentModel.INo
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
     /// <remarks>
-    /// The <see cref="PropertyChanged"/> event is not raised if the current and new value for the target property are the same.
+    /// The <see cref="PropertyChanging"/> and <see cref="PropertyChanged"/> events are not raised
+    /// if the current and new value for the target property are the same.
     /// </remarks>
     protected bool SetPropertyAndNotifyOnCompletion([global::System.Diagnostics.CodeAnalysis.NotNull] ref TaskNotifier? taskNotifier, global::System.Threading.Tasks.Task? newValue, global::System.Action<global::System.Threading.Tasks.Task?> callback, [global::System.Runtime.CompilerServices.CallerMemberName] string? propertyName = null)
     {
@@ -296,8 +339,9 @@ public abstract class INotifyPropertyChanged : global::System.ComponentModel.INo
     }
 
     /// <summary>
-    /// Compares the current and new values for a given field (which should be the backing field for a property).
-    /// If the value has changed, updates the field and then raises the <see cref="PropertyChanged"/> event.
+    /// Compares the current and new values for a given field (which should be the backing
+    /// field for a property). If the value has changed, raises the <see cref="PropertyChanging"/>
+    /// event, updates the field and then raises the <see cref="PropertyChanged"/> event.
     /// The behavior mirrors that of <see cref="SetProperty{T}(ref T,T,string)"/>, with the difference being that
     /// this method will also monitor the new value of the property (a generic <see cref="global::System.Threading.Tasks.Task"/>) and will also
     /// raise the <see cref="PropertyChanged"/> again for the target property when it completes.
@@ -323,10 +367,10 @@ public abstract class INotifyPropertyChanged : global::System.ComponentModel.INo
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
     /// <remarks>
-    /// The <see cref="PropertyChanged"/> event is not raised if the current and new value for the target property are
-    /// the same. The return value being <see langword="true"/> only indicates that the new value being assigned to
-    /// <paramref name="taskNotifier"/> is different than the previous one, and it does not mean the new
-    /// <see cref="global::System.Threading.Tasks.Task{TResult}"/> instance passed as argument is in any particular state.
+    /// The <see cref="PropertyChanging"/> and <see cref="PropertyChanged"/> events are not raised if the current
+    /// and new value for the target property are the same. The return value being <see langword="true"/> only
+    /// indicates that the new value being assigned to <paramref name="taskNotifier"/> is different than the previous one,
+    /// and it does not mean the new <see cref="global::System.Threading.Tasks.Task{TResult}"/> instance passed as argument is in any particular state.
     /// </remarks>
     protected bool SetPropertyAndNotifyOnCompletion<T>([global::System.Diagnostics.CodeAnalysis.NotNull] ref TaskNotifier<T>? taskNotifier, global::System.Threading.Tasks.Task<T>? newValue, [global::System.Runtime.CompilerServices.CallerMemberName] string? propertyName = null)
     {
@@ -334,8 +378,9 @@ public abstract class INotifyPropertyChanged : global::System.ComponentModel.INo
     }
 
     /// <summary>
-    /// Compares the current and new values for a given field (which should be the backing field for a property).
-    /// If the value has changed, updates the field and then raises the <see cref="PropertyChanged"/> event.
+    /// Compares the current and new values for a given field (which should be the backing
+    /// field for a property). If the value has changed, raises the <see cref="PropertyChanging"/>
+    /// event, updates the field and then raises the <see cref="PropertyChanged"/> event.
     /// This method is just like <see cref="SetPropertyAndNotifyOnCompletion{T}(ref TaskNotifier{T},global::System.Threading.Tasks.Task{T},string)"/>,
     /// with the difference being an extra <see cref="global::System.Action{T}"/> parameter with a callback being invoked
     /// either immediately, if the new task has already completed or is <see langword="null"/>, or upon completion.
@@ -347,7 +392,8 @@ public abstract class INotifyPropertyChanged : global::System.ComponentModel.INo
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
     /// <remarks>
-    /// The <see cref="PropertyChanged"/> event is not raised if the current and new value for the target property are the same.
+    /// The <see cref="PropertyChanging"/> and <see cref="PropertyChanged"/> events are not raised
+    /// if the current and new value for the target property are the same.
     /// </remarks>
     protected bool SetPropertyAndNotifyOnCompletion<T>([global::System.Diagnostics.CodeAnalysis.NotNull] ref TaskNotifier<T>? taskNotifier, global::System.Threading.Tasks.Task<T>? newValue, global::System.Action<global::System.Threading.Tasks.Task<T>?> callback, [global::System.Runtime.CompilerServices.CallerMemberName] string? propertyName = null)
     {
@@ -372,6 +418,8 @@ public abstract class INotifyPropertyChanged : global::System.ComponentModel.INo
         }
 
         bool isAlreadyCompletedOrNull = newValue?.IsCompleted ?? true;
+
+        OnPropertyChanging(propertyName);
 
         taskNotifier.Task = newValue;
 
