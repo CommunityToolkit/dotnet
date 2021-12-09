@@ -70,6 +70,42 @@ internal static class AttributeDataExtensions
     }
 
     /// <summary>
+    /// Enumerates all items in a flattened sequence of constructor arguments for a given <see cref="AttributeData"/> instance.
+    /// </summary>
+    /// <typeparam name="T">The type of constructor arguments to retrieve.</typeparam>
+    /// <param name="attributeData">The target <see cref="AttributeData"/> instance to get the arguments from.</param>
+    /// <returns>A sequence of all constructor arguments of the specified type from <paramref name="attributeData"/>.</returns>
+    [Pure]
+    public static IEnumerable<T> GetConstructorArguments<T>(this AttributeData attributeData)
+    {
+        static IEnumerable<T> Enumerate(IEnumerable<TypedConstant> constants)
+        {
+            foreach (TypedConstant constant in constants)
+            {
+                if (constant.IsNull)
+                {
+                    continue;
+                }
+
+                if (constant.Kind == TypedConstantKind.Primitive &&
+                    constant.Value is T value)
+                {
+                    yield return value;
+                }
+                else if (constant.Kind == TypedConstantKind.Array)
+                {
+                    foreach (T item in Enumerate(constant.Values))
+                    {
+                        yield return item;
+                    }
+                }
+            }
+        }
+
+        return Enumerate(attributeData.ConstructorArguments);
+    }
+
+    /// <summary>
     /// Creates an <see cref="AttributeSyntax"/> node that is equivalent to the input <see cref="AttributeData"/> instance.
     /// </summary>
     /// <param name="attributeData">The input <see cref="AttributeData"/> instance to process.</param>

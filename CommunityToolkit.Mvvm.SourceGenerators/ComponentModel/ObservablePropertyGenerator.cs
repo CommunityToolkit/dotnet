@@ -181,9 +181,10 @@ public sealed partial class ObservablePropertyGenerator : ISourceGenerator
         string propertyName = GetGeneratedPropertyName(fieldSymbol);
 
         INamedTypeSymbol alsoNotifyChangeForAttributeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.AlsoNotifyChangeForAttribute")!;
+        INamedTypeSymbol alsoNotifyCanExecuteForAttributeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.AlsoNotifyCanExecuteForAttribute")!;
         INamedTypeSymbol? validationAttributeSymbol = context.Compilation.GetTypeByMetadataName("System.ComponentModel.DataAnnotations.ValidationAttribute");
 
-        List<StatementSyntax> dependentPropertyNotificationStatements = new();
+        List<StatementSyntax> dependentNotificationStatements = new();
         List<AttributeSyntax> validationAttributes = new();
 
         foreach (AttributeData attributeData in fieldSymbol.GetAttributes())
@@ -191,48 +192,30 @@ public sealed partial class ObservablePropertyGenerator : ISourceGenerator
             // Add dependent property notifications, if needed
             if (SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, alsoNotifyChangeForAttributeSymbol))
             {
-                foreach (TypedConstant attributeArgument in attributeData.ConstructorArguments)
+                foreach (string dependentPropertyName in attributeData.GetConstructorArguments<string>())
                 {
-                    if (attributeArgument.IsNull)
-                    {
-                        continue;
-                    }
+                    propertyChangedNames.Add(dependentPropertyName);
 
-                    if (attributeArgument.Kind == TypedConstantKind.Primitive &&
-                        attributeArgument.Value is string dependentPropertyName)
-                    {
-                        propertyChangedNames.Add(dependentPropertyName);
-
-                        // OnPropertyChanged("OtherPropertyName");
-                        dependentPropertyNotificationStatements.Add(ExpressionStatement(
-                            InvocationExpression(IdentifierName("OnPropertyChanged"))
-                            .AddArgumentListArguments(Argument(MemberAccessExpression(
-                                SyntaxKind.SimpleMemberAccessExpression,
-                                IdentifierName("global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs"),
-                                IdentifierName($"{dependentPropertyName}{nameof(PropertyChangedEventArgs)}"))))));
-                    }
-                    else if (attributeArgument.Kind == TypedConstantKind.Array)
-                    {
-                        foreach (TypedConstant nestedAttributeArgument in attributeArgument.Values)
-                        {
-                            if (nestedAttributeArgument.IsNull)
-                            {
-                                continue;
-                            }
-
-                            string currentPropertyName = (string)nestedAttributeArgument.Value!;
-
-                            propertyChangedNames.Add(currentPropertyName);
-
-                            // Additional property names
-                            dependentPropertyNotificationStatements.Add(ExpressionStatement(
-                                InvocationExpression(IdentifierName("OnPropertyChanged"))
-                                .AddArgumentListArguments(Argument(MemberAccessExpression(
-                                    SyntaxKind.SimpleMemberAccessExpression,
-                                    IdentifierName("global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs"),
-                                    IdentifierName($"{currentPropertyName}{nameof(PropertyChangedEventArgs)}"))))));
-                        }
-                    }
+                    // OnPropertyChanged("<PROPERTY_NAME>");
+                    dependentNotificationStatements.Add(ExpressionStatement(
+                        InvocationExpression(IdentifierName("OnPropertyChanged"))
+                        .AddArgumentListArguments(Argument(MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            IdentifierName("global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs"),
+                            IdentifierName($"{dependentPropertyName}{nameof(PropertyChangedEventArgs)}"))))));
+                }
+            }
+            else if (SymbolEqualityComparer.Default.Equals(attributeData.AttributeClass, alsoNotifyCanExecuteForAttributeSymbol))
+            {
+                // Add dependent relay command notifications, if needed
+                foreach (string commandName in attributeData.GetConstructorArguments<string>())
+                {
+                    // <PROPERTY_NAME>.NotifyCanExecuteChanged();
+                    dependentNotificationStatements.Add(ExpressionStatement(
+                        InvocationExpression(MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            IdentifierName(commandName),
+                            IdentifierName("NotifyCanExecuteChanged")))));
                 }
             }
             else if (validationAttributeSymbol is not null &&
@@ -276,14 +259,18 @@ public sealed partial class ObservablePropertyGenerator : ISourceGenerator
                 //
                 // if (!global::System.Collections.Generic.EqualityComparer<<FIELD_TYPE>>.Default.Equals(this.<FIELD_NAME>, value))
                 // {
-                //     OnPropertyChanging(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.PropertyNamePropertyChangingEventArgs); // Optional
+                //     OnPropertyChanging(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.<PROPERTY_NAME>PropertyChangingEventArgs); // Optional
                 //     this.<FIELD_NAME> = value;
-                //     OnPropertyChanged(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.PropertyNamePropertyChangedEventArgs);
+                //     OnPropertyChanged(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.<PROPERTY_NAME>PropertyChangedEventArgs);
                 //     ValidateProperty(value, <PROPERTY_NAME>);
-                //     OnPropertyChanged(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.Property1PropertyChangedEventArgs); // Optional
-                //     OnPropertyChanged(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.Property2PropertyChangedEventArgs);
+                //     OnPropertyChanged(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.<PROPERTY_1>PropertyChangedEventArgs); // Optional
+                //     OnPropertyChanged(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.<PROPERTY_2>PropertyChangedEventArgs);
                 //     ...
-                //     OnPropertyChanged(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.PropertyNPropertyChangedEventArgs);
+                //     OnPropertyChanged(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.<PROPERTY_N>PropertyChangedEventArgs);
+                //     <COMMAND_1>.NotifyCanExecuteChanged(); // Optional
+                //     <COMMAND_2>.NotifyCanExecuteChanged();
+                //     ...
+                //     <COMMAND_N>.NotifyCanExecuteChanged();
                 // }
                 //
                 // The reason why the code is explicitly generated instead of just calling ObservableValidator.SetProperty() is so that we can
@@ -327,7 +314,7 @@ public sealed partial class ObservablePropertyGenerator : ISourceGenerator
                                 .AddArgumentListArguments(
                                     Argument(IdentifierName("value")),
                                     Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(propertyName))))))
-                        .AddStatements(dependentPropertyNotificationStatements.ToArray())));
+                        .AddStatements(dependentNotificationStatements.ToArray())));
             }
         }
         else
@@ -367,19 +354,23 @@ public sealed partial class ObservablePropertyGenerator : ISourceGenerator
                         IdentifierName($"{propertyName}{nameof(PropertyChangedEventArgs)}"))))));
 
             // Add the dependent property notifications at the end
-            updateAndNotificationBlock = updateAndNotificationBlock.AddStatements(dependentPropertyNotificationStatements.ToArray());
+            updateAndNotificationBlock = updateAndNotificationBlock.AddStatements(dependentNotificationStatements.ToArray());
 
             // Generate the inner setter block as follows:
             //
             // if (!global::System.Collections.Generic.EqualityComparer<<FIELD_TYPE>>.Default.Equals(<FIELD_NAME>, value))
             // {
-            //     OnPropertyChanging(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.PropertyNamePropertyChangingEventArgs); // Optional
+            //     OnPropertyChanging(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.<PROPERTY_NAME>PropertyChangingEventArgs); // Optional
             //     <FIELD_NAME> = value;
-            //     OnPropertyChanged(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.PropertyNamePropertyChangedEventArgs);
-            //     OnPropertyChanged(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.Property1PropertyChangedEventArgs); // Optional
-            //     OnPropertyChanged(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.Property2PropertyChangedEventArgs);
+            //     OnPropertyChanged(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.<PROPERTY_NAME>PropertyChangedEventArgs);
+            //     OnPropertyChanged(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.<PROPERTY_1>PropertyChangedEventArgs); // Optional
+            //     OnPropertyChanged(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.<PROPERTY_2>PropertyChangedEventArgs);
             //     ...
-            //     OnPropertyChanged(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.PropertyNPropertyChangedEventArgs);
+            //     OnPropertyChanged(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedOrChangingArgs.<PROPERTY_N>PropertyChangedEventArgs);
+            //     <COMMAND_1>.NotifyCanExecuteChanged(); // Optional
+            //     <COMMAND_2>.NotifyCanExecuteChanged();
+            //     ...
+            //     <COMMAND_N>.NotifyCanExecuteChanged();
             // }
             setterBlock = Block(
                 IfStatement(
