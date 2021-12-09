@@ -273,7 +273,7 @@ internal static class DiagnosticDescriptors
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor InvalidConcurrentExecutionsParameterError = new(
-        id: "MVVMTK0014",
+        id: "MVVMTK0017",
         title: "Invalid concurrency control setting usage",
         messageFormat: "The method {0}.{1} cannot be annotated with the [ICommand] attribute specifying a concurrency control setting, as it maps to a non-asynchronous command type",
         category: typeof(ICommandGenerator).FullName,
