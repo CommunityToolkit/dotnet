@@ -12,7 +12,7 @@ namespace System.Collections.Generic;
 /// <typeparam name="TValue">The covariant type of values in the dictionary.</typeparam>
 internal interface IDictionary2<in TKey, out TValue> : IDictionary2<TKey>
     where TKey : IEquatable<TKey>
-    where TValue : class
+    where TValue : class?
 {
     /// <summary>
     /// Gets the value with the specified key.

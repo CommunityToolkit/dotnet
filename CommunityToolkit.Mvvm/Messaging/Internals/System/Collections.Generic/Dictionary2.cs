@@ -17,7 +17,7 @@ namespace System.Collections.Generic;
 [DebuggerDisplay("Count = {Count}")]
 internal class Dictionary2<TKey, TValue> : IDictionary2<TKey, TValue>
     where TKey : IEquatable<TKey>
-    where TValue : class
+    where TValue : class?
 {
     /// <summary>
     /// The index indicating the start of a free linked list.

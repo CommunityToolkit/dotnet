@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
 using System.Runtime.CompilerServices;
 
 namespace CommunityToolkit.Mvvm.Messaging.Internals;
@@ -52,25 +51,6 @@ internal abstract class MessageHandlerDispatcher
         public override void Invoke(object recipient, object message)
         {
             this.handler(Unsafe.As<TRecipient>(recipient), Unsafe.As<TMessage>(message));
-        }
-    }
-
-    /// <summary>
-    /// A marker type implementing <see cref="MessageHandlerDispatcher"/> for <see cref="IRecipient{TMessage}"/> types.
-    /// </summary>
-    public sealed class IRecipient : MessageHandlerDispatcher
-    {
-        /// <summary>
-        /// Gets the shared marker instance.
-        /// </summary>
-        public static IRecipient Instance { get; } = new();
-
-        /// <inheritdoc/>
-        public override void Invoke(object recipient, object message)
-        {
-            // This method always throws, as callers are intended to do explicit guarded
-            // devirtualization on this type and then just skip the indirection entirely.
-            throw new NotSupportedException();
         }
     }
 }
