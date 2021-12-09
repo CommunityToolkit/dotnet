@@ -356,7 +356,10 @@ public sealed class StrongReferenceMessenger : IMessenger
         lock (this.recipientsMap)
         {
             // Check whether there are any registered recipients
-            _ = TryGetMapping(out Mapping<TMessage, TToken>? mapping);
+            if (!TryGetMapping(out Mapping<TMessage, TToken>? mapping))
+            {
+                goto End;
+            }
 
             // We need to make a local copy of the currently registered handlers, since users might
             // try to unregister (or register) new handlers from inside one of the currently existing
@@ -369,11 +372,11 @@ public sealed class StrongReferenceMessenger : IMessenger
             // in the mapping. This relies on the fact that tokens are unique, and that there is only
             // one handler associated with a given token. We can use this upper bound as the requested
             // size for each array rented from the pool, which guarantees that we'll have enough space.
-            int totalHandlersCount = mapping?.Count ?? 0;
+            int totalHandlersCount = mapping.Count;
 
             if (totalHandlersCount == 0)
             {
-                return message;
+                goto End;
             }
 
             // Rent the array and also assign it to a span, which will be used to access values.
@@ -385,7 +388,7 @@ public sealed class StrongReferenceMessenger : IMessenger
             // handlers for different tokens. We can reuse the same variable
             // to count the number of matching handlers to invoke later on.
             // This will be the array slice with valid handler in the rented buffer.
-            Dictionary2<Recipient, Dictionary2<TToken, object>>.Enumerator mappingEnumerator = mapping!.GetEnumerator();
+            Dictionary2<Recipient, Dictionary2<TToken, object>>.Enumerator mappingEnumerator = mapping.GetEnumerator();
 
             // Explicit enumerator usage here as we're using a custom one
             // that doesn't expose the single standard Current property.
@@ -427,6 +430,7 @@ public sealed class StrongReferenceMessenger : IMessenger
             ArrayPool<object>.Shared.Return(rentedArray);
         }
 
+        End:
         return message;
     }
 
