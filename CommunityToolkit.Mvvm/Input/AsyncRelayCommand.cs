@@ -7,7 +7,6 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace CommunityToolkit.Mvvm.Input;
 
@@ -17,8 +16,13 @@ namespace CommunityToolkit.Mvvm.Input;
 /// action, and providing an <see cref="ExecutionTask"/> property that notifies changes when
 /// <see cref="ExecuteAsync"/> is invoked and when the returned <see cref="Task"/> completes.
 /// </summary>
-public sealed class AsyncRelayCommand : ObservableObject, IAsyncRelayCommand
+public sealed class AsyncRelayCommand : IAsyncRelayCommand
 {
+    /// <summary>
+    /// The cached <see cref="PropertyChangedEventArgs"/> for <see cref="ExecutionTask"/>.
+    /// </summary>
+    internal static readonly PropertyChangedEventArgs ExecutionTaskChangedEventArgs = new(nameof(ExecutionTask));
+
     /// <summary>
     /// The cached <see cref="PropertyChangedEventArgs"/> for <see cref="CanBeCanceled"/>.
     /// </summary>
@@ -51,10 +55,18 @@ public sealed class AsyncRelayCommand : ObservableObject, IAsyncRelayCommand
     private readonly Func<bool>? canExecute;
 
     /// <summary>
+    /// Indicates whether or not concurrent executions of the command are allowed.
+    /// </summary>
+    private readonly bool allowConcurrentExecutions;
+
+    /// <summary>
     /// The <see cref="CancellationTokenSource"/> instance to use to cancel <see cref="cancelableExecute"/>.
     /// </summary>
     /// <remarks>This is only used when <see cref="cancelableExecute"/> is not <see langword="null"/>.</remarks>
     private CancellationTokenSource? cancellationTokenSource;
+
+    /// <inheritdoc/>
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     /// <inheritdoc/>
     public event EventHandler? CanExecuteChanged;
@@ -66,6 +78,18 @@ public sealed class AsyncRelayCommand : ObservableObject, IAsyncRelayCommand
     public AsyncRelayCommand(Func<Task> execute)
     {
         this.execute = execute;
+        this.allowConcurrentExecutions = true;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AsyncRelayCommand"/> class that can always execute.
+    /// </summary>
+    /// <param name="execute">The execution logic.</param>
+    /// <param name="allowConcurrentExecutions">Whether or not to allow concurrent executions of the command.</param>
+    public AsyncRelayCommand(Func<Task> execute, bool allowConcurrentExecutions)
+    {
+        this.execute = execute;
+        this.allowConcurrentExecutions = allowConcurrentExecutions;
     }
 
     /// <summary>
@@ -75,6 +99,18 @@ public sealed class AsyncRelayCommand : ObservableObject, IAsyncRelayCommand
     public AsyncRelayCommand(Func<CancellationToken, Task> cancelableExecute)
     {
         this.cancelableExecute = cancelableExecute;
+        this.allowConcurrentExecutions = true;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AsyncRelayCommand"/> class that can always execute.
+    /// </summary>
+    /// <param name="cancelableExecute">The cancelable execution logic.</param>
+    /// <param name="allowConcurrentExecutions">Whether or not to allow concurrent executions of the command.</param>
+    public AsyncRelayCommand(Func<CancellationToken, Task> cancelableExecute, bool allowConcurrentExecutions)
+    {
+        this.cancelableExecute = cancelableExecute;
+        this.allowConcurrentExecutions = allowConcurrentExecutions;
     }
 
     /// <summary>
@@ -86,6 +122,20 @@ public sealed class AsyncRelayCommand : ObservableObject, IAsyncRelayCommand
     {
         this.execute = execute;
         this.canExecute = canExecute;
+        this.allowConcurrentExecutions = true;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AsyncRelayCommand"/> class.
+    /// </summary>
+    /// <param name="execute">The execution logic.</param>
+    /// <param name="canExecute">The execution status logic.</param>
+    /// <param name="allowConcurrentExecutions">Whether or not to allow concurrent executions of the command.</param>
+    public AsyncRelayCommand(Func<Task> execute, Func<bool> canExecute, bool allowConcurrentExecutions)
+    {
+        this.execute = execute;
+        this.canExecute = canExecute;
+        this.allowConcurrentExecutions = allowConcurrentExecutions;
     }
 
     /// <summary>
@@ -97,9 +147,23 @@ public sealed class AsyncRelayCommand : ObservableObject, IAsyncRelayCommand
     {
         this.cancelableExecute = cancelableExecute;
         this.canExecute = canExecute;
+        this.allowConcurrentExecutions = true;
     }
 
-    private TaskNotifier? executionTask;
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AsyncRelayCommand"/> class.
+    /// </summary>
+    /// <param name="cancelableExecute">The cancelable execution logic.</param>
+    /// <param name="canExecute">The execution status logic.</param>
+    /// <param name="allowConcurrentExecutions">Whether or not to allow concurrent executions of the command.</param>
+    public AsyncRelayCommand(Func<CancellationToken, Task> cancelableExecute, Func<bool> canExecute, bool allowConcurrentExecutions)
+    {
+        this.cancelableExecute = cancelableExecute;
+        this.canExecute = canExecute;
+        this.allowConcurrentExecutions = allowConcurrentExecutions;
+    }
+
+    private Task? executionTask;
 
     /// <inheritdoc/>
     public Task? ExecutionTask
@@ -107,17 +171,41 @@ public sealed class AsyncRelayCommand : ObservableObject, IAsyncRelayCommand
         get => this.executionTask;
         private set
         {
-            if (SetPropertyAndNotifyOnCompletion(ref this.executionTask, value, _ =>
+            if (ReferenceEquals(this.executionTask, value))
             {
-                    // When the task completes
-                    OnPropertyChanged(IsRunningChangedEventArgs);
-                OnPropertyChanged(CanBeCanceledChangedEventArgs);
-            }))
-            {
-                // When setting the task
-                OnPropertyChanged(IsRunningChangedEventArgs);
-                OnPropertyChanged(CanBeCanceledChangedEventArgs);
+                return;
             }
+
+            this.executionTask = value;
+
+            PropertyChanged?.Invoke(this, ExecutionTaskChangedEventArgs);
+            PropertyChanged?.Invoke(this, IsRunningChangedEventArgs);
+            PropertyChanged?.Invoke(this, CanBeCanceledChangedEventArgs);
+
+            if (value?.IsCompleted ?? true)
+            {
+                return;
+            }
+
+            static async void MonitorTask(AsyncRelayCommand @this, Task task)
+            {
+                try
+                {
+                    await task;
+                }
+                catch
+                {
+                }
+
+                if (ReferenceEquals(@this.executionTask, task))
+                {
+                    @this.PropertyChanged?.Invoke(@this, ExecutionTaskChangedEventArgs);
+                    @this.PropertyChanged?.Invoke(@this, IsRunningChangedEventArgs);
+                    @this.PropertyChanged?.Invoke(@this, CanBeCanceledChangedEventArgs);
+                }
+            }
+
+            MonitorTask(this, value!);
         }
     }
 
@@ -140,7 +228,9 @@ public sealed class AsyncRelayCommand : ObservableObject, IAsyncRelayCommand
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool CanExecute(object? parameter)
     {
-        return this.canExecute?.Invoke() != false;
+        bool canExecute = this.canExecute?.Invoke() != false;
+
+        return canExecute && (this.allowConcurrentExecutions || ExecutionTask?.IsCompleted != false);
     }
 
     /// <inheritdoc/>
@@ -165,7 +255,7 @@ public sealed class AsyncRelayCommand : ObservableObject, IAsyncRelayCommand
 
             CancellationTokenSource cancellationTokenSource = this.cancellationTokenSource = new();
 
-            OnPropertyChanged(IsCancellationRequestedChangedEventArgs);
+            PropertyChanged?.Invoke(this, IsCancellationRequestedChangedEventArgs);
 
             // Invoke the cancelable command delegate with a new linked token
             return ExecutionTask = this.cancelableExecute!(cancellationTokenSource.Token);
@@ -179,7 +269,7 @@ public sealed class AsyncRelayCommand : ObservableObject, IAsyncRelayCommand
     {
         this.cancellationTokenSource?.Cancel();
 
-        OnPropertyChanged(IsCancellationRequestedChangedEventArgs);
-        OnPropertyChanged(CanBeCanceledChangedEventArgs);
+        PropertyChanged?.Invoke(this, IsCancellationRequestedChangedEventArgs);
+        PropertyChanged?.Invoke(this, CanBeCanceledChangedEventArgs);
     }
 }

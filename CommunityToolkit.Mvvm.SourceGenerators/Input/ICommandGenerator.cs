@@ -89,7 +89,7 @@ public sealed partial class ICommandGenerator : ISourceGenerator
         ClassDeclarationSyntax? classDeclarationSyntax =
             ClassDeclaration(classDeclarationSymbol.Name)
             .WithModifiers(classDeclaration.Modifiers)
-            .AddMembers(items.Select(item => CreateCommandMembers(context, classDeclarationSymbol, item.LeadingTrivia, item.MethodSymbol, item.CommandData)).SelectMany(static g => g).ToArray());
+            .AddMembers(items.Select(item => CreateCommandMembers(context, classDeclarationSymbol, item.LeadingTrivia, item.MethodSymbol, item.AttributeData)).SelectMany(static g => g).ToArray());
 
         TypeDeclarationSyntax typeDeclarationSyntax = classDeclarationSyntax;
 
@@ -129,7 +129,7 @@ public sealed partial class ICommandGenerator : ISourceGenerator
     /// <param name="classDeclarationSymbol">The <see cref="INamedTypeSymbol"/> for the parent type.</param>
     /// <param name="leadingTrivia">The leading trivia for the field to process.</param>
     /// <param name="methodSymbol">The input <see cref="IMethodSymbol"/> instance to process.</param>
-    /// <param name="commandData">The <see cref="AttributeData"/> instance the method was annotated with.</param>
+    /// <param name="attributeData">The <see cref="AttributeData"/> instance the method was annotated with.</param>
     /// <returns>The <see cref="MemberDeclarationSyntax"/> instances for the input command.</returns>
     [Pure]
     private static IEnumerable<MemberDeclarationSyntax> CreateCommandMembers(
@@ -137,7 +137,7 @@ public sealed partial class ICommandGenerator : ISourceGenerator
         INamedTypeSymbol classDeclarationSymbol,
         SyntaxTriviaList leadingTrivia,
         IMethodSymbol methodSymbol,
-        AttributeData commandData)
+        AttributeData attributeData)
     {
         // Get the command member names
         (string fieldName, string propertyName) = GetGeneratedFieldAndPropertyNames(context, methodSymbol);
@@ -156,31 +156,40 @@ public sealed partial class ICommandGenerator : ISourceGenerator
         }
 
         // Prepares the argument to pass the underlying method to invoke
-        ArgumentSyntax[] commandCreationArguments = new[] {
-            Argument(ObjectCreationExpression(IdentifierName(delegateTypeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)))
-            .AddArgumentListArguments(Argument(IdentifierName(methodSymbol.Name))))
+        List<ArgumentSyntax> commandCreationArguments = new()
+        {
+            Argument(
+                ObjectCreationExpression(IdentifierName(delegateTypeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)))
+                .AddArgumentListArguments(Argument(IdentifierName(methodSymbol.Name))))
         };
 
         // Get the can execute member, if any
-        if (commandData.TryGetNamedArgument("CanExecute", out string? memberName))
+        if (attributeData.TryGetNamedArgument("CanExecute", out string? memberName))
         {
-            ImmutableArray<ISymbol> canExecuteSymbols = classDeclarationSymbol.GetMembers(memberName);
-
-            if (canExecuteSymbols.IsEmpty)
+            if (memberName is null)
             {
-                context.ReportDiagnostic(InvalidCanExecuteMemberName, methodSymbol, memberName, methodSymbol.ContainingType);
-            }
-            else if (canExecuteSymbols.Length > 1)
-            {
-                context.ReportDiagnostic(MultipleCanExecuteMemberNameMatches, methodSymbol, memberName, methodSymbol.ContainingType);
-            }
-            else if (TryGetCanExecuteExpressionFromSymbol(context, memberName, canExecuteSymbols[0], commandInterfaceTypeSymbol, out ExpressionSyntax? canExecuteExpression))
-            {
-                commandCreationArguments = new ArgumentSyntax[] { commandCreationArguments[0], Argument(canExecuteExpression) };
+                context.ReportDiagnostic(InvalidCanExecuteMemberName, methodSymbol, memberName ?? string.Empty, methodSymbol.ContainingType);
             }
             else
             {
-                context.ReportDiagnostic(InvalidCanExecuteMember, methodSymbol, memberName, methodSymbol.ContainingType);
+                ImmutableArray<ISymbol> canExecuteSymbols = classDeclarationSymbol.GetMembers(memberName);
+
+                if (canExecuteSymbols.IsEmpty)
+                {
+                    context.ReportDiagnostic(InvalidCanExecuteMemberName, methodSymbol, memberName, methodSymbol.ContainingType);
+                }
+                else if (canExecuteSymbols.Length > 1)
+                {
+                    context.ReportDiagnostic(MultipleCanExecuteMemberNameMatches, methodSymbol, memberName, methodSymbol.ContainingType);
+                }
+                else if (TryGetCanExecuteExpressionFromSymbol(context, memberName, canExecuteSymbols[0], commandInterfaceTypeSymbol, out ExpressionSyntax? canExecuteExpression))
+                {
+                    commandCreationArguments.Add(Argument(canExecuteExpression));
+                }
+                else
+                {
+                    context.ReportDiagnostic(InvalidCanExecuteMember, methodSymbol, memberName, methodSymbol.ContainingType);
+                }
             }
         }
 
@@ -220,13 +229,28 @@ public sealed partial class ICommandGenerator : ISourceGenerator
             }
         }
 
+        // If the current type is an async command type and concurrent execution is disabled, pass that value to the constructor.
+        // If concurrent executions are allowed, there is no need to add any additional argument, as that is the default value.
+        if (commandClassTypeSymbol.Name is "AsyncRelayCommand" or "AsyncRelayCommand`1")
+        {
+            if (attributeData.TryGetNamedArgument("AllowConcurrentExecutions", out bool allowConcurrentExecutions) &&
+                !allowConcurrentExecutions)
+            {
+                commandCreationArguments.Add(Argument(LiteralExpression(SyntaxKind.FalseLiteralExpression)));
+            }
+        }
+        else if (attributeData.TryGetNamedArgument("AllowConcurrentExecutions", out bool _))
+        {
+            context.ReportDiagnostic(InvalidConcurrentExecutionsParameterError, methodSymbol, methodSymbol.ContainingType, methodSymbol);
+        }
+
         // Construct the generated property as follows (the explicit delegate cast is needed to avoid overload resolution conflicts):
         //
         // <METHOD_SUMMARY>
         // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
         // [global::System.Diagnostics.DebuggerNonUserCode]
         // [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        // public <COMMAND_TYPE> <COMMAND_PROPERTY_NAME> => <COMMAND_FIELD_NAME> ??= new <RELAY_COMMAND_TYPE>(new <DELEGATE_TYPE>(<METHOD_NAME>), <OPTIONAL_CAN_EXECUTE_INVOCATION>);
+        // public <COMMAND_TYPE> <COMMAND_PROPERTY_NAME> => <COMMAND_FIELD_NAME> ??= new <RELAY_COMMAND_TYPE>(new <DELEGATE_TYPE>(<METHOD_NAME>), <OPTIONAL_CAN_EXECUTE>, <OPTIONAL_ALLOW_CONCURRENT_EXECUTIONS>);
         PropertyDeclarationSyntax propertyDeclaration =
             PropertyDeclaration(
                 IdentifierName(commandInterfaceTypeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)),
@@ -247,7 +271,7 @@ public sealed partial class ICommandGenerator : ISourceGenerator
                         SyntaxKind.CoalesceAssignmentExpression,
                         IdentifierName(fieldName),
                         ObjectCreationExpression(IdentifierName(commandClassTypeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)))
-                        .AddArgumentListArguments(commandCreationArguments))))
+                        .AddArgumentListArguments(commandCreationArguments.ToArray()))))
             .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
 
         return new MemberDeclarationSyntax[] { fieldDeclaration, propertyDeclaration };
