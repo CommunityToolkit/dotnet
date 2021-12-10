@@ -26,25 +26,25 @@ public sealed class StrongReferenceMessenger : IMessenger
     //   Dictionary2<Recipient, HashSet<IMapping>> recipientsMap;
     //                   |                 \________________[*]IDictionary2<Recipient, IDictionary2<TToken>>
     //                   |                  \_______________[*]IDictionary2<Recipient, object?>       /
-    //                   |                                           \_________/_________/____       / 
-    //                   |\                       _(recipients registrations)_/         /     \     /
-    //                   | \__________________   /    _____(channel registrations)_____/_______\___/
-    //                   |                    \ /    /      __________________________/         \
-    //                   |                     /    /      /                                     \
-    //                   |      Dictionary2<Recipient, object?> mapping = Mapping<TMessage>_______\
-    //                   | __________________/    /                |                 /             \
-    //                   |/                      /                 |                /               \
-    //    Dictionary2<Recipient, Dictionary2<TToken, object?>> mapping = Mapping<TMessage, TToken>___\
-    //                                         /                  /               /  /
-    //                   ___(Type2.TToken)____/                  /               /  /
-    //                  /________________(Type2.TMessage)_______/_______________/__/
+    //                   |                                           \_________/_________/___        / 
+    //                   |\                       _(recipients registrations)_/         /    \      /
+    //                   | \__________________   /    _____(channel registrations)_____/______\____/
+    //                   |                    \ /    /      __________________________/        \
+    //                   |                     /    /      /                                    \
+    //                   |      Dictionary2<Recipient, object?> mapping = Mapping________________\
+    //                   | __________________/    /                |         /                    \
+    //                   |/                      /                 |        /                      \
+    //    Dictionary2<Recipient, Dictionary2<TToken, object?>> mapping = Mapping<TToken>____________\
+    //                                         /                  /       /  /
+    //                   ___(Type2.TToken)____/                  /       /  /
+    //                  /________________(Type2.TMessage)_______/_______/__/
     //                 /       ________________________________/
     //                /       /
     // Dictionary2<Type2, IMapping> typesMap;
     // --------------------------------------------------------------------------------------------------------
-    // Each combination of <TMessage, TToken> results in a concrete Mapping<TMessage> type or Mapping<TMessage, Token> type,
-    // which holds the references from registered recipients to handlers. Mapping<TMessage> is used when the default channel is
-    // being requested, as in that case there will only ever be up to a handler per recipient, per message type. In that case,
+    // Each combination of <TMessage, TToken> results in a concrete Mapping type (if TToken is Unit) or Mapping<Token> type,
+    // which holds the references from registered recipients to handlers. Mapping is used when the default channel is being
+    // requested, as in that case there will only ever be up to a handler per recipient, per message type. In that case,
     // each recipient will only track the message dispatcher (stored as an object?, see notes below), instead of a dictionary
     // mapping each TToken value to the corresponding dispatcher for that recipient. When a custom channel is used, the dispatchers
     // are stored in a <TToken, object?> dictionary, so that each recipient can have up to one registered handler for a given token,
@@ -81,12 +81,12 @@ public sealed class StrongReferenceMessenger : IMessenger
     private readonly Dictionary2<Recipient, HashSet<IMapping>> recipientsMap = new();
 
     /// <summary>
-    /// The <see cref="Mapping{TMessage,TToken}"/> instance for types combination.
+    /// The <see cref="Mapping"/> and <see cref="Mapping{TToken}"/> instance for types combination.
     /// </summary>
     /// <remarks>
     /// The values are just of type <see cref="IDictionary2{T}"/> as we don't know the type parameters in advance.
-    /// Each method relies on <see cref="GetOrAddMapping{TMessage,TToken}"/> to get the type-safe instance
-    /// of the <see cref="Mapping{TMessage,TToken}"/> class for each pair of generic arguments in use.
+    /// Each method relies on <see cref="GetOrAddMapping{TMessage,TToken}"/> to get the type-safe instance of the
+    /// <see cref="Mapping"/> or <see cref="Mapping{TToken}"/> class for each pair of generic arguments in use.
     /// </remarks>
     private readonly Dictionary2<Type2, IMapping> typesMap = new();
 
@@ -104,7 +104,7 @@ public sealed class StrongReferenceMessenger : IMessenger
         {
             if (typeof(TToken) == typeof(Unit))
             {
-                if (!TryGetMapping(out Mapping<TMessage>? mapping))
+                if (!TryGetMapping<TMessage>(out Mapping? mapping))
                 {
                     return false;
                 }
@@ -115,7 +115,7 @@ public sealed class StrongReferenceMessenger : IMessenger
             }
             else
             {
-                if (!TryGetMapping(out Mapping<TMessage, TToken>? mapping))
+                if (!TryGetMapping<TMessage, TToken>(out Mapping<TToken>? mapping))
                 {
                     return false;
                 }
@@ -166,7 +166,7 @@ public sealed class StrongReferenceMessenger : IMessenger
             if (typeof(TToken) == typeof(Unit))
             {
                 // Get the <TMessage> registration list for this recipient
-                Mapping<TMessage> underlyingMapping = GetOrAddMapping<TMessage>();
+                Mapping underlyingMapping = GetOrAddMapping<TMessage>();
                 ref object? registeredHandler = ref underlyingMapping.GetOrAddValueRef(key);
 
                 if (registeredHandler is not null)
@@ -182,7 +182,7 @@ public sealed class StrongReferenceMessenger : IMessenger
             else
             {
                 // Get the <TMessage, TToken> registration list for this recipient
-                Mapping<TMessage, TToken> underlyingMapping = GetOrAddMapping<TMessage, TToken>();
+                Mapping<TToken> underlyingMapping = GetOrAddMapping<TMessage, TToken>();
                 ref Dictionary2<TToken, object?>? map = ref underlyingMapping.GetOrAddValueRef(key);
 
                 map ??= new Dictionary2<TToken, object?>();
@@ -376,7 +376,7 @@ public sealed class StrongReferenceMessenger : IMessenger
             if (typeof(TToken) == typeof(Unit))
             {
                 // Get the registration list, if available
-                if (!TryGetMapping(out Mapping<TMessage>? mapping))
+                if (!TryGetMapping<TMessage>(out Mapping? mapping))
                 {
                     return;
                 }
@@ -416,7 +416,7 @@ public sealed class StrongReferenceMessenger : IMessenger
             else
             {
                 // Get the registration list, if available
-                if (!TryGetMapping(out Mapping<TMessage, TToken>? mapping))
+                if (!TryGetMapping<TMessage, TToken>(out Mapping<TToken>? mapping))
                 {
                     return;
                 }
@@ -474,7 +474,7 @@ public sealed class StrongReferenceMessenger : IMessenger
             if (typeof(TToken) == typeof(Unit))
             {
                 // Check whether there are any registered recipients
-                if (!TryGetMapping(out Mapping<TMessage>? mapping))
+                if (!TryGetMapping<TMessage>(out Mapping? mapping))
                 {
                     goto End;
                 }
@@ -502,7 +502,7 @@ public sealed class StrongReferenceMessenger : IMessenger
             else
             {
                 // Check whether there are any registered recipients
-                if (!TryGetMapping(out Mapping<TMessage, TToken>? mapping))
+                if (!TryGetMapping<TMessage, TToken>(out Mapping<TToken>? mapping))
                 {
                     goto End;
                 }
@@ -595,14 +595,14 @@ public sealed class StrongReferenceMessenger : IMessenger
     }
 
     /// <summary>
-    /// Tries to get the <see cref="Mapping{TMessage}"/> instance of currently
+    /// Tries to get the <see cref="Mapping"/> instance of currently
     /// registered recipients for the input <typeparamref name="TMessage"/> type.
     /// </summary>
     /// <typeparam name="TMessage">The type of message to send.</typeparam>
-    /// <param name="mapping">The resulting <see cref="Mapping{TMessage}"/> instance, if found.</param>
-    /// <returns>Whether or not the required <see cref="Mapping{TMessage}"/> instance was found.</returns>
+    /// <param name="mapping">The resulting <see cref="Mapping"/> instance, if found.</param>
+    /// <returns>Whether or not the required <see cref="Mapping"/> instance was found.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool TryGetMapping<TMessage>([NotNullWhen(true)] out Mapping<TMessage>? mapping)
+    private bool TryGetMapping<TMessage>([NotNullWhen(true)] out Mapping? mapping)
         where TMessage : class
     {
         Type2 key = new(typeof(TMessage), typeof(Unit));
@@ -612,7 +612,7 @@ public sealed class StrongReferenceMessenger : IMessenger
             // This method and the ones below are the only ones handling values in the types map,
             // and here we are sure that the object reference we have points to an instance of the
             // right type. Using an unsafe cast skips two conditional branches and is faster.
-            mapping = Unsafe.As<Mapping<TMessage>>(target);
+            mapping = Unsafe.As<Mapping>(target);
 
             return true;
         }
@@ -623,15 +623,15 @@ public sealed class StrongReferenceMessenger : IMessenger
     }
 
     /// <summary>
-    /// Tries to get the <see cref="Mapping{TMessage,TToken}"/> instance of currently registered recipients
+    /// Tries to get the <see cref="Mapping{TToken}"/> instance of currently registered recipients
     /// for the combination of types <typeparamref name="TMessage"/> and <typeparamref name="TToken"/>.
     /// </summary>
     /// <typeparam name="TMessage">The type of message to send.</typeparam>
     /// <typeparam name="TToken">The type of token to identify what channel to use to send the message.</typeparam>
-    /// <param name="mapping">The resulting <see cref="Mapping{TMessage,TToken}"/> instance, if found.</param>
-    /// <returns>Whether or not the required <see cref="Mapping{TMessage,TToken}"/> instance was found.</returns>
+    /// <param name="mapping">The resulting <see cref="Mapping{TToken}"/> instance, if found.</param>
+    /// <returns>Whether or not the required <see cref="Mapping{TToken}"/> instance was found.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool TryGetMapping<TMessage, TToken>([NotNullWhen(true)] out Mapping<TMessage, TToken>? mapping)
+    private bool TryGetMapping<TMessage, TToken>([NotNullWhen(true)] out Mapping<TToken>? mapping)
         where TMessage : class
         where TToken : IEquatable<TToken>
     {
@@ -639,7 +639,7 @@ public sealed class StrongReferenceMessenger : IMessenger
 
         if (this.typesMap.TryGetValue(key, out IMapping? target))
         {
-            mapping = Unsafe.As<Mapping<TMessage, TToken>>(target);
+            mapping = Unsafe.As<Mapping<TToken>>(target);
 
             return true;
         }
@@ -650,59 +650,70 @@ public sealed class StrongReferenceMessenger : IMessenger
     }
 
     /// <summary>
-    /// Gets the <see cref="Mapping{TMessage,TToken}"/> instance of currently
+    /// Gets the <see cref="Mapping"/> instance of currently
     /// registered recipients for the input <typeparamref name="TMessage"/> type.
     /// </summary>
     /// <typeparam name="TMessage">The type of message to send.</typeparam>
-    /// <returns>A <see cref="Mapping{TMessage,TToken}"/> instance with the requested type arguments.</returns>
+    /// <returns>A <see cref="Mapping"/> instance with the requested type arguments.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private Mapping<TMessage> GetOrAddMapping<TMessage>()
+    private Mapping GetOrAddMapping<TMessage>()
         where TMessage : class
     {
         Type2 key = new(typeof(TMessage), typeof(Unit));
         ref IMapping? target = ref this.typesMap.GetOrAddValueRef(key);
 
-        target ??= new Mapping<TMessage>();
+        target ??= Mapping.Create<TMessage>();
 
-        return Unsafe.As<Mapping<TMessage>>(target);
+        return Unsafe.As<Mapping>(target);
     }
 
     /// <summary>
-    /// Gets the <see cref="Mapping{TMessage,TToken}"/> instance of currently registered recipients
+    /// Gets the <see cref="Mapping{TToken}"/> instance of currently registered recipients
     /// for the combination of types <typeparamref name="TMessage"/> and <typeparamref name="TToken"/>.
     /// </summary>
     /// <typeparam name="TMessage">The type of message to send.</typeparam>
     /// <typeparam name="TToken">The type of token to identify what channel to use to send the message.</typeparam>
-    /// <returns>A <see cref="Mapping{TMessage,TToken}"/> instance with the requested type arguments.</returns>
+    /// <returns>A <see cref="Mapping{TToken}"/> instance with the requested type arguments.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private Mapping<TMessage, TToken> GetOrAddMapping<TMessage, TToken>()
+    private Mapping<TToken> GetOrAddMapping<TMessage, TToken>()
         where TMessage : class
         where TToken : IEquatable<TToken>
     {
         Type2 key = new(typeof(TMessage), typeof(TToken));
         ref IMapping? target = ref this.typesMap.GetOrAddValueRef(key);
 
-        target ??= new Mapping<TMessage, TToken>();
+        target ??= Mapping<TToken>.Create<TMessage>();
 
-        return Unsafe.As<Mapping<TMessage, TToken>>(target);
+        return Unsafe.As<Mapping<TToken>>(target);
     }
 
     /// <summary>
     /// A mapping type representing a link to recipients and their view of handlers per communication channel.
     /// </summary>
-    /// <typeparam name="TMessage">The type of message to receive.</typeparam>
     /// <remarks>
-    /// This type is a specialization of <see cref="Mapping{TMessage, TToken}"/> for <see cref="Unit"/> tokens.
+    /// This type is a specialization of <see cref="Mapping{TToken}"/> for <see cref="Unit"/> tokens.
     /// </remarks>
-    private sealed class Mapping<TMessage> : Dictionary2<Recipient, object?>, IMapping
-        where TMessage : class
+    private sealed class Mapping : Dictionary2<Recipient, object?>, IMapping
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Mapping{TMessage}"/> class.
+        /// Initializes a new instance of the <see cref="Mapping"/> class.
         /// </summary>
-        public Mapping()
+        /// <param name="messageType">The message type being used.</param>
+        private Mapping(Type messageType)
         {
-            TypeArguments = new Type2(typeof(TMessage), typeof(Unit));
+            TypeArguments = new Type2(messageType, typeof(Unit));
+        }
+
+        /// <summary>
+        /// Creates a new instance of the <see cref="Mapping"/> class.
+        /// </summary>
+        /// <typeparam name="TMessage">The type of message to receive.</typeparam>
+        /// <returns>A new <see cref="Mapping"/> instance.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Mapping Create<TMessage>()
+            where TMessage : class
+        {
+            return new(typeof(TMessage));
         }
 
         /// <inheritdoc/>
@@ -712,22 +723,33 @@ public sealed class StrongReferenceMessenger : IMessenger
     /// <summary>
     /// A mapping type representing a link to recipients and their view of handlers per communication channel.
     /// </summary>
-    /// <typeparam name="TMessage">The type of message to receive.</typeparam>
     /// <typeparam name="TToken">The type of token to use to pick the messages to receive.</typeparam>
     /// <remarks>
     /// This type is defined for simplicity and as a workaround for the lack of support for using type aliases
     /// over open generic types in C# (using type aliases can only be used for concrete, closed types).
     /// </remarks>
-    private sealed class Mapping<TMessage, TToken> : Dictionary2<Recipient, Dictionary2<TToken, object?>>, IMapping
-        where TMessage : class
+    private sealed class Mapping<TToken> : Dictionary2<Recipient, Dictionary2<TToken, object?>>, IMapping
         where TToken : IEquatable<TToken>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Mapping{TMessage, TToken}"/> class.
+        /// Initializes a new instance of the <see cref="Mapping{TToken}"/> class.
         /// </summary>
-        public Mapping()
+        /// <param name="messageType">The message type being used.</param>
+        private Mapping(Type messageType)
         {
-            TypeArguments = new Type2(typeof(TMessage), typeof(TToken));
+            TypeArguments = new Type2(messageType, typeof(TToken));
+        }
+
+        /// <summary>
+        /// Creates a new instance of the <see cref="Mapping{TToken}"/> class.
+        /// </summary>
+        /// <typeparam name="TMessage">The type of message to receive.</typeparam>
+        /// <returns>A new <see cref="Mapping{TToken}"/> instance.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Mapping<TToken> Create<TMessage>()
+            where TMessage : class
+        {
+            return new(typeof(TMessage));
         }
 
         /// <inheritdoc/>
@@ -735,8 +757,8 @@ public sealed class StrongReferenceMessenger : IMessenger
     }
 
     /// <summary>
-    /// An interface for the <see cref="Mapping{TMessage,TToken}"/> type which allows to retrieve the type
-    /// arguments from a given generic instance without having any prior knowledge about those arguments.
+    /// An interface for the <see cref="Mapping"/> and <see cref="Mapping{TToken}"/> types which allows to retrieve
+    /// the type arguments from a given generic instance without having any prior knowledge about those arguments.
     /// </summary>
     private interface IMapping : IDictionary2<Recipient>
     {
