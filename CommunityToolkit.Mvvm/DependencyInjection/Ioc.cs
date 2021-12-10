@@ -84,7 +84,7 @@ public sealed class Ioc : IServiceProvider
     /// </summary>
     /// <typeparam name="T">The type of service to resolve.</typeparam>
     /// <returns>An instance of the specified service, or <see langword="null"/>.</returns>
-    /// <exception cref="InvalidOperationException">Throw if the current <see cref="Ioc"/> instance has not been initialized.</exception>
+    /// <exception cref="InvalidOperationException">Thrown if the current <see cref="Ioc"/> instance has not been initialized.</exception>
     public T? GetService<T>()
         where T : class
     {
@@ -104,7 +104,7 @@ public sealed class Ioc : IServiceProvider
     /// <typeparam name="T">The type of service to resolve.</typeparam>
     /// <returns>An instance of the specified service, or <see langword="null"/>.</returns>
     /// <exception cref="InvalidOperationException">
-    /// Throw if the current <see cref="Ioc"/> instance has not been initialized, or if the
+    /// Thrown if the current <see cref="Ioc"/> instance has not been initialized, or if the
     /// requested service type was not registered in the service provider currently in use.
     /// </exception>
     public T GetRequiredService<T>()

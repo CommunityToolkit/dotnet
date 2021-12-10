@@ -35,8 +35,11 @@ public sealed class RelayCommand : IRelayCommand
     /// Initializes a new instance of the <see cref="RelayCommand"/> class that can always execute.
     /// </summary>
     /// <param name="execute">The execution logic.</param>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="execute"/> is <see langword="null"/>.</exception>
     public RelayCommand(Action execute)
     {
+        ArgumentNullException.ThrowIfNull(execute);
+
         this.execute = execute;
     }
 
@@ -45,8 +48,12 @@ public sealed class RelayCommand : IRelayCommand
     /// </summary>
     /// <param name="execute">The execution logic.</param>
     /// <param name="canExecute">The execution status logic.</param>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="execute"/> or <paramref name="canExecute"/> are <see langword="null"/>.</exception>
     public RelayCommand(Action execute, Func<bool> canExecute)
     {
+        ArgumentNullException.ThrowIfNull(execute);
+        ArgumentNullException.ThrowIfNull(canExecute);
+
         this.execute = execute;
         this.canExecute = canExecute;
     }
