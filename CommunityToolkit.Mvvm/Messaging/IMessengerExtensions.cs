@@ -254,6 +254,10 @@ public static class IMessengerExtensions
         {
             weakReferenceMessenger.Register(recipient, token);
         }
+        else if (messenger is StrongReferenceMessenger strongReferenceMessenger)
+        {
+            strongReferenceMessenger.Register(recipient, token);
+        }
         else
         {
             messenger.Register<IRecipient<TMessage>, TMessage, TToken>(recipient, token, static (r, m) => r.Receive(m));

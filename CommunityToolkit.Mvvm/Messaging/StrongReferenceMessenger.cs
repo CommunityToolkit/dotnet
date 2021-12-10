@@ -115,6 +115,14 @@ public sealed class StrongReferenceMessenger : IMessenger
         Register<TMessage, TToken>(recipient, token, new MessageHandlerDispatcher.For<TRecipient, TMessage>(handler));
     }
 
+    /// <inheritdoc cref="WeakReferenceMessenger.Register{TMessage, TToken}(IRecipient{TMessage}, TToken)"/>
+    internal void Register<TMessage, TToken>(IRecipient<TMessage> recipient, TToken token)
+        where TMessage : class
+        where TToken : IEquatable<TToken>
+    {
+        Register<TMessage, TToken>(recipient, token, null);
+    }
+
     /// <summary>
     /// Registers a recipient for a given type of message.
     /// </summary>
