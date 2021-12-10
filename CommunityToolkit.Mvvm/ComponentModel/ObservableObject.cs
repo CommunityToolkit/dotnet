@@ -37,8 +37,11 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
     /// Raises the <see cref="PropertyChanged"/> event.
     /// </summary>
     /// <param name="e">The input <see cref="PropertyChangedEventArgs"/> instance.</param>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="e"/> is <see langword="null"/>.</exception>
     protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
     {
+        ArgumentNullException.ThrowIfNull(e);
+
         PropertyChanged?.Invoke(this, e);
     }
 
@@ -46,8 +49,11 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
     /// Raises the <see cref="PropertyChanging"/> event.
     /// </summary>
     /// <param name="e">The input <see cref="PropertyChangingEventArgs"/> instance.</param>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="e"/> is <see langword="null"/>.</exception>
     protected virtual void OnPropertyChanging(PropertyChangingEventArgs e)
     {
+        ArgumentNullException.ThrowIfNull(e);
+
         PropertyChanging?.Invoke(this, e);
     }
 
@@ -124,8 +130,11 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
     /// <param name="comparer">The <see cref="IEqualityComparer{T}"/> instance to use to compare the input values.</param>
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="comparer"/> is <see langword="null"/>.</exception>
     protected bool SetProperty<T>([NotNullIfNotNull("newValue")] ref T field, T newValue, IEqualityComparer<T> comparer, [CallerMemberName] string? propertyName = null)
     {
+        ArgumentNullException.ThrowIfNull(comparer);
+
         if (comparer.Equals(field, newValue))
         {
             return false;
@@ -163,8 +172,11 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
     /// The <see cref="PropertyChanging"/> and <see cref="PropertyChanged"/> events are not raised
     /// if the current and new value for the target property are the same.
     /// </remarks>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="callback"/> is <see langword="null"/>.</exception>
     protected bool SetProperty<T>(T oldValue, T newValue, Action<T> callback, [CallerMemberName] string? propertyName = null)
     {
+        ArgumentNullException.ThrowIfNull(callback);
+
         // We avoid calling the overload again to ensure the comparison is inlined
         if (EqualityComparer<T>.Default.Equals(oldValue, newValue))
         {
@@ -193,8 +205,12 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
     /// <param name="callback">A callback to invoke to update the property value.</param>
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="comparer"/> or <paramref name="callback"/> are <see langword="null"/>.</exception>
     protected bool SetProperty<T>(T oldValue, T newValue, IEqualityComparer<T> comparer, Action<T> callback, [CallerMemberName] string? propertyName = null)
     {
+        ArgumentNullException.ThrowIfNull(comparer);
+        ArgumentNullException.ThrowIfNull(callback);
+
         if (comparer.Equals(oldValue, newValue))
         {
             return false;
@@ -261,9 +277,13 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
     /// The <see cref="PropertyChanging"/> and <see cref="PropertyChanged"/> events are not
     /// raised if the current and new value for the target property are the same.
     /// </remarks>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="model"/> or <paramref name="callback"/> are <see langword="null"/>.</exception>
     protected bool SetProperty<TModel, T>(T oldValue, T newValue, TModel model, Action<TModel, T> callback, [CallerMemberName] string? propertyName = null)
         where TModel : class
     {
+        ArgumentNullException.ThrowIfNull(model);
+        ArgumentNullException.ThrowIfNull(callback);
+
         if (EqualityComparer<T>.Default.Equals(oldValue, newValue))
         {
             return false;
@@ -294,9 +314,14 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
     /// <param name="callback">The callback to invoke to set the target property value, if a change has occurred.</param>
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="comparer"/>, <paramref name="model"/> or <paramref name="callback"/> are <see langword="null"/>.</exception>
     protected bool SetProperty<TModel, T>(T oldValue, T newValue, IEqualityComparer<T> comparer, TModel model, Action<TModel, T> callback, [CallerMemberName] string? propertyName = null)
         where TModel : class
     {
+        ArgumentNullException.ThrowIfNull(comparer);
+        ArgumentNullException.ThrowIfNull(model);
+        ArgumentNullException.ThrowIfNull(callback);
+
         if (comparer.Equals(oldValue, newValue))
         {
             return false;
@@ -372,8 +397,11 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
     /// The <see cref="PropertyChanging"/> and <see cref="PropertyChanged"/> events are not raised
     /// if the current and new value for the target property are the same.
     /// </remarks>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="callback"/> is <see langword="null"/>.</exception>
     protected bool SetPropertyAndNotifyOnCompletion([NotNull] ref TaskNotifier? taskNotifier, Task? newValue, Action<Task?> callback, [CallerMemberName] string? propertyName = null)
     {
+        ArgumentNullException.ThrowIfNull(callback);
+
         return SetPropertyAndNotifyOnCompletion(taskNotifier ??= new TaskNotifier(), newValue, callback, propertyName);
     }
 
@@ -434,8 +462,11 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
     /// The <see cref="PropertyChanging"/> and <see cref="PropertyChanged"/> events are not raised
     /// if the current and new value for the target property are the same.
     /// </remarks>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="callback"/> is <see langword="null"/>.</exception>
     protected bool SetPropertyAndNotifyOnCompletion<T>([NotNull] ref TaskNotifier<T>? taskNotifier, Task<T>? newValue, Action<Task<T>?> callback, [CallerMemberName] string? propertyName = null)
     {
+        ArgumentNullException.ThrowIfNull(callback);
+
         return SetPropertyAndNotifyOnCompletion(taskNotifier ??= new TaskNotifier<T>(), newValue, callback, propertyName);
     }
 

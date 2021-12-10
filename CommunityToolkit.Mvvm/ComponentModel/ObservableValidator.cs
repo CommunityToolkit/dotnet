@@ -112,8 +112,11 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// value of <see cref="ValidationContext.MemberName"/> will always indicate the name of the last property that was validated, if any.
     /// </para>
     /// </param>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="validationContext"/> is <see langword="null"/>.</exception>
     protected ObservableValidator(ValidationContext validationContext)
     {
+        ArgumentNullException.ThrowIfNull(validationContext);
+
         this.validationContext = validationContext;
     }
 
@@ -138,8 +141,11 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// the <see cref="ObservableObject.PropertyChanging"/> and <see cref="ObservableObject.PropertyChanged"/> events
     /// are not raised if the current and new value for the target property are the same.
     /// </remarks>
-    protected bool SetProperty<T>([NotNullIfNotNull("newValue")] ref T field, T newValue, bool validate, [CallerMemberName] string? propertyName = null)
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="propertyName"/> is <see langword="null"/>.</exception>
+    protected bool SetProperty<T>([NotNullIfNotNull("newValue")] ref T field, T newValue, bool validate, [CallerMemberName] string propertyName = null!)
     {
+        ArgumentNullException.ThrowIfNull(propertyName);
+
         bool propertyChanged = SetProperty(ref field, newValue, propertyName);
 
         if (propertyChanged && validate)
@@ -163,8 +169,12 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// <param name="validate">If <see langword="true"/>, <paramref name="newValue"/> will also be validated.</param>
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
-    protected bool SetProperty<T>([NotNullIfNotNull("newValue")] ref T field, T newValue, IEqualityComparer<T> comparer, bool validate, [CallerMemberName] string? propertyName = null)
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="comparer"/> or <paramref name="propertyName"/> are <see langword="null"/>.</exception>
+    protected bool SetProperty<T>([NotNullIfNotNull("newValue")] ref T field, T newValue, IEqualityComparer<T> comparer, bool validate, [CallerMemberName] string propertyName = null!)
     {
+        ArgumentNullException.ThrowIfNull(comparer);
+        ArgumentNullException.ThrowIfNull(propertyName);
+
         bool propertyChanged = SetProperty(ref field, newValue, comparer, propertyName);
 
         if (propertyChanged && validate)
@@ -195,8 +205,12 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// the <see cref="ObservableObject.PropertyChanging"/> and <see cref="ObservableObject.PropertyChanged"/> events
     /// are not raised if the current and new value for the target property are the same.
     /// </remarks>
-    protected bool SetProperty<T>(T oldValue, T newValue, Action<T> callback, bool validate, [CallerMemberName] string? propertyName = null)
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="callback"/> or <paramref name="propertyName"/> are <see langword="null"/>.</exception>
+    protected bool SetProperty<T>(T oldValue, T newValue, Action<T> callback, bool validate, [CallerMemberName] string propertyName = null!)
     {
+        ArgumentNullException.ThrowIfNull(callback);
+        ArgumentNullException.ThrowIfNull(propertyName);
+
         bool propertyChanged = SetProperty(oldValue, newValue, callback, propertyName);
 
         if (propertyChanged && validate)
@@ -221,8 +235,13 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// <param name="validate">If <see langword="true"/>, <paramref name="newValue"/> will also be validated.</param>
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
-    protected bool SetProperty<T>(T oldValue, T newValue, IEqualityComparer<T> comparer, Action<T> callback, bool validate, [CallerMemberName] string? propertyName = null)
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="comparer"/>, <paramref name="callback"/> or <paramref name="propertyName"/> are <see langword="null"/>.</exception>
+    protected bool SetProperty<T>(T oldValue, T newValue, IEqualityComparer<T> comparer, Action<T> callback, bool validate, [CallerMemberName] string propertyName = null!)
     {
+        ArgumentNullException.ThrowIfNull(comparer);
+        ArgumentNullException.ThrowIfNull(callback);
+        ArgumentNullException.ThrowIfNull(propertyName);
+
         bool propertyChanged = SetProperty(oldValue, newValue, comparer, callback, propertyName);
 
         if (propertyChanged && validate)
@@ -250,9 +269,14 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// <param name="validate">If <see langword="true"/>, <paramref name="newValue"/> will also be validated.</param>
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
-    protected bool SetProperty<TModel, T>(T oldValue, T newValue, TModel model, Action<TModel, T> callback, bool validate, [CallerMemberName] string? propertyName = null)
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="model"/>, <paramref name="callback"/> or <paramref name="propertyName"/> are <see langword="null"/>.</exception>
+    protected bool SetProperty<TModel, T>(T oldValue, T newValue, TModel model, Action<TModel, T> callback, bool validate, [CallerMemberName] string propertyName = null!)
         where TModel : class
     {
+        ArgumentNullException.ThrowIfNull(model);
+        ArgumentNullException.ThrowIfNull(callback);
+        ArgumentNullException.ThrowIfNull(propertyName);
+
         bool propertyChanged = SetProperty(oldValue, newValue, model, callback, propertyName);
 
         if (propertyChanged && validate)
@@ -282,9 +306,15 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// <param name="validate">If <see langword="true"/>, <paramref name="newValue"/> will also be validated.</param>
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
-    protected bool SetProperty<TModel, T>(T oldValue, T newValue, IEqualityComparer<T> comparer, TModel model, Action<TModel, T> callback, bool validate, [CallerMemberName] string? propertyName = null)
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="comparer"/>, <paramref name="model"/>, <paramref name="callback"/> or <paramref name="propertyName"/> are <see langword="null"/>.</exception>
+    protected bool SetProperty<TModel, T>(T oldValue, T newValue, IEqualityComparer<T> comparer, TModel model, Action<TModel, T> callback, bool validate, [CallerMemberName] string propertyName = null!)
         where TModel : class
     {
+        ArgumentNullException.ThrowIfNull(comparer);
+        ArgumentNullException.ThrowIfNull(model);
+        ArgumentNullException.ThrowIfNull(callback);
+        ArgumentNullException.ThrowIfNull(propertyName);
+
         bool propertyChanged = SetProperty(oldValue, newValue, comparer, model, callback, propertyName);
 
         if (propertyChanged && validate)
@@ -305,8 +335,11 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// <param name="errors">The resulting validation errors, if any.</param>
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns>Whether the validation was successful and the property value changed as well.</returns>
-    protected bool TrySetProperty<T>(ref T field, T newValue, out IReadOnlyCollection<ValidationResult> errors, [CallerMemberName] string? propertyName = null)
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="propertyName"/> is <see langword="null"/>.</exception>
+    protected bool TrySetProperty<T>(ref T field, T newValue, out IReadOnlyCollection<ValidationResult> errors, [CallerMemberName] string propertyName = null!)
     {
+        ArgumentNullException.ThrowIfNull(propertyName);
+
         return TryValidateProperty(newValue, propertyName, out errors) &&
                SetProperty(ref field, newValue, propertyName);
     }
@@ -322,8 +355,12 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// <param name="errors">The resulting validation errors, if any.</param>
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns>Whether the validation was successful and the property value changed as well.</returns>
-    protected bool TrySetProperty<T>(ref T field, T newValue, IEqualityComparer<T> comparer, out IReadOnlyCollection<ValidationResult> errors, [CallerMemberName] string? propertyName = null)
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="comparer"/> or <paramref name="propertyName"/> are <see langword="null"/>.</exception>
+    protected bool TrySetProperty<T>(ref T field, T newValue, IEqualityComparer<T> comparer, out IReadOnlyCollection<ValidationResult> errors, [CallerMemberName] string propertyName = null!)
     {
+        ArgumentNullException.ThrowIfNull(comparer);
+        ArgumentNullException.ThrowIfNull(propertyName);
+
         return TryValidateProperty(newValue, propertyName, out errors) &&
                SetProperty(ref field, newValue, comparer, propertyName);
     }
@@ -339,8 +376,12 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// <param name="errors">The resulting validation errors, if any.</param>
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns>Whether the validation was successful and the property value changed as well.</returns>
-    protected bool TrySetProperty<T>(T oldValue, T newValue, Action<T> callback, out IReadOnlyCollection<ValidationResult> errors, [CallerMemberName] string? propertyName = null)
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="callback"/> or <paramref name="propertyName"/> are <see langword="null"/>.</exception>
+    protected bool TrySetProperty<T>(T oldValue, T newValue, Action<T> callback, out IReadOnlyCollection<ValidationResult> errors, [CallerMemberName] string propertyName = null!)
     {
+        ArgumentNullException.ThrowIfNull(callback);
+        ArgumentNullException.ThrowIfNull(propertyName);
+
         return TryValidateProperty(newValue, propertyName, out errors) &&
                SetProperty(oldValue, newValue, callback, propertyName);
     }
@@ -357,8 +398,13 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// <param name="errors">The resulting validation errors, if any.</param>
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns>Whether the validation was successful and the property value changed as well.</returns>
-    protected bool TrySetProperty<T>(T oldValue, T newValue, IEqualityComparer<T> comparer, Action<T> callback, out IReadOnlyCollection<ValidationResult> errors, [CallerMemberName] string? propertyName = null)
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="comparer"/>, <paramref name="callback"/> or <paramref name="propertyName"/> are <see langword="null"/>.</exception>
+    protected bool TrySetProperty<T>(T oldValue, T newValue, IEqualityComparer<T> comparer, Action<T> callback, out IReadOnlyCollection<ValidationResult> errors, [CallerMemberName] string propertyName = null!)
     {
+        ArgumentNullException.ThrowIfNull(comparer);
+        ArgumentNullException.ThrowIfNull(callback);
+        ArgumentNullException.ThrowIfNull(propertyName);
+
         return TryValidateProperty(newValue, propertyName, out errors) &&
                SetProperty(oldValue, newValue, comparer, callback, propertyName);
     }
@@ -376,9 +422,14 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// <param name="errors">The resulting validation errors, if any.</param>
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns>Whether the validation was successful and the property value changed as well.</returns>
-    protected bool TrySetProperty<TModel, T>(T oldValue, T newValue, TModel model, Action<TModel, T> callback, out IReadOnlyCollection<ValidationResult> errors, [CallerMemberName] string? propertyName = null)
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="model"/>, <paramref name="callback"/> or <paramref name="propertyName"/> are <see langword="null"/>.</exception>
+    protected bool TrySetProperty<TModel, T>(T oldValue, T newValue, TModel model, Action<TModel, T> callback, out IReadOnlyCollection<ValidationResult> errors, [CallerMemberName] string propertyName = null!)
         where TModel : class
     {
+        ArgumentNullException.ThrowIfNull(model);
+        ArgumentNullException.ThrowIfNull(callback);
+        ArgumentNullException.ThrowIfNull(propertyName);
+
         return TryValidateProperty(newValue, propertyName, out errors) &&
                SetProperty(oldValue, newValue, model, callback, propertyName);
     }
@@ -397,9 +448,15 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// <param name="errors">The resulting validation errors, if any.</param>
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns>Whether the validation was successful and the property value changed as well.</returns>
-    protected bool TrySetProperty<TModel, T>(T oldValue, T newValue, IEqualityComparer<T> comparer, TModel model, Action<TModel, T> callback, out IReadOnlyCollection<ValidationResult> errors, [CallerMemberName] string? propertyName = null)
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="comparer"/>, <paramref name="model"/>, <paramref name="callback"/> or <paramref name="propertyName"/> are <see langword="null"/>.</exception>
+    protected bool TrySetProperty<TModel, T>(T oldValue, T newValue, IEqualityComparer<T> comparer, TModel model, Action<TModel, T> callback, out IReadOnlyCollection<ValidationResult> errors, [CallerMemberName] string propertyName = null!)
         where TModel : class
     {
+        ArgumentNullException.ThrowIfNull(comparer);
+        ArgumentNullException.ThrowIfNull(model);
+        ArgumentNullException.ThrowIfNull(callback);
+        ArgumentNullException.ThrowIfNull(propertyName);
+
         return TryValidateProperty(newValue, propertyName, out errors) &&
                SetProperty(oldValue, newValue, comparer, model, callback, propertyName);
     }
@@ -550,12 +607,9 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// <param name="value">The value to test for the specified property.</param>
     /// <param name="propertyName">The name of the property to validate.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="propertyName"/> is <see langword="null"/>.</exception>
-    protected internal void ValidateProperty(object? value, [CallerMemberName] string? propertyName = null)
+    protected internal void ValidateProperty(object? value, [CallerMemberName] string propertyName = null!)
     {
-        if (propertyName is null)
-        {
-            ThrowArgumentNullExceptionForNullPropertyName();
-        }
+        ArgumentNullException.ThrowIfNull(propertyName);
 
         // Check if the property had already been previously validated, and if so retrieve
         // the reusable list of validation errors from the errors dictionary. This list is
@@ -630,12 +684,9 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// <param name="propertyName">The name of the property to validate.</param>
     /// <param name="errors">The resulting validation errors, if any.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="propertyName"/> is <see langword="null"/>.</exception>
-    private bool TryValidateProperty(object? value, string? propertyName, out IReadOnlyCollection<ValidationResult> errors)
+    private bool TryValidateProperty(object? value, string propertyName, out IReadOnlyCollection<ValidationResult> errors)
     {
-        if (propertyName is null)
-        {
-            ThrowArgumentNullExceptionForNullPropertyName();
-        }
+        ArgumentNullException.ThrowIfNull(propertyName);
 
         // Add the cached errors list for later use.
         if (!this.errors.TryGetValue(propertyName!, out List<ValidationResult>? propertyErrors))
@@ -757,13 +808,5 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
         _ = DisplayNamesMap.GetValue(GetType(), static t => GetDisplayNames(t)).TryGetValue(propertyName, out string? displayName);
 
         return displayName ?? propertyName;
-    }
-
-    /// <summary>
-    /// Throws an <see cref="ArgumentNullException"/> when a property name given as input is <see langword="null"/>.
-    /// </summary>
-    private static void ThrowArgumentNullExceptionForNullPropertyName()
-    {
-        throw new System.ArgumentNullException("propertyName", "The input property name cannot be null when validating a property");
     }
 }
