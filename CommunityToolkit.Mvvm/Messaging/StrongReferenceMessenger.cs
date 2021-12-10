@@ -46,23 +46,28 @@ public sealed class StrongReferenceMessenger : IMessenger
     // which holds the references from registered recipients to handlers. Mapping is used when the default channel is being
     // requested, as in that case there will only ever be up to a handler per recipient, per message type. In that case,
     // each recipient will only track the message dispatcher (stored as an object?, see notes below), instead of a dictionary
-    // mapping each TToken value to the corresponding dispatcher for that recipient. When a custom channel is used, the dispatchers
-    // are stored in a <TToken, object?> dictionary, so that each recipient can have up to one registered handler for a given token,
-    // for each message type. Note that the registered dispatchers are only stored as object references, as they can either be null
-    // or a MessageHandlerDispatcher.For<TRecipient, TMessage> instance. The first case happens if the handler was registered through
-    // an IRecipient<TMessage> instance, while the second one is used to wrap input MessageHandler<TRecipient, TMessage> instances.
-    // The MessageHandlerDispatcher.For<TRecipient, TMessage> instances will just be cast to MessageHandlerDispatcher when invoking it.
-    // This allows users to retain type information on each registered recipient, instead of having to manually cast each recipient
-    // to the right type within the handler (additionally, using double dispatch here avoids the need to alias delegate types).
-    // The type conversion is guaranteed to be respected due to how the messenger type itself works - as registered handlers are always
-    // invoked on their respective recipients. Each mapping is stored in the types map, which associates each pair of concrete types to
-    // its mapping instance. Mapping instances are exposed as IMapping items, as each will be a closed type over a different combination
-    // of TMessage and TToken generic type parameters (or just of TMessage, for the default channel). Each existing recipient is also
-    // stored in the main recipients map, along with a set of all the existing (dictionaries of) handlers for that recipient (for all
-    // message types and token types, if any). A recipient is stored in the main map as long as it has at least one registered handler in
-    // any of the existing mappings for every message/token type combination. The shared map is used to access the set of all registered
-    // handlers for a given recipient, without having to know in advance the type of message or token being used for the registration, and
-    // without having to use reflection. This is the same approach used in the types map, as we expose saved items as IMapping values too.
+    // mapping each TToken value to the corresponding dispatcher for that recipient. When a custom channel is used, the
+    // dispatchers are stored in a <TToken, object?> dictionary, so that each recipient can have up to one registered handler
+    // for a given token, for each message type. Note that the registered dispatchers are only stored as object references, as
+    // they can either be null or a MessageHandlerDispatcher.For<TRecipient, TMessage> instance.
+    //
+    // The first case happens if the handler was registered through an IRecipient<TMessage> instance, while the second one is
+    // used to wrap input MessageHandler<TRecipient, TMessage> instances. The MessageHandlerDispatcher.For<TRecipient, TMessage>
+    // instances will just be cast to MessageHandlerDispatcher when invoking it. This allows users to retain type information on
+    // each registered recipient, instead of having to manually cast each recipient to the right type within the handler
+    // (additionally, using double dispatch here avoids the need to alias delegate types). The type conversion is guaranteed to be
+    // respected due to how the messenger type itself works - as registered handlers are always invoked on their respective recipients.
+    //
+    // Each mapping is stored in the types map, which associates each pair of concrete types to its mapping instance. Mapping instances
+    // are exposed as IMapping items, as each will be a closed type over a different combination of TMessage and TToken generic type
+    // parameters (or just of TMessage, for the default channel). Each existing recipient is also stored in the main recipients map,
+    // along with a set of all the existing (dictionaries of) handlers for that recipient (for all message types and token types, if any).
+    //
+    // A recipient is stored in the main map as long as it has at least one registered handler in any of the existing mappings for every
+    // message/token type combination. The shared map is used to access the set of all registered handlers for a given recipient, without
+    // having to know in advance the type of message or token being used for the registration, and without having to use reflection. This
+    // is the same approach used in the types map, as we expose saved items as IMapping values too.
+    //
     // Note that each mapping stored in the associated set for each recipient also indirectly implements either IDictionary2<Recipient, Token>
     // or IDictionary2<Recipient>, with any token type currently in use by that recipient (or none, if using the default channel). This allows
     // to retrieve the type-closed mappings of registered handlers with a given token type, for any message type, for every receiver, again
