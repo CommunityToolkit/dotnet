@@ -764,6 +764,6 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// </summary>
     private static void ThrowArgumentNullExceptionForNullPropertyName()
     {
-        throw new ArgumentNullException("propertyName", "The input property name cannot be null when validating a property");
+        throw new System.ArgumentNullException("propertyName", "The input property name cannot be null when validating a property");
     }
 }
