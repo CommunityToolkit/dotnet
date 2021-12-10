@@ -4,6 +4,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -54,9 +55,12 @@ public class AsyncRequestMessage<T>
     /// Replies to the current request message.
     /// </summary>
     /// <param name="response">The response to use to reply to the request message.</param>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="response"/> is <see langword="null"/>.</exception>
     /// <exception cref="InvalidOperationException">Thrown if <see cref="Response"/> has already been set.</exception>
     public void Reply(Task<T> response)
     {
+        ArgumentNullException.ThrowIfNull(response);
+
         if (HasReceivedResponse)
         {
             ThrowInvalidOperationExceptionForDuplicateReply();
@@ -79,6 +83,7 @@ public class AsyncRequestMessage<T>
     /// <summary>
     /// Throws an <see cref="InvalidOperationException"/> when a response is not available.
     /// </summary>
+    [DoesNotReturn]
     private static void ThrowInvalidOperationExceptionForNoResponseReceived()
     {
         throw new InvalidOperationException("No response was received for the given request message");
@@ -87,6 +92,7 @@ public class AsyncRequestMessage<T>
     /// <summary>
     /// Throws an <see cref="InvalidOperationException"/> when <see cref="Reply(T)"/> or <see cref="Reply(Task{T})"/> are called twice.
     /// </summary>
+    [DoesNotReturn]
     private static void ThrowInvalidOperationExceptionForDuplicateReply()
     {
         throw new InvalidOperationException("A response has already been issued for the current message");

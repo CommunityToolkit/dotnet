@@ -68,6 +68,7 @@ public interface IMessenger
     /// <param name="recipient">The target recipient to check the registration for.</param>
     /// <param name="token">The token used to identify the target channel to check.</param>
     /// <returns>Whether or not <paramref name="recipient"/> has already been registered for the specified message.</returns>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="recipient"/> or <paramref name="token"/> are <see langword="null"/>.</exception>
     [Pure]
     bool IsRegistered<TMessage, TToken>(object recipient, TToken token)
         where TMessage : class
@@ -82,6 +83,7 @@ public interface IMessenger
     /// <param name="recipient">The recipient that will receive the messages.</param>
     /// <param name="token">A token used to determine the receiving channel to use.</param>
     /// <param name="handler">The <see cref="MessageHandler{TRecipient,TMessage}"/> to invoke when a message is received.</param>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="recipient"/>, <paramref name="token"/> or <paramref name="handler"/> are <see langword="null"/>.</exception>
     /// <exception cref="InvalidOperationException">Thrown when trying to register the same message twice.</exception>
     void Register<TRecipient, TMessage, TToken>(TRecipient recipient, TToken token, MessageHandler<TRecipient, TMessage> handler)
         where TRecipient : class
@@ -97,6 +99,7 @@ public interface IMessenger
     /// Use this method as an easy way to lose all references to a target recipient.
     /// If the recipient has no registered handler, this method does nothing.
     /// </remarks>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="recipient"/> is <see langword="null"/>.</exception>
     void UnregisterAll(object recipient);
 
     /// <summary>
@@ -106,6 +109,7 @@ public interface IMessenger
     /// <param name="recipient">The recipient to unregister.</param>
     /// <param name="token">The token to use to identify which handlers to unregister.</param>
     /// <remarks>If the recipient has no registered handler, this method does nothing.</remarks>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="recipient"/> or <paramref name="token"/> are <see langword="null"/>.</exception>
     void UnregisterAll<TToken>(object recipient, TToken token)
         where TToken : IEquatable<TToken>;
 
@@ -117,6 +121,7 @@ public interface IMessenger
     /// <param name="recipient">The recipient to unregister.</param>
     /// <param name="token">The token to use to identify which handlers to unregister.</param>
     /// <remarks>If the recipient has no registered handler, this method does nothing.</remarks>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="recipient"/> or <paramref name="token"/> are <see langword="null"/>.</exception>
     void Unregister<TMessage, TToken>(object recipient, TToken token)
         where TMessage : class
         where TToken : IEquatable<TToken>;
@@ -129,6 +134,7 @@ public interface IMessenger
     /// <param name="message">The message to send.</param>
     /// <param name="token">The token indicating what channel to use.</param>
     /// <returns>The message that was sent (ie. <paramref name="message"/>).</returns>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="message"/> or <paramref name="token"/> are <see langword="null"/>.</exception>
     TMessage Send<TMessage, TToken>(TMessage message, TToken token)
         where TMessage : class
         where TToken : IEquatable<TToken>;
