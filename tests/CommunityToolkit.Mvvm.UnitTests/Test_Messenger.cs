@@ -73,6 +73,8 @@ public partial class Test_Messenger
 
         messenger.Register<MessageA>(recipient, (r, m) => { });
 
+        Assert.IsTrue(messenger.IsRegistered<MessageA>(recipient));
+
         messenger.Unregister<MessageA>(recipient);
 
         Assert.IsFalse(messenger.IsRegistered<MessageA>(recipient));
@@ -88,9 +90,81 @@ public partial class Test_Messenger
 
         messenger.Register<MessageA, string>(recipient, nameof(MessageA), (r, m) => { });
 
+        Assert.IsTrue(messenger.IsRegistered<MessageA, string>(recipient, nameof(MessageA)));
+
         messenger.Unregister<MessageA, string>(recipient, nameof(MessageA));
 
         Assert.IsFalse(messenger.IsRegistered<MessageA, string>(recipient, nameof(MessageA)));
+    }
+
+    [TestMethod]
+    [DataRow(typeof(StrongReferenceMessenger))]
+    [DataRow(typeof(WeakReferenceMessenger))]
+    public void Test_Messenger_RegisterAndUnregisterRecipientWithMessageTypeAndMultipleTokens(Type type)
+    {
+        IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+        object? recipient = new();
+
+        Assert.IsFalse(messenger.IsRegistered<MessageA, int>(recipient, 1));
+        Assert.IsFalse(messenger.IsRegistered<MessageA, int>(recipient, 2));
+        Assert.IsFalse(messenger.IsRegistered<MessageA, string>(recipient, "a"));
+        Assert.IsFalse(messenger.IsRegistered<MessageA, string>(recipient, "b"));
+
+        messenger.Register<MessageA, int>(recipient, 1, (r, m) => { });
+
+        Assert.IsTrue(messenger.IsRegistered<MessageA, int>(recipient, 1));
+        Assert.IsFalse(messenger.IsRegistered<MessageA, int>(recipient, 2));
+        Assert.IsFalse(messenger.IsRegistered<MessageA, string>(recipient, "a"));
+        Assert.IsFalse(messenger.IsRegistered<MessageA, string>(recipient, "b"));
+
+        messenger.Register<MessageA, int>(recipient, 2, (r, m) => { });
+
+        Assert.IsTrue(messenger.IsRegistered<MessageA, int>(recipient, 1));
+        Assert.IsTrue(messenger.IsRegistered<MessageA, int>(recipient, 2));
+        Assert.IsFalse(messenger.IsRegistered<MessageA, string>(recipient, "a"));
+        Assert.IsFalse(messenger.IsRegistered<MessageA, string>(recipient, "b"));
+
+        messenger.Register<MessageA, string>(recipient, "a", (r, m) => { });
+
+        Assert.IsTrue(messenger.IsRegistered<MessageA, int>(recipient, 1));
+        Assert.IsTrue(messenger.IsRegistered<MessageA, int>(recipient, 2));
+        Assert.IsTrue(messenger.IsRegistered<MessageA, string>(recipient, "a"));
+        Assert.IsFalse(messenger.IsRegistered<MessageA, string>(recipient, "b"));
+
+        messenger.Register<MessageA, string>(recipient, "b", (r, m) => { });
+
+        Assert.IsTrue(messenger.IsRegistered<MessageA, int>(recipient, 1));
+        Assert.IsTrue(messenger.IsRegistered<MessageA, int>(recipient, 2));
+        Assert.IsTrue(messenger.IsRegistered<MessageA, string>(recipient, "a"));
+        Assert.IsTrue(messenger.IsRegistered<MessageA, string>(recipient, "b"));
+
+        messenger.Unregister<MessageA, int>(recipient, 1);
+
+        Assert.IsFalse(messenger.IsRegistered<MessageA, int>(recipient, 1));
+        Assert.IsTrue(messenger.IsRegistered<MessageA, int>(recipient, 2));
+        Assert.IsTrue(messenger.IsRegistered<MessageA, string>(recipient, "a"));
+        Assert.IsTrue(messenger.IsRegistered<MessageA, string>(recipient, "b"));
+
+        messenger.Unregister<MessageA, int>(recipient, 2);
+
+        Assert.IsFalse(messenger.IsRegistered<MessageA, int>(recipient, 1));
+        Assert.IsFalse(messenger.IsRegistered<MessageA, int>(recipient, 2));
+        Assert.IsTrue(messenger.IsRegistered<MessageA, string>(recipient, "a"));
+        Assert.IsTrue(messenger.IsRegistered<MessageA, string>(recipient, "b"));
+
+        messenger.Unregister<MessageA, string>(recipient, "a");
+
+        Assert.IsFalse(messenger.IsRegistered<MessageA, int>(recipient, 1));
+        Assert.IsFalse(messenger.IsRegistered<MessageA, int>(recipient, 2));
+        Assert.IsFalse(messenger.IsRegistered<MessageA, string>(recipient, "a"));
+        Assert.IsTrue(messenger.IsRegistered<MessageA, string>(recipient, "b"));
+
+        messenger.Unregister<MessageA, string>(recipient, "b");
+
+        Assert.IsFalse(messenger.IsRegistered<MessageA, int>(recipient, 1));
+        Assert.IsFalse(messenger.IsRegistered<MessageA, int>(recipient, 2));
+        Assert.IsFalse(messenger.IsRegistered<MessageA, string>(recipient, "a"));
+        Assert.IsFalse(messenger.IsRegistered<MessageA, string>(recipient, "b"));
     }
 
     [TestMethod]
@@ -102,6 +176,8 @@ public partial class Test_Messenger
         object? recipient = new();
 
         messenger.Register<MessageA, string>(recipient, nameof(MessageA), (r, m) => { });
+
+        Assert.IsTrue(messenger.IsRegistered<MessageA, string>(recipient, nameof(MessageA)));
 
         messenger.UnregisterAll(recipient, nameof(MessageA));
 
@@ -117,6 +193,8 @@ public partial class Test_Messenger
         object? recipient = new();
 
         messenger.Register<MessageA, string>(recipient, nameof(MessageA), (r, m) => { });
+
+        Assert.IsTrue(messenger.IsRegistered<MessageA, string>(recipient, nameof(MessageA)));
 
         messenger.UnregisterAll(recipient);
 

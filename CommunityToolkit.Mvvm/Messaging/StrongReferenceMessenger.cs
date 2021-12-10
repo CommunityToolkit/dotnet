@@ -122,7 +122,9 @@ public sealed class StrongReferenceMessenger : IMessenger
 
                 Recipient key = new(recipient);
 
-                return mapping.ContainsKey(key);
+                return
+                    mapping.TryGetValue(key, out Dictionary2<TToken, object?>? handlers) &&
+                    handlers.ContainsKey(token);
             }
         }
     }
