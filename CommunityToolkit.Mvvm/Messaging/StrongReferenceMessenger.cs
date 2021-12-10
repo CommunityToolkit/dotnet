@@ -112,14 +112,30 @@ public sealed class StrongReferenceMessenger : IMessenger
         where TMessage : class
         where TToken : IEquatable<TToken>
     {
+        Register<TMessage, TToken>(recipient, token, new MessageHandlerDispatcher.For<TRecipient, TMessage>(handler));
+    }
+
+    /// <summary>
+    /// Registers a recipient for a given type of message.
+    /// </summary>
+    /// <typeparam name="TMessage">The type of message to receive.</typeparam>
+    /// <typeparam name="TToken">The type of token to use to pick the messages to receive.</typeparam>
+    /// <param name="recipient">The recipient that will receive the messages.</param>
+    /// <param name="token">A token used to determine the receiving channel to use.</param>
+    /// <param name="dispatcher">The input <see cref="MessageHandlerDispatcher"/> instance to register, or null.</param>
+    /// <exception cref="InvalidOperationException">Thrown when trying to register the same message twice.</exception>
+    private void Register<TMessage, TToken>(object recipient, TToken token, MessageHandlerDispatcher? dispatcher)
+       where TMessage : class
+       where TToken : IEquatable<TToken>
+    {
         lock (this.recipientsMap)
         {
             // Get the <TMessage, TToken> registration list for this recipient
             Mapping<TMessage, TToken> mapping = GetOrAddMapping<TMessage, TToken>();
             Recipient key = new(recipient);
-            ref Dictionary2<TToken, object>? map = ref mapping.GetOrAddValueRef(key);
+            ref Dictionary2<TToken, object?>? map = ref mapping.GetOrAddValueRef(key);
 
-            map ??= new Dictionary2<TToken, object>();
+            map ??= new Dictionary2<TToken, object?>();
 
             // Add the new registration entry
             ref object? registeredHandler = ref map.GetOrAddValueRef(token);
@@ -129,8 +145,8 @@ public sealed class StrongReferenceMessenger : IMessenger
                 ThrowInvalidOperationExceptionForDuplicateRegistration();
             }
 
-            // Treat the input delegate as if it was covariant (see comments below in the Send method)
-            registeredHandler = handler;
+            // Store the input handler
+            registeredHandler = dispatcher;
 
             // Make sure this registration map is tracked for the current recipient
             ref HashSet<IMapping>? set = ref this.recipientsMap.GetOrAddValueRef(key);
@@ -308,7 +324,7 @@ public sealed class StrongReferenceMessenger : IMessenger
 
             Recipient key = new(recipient);
 
-            if (!mapping.TryGetValue(key, out Dictionary2<TToken, object>? dictionary))
+            if (!mapping.TryGetValue(key, out Dictionary2<TToken, object?>? dictionary))
             {
                 return;
             }
@@ -349,8 +365,8 @@ public sealed class StrongReferenceMessenger : IMessenger
         where TMessage : class
         where TToken : IEquatable<TToken>
     {
-        object[] rentedArray;
-        Span<object> pairs;
+        object?[] rentedArray;
+        Span<object?> pairs;
         int i = 0;
 
         lock (this.recipientsMap)
@@ -381,14 +397,14 @@ public sealed class StrongReferenceMessenger : IMessenger
 
             // Rent the array and also assign it to a span, which will be used to access values.
             // We're doing this to avoid the array covariance checks slowdown in the loops below.
-            pairs = rentedArray = ArrayPool<object>.Shared.Rent(2 * totalHandlersCount);
+            pairs = rentedArray = ArrayPool<object?>.Shared.Rent(2 * totalHandlersCount);
 
             // Copy the handlers to the local collection.
             // The array is oversized at this point, since it also includes
             // handlers for different tokens. We can reuse the same variable
             // to count the number of matching handlers to invoke later on.
             // This will be the array slice with valid handler in the rented buffer.
-            Dictionary2<Recipient, Dictionary2<TToken, object>>.Enumerator mappingEnumerator = mapping.GetEnumerator();
+            Dictionary2<Recipient, Dictionary2<TToken, object?>>.Enumerator mappingEnumerator = mapping.GetEnumerator();
 
             // Explicit enumerator usage here as we're using a custom one
             // that doesn't expose the single standard Current property.
@@ -414,11 +430,19 @@ public sealed class StrongReferenceMessenger : IMessenger
             // Invoke all the necessary handlers on the local copy of entries
             for (int j = 0; j < i; j++)
             {
-                // Here we perform an unsafe cast to enable covariance for delegate types.
-                // We know that the input recipient will always respect the type constraints
-                // of each original input delegate, and doing so allows us to still invoke
-                // them all from here without worrying about specific generic type arguments.
-                Unsafe.As<MessageHandler<object, TMessage>>(pairs[2 * j])(pairs[(2 * j) + 1], message);
+                object? handler = pairs[2 * j];
+                object recipient = pairs[(2 * j) + 1]!;
+
+                // Same null-based guarded devirtualization as in WeakReferenceMessenger.
+                // See comments there for a detailed explanation of how this optimization works.
+                if (handler is null)
+                {
+                    Unsafe.As<IRecipient<TMessage>>(recipient).Receive(message);
+                }
+                else
+                {
+                    Unsafe.As<MessageHandlerDispatcher>(handler).Invoke(recipient, message);
+                }
             }
         }
         finally
@@ -427,7 +451,7 @@ public sealed class StrongReferenceMessenger : IMessenger
             // lasting memory leaks due to leftover references being stored in the pool.
             Array.Clear(rentedArray, 0, 2 * i);
 
-            ArrayPool<object>.Shared.Return(rentedArray);
+            ArrayPool<object?>.Shared.Return(rentedArray);
         }
 
         End:
@@ -513,7 +537,7 @@ public sealed class StrongReferenceMessenger : IMessenger
     /// This type is defined for simplicity and as a workaround for the lack of support for using type aliases
     /// over open generic types in C# (using type aliases can only be used for concrete, closed types).
     /// </remarks>
-    private sealed class Mapping<TMessage, TToken> : Dictionary2<Recipient, Dictionary2<TToken, object>>, IMapping
+    private sealed class Mapping<TMessage, TToken> : Dictionary2<Recipient, Dictionary2<TToken, object?>>, IMapping
         where TMessage : class
         where TToken : IEquatable<TToken>
     {
