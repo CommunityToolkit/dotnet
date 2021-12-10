@@ -226,7 +226,14 @@ public static class IMessengerExtensions
     public static void Register<TMessage>(this IMessenger messenger, IRecipient<TMessage> recipient)
         where TMessage : class
     {
-        messenger.Register<IRecipient<TMessage>, TMessage, Unit>(recipient, default, static (r, m) => r.Receive(m));
+        if (messenger is WeakReferenceMessenger weakReferenceMessenger)
+        {
+            weakReferenceMessenger.Register<TMessage, Unit>(recipient, default);
+        }
+        else
+        {
+            messenger.Register<IRecipient<TMessage>, TMessage, Unit>(recipient, default, static (r, m) => r.Receive(m));
+        }
     }
 
     /// <summary>
@@ -243,7 +250,14 @@ public static class IMessengerExtensions
         where TMessage : class
         where TToken : IEquatable<TToken>
     {
-        messenger.Register<IRecipient<TMessage>, TMessage, TToken>(recipient, token, static (r, m) => r.Receive(m));
+        if (messenger is WeakReferenceMessenger weakReferenceMessenger)
+        {
+            weakReferenceMessenger.Register(recipient, token);
+        }
+        else
+        {
+            messenger.Register<IRecipient<TMessage>, TMessage, TToken>(recipient, token, static (r, m) => r.Receive(m));
+        }
     }
 
     /// <summary>

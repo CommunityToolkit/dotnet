@@ -2,15 +2,13 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
-
-namespace Microsoft.Collections.Extensions;
+namespace System.Collections.Generic;
 
 /// <summary>
-/// An interface providing key type contravariant access to a <see cref="DictionarySlim{TKey,TValue}"/> instance.
+/// An interface providing key type contravariant access to a <see cref="Dictionary2{TKey,TValue}"/> instance.
 /// </summary>
 /// <typeparam name="TKey">The contravariant type of keys in the dictionary.</typeparam>
-internal interface IDictionarySlim<in TKey> : IDictionarySlim
+internal interface IDictionary2<in TKey> : IDictionary2
     where TKey : IEquatable<TKey>
 {
     /// <summary>

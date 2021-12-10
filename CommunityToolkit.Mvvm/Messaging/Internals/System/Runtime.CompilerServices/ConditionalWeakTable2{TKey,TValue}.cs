@@ -4,13 +4,11 @@
 
 #if NETSTANDARD2_0
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
-using System.Runtime.CompilerServices;
 
-namespace CommunityToolkit.Mvvm.Messaging.Internals;
+namespace System.Runtime.CompilerServices;
 
 /// <summary>
 /// A wrapper for <see cref="ConditionalWeakTable{TKey,TValue}"/>
@@ -37,6 +35,31 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
     public bool TryGetValue(TKey key, [NotNullWhen(true)] out TValue? value)
     {
         return this.table.TryGetValue(key, out value);
+    }
+
+    /// <inheritdoc cref="ConditionalWeakTableExtensions.TryAdd{TKey, TValue}(ConditionalWeakTable{TKey, TValue}, TKey, TValue)"/>
+    public bool TryAdd(TKey key, TValue value)
+    {
+        if (!this.table.TryAdd(key, value))
+        {
+            return false;
+        }
+
+        // Check if the list of keys contains the given key.
+        // If it does, we can just stop here and return the result.
+        foreach (WeakReference<TKey> node in this.keys)
+        {
+            if (node.TryGetTarget(out TKey? target) &&
+                ReferenceEquals(target, key))
+            {
+                return true;
+            }
+        }
+
+        // Add the key to the list of weak references to track it
+        _ = this.keys.AddFirst(new WeakReference<TKey>(key));
+
+        return true;
     }
 
     /// <inheritdoc cref="ConditionalWeakTable{TKey,TValue}.GetValue"/>
@@ -89,9 +112,14 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
         private LinkedListNode<WeakReference<TKey>>? node;
 
         /// <summary>
-        /// The current <see cref="KeyValuePair{TKey, TValue}"/> to return.
+        /// The current key, if available.
         /// </summary>
-        private KeyValuePair<TKey, TValue> current;
+        private TKey? key;
+
+        /// <summary>
+        /// The current value, if available.
+        /// </summary>
+        private TValue? value;
 
         /// <summary>
         /// Indicates whether or not <see cref="MoveNext"/> has been called at least once.
@@ -107,11 +135,17 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
         {
             this.owner = owner;
             this.node = null;
-            this.current = default;
+            this.key = null;
+            this.value = null;
             this.isFirstMoveNextPending = true;
         }
 
-        /// <inheritdoc cref="System.Collections.IEnumerator.MoveNext"/>
+        /// <inheritdoc cref="IDisposable.Dispose"/>
+        public void Dispose()
+        {
+        }
+
+        /// <inheritdoc cref="Collections.IEnumerator.MoveNext"/>
         public bool MoveNext()
         {
             LinkedListNode<WeakReference<TKey>>? node;
@@ -136,7 +170,8 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
                     this.owner.table.TryGetValue(target!, out TValue? value))
                 {
                     this.node = node;
-                    this.current = new KeyValuePair<TKey, TValue>(target, value);
+                    this.key = target;
+                    this.value = value;
 
                     return true;
                 }
@@ -152,11 +187,22 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
             return false;
         }
 
-        /// <inheritdoc cref="System.Collections.IEnumerator.MoveNext"/>
-        public readonly KeyValuePair<TKey, TValue> Current
+        /// <summary>
+        /// Gets the current key.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public TKey GetKey()
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => this.current;
+            return this.key!;
+        }
+
+        /// <summary>
+        /// Gets the current value.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public TValue GetValue()
+        {
+            return this.value!;
         }
     }
 }
