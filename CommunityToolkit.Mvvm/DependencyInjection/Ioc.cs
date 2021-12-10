@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
 namespace CommunityToolkit.Mvvm.DependencyInjection;
@@ -55,6 +56,8 @@ public sealed class Ioc : IServiceProvider
     /// <inheritdoc/>
     public object? GetService(Type serviceType)
     {
+        ArgumentNullException.ThrowIfNull(serviceType);
+
         // As per section I.12.6.6 of the official CLI ECMA-335 spec:
         // "[...] read and write access to properly aligned memory locations no larger than the native
         // word size is atomic when all the write accesses to a location are the same size. Atomic writes
@@ -128,8 +131,11 @@ public sealed class Ioc : IServiceProvider
     /// Initializes the shared <see cref="IServiceProvider"/> instance.
     /// </summary>
     /// <param name="serviceProvider">The input <see cref="IServiceProvider"/> instance to use.</param>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="serviceProvider"/> is <see langword="null"/>.</exception>
     public void ConfigureServices(IServiceProvider serviceProvider)
     {
+        ArgumentNullException.ThrowIfNull(serviceProvider);
+
         IServiceProvider? oldServices = Interlocked.CompareExchange(ref this.serviceProvider, serviceProvider, null);
 
         if (oldServices is not null)
@@ -141,6 +147,7 @@ public sealed class Ioc : IServiceProvider
     /// <summary>
     /// Throws an <see cref="InvalidOperationException"/> when the <see cref="IServiceProvider"/> property is used before initialization.
     /// </summary>
+    [DoesNotReturn]
     private static void ThrowInvalidOperationExceptionForMissingInitialization()
     {
         throw new InvalidOperationException("The service provider has not been configured yet");
@@ -149,6 +156,7 @@ public sealed class Ioc : IServiceProvider
     /// <summary>
     /// Throws an <see cref="InvalidOperationException"/> when the <see cref="IServiceProvider"/> property is missing a type registration.
     /// </summary>
+    [DoesNotReturn]
     private static void ThrowInvalidOperationExceptionForUnregisteredType()
     {
         throw new InvalidOperationException("The requested service type was not registered");
@@ -157,6 +165,7 @@ public sealed class Ioc : IServiceProvider
     /// <summary>
     /// Throws an <see cref="InvalidOperationException"/> when a configuration is attempted more than once.
     /// </summary>
+    [DoesNotReturn]
     private static void ThrowInvalidOperationExceptionForRepeatedConfiguration()
     {
         throw new InvalidOperationException("The default service provider has already been configured");
