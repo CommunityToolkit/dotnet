@@ -218,7 +218,8 @@ public sealed class WeakReferenceMessenger : IMessenger
     public void UnregisterAll<TToken>(object recipient, TToken token)
         where TToken : IEquatable<TToken>
     {
-        // This method is never called with the unit type
+        // This method is never called with the unit type. See more details in
+        // the comments in the corresponding method in StrongReferenceMessenger.
         if (typeof(TToken) == typeof(Unit))
         {
             throw new NotImplementedException();

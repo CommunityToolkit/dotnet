@@ -255,7 +255,13 @@ public sealed class StrongReferenceMessenger : IMessenger
     public void UnregisterAll<TToken>(object recipient, TToken token)
         where TToken : IEquatable<TToken>
     {
-        // This method is never called with the unit type
+        // This method is never called with the unit type, so this path is not implemented. This
+        // exception should not ever be thrown, it's here just to double check for regressions in
+        // case a bug was introduced that caused this path to somehow be invoked with the Unit type.
+        // This type is internal, so consumers of the library would never be able to pass it here,
+        // and there are (and shouldn't be) any APIs publicly exposed from the library that would
+        // cause this path to be taken either. When using the default channel, only UnregisterAll(object)
+        // is supported, which would just unregister all recipients regardless of the selected channel.
         if (typeof(TToken) == typeof(Unit))
         {
             throw new NotImplementedException();
