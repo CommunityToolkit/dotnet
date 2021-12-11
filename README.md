@@ -50,8 +50,6 @@ This project is supported by the [.NET Foundation](http://dotnetfoundation.org).
 
 ## 🏆 Contributors
 
-<a href="https://github.com/CommunityToolkit/dotnet/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=CommunityToolkit/dotnet" />
-</a>
+[![Toolkit Contributors](https://contrib.rocks/image?repo=CommunityToolkit/dotnet)](https://github.com/CommunityToolkit/dotnet/graphs/contributors)
 
 Made with [contrib.rocks](https://contrib.rocks).
