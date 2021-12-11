@@ -48,7 +48,7 @@ For more information see the [.NET Foundation Code of Conduct](CODE_OF_CONDUCT.m
 
 This project is supported by the [.NET Foundation](http://dotnetfoundation.org).
 
-## Contributors
+## 🏆 Contributors
 
 <a href="https://github.com/CommunityToolkit/dotnet/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=CommunityToolkit/dotnet" />
