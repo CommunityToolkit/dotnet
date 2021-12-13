@@ -14,7 +14,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CommunityToolkit.Mvvm.UnitTests;
 
 [TestClass]
-public class Test_ArgumentNullException
+public partial class Test_ArgumentNullException
 {
     [TestMethod]
     public void Test_ObservableObject()
