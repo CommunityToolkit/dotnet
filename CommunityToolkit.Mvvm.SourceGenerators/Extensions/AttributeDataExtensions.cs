@@ -2,6 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+// This file is ported and adapted from ComputeSharp (Sergio0694/ComputeSharp),
+// more info in ThirdPartyNotices.txt in the root of the project.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
