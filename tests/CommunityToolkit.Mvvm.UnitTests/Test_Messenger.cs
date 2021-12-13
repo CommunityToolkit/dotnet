@@ -1065,6 +1065,131 @@ public partial class Test_Messenger
         });
     }
 
+    [TestMethod]
+    [DataRow(typeof(StrongReferenceMessenger))]
+    [DataRow(typeof(WeakReferenceMessenger))]
+    public void Test_Messenger_ConcurrentOperations_Combined_SeparateRecipients(Type type)
+    {
+        IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+
+        RecipientWithConcurrency[] recipients = Enumerable.Range(0, 1024).Select(static _ => new RecipientWithConcurrency()).ToArray();
+        string[] wordTokens = Enumerable.Range(0, 16).Select(static i => i.ToString()).ToArray();
+        int[] numberTokens = Enumerable.Range(0, 16).ToArray();
+        DateTime end = DateTime.Now.AddSeconds(5);
+
+        _ = Parallel.For(0, recipients.Length, i =>
+        {
+            RecipientWithConcurrency r = recipients[i];
+            string wordToken = wordTokens[i % wordTokens.Length];
+            int numberToken = numberTokens[i % numberTokens.Length];
+            Random random = new(i);
+
+            while (DateTime.Now < end)
+            {
+                Assert.IsFalse(messenger.IsRegistered<MessageA, string>(r, wordToken));
+                Assert.IsFalse(messenger.IsRegistered<MessageB, string>(r, wordToken));
+                Assert.IsFalse(messenger.IsRegistered<MessageA, int>(r, numberToken));
+                Assert.IsFalse(messenger.IsRegistered<MessageB, int>(r, numberToken));
+                Assert.IsFalse(messenger.IsRegistered<MessageA>(r));
+                Assert.IsFalse(messenger.IsRegistered<MessageB>(r));
+
+                int choice = random.Next(0, 9);
+
+                switch (choice)
+                {
+                    case 0:
+                        messenger.Register<RecipientWithConcurrency, MessageA, string>(r, wordToken, static (r, m) => r.Receive(m));
+                        messenger.Register<RecipientWithConcurrency, MessageB, string>(r, wordToken, static (r, m) => r.Receive(m));
+
+                        Assert.IsTrue(messenger.IsRegistered<MessageA, string>(r, wordToken));
+                        Assert.IsTrue(messenger.IsRegistered<MessageB, string>(r, wordToken));
+                        break;
+                    case 1:
+                        messenger.Register<RecipientWithConcurrency, MessageA, int>(r, numberToken, static (r, m) => r.Receive(m));
+                        messenger.Register<RecipientWithConcurrency, MessageB, int>(r, numberToken, static (r, m) => r.Receive(m));
+
+                        Assert.IsTrue(messenger.IsRegistered<MessageA, int>(r, numberToken));
+                        Assert.IsTrue(messenger.IsRegistered<MessageB, int>(r, numberToken));
+                        break;
+                    case 2:
+                        messenger.Register<RecipientWithConcurrency, MessageA>(r, static (r, m) => r.Receive(m));
+                        messenger.Register<RecipientWithConcurrency, MessageB>(r, static (r, m) => r.Receive(m));
+
+                        Assert.IsTrue(messenger.IsRegistered<MessageA>(r));
+                        Assert.IsTrue(messenger.IsRegistered<MessageB>(r));
+                        break;
+                    case 3:
+                        messenger.Register<MessageA, string>(r, wordToken);
+                        messenger.Register<MessageB, string>(r, wordToken);
+
+                        Assert.IsTrue(messenger.IsRegistered<MessageA, string>(r, wordToken));
+                        Assert.IsTrue(messenger.IsRegistered<MessageB, string>(r, wordToken));
+                        break;
+                    case 4:
+                        messenger.Register<MessageA, int>(r, numberToken);
+                        messenger.Register<MessageB, int>(r, numberToken);
+
+                        Assert.IsTrue(messenger.IsRegistered<MessageA, int>(r, numberToken));
+                        Assert.IsTrue(messenger.IsRegistered<MessageB, int>(r, numberToken));
+                        break;
+                    case 5:
+                        messenger.Register<MessageA>(r);
+                        messenger.Register<MessageB>(r);
+
+                        Assert.IsTrue(messenger.IsRegistered<MessageA>(r));
+                        Assert.IsTrue(messenger.IsRegistered<MessageB>(r));
+                        break;
+                    case 6:
+                        messenger.RegisterAll(r, wordToken);
+
+                        Assert.IsTrue(messenger.IsRegistered<MessageA, string>(r, wordToken));
+                        Assert.IsTrue(messenger.IsRegistered<MessageB, string>(r, wordToken));
+                        break;
+                    case 7:
+                        messenger.RegisterAll(r, numberToken);
+
+                        Assert.IsTrue(messenger.IsRegistered<MessageA, int>(r, numberToken));
+                        Assert.IsTrue(messenger.IsRegistered<MessageB, int>(r, numberToken));
+                        break;
+                    default:
+                        messenger.RegisterAll(r);
+
+                        Assert.IsTrue(messenger.IsRegistered<MessageA>(r));
+                        Assert.IsTrue(messenger.IsRegistered<MessageB>(r));
+                        break;
+                }
+
+                int a = r.As;
+                int b = r.Bs;
+
+                if (choice is 0 or 3 or 6)
+                {
+                    _ = messenger.Send<MessageA, string>(wordToken);
+                    _ = messenger.Send<MessageB, string>(wordToken);
+
+                    messenger.UnregisterAll(r, wordToken);
+                }
+                else if (choice is 1 or 4 or 7)
+                {
+                    _ = messenger.Send<MessageA, int>(numberToken);
+                    _ = messenger.Send<MessageB, int>(numberToken);
+
+                    messenger.UnregisterAll(r, numberToken);
+                }
+                else
+                {
+                    _ = messenger.Send<MessageA>();
+                    _ = messenger.Send<MessageB>();
+
+                    messenger.UnregisterAll(r);
+                }
+
+                Assert.IsTrue(r.As > a);
+                Assert.IsTrue(r.Bs > b);
+            }
+        });
+    }
+
     public sealed class RecipientWithNoMessages
     {
         public int Number { get; set; }
