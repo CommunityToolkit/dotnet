@@ -683,11 +683,8 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// <param name="value">The value to test for the specified property.</param>
     /// <param name="propertyName">The name of the property to validate.</param>
     /// <param name="errors">The resulting validation errors, if any.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="propertyName"/> is <see langword="null"/>.</exception>
     private bool TryValidateProperty(object? value, string propertyName, out IReadOnlyCollection<ValidationResult> errors)
     {
-        ArgumentNullException.ThrowIfNull(propertyName);
-
         // Add the cached errors list for later use.
         if (!this.errors.TryGetValue(propertyName!, out List<ValidationResult>? propertyErrors))
         {
