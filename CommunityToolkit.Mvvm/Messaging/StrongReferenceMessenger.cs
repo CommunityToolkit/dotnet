@@ -24,43 +24,55 @@ public sealed class StrongReferenceMessenger : IMessenger
     // This messenger uses the following logic to link stored instances together:
     // --------------------------------------------------------------------------------------------------------
     //   Dictionary2<Recipient, HashSet<IMapping>> recipientsMap;
-    //                 |                   \________________[*]IDictionary2<Recipient, IDictionary2<TToken>>
-    //                 |                                             \____________/_________                /
-    //                 |   ________(recipients registrations)____________________/          \              /
-    //                 |  /                       ____(channel registrations)________________\____________/
-    //                 | /                       /                                            \
-    //    Dictionary2<Recipient, Dictionary2<TToken, MessageHandler<TRecipient, TMessage>>> mapping = Mapping<TMessage, TToken>
-    //                                         /                                   /          /
-    //                   ___(Type2.TToken)____/                                   /          /
-    //                  /________________(Type2.TMessage)________________________/          /
-    //                 /       ____________________________________________________________/
+    //                   |                 \________________[*]IDictionary2<Recipient, IDictionary2<TToken>>
+    //                   |                  \_______________[*]IDictionary2<Recipient, object?>       /
+    //                   |                                           \_________/_________/___        / 
+    //                   |\                       _(recipients registrations)_/         /    \      /
+    //                   | \__________________   /    _____(channel registrations)_____/______\____/
+    //                   |                    \ /    /      __________________________/        \
+    //                   |                     /    /      /                                    \
+    //                   |      Dictionary2<Recipient, object?> mapping = Mapping________________\
+    //                   | __________________/    /                |         /                    \
+    //                   |/                      /                 |        /                      \
+    //    Dictionary2<Recipient, Dictionary2<TToken, object?>> mapping = Mapping<TToken>____________\
+    //                                         /                  /       /  /
+    //                   ___(Type2.TToken)____/                  /       /  /
+    //                  /________________(Type2.TMessage)_______/_______/__/
+    //                 /       ________________________________/
     //                /       /
     // Dictionary2<Type2, IMapping> typesMap;
     // --------------------------------------------------------------------------------------------------------
-    // Each combination of <TMessage, TToken> results in a concrete Mapping<TMessage, TToken> type, which holds the references
-    // from registered recipients to handlers. The handlers are stored in a <TToken, MessageHandler<object, TMessage>> dictionary,
-    // so that each recipient can have up to one registered handler for a given token, for each message type.
-    // Note that the registered handlers are only stored as object references, even if they were actually of type
-    // MessageHandler<TRecipient, TMessage>, to avoid unnecessary unsafe casts. Each handler is also generic with respect to the
-    // recipient type, in order to allow the messenger to track and invoke type-specific handlers without using reflection and
-    // without having to capture the input handler in a proxy delegate, causing one extra memory allocations and adding overhead.
-    // This allows users to retain type information on each registered recipient, instead of having to manually cast each recipient
-    // to the right type within the handler. The type conversion is guaranteed to be respected due to how the messenger type
-    // itself works - as registered handlers are always invoked on their respective recipients.
-    // Each mapping is stored in the types map, which associates each pair of concrete types to its
-    // mapping instance. Mapping instances are exposed as IMapping items, as each will be a closed type over
-    // a different combination of TMessage and TToken generic type parameters. Each existing recipient is also stored in
-    // the main recipients map, along with a set of all the existing dictionaries of handlers for that recipient (for all
-    // message types and token types). A recipient is stored in the main map as long as it has at least one
-    // registered handler in any of the existing mappings for every message/token type combination.
-    // The shared map is used to access the set of all registered handlers for a given recipient, without having
-    // to know in advance the type of message or token being used for the registration, and without having to
-    // use reflection. This is the same approach used in the types map, as we expose saved items as IMapping values too.
-    // Note that each mapping stored in the associated set for each recipient also indirectly implements
-    // IDictionary2<Recipient, Token>, with any token type currently in use by that recipient. This allows to retrieve
-    // the type-closed mappings of registered handlers with a given token type, for any message type, for every receiver,
-    // again without having to use reflection. This shared map is used to unregister messages from a given recipients
-    // either unconditionally, by message type, by token, or for a specific pair of message type and token value.
+    // Each combination of <TMessage, TToken> results in a concrete Mapping type (if TToken is Unit) or Mapping<Token> type,
+    // which holds the references from registered recipients to handlers. Mapping is used when the default channel is being
+    // requested, as in that case there will only ever be up to a handler per recipient, per message type. In that case,
+    // each recipient will only track the message dispatcher (stored as an object?, see notes below), instead of a dictionary
+    // mapping each TToken value to the corresponding dispatcher for that recipient. When a custom channel is used, the
+    // dispatchers are stored in a <TToken, object?> dictionary, so that each recipient can have up to one registered handler
+    // for a given token, for each message type. Note that the registered dispatchers are only stored as object references, as
+    // they can either be null or a MessageHandlerDispatcher.For<TRecipient, TMessage> instance.
+    //
+    // The first case happens if the handler was registered through an IRecipient<TMessage> instance, while the second one is
+    // used to wrap input MessageHandler<TRecipient, TMessage> instances. The MessageHandlerDispatcher.For<TRecipient, TMessage>
+    // instances will just be cast to MessageHandlerDispatcher when invoking it. This allows users to retain type information on
+    // each registered recipient, instead of having to manually cast each recipient to the right type within the handler
+    // (additionally, using double dispatch here avoids the need to alias delegate types). The type conversion is guaranteed to be
+    // respected due to how the messenger type itself works - as registered handlers are always invoked on their respective recipients.
+    //
+    // Each mapping is stored in the types map, which associates each pair of concrete types to its mapping instance. Mapping instances
+    // are exposed as IMapping items, as each will be a closed type over a different combination of TMessage and TToken generic type
+    // parameters (or just of TMessage, for the default channel). Each existing recipient is also stored in the main recipients map,
+    // along with a set of all the existing (dictionaries of) handlers for that recipient (for all message types and token types, if any).
+    //
+    // A recipient is stored in the main map as long as it has at least one registered handler in any of the existing mappings for every
+    // message/token type combination. The shared map is used to access the set of all registered handlers for a given recipient, without
+    // having to know in advance the type of message or token being used for the registration, and without having to use reflection. This
+    // is the same approach used in the types map, as we expose saved items as IMapping values too.
+    //
+    // Note that each mapping stored in the associated set for each recipient also indirectly implements either IDictionary2<Recipient, Token>
+    // or IDictionary2<Recipient>, with any token type currently in use by that recipient (or none, if using the default channel). This allows
+    // to retrieve the type-closed mappings of registered handlers with a given token type, for any message type, for every receiver, again
+    // without having to use reflection. This shared map is used to unregister messages from a given recipients either unconditionally, by
+    // message type, by token, or for a specific pair of message type and token value.
 
     /// <summary>
     /// The collection of currently registered recipients, with a link to their linked message receivers.
@@ -74,12 +86,12 @@ public sealed class StrongReferenceMessenger : IMessenger
     private readonly Dictionary2<Recipient, HashSet<IMapping>> recipientsMap = new();
 
     /// <summary>
-    /// The <see cref="Mapping{TMessage,TToken}"/> instance for types combination.
+    /// The <see cref="Mapping"/> and <see cref="Mapping{TToken}"/> instance for types combination.
     /// </summary>
     /// <remarks>
     /// The values are just of type <see cref="IDictionary2{T}"/> as we don't know the type parameters in advance.
-    /// Each method relies on <see cref="GetOrAddMapping{TMessage,TToken}"/> to get the type-safe instance
-    /// of the <see cref="Mapping{TMessage,TToken}"/> class for each pair of generic arguments in use.
+    /// Each method relies on <see cref="GetOrAddMapping{TMessage,TToken}"/> to get the type-safe instance of the
+    /// <see cref="Mapping"/> or <see cref="Mapping{TToken}"/> class for each pair of generic arguments in use.
     /// </remarks>
     private readonly Dictionary2<Type2, IMapping> typesMap = new();
 
@@ -95,14 +107,30 @@ public sealed class StrongReferenceMessenger : IMessenger
     {
         lock (this.recipientsMap)
         {
-            if (!TryGetMapping(out Mapping<TMessage, TToken>? mapping))
+            if (typeof(TToken) == typeof(Unit))
             {
-                return false;
+                if (!TryGetMapping<TMessage>(out Mapping? mapping))
+                {
+                    return false;
+                }
+
+                Recipient key = new(recipient);
+
+                return mapping.ContainsKey(key);
             }
+            else
+            {
+                if (!TryGetMapping<TMessage, TToken>(out Mapping<TToken>? mapping))
+                {
+                    return false;
+                }
 
-            Recipient key = new(recipient);
+                Recipient key = new(recipient);
 
-            return mapping.ContainsKey(key);
+                return
+                    mapping.TryGetValue(key, out Dictionary2<TToken, object?>? handlers) &&
+                    handlers.ContainsKey(token);
+            }
         }
     }
 
@@ -112,25 +140,71 @@ public sealed class StrongReferenceMessenger : IMessenger
         where TMessage : class
         where TToken : IEquatable<TToken>
     {
+        Register<TMessage, TToken>(recipient, token, new MessageHandlerDispatcher.For<TRecipient, TMessage>(handler));
+    }
+
+    /// <inheritdoc cref="WeakReferenceMessenger.Register{TMessage, TToken}(IRecipient{TMessage}, TToken)"/>
+    internal void Register<TMessage, TToken>(IRecipient<TMessage> recipient, TToken token)
+        where TMessage : class
+        where TToken : IEquatable<TToken>
+    {
+        Register<TMessage, TToken>(recipient, token, null);
+    }
+
+    /// <summary>
+    /// Registers a recipient for a given type of message.
+    /// </summary>
+    /// <typeparam name="TMessage">The type of message to receive.</typeparam>
+    /// <typeparam name="TToken">The type of token to use to pick the messages to receive.</typeparam>
+    /// <param name="recipient">The recipient that will receive the messages.</param>
+    /// <param name="token">A token used to determine the receiving channel to use.</param>
+    /// <param name="dispatcher">The input <see cref="MessageHandlerDispatcher"/> instance to register, or null.</param>
+    /// <exception cref="InvalidOperationException">Thrown when trying to register the same message twice.</exception>
+    private void Register<TMessage, TToken>(object recipient, TToken token, MessageHandlerDispatcher? dispatcher)
+       where TMessage : class
+       where TToken : IEquatable<TToken>
+    {
         lock (this.recipientsMap)
         {
-            // Get the <TMessage, TToken> registration list for this recipient
-            Mapping<TMessage, TToken> mapping = GetOrAddMapping<TMessage, TToken>();
             Recipient key = new(recipient);
-            ref Dictionary2<TToken, object>? map = ref mapping.GetOrAddValueRef(key);
+            IMapping mapping;
 
-            map ??= new Dictionary2<TToken, object>();
-
-            // Add the new registration entry
-            ref object? registeredHandler = ref map.GetOrAddValueRef(token);
-
-            if (registeredHandler is not null)
+            // Fast path for unit tokens
+            if (typeof(TToken) == typeof(Unit))
             {
-                ThrowInvalidOperationExceptionForDuplicateRegistration();
-            }
+                // Get the <TMessage> registration list for this recipient
+                Mapping underlyingMapping = GetOrAddMapping<TMessage>();
+                ref object? registeredHandler = ref underlyingMapping.GetOrAddValueRef(key);
 
-            // Treat the input delegate as if it was covariant (see comments below in the Send method)
-            registeredHandler = handler;
+                if (registeredHandler is not null)
+                {
+                    ThrowInvalidOperationExceptionForDuplicateRegistration();
+                }
+
+                // Store the input handler
+                registeredHandler = dispatcher;
+
+                mapping = underlyingMapping;
+            }
+            else
+            {
+                // Get the <TMessage, TToken> registration list for this recipient
+                Mapping<TToken> underlyingMapping = GetOrAddMapping<TMessage, TToken>();
+                ref Dictionary2<TToken, object?>? map = ref underlyingMapping.GetOrAddValueRef(key);
+
+                map ??= new Dictionary2<TToken, object?>();
+
+                // Add the new registration entry
+                ref object? registeredHandler = ref map.GetOrAddValueRef(token);
+
+                if (registeredHandler is not null)
+                {
+                    ThrowInvalidOperationExceptionForDuplicateRegistration();
+                }
+
+                registeredHandler = dispatcher;
+                mapping = underlyingMapping;
+            }
 
             // Make sure this registration map is tracked for the current recipient
             ref HashSet<IMapping>? set = ref this.recipientsMap.GetOrAddValueRef(key);
@@ -181,6 +255,18 @@ public sealed class StrongReferenceMessenger : IMessenger
     public void UnregisterAll<TToken>(object recipient, TToken token)
         where TToken : IEquatable<TToken>
     {
+        // This method is never called with the unit type, so this path is not implemented. This
+        // exception should not ever be thrown, it's here just to double check for regressions in
+        // case a bug was introduced that caused this path to somehow be invoked with the Unit type.
+        // This type is internal, so consumers of the library would never be able to pass it here,
+        // and there are (and shouldn't be) any APIs publicly exposed from the library that would
+        // cause this path to be taken either. When using the default channel, only UnregisterAll(object)
+        // is supported, which would just unregister all recipients regardless of the selected channel.
+        if (typeof(TToken) == typeof(Unit))
+        {
+            throw new NotImplementedException();
+        }
+
         bool lockTaken = false;
         object[]? maps = null;
         int i = 0;
@@ -300,28 +386,26 @@ public sealed class StrongReferenceMessenger : IMessenger
     {
         lock (this.recipientsMap)
         {
-            // Get the registration list, if available
-            if (!TryGetMapping(out Mapping<TMessage, TToken>? mapping))
+            if (typeof(TToken) == typeof(Unit))
             {
-                return;
-            }
+                // Get the registration list, if available
+                if (!TryGetMapping<TMessage>(out Mapping? mapping))
+                {
+                    return;
+                }
 
-            Recipient key = new(recipient);
+                Recipient key = new(recipient);
 
-            if (!mapping.TryGetValue(key, out Dictionary2<TToken, object>? dictionary))
-            {
-                return;
-            }
+                // Remove the handler (there can only be one for the unit type)
+                if (!mapping.TryRemove(key))
+                {
+                    return;
+                }
 
-            // Remove the target handler
-            if (dictionary.TryRemove(token) &&
-                dictionary.Count == 0)
-            {
-                // If the map is empty, it means that the current recipient has no remaining
-                // registered handlers for the current <TMessage, TToken> combination, regardless,
-                // of the specific token value (ie. the channel used to receive messages of that type).
-                // We can remove the map entirely from this container, and remove the link to the map itself
-                // to the current mapping between existing registered recipients (or entire recipients too).
+                // Remove the map entirely from this container, and remove the link to the map itself to
+                // the current mapping between existing registered recipients (or entire recipients too).
+                // This is the same as below, except for the unit type there can only be one handler, so
+                // removing it already implies the target recipient has no remaining handlers left.
                 _ = mapping.TryRemove(key);
 
                 // If there are no handlers left at all for this type combination, drop it
@@ -332,13 +416,58 @@ public sealed class StrongReferenceMessenger : IMessenger
 
                 HashSet<IMapping> set = this.recipientsMap[key];
 
-                // The current mapping no longer has any handlers left for this recipient
+                // The current mapping no longer has any handlers left for this recipient.
+                // Remove it and then also remove the recipient if this was the last handler.
+                // Again, this is the same as below, except with the assumption of the unit type.
                 _ = set.Remove(mapping);
 
-                // If the current recipients has no handlers left at all, remove it
                 if (set.Count == 0)
                 {
                     _ = this.recipientsMap.TryRemove(key);
+                }
+            }
+            else
+            {
+                // Get the registration list, if available
+                if (!TryGetMapping<TMessage, TToken>(out Mapping<TToken>? mapping))
+                {
+                    return;
+                }
+
+                Recipient key = new(recipient);
+
+                if (!mapping.TryGetValue(key, out Dictionary2<TToken, object?>? dictionary))
+                {
+                    return;
+                }
+
+                // Remove the target handler
+                if (dictionary.TryRemove(token) &&
+                    dictionary.Count == 0)
+                {
+                    // If the map is empty, it means that the current recipient has no remaining
+                    // registered handlers for the current <TMessage, TToken> combination, regardless,
+                    // of the specific token value (ie. the channel used to receive messages of that type).
+                    // We can remove the map entirely from this container, and remove the link to the map itself
+                    // to the current mapping between existing registered recipients (or entire recipients too).
+                    _ = mapping.TryRemove(key);
+
+                    // If there are no handlers left at all for this type combination, drop it
+                    if (mapping.Count == 0)
+                    {
+                        _ = this.typesMap.TryRemove(mapping.TypeArguments);
+                    }
+
+                    HashSet<IMapping> set = this.recipientsMap[key];
+
+                    // The current mapping no longer has any handlers left for this recipient
+                    _ = set.Remove(mapping);
+
+                    // If the current recipients has no handlers left at all, remove it
+                    if (set.Count == 0)
+                    {
+                        _ = this.recipientsMap.TryRemove(key);
+                    }
                 }
             }
         }
@@ -349,77 +478,101 @@ public sealed class StrongReferenceMessenger : IMessenger
         where TMessage : class
         where TToken : IEquatable<TToken>
     {
-        object[] rentedArray;
-        Span<object> pairs;
+        object?[] rentedArray;
+        Span<object?> pairs;
         int i = 0;
 
         lock (this.recipientsMap)
         {
-            // Check whether there are any registered recipients
-            if (!TryGetMapping(out Mapping<TMessage, TToken>? mapping))
+            if (typeof(TToken) == typeof(Unit))
             {
-                goto End;
-            }
-
-            // We need to make a local copy of the currently registered handlers, since users might
-            // try to unregister (or register) new handlers from inside one of the currently existing
-            // handlers. We can use memory pooling to reuse arrays, to minimize the average memory
-            // usage. In practice, we usually just need to pay the small overhead of copying the items.
-            // The current mapping contains all the currently registered recipients and handlers for
-            // the <TMessage, TToken> combination in use. In the worst case scenario, all recipients
-            // will have a registered handler with a token matching the input one, meaning that we could
-            // have at worst a number of pending handlers to invoke equal to the total number of recipient
-            // in the mapping. This relies on the fact that tokens are unique, and that there is only
-            // one handler associated with a given token. We can use this upper bound as the requested
-            // size for each array rented from the pool, which guarantees that we'll have enough space.
-            int totalHandlersCount = mapping.Count;
-
-            if (totalHandlersCount == 0)
-            {
-                goto End;
-            }
-
-            // Rent the array and also assign it to a span, which will be used to access values.
-            // We're doing this to avoid the array covariance checks slowdown in the loops below.
-            pairs = rentedArray = ArrayPool<object>.Shared.Rent(2 * totalHandlersCount);
-
-            // Copy the handlers to the local collection.
-            // The array is oversized at this point, since it also includes
-            // handlers for different tokens. We can reuse the same variable
-            // to count the number of matching handlers to invoke later on.
-            // This will be the array slice with valid handler in the rented buffer.
-            Dictionary2<Recipient, Dictionary2<TToken, object>>.Enumerator mappingEnumerator = mapping.GetEnumerator();
-
-            // Explicit enumerator usage here as we're using a custom one
-            // that doesn't expose the single standard Current property.
-            while (mappingEnumerator.MoveNext())
-            {
-                // Pick the target handler, if the token is a match for the recipient
-                if (mappingEnumerator.GetValue().TryGetValue(token, out object? handler))
+                // Check whether there are any registered recipients
+                if (!TryGetMapping<TMessage>(out Mapping? mapping))
                 {
-                    // This span access should always guaranteed to be valid due to the size of the
-                    // array being set according to the current total number of registered handlers,
-                    // which will always be greater or equal than the ones matching the previous test.
-                    // We're still using a checked span accesses here though to make sure an out of
-                    // bounds write can never happen even if an error was present in the logic above.
-                    pairs[2 * i] = handler;
+                    goto End;
+                }
+
+                // Check the number of remaining handlers, see below
+                int totalHandlersCount = mapping.Count;
+
+                if (totalHandlersCount == 0)
+                {
+                    goto End;
+                }
+
+                pairs = rentedArray = ArrayPool<object?>.Shared.Rent(2 * totalHandlersCount);
+
+                // Same logic as below, except here we're only traversing one handler per recipient
+                Dictionary2<Recipient, object?>.Enumerator mappingEnumerator = mapping.GetEnumerator();
+
+                while (mappingEnumerator.MoveNext())
+                {
+                    pairs[2 * i] = mappingEnumerator.GetValue();
                     pairs[(2 * i) + 1] = mappingEnumerator.GetKey().Target;
                     i++;
+                }
+            }
+            else
+            {
+                // Check whether there are any registered recipients
+                if (!TryGetMapping<TMessage, TToken>(out Mapping<TToken>? mapping))
+                {
+                    goto End;
+                }
+
+                // We need to make a local copy of the currently registered handlers, since users might
+                // try to unregister (or register) new handlers from inside one of the currently existing
+                // handlers. We can use memory pooling to reuse arrays, to minimize the average memory
+                // usage. In practice, we usually just need to pay the small overhead of copying the items.
+                // The current mapping contains all the currently registered recipients and handlers for
+                // the <TMessage, TToken> combination in use. In the worst case scenario, all recipients
+                // will have a registered handler with a token matching the input one, meaning that we could
+                // have at worst a number of pending handlers to invoke equal to the total number of recipient
+                // in the mapping. This relies on the fact that tokens are unique, and that there is only
+                // one handler associated with a given token. We can use this upper bound as the requested
+                // size for each array rented from the pool, which guarantees that we'll have enough space.
+                int totalHandlersCount = mapping.Count;
+
+                if (totalHandlersCount == 0)
+                {
+                    goto End;
+                }
+
+                // Rent the array and also assign it to a span, which will be used to access values.
+                // We're doing this to avoid the array covariance checks slowdown in the loops below.
+                pairs = rentedArray = ArrayPool<object?>.Shared.Rent(2 * totalHandlersCount);
+
+                // Copy the handlers to the local collection.
+                // The array is oversized at this point, since it also includes
+                // handlers for different tokens. We can reuse the same variable
+                // to count the number of matching handlers to invoke later on.
+                // This will be the array slice with valid handler in the rented buffer.
+                Dictionary2<Recipient, Dictionary2<TToken, object?>>.Enumerator mappingEnumerator = mapping.GetEnumerator();
+
+                // Explicit enumerator usage here as we're using a custom one
+                // that doesn't expose the single standard Current property.
+                while (mappingEnumerator.MoveNext())
+                {
+                    // Pick the target handler, if the token is a match for the recipient
+                    if (mappingEnumerator.GetValue().TryGetValue(token, out object? handler))
+                    {
+                        // This span access should always guaranteed to be valid due to the size of the
+                        // array being set according to the current total number of registered handlers,
+                        // which will always be greater or equal than the ones matching the previous test.
+                        // We're still using a checked span accesses here though to make sure an out of
+                        // bounds write can never happen even if an error was present in the logic above.
+                        pairs[2 * i] = handler;
+                        pairs[(2 * i) + 1] = mappingEnumerator.GetKey().Target;
+                        i++;
+                    }
                 }
             }
         }
 
         try
         {
-            // Invoke all the necessary handlers on the local copy of entries
-            for (int j = 0; j < i; j++)
-            {
-                // Here we perform an unsafe cast to enable covariance for delegate types.
-                // We know that the input recipient will always respect the type constraints
-                // of each original input delegate, and doing so allows us to still invoke
-                // them all from here without worrying about specific generic type arguments.
-                Unsafe.As<MessageHandler<object, TMessage>>(pairs[2 * j])(pairs[(2 * j) + 1], message);
-            }
+            // The core broadcasting logic is the same as the weak reference messenger one
+            WeakReferenceMessenger.SendAll(pairs, i, message);
         }
         finally
         {
@@ -427,7 +580,7 @@ public sealed class StrongReferenceMessenger : IMessenger
             // lasting memory leaks due to leftover references being stored in the pool.
             Array.Clear(rentedArray, 0, 2 * i);
 
-            ArrayPool<object>.Shared.Return(rentedArray);
+            ArrayPool<object?>.Shared.Return(rentedArray);
         }
 
         End:
@@ -455,26 +608,24 @@ public sealed class StrongReferenceMessenger : IMessenger
     }
 
     /// <summary>
-    /// Tries to get the <see cref="Mapping{TMessage,TToken}"/> instance of currently registered recipients
-    /// for the combination of types <typeparamref name="TMessage"/> and <typeparamref name="TToken"/>.
+    /// Tries to get the <see cref="Mapping"/> instance of currently
+    /// registered recipients for the input <typeparamref name="TMessage"/> type.
     /// </summary>
     /// <typeparam name="TMessage">The type of message to send.</typeparam>
-    /// <typeparam name="TToken">The type of token to identify what channel to use to send the message.</typeparam>
-    /// <param name="mapping">The resulting <see cref="Mapping{TMessage,TToken}"/> instance, if found.</param>
-    /// <returns>Whether or not the required <see cref="Mapping{TMessage,TToken}"/> instance was found.</returns>
+    /// <param name="mapping">The resulting <see cref="Mapping"/> instance, if found.</param>
+    /// <returns>Whether or not the required <see cref="Mapping"/> instance was found.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool TryGetMapping<TMessage, TToken>([NotNullWhen(true)] out Mapping<TMessage, TToken>? mapping)
+    private bool TryGetMapping<TMessage>([NotNullWhen(true)] out Mapping? mapping)
         where TMessage : class
-        where TToken : IEquatable<TToken>
     {
-        Type2 key = new(typeof(TMessage), typeof(TToken));
+        Type2 key = new(typeof(TMessage), typeof(Unit));
 
         if (this.typesMap.TryGetValue(key, out IMapping? target))
         {
-            // This method and the ones above are the only ones handling values in the types map,
+            // This method and the ones below are the only ones handling values in the types map,
             // and here we are sure that the object reference we have points to an instance of the
             // right type. Using an unsafe cast skips two conditional branches and is faster.
-            mapping = Unsafe.As<Mapping<TMessage, TToken>>(target);
+            mapping = Unsafe.As<Mapping>(target);
 
             return true;
         }
@@ -485,44 +636,97 @@ public sealed class StrongReferenceMessenger : IMessenger
     }
 
     /// <summary>
-    /// Gets the <see cref="Mapping{TMessage,TToken}"/> instance of currently registered recipients
+    /// Tries to get the <see cref="Mapping{TToken}"/> instance of currently registered recipients
     /// for the combination of types <typeparamref name="TMessage"/> and <typeparamref name="TToken"/>.
     /// </summary>
     /// <typeparam name="TMessage">The type of message to send.</typeparam>
     /// <typeparam name="TToken">The type of token to identify what channel to use to send the message.</typeparam>
-    /// <returns>A <see cref="Mapping{TMessage,TToken}"/> instance with the requested type arguments.</returns>
+    /// <param name="mapping">The resulting <see cref="Mapping{TToken}"/> instance, if found.</param>
+    /// <returns>Whether or not the required <see cref="Mapping{TToken}"/> instance was found.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private Mapping<TMessage, TToken> GetOrAddMapping<TMessage, TToken>()
+    private bool TryGetMapping<TMessage, TToken>([NotNullWhen(true)] out Mapping<TToken>? mapping)
+        where TMessage : class
+        where TToken : IEquatable<TToken>
+    {
+        Type2 key = new(typeof(TMessage), typeof(TToken));
+
+        if (this.typesMap.TryGetValue(key, out IMapping? target))
+        {
+            mapping = Unsafe.As<Mapping<TToken>>(target);
+
+            return true;
+        }
+
+        mapping = null;
+
+        return false;
+    }
+
+    /// <summary>
+    /// Gets the <see cref="Mapping"/> instance of currently
+    /// registered recipients for the input <typeparamref name="TMessage"/> type.
+    /// </summary>
+    /// <typeparam name="TMessage">The type of message to send.</typeparam>
+    /// <returns>A <see cref="Mapping"/> instance with the requested type arguments.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private Mapping GetOrAddMapping<TMessage>()
+        where TMessage : class
+    {
+        Type2 key = new(typeof(TMessage), typeof(Unit));
+        ref IMapping? target = ref this.typesMap.GetOrAddValueRef(key);
+
+        target ??= Mapping.Create<TMessage>();
+
+        return Unsafe.As<Mapping>(target);
+    }
+
+    /// <summary>
+    /// Gets the <see cref="Mapping{TToken}"/> instance of currently registered recipients
+    /// for the combination of types <typeparamref name="TMessage"/> and <typeparamref name="TToken"/>.
+    /// </summary>
+    /// <typeparam name="TMessage">The type of message to send.</typeparam>
+    /// <typeparam name="TToken">The type of token to identify what channel to use to send the message.</typeparam>
+    /// <returns>A <see cref="Mapping{TToken}"/> instance with the requested type arguments.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private Mapping<TToken> GetOrAddMapping<TMessage, TToken>()
         where TMessage : class
         where TToken : IEquatable<TToken>
     {
         Type2 key = new(typeof(TMessage), typeof(TToken));
         ref IMapping? target = ref this.typesMap.GetOrAddValueRef(key);
 
-        target ??= new Mapping<TMessage, TToken>();
+        target ??= Mapping<TToken>.Create<TMessage>();
 
-        return Unsafe.As<Mapping<TMessage, TToken>>(target);
+        return Unsafe.As<Mapping<TToken>>(target);
     }
 
     /// <summary>
     /// A mapping type representing a link to recipients and their view of handlers per communication channel.
     /// </summary>
-    /// <typeparam name="TMessage">The type of message to receive.</typeparam>
-    /// <typeparam name="TToken">The type of token to use to pick the messages to receive.</typeparam>
     /// <remarks>
-    /// This type is defined for simplicity and as a workaround for the lack of support for using type aliases
-    /// over open generic types in C# (using type aliases can only be used for concrete, closed types).
+    /// This type is a specialization of <see cref="Mapping{TToken}"/> for <see cref="Unit"/> tokens.
     /// </remarks>
-    private sealed class Mapping<TMessage, TToken> : Dictionary2<Recipient, Dictionary2<TToken, object>>, IMapping
-        where TMessage : class
-        where TToken : IEquatable<TToken>
+    private sealed class Mapping : Dictionary2<Recipient, object?>, IMapping
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Mapping{TMessage, TToken}"/> class.
+        /// Initializes a new instance of the <see cref="Mapping"/> class.
         /// </summary>
-        public Mapping()
+        /// <param name="messageType">The message type being used.</param>
+        private Mapping(Type messageType)
         {
-            TypeArguments = new Type2(typeof(TMessage), typeof(TToken));
+            TypeArguments = new Type2(messageType, typeof(Unit));
+        }
+
+        /// <summary>
+        /// Creates a new instance of the <see cref="Mapping"/> class.
+        /// </summary>
+        /// <typeparam name="TMessage">The type of message to receive.</typeparam>
+        /// <returns>A new <see cref="Mapping"/> instance.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Mapping Create<TMessage>()
+            where TMessage : class
+        {
+            return new(typeof(TMessage));
         }
 
         /// <inheritdoc/>
@@ -530,8 +734,44 @@ public sealed class StrongReferenceMessenger : IMessenger
     }
 
     /// <summary>
-    /// An interface for the <see cref="Mapping{TMessage,TToken}"/> type which allows to retrieve the type
-    /// arguments from a given generic instance without having any prior knowledge about those arguments.
+    /// A mapping type representing a link to recipients and their view of handlers per communication channel.
+    /// </summary>
+    /// <typeparam name="TToken">The type of token to use to pick the messages to receive.</typeparam>
+    /// <remarks>
+    /// This type is defined for simplicity and as a workaround for the lack of support for using type aliases
+    /// over open generic types in C# (using type aliases can only be used for concrete, closed types).
+    /// </remarks>
+    private sealed class Mapping<TToken> : Dictionary2<Recipient, Dictionary2<TToken, object?>>, IMapping
+        where TToken : IEquatable<TToken>
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Mapping{TToken}"/> class.
+        /// </summary>
+        /// <param name="messageType">The message type being used.</param>
+        private Mapping(Type messageType)
+        {
+            TypeArguments = new Type2(messageType, typeof(TToken));
+        }
+
+        /// <summary>
+        /// Creates a new instance of the <see cref="Mapping{TToken}"/> class.
+        /// </summary>
+        /// <typeparam name="TMessage">The type of message to receive.</typeparam>
+        /// <returns>A new <see cref="Mapping{TToken}"/> instance.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Mapping<TToken> Create<TMessage>()
+            where TMessage : class
+        {
+            return new(typeof(TMessage));
+        }
+
+        /// <inheritdoc/>
+        public Type2 TypeArguments { get; }
+    }
+
+    /// <summary>
+    /// An interface for the <see cref="Mapping"/> and <see cref="Mapping{TToken}"/> types which allows to retrieve
+    /// the type arguments from a given generic instance without having any prior knowledge about those arguments.
     /// </summary>
     private interface IMapping : IDictionary2<Recipient>
     {

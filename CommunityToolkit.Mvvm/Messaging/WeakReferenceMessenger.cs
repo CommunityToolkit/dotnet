@@ -218,6 +218,13 @@ public sealed class WeakReferenceMessenger : IMessenger
     public void UnregisterAll<TToken>(object recipient, TToken token)
         where TToken : IEquatable<TToken>
     {
+        // This method is never called with the unit type. See more details in
+        // the comments in the corresponding method in StrongReferenceMessenger.
+        if (typeof(TToken) == typeof(Unit))
+        {
+            throw new NotImplementedException();
+        }
+
         lock (this.recipientsMap)
         {
             Dictionary2<Type2, ConditionalWeakTable2<object, object?>>.Enumerator enumerator = this.recipientsMap.GetEnumerator();
@@ -229,11 +236,7 @@ public sealed class WeakReferenceMessenger : IMessenger
             {
                 if (enumerator.GetKey().TToken == typeof(TToken))
                 {
-                    if (typeof(TToken) == typeof(Unit))
-                    {
-                        _ = enumerator.GetValue().Remove(recipient);
-                    }
-                    else if (enumerator.GetValue().TryGetValue(recipient, out object? mapping))
+                    if (enumerator.GetValue().TryGetValue(recipient, out object? mapping))
                     {
                         _ = Unsafe.As<Dictionary2<TToken, object?>>(mapping!).TryRemove(token);
                     }
@@ -344,7 +347,7 @@ public sealed class WeakReferenceMessenger : IMessenger
     /// of the EH block (the <see langword="try"/> block) can help result in slightly better codegen.
     /// </remarks>
     [MethodImpl(MethodImplOptions.NoInlining)]
-    private static void SendAll<TMessage>(ReadOnlySpan<object?> pairs, int i, TMessage message)
+    internal static void SendAll<TMessage>(ReadOnlySpan<object?> pairs, int i, TMessage message)
         where TMessage : class
     {
         // This Slice calls executes bounds checks for the loop below, in case i was somehow wrong.
