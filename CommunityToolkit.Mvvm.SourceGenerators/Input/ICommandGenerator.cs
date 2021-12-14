@@ -3,491 +3,591 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
+using CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
+using CommunityToolkit.Mvvm.SourceGenerators.Models;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-using static Microsoft.CodeAnalysis.SymbolDisplayTypeQualificationStyle;
 using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
-using System.Collections.Immutable;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators;
 
 /// <summary>
 /// A source generator for generating command properties from annotated methods.
 /// </summary>
-public sealed partial class ICommandGenerator : ISourceGenerator
+[Generator(LanguageNames.CSharp)]
+public sealed partial class ICommandGenerator : IIncrementalGenerator
 {
     /// <inheritdoc/>
-    public void Initialize(GeneratorInitializationContext context)
+    public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        context.RegisterForSyntaxNotifications(static () => new SyntaxReceiver());
-    }
+        // Get all method declarations with at least one attribute
+        IncrementalValuesProvider<IMethodSymbol> methodSymbols =
+            context.SyntaxProvider
+            .CreateSyntaxProvider(
+                static (node, _) => node is MethodDeclarationSyntax { Parent: ClassDeclarationSyntax, AttributeLists.Count: > 0 },
+                static (context, _) => (IMethodSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!);
 
-    /// <inheritdoc/>
-    public void Execute(GeneratorExecutionContext context)
-    {
-        // Get the syntax receiver with the candidate nodes
-        if (context.SyntaxContextReceiver is not SyntaxReceiver syntaxReceiver ||
-            syntaxReceiver.GatheredInfo.Count == 0)
-        {
-            return;
-        }
+        // Filter the methods using [ICommand]
+        IncrementalValuesProvider<(IMethodSymbol Symbol, AttributeData Attribute)> methodSymbolsWithAttributeData =
+            methodSymbols
+            .Select(static (item, _) => (
+                item,
+                Attribute: item.GetAttributes().FirstOrDefault(a => a.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.ICommandAttribute") == true)))
+            .Where(static item => item.Attribute is not null)!;
 
-        // Validate the language version
-        if (context.ParseOptions is not CSharpParseOptions { LanguageVersion: >= LanguageVersion.CSharp9 })
-        {
-            context.ReportDiagnostic(Diagnostic.Create(UnsupportedCSharpLanguageVersionError, null));
-        }
-
-        foreach (IGrouping<INamedTypeSymbol, SyntaxReceiver.Item>? items in syntaxReceiver.GatheredInfo.GroupBy<SyntaxReceiver.Item, INamedTypeSymbol>(static item => item.MethodSymbol.ContainingType, SymbolEqualityComparer.Default))
-        {
-            if (items.Key.DeclaringSyntaxReferences.Length > 0 &&
-                items.Key.DeclaringSyntaxReferences.First().GetSyntax() is ClassDeclarationSyntax classDeclaration)
+        // Gather info for all annotated command methods
+        IncrementalValuesProvider<Result<CommandInfo?>> commandInfoWithErrors =
+            methodSymbolsWithAttributeData
+            .Select(static (item, _) =>
             {
-                try
-                {
-                    OnExecute(context, classDeclaration, items.Key, items);
-                }
-                catch
-                {
-                    context.ReportDiagnostic(ICommandGeneratorError, classDeclaration, items.Key);
-                }
-            }
-        }
-    }
+                CommandInfo? commandInfo = Execute.GetInfo(item.Symbol, item.Attribute, out ImmutableArray<Diagnostic> diagnostics);
 
-    /// <summary>
-    /// Processes a given target type.
-    /// </summary>
-    /// <param name="context">The input <see cref="GeneratorExecutionContext"/> instance to use.</param>
-    /// <param name="classDeclaration">The <see cref="ClassDeclarationSyntax"/> node to process.</param>
-    /// <param name="classDeclarationSymbol">The <see cref="INamedTypeSymbol"/> for <paramref name="classDeclaration"/>.</param>
-    /// <param name="items">The sequence of <see cref="IMethodSymbol"/> instances to process.</param>
-    private static void OnExecute(
-        GeneratorExecutionContext context,
-        ClassDeclarationSyntax classDeclaration,
-        INamedTypeSymbol classDeclarationSymbol,
-        IEnumerable<SyntaxReceiver.Item> items)
-    {
-        // Create the class declaration for the user type. This will produce a tree as follows:
-        //
-        // <MODIFIERS> <CLASS_NAME>
-        // {
-        //     <MEMBERS>
-        // }
-        ClassDeclarationSyntax? classDeclarationSyntax =
-            ClassDeclaration(classDeclarationSymbol.Name)
-            .WithModifiers(classDeclaration.Modifiers)
-            .AddMembers(items.Select(item => CreateCommandMembers(context, classDeclarationSymbol, item.LeadingTrivia, item.MethodSymbol, item.AttributeData)).SelectMany(static g => g).ToArray());
+                return new Result<CommandInfo?>(commandInfo, diagnostics);
+            });
 
-        TypeDeclarationSyntax typeDeclarationSyntax = classDeclarationSyntax;
+        // Output the diagnostics
+        context.ReportDiagnostics(commandInfoWithErrors.Select(static (item, _) => item.Errors));
 
-        // Add all parent types in ascending order, if any
-        foreach (TypeDeclarationSyntax? parentType in classDeclaration.Ancestors().OfType<TypeDeclarationSyntax>())
+        // Get the filtered sequence to enable caching
+        IncrementalValuesProvider<CommandInfo> commandInfo =
+            commandInfoWithErrors
+            .Select(static (item, _) => item.Value)
+            .Where(static item => item is not null)!
+            .WithComparer(CommandInfo.Comparer.Default);
+
+        // Generate the commands
+        context.RegisterSourceOutput(commandInfo, static (context, item) =>
         {
-            typeDeclarationSyntax = parentType
-                .WithMembers(SingletonList<MemberDeclarationSyntax>(typeDeclarationSyntax))
-                .WithConstraintClauses(List<TypeParameterConstraintClauseSyntax>())
-                .WithBaseList(null)
-                .WithAttributeLists(List<AttributeListSyntax>())
-                .WithoutTrivia();
-        }
+            ImmutableArray<MemberDeclarationSyntax> memberDeclarations = Execute.GetSyntax(item);
+            CompilationUnitSyntax compilationUnit = item.Hierarchy.GetCompilationUnit(memberDeclarations);
 
-        // Create the compilation unit with the namespace and target member.
-        // From this, we can finally generate the source code to output.
-        string? namespaceName = classDeclarationSymbol.ContainingNamespace.ToDisplayString(new SymbolDisplayFormat(typeQualificationStyle: NameAndContainingTypesAndNamespaces));
-
-        // Create the final compilation unit to generate (with leading trivia)
-        string? source =
-            CompilationUnit().AddMembers(
-            NamespaceDeclaration(IdentifierName(namespaceName)).WithLeadingTrivia(TriviaList(
-                Comment("// <auto-generated/>"),
-                Trivia(PragmaWarningDirectiveTrivia(Token(SyntaxKind.DisableKeyword), true))))
-            .AddMembers(typeDeclarationSyntax))
-            .NormalizeWhitespace()
-            .ToFullString();
-
-        // Add the partial type
-        context.AddSource($"{classDeclarationSymbol.GetFullMetadataNameForFileName()}.cs", SourceText.From(source, Encoding.UTF8));
+            context.AddSource(
+                hintName: $"{item.Hierarchy.FilenameHint}.{item.MethodName}.cs",
+                sourceText: SourceText.From(compilationUnit.ToFullString(), Encoding.UTF8));
+        });
     }
 
     /// <summary>
-    /// Creates the <see cref="MemberDeclarationSyntax"/> instances for a specified command.
+    /// A container for all the logic for <see cref="ICommandGenerator2"/>.
     /// </summary>
-    /// <param name="context">The input <see cref="GeneratorExecutionContext"/> instance to use.</param>
-    /// <param name="classDeclarationSymbol">The <see cref="INamedTypeSymbol"/> for the parent type.</param>
-    /// <param name="leadingTrivia">The leading trivia for the field to process.</param>
-    /// <param name="methodSymbol">The input <see cref="IMethodSymbol"/> instance to process.</param>
-    /// <param name="attributeData">The <see cref="AttributeData"/> instance the method was annotated with.</param>
-    /// <returns>The <see cref="MemberDeclarationSyntax"/> instances for the input command.</returns>
-    private static IEnumerable<MemberDeclarationSyntax> CreateCommandMembers(
-        GeneratorExecutionContext context,
-        INamedTypeSymbol classDeclarationSymbol,
-        SyntaxTriviaList leadingTrivia,
-        IMethodSymbol methodSymbol,
-        AttributeData attributeData)
+    private static class Execute
     {
-        // Get the command member names
-        (string fieldName, string propertyName) = GetGeneratedFieldAndPropertyNames(context, methodSymbol);
-
-        // Get the command type symbols
-        if (!TryMapCommandTypesFromMethod(
-            context,
-            methodSymbol,
-            out INamedTypeSymbol? commandInterfaceTypeSymbol,
-            out INamedTypeSymbol? commandClassTypeSymbol,
-            out INamedTypeSymbol? delegateTypeSymbol))
+        /// <summary>
+        /// Processes a given target method.
+        /// </summary>
+        /// <param name="methodSymbol">The input <see cref="IMethodSymbol"/> instance to process.</param>
+        /// <param name="attributeData">The <see cref="AttributeData"/> instance the method was annotated with.</param>
+        /// <param name="diagnostics">The resulting diagnostics from the processing operation.</param>
+        /// <returns>The resulting <see cref="CommandInfo"/> instance for <paramref name="methodSymbol"/>, if available.</returns>
+        public static CommandInfo? GetInfo(IMethodSymbol methodSymbol, AttributeData attributeData, out ImmutableArray<Diagnostic> diagnostics)
         {
-            context.ReportDiagnostic(InvalidICommandMethodSignatureError, methodSymbol, methodSymbol.ContainingType, methodSymbol);
+            ImmutableArray<Diagnostic>.Builder builder = ImmutableArray.CreateBuilder<Diagnostic>();
 
-            return Array.Empty<MemberDeclarationSyntax>();
+            // Get the command field and property names
+            (string fieldName, string propertyName) = GetGeneratedFieldAndPropertyNames(methodSymbol);
+
+            // Get the command type symbols
+            if (!TryMapCommandTypesFromMethod(
+                methodSymbol,
+                builder,
+                out string? commandInterfaceType,
+                out string? commandClassType,
+                out string? delegateType,
+                out ImmutableArray<string> commandTypeArguments,
+                out ImmutableArray<string> delegateTypeArguments))
+            {
+                goto Failure;
+            }
+
+            // Check the switch to allow concurrent executions
+            if (!TryGetAllowConcurrentExecutionsSwitch(
+                methodSymbol,
+                attributeData,
+                commandClassType,
+                builder,
+                out bool allowConcurrentExecutions))
+            {
+                goto Failure;   
+            }
+
+            // Get the CanExecute expression type, if any
+            if (!TryGetCanExecuteExpressionType(
+                methodSymbol,
+                attributeData,
+                commandTypeArguments,
+                builder,
+                out string? canExecuteMemberName,
+                out CanExecuteExpressionType? canExecuteExpressionType))
+            {
+                goto Failure;
+            }
+
+            diagnostics = builder.ToImmutable();
+
+            return new(
+                HierarchyInfo.From(methodSymbol.ContainingType),
+                methodSymbol.Name,
+                fieldName,
+                propertyName,
+                commandInterfaceType,
+                commandClassType,
+                delegateType,
+                commandTypeArguments,
+                delegateTypeArguments,
+                canExecuteMemberName,
+                canExecuteExpressionType,
+                allowConcurrentExecutions);
+
+            Failure:
+            diagnostics = builder.ToImmutable();
+
+            return null;
         }
 
-        // Prepares the argument to pass the underlying method to invoke
-        List<ArgumentSyntax> commandCreationArguments = new()
+        /// <summary>
+        /// Creates the <see cref="MemberDeclarationSyntax"/> instances for a specified command.
+        /// </summary>
+        /// <param name="commandInfo">The input <see cref="CommandInfo"/> instance with the info to generate the command.</param>
+        /// <returns>The <see cref="MemberDeclarationSyntax"/> instances for the input command.</returns>
+        public static ImmutableArray<MemberDeclarationSyntax> GetSyntax(CommandInfo commandInfo)
         {
-            Argument(
-                ObjectCreationExpression(IdentifierName(delegateTypeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)))
-                .AddArgumentListArguments(Argument(IdentifierName(methodSymbol.Name))))
-        };
+            // Prepare all necessary type names with type arguments
+            string commandInterfaceTypeXmlName = commandInfo.CommandTypeArguments.IsEmpty
+                ? commandInfo.CommandInterfaceType
+                : commandInfo.CommandInterfaceType + "{T}";
+            string commandClassTypeName = commandInfo.CommandTypeArguments.IsEmpty
+                ? commandInfo.CommandClassType
+                : $"{commandInfo.CommandClassType}<{string.Join(", ", commandInfo.CommandTypeArguments)}>";
+            string commandInterfaceTypeName = commandInfo.CommandTypeArguments.IsEmpty
+                ? commandInfo.CommandInterfaceType
+                : $"{commandInfo.CommandInterfaceType}<{string.Join(", ", commandInfo.CommandTypeArguments)}>";
+            string delegateTypeName = commandInfo.DelegateTypeArguments.IsEmpty
+                ? commandInfo.DelegateType
+                : $"{commandInfo.DelegateType}<{string.Join(", ", commandInfo.DelegateTypeArguments)}>";
 
-        // Get the can execute member, if any
-        if (attributeData.TryGetNamedArgument("CanExecute", out string? memberName))
-        {
-            if (memberName is null)
+            // Construct the generated field as follows:
+            //
+            // <summary>The backing field for <see cref="<COMMAND_PROPERTY_NAME>"/></summary>
+            // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
+            // private <COMMAND_TYPE>? <COMMAND_FIELD_NAME>;
+            FieldDeclarationSyntax fieldDeclaration =
+                FieldDeclaration(
+                VariableDeclaration(NullableType(IdentifierName(commandClassTypeName)))
+                .AddVariables(VariableDeclarator(Identifier(commandInfo.FieldName))))
+                .AddModifiers(Token(SyntaxKind.PrivateKeyword))
+                .AddAttributeLists(
+                    AttributeList(SingletonSeparatedList(
+                        Attribute(IdentifierName("global::System.CodeDom.Compiler.GeneratedCode"))
+                        .AddArgumentListArguments(
+                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ICommandGenerator).FullName))),
+                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ICommandGenerator).Assembly.GetName().Version.ToString()))))))
+                    .WithOpenBracketToken(Token(TriviaList(Comment($"/// <summary>The backing field for <see cref=\"{commandInfo.PropertyName}\"/>.</summary>")), SyntaxKind.OpenBracketToken, TriviaList())));
+
+            // Prepares the argument to pass the underlying method to invoke
+            ImmutableArray<ArgumentSyntax>.Builder commandCreationArguments = ImmutableArray.CreateBuilder<ArgumentSyntax>();
+
+            // The first argument is the execute method, which is always present
+            commandCreationArguments.Add(
+                Argument(
+                    ObjectCreationExpression(IdentifierName(delegateTypeName))
+                    .AddArgumentListArguments(Argument(IdentifierName(commandInfo.MethodName)))));
+
+            // Get the can execute expression, if available
+            ExpressionSyntax? canExecuteExpression = commandInfo.CanExecuteExpressionType switch
             {
-                context.ReportDiagnostic(InvalidCanExecuteMemberName, methodSymbol, memberName ?? string.Empty, methodSymbol.ContainingType);
-            }
-            else
+                // Create a lambda expression ignoring the input value:
+                //
+                // new <RELAY_COMMAND_TYPE>(<METHOD_EXPRESSION>, _ => <CAN_EXECUTE_METHOD>());
+                CanExecuteExpressionType.MethodInvocationLambdaWithDiscard =>
+                    SimpleLambdaExpression(
+                        Parameter(Identifier(TriviaList(), SyntaxKind.UnderscoreToken, "_", "_", TriviaList())))
+                    .WithExpressionBody(InvocationExpression(IdentifierName(commandInfo.CanExecuteMemberName!))),
+
+                // Create a lambda expression returning the property value:
+                //
+                // new <RELAY_COMMAND_TYPE>(<METHOD_EXPRESSION>, () => <CAN_EXECUTE_PROPERTY>);
+                CanExecuteExpressionType.PropertyAccessLambda =>
+                    ParenthesizedLambdaExpression()
+                    .WithExpressionBody(IdentifierName(commandInfo.CanExecuteMemberName!)),
+
+                // Create a lambda expression again, but discarding the input value:
+                //
+                // new <RELAY_COMMAND_TYPE>(<METHOD_EXPRESSION>, _ => <CAN_EXECUTE_PROPERTY>);
+                CanExecuteExpressionType.PropertyAccessLambdaWithDiscard =>
+                    SimpleLambdaExpression(
+                        Parameter(Identifier(TriviaList(), SyntaxKind.UnderscoreToken, "_", "_", TriviaList())))
+                    .WithExpressionBody(IdentifierName(commandInfo.CanExecuteMemberName!)),
+
+                    // Create a method groupd expression, which will become:
+                    //
+                    // new <RELAY_COMMAND_TYPE>(<METHOD_EXPRESSION>, <CAN_EXECUTE_METHOD>);
+                    CanExecuteExpressionType.MethodGroup => IdentifierName(commandInfo.CanExecuteMemberName!),
+                _ => null
+            };
+
+            // Add the can execute expression to the arguments, if available
+            if (canExecuteExpression is not null)
             {
-                ImmutableArray<ISymbol> canExecuteSymbols = classDeclarationSymbol.GetMembers(memberName);
-
-                if (canExecuteSymbols.IsEmpty)
-                {
-                    context.ReportDiagnostic(InvalidCanExecuteMemberName, methodSymbol, memberName, methodSymbol.ContainingType);
-                }
-                else if (canExecuteSymbols.Length > 1)
-                {
-                    context.ReportDiagnostic(MultipleCanExecuteMemberNameMatches, methodSymbol, memberName, methodSymbol.ContainingType);
-                }
-                else if (TryGetCanExecuteExpressionFromSymbol(context, memberName, canExecuteSymbols[0], commandInterfaceTypeSymbol, out ExpressionSyntax? canExecuteExpression))
-                {
-                    commandCreationArguments.Add(Argument(canExecuteExpression));
-                }
-                else
-                {
-                    context.ReportDiagnostic(InvalidCanExecuteMember, methodSymbol, memberName, methodSymbol.ContainingType);
-                }
+                commandCreationArguments.Add(Argument(canExecuteExpression));
             }
-        }
 
-        // Construct the generated field as follows:
-        //
-        // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
-        // private <COMMAND_TYPE>? <COMMAND_FIELD_NAME>;
-        FieldDeclarationSyntax fieldDeclaration =
-            FieldDeclaration(
-            VariableDeclaration(NullableType(IdentifierName(commandClassTypeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat))))
-            .AddVariables(VariableDeclarator(Identifier(fieldName))))
-            .AddModifiers(Token(SyntaxKind.PrivateKeyword))
-            .AddAttributeLists(AttributeList(SingletonSeparatedList(
-                Attribute(IdentifierName("global::System.CodeDom.Compiler.GeneratedCode"))
-                .AddArgumentListArguments(
-                    AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ICommandGenerator).FullName))),
-                    AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ICommandGenerator).Assembly.GetName().Version.ToString())))))));
-
-        SyntaxTriviaList summaryTrivia = SyntaxTriviaList.Empty;
-
-        // Parse the <summary> docs, if present
-        foreach (SyntaxTrivia trivia in leadingTrivia)
-        {
-            if (trivia.IsKind(SyntaxKind.SingleLineCommentTrivia) ||
-                trivia.IsKind(SyntaxKind.SingleLineDocumentationCommentTrivia))
-            {
-                string text = trivia.ToString();
-
-                Match match = Regex.Match(text, @"<summary>.*?<\/summary>", RegexOptions.Singleline);
-
-                if (match.Success)
-                {
-                    summaryTrivia = TriviaList(Comment($"/// {match.Value}"));
-
-                    break;
-                }
-            }
-        }
-
-        // If the current type is an async command type and concurrent execution is disabled, pass that value to the constructor.
-        // If concurrent executions are allowed, there is no need to add any additional argument, as that is the default value.
-        if (commandClassTypeSymbol.Name is "AsyncRelayCommand" or "AsyncRelayCommand`1")
-        {
-            if (attributeData.TryGetNamedArgument("AllowConcurrentExecutions", out bool allowConcurrentExecutions) &&
-                !allowConcurrentExecutions)
+            // Disable concurrent executions, if requested
+            if (!commandInfo.AllowConcurrentExecutions)
             {
                 commandCreationArguments.Add(Argument(LiteralExpression(SyntaxKind.FalseLiteralExpression)));
             }
-        }
-        else if (attributeData.TryGetNamedArgument("AllowConcurrentExecutions", out bool _))
-        {
-            context.ReportDiagnostic(InvalidConcurrentExecutionsParameterError, methodSymbol, methodSymbol.ContainingType, methodSymbol);
-        }
 
-        // Construct the generated property as follows (the explicit delegate cast is needed to avoid overload resolution conflicts):
-        //
-        // <METHOD_SUMMARY>
-        // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
-        // [global::System.Diagnostics.DebuggerNonUserCode]
-        // [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        // public <COMMAND_TYPE> <COMMAND_PROPERTY_NAME> => <COMMAND_FIELD_NAME> ??= new <RELAY_COMMAND_TYPE>(new <DELEGATE_TYPE>(<METHOD_NAME>), <OPTIONAL_CAN_EXECUTE>, <OPTIONAL_ALLOW_CONCURRENT_EXECUTIONS>);
-        PropertyDeclarationSyntax propertyDeclaration =
-            PropertyDeclaration(
-                IdentifierName(commandInterfaceTypeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)),
-                Identifier(propertyName))
-            .AddModifiers(Token(SyntaxKind.PublicKeyword))
-            .AddAttributeLists(
-                AttributeList(SingletonSeparatedList(
-                    Attribute(IdentifierName("global::System.CodeDom.Compiler.GeneratedCode"))
-                    .AddArgumentListArguments(
-                        AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ICommandGenerator).FullName))),
-                        AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ICommandGenerator).Assembly.GetName().Version.ToString()))))))
-                .WithOpenBracketToken(Token(summaryTrivia, SyntaxKind.OpenBracketToken, TriviaList())),
-                AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.DebuggerNonUserCode")))),
-                AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage")))))
-            .WithExpressionBody(
-                ArrowExpressionClause(
-                    AssignmentExpression(
-                        SyntaxKind.CoalesceAssignmentExpression,
-                        IdentifierName(fieldName),
-                        ObjectCreationExpression(IdentifierName(commandClassTypeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)))
-                        .AddArgumentListArguments(commandCreationArguments.ToArray()))))
-            .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+            // Construct the generated property as follows (the explicit delegate cast is needed to avoid overload resolution conflicts):
+            //
+            // <summary>Gets an <see cref="<COMMAND_INTERFACE_TYPE>" instance wrapping <see cref="<METHOD_NAME>"/> and <see cref="<OPTIONAL_CAN_EXECUTE>"/>.</summary>
+            // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
+            // [global::System.Diagnostics.DebuggerNonUserCode]
+            // [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+            // public <COMMAND_TYPE> <COMMAND_PROPERTY_NAME> => <COMMAND_FIELD_NAME> ??= new <RELAY_COMMAND_TYPE>(<COMMAND_CREATION_ARGUMENTS>);
+            PropertyDeclarationSyntax propertyDeclaration =
+                PropertyDeclaration(
+                    IdentifierName(commandInterfaceTypeName),
+                    Identifier(commandInfo.PropertyName))
+                .AddModifiers(Token(SyntaxKind.PublicKeyword))
+                .AddAttributeLists(
+                    AttributeList(SingletonSeparatedList(
+                        Attribute(IdentifierName("global::System.CodeDom.Compiler.GeneratedCode"))
+                        .AddArgumentListArguments(
+                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ICommandGenerator).FullName))),
+                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ICommandGenerator).Assembly.GetName().Version.ToString()))))))
+                    .WithOpenBracketToken(Token(TriviaList(Comment(
+                        $"/// <summary>Gets an <see cref=\"{commandInterfaceTypeXmlName}\"/> instance wrapping <see cref=\"{commandInfo.MethodName}\"/>.</summary>")),
+                        SyntaxKind.OpenBracketToken,
+                        TriviaList())),
+                    AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.DebuggerNonUserCode")))),
+                    AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage")))))
+                .WithExpressionBody(
+                    ArrowExpressionClause(
+                        AssignmentExpression(
+                            SyntaxKind.CoalesceAssignmentExpression,
+                            IdentifierName(commandInfo.FieldName),
+                            ObjectCreationExpression(IdentifierName(commandClassTypeName))
+                            .AddArgumentListArguments(commandCreationArguments.ToArray()))))
+                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
 
-        return new MemberDeclarationSyntax[] { fieldDeclaration, propertyDeclaration };
-    }
-
-    /// <summary>
-    /// Get the generated field and property names for the input method.
-    /// </summary>
-    /// <param name="context">The input <see cref="GeneratorExecutionContext"/> instance to use.</param>
-    /// <param name="methodSymbol">The input <see cref="IMethodSymbol"/> instance to process.</param>
-    /// <returns>The generated field and property names for <paramref name="methodSymbol"/>.</returns>
-    private static (string FieldName, string PropertyName) GetGeneratedFieldAndPropertyNames(GeneratorExecutionContext context, IMethodSymbol methodSymbol)
-    {
-        string propertyName = methodSymbol.Name;
-
-        if (SymbolEqualityComparer.Default.Equals(methodSymbol.ReturnType, context.Compilation.GetTypeByMetadataName("System.Threading.Tasks.Task")) &&
-            methodSymbol.Name.EndsWith("Async"))
-        {
-            propertyName = propertyName.Substring(0, propertyName.Length - "Async".Length);
+            return ImmutableArray.Create<MemberDeclarationSyntax>(fieldDeclaration, propertyDeclaration);
         }
 
-        propertyName += "Command";
-
-        string fieldName = $"{char.ToLower(propertyName[0])}{propertyName.Substring(1)}";
-
-        return (fieldName, propertyName);
-    }
-
-    /// <summary>
-    /// Gets the type symbols for the input method, if supported.
-    /// </summary>
-    /// <param name="context">The input <see cref="GeneratorExecutionContext"/> instance to use.</param>
-    /// <param name="methodSymbol">The input <see cref="IMethodSymbol"/> instance to process.</param>
-    /// <param name="commandInterfaceTypeSymbol">The command interface type symbol.</param>
-    /// <param name="commandClassTypeSymbol">The command class type symbol.</param>
-    /// <param name="delegateTypeSymbol">The delegate type symbol for the wrapped method.</param>
-    /// <returns>Whether or not <paramref name="methodSymbol"/> was valid and the requested types have been set.</returns>
-    private static bool TryMapCommandTypesFromMethod(
-        GeneratorExecutionContext context,
-        IMethodSymbol methodSymbol,
-        [NotNullWhen(true)] out INamedTypeSymbol? commandInterfaceTypeSymbol,
-        [NotNullWhen(true)] out INamedTypeSymbol? commandClassTypeSymbol,
-        [NotNullWhen(true)] out INamedTypeSymbol? delegateTypeSymbol)
-    {
-        // Map <void, void> to IRelayCommand, RelayCommand, Action
-        if (methodSymbol.ReturnsVoid && methodSymbol.Parameters.Length == 0)
+        /// <summary>
+        /// Get the generated field and property names for the input method.
+        /// </summary>
+        /// <param name="methodSymbol">The input <see cref="IMethodSymbol"/> instance to process.</param>
+        /// <returns>The generated field and property names for <paramref name="methodSymbol"/>.</returns>
+        private static (string FieldName, string PropertyName) GetGeneratedFieldAndPropertyNames(IMethodSymbol methodSymbol)
         {
-            commandInterfaceTypeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Input.IRelayCommand")!;
-            commandClassTypeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Input.RelayCommand")!;
-            delegateTypeSymbol = context.Compilation.GetTypeByMetadataName("System.Action")!;
+            string propertyName = methodSymbol.Name;
 
-            return true;
-        }
-
-        // Map <T, void> to IRelayCommand<T>, RelayCommand<T>, Action<T>
-        if (methodSymbol.ReturnsVoid &&
-            methodSymbol.Parameters.Length == 1 &&
-            methodSymbol.Parameters[0] is IParameterSymbol { RefKind: RefKind.None, Type: { IsRefLikeType: false, TypeKind: not TypeKind.Pointer and not TypeKind.FunctionPointer } } parameter)
-        {
-            commandInterfaceTypeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Input.IRelayCommand`1")!.Construct(parameter.Type);
-            commandClassTypeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Input.RelayCommand`1")!.Construct(parameter.Type);
-            delegateTypeSymbol = context.Compilation.GetTypeByMetadataName("System.Action`1")!.Construct(parameter.Type);
-
-            return true;
-        }
-
-        if (SymbolEqualityComparer.Default.Equals(methodSymbol.ReturnType, context.Compilation.GetTypeByMetadataName("System.Threading.Tasks.Task")!))
-        {
-            // Map <void, Task> to IAsyncRelayCommand, AsyncRelayCommand, Func<Task>
-            if (methodSymbol.Parameters.Length == 0)
+            if (methodSymbol.ReturnType.HasFullyQualifiedName("global::System.Threading.Tasks.Task") &&
+                methodSymbol.Name.EndsWith("Async"))
             {
-                commandInterfaceTypeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Input.IAsyncRelayCommand")!;
-                commandClassTypeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Input.AsyncRelayCommand")!;
-                delegateTypeSymbol = context.Compilation.GetTypeByMetadataName("System.Func`1")!.Construct(context.Compilation.GetTypeByMetadataName("System.Threading.Tasks.Task")!);
+                propertyName = propertyName.Substring(0, propertyName.Length - "Async".Length);
+            }
+
+            propertyName += "Command";
+
+            string fieldName = $"{char.ToLower(propertyName[0])}{propertyName.Substring(1)}";
+
+            return (fieldName, propertyName);
+        }
+
+        /// <summary>
+        /// Gets the type symbols for the input method, if supported.
+        /// </summary>
+        /// <param name="methodSymbol">The input <see cref="IMethodSymbol"/> instance to process.</param>
+        /// <param name="diagnostics">The current collection of gathered diagnostics.</param>
+        /// <param name="commandInterfaceType">The command interface type name.</param>
+        /// <param name="commandClassType">The command class type name.</param>
+        /// <param name="delegateType">The delegate type name for the wrapped method.</param>
+        /// <param name="commandTypeArguments">The type arguments for <paramref name="commandInterfaceType"/> and <paramref name="commandClassType"/>, if any.</param>
+        /// <param name="delegateTypeArguments">The type arguments for <paramref name="delegateType"/>, if any.</param>
+        /// <returns>Whether or not <paramref name="methodSymbol"/> was valid and the requested types have been set.</returns>
+        private static bool TryMapCommandTypesFromMethod(
+            IMethodSymbol methodSymbol,
+            ImmutableArray<Diagnostic>.Builder diagnostics,
+            [NotNullWhen(true)] out string? commandInterfaceType,
+            [NotNullWhen(true)] out string? commandClassType,
+            [NotNullWhen(true)] out string? delegateType,
+            out ImmutableArray<string> commandTypeArguments,
+            out ImmutableArray<string> delegateTypeArguments)
+        {
+            // Map <void, void> to IRelayCommand, RelayCommand, Action
+            if (methodSymbol.ReturnsVoid && methodSymbol.Parameters.Length == 0)
+            {
+                commandInterfaceType = "global::CommunityToolkit.Mvvm.Input.IRelayCommand";
+                commandClassType = "global::CommunityToolkit.Mvvm.Input.RelayCommand";
+                delegateType = "global::System.Action";
+                commandTypeArguments = ImmutableArray<string>.Empty;
+                delegateTypeArguments = ImmutableArray<string>.Empty;
 
                 return true;
             }
 
-            if (methodSymbol.Parameters.Length == 1 &&
-                methodSymbol.Parameters[0] is IParameterSymbol { RefKind: RefKind.None, Type: { IsRefLikeType: false, TypeKind: not TypeKind.Pointer and not TypeKind.FunctionPointer } } singleParameter)
+            // Map <T, void> to IRelayCommand<T>, RelayCommand<T>, Action<T>
+            if (methodSymbol.ReturnsVoid &&
+                methodSymbol.Parameters.Length == 1 &&
+                methodSymbol.Parameters[0] is IParameterSymbol { RefKind: RefKind.None, Type: { IsRefLikeType: false, TypeKind: not TypeKind.Pointer and not TypeKind.FunctionPointer } } parameter)
             {
-                // Map <CancellationToken, Task> to IAsyncRelayCommand, AsyncRelayCommand, Func<CancellationToken, Task>
-                if (SymbolEqualityComparer.Default.Equals(singleParameter.Type, context.Compilation.GetTypeByMetadataName("System.Threading.CancellationToken")!))
+                commandInterfaceType = "global::CommunityToolkit.Mvvm.Input.IRelayCommand";
+                commandClassType = "global::CommunityToolkit.Mvvm.Input.RelayCommand";
+                delegateType = "global::System.Action";
+                commandTypeArguments = ImmutableArray.Create(parameter.Type.GetFullyQualifiedName());
+                delegateTypeArguments = ImmutableArray.Create(parameter.Type.GetFullyQualifiedName());
+
+                return true;
+            }
+
+            if (methodSymbol.ReturnType.HasFullyQualifiedName("global::System.Threading.Tasks.Task"))
+            {
+                // Map <void, Task> to IAsyncRelayCommand, AsyncRelayCommand, Func<Task>
+                if (methodSymbol.Parameters.Length == 0)
                 {
-                    commandInterfaceTypeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Input.IAsyncRelayCommand")!;
-                    commandClassTypeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Input.AsyncRelayCommand")!;
-                    delegateTypeSymbol = context.Compilation.GetTypeByMetadataName("System.Func`2")!.Construct(
-                        context.Compilation.GetTypeByMetadataName("System.Threading.CancellationToken")!,
-                        context.Compilation.GetTypeByMetadataName("System.Threading.Tasks.Task")!);
+                    commandInterfaceType = "global::CommunityToolkit.Mvvm.Input.IAsyncRelayCommand";
+                    commandClassType = "global::CommunityToolkit.Mvvm.Input.AsyncRelayCommand";
+                    delegateType = "global::System.Func";
+                    commandTypeArguments = ImmutableArray<string>.Empty;
+                    delegateTypeArguments = ImmutableArray.Create("global::System.Threading.Tasks.Task");
 
                     return true;
                 }
 
-                // Map <T, Task> to IAsyncRelayCommand<T>, AsyncRelayCommand<T>, Func<T, Task>
-                commandInterfaceTypeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Input.IAsyncRelayCommand`1")!.Construct(singleParameter.Type);
-                commandClassTypeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Input.AsyncRelayCommand`1")!.Construct(singleParameter.Type);
-                delegateTypeSymbol = context.Compilation.GetTypeByMetadataName("System.Func`2")!.Construct(
-                    singleParameter.Type,
-                    context.Compilation.GetTypeByMetadataName("System.Threading.Tasks.Task")!);
-
-                return true;
-            }
-
-            // Map <T, CancellationToken, Task> to IAsyncRelayCommand<T>, AsyncRelayCommand<T>, Func<T, CancellationToken, Task>
-            if (methodSymbol.Parameters.Length == 2 &&
-                methodSymbol.Parameters[0] is IParameterSymbol { RefKind: RefKind.None, Type: { IsRefLikeType: false, TypeKind: not TypeKind.Pointer and not TypeKind.FunctionPointer } } firstParameter &&
-                methodSymbol.Parameters[1] is IParameterSymbol { RefKind: RefKind.None, Type: { IsRefLikeType: false, TypeKind: not TypeKind.Pointer and not TypeKind.FunctionPointer } } secondParameter &&
-                SymbolEqualityComparer.Default.Equals(secondParameter.Type, context.Compilation.GetTypeByMetadataName("System.Threading.CancellationToken")!))
-            {
-                commandInterfaceTypeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Input.IAsyncRelayCommand`1")!.Construct(firstParameter.Type);
-                commandClassTypeSymbol = context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Input.AsyncRelayCommand`1")!.Construct(firstParameter.Type);
-                delegateTypeSymbol = context.Compilation.GetTypeByMetadataName("System.Func`3")!.Construct(
-                    firstParameter.Type,
-                    secondParameter.Type,
-                    context.Compilation.GetTypeByMetadataName("System.Threading.Tasks.Task")!);
-
-                return true;
-            }
-        }
-
-        commandInterfaceTypeSymbol = null;
-        commandClassTypeSymbol = null;
-        delegateTypeSymbol = null;
-
-        return false;
-    }
-
-    /// <summary>
-    /// Gets the expression for the can execute logic, if possible.
-    /// </summary>
-    /// <param name="context">The input <see cref="GeneratorExecutionContext"/> instance to use.</param>
-    /// <param name="canExecuteMemberName">The name of the can execute member name being used.</param>
-    /// <param name="canExecuteSymbol">The can execute member symbol (either a method or a property).</param>
-    /// <param name="commandInterfaceTypeSymbol">The command interface type symbol.</param>
-    /// <param name="canExecuteExpression">The resulting can execute expression, if available.</param>
-    /// <returns>Whether or not <paramref name="canExecuteExpression"/> was set and the input symbol was valid.</returns>
-    private static bool TryGetCanExecuteExpressionFromSymbol(
-        GeneratorExecutionContext context,
-        string canExecuteMemberName,
-        ISymbol canExecuteSymbol,
-        INamedTypeSymbol commandInterfaceTypeSymbol,
-        [NotNullWhen(true)] out ExpressionSyntax? canExecuteExpression)
-    {
-        if (canExecuteSymbol is IMethodSymbol canExecuteMethodSymbol)
-        {
-            // The return type must always be a bool
-            if (!SymbolEqualityComparer.Default.Equals(canExecuteMethodSymbol.ReturnType, context.Compilation.GetTypeByMetadataName("System.Boolean")))
-            {
-                goto Failure;
-            }
-
-            // Parameterless methods are always valid
-            if (canExecuteMethodSymbol.Parameters.IsEmpty)
-            {
-                // If the command is generic, the input value is ignored
-                if (commandInterfaceTypeSymbol.IsGenericType)
+                if (methodSymbol.Parameters.Length == 1 &&
+                    methodSymbol.Parameters[0] is IParameterSymbol { RefKind: RefKind.None, Type: { IsRefLikeType: false, TypeKind: not TypeKind.Pointer and not TypeKind.FunctionPointer } } singleParameter)
                 {
-                    // Create a lambda expression ignoring the input value:
-                    //
-                    // new <RELAY_COMMAND_TYPE>(<METHOD_EXPRESSION>, _ => <CAN_EXECUTE_METHOD>());
-                    canExecuteExpression =
-                        SimpleLambdaExpression(
-                            Parameter(Identifier(TriviaList(), SyntaxKind.UnderscoreToken, "_", "_", TriviaList())))
-                        .WithExpressionBody(InvocationExpression(IdentifierName(canExecuteMemberName)));
-                }
-                else
-                {
-                    // Create a method groupd expression, which will become:
-                    //
-                    // new <RELAY_COMMAND_TYPE>(<METHOD_EXPRESSION>, <CAN_EXECUTE_METHOD>);
-                    canExecuteExpression = IdentifierName(canExecuteMemberName);
+                    // Map <CancellationToken, Task> to IAsyncRelayCommand, AsyncRelayCommand, Func<CancellationToken, Task>
+                    if (singleParameter.Type.HasFullyQualifiedName("global::System.Threading.CancellationToken"))
+                    {
+                        commandInterfaceType = "global::CommunityToolkit.Mvvm.Input.IAsyncRelayCommand";
+                        commandClassType = "global::CommunityToolkit.Mvvm.Input.AsyncRelayCommand";
+                        delegateType = "global::System.Func";
+                        commandTypeArguments = ImmutableArray<string>.Empty;
+                        delegateTypeArguments = ImmutableArray.Create("global::System.Threading.CancellationToken", "global::System.Threading.Tasks.Task");
+
+                        return true;
+                    }
+
+                    // Map <T, Task> to IAsyncRelayCommand<T>, AsyncRelayCommand<T>, Func<T, Task>
+                    commandInterfaceType = "global::CommunityToolkit.Mvvm.Input.IAsyncRelayCommand";
+                    commandClassType = "global::CommunityToolkit.Mvvm.Input.AsyncRelayCommand";
+                    delegateType = "global::System.Func";
+                    commandTypeArguments = ImmutableArray.Create(singleParameter.Type.GetFullyQualifiedName());
+                    delegateTypeArguments = ImmutableArray.Create(singleParameter.Type.GetFullyQualifiedName(), "global::System.Threading.Tasks.Task");
+
+                    return true;
                 }
 
-                return true;
+                // Map <T, CancellationToken, Task> to IAsyncRelayCommand<T>, AsyncRelayCommand<T>, Func<T, CancellationToken, Task>
+                if (methodSymbol.Parameters.Length == 2 &&
+                    methodSymbol.Parameters[0] is IParameterSymbol { RefKind: RefKind.None, Type: { IsRefLikeType: false, TypeKind: not TypeKind.Pointer and not TypeKind.FunctionPointer } } firstParameter &&
+                    methodSymbol.Parameters[1] is IParameterSymbol { RefKind: RefKind.None, Type: { IsRefLikeType: false, TypeKind: not TypeKind.Pointer and not TypeKind.FunctionPointer } } secondParameter &&
+                    secondParameter.Type.HasFullyQualifiedName("global::System.Threading.CancellationToken"))
+                {
+                    commandInterfaceType = "global::CommunityToolkit.Mvvm.Input.IAsyncRelayCommand";
+                    commandClassType = "global::CommunityToolkit.Mvvm.Input.AsyncRelayCommand";
+                    delegateType = "global::System.Func";
+                    commandTypeArguments = ImmutableArray.Create(firstParameter.Type.GetFullyQualifiedName());
+                    delegateTypeArguments = ImmutableArray.Create(firstParameter.Type.GetFullyQualifiedName(), secondParameter.Type.GetFullyQualifiedName(), "global::System.Threading.Tasks.Task");
+
+                    return true;
+                }
             }
 
-            // If the method has parameters, it has to have a single one matching the command type
-            if (canExecuteMethodSymbol.Parameters.Length == 1 &&
-                commandInterfaceTypeSymbol.IsGenericType &&
-                SymbolEqualityComparer.Default.Equals(canExecuteMethodSymbol.Parameters[0].Type, commandInterfaceTypeSymbol.TypeArguments[0]))
-            {
-                // Create a method groupd expression again
-                canExecuteExpression = IdentifierName(canExecuteMemberName);
+            diagnostics.Add(InvalidICommandMethodSignatureError, methodSymbol, methodSymbol.ContainingType, methodSymbol);
 
-                return true;
-            }
+            commandInterfaceType = null;
+            commandClassType = null;
+            delegateType = null;
+            commandTypeArguments = ImmutableArray<string>.Empty;
+            delegateTypeArguments = ImmutableArray<string>.Empty;
+
+            return false;
         }
-        else if (canExecuteSymbol is IPropertySymbol { GetMethod: not null } canExecutePropertySymbol)
+
+        /// <summary>
+        /// Checks whether or not the user has requested to configure the handling of concurrent executions.
+        /// </summary>
+        /// <param name="methodSymbol">The input <see cref="IMethodSymbol"/> instance to process.</param>
+        /// <param name="attributeData">The <see cref="AttributeData"/> instance the method was annotated with.</param>
+        /// <param name="commandClassType">The command class type name.</param>
+        /// <param name="diagnostics">The current collection of gathered diagnostics.</param>
+        /// <param name="allowConcurrentExecutions">Whether or not concurrent executions have been disabled.</param>
+        /// <returns>Whether or not a value for <paramref name="allowConcurrentExecutions"/> could be retrieved successfully.</returns>
+        private static bool TryGetAllowConcurrentExecutionsSwitch(
+            IMethodSymbol methodSymbol,
+            AttributeData attributeData,
+            string commandClassType,
+            ImmutableArray<Diagnostic>.Builder diagnostics,
+            out bool allowConcurrentExecutions)
         {
-            // The property type must always be a bool
-            if (!SymbolEqualityComparer.Default.Equals(canExecutePropertySymbol.Type, context.Compilation.GetTypeByMetadataName("System.Boolean")))
+            // Try to get the custom switch for concurrent executions. If the switch is not present, the
+            // default value is set to true, to avoid breaking backwards compatibility with the first release.
+            if (!attributeData.TryGetNamedArgument("AllowConcurrentExecutions", out allowConcurrentExecutions))
             {
-                goto Failure;
+                allowConcurrentExecutions = true;
+
+                return true;
             }
 
-            if (commandInterfaceTypeSymbol.IsGenericType)
+            // If the current type is an async command type and concurrent execution is disabled, pass that value to the constructor.
+            // If concurrent executions are allowed, there is no need to add any additional argument, as that is the default value.
+            if (commandClassType is "global::CommunityToolkit.Mvvm.Input.AsyncRelayCommand")
             {
-                // Create a lambda expression again, but discarding the input value:
-                //
-                // new <RELAY_COMMAND_TYPE>(<METHOD_EXPRESSION>, _ => <CAN_EXECUTE_PROPERTY>);
-                canExecuteExpression =
-                    SimpleLambdaExpression(
-                        Parameter(Identifier(TriviaList(), SyntaxKind.UnderscoreToken, "_", "_", TriviaList())))
-                    .WithExpressionBody(IdentifierName(canExecuteMemberName));                
+                return true;
             }
             else
             {
-                // Create a lambda expression returning the property value:
-                //
-                // new <RELAY_COMMAND_TYPE>(<METHOD_EXPRESSION>, () => <CAN_EXECUTE_PROPERTY>);
-                canExecuteExpression = ParenthesizedLambdaExpression().WithExpressionBody(IdentifierName(canExecuteMemberName));
-            }
+                diagnostics.Add(InvalidConcurrentExecutionsParameterError, methodSymbol, methodSymbol.ContainingType, methodSymbol);
 
-            return true;
+                return false;
+            }
         }
 
-        Failure:
-        canExecuteExpression = null;
+        /// <summary>
+        /// Tries to get the expression type for the "CanExecute" property, if available.
+        /// </summary>
+        /// <param name="methodSymbol">The input <see cref="IMethodSymbol"/> instance to process.</param>
+        /// <param name="attributeData">The <see cref="AttributeData"/> instance for <paramref name="methodSymbol"/>.</param>
+        /// <param name="commandTypeArguments">The command type arguments, if any.</param>
+        /// <param name="diagnostics">The current collection of gathered diagnostics.</param>
+        /// <param name="canExecuteMemberName">The resulting can execute member name, if available.</param>
+        /// <param name="canExecuteExpressionType">The resulting expression type, if available.</param>
+        /// <returns>Whether or not a value for <paramref name="canExecuteMemberName"/> and <paramref name="canExecuteExpressionType"/> could be determined (may include <see langword="null"/>).</returns>
+        private static bool TryGetCanExecuteExpressionType(
+            IMethodSymbol methodSymbol,
+            AttributeData attributeData,
+            ImmutableArray<string> commandTypeArguments,
+            ImmutableArray<Diagnostic>.Builder diagnostics,
+            out string? canExecuteMemberName,
+            out CanExecuteExpressionType? canExecuteExpressionType)
+        {
+            // Get the can execute member, if any
+            if (!attributeData.TryGetNamedArgument("CanExecute", out string? memberName))
+            {
+                canExecuteMemberName = null;
+                canExecuteExpressionType = null;
 
-        return false;
+                return true;
+            }
+
+            if (memberName is null)
+            {
+                diagnostics.Add(InvalidCanExecuteMemberName, methodSymbol, memberName ?? string.Empty, methodSymbol.ContainingType);
+
+                goto Failure;
+            }
+
+            ImmutableArray<ISymbol> canExecuteSymbols = methodSymbol.ContainingType!.GetMembers(memberName);
+
+            if (canExecuteSymbols.IsEmpty)
+            {
+                diagnostics.Add(InvalidCanExecuteMemberName, methodSymbol, memberName, methodSymbol.ContainingType);
+            }
+            else if (canExecuteSymbols.Length > 1)
+            {
+                diagnostics.Add(MultipleCanExecuteMemberNameMatches, methodSymbol, memberName, methodSymbol.ContainingType);
+            }
+            else if (TryGetCanExecuteExpressionFromSymbol(canExecuteSymbols[0], commandTypeArguments, out canExecuteExpressionType))
+            {
+                canExecuteMemberName = memberName;
+
+                return true;
+            }
+            else
+            {
+                diagnostics.Add(InvalidCanExecuteMember, methodSymbol, memberName, methodSymbol.ContainingType);
+            }
+
+            Failure:
+            canExecuteMemberName = null;
+            canExecuteExpressionType = null;
+
+            return false;
+        }
+
+        /// <summary>
+        /// Gets the expression type for the can execute logic, if possible.
+        /// </summary>
+        /// <param name="canExecuteSymbol">The can execute member symbol (either a method or a property).</param>
+        /// <param name="commandTypeArguments">The type arguments for the command interface, if any.</param>
+        /// <param name="canExecuteExpressionType">The resulting can execute expression type, if available.</param>
+        /// <returns>Whether or not <paramref name="canExecuteExpressionType"/> was set and the input symbol was valid.</returns>
+        private static bool TryGetCanExecuteExpressionFromSymbol(
+            ISymbol canExecuteSymbol,
+            ImmutableArray<string> commandTypeArguments,
+            [NotNullWhen(true)] out CanExecuteExpressionType? canExecuteExpressionType)
+        {
+            if (canExecuteSymbol is IMethodSymbol canExecuteMethodSymbol)
+            {
+                // The return type must always be a bool
+                if (!canExecuteMethodSymbol.ReturnType.HasFullyQualifiedName("bool"))
+                {
+                    goto Failure;
+                }
+
+                // Parameterless methods are always valid
+                if (canExecuteMethodSymbol.Parameters.IsEmpty)
+                {
+                    // If the command is generic, the input value is ignored
+                    if (commandTypeArguments.Length > 0)
+                    {
+                        canExecuteExpressionType = CanExecuteExpressionType.MethodInvocationLambdaWithDiscard;
+                    }
+                    else
+                    {
+                        canExecuteExpressionType = CanExecuteExpressionType.MethodGroup;
+                    }
+
+                    return true;
+                }
+
+                // If the method has parameters, it has to have a single one matching the command type
+                if (canExecuteMethodSymbol.Parameters.Length == 1 &&
+                    commandTypeArguments.Length == 1 &&
+                    canExecuteMethodSymbol.Parameters[0].Type.HasFullyQualifiedName(commandTypeArguments[0]))
+                {
+                    // Create a method group expression again
+                    canExecuteExpressionType = CanExecuteExpressionType.MethodGroup;
+
+                    return true;
+                }
+            }
+            else if (canExecuteSymbol is IPropertySymbol { GetMethod: not null } canExecutePropertySymbol)
+            {
+                // The property type must always be a bool
+                if (!canExecutePropertySymbol.Type.HasFullyQualifiedName("bool"))
+                {
+                    goto Failure;
+                }
+
+                if (commandTypeArguments.Length > 0)
+                {
+                    canExecuteExpressionType = CanExecuteExpressionType.PropertyAccessLambdaWithDiscard;
+                }
+                else
+                {
+                    canExecuteExpressionType = CanExecuteExpressionType.PropertyAccessLambda;
+                }
+
+                return true;
+            }
+
+            Failure:
+            canExecuteExpressionType = null;
+
+            return false;
+        }
     }
 }
