@@ -95,4 +95,24 @@ internal static class DiagnosticExtensions
             }
         });
     }
+
+    /// <summary>
+    /// Registers an output node into an <see cref="IncrementalGeneratorInitializationContext"/> to output diagnostics.
+    /// </summary>
+    /// <param name="context">The input <see cref="IncrementalGeneratorInitializationContext"/> instance.</param>
+    /// <param name="isSupported">An <see cref="IncrementalValueProvider{TValue}"/> instance indicating support for a feature.</param>
+    /// <param name="diagnostic">The <see cref="Diagnostic"/> to emit if <paramref name="isSupported"/> fails.</param>
+    public static void ReportDiagnosticsIsNotSupported(
+        this IncrementalGeneratorInitializationContext context,
+        IncrementalValueProvider<bool> isSupported,
+        Diagnostic diagnostic)
+    {
+        context.RegisterSourceOutput(isSupported, (context, isSupported) =>
+        {
+            if (!isSupported)
+            {
+                context.ReportDiagnostic(diagnostic);
+            }
+        });
+    }
 }

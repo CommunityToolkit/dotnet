@@ -29,12 +29,23 @@ public sealed partial class ICommandGenerator : IIncrementalGenerator
     /// <inheritdoc/>
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+        // Validate the language version
+        IncrementalValueProvider<bool> isGeneratorSupported =
+            context.ParseOptionsProvider
+            .Select(static (item, _) => item is CSharpParseOptions { LanguageVersion: >= LanguageVersion.CSharp9 });
+
+        // Emit the diagnostic, if needed
+        context.ReportDiagnosticsIsNotSupported(isGeneratorSupported, Diagnostic.Create(UnsupportedCSharpLanguageVersionError, null));
+
         // Get all method declarations with at least one attribute
         IncrementalValuesProvider<IMethodSymbol> methodSymbols =
             context.SyntaxProvider
             .CreateSyntaxProvider(
                 static (node, _) => node is MethodDeclarationSyntax { Parent: ClassDeclarationSyntax, AttributeLists.Count: > 0 },
-                static (context, _) => (IMethodSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!);
+                static (context, _) => (IMethodSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!)
+            .Combine(isGeneratorSupported)
+            .Where(static item => item.Right)
+            .Select(static (item, _) => item.Left);
 
         // Filter the methods using [ICommand]
         IncrementalValuesProvider<(IMethodSymbol Symbol, AttributeData Attribute)> methodSymbolsWithAttributeData =
