@@ -14,10 +14,10 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace CommunityToolkit.Mvvm.SourceGenerators;
 
 /// <inheritdoc/>
-partial class IMessengerRegisterAllGenerator2
+partial class IMessengerRegisterAllGenerator
 {
     /// <summary>
-    /// A container for all the logic for <see cref="IMessengerRegisterAllGenerator2"/>.
+    /// A container for all the logic for <see cref="IMessengerRegisterAllGenerator"/>.
     /// </summary>
     private static class Execute
     {
@@ -253,8 +253,8 @@ partial class IMessengerRegisterAllGenerator2
                 .AddAttributeLists(
                     AttributeList(SingletonSeparatedList(
                     Attribute(IdentifierName($"global::System.CodeDom.Compiler.GeneratedCode")).AddArgumentListArguments(
-                        AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(IMessengerRegisterAllGenerator2).FullName))),
-                        AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(IMessengerRegisterAllGenerator2).Assembly.GetName().Version.ToString())))))),
+                        AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(IMessengerRegisterAllGenerator).FullName))),
+                        AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(IMessengerRegisterAllGenerator).Assembly.GetName().Version.ToString())))))),
                     AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.DebuggerNonUserCode")))),
                     AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage")))),
                     AttributeList(SingletonSeparatedList(
