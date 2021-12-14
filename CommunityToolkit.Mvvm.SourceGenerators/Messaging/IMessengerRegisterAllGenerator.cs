@@ -49,20 +49,29 @@ public sealed partial class IMessengerRegisterAllGenerator : IIncrementalGenerat
             .Select(static (item, _) => Execute.GetInfo(item.Type, item.Interfaces))
             .WithComparer(RecipientInfo.Comparer.Default);
 
-        // Get the generated methods for all recipients
-        IncrementalValueProvider<ImmutableArray<MemberDeclarationSyntax>> methodDeclarations =
+        // Check whether the header file is needed
+        IncrementalValueProvider<bool> isHeaderFileNeeded =
             recipientInfo
-            .Select(static (item, _) => Execute.GetSyntax(item))
-            .SelectMany(static (item, _) => item)
-            .Collect();
+            .Collect()
+            .Select(static (item, _) => item.Length > 0);
+
+        // Generate the header file with the attributes
+        context.RegisterImplementationSourceOutput(isHeaderFileNeeded, static (context, item) =>
+        {
+            CompilationUnitSyntax compilationUnit = Execute.GetSyntax();
+
+            context.AddSource(
+                hintName: "__IMessengerExtensions.cs",
+                sourceText: SourceText.From(compilationUnit.ToFullString(), Encoding.UTF8));
+        });
 
         // Generate the class with all registration methods
-        context.RegisterImplementationSourceOutput(methodDeclarations, static (context, item) =>
+        context.RegisterImplementationSourceOutput(recipientInfo, static (context, item) =>
         {
             CompilationUnitSyntax compilationUnit = Execute.GetSyntax(item);
 
             context.AddSource(
-                hintName: "__IMessengerExtensions.cs",
+                hintName: $"{item.FilenameHint}.cs",
                 sourceText: SourceText.From(compilationUnit.ToFullString(), Encoding.UTF8));
         });
     }

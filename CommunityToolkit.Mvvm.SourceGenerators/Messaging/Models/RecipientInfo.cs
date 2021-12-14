@@ -13,9 +13,11 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
 /// <summary>
 /// A model with gathered info on all message types being handled by a recipient.
 /// </summary>
+/// <param name="FilenameHint">The filename hint for the current type.</param>
 /// <param name="TypeName">The fully qualified type name of the target type.</param>
 /// <param name="MessageTypes">The name of messages being received.</param>
 internal sealed record RecipientInfo(
+    string FilenameHint,
     string TypeName,
     ImmutableArray<string> MessageTypes)
 {
@@ -48,6 +50,7 @@ internal sealed record RecipientInfo(
             }
 
             return
+                x.FilenameHint == y.FilenameHint &&
                 x.TypeName == y.TypeName &&
                 x.MessageTypes.SequenceEqual(y.MessageTypes);
         }
@@ -57,6 +60,7 @@ internal sealed record RecipientInfo(
         {
             HashCode hashCode = default;
 
+            hashCode.Add(obj.FilenameHint);
             hashCode.Add(obj.TypeName);
             hashCode.AddRange(obj.MessageTypes);
 
