@@ -1,4 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
@@ -44,6 +44,29 @@ internal static class INamedTypeSymbolExtensions
     public static string GetFullMetadataNameForFileName(this INamedTypeSymbol symbol)
     {
         return symbol.GetFullMetadataName().Replace('`', '-').Replace('+', '.');
+    }
+
+    /// <summary>
+    /// Checks whether or not a given <see cref="INamedTypeSymbol"/> inherits from a specified type.
+    /// </summary>
+    /// <param name="typeSymbol">The target <see cref="INamedTypeSymbol"/> instance to check.</param>
+    /// <param name="name">The full name of the type to check for inheritance.</param>
+    /// <returns>Whether or not <paramref name="typeSymbol"/> inherits from <paramref name="name"/>.</returns>
+    public static bool InheritsFrom(this INamedTypeSymbol typeSymbol, string name)
+    {
+        INamedTypeSymbol? baseType = typeSymbol.BaseType;
+
+        while (baseType != null)
+        {
+            if (baseType.HasFullyQualifiedName(name))
+            {
+                return true;
+            }
+
+            baseType = baseType.BaseType;
+        }
+
+        return false;
     }
 
     /// <summary>
