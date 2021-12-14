@@ -15,10 +15,10 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace CommunityToolkit.Mvvm.SourceGenerators;
 
 /// <inheritdoc/>
-partial class ObservableValidatorValidateAllPropertiesGenerator2
+partial class ObservableValidatorValidateAllPropertiesGenerator
 {
     /// <summary>
-    /// A container for all the logic for <see cref="ObservableValidatorValidateAllPropertiesGenerator2"/>.
+    /// A container for all the logic for <see cref="ObservableValidatorValidateAllPropertiesGenerator"/>.
     /// </summary>
     private static class Execute
     {
@@ -138,8 +138,8 @@ partial class ObservableValidatorValidateAllPropertiesGenerator2
                 .AddAttributeLists(
                     AttributeList(SingletonSeparatedList(
                     Attribute(IdentifierName($"global::System.CodeDom.Compiler.GeneratedCode")).AddArgumentListArguments(
-                        AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservableValidatorValidateAllPropertiesGenerator2).FullName))),
-                        AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservableValidatorValidateAllPropertiesGenerator2).Assembly.GetName().Version.ToString())))))),
+                        AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservableValidatorValidateAllPropertiesGenerator).FullName))),
+                        AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservableValidatorValidateAllPropertiesGenerator).Assembly.GetName().Version.ToString())))))),
                     AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.DebuggerNonUserCode")))),
                     AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage")))),
                     AttributeList(SingletonSeparatedList(
