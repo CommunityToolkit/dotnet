@@ -18,7 +18,6 @@ namespace CommunityToolkit.Mvvm.SourceGenerators;
 /// <summary>
 /// A source generator for message registration without relying on compiled LINQ expressions.
 /// </summary>
-[Generator]
 public sealed partial class IMessengerRegisterAllGenerator : ISourceGenerator
 {
     /// <inheritdoc/>
