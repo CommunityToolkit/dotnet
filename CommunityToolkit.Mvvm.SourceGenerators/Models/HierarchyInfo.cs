@@ -22,7 +22,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.Models;
 /// <param name="MetadataName">The metadata name for the current type.</param>
 /// <param name="Namespace">Gets the namespace for the current type.</param>
 /// <param name="Names">Gets the sequence of type definitions containing the current type.</param>
-internal sealed record HierarchyInfo(string FilenameHint, string MetadataName, string Namespace, ImmutableArray<string> Names)
+internal sealed partial record HierarchyInfo(string FilenameHint, string MetadataName, string Namespace, ImmutableArray<string> Names)
 {
     /// <summary>
     /// Creates a new <see cref="HierarchyInfo"/> instance from a given <see cref="INamedTypeSymbol"/>.

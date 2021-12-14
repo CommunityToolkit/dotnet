@@ -24,7 +24,6 @@ namespace CommunityToolkit.Mvvm.SourceGenerators;
 /// <summary>
 /// A source generator for generating command properties from annotated methods.
 /// </summary>
-[Generator]
 public sealed partial class ICommandGenerator : ISourceGenerator
 {
     /// <inheritdoc/>
