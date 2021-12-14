@@ -615,11 +615,11 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
         // the reusable list of validation errors from the errors dictionary. This list is
         // used to add new validation errors below, if any are produced by the validator.
         // If the property isn't present in the dictionary, add it now to avoid allocations.
-        if (!this.errors.TryGetValue(propertyName!, out List<ValidationResult>? propertyErrors))
+        if (!this.errors.TryGetValue(propertyName, out List<ValidationResult>? propertyErrors))
         {
             propertyErrors = new List<ValidationResult>();
 
-            this.errors.Add(propertyName!, propertyErrors);
+            this.errors.Add(propertyName, propertyErrors);
         }
 
         bool errorsChanged = false;
@@ -634,7 +634,7 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
 
         // Validate the property, by adding new errors to the existing list
         this.validationContext.MemberName = propertyName;
-        this.validationContext.DisplayName = GetDisplayNameForProperty(propertyName!);
+        this.validationContext.DisplayName = GetDisplayNameForProperty(propertyName);
 
         bool isValid = Validator.TryValidateProperty(value, this.validationContext, propertyErrors);
 
