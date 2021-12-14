@@ -15,7 +15,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace CommunityToolkit.Mvvm.SourceGenerators.Models;
 
 /// <inheritdoc/>
-internal sealed partial record HierarchyInfo
+partial record HierarchyInfo
 {
     /// <summary>
     /// Creates a <see cref="CompilationUnitSyntax"/> instance wrapping the given members.
