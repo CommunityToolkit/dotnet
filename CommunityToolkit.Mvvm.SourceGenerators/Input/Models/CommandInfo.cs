@@ -7,14 +7,12 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
-using CommunityToolkit.Mvvm.SourceGenerators.Models;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
 
 /// <summary>
 /// A model with gathered info on a given command method.
 /// </summary>
-/// <param name="Hierarchy">The hierarchy info for the containing type.</param>
 /// <param name="MethodName">The name of the target method.</param>
 /// <param name="FieldName">The resulting field name for the generated command.</param>
 /// <param name="PropertyName">The resulting property name for the generated command.</param>
@@ -27,7 +25,6 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
 /// <param name="CanExecuteExpressionType">The can execute expression type, if available.</param>
 /// <param name="AllowConcurrentExecutions">Whether or not concurrent executions have been disabled.</param>
 internal sealed record CommandInfo(
-    HierarchyInfo Hierarchy,
     string MethodName,
     string FieldName,
     string PropertyName,
@@ -69,7 +66,6 @@ internal sealed record CommandInfo(
             }
 
             return
-                HierarchyInfo.Comparer.Default.Equals(x.Hierarchy, y.Hierarchy) &&
                 x.MethodName == y.MethodName &&
                 x.FieldName == y.FieldName &&
                 x.PropertyName == y.PropertyName &&
@@ -88,7 +84,6 @@ internal sealed record CommandInfo(
         {
             HashCode hashCode = default;
 
-            hashCode.Add(obj.Hierarchy, HierarchyInfo.Comparer.Default);
             hashCode.Add(obj.MethodName);
             hashCode.Add(obj.FieldName);
             hashCode.Add(obj.PropertyName);

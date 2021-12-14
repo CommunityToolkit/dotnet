@@ -45,39 +45,40 @@ public sealed partial class ICommandGenerator : IIncrementalGenerator
             .Where(static item => item.Attribute is not null)!;
 
         // Gather info for all annotated command methods
-        IncrementalValuesProvider<Result<CommandInfo?>> commandInfoWithErrors =
+        IncrementalValuesProvider<(HierarchyInfo Hierarchy, Result<CommandInfo?> Info)> commandInfoWithErrors =
             methodSymbolsWithAttributeData
             .Select(static (item, _) =>
             {
+                HierarchyInfo hierarchy = HierarchyInfo.From(item.Symbol.ContainingType);
                 CommandInfo? commandInfo = Execute.GetInfo(item.Symbol, item.Attribute, out ImmutableArray<Diagnostic> diagnostics);
 
-                return new Result<CommandInfo?>(commandInfo, diagnostics);
+                return (hierarchy, new Result<CommandInfo?>(commandInfo, diagnostics));
             });
 
         // Output the diagnostics
-        context.ReportDiagnostics(commandInfoWithErrors.Select(static (item, _) => item.Errors));
+        context.ReportDiagnostics(commandInfoWithErrors.Select(static (item, _) => item.Info.Errors));
 
         // Get the filtered sequence to enable caching
-        IncrementalValuesProvider<CommandInfo> commandInfo =
+        IncrementalValuesProvider<(HierarchyInfo Hierarchy, CommandInfo Info)> commandInfo =
             commandInfoWithErrors
-            .Select(static (item, _) => item.Value)
-            .Where(static item => item is not null)!
-            .WithComparer(CommandInfo.Comparer.Default);
+            .Where(static item => item.Info.Value is not null)
+            .Select(static (item, _) => (item.Hierarchy, item.Info.Value!))
+            .WithComparers(HierarchyInfo.Comparer.Default, CommandInfo.Comparer.Default);
 
         // Generate the commands
         context.RegisterSourceOutput(commandInfo, static (context, item) =>
         {
-            ImmutableArray<MemberDeclarationSyntax> memberDeclarations = Execute.GetSyntax(item);
+            ImmutableArray<MemberDeclarationSyntax> memberDeclarations = Execute.GetSyntax(item.Info);
             CompilationUnitSyntax compilationUnit = item.Hierarchy.GetCompilationUnit(memberDeclarations);
 
             context.AddSource(
-                hintName: $"{item.Hierarchy.FilenameHint}.{item.MethodName}.cs",
+                hintName: $"{item.Hierarchy.FilenameHint}.{item.Info.MethodName}.cs",
                 sourceText: SourceText.From(compilationUnit.ToFullString(), Encoding.UTF8));
         });
     }
 
     /// <summary>
-    /// A container for all the logic for <see cref="ICommandGenerator2"/>.
+    /// A container for all the logic for <see cref="ICommandGenerator"/>.
     /// </summary>
     private static class Execute
     {
@@ -134,7 +135,6 @@ public sealed partial class ICommandGenerator : IIncrementalGenerator
             diagnostics = builder.ToImmutable();
 
             return new(
-                HierarchyInfo.From(methodSymbol.ContainingType),
                 methodSymbol.Name,
                 fieldName,
                 propertyName,
