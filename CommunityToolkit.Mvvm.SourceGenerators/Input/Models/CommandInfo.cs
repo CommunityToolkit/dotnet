@@ -48,7 +48,7 @@ internal sealed record CommandInfo(
         public static Comparer Default { get; } = new();
 
         /// <inheritdoc/>
-        public bool Equals(CommandInfo x, CommandInfo y)
+        public bool Equals(CommandInfo? x, CommandInfo? y)
         {
             if (x is null && y is null)
             {

@@ -32,7 +32,7 @@ internal sealed record RecipientInfo(
         public static Comparer Default { get; } = new();
 
         /// <inheritdoc/>
-        public bool Equals(RecipientInfo x, RecipientInfo y)
+        public bool Equals(RecipientInfo? x, RecipientInfo? y)
         {
             if (x is null && y is null)
             {
