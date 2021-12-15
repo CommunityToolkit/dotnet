@@ -6,10 +6,12 @@ using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
+using CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators;
@@ -26,9 +28,12 @@ partial class ObservablePropertyGenerator
         /// Processes a given field.
         /// </summary>
         /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
+        /// <param name="diagnostics">The resulting diagnostics from the processing operation.</param>
         /// <returns>The resulting <see cref="PropertyInfo"/> instance for <paramref name="fieldSymbol"/>.</returns>
-        public static PropertyInfo GetInfo(IFieldSymbol fieldSymbol)
+        public static PropertyInfo GetInfo(IFieldSymbol fieldSymbol, out ImmutableArray<Diagnostic> diagnostics)
         {
+            ImmutableArray<Diagnostic>.Builder builder = ImmutableArray.CreateBuilder<Diagnostic>();
+
             // Check whether the containing type implements INotifyPropertyChanging and whether it inherits from ObservableValidator
             bool isObservableObject = fieldSymbol.ContainingType.InheritsFrom("global::CommunityToolkit.Mvvm.ComponentModel.ObservableObject");
             bool isObservableValidator = fieldSymbol.ContainingType.InheritsFrom("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator");
@@ -80,6 +85,20 @@ partial class ObservablePropertyGenerator
                     validationAttributes.Add(AttributeInfo.From(attributeData));
                 }
             }
+
+            // Log the diagnostics if needed
+            if (validationAttributes.Count > 0 &&
+                !isObservableValidator)
+            {
+                builder.Add(
+                    MissingObservableValidatorInheritanceError,
+                    fieldSymbol,
+                    fieldSymbol.ContainingType,
+                    fieldSymbol.Name,
+                    validationAttributes.Count);
+            }
+
+            diagnostics = builder.ToImmutable();
 
             return new(
                 typeName,

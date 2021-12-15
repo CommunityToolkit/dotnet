@@ -59,9 +59,9 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
             .Select(static (item, _) =>
             {
                 HierarchyInfo hierarchy = HierarchyInfo.From(item.ContainingType);
-                PropertyInfo propertyInfo = Execute.GetInfo(item);
+                PropertyInfo propertyInfo = Execute.GetInfo(item, out ImmutableArray<Diagnostic> diagnostics);
 
-                return (hierarchy, new Result<PropertyInfo>(propertyInfo, ImmutableArray<Diagnostic>.Empty));
+                return (hierarchy, new Result<PropertyInfo>(propertyInfo, diagnostics));
             });
 
         // Output the diagnostics
