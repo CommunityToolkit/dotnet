@@ -8,6 +8,8 @@ using System.Collections.Immutable;
 using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 
@@ -46,6 +48,26 @@ internal sealed record AttributeInfo(
             typeName,
             constructorArguments,
             namedArguments.ToImmutable());
+    }
+
+    /// <summary>
+    /// Gets an <see cref="AttributeSyntax"/> instance representing the current value.
+    /// </summary>
+    /// <returns>The <see cref="ExpressionSyntax"/> instance representing the current value.</returns>
+    public AttributeSyntax GetSyntax()
+    {
+        // Gather the constructor arguments
+        IEnumerable<AttributeArgumentSyntax> arguments =
+            ConstructorArgumentInfo
+            .Select(static arg => AttributeArgument(arg.GetSyntax()));
+
+        // Gather the named arguments
+        IEnumerable<AttributeArgumentSyntax> namedArguments =
+            NamedArgumentInfo.Select(static arg =>
+                AttributeArgument(arg.Value.GetSyntax())
+                .WithNameEquals(NameEquals(IdentifierName(arg.Name))));
+
+        return Attribute(IdentifierName(TypeName), AttributeArgumentList(SeparatedList(arguments.Concat(namedArguments))));
 
     }
 

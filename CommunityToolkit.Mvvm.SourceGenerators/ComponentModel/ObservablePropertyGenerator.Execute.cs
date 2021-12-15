@@ -2,23 +2,15 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.ComponentModel;
-using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Text;
+using CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
+using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
-using CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
-using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-using static Microsoft.CodeAnalysis.SymbolDisplayTypeQualificationStyle;
-using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
-using System.Collections.Immutable;
-using CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
-using CommunityToolkit.Mvvm.SourceGenerators.Models;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators;
 
@@ -42,7 +34,6 @@ partial class ObservablePropertyGenerator2
             bool isObservableValidator = fieldSymbol.ContainingType.InheritsFrom("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator");
             bool isNotifyPropertyChanging = fieldSymbol.ContainingType.AllInterfaces.Any(static i => i.HasFullyQualifiedName("global::System.ComponentModel.INotifyPropertyChanging"));
             bool hasObservableObjectAttribute = fieldSymbol.ContainingType.GetAttributes().Any(static a => a.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute") == true);
-            bool shouldNotifyPropertyChanging = isObservableObject || isNotifyPropertyChanging || hasObservableObjectAttribute;
 
             // Get the property type and name
             string typeName = fieldSymbol.Type.GetFullyQualifiedName();
@@ -54,6 +45,15 @@ partial class ObservablePropertyGenerator2
             ImmutableArray<string>.Builder propertyChangingNames = ImmutableArray.CreateBuilder<string>();
             ImmutableArray<string>.Builder notifiedCommandNames = ImmutableArray.CreateBuilder<string>();
             ImmutableArray<AttributeInfo>.Builder validationAttributes = ImmutableArray.CreateBuilder<AttributeInfo>();
+
+            // Track the property changing event for the property, if the type supports it
+            if (isObservableObject || isNotifyPropertyChanging || hasObservableObjectAttribute)
+            {
+                propertyChangingNames.Add(propertyName);
+            }
+
+            // The current property is always notified
+            propertyChangedNames.Add(propertyName);
 
             // Gather attributes info
             foreach (AttributeData attributeData in fieldSymbol.GetAttributes())
@@ -116,6 +116,159 @@ partial class ObservablePropertyGenerator2
                 "__KnownINotifyPropertyChangedArgs",
                 "global::System.ComponentModel.PropertyChangedEventArgs",
                 names);
+        }
+
+        /// <summary>
+        /// Gets the <see cref="MemberDeclarationSyntax"/> instance for the input field.
+        /// </summary>
+        /// <param name="propertyInfo">The input <see cref="PropertyInfo"/> instance to process.</param>
+        /// <returns>The generated <see cref="MemberDeclarationSyntax"/> instance for <paramref name="propertyInfo"/>.</returns>
+        public static MemberDeclarationSyntax GetSyntax(PropertyInfo propertyInfo)
+        {
+            ImmutableArray<StatementSyntax>.Builder setterStatements = ImmutableArray.CreateBuilder<StatementSyntax>();
+
+            // Gather the statements to notify dependent properties
+            foreach (string propertyName in propertyInfo.PropertyChangingNames)
+            {
+                // This code generates a statement as follows:
+                //
+                // OnPropertyChanging(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.<PROPERTY_NAME>);
+                setterStatements.Add(
+                    ExpressionStatement(
+                        InvocationExpression(IdentifierName("OnPropertyChanging"))
+                        .AddArgumentListArguments(Argument(MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            IdentifierName("global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs"),
+                            IdentifierName(propertyName))))));
+            }
+
+            // In case the backing field is exactly named "value", we need to add the "this." prefix to ensure that comparisons and assignments
+            // with it in the generated setter body are executed correctly and without conflicts with the implicit value parameter.
+            ExpressionSyntax fieldExpression = propertyInfo.FieldName switch
+            {
+                "value" => MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, ThisExpression(), IdentifierName("value")),
+                string name => IdentifierName(name)
+            };
+
+            // Add the assignment statement:
+            //
+            // <FIELD_EXPRESSION> = value;
+            setterStatements.Add(
+                ExpressionStatement(
+                    AssignmentExpression(
+                        SyntaxKind.SimpleAssignmentExpression,
+                        fieldExpression,
+                        IdentifierName("value"))));
+
+            // If there are validation attributes, add a call to ValidateProperty:
+            //
+            // ValidateProperty(value, <PROPERTY_NAME>);
+            if (propertyInfo.ValidationAttributes.Length > 0)
+            {
+                setterStatements.Add(
+                    ExpressionStatement(
+                        InvocationExpression(IdentifierName("ValidateProperty"))
+                        .AddArgumentListArguments(
+                            Argument(IdentifierName("value")),
+                            Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(propertyInfo.PropertyName))))));
+            }
+
+            // Gather the statements to notify dependent properties
+            foreach (string propertyName in propertyInfo.PropertyChangedNames)
+            {
+                // This code generates a statement as follows:
+                //
+                // OnPropertyChanging(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.<PROPERTY_NAME>);
+                setterStatements.Add(
+                    ExpressionStatement(
+                        InvocationExpression(IdentifierName("OnPropertyChanged"))
+                        .AddArgumentListArguments(Argument(MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            IdentifierName("global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs"),
+                            IdentifierName(propertyName))))));
+            }
+
+            // Gather the statements to notify commands
+            foreach (string commandName in propertyInfo.NotifiedCommandNames)
+            {
+                // This code generates a statement as follows:
+                //
+                // <COMMAND_NAME>.NotifyCanExecuteChanged();
+                setterStatements.Add(
+                    ExpressionStatement(
+                        InvocationExpression(MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            IdentifierName(commandName),
+                            IdentifierName("NotifyCanExecuteChanged")))));
+            }
+
+            // Get the property type syntax (adding the nullability annotation, if needed)
+            TypeSyntax propertyType = propertyInfo.IsNullableReferenceType
+                ? NullableType(IdentifierName(propertyInfo.TypeName))
+                : IdentifierName(propertyInfo.TypeName);
+
+            // Generate the inner setter block as follows:
+            //
+            // if (!global::System.Collections.Generic.EqualityComparer<<PROPERTY_TYPE>>.Default.Equals(<FIELD_EXPRESSION>, value))
+            // {
+            //     <STATEMENTS>
+            // }
+            IfStatementSyntax setterIfStatement =
+                IfStatement(
+                    PrefixUnaryExpression(
+                        SyntaxKind.LogicalNotExpression,
+                        InvocationExpression(
+                            MemberAccessExpression(
+                                SyntaxKind.SimpleMemberAccessExpression,
+                                MemberAccessExpression(
+                                    SyntaxKind.SimpleMemberAccessExpression,
+                                    GenericName(Identifier("global::System.Collections.Generic.EqualityComparer"))
+                                    .AddTypeArgumentListArguments(propertyType),
+                                    IdentifierName("Default")),
+                                IdentifierName("Equals")))
+                        .AddArgumentListArguments(
+                            Argument(fieldExpression),
+                            Argument(IdentifierName("value")))),
+                    Block(setterStatements));
+
+            // Prepare the validation attributes, if any
+            ImmutableArray<AttributeListSyntax> validationAttributes =
+                propertyInfo.ValidationAttributes
+                .Select(static a => AttributeList(SingletonSeparatedList(a.GetSyntax())))
+                .ToImmutableArray();
+
+            // Construct the generated property as follows:
+            //
+            // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
+            // [global::System.Diagnostics.DebuggerNonUserCode]
+            // [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+            // <VALIDATION_ATTRIBUTES>
+            // public <FIELD_TYPE><NULLABLE_ANNOTATION?> <PROPERTY_NAME>
+            // {
+            //     get => <FIELD_NAME>;
+            //     set
+            //     {
+            //         <BODY>
+            //     }
+            // }
+            return
+                PropertyDeclaration(propertyType, Identifier(propertyInfo.PropertyName))
+                .AddAttributeLists(
+                    AttributeList(SingletonSeparatedList(
+                        Attribute(IdentifierName("global::System.CodeDom.Compiler.GeneratedCode"))
+                        .AddArgumentListArguments(
+                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservablePropertyGenerator2).FullName))),
+                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservablePropertyGenerator2).Assembly.GetName().Version.ToString())))))),
+                    AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.DebuggerNonUserCode")))),
+                    AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage")))))
+                .AddAttributeLists(validationAttributes.ToArray())
+                .AddModifiers(Token(SyntaxKind.PublicKeyword))
+                .AddAccessorListAccessors(
+                    AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+                    .WithExpressionBody(ArrowExpressionClause(IdentifierName(propertyInfo.FieldName)))
+                    .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)),
+                    AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+                    .WithBody(Block(setterIfStatement)));
         }
 
         /// <summary>

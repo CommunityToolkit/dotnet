@@ -80,6 +80,23 @@ public sealed partial class ObservablePropertyGenerator2 : IIncrementalGenerator
             .GroupBy(HierarchyInfo.Comparer.Default)
             .WithComparers(HierarchyInfo.Comparer.Default, PropertyInfo.Comparer.Default.ForImmutableArray());
 
+        // Generate the requested properties
+        context.RegisterSourceOutput(groupedPropertyInfo, static (context, item) =>
+        {
+            // Generate all properties for the current type
+            ImmutableArray<MemberDeclarationSyntax> propertyDeclarations =
+                item.Properties
+                .Select(Execute.GetSyntax)
+                .ToImmutableArray();
+
+            // Insert all properties into the same partial type declaration
+            CompilationUnitSyntax compilationUnit = item.Hierarchy.GetCompilationUnit(propertyDeclarations);
+
+            context.AddSource(
+                hintName: $"{item.Hierarchy.FilenameHint}.cs",
+                sourceText: SourceText.From(compilationUnit.ToFullString(), Encoding.UTF8));
+        });
+
         // Gather all property changing names
         IncrementalValueProvider<ImmutableArray<string>> propertyChangingNames =
             propertyInfo
