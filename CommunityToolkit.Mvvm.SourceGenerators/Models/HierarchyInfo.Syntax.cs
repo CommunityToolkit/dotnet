@@ -21,8 +21,11 @@ partial record HierarchyInfo
     /// Creates a <see cref="CompilationUnitSyntax"/> instance wrapping the given members.
     /// </summary>
     /// <param name="memberDeclarations">The input <see cref="MemberDeclarationSyntax"/> instances to use.</param>
+    /// <param name="baseList">The optional <see cref="BaseListSyntax"/> instance to add to generated types.</param>
     /// <returns>A <see cref="CompilationUnitSyntax"/> object wrapping <paramref name="memberDeclarations"/>.</returns>
-    public CompilationUnitSyntax GetCompilationUnit(ImmutableArray<MemberDeclarationSyntax> memberDeclarations)
+    public CompilationUnitSyntax GetCompilationUnit(
+        ImmutableArray<MemberDeclarationSyntax> memberDeclarations,
+        BaseListSyntax? baseList = null)
     {
         // Create the partial type declaration with the given member declarations.
         // This code produces a class declaration as follows:
@@ -35,6 +38,12 @@ partial record HierarchyInfo
             ClassDeclaration(Names[0])
             .AddModifiers(Token(SyntaxKind.PartialKeyword))
             .AddMembers(memberDeclarations.ToArray());
+
+        // Add the base list, if present
+        if (baseList is not null)
+        {
+            classDeclarationSyntax = classDeclarationSyntax.WithBaseList(baseList);
+        }
 
         TypeDeclarationSyntax typeDeclarationSyntax = classDeclarationSyntax;
 
