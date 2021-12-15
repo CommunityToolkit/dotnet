@@ -76,7 +76,6 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
         // Split and group by containing type
         IncrementalValuesProvider<(HierarchyInfo Hierarchy, ImmutableArray<PropertyInfo> Properties)> groupedPropertyInfo =
             propertyInfo
-            .Collect()
             .GroupBy(HierarchyInfo.Comparer.Default)
             .WithComparers(HierarchyInfo.Comparer.Default, PropertyInfo.Comparer.Default.ForImmutableArray());
 
