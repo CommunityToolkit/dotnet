@@ -15,12 +15,12 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace CommunityToolkit.Mvvm.SourceGenerators;
 
 /// <inheritdoc/>
-partial class ObservablePropertyGenerator2
+partial class ObservablePropertyGenerator
 {
     /// <summary>
-    /// A container for all the logic for <see cref="ObservablePropertyGenerator2"/>.
+    /// A container for all the logic for <see cref="ObservablePropertyGenerator"/>.
     /// </summary>
-    private static class Execute
+    internal static class Execute
     {
         /// <summary>
         /// Processes a given field.
@@ -257,8 +257,8 @@ partial class ObservablePropertyGenerator2
                     AttributeList(SingletonSeparatedList(
                         Attribute(IdentifierName("global::System.CodeDom.Compiler.GeneratedCode"))
                         .AddArgumentListArguments(
-                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservablePropertyGenerator2).FullName))),
-                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservablePropertyGenerator2).Assembly.GetName().Version.ToString())))))),
+                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservablePropertyGenerator).FullName))),
+                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservablePropertyGenerator).Assembly.GetName().Version.ToString())))))),
                     AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.DebuggerNonUserCode")))),
                     AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage")))))
                 .AddAttributeLists(validationAttributes.ToArray())
@@ -315,8 +315,8 @@ partial class ObservablePropertyGenerator2
                         AttributeList(SingletonSeparatedList(
                             Attribute(IdentifierName($"global::System.CodeDom.Compiler.GeneratedCode"))
                             .AddArgumentListArguments(
-                                AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservablePropertyGenerator2).FullName))),
-                                AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservablePropertyGenerator2).Assembly.GetName().Version.ToString())))))),
+                                AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservablePropertyGenerator).FullName))),
+                                AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservablePropertyGenerator).Assembly.GetName().Version.ToString())))))),
                         AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.DebuggerNonUserCode")))),
                         AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage")))),
                         AttributeList(SingletonSeparatedList(
@@ -374,7 +374,7 @@ partial class ObservablePropertyGenerator2
         /// </summary>
         /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
         /// <returns>The generated property name for <paramref name="fieldSymbol"/>.</returns>
-        private static string GetGeneratedPropertyName(IFieldSymbol fieldSymbol)
+        public static string GetGeneratedPropertyName(IFieldSymbol fieldSymbol)
         {
             string propertyName = fieldSymbol.Name;
 

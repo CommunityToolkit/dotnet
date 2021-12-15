@@ -71,7 +71,7 @@ partial class ObservableValidatorValidateAllPropertiesGenerator
                 string propertyName = memberSymbol switch
                 {
                     IPropertySymbol propertySymbol => propertySymbol.Name,
-                    IFieldSymbol fieldSymbol => ObservablePropertyGenerator.GetGeneratedPropertyName(fieldSymbol),
+                    IFieldSymbol fieldSymbol => ObservablePropertyGenerator.Execute.GetGeneratedPropertyName(fieldSymbol),
                     _ => throw new InvalidOperationException("Invalid symbol type")
                 };
 
