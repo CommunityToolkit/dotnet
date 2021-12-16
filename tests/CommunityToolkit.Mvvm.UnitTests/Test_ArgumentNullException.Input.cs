@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -12,7 +11,7 @@ namespace CommunityToolkit.Mvvm.UnitTests;
 public partial class Test_ArgumentNullException
 {
     [TestMethod]
-    public void Test_RelayCommand()
+    public void Test_ArgumentNullException_RelayCommand()
     {
         Assert(() => new RelayCommand(execute: null!), "execute");
         Assert(() => new RelayCommand(execute: null!, () => true), "execute");
@@ -20,7 +19,7 @@ public partial class Test_ArgumentNullException
     }
 
     [TestMethod]
-    public void Test_RelayCommandOfT()
+    public void Test_ArgumentNullException_RelayCommandOfT()
     {
         Assert(() => new RelayCommand<string>(execute: null!), "execute");
         Assert(() => new RelayCommand<string>(execute: null!, s => true), "execute");
@@ -28,7 +27,7 @@ public partial class Test_ArgumentNullException
     }
 
     [TestMethod]
-    public void Test_AsyncRelayCommand()
+    public void Test_ArgumentNullException_AsyncRelayCommand()
     {
         Assert(() => new AsyncRelayCommand(execute: null!), "execute");
         Assert(() => new AsyncRelayCommand(execute: null!, true), "execute");
@@ -45,7 +44,7 @@ public partial class Test_ArgumentNullException
     }
 
     [TestMethod]
-    public void Test_AsyncRelayCommandOfT()
+    public void Test_ArgumentNullException_AsyncRelayCommandOfT()
     {
         Assert(() => new AsyncRelayCommand<string>(execute: null!), "execute");
         Assert(() => new AsyncRelayCommand<string>(execute: null!, true), "execute");

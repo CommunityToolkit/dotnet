@@ -16,7 +16,7 @@ public partial class Test_ArgumentNullException
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
-    public void Test_Messenger(Type type)
+    public void Test_ArgumentNullException_Messenger(Type type)
     {
         IMessenger messenger = (IMessenger)Activator.CreateInstance(type)!;
 
@@ -42,7 +42,7 @@ public partial class Test_ArgumentNullException
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
-    public void Test_MessengerExtensions(Type type)
+    public void Test_ArgumentNullException_MessengerExtensions(Type type)
     {
         IMessenger messenger = (IMessenger)Activator.CreateInstance(type)!;
 
@@ -89,7 +89,7 @@ public partial class Test_ArgumentNullException
     }
 
     [TestMethod]
-    public void Test_AsyncCollectionRequestMessage()
+    public void Test_ArgumentNullException_AsyncCollectionRequestMessage()
     {
         AsyncCollectionRequestMessage<int> message = new();
 
@@ -98,7 +98,7 @@ public partial class Test_ArgumentNullException
     }
 
     [TestMethod]
-    public void Test_AsyncRequestMessage()
+    public void Test_ArgumentNullException_AsyncRequestMessage()
     {
         AsyncRequestMessage<int> message = new();
 
@@ -106,13 +106,13 @@ public partial class Test_ArgumentNullException
     }
 
     [TestMethod]
-    public void Test_PropertyChangedMessage()
+    public void Test_ArgumentNullException_PropertyChangedMessage()
     {
         Assert(() => new PropertyChangedMessage<int>(sender: null!, "", 0, 1), "sender");
     }
 
     [TestMethod]
-    public void Test_RequestMessage()
+    public void Test_ArgumentNullException_RequestMessage()
     {
         Assert(() => _ = (int)(RequestMessage<int>)null!, "message");
     }

@@ -17,7 +17,7 @@ namespace CommunityToolkit.Mvvm.UnitTests;
 public partial class Test_ArgumentNullException
 {
     [TestMethod]
-    public void Test_ObservableObject()
+    public void Test_ArgumentNullException_ObservableObject()
     {
         TestObservableObject model = new();
 
@@ -38,7 +38,7 @@ public partial class Test_ArgumentNullException
     }
 
     [TestMethod]
-    public void Test_ObservableRecipient()
+    public void Test_ArgumentNullException_ObservableRecipient()
     {
         Assert(() => new TestObservableRecipient(null!), "messenger");
 
@@ -56,7 +56,7 @@ public partial class Test_ArgumentNullException
     }
 
     [TestMethod]
-    public void Test_ObservableValidator()
+    public void Test_ArgumentNullException_ObservableValidator()
     {
         Assert(() => new TestObservableValidator(null!), "validationContext");
 

@@ -10,7 +10,7 @@ namespace CommunityToolkit.Mvvm.UnitTests;
 public partial class Test_ArgumentNullException
 {
     [TestMethod]
-    public void Test_Ioc()
+    public void Test_ArgumentNullException_Ioc()
     {
         Ioc ioc = new();
 
