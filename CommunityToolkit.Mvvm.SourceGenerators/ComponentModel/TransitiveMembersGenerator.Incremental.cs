@@ -90,7 +90,7 @@ public abstract partial class TransitiveMembersGenerator2<TInfo> : IIncrementalG
                 Symbol: item,
                 Attribute: item.GetAttributes().FirstOrDefault(a => a.AttributeClass?.HasFullyQualifiedName(this.attributeType) == true)))
             .Where(static item => item.Attribute is not null)!
-            .Select((item, _) => (item.Symbol, GetInfo(item.Attribute!)));
+            .Select((item, _) => (item.Symbol, GetInfo(item.Symbol, item.Attribute!)));
 
         // Gather all generation info, and any diagnostics
         IncrementalValuesProvider<Result<(HierarchyInfo Hierarchy, TInfo Info)>> generationInfoWithErrors =
@@ -131,9 +131,10 @@ public abstract partial class TransitiveMembersGenerator2<TInfo> : IIncrementalG
     /// <summary>
     /// Gets an info model from a retrieved <see cref="AttributeData"/> instance.
     /// </summary>
+    /// <param name="typeSymbol">The <see cref="INamedTypeSymbol"/> instance for the target type.</param>
     /// <param name="attributeData">The input <see cref="AttributeData"/> to get info from.</param>
     /// <returns>A <typeparamref name="TInfo"/> instance with data extracted from <paramref name="attributeData"/>.</returns>
-    protected abstract TInfo GetInfo(AttributeData attributeData);
+    protected abstract TInfo GetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData);
 
     /// <summary>
     /// Validates a target type being processed.

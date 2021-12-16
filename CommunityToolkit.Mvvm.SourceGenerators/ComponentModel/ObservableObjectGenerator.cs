@@ -27,7 +27,7 @@ public sealed class ObservableObjectGenerator : TransitiveMembersGenerator2<obje
     }
 
     /// <inheritdoc/>
-    protected override object? GetInfo(AttributeData attributeData)
+    protected override object? GetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData)
     {
         return null;
     }

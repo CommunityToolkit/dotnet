@@ -28,7 +28,7 @@ public sealed class INotifyPropertyChangedGenerator : TransitiveMembersGenerator
     }
 
     /// <inheritdoc/>
-    protected override INotifyPropertyChangedInfo GetInfo(AttributeData attributeData)
+    protected override INotifyPropertyChangedInfo GetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData)
     {
         if (attributeData.TryGetNamedArgument("IncludeAdditionalHelperMethods", out bool includeAdditionalHelperMethods))
         {
