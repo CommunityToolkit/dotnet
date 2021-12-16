@@ -2,8 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Diagnostics.CodeAnalysis;
+using System.Collections.Immutable;
 using System.Linq;
+using CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
+using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
@@ -13,49 +15,56 @@ namespace CommunityToolkit.Mvvm.SourceGenerators;
 /// <summary>
 /// A source generator for the <c>ObservableObjectAttribute</c> type.
 /// </summary>
-[Generator]
-public sealed class ObservableObjectGenerator : TransitiveMembersGenerator
+[Generator(LanguageNames.CSharp)]
+public sealed class ObservableObjectGenerator : TransitiveMembersGenerator2<object?>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ObservableObjectGenerator"/> class.
     /// </summary>
     public ObservableObjectGenerator()
-        : base("CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute")
+        : base("global::CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute")
     {
     }
 
     /// <inheritdoc/>
-    protected override DiagnosticDescriptor TargetTypeErrorDescriptor => ObservableObjectGeneratorError;
+    protected override object? GetInfo(AttributeData attributeData)
+    {
+        return null;
+    }
 
     /// <inheritdoc/>
-    protected override bool ValidateTargetType(
-        GeneratorExecutionContext context,
-        AttributeData attributeData,
-        ClassDeclarationSyntax classDeclaration,
-        INamedTypeSymbol classDeclarationSymbol,
-        [NotNullWhen(false)] out DiagnosticDescriptor? descriptor)
+    protected override bool ValidateTargetType(INamedTypeSymbol typeSymbol, object? info, out ImmutableArray<Diagnostic> diagnostics)
     {
-        INamedTypeSymbol iNotifyPropertyChangedSymbol = context.Compilation.GetTypeByMetadataName("System.ComponentModel.INotifyPropertyChanged")!;
-        INamedTypeSymbol iNotifyPropertyChangingSymbol = context.Compilation.GetTypeByMetadataName("System.ComponentModel.INotifyPropertyChanging")!;
+        ImmutableArray<Diagnostic>.Builder builder = ImmutableArray.CreateBuilder<Diagnostic>();
 
         // Check if the type already implements INotifyPropertyChanged...
-        if (classDeclarationSymbol.AllInterfaces.Any(i => SymbolEqualityComparer.Default.Equals(i, iNotifyPropertyChangedSymbol)))
+        if (typeSymbol.AllInterfaces.Any(i => i.HasFullyQualifiedName("global::System.ComponentModel.INotifyPropertyChanged")))
         {
-            descriptor = DuplicateINotifyPropertyChangedInterfaceForObservableObjectAttributeError;
+            builder.Add(DuplicateINotifyPropertyChangedInterfaceForObservableObjectAttributeError, typeSymbol, typeSymbol);
+
+            diagnostics = builder.ToImmutable();
 
             return false;
         }
 
         // ...or INotifyPropertyChanging
-        if (classDeclarationSymbol.AllInterfaces.Any(i => SymbolEqualityComparer.Default.Equals(i, iNotifyPropertyChangingSymbol)))
+        if (typeSymbol.AllInterfaces.Any(i => i.HasFullyQualifiedName("global::System.ComponentModel.INotifyPropertyChanging")))
         {
-            descriptor = DuplicateINotifyPropertyChangingInterfaceForObservableObjectAttributeError;
+            builder.Add(DuplicateINotifyPropertyChangingInterfaceForObservableObjectAttributeError, typeSymbol, typeSymbol);
+
+            diagnostics = builder.ToImmutable();
 
             return false;
         }
 
-        descriptor = null;
+        diagnostics = builder.ToImmutable();
 
         return true;
+    }
+
+    /// <inheritdoc/>
+    protected override ImmutableArray<MemberDeclarationSyntax> FilterDeclaredMembers(object? info, ClassDeclarationSyntax classDeclaration)
+    {
+        return classDeclaration.Members.ToImmutableArray();
     }
 }

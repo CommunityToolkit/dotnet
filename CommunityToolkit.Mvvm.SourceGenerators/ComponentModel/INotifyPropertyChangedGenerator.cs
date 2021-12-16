@@ -39,10 +39,7 @@ public sealed class INotifyPropertyChangedGenerator : TransitiveMembersGenerator
     }
 
     /// <inheritdoc/>
-    protected override bool ValidateTargetType(
-        INamedTypeSymbol typeSymbol,
-        INotifyPropertyChangedInfo info,
-        out ImmutableArray<Diagnostic> diagnostics)
+    protected override bool ValidateTargetType(INamedTypeSymbol typeSymbol, INotifyPropertyChangedInfo info, out ImmutableArray<Diagnostic> diagnostics)
     {
         ImmutableArray<Diagnostic>.Builder builder = ImmutableArray.CreateBuilder<Diagnostic>();
 
