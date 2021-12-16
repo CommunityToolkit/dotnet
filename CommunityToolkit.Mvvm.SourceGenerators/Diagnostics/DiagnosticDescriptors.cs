@@ -14,61 +14,13 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
 internal static class DiagnosticDescriptors
 {
     /// <summary>
-    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <see cref="INotifyPropertyChangedGenerator"/> failed to run on a given type.
-    /// <para>
-    /// Format: <c>"The generator INotifyPropertyChangedGenerator failed to execute on type {0}"</c>.
-    /// </para>
-    /// </summary>
-    public static readonly DiagnosticDescriptor INotifyPropertyChangedGeneratorError = new(
-        id: "MVVMTK0001",
-        title: $"Internal error for {nameof(INotifyPropertyChangedGenerator)}",
-        messageFormat: $"The generator {nameof(INotifyPropertyChangedGenerator)} failed to execute on type {{0}}",
-        category: typeof(INotifyPropertyChangedGenerator).FullName,
-        defaultSeverity: DiagnosticSeverity.Error,
-        isEnabledByDefault: true,
-        description: $"The {nameof(INotifyPropertyChangedGenerator)} generator encountered an error while processing a type. Please report this issue at https://aka.ms/mvvmtoolkit.",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
-
-    /// <summary>
-    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <see cref="ObservableObjectGenerator"/> failed to run on a given type.
-    /// <para>
-    /// Format: <c>"The generator ObservableObjectGenerator failed to execute on type {0}"</c>.
-    /// </para>
-    /// </summary>
-    public static readonly DiagnosticDescriptor ObservableObjectGeneratorError = new(
-        id: "MVVMTK0002",
-        title: $"Internal error for {nameof(ObservableObjectGenerator)}",
-        messageFormat: $"The generator {nameof(ObservableObjectGenerator)} failed to execute on type {{0}}",
-        category: typeof(ObservableObjectGenerator).FullName,
-        defaultSeverity: DiagnosticSeverity.Error,
-        isEnabledByDefault: true,
-        description: $"The {nameof(ObservableObjectGenerator)} generator encountered an error while processing a type. Please report this issue at https://aka.ms/mvvmtoolkit.",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
-
-    /// <summary>
-    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <see cref="ObservableRecipientGenerator"/> failed to run on a given type.
-    /// <para>
-    /// Format: <c>"The generator ObservableRecipientGenerator failed to execute on type {0}"</c>.
-    /// </para>
-    /// </summary>
-    public static readonly DiagnosticDescriptor ObservableRecipientGeneratorError = new(
-        id: "MVVMTK0003",
-        title: $"Internal error for {nameof(ObservableRecipientGenerator)}",
-        messageFormat: $"The generator {nameof(ObservableRecipientGenerator)} failed to execute on type {{0}}",
-        category: typeof(ObservableRecipientGenerator).FullName,
-        defaultSeverity: DiagnosticSeverity.Error,
-        isEnabledByDefault: true,
-        description: $"The {nameof(ObservableRecipientGenerator)} generator encountered an error while processing a type. Please report this issue at https://aka.ms/mvvmtoolkit.",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
-
-    /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a duplicate declaration of <see cref="INotifyPropertyChanged"/> would happen.
     /// <para>
     /// Format: <c>"Cannot apply [INotifyPropertyChangedAttribute] to type {0}, as it already declares the INotifyPropertyChanged interface"</c>.
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor DuplicateINotifyPropertyChangedInterfaceForINotifyPropertyChangedAttributeError = new(
-        id: "MVVMTK0004",
+        id: "MVVMTK0001",
         title: $"Duplicate {nameof(INotifyPropertyChanged)} definition",
         messageFormat: $"Cannot apply [INotifyPropertyChanged] to type {{0}}, as it already declares the {nameof(INotifyPropertyChanged)} interface",
         category: typeof(INotifyPropertyChangedGenerator).FullName,
@@ -84,7 +36,7 @@ internal static class DiagnosticDescriptors
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor DuplicateINotifyPropertyChangedInterfaceForObservableObjectAttributeError = new(
-        id: "MVVMTK0005",
+        id: "MVVMTK0002",
         title: $"Duplicate {nameof(INotifyPropertyChanged)} definition",
         messageFormat: $"Cannot apply [ObservableObject] to type {{0}}, as it already declares the {nameof(INotifyPropertyChanged)} interface",
         category: typeof(ObservableObjectGenerator).FullName,
@@ -100,7 +52,7 @@ internal static class DiagnosticDescriptors
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor DuplicateINotifyPropertyChangingInterfaceForObservableObjectAttributeError = new(
-        id: "MVVMTK0006",
+        id: "MVVMTK0003",
         title: $"Duplicate {nameof(INotifyPropertyChanging)} definition",
         messageFormat: $"Cannot apply [ObservableObject] to type {{0}}, as it already declares the {nameof(INotifyPropertyChanging)} interface",
         category: typeof(ObservableObjectGenerator).FullName,
@@ -116,7 +68,7 @@ internal static class DiagnosticDescriptors
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor DuplicateObservableRecipientError = new(
-        id: "MVVMTK0007",
+        id: "MVVMTK0004",
         title: "Duplicate ObservableRecipient definition",
         messageFormat: $"Cannot apply [ObservableRecipient] to type {{0}}, as it already inherits from the ObservableRecipient class",
         category: typeof(ObservableRecipientGenerator).FullName,
@@ -132,7 +84,7 @@ internal static class DiagnosticDescriptors
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor MissingBaseObservableObjectFunctionalityError = new(
-        id: "MVVMTK0008",
+        id: "MVVMTK0005",
         title: "Missing base ObservableObject functionality",
         messageFormat: $"Cannot apply [ObservableRecipient] to type {{0}}, as it lacks necessary base functionality (it should either inherit from ObservableObject, or be annotated with [ObservableObject] or [INotifyPropertyChanged])",
         category: typeof(ObservableRecipientGenerator).FullName,
@@ -148,7 +100,7 @@ internal static class DiagnosticDescriptors
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor MissingObservableValidatorInheritanceError = new(
-        id: "MVVMTK0009",
+        id: "MVVMTK0006",
         title: "Missing ObservableValidator inheritance",
         messageFormat: "The field {0}.{1} cannot be used to generate an observable property, as it has {2} validation attribute(s) but is declared in a type that doesn't inherit from ObservableValidator",
         category: typeof(ObservablePropertyGenerator).FullName,
@@ -158,45 +110,13 @@ internal static class DiagnosticDescriptors
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>
-    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <see cref="ObservablePropertyGenerator"/> failed to run on a given type.
-    /// <para>
-    /// Format: <c>"The generator ObservablePropertyGenerator failed to execute on type {0}"</c>.
-    /// </para>
-    /// </summary>
-    public static readonly DiagnosticDescriptor ObservablePropertyGeneratorError = new(
-        id: "MVVMTK0010",
-        title: $"Internal error for {nameof(ObservablePropertyGenerator)}",
-        messageFormat: $"The generator {nameof(ObservablePropertyGenerator)} failed to execute on type {{0}}",
-        category: typeof(ObservableObjectGenerator).FullName,
-        defaultSeverity: DiagnosticSeverity.Error,
-        isEnabledByDefault: true,
-        description: $"The {nameof(ObservablePropertyGenerator)} generator encountered an error while processing a type. Please report this issue at https://aka.ms/mvvmtoolkit.",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
-
-    /// <summary>
-    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <see cref="ICommandGenerator"/> failed to run on a given type.
-    /// <para>
-    /// Format: <c>"The generator ICommandGenerator failed to execute on type {0}"</c>.
-    /// </para>
-    /// </summary>
-    public static readonly DiagnosticDescriptor ICommandGeneratorError = new(
-        id: "MVVMTK0011",
-        title: $"Internal error for {nameof(ICommandGenerator)}",
-        messageFormat: $"The generator {nameof(ICommandGenerator)} failed to execute on type {{0}}",
-        category: typeof(ICommandGenerator).FullName,
-        defaultSeverity: DiagnosticSeverity.Error,
-        isEnabledByDefault: true,
-        description: $"The {nameof(ICommandGenerator)} generator encountered an error while processing a type. Please report this issue at https://aka.ms/mvvmtoolkit.",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
-
-    /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when an annotated method to generate a command for has an invalid signature.
     /// <para>
     /// Format: <c>"The method {0}.{1} cannot be used to generate a command property, as its signature isn't compatible with any of the existing relay command types"</c>.
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor InvalidICommandMethodSignatureError = new(
-        id: "MVVMTK0012",
+        id: "MVVMTK0007",
         title: "Invalid ICommand method signature",
         messageFormat: "The method {0}.{1} cannot be used to generate a command property, as its signature isn't compatible with any of the existing relay command types",
         category: typeof(ICommandGenerator).FullName,
@@ -209,7 +129,7 @@ internal static class DiagnosticDescriptors
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when an unsupported C# language version is being used.
     /// </summary>
     public static readonly DiagnosticDescriptor UnsupportedCSharpLanguageVersionError = new(
-        id: "MVVMTK0013",
+        id: "MVVMTK0008",
         title: "Unsupported C# language version",
         messageFormat: "The source generator features from the MVVM Toolkit require consuming projects to set the C# language version to at least C# 9.0",
         category: typeof(CSharpParseOptions).FullName,
@@ -225,7 +145,7 @@ internal static class DiagnosticDescriptors
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor InvalidCanExecuteMemberName = new(
-        id: "MVVMTK0014",
+        id: "MVVMTK0009",
         title: "Invalid ICommand.CanExecute member name",
         messageFormat: "The CanExecute name must refer to a valid member, but \"{0}\" has no matches in type {1}",
         category: typeof(ICommandGenerator).FullName,
@@ -241,7 +161,7 @@ internal static class DiagnosticDescriptors
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor MultipleCanExecuteMemberNameMatches = new(
-        id: "MVVMTK0015",
+        id: "MVVMTK0010",
         title: "Multiple ICommand.CanExecute member name matches",
         messageFormat: "The CanExecute name must refer to a single member, but \"{0}\" has multiple matches in type {1}",
         category: typeof(ICommandGenerator).FullName,
@@ -257,7 +177,7 @@ internal static class DiagnosticDescriptors
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor InvalidCanExecuteMember = new(
-        id: "MVVMTK0016",
+        id: "MVVMTK0011",
         title: "No valid ICommand.CanExecute member match",
         messageFormat: "The CanExecute name must refer to a compatible member, but no valid members were found for \"{0}\" in type {1}",
         category: typeof(ICommandGenerator).FullName,
@@ -273,7 +193,7 @@ internal static class DiagnosticDescriptors
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor InvalidConcurrentExecutionsParameterError = new(
-        id: "MVVMTK0017",
+        id: "MVVMTK0012",
         title: "Invalid concurrency control setting usage",
         messageFormat: "The method {0}.{1} cannot be annotated with the [ICommand] attribute specifying a concurrency control setting, as it maps to a non-asynchronous command type",
         category: typeof(ICommandGenerator).FullName,
