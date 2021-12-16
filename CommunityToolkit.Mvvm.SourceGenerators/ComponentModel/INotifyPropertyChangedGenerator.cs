@@ -2,12 +2,13 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+using System.Collections.Immutable;
 using System.Linq;
+using CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
+using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
+using CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators;
@@ -15,62 +16,63 @@ namespace CommunityToolkit.Mvvm.SourceGenerators;
 /// <summary>
 /// A source generator for the <c>INotifyPropertyChangedAttribute</c> type.
 /// </summary>
-[Generator]
-public sealed class INotifyPropertyChangedGenerator : TransitiveMembersGenerator
+[Generator(LanguageNames.CSharp)]
+public sealed class INotifyPropertyChangedGenerator : TransitiveMembersGenerator2<INotifyPropertyChangedInfo>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="INotifyPropertyChangedGenerator"/> class.
     /// </summary>
     public INotifyPropertyChangedGenerator()
-        : base("CommunityToolkit.Mvvm.ComponentModel.INotifyPropertyChangedAttribute")
+        : base("global::CommunityToolkit.Mvvm.ComponentModel.INotifyPropertyChangedAttribute")
     {
     }
 
     /// <inheritdoc/>
-    protected override DiagnosticDescriptor TargetTypeErrorDescriptor => INotifyPropertyChangedGeneratorError;
+    protected override INotifyPropertyChangedInfo GetInfo(AttributeData attributeData)
+    {
+        if (attributeData.TryGetNamedArgument("IncludeAdditionalHelperMethods", out bool includeAdditionalHelperMethods))
+        {
+            return new(includeAdditionalHelperMethods);
+        }
+
+        return new(false);
+    }
 
     /// <inheritdoc/>
     protected override bool ValidateTargetType(
-        GeneratorExecutionContext context,
-        AttributeData attributeData,
-        ClassDeclarationSyntax classDeclaration,
-        INamedTypeSymbol classDeclarationSymbol,
-        [NotNullWhen(false)] out DiagnosticDescriptor? descriptor)
+        INamedTypeSymbol typeSymbol,
+        INotifyPropertyChangedInfo info,
+        out ImmutableArray<Diagnostic> diagnostics)
     {
-        INamedTypeSymbol iNotifyPropertyChangedSymbol = context.Compilation.GetTypeByMetadataName("System.ComponentModel.INotifyPropertyChanged")!;
+        ImmutableArray<Diagnostic>.Builder builder = ImmutableArray.CreateBuilder<Diagnostic>();
 
         // Check if the type already implements INotifyPropertyChanged
-        if (classDeclarationSymbol.AllInterfaces.Any(i => SymbolEqualityComparer.Default.Equals(i, iNotifyPropertyChangedSymbol)))
+        if (typeSymbol.AllInterfaces.Any(i => i.HasFullyQualifiedName("global::System.ComponentModel.INotifyPropertyChanged")))
         {
-            descriptor = DuplicateINotifyPropertyChangedInterfaceForINotifyPropertyChangedAttributeError;
+            builder.Add(DuplicateINotifyPropertyChangedInterfaceForINotifyPropertyChangedAttributeError, typeSymbol, typeSymbol);
+
+            diagnostics = builder.ToImmutable();
 
             return false;
         }
 
-        descriptor = null;
+        diagnostics = builder.ToImmutable();
 
         return true;
     }
 
     /// <inheritdoc/>
-    protected override IEnumerable<MemberDeclarationSyntax> FilterDeclaredMembers(
-        GeneratorExecutionContext context,
-        AttributeData attributeData,
-        ClassDeclarationSyntax classDeclaration,
-        INamedTypeSymbol classDeclarationSymbol,
-        ClassDeclarationSyntax sourceDeclaration)
+    protected override ImmutableArray<MemberDeclarationSyntax> FilterDeclaredMembers(INotifyPropertyChangedInfo info, ClassDeclarationSyntax classDeclaration)
     {
         // If requested, only include the event and the basic methods to raise it, but not the additional helpers
-        if (attributeData.HasNamedArgument("IncludeAdditionalHelperMethods", false))
+        if (!info.IncludeAdditionalHelperMethods)
         {
-            return sourceDeclaration.Members.Where(static member =>
-            {
-                return member
+            return classDeclaration.Members.Where(
+                static member => member
                     is EventFieldDeclarationSyntax
-                    or MethodDeclarationSyntax { Identifier: { ValueText: "OnPropertyChanged" } };
-            });
+                    or MethodDeclarationSyntax { Identifier.ValueText: "OnPropertyChanged" }).ToImmutableArray();
         }
 
-        return sourceDeclaration.Members;
+        return classDeclaration.Members.ToImmutableArray();
     }
 }
