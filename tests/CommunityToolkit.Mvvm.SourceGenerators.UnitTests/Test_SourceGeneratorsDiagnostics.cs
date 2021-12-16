@@ -561,7 +561,7 @@ public class Test_SourceGeneratorsDiagnostics
     /// <param name="source">The input source to process.</param>
     /// <param name="diagnosticsIds">The diagnostic ids to expect for the input source code.</param>
     private static void VerifyGeneratedDiagnostics<TGenerator>(string source, params string[] diagnosticsIds)
-        where TGenerator : class, new()
+        where TGenerator : class, IIncrementalGenerator, new()
     {
         VerifyGeneratedDiagnostics<TGenerator>(CSharpSyntaxTree.ParseText(source), diagnosticsIds);
     }
@@ -573,7 +573,7 @@ public class Test_SourceGeneratorsDiagnostics
     /// <param name="syntaxTree">The input source tree to process.</param>
     /// <param name="diagnosticsIds">The diagnostic ids to expect for the input source code.</param>
     private static void VerifyGeneratedDiagnostics<TGenerator>(SyntaxTree syntaxTree, params string[] diagnosticsIds)
-        where TGenerator : class, new()
+        where TGenerator : class, IIncrementalGenerator, new()
     {
         Type observableObjectType = typeof(ObservableObject);
         Type validationAttributeType = typeof(ValidationAttribute);
@@ -590,12 +590,9 @@ public class Test_SourceGeneratorsDiagnostics
             references,
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
-        GeneratorDriver driver = new TGenerator() switch
-        {
-            ISourceGenerator generator => CSharpGeneratorDriver.Create(generator).WithUpdatedParseOptions((CSharpParseOptions)syntaxTree.Options),
-            IIncrementalGenerator incrementalGenerator => CSharpGeneratorDriver.Create(incrementalGenerator).WithUpdatedParseOptions((CSharpParseOptions)syntaxTree.Options),
-            _ => throw new ArgumentException("Invalid generator type", nameof(TGenerator))
-        };
+        IIncrementalGenerator generator = new TGenerator();
+
+        GeneratorDriver driver = CSharpGeneratorDriver.Create(generator).WithUpdatedParseOptions((CSharpParseOptions)syntaxTree.Options);
 
         _ = driver.RunGeneratorsAndUpdateCompilation(compilation, out Compilation outputCompilation, out ImmutableArray<Diagnostic> diagnostics);
 
