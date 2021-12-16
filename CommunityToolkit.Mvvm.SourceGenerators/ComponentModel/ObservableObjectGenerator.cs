@@ -16,7 +16,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators;
 /// A source generator for the <c>ObservableObjectAttribute</c> type.
 /// </summary>
 [Generator(LanguageNames.CSharp)]
-public sealed class ObservableObjectGenerator : TransitiveMembersGenerator2<object?>
+public sealed class ObservableObjectGenerator : TransitiveMembersGenerator<object?>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ObservableObjectGenerator"/> class.

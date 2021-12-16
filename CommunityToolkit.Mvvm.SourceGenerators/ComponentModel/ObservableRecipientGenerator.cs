@@ -19,7 +19,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators;
 /// A source generator for the <c>ObservableRecipientAttribute</c> type.
 /// </summary>
 [Generator(LanguageNames.CSharp)]
-public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator2<ObservableRecipientInfo>
+public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<ObservableRecipientInfo>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ObservableRecipientGenerator"/> class.

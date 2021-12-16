@@ -17,7 +17,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators;
 /// A source generator for the <c>INotifyPropertyChangedAttribute</c> type.
 /// </summary>
 [Generator(LanguageNames.CSharp)]
-public sealed class INotifyPropertyChangedGenerator : TransitiveMembersGenerator2<INotifyPropertyChangedInfo>
+public sealed class INotifyPropertyChangedGenerator : TransitiveMembersGenerator<INotifyPropertyChangedInfo>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="INotifyPropertyChangedGenerator"/> class.
