@@ -377,7 +377,7 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
         // instance. This will result in no further allocations after the first time this method is called for a given
         // generic type. We only pay the cost of the virtual call to the delegate, but this is not performance critical
         // code and that overhead would still be much lower than the rest of the method anyway, so that's fine.
-        return SetPropertyAndNotifyOnCompletion(taskNotifier ??= new TaskNotifier(), newValue, static _ => { }, propertyName);
+        return SetPropertyAndNotifyOnCompletion(taskNotifier ??= new TaskNotifier(), newValue, null, propertyName);
     }
 
     /// <summary>
@@ -441,7 +441,7 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
     /// </remarks>
     protected bool SetPropertyAndNotifyOnCompletion<T>([NotNull] ref TaskNotifier<T>? taskNotifier, Task<T>? newValue, [CallerMemberName] string? propertyName = null)
     {
-        return SetPropertyAndNotifyOnCompletion(taskNotifier ??= new TaskNotifier<T>(), newValue, static _ => { }, propertyName);
+        return SetPropertyAndNotifyOnCompletion(taskNotifier ??= new TaskNotifier<T>(), newValue, null, propertyName);
     }
 
     /// <summary>
@@ -476,10 +476,10 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
     /// <typeparam name="TTask">The type of <see cref="Task"/> to set and monitor.</typeparam>
     /// <param name="taskNotifier">The field notifier.</param>
     /// <param name="newValue">The property's value after the change occurred.</param>
-    /// <param name="callback">A callback to invoke to update the property value.</param>
+    /// <param name="callback">(optional) A callback to invoke to update the property value.</param>
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
-    private bool SetPropertyAndNotifyOnCompletion<TTask>(ITaskNotifier<TTask> taskNotifier, TTask? newValue, Action<TTask?> callback, [CallerMemberName] string? propertyName = null)
+    private bool SetPropertyAndNotifyOnCompletion<TTask>(ITaskNotifier<TTask> taskNotifier, TTask? newValue, Action<TTask?>? callback, [CallerMemberName] string? propertyName = null)
         where TTask : Task
     {
         if (ReferenceEquals(taskNotifier.Task, newValue))
@@ -507,7 +507,10 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
         // This mirrors the return value of all the other synchronous Set methods as well.
         if (isAlreadyCompletedOrNull)
         {
-            callback(newValue);
+            if (callback is not null)
+            {
+                callback(newValue);
+            }
 
             return true;
         }
@@ -537,7 +540,10 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
                 OnPropertyChanged(propertyName);
             }
 
-            callback(newValue);
+            if (callback is not null)
+            {
+                callback(newValue);
+            }
         }
 
         MonitorTask();
