@@ -48,10 +48,10 @@ public abstract partial class TransitiveMembersGenerator2<TInfo> : IIncrementalG
     /// </summary>
     /// <param name="attributeType">The fully qualified name of the attribute type to look for.</param>
     /// <param name="comparer">An <see cref="IEqualityComparer{T}"/> instance to compare intermediate models.</param>
-    protected TransitiveMembersGenerator2(string attributeType, IEqualityComparer<TInfo> comparer)
+    private protected TransitiveMembersGenerator2(string attributeType, IEqualityComparer<TInfo>? comparer = null)
     {
         this.attributeType = attributeType;
-        this.comparer = comparer;
+        this.comparer = comparer ?? EqualityComparer<TInfo>.Default;
 
         string attributeTypeName = attributeType.Split('.').Last();
         string filename = $"CommunityToolkit.Mvvm.SourceGenerators.EmbeddedResources.{attributeTypeName.Replace("Attribute", string.Empty)}.cs";
