@@ -129,8 +129,6 @@ public abstract class ObservableRecipient
     {
         T oldValue = field;
 
-        // We duplicate the code as in the base class here to leverage
-        // the intrinsics support for EqualityComparer<T>.Default.Equals.
         bool propertyChanged = SetProperty(ref field, newValue, propertyName);
 
         if (propertyChanged && broadcast)

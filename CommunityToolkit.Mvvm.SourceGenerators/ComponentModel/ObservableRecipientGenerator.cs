@@ -35,14 +35,12 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
         string typeName = typeSymbol.Name;
         bool hasExplicitConstructors = !(typeSymbol.InstanceConstructors.Length == 1 && typeSymbol.InstanceConstructors[0] is { Parameters.IsEmpty: true, IsImplicitlyDeclared: true });
         bool isAbstract = typeSymbol.IsAbstract;
-        bool isSealed = typeSymbol.IsSealed;
         bool isObservableValidator = typeSymbol.InheritsFrom("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator");
 
         return new(
             typeName,
             hasExplicitConstructors,
             isAbstract,
-            isSealed,
             isObservableValidator);
     }
 
@@ -82,14 +80,14 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
     }
 
     /// <inheritdoc/>
-    protected override ImmutableArray<MemberDeclarationSyntax> FilterDeclaredMembers(ObservableRecipientInfo info, ClassDeclarationSyntax classDeclaration)
+    protected override ImmutableArray<MemberDeclarationSyntax> FilterDeclaredMembers(ObservableRecipientInfo info, ImmutableArray<MemberDeclarationSyntax> memberDeclarations)
     {
         ImmutableArray<MemberDeclarationSyntax>.Builder builder = ImmutableArray.CreateBuilder<MemberDeclarationSyntax>();
 
         // If the target type has no constructors, generate constructors as well
         if (!info.HasExplicitConstructors)
         {
-            foreach (ConstructorDeclarationSyntax ctor in classDeclaration.Members.OfType<ConstructorDeclarationSyntax>())
+            foreach (ConstructorDeclarationSyntax ctor in memberDeclarations.OfType<ConstructorDeclarationSyntax>())
             {
                 string text = ctor.NormalizeWhitespace().ToFullString();
                 string replaced = text.Replace("ObservableRecipient", info.TypeName);
@@ -108,7 +106,7 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
         // Skip the SetProperty overloads if the target type inherits from ObservableValidator, to avoid conflicts
         if (info.IsObservableValidator)
         {
-            foreach (MemberDeclarationSyntax member in classDeclaration.Members.Where(static member => member is not ConstructorDeclarationSyntax))
+            foreach (MemberDeclarationSyntax member in memberDeclarations.Where(static member => member is not ConstructorDeclarationSyntax))
             {
                 if (member is not MethodDeclarationSyntax { Identifier.ValueText: "SetProperty" })
                 {
@@ -120,20 +118,9 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
         }
 
         // If the target type has at least one custom constructor, only generate methods
-        foreach (MemberDeclarationSyntax member in classDeclaration.Members.Where(static member => member is not ConstructorDeclarationSyntax))
+        foreach (MemberDeclarationSyntax member in memberDeclarations.Where(static member => member is not ConstructorDeclarationSyntax))
         {
             builder.Add(member);
-        }
-
-        // If the target class is sealed, make protected members private and remove the virtual modifier
-        if (info.IsSealed)
-        {
-            return
-                builder
-                .Select(static member => member
-                    .ReplaceModifier(SyntaxKind.ProtectedKeyword, SyntaxKind.PrivateKeyword)
-                    .RemoveModifier(SyntaxKind.VirtualKeyword))
-                .ToImmutableArray();
         }
 
         return builder.ToImmutable();

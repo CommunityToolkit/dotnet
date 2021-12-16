@@ -8,5 +8,4 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
 /// A model with gathered info on a given <c>INotifyPropertyChangedAttribute</c> instance.
 /// </summary>
 /// <param name="IncludeAdditionalHelperMethods">Whether to also generate helper methods in the target type.</param>
-/// <param name="IsSealed">Whether the target type is sealed.</param>
-public sealed record INotifyPropertyChangedInfo(bool IncludeAdditionalHelperMethods, bool IsSealed);
+public sealed record INotifyPropertyChangedInfo(bool IncludeAdditionalHelperMethods);

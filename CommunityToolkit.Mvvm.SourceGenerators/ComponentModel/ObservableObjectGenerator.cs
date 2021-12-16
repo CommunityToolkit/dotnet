@@ -17,7 +17,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators;
 /// A source generator for the <c>ObservableObjectAttribute</c> type.
 /// </summary>
 [Generator(LanguageNames.CSharp)]
-public sealed class ObservableObjectGenerator : TransitiveMembersGenerator<bool>
+public sealed class ObservableObjectGenerator : TransitiveMembersGenerator<object?>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ObservableObjectGenerator"/> class.
@@ -28,13 +28,13 @@ public sealed class ObservableObjectGenerator : TransitiveMembersGenerator<bool>
     }
 
     /// <inheritdoc/>
-    protected override bool GetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData)
+    protected override object? GetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData)
     {
-        return typeSymbol.IsSealed;
+        return null;
     }
 
     /// <inheritdoc/>
-    protected override bool ValidateTargetType(INamedTypeSymbol typeSymbol, bool info, out ImmutableArray<Diagnostic> diagnostics)
+    protected override bool ValidateTargetType(INamedTypeSymbol typeSymbol, object? info, out ImmutableArray<Diagnostic> diagnostics)
     {
         ImmutableArray<Diagnostic>.Builder builder = ImmutableArray.CreateBuilder<Diagnostic>();
 
@@ -64,19 +64,8 @@ public sealed class ObservableObjectGenerator : TransitiveMembersGenerator<bool>
     }
 
     /// <inheritdoc/>
-    protected override ImmutableArray<MemberDeclarationSyntax> FilterDeclaredMembers(bool info, ClassDeclarationSyntax classDeclaration)
+    protected override ImmutableArray<MemberDeclarationSyntax> FilterDeclaredMembers(object? info, ImmutableArray<MemberDeclarationSyntax> memberDeclarations)
     {
-        // If the target class is sealed, make protected members private and remove the virtual modifier
-        if (info)
-        {
-            return
-                classDeclaration.Members
-                .Select(static member => member
-                    .ReplaceModifier(SyntaxKind.ProtectedKeyword, SyntaxKind.PrivateKeyword)
-                    .RemoveModifier(SyntaxKind.VirtualKeyword))
-                .ToImmutableArray();
-        }
-
-        return classDeclaration.Members.ToImmutableArray();
+        return memberDeclarations;
     }
 }

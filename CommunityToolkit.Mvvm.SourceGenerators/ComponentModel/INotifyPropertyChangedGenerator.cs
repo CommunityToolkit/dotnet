@@ -33,9 +33,8 @@ public sealed class INotifyPropertyChangedGenerator : TransitiveMembersGenerator
     protected override INotifyPropertyChangedInfo GetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData)
     {
         bool includeAdditionalHelperMethods = attributeData.GetNamedArgument<bool>("IncludeAdditionalHelperMethods", true);
-        bool isSealed = typeSymbol.IsSealed;
 
-        return new(includeAdditionalHelperMethods, isSealed);
+        return new(includeAdditionalHelperMethods);
     }
 
     /// <inheritdoc/>
@@ -59,28 +58,16 @@ public sealed class INotifyPropertyChangedGenerator : TransitiveMembersGenerator
     }
 
     /// <inheritdoc/>
-    protected override ImmutableArray<MemberDeclarationSyntax> FilterDeclaredMembers(INotifyPropertyChangedInfo info, ClassDeclarationSyntax classDeclaration)
+    protected override ImmutableArray<MemberDeclarationSyntax> FilterDeclaredMembers(INotifyPropertyChangedInfo info, ImmutableArray<MemberDeclarationSyntax> memberDeclarations)
     {
-        IEnumerable<MemberDeclarationSyntax> memberDeclarations;
-
         // If requested, only include the event and the basic methods to raise it, but not the additional helpers
-        if (info.IncludeAdditionalHelperMethods)
+        if (!info.IncludeAdditionalHelperMethods)
         {
-            memberDeclarations = classDeclaration.Members;
-        }
-        else
-        {
-            memberDeclarations = classDeclaration.Members.Where(static member => member
+            return memberDeclarations.Where(static member => member
                 is EventFieldDeclarationSyntax
-                or MethodDeclarationSyntax { Identifier.ValueText: "OnPropertyChanged" });
+                or MethodDeclarationSyntax { Identifier.ValueText: "OnPropertyChanged" }).ToImmutableArray();
         }
 
-        // If the target class is sealed, make protected members private and remove the virtual modifier
-        return
-            memberDeclarations
-            .Select(static member => member
-                .ReplaceModifier(SyntaxKind.ProtectedKeyword, SyntaxKind.PrivateKeyword)
-                .RemoveModifier(SyntaxKind.VirtualKeyword))
-            .ToImmutableArray();
+        return memberDeclarations;
     }
 }
