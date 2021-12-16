@@ -313,7 +313,7 @@ public abstract class ObservableObject : global::System.ComponentModel.INotifyPr
     /// </remarks>
     protected bool SetPropertyAndNotifyOnCompletion([global::System.Diagnostics.CodeAnalysis.NotNull] ref TaskNotifier? taskNotifier, global::System.Threading.Tasks.Task? newValue, [global::System.Runtime.CompilerServices.CallerMemberName] string? propertyName = null)
     {
-        return SetPropertyAndNotifyOnCompletion(taskNotifier ??= new TaskNotifier(), newValue, static _ => { }, propertyName);
+        return SetPropertyAndNotifyOnCompletion(taskNotifier ??= new TaskNotifier(), newValue, null, propertyName);
     }
 
     /// <summary>
@@ -374,7 +374,7 @@ public abstract class ObservableObject : global::System.ComponentModel.INotifyPr
     /// </remarks>
     protected bool SetPropertyAndNotifyOnCompletion<T>([global::System.Diagnostics.CodeAnalysis.NotNull] ref TaskNotifier<T>? taskNotifier, global::System.Threading.Tasks.Task<T>? newValue, [global::System.Runtime.CompilerServices.CallerMemberName] string? propertyName = null)
     {
-        return SetPropertyAndNotifyOnCompletion(taskNotifier ??= new TaskNotifier<T>(), newValue, static _ => { }, propertyName);
+        return SetPropertyAndNotifyOnCompletion(taskNotifier ??= new TaskNotifier<T>(), newValue, null, propertyName);
     }
 
     /// <summary>
@@ -406,10 +406,10 @@ public abstract class ObservableObject : global::System.ComponentModel.INotifyPr
     /// <typeparam name="TTask">The type of <see cref="global::System.Threading.Tasks.Task"/> to set and monitor.</typeparam>
     /// <param name="taskNotifier">The field notifier.</param>
     /// <param name="newValue">The property's value after the change occurred.</param>
-    /// <param name="callback">A callback to invoke to update the property value.</param>
+    /// <param name="callback">(optional) A callback to invoke to update the property value.</param>
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
-    private bool SetPropertyAndNotifyOnCompletion<TTask>(ITaskNotifier<TTask> taskNotifier, TTask? newValue, global::System.Action<TTask?> callback, [global::System.Runtime.CompilerServices.CallerMemberName] string? propertyName = null)
+    private bool SetPropertyAndNotifyOnCompletion<TTask>(ITaskNotifier<TTask> taskNotifier, TTask? newValue, global::System.Action<TTask?>? callback, [global::System.Runtime.CompilerServices.CallerMemberName] string? propertyName = null)
         where TTask : global::System.Threading.Tasks.Task
     {
         if (ReferenceEquals(taskNotifier.Task, newValue))
@@ -427,7 +427,10 @@ public abstract class ObservableObject : global::System.ComponentModel.INotifyPr
 
         if (isAlreadyCompletedOrNull)
         {
-            callback(newValue);
+            if (callback != null)
+            {
+                callback(newValue);
+            }
 
             return true;
         }
@@ -447,7 +450,10 @@ public abstract class ObservableObject : global::System.ComponentModel.INotifyPr
                 OnPropertyChanged(propertyName);
             }
 
-            callback(newValue);
+            if (callback != null)
+            {
+                callback(newValue);
+            }
         }
 
         MonitorTask();

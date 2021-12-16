@@ -33,7 +33,7 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
         // This ensures that users not using any of the source generators won't be broken when upgrading to this new version.
         IncrementalValueProvider<bool> isGeneratorSupported =
             context.ParseOptionsProvider
-            .Select(static (item, _) => item is CSharpParseOptions { LanguageVersion: >= LanguageVersion.CSharp9 });
+            .Select(static (item, _) => item is CSharpParseOptions { LanguageVersion: >= LanguageVersion.CSharp8 });
 
         // Emit the diagnostic, if needed
         context.ReportDiagnosticsIsNotSupported(isGeneratorSupported, Diagnostic.Create(UnsupportedCSharpLanguageVersionError, null));

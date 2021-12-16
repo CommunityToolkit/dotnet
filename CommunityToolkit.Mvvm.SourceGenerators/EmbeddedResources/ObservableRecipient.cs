@@ -103,7 +103,7 @@ public abstract class ObservableRecipient
     /// </remarks>
     protected virtual void Broadcast<T>(T oldValue, T newValue, string? propertyName)
     {
-        global::CommunityToolkit.Mvvm.Messaging.Messages.PropertyChangedMessage<T> message = new(this, propertyName, oldValue, newValue);
+        var message = new global::CommunityToolkit.Mvvm.Messaging.Messages.PropertyChangedMessage<T>(this, propertyName, oldValue, newValue);
 
         _ = global::CommunityToolkit.Mvvm.Messaging.IMessengerExtensions.Send(Messenger, message);
     }

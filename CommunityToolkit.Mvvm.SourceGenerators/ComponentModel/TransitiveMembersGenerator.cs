@@ -76,7 +76,7 @@ public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGe
         // Validate the language version
         IncrementalValueProvider<bool> isGeneratorSupported =
             context.ParseOptionsProvider
-            .Select(static (item, _) => item is CSharpParseOptions { LanguageVersion: >= LanguageVersion.CSharp9 });
+            .Select(static (item, _) => item is CSharpParseOptions { LanguageVersion: >= LanguageVersion.CSharp8 });
 
         // Get all class declarations
         IncrementalValuesProvider<INamedTypeSymbol> typeSymbols =

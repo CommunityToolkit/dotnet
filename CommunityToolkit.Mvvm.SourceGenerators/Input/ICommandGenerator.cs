@@ -29,7 +29,7 @@ public sealed partial class ICommandGenerator : IIncrementalGenerator
         // Validate the language version
         IncrementalValueProvider<bool> isGeneratorSupported =
             context.ParseOptionsProvider
-            .Select(static (item, _) => item is CSharpParseOptions { LanguageVersion: >= LanguageVersion.CSharp9 });
+            .Select(static (item, _) => item is CSharpParseOptions { LanguageVersion: >= LanguageVersion.CSharp8 });
 
         // Emit the diagnostic, if needed
         context.ReportDiagnosticsIsNotSupported(isGeneratorSupported, Diagnostic.Create(UnsupportedCSharpLanguageVersionError, null));
