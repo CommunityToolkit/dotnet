@@ -26,23 +26,12 @@ public sealed partial class ICommandGenerator : IIncrementalGenerator
     /// <inheritdoc/>
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        // Validate the language version
-        IncrementalValueProvider<bool> isGeneratorSupported =
-            context.ParseOptionsProvider
-            .Select(static (item, _) => item is CSharpParseOptions { LanguageVersion: >= LanguageVersion.CSharp8 });
-
-        // Emit the diagnostic, if needed
-        context.ReportDiagnosticsIsNotSupported(isGeneratorSupported, Diagnostic.Create(UnsupportedCSharpLanguageVersionError, null));
-
         // Get all method declarations with at least one attribute
         IncrementalValuesProvider<IMethodSymbol> methodSymbols =
             context.SyntaxProvider
             .CreateSyntaxProvider(
                 static (node, _) => node is MethodDeclarationSyntax { Parent: ClassDeclarationSyntax, AttributeLists.Count: > 0 },
-                static (context, _) => (IMethodSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!)
-            .Combine(isGeneratorSupported)
-            .Where(static item => item.Right)
-            .Select(static (item, _) => item.Left);
+                static (context, _) => (IMethodSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!);
 
         // Filter the methods using [ICommand]
         IncrementalValuesProvider<(IMethodSymbol Symbol, AttributeData Attribute)> methodSymbolsWithAttributeData =
@@ -51,6 +40,9 @@ public sealed partial class ICommandGenerator : IIncrementalGenerator
                 item,
                 Attribute: item.GetAttributes().FirstOrDefault(a => a.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.ICommandAttribute") == true)))
             .Where(static item => item.Attribute is not null)!;
+
+        // Filter by language version
+        context.FilterWithLanguageVersion(ref methodSymbolsWithAttributeData, LanguageVersion.CSharp8, UnsupportedCSharpLanguageVersionError);
 
         // Gather info for all annotated command methods
         IncrementalValuesProvider<(HierarchyInfo Hierarchy, Result<CommandInfo?> Info)> commandInfoWithErrors =

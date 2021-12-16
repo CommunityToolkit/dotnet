@@ -21,21 +21,12 @@ public sealed partial class ObservableValidatorValidateAllPropertiesGenerator : 
     /// <inheritdoc/>
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        // Validate the language version (this needs at least C# 8.0 due to static local functions being used).
-        // If a lower C# version is set, just skip the execution silently. The fallback path will be used just fine.
-        IncrementalValueProvider<bool> isGeneratorSupported =
-            context.ParseOptionsProvider
-            .Select(static (item, _) => item is CSharpParseOptions { LanguageVersion: >= LanguageVersion.CSharp8 });
-
         // Get all class declarations
         IncrementalValuesProvider<INamedTypeSymbol> typeSymbols =
             context.SyntaxProvider
             .CreateSyntaxProvider(
                 static (node, _) => node is ClassDeclarationSyntax,
-                static (context, _) => (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!)
-            .Combine(isGeneratorSupported)
-            .Where(static item => item.Right)
-            .Select(static (item, _) => item.Left);
+                static (context, _) => (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!);
 
         // Get the types that inherit from ObservableValidator and gather their info
         IncrementalValuesProvider<ValidationInfo> validationInfo =

@@ -304,7 +304,7 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        // This is explicitly allowed in C# < 9.0, as it doesn't use any new features
+        // This is explicitly allowed in C# < 8.0, as it doesn't use any new features
         VerifyGeneratedDiagnostics<ObservableValidatorValidateAllPropertiesGenerator>(
             CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)));
     }
@@ -351,7 +351,7 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        // This is explicitly allowed in C# < 9.0, as it doesn't use any new features
+        // This is explicitly allowed in C# < 8.0, as it doesn't use any new features
         VerifyGeneratedDiagnostics<IMessengerRegisterAllGenerator>(
             CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)));
     }

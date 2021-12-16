@@ -22,20 +22,12 @@ public sealed partial class IMessengerRegisterAllGenerator : IIncrementalGenerat
     /// <inheritdoc/>
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        // Validate the language version
-        IncrementalValueProvider<bool> isGeneratorSupported =
-            context.ParseOptionsProvider
-            .Select(static (item, _) => item is CSharpParseOptions { LanguageVersion: >= LanguageVersion.CSharp8 });
-
         // Get all class declarations
         IncrementalValuesProvider<INamedTypeSymbol> typeSymbols =
             context.SyntaxProvider
             .CreateSyntaxProvider(
                 static (node, _) => node is ClassDeclarationSyntax,
-                static (context, _) => (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!)
-            .Combine(isGeneratorSupported)
-            .Where(static item => item.Right)
-            .Select(static (item, _) => item.Left);
+                static (context, _) => (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!);
 
         // Get the target IRecipient<TMessage> interfaces and filter out other types
         IncrementalValuesProvider<(INamedTypeSymbol Type, ImmutableArray<INamedTypeSymbol> Interfaces)> typeAndInterfaceSymbols =

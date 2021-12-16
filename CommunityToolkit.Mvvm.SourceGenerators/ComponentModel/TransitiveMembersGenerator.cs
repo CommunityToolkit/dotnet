@@ -4,9 +4,7 @@
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
@@ -15,6 +13,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators;
 
@@ -73,20 +72,12 @@ public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGe
     /// <inheritdoc/>
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        // Validate the language version
-        IncrementalValueProvider<bool> isGeneratorSupported =
-            context.ParseOptionsProvider
-            .Select(static (item, _) => item is CSharpParseOptions { LanguageVersion: >= LanguageVersion.CSharp8 });
-
         // Get all class declarations
         IncrementalValuesProvider<INamedTypeSymbol> typeSymbols =
             context.SyntaxProvider
             .CreateSyntaxProvider(
                 static (node, _) => node is ClassDeclarationSyntax { AttributeLists.Count: > 0 },
-                static (context, _) => (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!)
-            .Combine(isGeneratorSupported)
-            .Where(static item => item.Right)
-            .Select(static (item, _) => item.Left);
+                static (context, _) => (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!);
 
         // Filter the types with the target attribute
         IncrementalValuesProvider<(INamedTypeSymbol Symbol, TInfo Info)> typeSymbolsWithInfo =
@@ -96,6 +87,9 @@ public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGe
                 Attribute: item.GetAttributes().FirstOrDefault(a => a.AttributeClass?.HasFullyQualifiedName(this.attributeType) == true)))
             .Where(static item => item.Attribute is not null)!
             .Select((item, _) => (item.Symbol, GetInfo(item.Symbol, item.Attribute!)));
+
+        // Filter by language version
+        context.FilterWithLanguageVersion(ref typeSymbolsWithInfo, LanguageVersion.CSharp8, UnsupportedCSharpLanguageVersionError);
 
         // Gather all generation info, and any diagnostics
         IncrementalValuesProvider<Result<(HierarchyInfo Hierarchy, bool IsSealed, TInfo Info)>> generationInfoWithErrors =
