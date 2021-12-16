@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
+using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 using Microsoft.CodeAnalysis;
 using static Microsoft.CodeAnalysis.SymbolDisplayTypeQualificationStyle;
 
@@ -50,49 +51,25 @@ internal sealed partial record HierarchyInfo(string FilenameHint, string Metadat
     /// <summary>
     /// An <see cref="IEqualityComparer{T}"/> implementation for <see cref="HierarchyInfo"/>.
     /// </summary>
-    public sealed class Comparer : IEqualityComparer<HierarchyInfo>
+    public sealed class Comparer : Comparer<HierarchyInfo, Comparer>
     {
-        /// <summary>
-        /// The singleton <see cref="Comparer"/> instance.
-        /// </summary>
-        public static Comparer Default { get; } = new();
+        /// <inheritdoc/>
+        protected override void AddToHashCode(ref HashCode hashCode, HierarchyInfo obj)
+        {
+            hashCode.Add(obj.FilenameHint);
+            hashCode.Add(obj.MetadataName);
+            hashCode.Add(obj.Namespace);
+            hashCode.AddRange(obj.Names);
+        }
 
         /// <inheritdoc/>
-        public bool Equals(HierarchyInfo? x, HierarchyInfo? y)
+        protected override bool AreEqual(HierarchyInfo x, HierarchyInfo y)
         {
-            if (x is null && y is null)
-            {
-                return true;
-            }
-
-            if (x is null || y is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(x, y))
-            {
-                return true;
-            }
-
             return
                 x.FilenameHint == y.FilenameHint &&
                 x.MetadataName == y.MetadataName &&
                 x.Namespace == y.Namespace &&
                 x.Names.SequenceEqual(y.Names);
-        }
-
-        /// <inheritdoc/>
-        public int GetHashCode(HierarchyInfo obj)
-        {
-            HashCode hashCode = default;
-
-            hashCode.Add(obj.FilenameHint);
-            hashCode.Add(obj.MetadataName);
-            hashCode.Add(obj.Namespace);
-            hashCode.AddRange(obj.Names);
-
-            return hashCode.ToHashCode();
         }
     }
 }

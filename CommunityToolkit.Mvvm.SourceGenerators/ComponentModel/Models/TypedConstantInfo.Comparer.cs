@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 
@@ -13,42 +14,18 @@ partial record TypedConstantInfo
     /// <summary>
     /// An <see cref="IEqualityComparer{T}"/> implementation for <see cref="TypedConstantInfo"/>.
     /// </summary>
-    public sealed class Comparer : IEqualityComparer<TypedConstantInfo>
+    public sealed class Comparer : Comparer<TypedConstantInfo, Comparer>
     {
-        /// <summary>
-        /// The singleton <see cref="Comparer"/> instance.
-        /// </summary>
-        public static Comparer Default { get; } = new();
-
         /// <inheritdoc/>
-        public bool Equals(TypedConstantInfo? x, TypedConstantInfo? y)
+        protected override void AddToHashCode(ref HashCode hashCode, TypedConstantInfo obj)
         {
-            if (x is null && y is null)
-            {
-                return true;
-            }
-
-            if (x is null || y is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(x, y))
-            {
-                return true;
-            }
-
-            return x.IsEqualTo(y);
+            obj.AddToHashCode(ref hashCode);
         }
 
         /// <inheritdoc/>
-        public int GetHashCode(TypedConstantInfo obj)
+        protected override bool AreEqual(TypedConstantInfo x, TypedConstantInfo y)
         {
-            HashCode hashCode = default;
-
-            obj.AddToHashCode(ref hashCode);
-
-            return hashCode.ToHashCode();
+            return x.IsEqualTo(y);
         }
     }
 }

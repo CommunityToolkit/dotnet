@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
+using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 
@@ -34,31 +35,24 @@ internal sealed record PropertyInfo(
     /// <summary>
     /// An <see cref="IEqualityComparer{T}"/> implementation for <see cref="PropertyInfo"/>.
     /// </summary>
-    public sealed class Comparer : IEqualityComparer<PropertyInfo>
+    public sealed class Comparer : Comparer<PropertyInfo, Comparer>
     {
-        /// <summary>
-        /// The singleton <see cref="Comparer"/> instance.
-        /// </summary>
-        public static Comparer Default { get; } = new();
+        /// <inheritdoc/>
+        protected override void AddToHashCode(ref HashCode hashCode, PropertyInfo obj)
+        {
+            hashCode.Add(obj.TypeName);
+            hashCode.Add(obj.IsNullableReferenceType);
+            hashCode.Add(obj.FieldName);
+            hashCode.Add(obj.PropertyName);
+            hashCode.AddRange(obj.PropertyChangingNames);
+            hashCode.AddRange(obj.PropertyChangedNames);
+            hashCode.AddRange(obj.NotifiedCommandNames);
+            hashCode.AddRange(obj.ValidationAttributes, AttributeInfo.Comparer.Default);
+        }
 
         /// <inheritdoc/>
-        public bool Equals(PropertyInfo? x, PropertyInfo? y)
+        protected override bool AreEqual(PropertyInfo x, PropertyInfo y)
         {
-            if (x is null && y is null)
-            {
-                return true;
-            }
-
-            if (x is null || y is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(x, y))
-            {
-                return true;
-            }
-
             return
                 x.TypeName == y.TypeName &&
                 x.IsNullableReferenceType == y.IsNullableReferenceType &&
@@ -68,23 +62,6 @@ internal sealed record PropertyInfo(
                 x.PropertyChangedNames.SequenceEqual(y.PropertyChangedNames) &&
                 x.NotifiedCommandNames.SequenceEqual(y.NotifiedCommandNames) &&
                 x.ValidationAttributes.SequenceEqual(y.ValidationAttributes, AttributeInfo.Comparer.Default);
-        }
-
-        /// <inheritdoc/>
-        public int GetHashCode(PropertyInfo obj)
-        {
-            HashCode hashCode = default;
-
-            hashCode.Add(obj.TypeName);
-            hashCode.Add(obj.IsNullableReferenceType);
-            hashCode.Add(obj.FieldName);
-            hashCode.Add(obj.PropertyName);
-            hashCode.AddRange(obj.PropertyChangingNames);
-            hashCode.AddRange(obj.PropertyChangedNames);
-            hashCode.AddRange(obj.NotifiedCommandNames);
-            hashCode.AddRange(obj.ValidationAttributes, AttributeInfo.Comparer.Default);
-
-            return hashCode.ToHashCode();
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
+using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
 
@@ -24,47 +25,23 @@ internal sealed record RecipientInfo(
     /// <summary>
     /// An <see cref="IEqualityComparer{T}"/> implementation for <see cref="RecipientInfo"/>.
     /// </summary>
-    public sealed class Comparer : IEqualityComparer<RecipientInfo>
+    public sealed class Comparer : Comparer<RecipientInfo, Comparer>
     {
-        /// <summary>
-        /// The singleton <see cref="Comparer"/> instance.
-        /// </summary>
-        public static Comparer Default { get; } = new();
+        /// <inheritdoc/>
+        protected override void AddToHashCode(ref HashCode hashCode, RecipientInfo obj)
+        {
+            hashCode.Add(obj.FilenameHint);
+            hashCode.Add(obj.TypeName);
+            hashCode.AddRange(obj.MessageTypes);
+        }
 
         /// <inheritdoc/>
-        public bool Equals(RecipientInfo? x, RecipientInfo? y)
+        protected override bool AreEqual(RecipientInfo x, RecipientInfo y)
         {
-            if (x is null && y is null)
-            {
-                return true;
-            }
-
-            if (x is null || y is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(x, y))
-            {
-                return true;
-            }
-
             return
                 x.FilenameHint == y.FilenameHint &&
                 x.TypeName == y.TypeName &&
                 x.MessageTypes.SequenceEqual(y.MessageTypes);
-        }
-
-        /// <inheritdoc/>
-        public int GetHashCode(RecipientInfo obj)
-        {
-            HashCode hashCode = default;
-
-            hashCode.Add(obj.FilenameHint);
-            hashCode.Add(obj.TypeName);
-            hashCode.AddRange(obj.MessageTypes);
-
-            return hashCode.ToHashCode();
         }
     }
 }

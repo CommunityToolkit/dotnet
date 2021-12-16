@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
+using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
 
@@ -24,47 +25,23 @@ internal sealed record ValidationInfo(
     /// <summary>
     /// An <see cref="IEqualityComparer{T}"/> implementation for <see cref="ValidationInfo"/>.
     /// </summary>
-    public sealed class Comparer : IEqualityComparer<ValidationInfo>
+    public sealed class Comparer : Comparer<ValidationInfo, Comparer>
     {
-        /// <summary>
-        /// The singleton <see cref="Comparer"/> instance.
-        /// </summary>
-        public static Comparer Default { get; } = new();
+        /// <inheritdoc/>
+        protected override void AddToHashCode(ref HashCode hashCode, ValidationInfo obj)
+        {
+            hashCode.Add(obj.FilenameHint);
+            hashCode.Add(obj.TypeName);
+            hashCode.AddRange(obj.PropertyNames);
+        }
 
         /// <inheritdoc/>
-        public bool Equals(ValidationInfo x, ValidationInfo y)
+        protected override bool AreEqual(ValidationInfo x, ValidationInfo y)
         {
-            if (x is null && y is null)
-            {
-                return true;
-            }
-
-            if (x is null || y is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(x, y))
-            {
-                return true;
-            }
-
             return
                 x.FilenameHint == y.FilenameHint &&
                 x.TypeName == y.TypeName &&
                 x.PropertyNames.SequenceEqual(y.PropertyNames);
-        }
-
-        /// <inheritdoc/>
-        public int GetHashCode(ValidationInfo obj)
-        {
-            HashCode hashCode = default;
-
-            hashCode.Add(obj.FilenameHint);
-            hashCode.Add(obj.TypeName);
-            hashCode.AddRange(obj.PropertyNames);
-
-            return hashCode.ToHashCode();
         }
     }
 }

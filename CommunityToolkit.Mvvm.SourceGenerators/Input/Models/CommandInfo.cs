@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
+using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
 
@@ -40,31 +41,27 @@ internal sealed record CommandInfo(
     /// <summary>
     /// An <see cref="IEqualityComparer{T}"/> implementation for <see cref="CommandInfo"/>.
     /// </summary>
-    public sealed class Comparer : IEqualityComparer<CommandInfo>
+    public sealed class Comparer : Comparer<CommandInfo, Comparer>
     {
-        /// <summary>
-        /// The singleton <see cref="Comparer"/> instance.
-        /// </summary>
-        public static Comparer Default { get; } = new();
+        /// <inheritdoc/>
+        protected override void AddToHashCode(ref HashCode hashCode, CommandInfo obj)
+        {
+            hashCode.Add(obj.MethodName);
+            hashCode.Add(obj.FieldName);
+            hashCode.Add(obj.PropertyName);
+            hashCode.Add(obj.CommandInterfaceType);
+            hashCode.Add(obj.CommandClassType);
+            hashCode.Add(obj.DelegateType);
+            hashCode.AddRange(obj.CommandTypeArguments);
+            hashCode.AddRange(obj.DelegateTypeArguments);
+            hashCode.Add(obj.CanExecuteMemberName);
+            hashCode.Add(obj.CanExecuteExpressionType);
+            hashCode.Add(obj.AllowConcurrentExecutions);
+        }
 
         /// <inheritdoc/>
-        public bool Equals(CommandInfo? x, CommandInfo? y)
+        protected override bool AreEqual(CommandInfo x, CommandInfo y)
         {
-            if (x is null && y is null)
-            {
-                return true;
-            }
-
-            if (x is null || y is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(x, y))
-            {
-                return true;
-            }
-
             return
                 x.MethodName == y.MethodName &&
                 x.FieldName == y.FieldName &&
@@ -77,26 +74,6 @@ internal sealed record CommandInfo(
                 x.CanExecuteMemberName == y.CanExecuteMemberName &&
                 x.CanExecuteExpressionType == y.CanExecuteExpressionType &&
                 x.AllowConcurrentExecutions == y.AllowConcurrentExecutions;
-        }
-
-        /// <inheritdoc/>
-        public int GetHashCode(CommandInfo obj)
-        {
-            HashCode hashCode = default;
-
-            hashCode.Add(obj.MethodName);
-            hashCode.Add(obj.FieldName);
-            hashCode.Add(obj.PropertyName);
-            hashCode.Add(obj.CommandInterfaceType);
-            hashCode.Add(obj.CommandClassType);
-            hashCode.Add(obj.DelegateType);
-            hashCode.AddRange(obj.CommandTypeArguments);
-            hashCode.AddRange(obj.DelegateTypeArguments);
-            hashCode.Add(obj.CanExecuteMemberName);
-            hashCode.Add(obj.CanExecuteExpressionType);
-            hashCode.Add(obj.AllowConcurrentExecutions);
-
-            return hashCode.ToHashCode();
         }
     }
 }

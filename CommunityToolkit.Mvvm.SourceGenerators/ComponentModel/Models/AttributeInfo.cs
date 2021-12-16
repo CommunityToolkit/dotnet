@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
+using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -74,31 +75,24 @@ internal sealed record AttributeInfo(
     /// <summary>
     /// An <see cref="IEqualityComparer{T}"/> implementation for <see cref="AttributeInfo"/>.
     /// </summary>
-    public sealed class Comparer : IEqualityComparer<AttributeInfo>
+    public sealed class Comparer : Comparer<AttributeInfo, Comparer>
     {
-        /// <summary>
-        /// The singleton <see cref="Comparer"/> instance.
-        /// </summary>
-        public static Comparer Default { get; } = new();
+        /// <inheritdoc/>
+        protected override void AddToHashCode(ref HashCode hashCode, AttributeInfo obj)
+        {
+            hashCode.Add(obj.TypeName);
+            hashCode.AddRange(obj.ConstructorArgumentInfo, TypedConstantInfo.Comparer.Default);
+
+            foreach ((string key, TypedConstantInfo value) in obj.NamedArgumentInfo)
+            {
+                hashCode.Add(key);
+                hashCode.Add(value, TypedConstantInfo.Comparer.Default);
+            }
+        }
 
         /// <inheritdoc/>
-        public bool Equals(AttributeInfo? x, AttributeInfo? y)
+        protected override bool AreEqual(AttributeInfo x, AttributeInfo y)
         {
-            if (x is null && y is null)
-            {
-                return true;
-            }
-
-            if (x is null || y is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(x, y))
-            {
-                return true;
-            }
-
             if (x.TypeName != y.TypeName ||
                 !x.ConstructorArgumentInfo.SequenceEqual(y.ConstructorArgumentInfo, TypedConstantInfo.Comparer.Default) ||
                 x.NamedArgumentInfo.Length != y.NamedArgumentInfo.Length)
@@ -119,23 +113,6 @@ internal sealed record AttributeInfo(
             }
 
             return true;
-        }
-
-        /// <inheritdoc/>
-        public int GetHashCode(AttributeInfo obj)
-        {
-            HashCode hashCode = default;
-
-            hashCode.Add(obj.TypeName);
-            hashCode.AddRange(obj.ConstructorArgumentInfo, TypedConstantInfo.Comparer.Default);
-
-            foreach ((string key, TypedConstantInfo value) in obj.NamedArgumentInfo)
-            {
-                hashCode.Add(key);
-                hashCode.Add(value, TypedConstantInfo.Comparer.Default);
-            }
-
-            return hashCode.ToHashCode();
         }
     }
 }
