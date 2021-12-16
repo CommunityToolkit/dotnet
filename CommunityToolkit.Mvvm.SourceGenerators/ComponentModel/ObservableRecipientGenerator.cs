@@ -35,12 +35,14 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
         string typeName = typeSymbol.Name;
         bool hasExplicitConstructors = !(typeSymbol.InstanceConstructors.Length == 1 && typeSymbol.InstanceConstructors[0] is { Parameters.IsEmpty: true, IsImplicitlyDeclared: true });
         bool isAbstract = typeSymbol.IsAbstract;
+        bool isSealed = typeSymbol.IsSealed;
         bool isObservableValidator = typeSymbol.InheritsFrom("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator");
 
         return new(
             typeName,
             hasExplicitConstructors,
             isAbstract,
+            isSealed,
             isObservableValidator);
     }
 
@@ -121,6 +123,17 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
         foreach (MemberDeclarationSyntax member in classDeclaration.Members.Where(static member => member is not ConstructorDeclarationSyntax))
         {
             builder.Add(member);
+        }
+
+        // If the target class is sealed, make protected members private and remove the virtual modifier
+        if (info.IsSealed)
+        {
+            return
+                builder
+                .Select(static member => member
+                    .ReplaceModifier(SyntaxKind.ProtectedKeyword, SyntaxKind.PrivateKeyword)
+                    .RemoveModifier(SyntaxKind.VirtualKeyword))
+                .ToImmutableArray();
         }
 
         return builder.ToImmutable();

@@ -23,7 +23,6 @@ namespace CommunityToolkit.Mvvm.SourceGenerators;
 /// </summary>
 /// <typeparam name="TInfo">The type of info gathered for each target type to process.</typeparam>
 public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGenerator
-    where TInfo : class?
 {
     /// <summary>
     /// The fully qualified name of the attribute type to look for.

@@ -10,9 +10,11 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 /// <param name="TypeName">The type name of the type being annotated.</param>
 /// <param name="HasExplicitConstructors">Whether or not the target type has explicit constructors.</param>
 /// <param name="IsAbstract">Whether or not the target type is abstract.</param>
+/// <param name="IsSealed">Whether the target type is sealed.</param>
 /// <param name="IsObservableValidator">Whether or not the target type inherits from <c>ObservableValidator</c>.</param>
 public sealed record ObservableRecipientInfo(
     string TypeName,
     bool HasExplicitConstructors,
     bool IsAbstract,
+    bool IsSealed,
     bool IsObservableValidator);

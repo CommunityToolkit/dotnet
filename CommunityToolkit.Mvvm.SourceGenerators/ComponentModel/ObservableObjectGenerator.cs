@@ -7,6 +7,7 @@ using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
 
@@ -16,7 +17,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators;
 /// A source generator for the <c>ObservableObjectAttribute</c> type.
 /// </summary>
 [Generator(LanguageNames.CSharp)]
-public sealed class ObservableObjectGenerator : TransitiveMembersGenerator<object?>
+public sealed class ObservableObjectGenerator : TransitiveMembersGenerator<bool>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ObservableObjectGenerator"/> class.
@@ -27,13 +28,13 @@ public sealed class ObservableObjectGenerator : TransitiveMembersGenerator<objec
     }
 
     /// <inheritdoc/>
-    protected override object? GetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData)
+    protected override bool GetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData)
     {
-        return null;
+        return typeSymbol.IsSealed;
     }
 
     /// <inheritdoc/>
-    protected override bool ValidateTargetType(INamedTypeSymbol typeSymbol, object? info, out ImmutableArray<Diagnostic> diagnostics)
+    protected override bool ValidateTargetType(INamedTypeSymbol typeSymbol, bool info, out ImmutableArray<Diagnostic> diagnostics)
     {
         ImmutableArray<Diagnostic>.Builder builder = ImmutableArray.CreateBuilder<Diagnostic>();
 
@@ -63,8 +64,19 @@ public sealed class ObservableObjectGenerator : TransitiveMembersGenerator<objec
     }
 
     /// <inheritdoc/>
-    protected override ImmutableArray<MemberDeclarationSyntax> FilterDeclaredMembers(object? info, ClassDeclarationSyntax classDeclaration)
+    protected override ImmutableArray<MemberDeclarationSyntax> FilterDeclaredMembers(bool info, ClassDeclarationSyntax classDeclaration)
     {
+        // If the target class is sealed, make protected members private and remove the virtual modifier
+        if (info)
+        {
+            return
+                classDeclaration.Members
+                .Select(static member => member
+                    .ReplaceModifier(SyntaxKind.ProtectedKeyword, SyntaxKind.PrivateKeyword)
+                    .RemoveModifier(SyntaxKind.VirtualKeyword))
+                .ToImmutableArray();
+        }
+
         return classDeclaration.Members.ToImmutableArray();
     }
 }

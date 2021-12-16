@@ -2,12 +2,14 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
 
@@ -30,12 +32,10 @@ public sealed class INotifyPropertyChangedGenerator : TransitiveMembersGenerator
     /// <inheritdoc/>
     protected override INotifyPropertyChangedInfo GetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData)
     {
-        if (attributeData.TryGetNamedArgument("IncludeAdditionalHelperMethods", out bool includeAdditionalHelperMethods))
-        {
-            return new(includeAdditionalHelperMethods);
-        }
+        bool includeAdditionalHelperMethods = attributeData.GetNamedArgument<bool>("IncludeAdditionalHelperMethods", true);
+        bool isSealed = typeSymbol.IsSealed;
 
-        return new(false);
+        return new(includeAdditionalHelperMethods, isSealed);
     }
 
     /// <inheritdoc/>
@@ -61,15 +61,26 @@ public sealed class INotifyPropertyChangedGenerator : TransitiveMembersGenerator
     /// <inheritdoc/>
     protected override ImmutableArray<MemberDeclarationSyntax> FilterDeclaredMembers(INotifyPropertyChangedInfo info, ClassDeclarationSyntax classDeclaration)
     {
+        IEnumerable<MemberDeclarationSyntax> memberDeclarations;
+
         // If requested, only include the event and the basic methods to raise it, but not the additional helpers
-        if (!info.IncludeAdditionalHelperMethods)
+        if (info.IncludeAdditionalHelperMethods)
         {
-            return classDeclaration.Members.Where(
-                static member => member
-                    is EventFieldDeclarationSyntax
-                    or MethodDeclarationSyntax { Identifier.ValueText: "OnPropertyChanged" }).ToImmutableArray();
+            memberDeclarations = classDeclaration.Members;
+        }
+        else
+        {
+            memberDeclarations = classDeclaration.Members.Where(static member => member
+                is EventFieldDeclarationSyntax
+                or MethodDeclarationSyntax { Identifier.ValueText: "OnPropertyChanged" });
         }
 
-        return classDeclaration.Members.ToImmutableArray();
+        // If the target class is sealed, make protected members private and remove the virtual modifier
+        return
+            memberDeclarations
+            .Select(static member => member
+                .ReplaceModifier(SyntaxKind.ProtectedKeyword, SyntaxKind.PrivateKeyword)
+                .RemoveModifier(SyntaxKind.VirtualKeyword))
+            .ToImmutableArray();
     }
 }

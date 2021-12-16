@@ -44,6 +44,24 @@ internal static class AttributeDataExtensions
     }
 
     /// <summary>
+    /// Gets a given named argument value from an <see cref="AttributeData"/> instance, or a fallback value.
+    /// </summary>
+    /// <typeparam name="T">The type of argument to check.</typeparam>
+    /// <param name="attributeData">The target <see cref="AttributeData"/> instance to check.</param>
+    /// <param name="name">The name of the argument to check.</param>
+    /// <param name="fallback">The fallback value to use if the named argument is not present.</param>
+    /// <returns>The argument named <paramref name="name"/>, or a fallback value.</returns>
+    public static T? GetNamedArgument<T>(this AttributeData attributeData, string name, T? fallback = default)
+    {
+        if (attributeData.TryGetNamedArgument(name, out T? value))
+        {
+            return value;
+        }
+
+        return fallback;
+    }
+
+    /// <summary>
     /// Tries to get a given named argument value from an <see cref="AttributeData"/> instance, if present.
     /// </summary>
     /// <typeparam name="T">The type of argument to check.</typeparam>
