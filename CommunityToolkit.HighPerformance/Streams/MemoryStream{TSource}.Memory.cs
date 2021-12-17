@@ -11,8 +11,8 @@ using System.Threading.Tasks;
 
 namespace CommunityToolkit.HighPerformance.Streams;
 
-/// <inheritdoc cref="MemoryStream{TSource}"/>
-internal partial class MemoryStream<TSource>
+/// <inheritdoc/>
+partial class MemoryStream<TSource>
 {
     /// <inheritdoc/>
     public sealed override void CopyTo(Stream destination, int bufferSize)

@@ -7,10 +7,8 @@ using System.IO;
 
 namespace CommunityToolkit.HighPerformance.Streams;
 
-/// <summary>
-/// A factory class to produce <see cref="MemoryStream{TSource}"/> instances.
-/// </summary>
-internal static partial class MemoryStream
+/// <inheritdoc/>
+partial class MemoryStream
 {
     /// <summary>
     /// Gets a standard <see cref="NotSupportedException"/> instance for a stream.

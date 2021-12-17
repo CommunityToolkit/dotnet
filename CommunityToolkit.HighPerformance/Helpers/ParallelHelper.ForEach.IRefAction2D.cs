@@ -8,10 +8,8 @@ using System.Threading.Tasks;
 
 namespace CommunityToolkit.HighPerformance.Helpers;
 
-/// <summary>
-/// Helpers to work with parallel code in a highly optimized manner.
-/// </summary>
-public static partial class ParallelHelper
+/// <inheritdoc/>
+partial class ParallelHelper
 {
     /// <summary>
     /// Executes a specified action in an optimized parallel loop over the input data.

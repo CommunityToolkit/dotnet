@@ -7,10 +7,8 @@ using System.Runtime.CompilerServices;
 
 namespace CommunityToolkit.HighPerformance.Streams;
 
-/// <summary>
-/// A factory class to produce <see cref="MemoryStream{TSource}"/> instances.
-/// </summary>
-internal static partial class MemoryStream
+/// <inheritdoc/>
+partial class MemoryStream
 {
     /// <summary>
     /// Validates the <see cref="Stream.Position"/> argument (it needs to be in the [0, length]) range.
