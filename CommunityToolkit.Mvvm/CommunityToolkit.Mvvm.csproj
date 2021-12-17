@@ -33,6 +33,12 @@
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
   </ItemGroup>
+
+  <!-- Enable trimming support on .NET 6 -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+    <IsTrimmable>true</IsTrimmable>
+  </PropertyGroup>
     
   <!-- Source generator project reference for packing -->
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">

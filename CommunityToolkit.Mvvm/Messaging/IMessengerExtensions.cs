@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -85,11 +86,16 @@ public static class IMessengerExtensions
     /// <param name="recipient">The recipient that will receive the messages.</param>
     /// <remarks>See notes for <see cref="RegisterAll{TToken}(IMessenger,object,TToken)"/> for more info.</remarks>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="messenger"/> or <paramref name="recipient"/> are <see langword="null"/>.</exception>
+    [RequiresUnreferencedCode(
+        "This method requires the generated CommunityToolkit.Mvvm.Messaging.__Internals.__IMessengerExtensions type not to be removed to use the fast path. " +
+        "If this type is removed by the linker, or if the target recipient was created dynamically and was missed by the source generator, a slower fallback " +
+        "path using a compiled LINQ expression will be used. This will have more overhead in the first invocation of this method for any given recipient type.")]
     public static void RegisterAll(this IMessenger messenger, object recipient)
     {
         ArgumentNullException.ThrowIfNull(messenger);
         ArgumentNullException.ThrowIfNull(recipient);
 
+#pragma warning disable IL2026
         // We use this method as a callback for the conditional weak table, which will handle
         // thread-safety for us. This first callback will try to find a generated method for the
         // target recipient type, and just invoke it to get the delegate to cache and use later.
@@ -103,6 +109,7 @@ public static class IMessengerExtensions
 
             return null;
         }
+#pragma warning restore IL2026
 
         // Try to get the cached delegate, if the generatos has run correctly
         Action<IMessenger, object>? registrationAction = DiscoveredRecipients.RegistrationMethods.GetValue(
@@ -134,6 +141,10 @@ public static class IMessengerExtensions
     /// registered directly through any of the other generic extensions for the <see cref="IMessenger"/> interface.
     /// </remarks>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="messenger"/>, <paramref name="recipient"/> or <paramref name="token"/> are <see langword="null"/>.</exception>
+    [RequiresUnreferencedCode(
+        "This method requires the generated CommunityToolkit.Mvvm.Messaging.__Internals.__IMessengerExtensions type not to be removed to use the fast path. " +
+        "If this type is removed by the linker, or if the target recipient was created dynamically and was missed by the source generator, a slower fallback " +
+        "path using a compiled LINQ expression will be used. This will have more overhead in the first invocation of this method for any given recipient type.")]
     public static void RegisterAll<TToken>(this IMessenger messenger, object recipient, TToken token)
         where TToken : IEquatable<TToken>
     {
@@ -141,6 +152,7 @@ public static class IMessengerExtensions
         ArgumentNullException.ThrowIfNull(recipient);
         ArgumentNullException.For<TToken>.ThrowIfNull(token);
 
+#pragma warning disable IL2026
         // We use this method as a callback for the conditional weak table, which will handle
         // thread-safety for us. This first callback will try to find a generated method for the
         // target recipient type, and just invoke it to get the delegate to cache and use later.
@@ -212,6 +224,7 @@ public static class IMessengerExtensions
 
             return Expression.Lambda<Action<IMessenger, object, TToken>>(body, arg0, arg1, arg2).Compile();
         }
+#pragma warning restore IL2026
 
         // Get or compute the registration method for the current recipient type.
         // As in CommunityToolkit.Diagnostics.TypeExtensions.ToTypeString, we use a lambda

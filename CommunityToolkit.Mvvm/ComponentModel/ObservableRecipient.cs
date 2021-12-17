@@ -57,6 +57,13 @@ public abstract class ObservableRecipient : ObservableObject
     public bool IsActive
     {
         get => this.isActive;
+
+        [RequiresUnreferencedCode(
+            "When this property is set to true, the OnActivated() method will be invoked, which will register all necessary message handlers for this recipient. " +
+            "This method requires the generated CommunityToolkit.Mvvm.Messaging.__Internals.__IMessengerExtensions type not to be removed to use the fast path. " +
+            "If this type is removed by the linker, or if the target recipient was created dynamically and was missed by the source generator, a slower fallback " +
+            "path using a compiled LINQ expression will be used. This will have more overhead in the first invocation of this method for any given recipient type. " +
+            "Alternatively, OnActivated() can be manually overwritten, and registration can be done individually for each required message for this recipient.")]
         set
         {
             if (SetProperty(ref this.isActive, value, true))
@@ -84,6 +91,11 @@ public abstract class ObservableRecipient : ObservableObject
     /// If you need more fine tuned control, want to register messages individually or just prefer
     /// the lambda-style syntax for message registration, override this method and register manually.
     /// </remarks>
+    [RequiresUnreferencedCode(
+        "This method requires the generated CommunityToolkit.Mvvm.Messaging.__Internals.__IMessengerExtensions type not to be removed to use the fast path. " +
+        "If this type is removed by the linker, or if the target recipient was created dynamically and was missed by the source generator, a slower fallback " +
+        "path using a compiled LINQ expression will be used. This will have more overhead in the first invocation of this method for any given recipient type. " +
+        "Alternatively, OnActivated() can be manually overwritten, and registration can be done individually for each required message for this recipient.")]
     protected virtual void OnActivated()
     {
         Messenger.RegisterAll(this);
