@@ -451,7 +451,7 @@ public static partial class ArrayExtensions
     /// </summary>
     private static void ThrowArrayTypeMismatchException()
     {
-        throw new ArrayTypeMismatchException("The given array doesn't match the specified type T");
+        throw new ArrayTypeMismatchException("The given array doesn't match the specified type T.");
     }
 
     /// <summary>

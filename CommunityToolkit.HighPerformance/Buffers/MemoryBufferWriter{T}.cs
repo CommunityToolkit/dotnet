@@ -162,7 +162,7 @@ public sealed class MemoryBufferWriter<T> : IBuffer<T>
     /// </summary>
     private static void ThrowArgumentOutOfRangeExceptionForNegativeCount()
     {
-        throw new ArgumentOutOfRangeException("count", "The count can't be a negative value");
+        throw new ArgumentOutOfRangeException("count", "The count can't be a negative value.");
     }
 
     /// <summary>
@@ -170,7 +170,7 @@ public sealed class MemoryBufferWriter<T> : IBuffer<T>
     /// </summary>
     private static void ThrowArgumentOutOfRangeExceptionForNegativeSizeHint()
     {
-        throw new ArgumentOutOfRangeException("sizeHint", "The size hint can't be a negative value");
+        throw new ArgumentOutOfRangeException("sizeHint", "The size hint can't be a negative value.");
     }
 
     /// <summary>
@@ -178,7 +178,7 @@ public sealed class MemoryBufferWriter<T> : IBuffer<T>
     /// </summary>
     private static void ThrowArgumentExceptionForAdvancedTooFar()
     {
-        throw new ArgumentException("The buffer writer has advanced too far");
+        throw new ArgumentException("The buffer writer has advanced too far.");
     }
 
     /// <summary>
@@ -186,6 +186,6 @@ public sealed class MemoryBufferWriter<T> : IBuffer<T>
     /// </summary>
     private static void ThrowArgumentExceptionForCapacityExceeded()
     {
-        throw new ArgumentException("The buffer writer doesn't have enough capacity left");
+        throw new ArgumentException("The buffer writer doesn't have enough capacity left.");
     }
 }

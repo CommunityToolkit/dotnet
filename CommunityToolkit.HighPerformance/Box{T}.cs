@@ -61,7 +61,7 @@ public sealed class Box<T>
     /// <exception cref="InvalidOperationException">Always thrown when this constructor is used (eg. from reflection).</exception>
     private Box()
     {
-        throw new InvalidOperationException("The CommunityToolkit.HighPerformance.Box<T> constructor should never be used");
+        throw new InvalidOperationException("The CommunityToolkit.HighPerformance.Box<T> constructor should never be used.");
     }
 
     /// <summary>

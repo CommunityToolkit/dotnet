@@ -464,6 +464,6 @@ public readonly ref struct ReadOnlyRefEnumerable<T>
     /// </summary>
     private static void ThrowArgumentExceptionForDestinationTooShort()
     {
-        throw new ArgumentException("The target span is too short to copy all the current items to");
+        throw new ArgumentException("The target span is too short to copy all the current items to.");
     }
 }

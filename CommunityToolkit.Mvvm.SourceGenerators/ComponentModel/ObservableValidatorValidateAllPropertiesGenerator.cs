@@ -201,7 +201,7 @@ public sealed partial class ObservableValidatorValidateAllPropertiesGenerator : 
             {
                 IPropertySymbol propertySymbol => propertySymbol.Name,
                 IFieldSymbol fieldSymbol => ObservablePropertyGenerator.GetGeneratedPropertyName(fieldSymbol),
-                _ => throw new InvalidOperationException("Invalid symbol type")
+                _ => throw new InvalidOperationException("Invalid symbol type.")
             };
 
             // This enumerator produces a sequence of statements as follows:

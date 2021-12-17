@@ -961,7 +961,7 @@ public readonly ref partial struct ReadOnlySpan2D<T>
     [Obsolete("Equals() on Span will always throw an exception. Use == instead.")]
     public override bool Equals(object? obj)
     {
-        throw new NotSupportedException("CommunityToolkit.HighPerformance.ReadOnlySpan2D<T>.Equals(object) is not supported");
+        throw new NotSupportedException("CommunityToolkit.HighPerformance.ReadOnlySpan2D<T>.Equals(object) is not supported.");
     }
 
     /// <inheritdoc cref="ReadOnlySpan{T}.GetHashCode()"/>
@@ -969,7 +969,7 @@ public readonly ref partial struct ReadOnlySpan2D<T>
     [Obsolete("GetHashCode() on Span will always throw an exception.")]
     public override int GetHashCode()
     {
-        throw new NotSupportedException("CommunityToolkit.HighPerformance.ReadOnlySpan2D<T>.GetHashCode() is not supported");
+        throw new NotSupportedException("CommunityToolkit.HighPerformance.ReadOnlySpan2D<T>.GetHashCode() is not supported.");
     }
 
     /// <inheritdoc/>
