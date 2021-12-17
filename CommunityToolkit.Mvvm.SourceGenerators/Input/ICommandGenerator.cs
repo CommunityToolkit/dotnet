@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -131,7 +130,6 @@ public sealed partial class ICommandGenerator : ISourceGenerator
     /// <param name="methodSymbol">The input <see cref="IMethodSymbol"/> instance to process.</param>
     /// <param name="attributeData">The <see cref="AttributeData"/> instance the method was annotated with.</param>
     /// <returns>The <see cref="MemberDeclarationSyntax"/> instances for the input command.</returns>
-    [Pure]
     private static IEnumerable<MemberDeclarationSyntax> CreateCommandMembers(
         GeneratorExecutionContext context,
         INamedTypeSymbol classDeclarationSymbol,
@@ -283,7 +281,6 @@ public sealed partial class ICommandGenerator : ISourceGenerator
     /// <param name="context">The input <see cref="GeneratorExecutionContext"/> instance to use.</param>
     /// <param name="methodSymbol">The input <see cref="IMethodSymbol"/> instance to process.</param>
     /// <returns>The generated field and property names for <paramref name="methodSymbol"/>.</returns>
-    [Pure]
     private static (string FieldName, string PropertyName) GetGeneratedFieldAndPropertyNames(GeneratorExecutionContext context, IMethodSymbol methodSymbol)
     {
         string propertyName = methodSymbol.Name;

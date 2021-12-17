@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using CommunityToolkit.HighPerformance.Helpers;
@@ -54,7 +53,6 @@ public partial class Test_ParallelHelper
     /// </summary>
     /// <param name="count">The number of array items to create.</param>
     /// <returns>An array of random <see cref="int"/> elements.</returns>
-    [Pure]
     private static UnmanagedSpanOwner<int> CreateRandomData(int count)
     {
         Random? random = new(count);

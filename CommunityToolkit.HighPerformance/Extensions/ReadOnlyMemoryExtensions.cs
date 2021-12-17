@@ -4,7 +4,6 @@
 
 using System;
 using System.Buffers;
-using System.Diagnostics.Contracts;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -34,7 +33,6 @@ public static class ReadOnlyMemoryExtensions
     /// <exception cref="ArgumentException">
     /// Thrown when the requested area is outside of bounds for <paramref name="memory"/>.
     /// </exception>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ReadOnlyMemory2D<T> AsMemory2D<T>(this ReadOnlyMemory<T> memory, int height, int width)
     {
@@ -57,7 +55,6 @@ public static class ReadOnlyMemoryExtensions
     /// <exception cref="ArgumentException">
     /// Thrown when the requested area is outside of bounds for <paramref name="memory"/>.
     /// </exception>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ReadOnlyMemory2D<T> AsMemory2D<T>(this ReadOnlyMemory<T> memory, int offset, int height, int width, int pitch)
     {
@@ -75,7 +72,6 @@ public static class ReadOnlyMemoryExtensions
     /// Thrown if the <see cref="ReadOnlyMemory{T}.Length"/> property of the new <see cref="ReadOnlyMemory{T}"/> would exceed <see cref="int.MaxValue"/>.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when the data store of <paramref name="memory"/> is not supported.</exception>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ReadOnlyMemory<byte> AsBytes<T>(this ReadOnlyMemory<T> memory)
         where T : unmanaged
@@ -91,7 +87,6 @@ public static class ReadOnlyMemoryExtensions
     /// <param name="memory">The source <see cref="ReadOnlyMemory{T}"/>, of type <typeparamref name="TFrom"/>.</param>
     /// <returns>A <see cref="ReadOnlyMemory{T}"/> of type <typeparamref name="TTo"/></returns>
     /// <exception cref="ArgumentException">Thrown when the data store of <paramref name="memory"/> is not supported.</exception>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ReadOnlyMemory<TTo> Cast<TFrom, TTo>(this ReadOnlyMemory<TFrom> memory)
         where TFrom : unmanaged
@@ -148,7 +143,6 @@ public static class ReadOnlyMemoryExtensions
     /// as the returned <see cref="Stream"/> is in use, to avoid unexpected issues.
     /// </remarks>
     /// <exception cref="ArgumentException">Thrown when <paramref name="memory"/> has an invalid data store.</exception>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Stream AsStream(this ReadOnlyMemory<byte> memory)
     {

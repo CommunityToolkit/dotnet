@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using CommunityToolkit.HighPerformance.Enumerables;
 using CommunityToolkit.HighPerformance.Memory.Internals;
@@ -24,7 +23,6 @@ public readonly ref partial struct ReadOnlySpan2D<T>
     /// <param name="row">The target row to enumerate within the current <see cref="ReadOnlySpan2D{T}"/> instance.</param>
     /// <returns>A <see cref="ReadOnlyRefEnumerable{T}"/> with target items to enumerate.</returns>
     /// <remarks>The returned <see cref="ReadOnlyRefEnumerable{T}"/> value shouldn't be used directly: use this extension in a <see langword="foreach"/> loop.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ReadOnlyRefEnumerable<T> GetRow(int row)
     {
@@ -52,7 +50,6 @@ public readonly ref partial struct ReadOnlySpan2D<T>
     /// <param name="column">The target column to enumerate within the current <see cref="ReadOnlySpan2D{T}"/> instance.</param>
     /// <returns>A <see cref="ReadOnlyRefEnumerable{T}"/> with target items to enumerate.</returns>
     /// <remarks>The returned <see cref="ReadOnlyRefEnumerable{T}"/> value shouldn't be used directly: use this extension in a <see langword="foreach"/> loop.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ReadOnlyRefEnumerable<T> GetColumn(int column)
     {
@@ -79,7 +76,6 @@ public readonly ref partial struct ReadOnlySpan2D<T>
     /// <returns>
     /// An enumerator that can be used to traverse the items in the current <see cref="ReadOnlySpan2D{T}"/> instance
     /// </returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Enumerator GetEnumerator() => new(this);
 

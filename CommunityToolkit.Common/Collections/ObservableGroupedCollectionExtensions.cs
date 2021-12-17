@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
@@ -24,7 +23,6 @@ public static class ObservableGroupedCollectionExtensions
     /// <param name="key">The key of the group to query.</param>
     /// <returns>The first group matching <paramref name="key"/>.</returns>
     /// <exception cref="InvalidOperationException">The target group does not exist.</exception>
-    [Pure]
     public static ObservableGroup<TKey, TValue> First<TKey, TValue>(this ObservableGroupedCollection<TKey, TValue> source, TKey key)
         where TKey : notnull
     {
@@ -51,7 +49,6 @@ public static class ObservableGroupedCollectionExtensions
     /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TValue}"/> instance.</param>
     /// <param name="key">The key of the group to query.</param>
     /// <returns>The first group matching <paramref name="key"/> or null.</returns>
-    [Pure]
     public static ObservableGroup<TKey, TValue>? FirstOrDefault<TKey, TValue>(this ObservableGroupedCollection<TKey, TValue> source, TKey key)
         where TKey : notnull
     {
@@ -89,7 +86,6 @@ public static class ObservableGroupedCollectionExtensions
     /// <returns>The element.</returns>
     /// <exception cref="InvalidOperationException">The target group does not exist.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is less than zero or <paramref name="index"/> is greater than the group elements' count.</exception>
-    [Pure]
     public static TValue ElementAt<TKey, TValue>(
         this ObservableGroupedCollection<TKey, TValue> source,
         TKey key,
@@ -106,7 +102,6 @@ public static class ObservableGroupedCollectionExtensions
     /// <param name="key">The key of the group to query.</param>
     /// <param name="index">The index of the item from the targeted group.</param>
     /// <returns>The element or default(TValue) if it does not exist.</returns>
-    [Pure]
     public static TValue? ElementAtOrDefault<TKey, TValue>(
         this ObservableGroupedCollection<TKey, TValue> source,
         TKey key,

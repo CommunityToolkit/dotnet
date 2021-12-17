@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 #if NETSTANDARD2_1_OR_GREATER
 using System.Runtime.InteropServices;
@@ -28,7 +27,6 @@ public static partial class ArrayExtensions
     /// <param name="array">The input <typeparamref name="T"/> array instance.</param>
     /// <returns>A reference to the first element within <paramref name="array"/>, or the location it would have used, if <paramref name="array"/> is empty.</returns>
     /// <remarks>This method doesn't do any bounds checks, therefore it is responsibility of the caller to perform checks in case the returned value is dereferenced.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref T DangerousGetReference<T>(this T[,] array)
     {
@@ -60,7 +58,6 @@ public static partial class ArrayExtensions
     /// array, and will just assume that the input index is 0-based. It is responsibility of the caller to adjust the input
     /// indices to account for the actual lower bounds, if the input array has either axis not starting at 0.
     /// </remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref T DangerousGetReferenceAt<T>(this T[,] array, int i, int j)
     {
@@ -121,7 +118,6 @@ public static partial class ArrayExtensions
     /// <returns>A <see cref="RefEnumerable{T}"/> with the items from the target row within <paramref name="array"/>.</returns>
     /// <remarks>The returned <see cref="RefEnumerable{T}"/> value shouldn't be used directly: use this extension in a <see langword="foreach"/> loop.</remarks>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when one of the input parameters is out of range.</exception>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static RefEnumerable<T> GetRow<T>(this T[,] array, int row)
     {
@@ -175,7 +171,6 @@ public static partial class ArrayExtensions
     /// <returns>A wrapper type that will handle the column enumeration for <paramref name="array"/>.</returns>
     /// <remarks>The returned <see cref="RefEnumerable{T}"/> value shouldn't be used directly: use this extension in a <see langword="foreach"/> loop.</remarks>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when one of the input parameters is out of range.</exception>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static RefEnumerable<T> GetColumn<T>(this T[,] array, int column)
     {
@@ -211,7 +206,6 @@ public static partial class ArrayExtensions
     /// <typeparam name="T">The type of elements in the input 2D <typeparamref name="T"/> array instance.</typeparam>
     /// <param name="array">The input 2D <typeparamref name="T"/> array instance.</param>
     /// <returns>A <see cref="Span2D{T}"/> instance with the values of <paramref name="array"/>.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Span2D<T> AsSpan2D<T>(this T[,]? array)
     {
@@ -235,7 +229,6 @@ public static partial class ArrayExtensions
     /// are negative or not within the bounds that are valid for <paramref name="array"/>.
     /// </exception>
     /// <returns>A <see cref="Span2D{T}"/> instance with the values of <paramref name="array"/>.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Span2D<T> AsSpan2D<T>(this T[,]? array, int row, int column, int height, int width)
     {
@@ -248,7 +241,6 @@ public static partial class ArrayExtensions
     /// <typeparam name="T">The type of elements in the input 2D <typeparamref name="T"/> array instance.</typeparam>
     /// <param name="array">The input 2D <typeparamref name="T"/> array instance.</param>
     /// <returns>A <see cref="Memory2D{T}"/> instance with the values of <paramref name="array"/>.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Memory2D<T> AsMemory2D<T>(this T[,]? array)
     {
@@ -272,7 +264,6 @@ public static partial class ArrayExtensions
     /// are negative or not within the bounds that are valid for <paramref name="array"/>.
     /// </exception>
     /// <returns>A <see cref="Memory2D{T}"/> instance with the values of <paramref name="array"/>.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Memory2D<T> AsMemory2D<T>(this T[,]? array, int row, int column, int height, int width)
     {
@@ -289,7 +280,6 @@ public static partial class ArrayExtensions
     /// <returns>A <see cref="Span{T}"/> with the items from the target row within <paramref name="array"/>.</returns>
     /// <exception cref="ArrayTypeMismatchException">Thrown when <paramref name="array"/> doesn't match <typeparamref name="T"/>.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="row"/> is invalid.</exception>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Span<T> GetRowSpan<T>(this T[,] array, int row)
     {
@@ -317,7 +307,6 @@ public static partial class ArrayExtensions
     /// <returns>A <see cref="Memory{T}"/> with the items from the target row within <paramref name="array"/>.</returns>
     /// <exception cref="ArrayTypeMismatchException">Thrown when <paramref name="array"/> doesn't match <typeparamref name="T"/>.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="row"/> is invalid.</exception>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Memory<T> GetRowMemory<T>(this T[,] array, int row)
     {
@@ -343,7 +332,6 @@ public static partial class ArrayExtensions
     /// <typeparam name="T">The type of elements in the input 2D <typeparamref name="T"/> array instance.</typeparam>
     /// <param name="array">The input 2D <typeparamref name="T"/> array instance.</param>
     /// <returns>A <see cref="Memory{T}"/> instance with the values of <paramref name="array"/>.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Memory<T> AsMemory<T>(this T[,]? array)
     {
@@ -369,7 +357,6 @@ public static partial class ArrayExtensions
     /// <typeparam name="T">The type of elements in the input 2D <typeparamref name="T"/> array instance.</typeparam>
     /// <param name="array">The input 2D <typeparamref name="T"/> array instance.</param>
     /// <returns>A <see cref="Span{T}"/> instance with the values of <paramref name="array"/>.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Span<T> AsSpan<T>(this T[,]? array)
     {
@@ -397,7 +384,6 @@ public static partial class ArrayExtensions
     /// <param name="array">The input 2D <typeparamref name="T"/> array instance.</param>
     /// <param name="value">The <typeparamref name="T"/> value to look for.</param>
     /// <returns>The number of occurrences of <paramref name="value"/> in <paramref name="array"/>.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe int Count<T>(this T[,] array, T value)
         where T : IEquatable<T>
@@ -422,7 +408,6 @@ public static partial class ArrayExtensions
     /// <param name="array">The input 2D <typeparamref name="T"/> array instance.</param>
     /// <returns>The Djb2 value for the input 2D <typeparamref name="T"/> array instance.</returns>
     /// <remarks>The Djb2 hash is fully deterministic and with no random components.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe int GetDjb2HashCode<T>(this T[,] array)
         where T : notnull
@@ -439,7 +424,6 @@ public static partial class ArrayExtensions
     /// <typeparam name="T">The type of items in the input <typeparamref name="T"/> array instance.</typeparam>
     /// <param name="array">The input <typeparamref name="T"/> array instance.</param>
     /// <returns>Whether or not <paramref name="array"/> is covariant.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsCovariant<T>(this T[,] array)
     {

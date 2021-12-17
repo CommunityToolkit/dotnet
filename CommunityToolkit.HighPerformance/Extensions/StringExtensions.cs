@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 #if NETSTANDARD
 using System.Runtime.InteropServices;
@@ -24,7 +23,6 @@ public static class StringExtensions
     /// <param name="text">The input <see cref="string"/> instance.</param>
     /// <returns>A reference to the first element within <paramref name="text"/>, or the location it would have used, if <paramref name="text"/> is empty.</returns>
     /// <remarks>This method doesn't do any bounds checks, therefore it is responsibility of the caller to perform checks in case the returned value is dereferenced.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref char DangerousGetReference(this string text)
     {
@@ -42,7 +40,6 @@ public static class StringExtensions
     /// <param name="i">The index of the element to retrieve within <paramref name="text"/>.</param>
     /// <returns>A reference to the element within <paramref name="text"/> at the index specified by <paramref name="i"/>.</returns>
     /// <remarks>This method doesn't do any bounds checks, therefore it is responsibility of the caller to ensure the <paramref name="i"/> parameter is valid.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref char DangerousGetReferenceAt(this string text, int i)
     {
@@ -62,7 +59,6 @@ public static class StringExtensions
     /// <param name="text">The input <see cref="string"/> instance to read.</param>
     /// <param name="c">The character to look for.</param>
     /// <returns>The number of occurrences of <paramref name="c"/> in <paramref name="text"/>.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int Count(this string text, char c)
     {
@@ -90,7 +86,6 @@ public static class StringExtensions
     /// <param name="text">The source <see cref="string"/> to enumerate.</param>
     /// <returns>A wrapper type that will handle the value/index enumeration for <paramref name="text"/>.</returns>
     /// <remarks>The returned <see cref="ReadOnlySpanEnumerable{T}"/> value shouldn't be used directly: use this extension in a <see langword="foreach"/> loop.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ReadOnlySpanEnumerable<char> Enumerate(this string text)
     {
@@ -114,7 +109,6 @@ public static class StringExtensions
     /// <param name="separator">The separator character to use.</param>
     /// <returns>A wrapper type that will handle the tokenization for <paramref name="text"/>.</returns>
     /// <remarks>The returned <see cref="ReadOnlySpanTokenizer{T}"/> value shouldn't be used directly: use this extension in a <see langword="foreach"/> loop.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ReadOnlySpanTokenizer<char> Tokenize(this string text, char separator)
     {
@@ -128,7 +122,6 @@ public static class StringExtensions
     /// <param name="text">The source <see cref="string"/> to enumerate.</param>
     /// <returns>The Djb2 value for the input <see cref="string"/> instance.</returns>
     /// <remarks>The Djb2 hash is fully deterministic and with no random components.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe int GetDjb2HashCode(this string text)
     {

@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics.Contracts;
 using CommunityToolkit.HighPerformance.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -60,7 +59,6 @@ public partial class Test_ParallelHelper
     /// <param name="height">The height of the array to create.</param>
     /// <param name="width">The width of the array to create.</param>
     /// <returns>An array of random <see cref="int"/> elements.</returns>
-    [Pure]
     private static int[,] CreateRandomData2D(int height, int width)
     {
         Random? random = new((height * 33) + width);

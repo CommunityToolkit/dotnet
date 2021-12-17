@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Diagnostics.Contracts;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
@@ -20,7 +19,6 @@ internal static partial class SpanHelper
     /// <param name="r0">The reference to the target memory area to hash.</param>
     /// <param name="length">The number of items to hash.</param>
     /// <returns>The Djb2 value for the input sequence of items.</returns>
-    [Pure]
     public static int GetDjb2HashCode<T>(ref T r0, nint length)
         where T : notnull
     {
@@ -83,7 +81,6 @@ internal static partial class SpanHelper
     /// The advantage of this method is that when SIMD instructions are available, it performs much
     /// faster than <see cref="GetDjb2HashCode{T}"/>, as it can parallelize much of the workload.
     /// </remarks>
-    [Pure]
     public static unsafe int GetDjb2LikeByteHash(ref byte r0, nint length)
     {
         int hash = 5381;

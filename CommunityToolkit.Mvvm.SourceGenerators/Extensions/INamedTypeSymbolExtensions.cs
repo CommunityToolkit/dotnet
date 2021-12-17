@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Diagnostics.Contracts;
 using System.Text;
 using Microsoft.CodeAnalysis;
 
@@ -18,7 +17,6 @@ internal static class INamedTypeSymbolExtensions
     /// </summary>
     /// <param name="symbol">The input <see cref="INamedTypeSymbol"/> instance.</param>
     /// <returns>The full metadata name for <paramref name="symbol"/>.</returns>
-    [Pure]
     public static string GetFullMetadataName(this INamedTypeSymbol symbol)
     {
         static StringBuilder BuildFrom(ISymbol? symbol, StringBuilder builder)
@@ -43,7 +41,6 @@ internal static class INamedTypeSymbolExtensions
     /// </summary>
     /// <param name="symbol">The input <see cref="INamedTypeSymbol"/> instance.</param>
     /// <returns>The full metadata name for <paramref name="symbol"/> that is also a valid filename.</returns>
-    [Pure]
     public static string GetFullMetadataNameForFileName(this INamedTypeSymbol symbol)
     {
         return symbol.GetFullMetadataName().Replace('`', '-').Replace('+', '.');
@@ -55,7 +52,6 @@ internal static class INamedTypeSymbolExtensions
     /// <param name="typeSymbol">The target <see cref="INamedTypeSymbol"/> instance to check.</param>
     /// <param name="targetTypeSymbol">The type symbol of the type to check for inheritance.</param>
     /// <returns>Whether or not <paramref name="typeSymbol"/> inherits from <paramref name="targetTypeSymbol"/>.</returns>
-    [Pure]
     public static bool InheritsFrom(this INamedTypeSymbol typeSymbol, INamedTypeSymbol targetTypeSymbol)
     {
         INamedTypeSymbol? baseType = typeSymbol.BaseType;

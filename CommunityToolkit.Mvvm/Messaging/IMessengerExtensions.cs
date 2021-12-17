@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -70,7 +69,6 @@ public static class IMessengerExtensions
     /// <returns>Whether or not <paramref name="recipient"/> has already been registered for the specified message.</returns>
     /// <remarks>This method will use the default channel to check for the requested registration.</remarks>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="messenger"/> or <paramref name="recipient"/> are <see langword="null"/>.</exception>
-    [Pure]
     public static bool IsRegistered<TMessage>(this IMessenger messenger, object recipient)
         where TMessage : class
     {

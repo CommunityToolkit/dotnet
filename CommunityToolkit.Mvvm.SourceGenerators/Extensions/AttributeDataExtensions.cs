@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -26,7 +25,6 @@ internal static class AttributeDataExtensions
     /// <param name="name">The name of the argument to check.</param>
     /// <param name="value">The expected value for the target named argument.</param>
     /// <returns>Whether or not <paramref name="attributeData"/> contains an argument named <paramref name="name"/> with the expected value.</returns>
-    [Pure]
     public static bool HasNamedArgument<T>(this AttributeData attributeData, string name, T? value)
     {
         foreach (KeyValuePair<string, TypedConstant> properties in attributeData.NamedArguments)
@@ -73,7 +71,6 @@ internal static class AttributeDataExtensions
     /// <typeparam name="T">The type of constructor arguments to retrieve.</typeparam>
     /// <param name="attributeData">The target <see cref="AttributeData"/> instance to get the arguments from.</param>
     /// <returns>A sequence of all constructor arguments of the specified type from <paramref name="attributeData"/>.</returns>
-    [Pure]
     public static IEnumerable<T> GetConstructorArguments<T>(this AttributeData attributeData)
     {
         static IEnumerable<T> Enumerate(IEnumerable<TypedConstant> constants)
@@ -108,7 +105,6 @@ internal static class AttributeDataExtensions
     /// </summary>
     /// <param name="attributeData">The input <see cref="AttributeData"/> instance to process.</param>
     /// <returns>An <see cref="AttributeSyntax"/> replicating the data in <paramref name="attributeData"/>.</returns>
-    [Pure]
     public static AttributeSyntax AsAttributeSyntax(this AttributeData attributeData)
     {
         IdentifierNameSyntax attributeType = IdentifierName(attributeData.AttributeClass!.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));

@@ -5,7 +5,6 @@
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 
 namespace CommunityToolkit.HighPerformance;
@@ -69,7 +68,6 @@ public sealed class Box<T>
     /// </summary>
     /// <param name="obj">The input <see cref="object"/> instance, representing a boxed <typeparamref name="T"/> value.</param>
     /// <returns>A <see cref="Box{T}"/> reference pointing to <paramref name="obj"/>.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Box<T> GetFrom(object obj)
     {
@@ -90,7 +88,6 @@ public sealed class Box<T>
     /// This method doesn't check the actual type of <paramref name="obj"/>, so it is responsibility of the caller
     /// to ensure it actually represents a boxed <typeparamref name="T"/> value and not some other instance.
     /// </remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Box<T> DangerousGetFrom(object obj)
     {
@@ -197,7 +194,6 @@ public static class BoxExtensions
     /// <typeparam name="T">The type of reference to retrieve.</typeparam>
     /// <param name="box">The input <see cref="Box{T}"/> instance.</param>
     /// <returns>A <typeparamref name="T"/> reference to the boxed value within <paramref name="box"/>.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref T GetReference<T>(this Box<T> box)
         where T : struct

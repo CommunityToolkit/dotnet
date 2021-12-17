@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics.Contracts;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -31,7 +30,6 @@ public static class MemoryExtensions
     /// <exception cref="ArgumentException">
     /// Thrown when the requested area is outside of bounds for <paramref name="memory"/>.
     /// </exception>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Memory2D<T> AsMemory2D<T>(this Memory<T> memory, int height, int width)
     {
@@ -54,7 +52,6 @@ public static class MemoryExtensions
     /// <exception cref="ArgumentException">
     /// Thrown when the requested area is outside of bounds for <paramref name="memory"/>.
     /// </exception>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Memory2D<T> AsMemory2D<T>(this Memory<T> memory, int offset, int height, int width, int pitch)
     {
@@ -72,7 +69,6 @@ public static class MemoryExtensions
     /// Thrown if the <see cref="Memory{T}.Length"/> property of the new <see cref="Memory{T}"/> would exceed <see cref="int.MaxValue"/>.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when the data store of <paramref name="memory"/> is not supported.</exception>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Memory<byte> AsBytes<T>(this Memory<T> memory)
         where T : unmanaged
@@ -88,7 +84,6 @@ public static class MemoryExtensions
     /// <param name="memory">The source <see cref="Memory{T}"/>, of type <typeparamref name="TFrom"/>.</param>
     /// <returns>A <see cref="Memory{T}"/> of type <typeparamref name="TTo"/></returns>
     /// <exception cref="ArgumentException">Thrown when the data store of <paramref name="memory"/> is not supported.</exception>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Memory<TTo> Cast<TFrom, TTo>(this Memory<TFrom> memory)
         where TFrom : unmanaged
@@ -109,7 +104,6 @@ public static class MemoryExtensions
     /// as the returned <see cref="Stream"/> is in use, to avoid unexpected issues.
     /// </remarks>
     /// <exception cref="ArgumentException">Thrown when <paramref name="memory"/> has an invalid data store.</exception>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Stream AsStream(this Memory<byte> memory)
     {

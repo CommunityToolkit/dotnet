@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using static System.Math;
 
@@ -62,7 +61,6 @@ internal static class OverflowHelper
     /// <returns>The area resulting from the given parameters.</returns>
     /// <exception cref="OverflowException">Throw when the inputs don't fit in the expected range.</exception>
     /// <remarks>The input parameters are assumed to always be positive.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int ComputeInt32Area(int height, int width, int pitch)
     {

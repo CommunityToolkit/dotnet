@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 
 namespace CommunityToolkit.HighPerformance;
@@ -18,7 +17,6 @@ public static class BoolExtensions
     /// <param name="flag">The input value to convert.</param>
     /// <returns>1 if <paramref name="flag"/> is <see langword="true"/>, 0 otherwise.</returns>
     /// <remarks>This method does not contain branching instructions.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe byte ToByte(this bool flag)
     {
@@ -46,7 +44,6 @@ public static class BoolExtensions
     /// or by using <see cref="Unsafe.As{T}"/> or other unsafe APIs to directly manipulate the underlying
     /// data though, it is responsibility of the caller to ensure the validity of the provided value.
     /// </remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe int ToBitwiseMask32(this bool flag)
     {
@@ -65,7 +62,6 @@ public static class BoolExtensions
     /// <param name="flag">The input value to convert.</param>
     /// <returns>All 1s if <paramref name="flag"/> is <see langword="true"/>, all 0s otherwise.</returns>
     /// <remarks>This method does not contain branching instructions. See additional note in <see cref="ToBitwiseMask32"/>.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe long ToBitwiseMask64(this bool flag)
     {

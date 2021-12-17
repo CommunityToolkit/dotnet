@@ -5,7 +5,6 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
@@ -72,7 +71,6 @@ public class AsyncRequestMessage<T>
     }
 
     /// <inheritdoc cref="Task{T}.GetAwaiter"/>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [EditorBrowsable(EditorBrowsableState.Never)]
     public TaskAwaiter<T> GetAwaiter()

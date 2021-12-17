@@ -4,7 +4,6 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using System.Text;
 using CommunityToolkit.HighPerformance.Helpers;
@@ -767,7 +766,6 @@ public sealed class StringPool
     /// </summary>
     /// <param name="span">The input <see cref="ReadOnlySpan{T}"/> instance.</param>
     /// <returns>The hashcode for <paramref name="span"/>.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static int GetHashCode(ReadOnlySpan<char> span)
     {

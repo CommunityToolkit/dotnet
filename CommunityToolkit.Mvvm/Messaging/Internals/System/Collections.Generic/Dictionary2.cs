@@ -4,7 +4,6 @@
 
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 
 namespace System.Collections.Generic;
@@ -259,7 +258,6 @@ internal class Dictionary2<TKey, TValue> : IDictionary2<TKey, TValue>
     }
 
     /// <inheritdoc cref="IEnumerable{T}.GetEnumerator"/>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Enumerator GetEnumerator() => new(this);
 

@@ -4,7 +4,6 @@
 
 using System;
 using System.ComponentModel;
-using System.Diagnostics.Contracts;
 
 /// <summary>
 /// A container for all shared <see cref="AppContext"/> configuration switches for the MVVM Toolkit.
@@ -26,7 +25,6 @@ internal static class Configuration
     /// </summary>
     /// <param name="propertyName">The property name to retrieve the value for.</param>
     /// <returns>The value of the specified configuration setting.</returns>
-    [Pure]
     private static bool GetConfigurationValue(string propertyName)
     {
         if (AppContext.TryGetSwitch(propertyName, out bool isEnabled))

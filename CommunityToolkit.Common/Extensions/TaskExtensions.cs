@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Diagnostics.Contracts;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -24,7 +23,6 @@ public static class TaskExtensions
     /// and uses reflection to access the <see cref="Task{TResult}.Result"/> property and boxes the result if it's
     /// a value type, which adds overhead. It should only be used when using generics is not possible.
     /// </remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static object? GetResultOrDefault(this Task task)
     {
@@ -66,7 +64,6 @@ public static class TaskExtensions
     /// <param name="task">The input <see cref="Task{TResult}"/> instance to get the result for.</param>
     /// <returns>The result of <paramref name="task"/> if completed successfully, or <see langword="default"/> otherwise.</returns>
     /// <remarks>This method does not block if <paramref name="task"/> has not completed yet.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T? GetResultOrDefault<T>(this Task<T?> task)
     {

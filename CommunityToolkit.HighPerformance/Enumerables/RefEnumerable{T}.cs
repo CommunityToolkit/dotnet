@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 #if NETSTANDARD2_1_OR_GREATER
 using System.Runtime.InteropServices;
@@ -68,7 +67,6 @@ public readonly ref struct RefEnumerable<T>
     /// <param name="step">The distance between items in the sequence to enumerate.</param>
     /// <returns>A <see cref="RefEnumerable{T}"/> instance with the specified parameters.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when one of the parameters are negative.</exception>
-    [Pure]
     public static RefEnumerable<T> DangerousCreate(ref T value, int length, int step)
     {
         if (length < 0)
@@ -163,7 +161,6 @@ public readonly ref struct RefEnumerable<T>
 #endif
 
     /// <inheritdoc cref="System.Collections.IEnumerable.GetEnumerator"/>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Enumerator GetEnumerator()
     {
@@ -411,7 +408,6 @@ public readonly ref struct RefEnumerable<T>
     /// This method will allocate a new <typeparamref name="T"/> array, so only
     /// use it if you really need to copy the target items in a new memory location.
     /// </remarks>
-    [Pure]
     public T[] ToArray()
     {
 #if NETSTANDARD2_1_OR_GREATER

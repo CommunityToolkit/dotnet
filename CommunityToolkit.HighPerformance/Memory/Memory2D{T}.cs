@@ -6,7 +6,6 @@ using System;
 using System.Buffers;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 #if NETSTANDARD2_1_OR_GREATER
@@ -525,7 +524,6 @@ public readonly struct Memory2D<T> : IEquatable<Memory2D<T>>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when one of the input parameters is out of range.
     /// </exception>
-    [Pure]
     public static Memory2D<T> DangerousCreate(object instance, ref T value, int height, int width, int pitch)
     {
         if (height < 0)
@@ -659,7 +657,6 @@ public readonly struct Memory2D<T> : IEquatable<Memory2D<T>>
     /// are negative or not within the bounds that are valid for the current instance.
     /// </exception>
     /// <returns>A new <see cref="Memory2D{T}"/> instance representing a slice of the current one.</returns>
-    [Pure]
     public Memory2D<T> Slice(int row, int column, int height, int width)
     {
         if ((uint)row >= Height)
@@ -825,7 +822,6 @@ public readonly struct Memory2D<T> : IEquatable<Memory2D<T>>
     /// Copies the contents of the current <see cref="Memory2D{T}"/> instance into a new 2D array.
     /// </summary>
     /// <returns>A 2D array containing the data in the current <see cref="Memory2D{T}"/> instance.</returns>
-    [Pure]
     public T[,] ToArray() => Span.ToArray();
 
     /// <inheritdoc/>

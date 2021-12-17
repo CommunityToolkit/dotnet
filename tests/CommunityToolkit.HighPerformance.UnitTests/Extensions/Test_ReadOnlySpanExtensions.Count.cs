@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics.Contracts;
 using System.Runtime.InteropServices;
 using CommunityToolkit.HighPerformance;
 using CommunityToolkit.HighPerformance.UnitTests.Buffers.Internals;
@@ -176,7 +175,6 @@ public partial class Test_ReadOnlySpanExtensions
     /// <param name="span">The input <see cref="ReadOnlySpan{T}"/> instance to read.</param>
     /// <param name="value">The value to look for.</param>
     /// <returns>The number of occurrences of <paramref name="value"/> in <paramref name="span"/>.</returns>
-    [Pure]
     private static int CountWithForeach<T>(ReadOnlySpan<T> span, T value)
         where T : IEquatable<T>
     {
@@ -200,7 +198,6 @@ public partial class Test_ReadOnlySpanExtensions
     /// <param name="count">The number of array items to create.</param>
     /// <param name="value">The value to look for.</param>
     /// <returns>An array of random <typeparamref name="T"/> elements.</returns>
-    [Pure]
     private static UnmanagedSpanOwner<T> CreateRandomData<T>(int count, T value)
         where T : unmanaged
     {
@@ -233,7 +230,6 @@ public partial class Test_ReadOnlySpanExtensions
     /// <param name="count">The number of array items to create.</param>
     /// <param name="value">The value to use to populate the array.</param>
     /// <returns>An array of <typeparamref name="T"/> elements.</returns>
-    [Pure]
     private static UnmanagedSpanOwner<T> CreateFilledData<T>(int count, T value)
         where T : unmanaged
     {

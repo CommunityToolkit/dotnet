@@ -4,7 +4,6 @@
 
 using System;
 using System.Buffers;
-using System.Diagnostics.Contracts;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -22,7 +21,6 @@ internal static partial class MemoryStream
     /// <param name="isReadOnly">Indicates whether or not <paramref name="memory"/> can be written to.</param>
     /// <returns>A <see cref="Stream"/> wrapping the underlying data for <paramref name="memory"/>.</returns>
     /// <exception cref="ArgumentException">Thrown when <paramref name="memory"/> has an invalid data store.</exception>
-    [Pure]
     public static Stream Create(ReadOnlyMemory<byte> memory, bool isReadOnly)
     {
         if (memory.IsEmpty)
@@ -54,7 +52,6 @@ internal static partial class MemoryStream
     /// <param name="memoryOwner">The input <see cref="IMemoryOwner{T}"/> instance.</param>
     /// <returns>A <see cref="Stream"/> wrapping the underlying data for <paramref name="memoryOwner"/>.</returns>
     /// <exception cref="ArgumentException">Thrown when <paramref name="memoryOwner"/> has an invalid data store.</exception>
-    [Pure]
     public static Stream Create(IMemoryOwner<byte> memoryOwner)
     {
         Memory<byte> memory = memoryOwner.Memory;

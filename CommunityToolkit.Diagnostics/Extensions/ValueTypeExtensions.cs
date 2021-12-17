@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -42,7 +41,6 @@ public static class ValueTypeExtensions
     /// Console.WriteLine((-1).ToHexString()); // "0xFFFFFFFF"
     /// </code>
     /// </remarks>
-    [Pure]
     [SkipLocalsInit]
     public static unsafe string ToHexString<T>(this T value)
         where T : unmanaged

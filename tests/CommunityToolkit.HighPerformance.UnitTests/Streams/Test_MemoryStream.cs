@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics.Contracts;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -259,7 +258,6 @@ public partial class Test_MemoryStream
     /// </summary>
     /// <param name="count">The number of array items to create.</param>
     /// <returns>The returned random array.</returns>
-    [Pure]
     internal static byte[] CreateRandomData(int count)
     {
         Random? random = new(DateTime.Now.Ticks.GetHashCode());
