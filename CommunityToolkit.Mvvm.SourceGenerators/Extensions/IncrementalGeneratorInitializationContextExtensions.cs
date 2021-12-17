@@ -10,7 +10,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 /// <summary>
 /// Extension methods for <see cref="IncrementalGeneratorInitializationContext"/>.
 /// </summary>
-internal static partial class IncrementalGeneratorInitializationContextExtensions
+internal static class IncrementalGeneratorInitializationContextExtensions
 {
     /// <summary>
     /// Implements a gate for a language version over items in an input <see cref="IncrementalValuesProvider{TValues}"/> source.
