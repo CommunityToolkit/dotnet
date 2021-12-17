@@ -18,11 +18,11 @@ public static class ValueTypeExtensions
     /// </summary>
     private static ReadOnlySpan<byte> HexCharactersTable => new[]
     {
-            (byte)'0', (byte)'1', (byte)'2', (byte)'3',
-            (byte)'4', (byte)'5', (byte)'6', (byte)'7',
-            (byte)'8', (byte)'9', (byte)'A', (byte)'B',
-            (byte)'C', (byte)'D', (byte)'E', (byte)'F'
-        };
+        (byte)'0', (byte)'1', (byte)'2', (byte)'3',
+        (byte)'4', (byte)'5', (byte)'6', (byte)'7',
+        (byte)'8', (byte)'9', (byte)'A', (byte)'B',
+        (byte)'C', (byte)'D', (byte)'E', (byte)'F'
+    };
 
     /// <summary>
     /// Returns a hexadecimal <see cref="string"/> representation of a given <typeparamref name="T"/> value, left-padded and ordered as big-endian.

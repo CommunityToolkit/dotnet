@@ -7,14 +7,10 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace CommunityToolkit.Diagnostics;
 
-/// <summary>
-/// Helper methods to verify conditions when running code.
-/// </summary>
-public static partial class Guard
+/// <inheritdoc/>
+partial class Guard
 {
-    /// <summary>
-    /// Helper methods to efficiently throw exceptions.
-    /// </summary>
+    /// <inheritdoc/>
     private static partial class ThrowHelper
     {
         /// <summary>
