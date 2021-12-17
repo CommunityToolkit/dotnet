@@ -240,7 +240,11 @@ internal static partial class SpanHelper
                     offset += Vector<T>.Count;
                 }
 
+#if NET6_0_OR_GREATER
+                result += CastToNativeInt(Vector.Sum(partials));
+#else
                 result += CastToNativeInt(Vector.Dot(partials, Vector<T>.One));
+#endif
                 length -= offset - initialOffset;
             }
             while (length >= Vector<T>.Count);
