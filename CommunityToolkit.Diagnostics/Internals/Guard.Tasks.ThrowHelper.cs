@@ -12,7 +12,7 @@ namespace CommunityToolkit.Diagnostics;
 partial class Guard
 {
     /// <inheritdoc/>
-    private static partial class ThrowHelper
+    partial class ThrowHelper
     {
         /// <summary>
         /// Throws an <see cref="ArgumentException"/> when <see cref="IsCompleted"/> fails.
