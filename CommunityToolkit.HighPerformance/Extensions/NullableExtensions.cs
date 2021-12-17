@@ -12,7 +12,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace CommunityToolkit.HighPerformance.Extensions;
+namespace CommunityToolkit.HighPerformance;
 
 /// <summary>
 /// Helpers for working with the <see cref="Nullable{T}"/> type.
