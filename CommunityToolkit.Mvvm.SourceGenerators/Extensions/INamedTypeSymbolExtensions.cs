@@ -13,11 +13,11 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 internal static class INamedTypeSymbolExtensions
 {
     /// <summary>
-    /// Gets the full metadata name for a given <see cref="INamedTypeSymbol"/> instance.
+    /// Gets a valid filename for a given <see cref="INamedTypeSymbol"/> instance.
     /// </summary>
     /// <param name="symbol">The input <see cref="INamedTypeSymbol"/> instance.</param>
-    /// <returns>The full metadata name for <paramref name="symbol"/>.</returns>
-    public static string GetFullMetadataName(this INamedTypeSymbol symbol)
+    /// <returns>The full metadata name for <paramref name="symbol"/> that is also a valid filename.</returns>
+    public static string GetFullMetadataNameForFileName(this INamedTypeSymbol symbol)
     {
         static StringBuilder BuildFrom(ISymbol? symbol, StringBuilder builder)
         {
@@ -33,17 +33,7 @@ internal static class INamedTypeSymbolExtensions
             };
         }
 
-        return BuildFrom(symbol, new StringBuilder(256)).ToString();
-    }
-
-    /// <summary>
-    /// Gets a valid filename for a given <see cref="INamedTypeSymbol"/> instance.
-    /// </summary>
-    /// <param name="symbol">The input <see cref="INamedTypeSymbol"/> instance.</param>
-    /// <returns>The full metadata name for <paramref name="symbol"/> that is also a valid filename.</returns>
-    public static string GetFullMetadataNameForFileName(this INamedTypeSymbol symbol)
-    {
-        return symbol.GetFullMetadataName().Replace('`', '-').Replace('+', '.');
+        return BuildFrom(symbol, new StringBuilder(256)).ToString().Replace('`', '-').Replace('+', '.');
     }
 
     /// <summary>
@@ -59,29 +49,6 @@ internal static class INamedTypeSymbolExtensions
         while (baseType != null)
         {
             if (baseType.HasFullyQualifiedName(name))
-            {
-                return true;
-            }
-
-            baseType = baseType.BaseType;
-        }
-
-        return false;
-    }
-
-    /// <summary>
-    /// Checks whether or not a given <see cref="INamedTypeSymbol"/> inherits from a specified type.
-    /// </summary>
-    /// <param name="typeSymbol">The target <see cref="INamedTypeSymbol"/> instance to check.</param>
-    /// <param name="targetTypeSymbol">The type symbol of the type to check for inheritance.</param>
-    /// <returns>Whether or not <paramref name="typeSymbol"/> inherits from <paramref name="targetTypeSymbol"/>.</returns>
-    public static bool InheritsFrom(this INamedTypeSymbol typeSymbol, INamedTypeSymbol targetTypeSymbol)
-    {
-        INamedTypeSymbol? baseType = typeSymbol.BaseType;
-
-        while (baseType != null)
-        {
-            if (SymbolEqualityComparer.Default.Equals(baseType, targetTypeSymbol))
             {
                 return true;
             }

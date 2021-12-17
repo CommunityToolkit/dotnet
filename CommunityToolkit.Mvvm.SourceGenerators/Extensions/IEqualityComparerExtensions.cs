@@ -30,7 +30,7 @@ internal static class IEqualityComparerExtensions
     /// <summary>
     /// An <see cref="IEqualityComparer{T}"/> implementation for an <see cref="ImmutableArray{T}"/> value.
     /// </summary>
-    public sealed class Comparer<T> : IEqualityComparer<ImmutableArray<T>>
+    private sealed class Comparer<T> : IEqualityComparer<ImmutableArray<T>>
     {
         /// <summary>
         /// The <typeparamref name="T"/> comparer.

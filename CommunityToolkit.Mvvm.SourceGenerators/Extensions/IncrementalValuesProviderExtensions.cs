@@ -97,7 +97,7 @@ internal static class IncrementalValuesProviderExtensions
     /// <summary>
     /// An <see cref="IEqualityComparer{T}"/> implementation for a value tuple.
     /// </summary>
-    public sealed class Comparer<TLeft, TRight> : IEqualityComparer<(TLeft Left, TRight Right)>
+    private sealed class Comparer<TLeft, TRight> : IEqualityComparer<(TLeft Left, TRight Right)>
     {
         /// <summary>
         /// The <typeparamref name="TLeft"/> comparer.
@@ -140,7 +140,7 @@ internal static class IncrementalValuesProviderExtensions
     /// <summary>
     /// An <see cref="IEqualityComparer{T}"/> implementation for a value tuple.
     /// </summary>
-    public sealed class Comparer<T1, T2, T3> : IEqualityComparer<(T1, T2, T3)>
+    private sealed class Comparer<T1, T2, T3> : IEqualityComparer<(T1, T2, T3)>
     {
         /// <summary>
         /// The <typeparamref name="T1"/> comparer.
