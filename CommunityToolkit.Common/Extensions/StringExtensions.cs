@@ -69,7 +69,7 @@ public static class StringExtensions
     }
 
     /// <summary>
-    /// Determines whether a string is a valid as a currency.
+    /// Determines whether a string is valid as a currency.
     /// </summary>
     /// <param name="str">The string to test.</param>
     /// <param name="culture">The culture to check against. If left null, <see cref="CultureInfo.CurrentCulture"/> is used.</param>
