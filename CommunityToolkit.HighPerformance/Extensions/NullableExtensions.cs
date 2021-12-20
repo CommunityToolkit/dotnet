@@ -12,7 +12,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace CommunityToolkit.HighPerformance.Extensions;
+namespace CommunityToolkit.HighPerformance;
 
 /// <summary>
 /// Helpers for working with the <see cref="Nullable{T}"/> type.
@@ -24,17 +24,37 @@ public static class NullableExtensions
     /// the <see cref="Nullable{T}.HasValue"/> property is returning <see langword="true"/> or not. If that is not
     /// the case, this method will still return a reference to the underlying <see langword="default"/> value.
     /// </summary>
-    /// <typeparam name="T">The type of the underlying value</typeparam>
-    /// <param name="value">The <see cref="Nullable{T}"/></param>
+    /// <typeparam name="T">The type of the underlying value.</typeparam>
+    /// <param name="value">The <see cref="Nullable{T}"/>.</param>
     /// <returns>A reference to the underlying value from the input <see cref="Nullable{T}"/> instance.</returns>
     /// <remarks>
     /// Note that attempting to mutate the returned reference will not change the value returned by <see cref="Nullable{T}.HasValue"/>.
     /// That means that reassigning the value of an empty instance will not make <see cref="Nullable{T}.HasValue"/> return <see langword="true"/>.
     /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref T DangerousGetValueOrDefaultReference<T>(this ref T? value)
         where T : struct
     {
         return ref Unsafe.As<T?, RawNullableData<T>>(ref value).Value;
+    }
+
+    /// <summary>
+    /// Returns a reference to the value of the input <see cref="Nullable{T}"/> instance, or a <see langword="null"/> <typeparamref name="T"/> reference.
+    /// </summary>
+    /// <typeparam name="T">The type of the underlying value.</typeparam>
+    /// <param name="value">The <see cref="Nullable{T}"/>.</param>
+    /// <returns>A reference to the value of the input <see cref="Nullable{T}"/> instance, or a <see langword="null"/> <typeparamref name="T"/> reference.</returns>
+    /// <remarks>The returned reference can be tested for <see langword="null"/> using <see cref="Unsafe.IsNullRef{T}(ref T)"/>.</remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static unsafe ref T DangerousGetValueOrNullReference<T>(ref this T? value)
+        where T : struct
+    {
+        if (value.HasValue)
+        {
+            return ref Unsafe.As<T?, RawNullableData<T>>(ref value).Value;
+        }
+
+        return ref Unsafe.NullRef<T>();
     }
 
     /// <summary>
