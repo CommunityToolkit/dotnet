@@ -247,6 +247,6 @@ public static class StreamExtensions
     /// </summary>
     private static void ThrowInvalidOperationExceptionForEndOfStream()
     {
-        throw new InvalidOperationException("The stream didn't contain enough data to read the requested item");
+        throw new InvalidOperationException("The stream didn't contain enough data to read the requested item.");
     }
 }

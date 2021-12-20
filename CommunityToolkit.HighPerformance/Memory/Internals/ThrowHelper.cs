@@ -16,7 +16,7 @@ internal static class ThrowHelper
     /// </summary>
     public static void ThrowArgumentExceptionForManagedType()
     {
-        throw new ArgumentException("Can't use a void* constructor when T is a managed type");
+        throw new ArgumentException("Can't use a void* constructor when T is a managed type.");
     }
 
     /// <summary>
@@ -24,7 +24,7 @@ internal static class ThrowHelper
     /// </summary>
     public static void ThrowArgumentExceptionForDestinationTooShort()
     {
-        throw new ArgumentException("The target span is too short to copy all the current items to");
+        throw new ArgumentException("The target span is too short to copy all the current items to.");
     }
 
     /// <summary>
@@ -32,7 +32,7 @@ internal static class ThrowHelper
     /// </summary>
     public static void ThrowArgumentExceptionForDestinationWithNotSameShape()
     {
-        throw new ArgumentException("The target span does not have the same shape as the source one");
+        throw new ArgumentException("The target span does not have the same shape as the source one.");
     }
 
     /// <summary>
@@ -40,7 +40,7 @@ internal static class ThrowHelper
     /// </summary>
     public static void ThrowArrayTypeMismatchException()
     {
-        throw new ArrayTypeMismatchException("The given array doesn't match the specified type T");
+        throw new ArrayTypeMismatchException("The given array doesn't match the specified type T.");
     }
 
     /// <summary>
@@ -48,7 +48,7 @@ internal static class ThrowHelper
     /// </summary>
     public static void ThrowArgumentExceptionForUnsupportedType()
     {
-        throw new ArgumentException("The specified object type is not supported");
+        throw new ArgumentException("The specified object type is not supported.");
     }
 
     /// <summary>
@@ -68,7 +68,7 @@ internal static class ThrowHelper
     /// </summary>
     public static void ThrowArgumentException()
     {
-        throw new ArgumentException("One or more input parameters were invalid");
+        throw new ArgumentException("One or more input parameters were invalid.");
     }
 
     /// <summary>

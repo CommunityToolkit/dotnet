@@ -131,7 +131,7 @@ public readonly ref struct NullableReadOnlyRef<T>
     /// </summary>
     private static void ThrowInvalidOperationException()
     {
-        throw new InvalidOperationException("The current instance doesn't have a value that can be accessed");
+        throw new InvalidOperationException("The current instance doesn't have a value that can be accessed.");
     }
 }
 

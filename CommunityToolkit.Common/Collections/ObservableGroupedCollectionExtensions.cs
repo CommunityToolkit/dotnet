@@ -34,7 +34,7 @@ public static class ObservableGroupedCollectionExtensions
         {
             static void ThrowArgumentExceptionForKeyNotFound()
             {
-                throw new InvalidOperationException("The requested key was not present in the collection");
+                throw new InvalidOperationException("The requested key was not present in the collection.");
             }
 
             ThrowArgumentExceptionForKeyNotFound();

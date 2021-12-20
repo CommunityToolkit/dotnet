@@ -543,6 +543,6 @@ public sealed class WeakReferenceMessenger : IMessenger
     /// </summary>
     private static void ThrowInvalidOperationExceptionForDuplicateRegistration()
     {
-        throw new InvalidOperationException("The target recipient has already subscribed to the target message");
+        throw new InvalidOperationException("The target recipient has already subscribed to the target message.");
     }
 }

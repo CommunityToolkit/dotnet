@@ -150,7 +150,7 @@ public sealed class Ioc : IServiceProvider
     [DoesNotReturn]
     private static void ThrowInvalidOperationExceptionForMissingInitialization()
     {
-        throw new InvalidOperationException("The service provider has not been configured yet");
+        throw new InvalidOperationException("The service provider has not been configured yet.");
     }
 
     /// <summary>
@@ -159,7 +159,7 @@ public sealed class Ioc : IServiceProvider
     [DoesNotReturn]
     private static void ThrowInvalidOperationExceptionForUnregisteredType()
     {
-        throw new InvalidOperationException("The requested service type was not registered");
+        throw new InvalidOperationException("The requested service type was not registered.");
     }
 
     /// <summary>
@@ -168,6 +168,6 @@ public sealed class Ioc : IServiceProvider
     [DoesNotReturn]
     private static void ThrowInvalidOperationExceptionForRepeatedConfiguration()
     {
-        throw new InvalidOperationException("The default service provider has already been configured");
+        throw new InvalidOperationException("The default service provider has already been configured.");
     }
 }

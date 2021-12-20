@@ -339,7 +339,7 @@ public sealed class ArrayPoolBufferWriter<T> : IBuffer<T>, IMemoryOwner<T>
     /// </summary>
     private static void ThrowArgumentOutOfRangeExceptionForNegativeCount()
     {
-        throw new ArgumentOutOfRangeException("count", "The count can't be a negative value");
+        throw new ArgumentOutOfRangeException("count", "The count can't be a negative value.");
     }
 
     /// <summary>
@@ -347,7 +347,7 @@ public sealed class ArrayPoolBufferWriter<T> : IBuffer<T>, IMemoryOwner<T>
     /// </summary>
     private static void ThrowArgumentOutOfRangeExceptionForNegativeSizeHint()
     {
-        throw new ArgumentOutOfRangeException("sizeHint", "The size hint can't be a negative value");
+        throw new ArgumentOutOfRangeException("sizeHint", "The size hint can't be a negative value.");
     }
 
     /// <summary>
@@ -355,7 +355,7 @@ public sealed class ArrayPoolBufferWriter<T> : IBuffer<T>, IMemoryOwner<T>
     /// </summary>
     private static void ThrowArgumentExceptionForAdvancedTooFar()
     {
-        throw new ArgumentException("The buffer writer has advanced too far");
+        throw new ArgumentException("The buffer writer has advanced too far.");
     }
 
     /// <summary>
@@ -363,6 +363,6 @@ public sealed class ArrayPoolBufferWriter<T> : IBuffer<T>, IMemoryOwner<T>
     /// </summary>
     private static void ThrowObjectDisposedException()
     {
-        throw new ObjectDisposedException("The current buffer has already been disposed");
+        throw new ObjectDisposedException("The current buffer has already been disposed.");
     }
 }

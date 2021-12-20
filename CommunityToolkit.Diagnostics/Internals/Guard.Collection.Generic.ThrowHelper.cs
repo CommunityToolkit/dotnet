@@ -25,7 +25,7 @@ public static partial class Guard
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsNotEmptyWithSpan<T>(string name)
         {
-            throw new ArgumentException($"Parameter {AssertString(name)} ({typeof(Span<T>).ToTypeString()}) must not be empty", name);
+            throw new ArgumentException($"Parameter {AssertString(name)} ({typeof(Span<T>).ToTypeString()}) must not be empty.", name);
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ public static partial class Guard
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsNotEmptyWithReadOnlySpan<T>(string name)
         {
-            throw new ArgumentException($"Parameter {AssertString(name)} ({typeof(ReadOnlySpan<T>).ToTypeString()}) must not be empty", name);
+            throw new ArgumentException($"Parameter {AssertString(name)} ({typeof(ReadOnlySpan<T>).ToTypeString()}) must not be empty.", name);
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ public static partial class Guard
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsNotEmpty<T>(string name)
         {
-            throw new ArgumentException($"Parameter {AssertString(name)} ({typeof(T).ToTypeString()}) must not be empty", name);
+            throw new ArgumentException($"Parameter {AssertString(name)} ({typeof(T).ToTypeString()}) must not be empty.", name);
         }
     }
 }

@@ -639,7 +639,7 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
         {
             if (this.invalid)
             {
-                static void Throw() => throw new InvalidOperationException("The current collection is in a corrupted state");
+                static void Throw() => throw new InvalidOperationException("The current collection is in a corrupted state.");
 
                 Throw();
             }

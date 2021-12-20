@@ -75,7 +75,7 @@ public class RequestMessage<T>
     [DoesNotReturn]
     private static void ThrowInvalidOperationExceptionForNoResponseReceived()
     {
-        throw new InvalidOperationException("No response was received for the given request message");
+        throw new InvalidOperationException("No response was received for the given request message.");
     }
 
     /// <summary>
@@ -84,6 +84,6 @@ public class RequestMessage<T>
     [DoesNotReturn]
     private static void ThrowInvalidOperationExceptionForDuplicateReply()
     {
-        throw new InvalidOperationException("A response has already been issued for the current message");
+        throw new InvalidOperationException("A response has already been issued for the current message.");
     }
 }

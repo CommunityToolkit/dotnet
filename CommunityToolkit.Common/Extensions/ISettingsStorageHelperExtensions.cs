@@ -76,6 +76,6 @@ public static class ISettingsStorageHelperExtensions
 
     private static void ThrowKeyNotFoundException<TKey>(TKey key)
     {
-        throw new KeyNotFoundException($"The given key '{key}' was not present");
+        throw new KeyNotFoundException($"The given key '{key}' was not present.");
     }
 }
