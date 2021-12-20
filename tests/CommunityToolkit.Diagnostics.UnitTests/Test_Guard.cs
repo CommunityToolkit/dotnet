@@ -311,6 +311,33 @@ public partial class Test_Guard
         Assert.Fail();
     }
 
+#if NET6_0_OR_GREATER
+    [TestMethod]
+    public void Test_Guard_IsTrue_WithHandler_Ok()
+    {
+        Guard.IsTrue(true, nameof(Test_Guard_IsTrue_Ok), $"This is an interpolated message: {DateTime.Now.Year}, {"hello".AsSpan()}");
+    }
+
+    [TestMethod]
+    public void Test_Guard_IsTrue_WithHandler_Fail()
+    {
+        try
+        {
+            Guard.IsTrue(false, nameof(Test_Guard_IsTrue_WithHandler_Fail), $"This is an interpolated message: {DateTime.Now.Year}, {"hello".AsSpan()}");
+        }
+        catch (ArgumentException e)
+        {
+            Assert.IsTrue(e.Message.Contains($"This is an interpolated message: {DateTime.Now.Year}, {"hello".AsSpan()}"));
+
+            return;
+        }
+
+        // Compiler detects this is unreachable from attribute,
+        // but we leave the assertion to double check that's valid
+        Assert.Fail();
+    }
+#endif
+
     [TestMethod]
     public void Test_Guard_IsFalse_Ok()
     {
@@ -341,6 +368,33 @@ public partial class Test_Guard
 
         Assert.Fail();
     }
+
+#if NET6_0_OR_GREATER
+    [TestMethod]
+    public void Test_Guard_IsFalse_WithHandler_Ok()
+    {
+        Guard.IsFalse(false, nameof(Test_Guard_IsFalse_WithHandler_Ok), $"This is an interpolated message: {DateTime.Now.Year}, {"hello".AsSpan()}");
+    }
+
+    [TestMethod]
+    public void Test_Guard_IsFalse_WithHandler_Fail()
+    {
+        try
+        {
+            Guard.IsFalse(true, nameof(Test_Guard_IsFalse_WithHandler_Fail), $"This is an interpolated message: {DateTime.Now.Year}, {"hello".AsSpan()}");
+        }
+        catch (ArgumentException e)
+        {
+            Assert.IsTrue(e.Message.Contains($"This is an interpolated message: {DateTime.Now.Year}, {"hello".AsSpan()}"));
+
+            return;
+        }
+
+        // Compiler detects this is unreachable from attribute,
+        // but we leave the assertion to double check that's valid
+        Assert.Fail();
+    }
+#endif
 
     [TestMethod]
     public void Test_Guard_IsLessThan_Ok()
