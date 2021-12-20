@@ -69,10 +69,14 @@ public static class IMessengerExtensions
     /// <param name="recipient">The target recipient to check the registration for.</param>
     /// <returns>Whether or not <paramref name="recipient"/> has already been registered for the specified message.</returns>
     /// <remarks>This method will use the default channel to check for the requested registration.</remarks>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="messenger"/> or <paramref name="recipient"/> are <see langword="null"/>.</exception>
     [Pure]
     public static bool IsRegistered<TMessage>(this IMessenger messenger, object recipient)
         where TMessage : class
     {
+        ArgumentNullException.ThrowIfNull(messenger);
+        ArgumentNullException.ThrowIfNull(recipient);
+
         return messenger.IsRegistered<TMessage, Unit>(recipient, default);
     }
 
@@ -82,8 +86,12 @@ public static class IMessengerExtensions
     /// <param name="messenger">The <see cref="IMessenger"/> instance to use to register the recipient.</param>
     /// <param name="recipient">The recipient that will receive the messages.</param>
     /// <remarks>See notes for <see cref="RegisterAll{TToken}(IMessenger,object,TToken)"/> for more info.</remarks>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="messenger"/> or <paramref name="recipient"/> are <see langword="null"/>.</exception>
     public static void RegisterAll(this IMessenger messenger, object recipient)
     {
+        ArgumentNullException.ThrowIfNull(messenger);
+        ArgumentNullException.ThrowIfNull(recipient);
+
         // We use this method as a callback for the conditional weak table, which will handle
         // thread-safety for us. This first callback will try to find a generated method for the
         // target recipient type, and just invoke it to get the delegate to cache and use later.
@@ -127,9 +135,14 @@ public static class IMessengerExtensions
     /// Once the registration is complete though, the performance will be exactly the same as with handlers
     /// registered directly through any of the other generic extensions for the <see cref="IMessenger"/> interface.
     /// </remarks>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="messenger"/>, <paramref name="recipient"/> or <paramref name="token"/> are <see langword="null"/>.</exception>
     public static void RegisterAll<TToken>(this IMessenger messenger, object recipient, TToken token)
         where TToken : IEquatable<TToken>
     {
+        ArgumentNullException.ThrowIfNull(messenger);
+        ArgumentNullException.ThrowIfNull(recipient);
+        ArgumentNullException.For<TToken>.ThrowIfNull(token);
+
         // We use this method as a callback for the conditional weak table, which will handle
         // thread-safety for us. This first callback will try to find a generated method for the
         // target recipient type, and just invoke it to get the delegate to cache and use later.
@@ -223,9 +236,13 @@ public static class IMessengerExtensions
     /// <param name="recipient">The recipient that will receive the messages.</param>
     /// <exception cref="InvalidOperationException">Thrown when trying to register the same message twice.</exception>
     /// <remarks>This method will use the default channel to perform the requested registration.</remarks>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="messenger"/> or <paramref name="recipient"/> are <see langword="null"/>.</exception>
     public static void Register<TMessage>(this IMessenger messenger, IRecipient<TMessage> recipient)
         where TMessage : class
     {
+        ArgumentNullException.ThrowIfNull(messenger);
+        ArgumentNullException.ThrowIfNull(recipient);
+
         if (messenger is WeakReferenceMessenger weakReferenceMessenger)
         {
             weakReferenceMessenger.Register<TMessage, Unit>(recipient, default);
@@ -246,10 +263,15 @@ public static class IMessengerExtensions
     /// <param name="token">The token indicating what channel to use.</param>
     /// <exception cref="InvalidOperationException">Thrown when trying to register the same message twice.</exception>
     /// <remarks>This method will use the default channel to perform the requested registration.</remarks>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="messenger"/>, <paramref name="recipient"/> or <paramref name="token"/> are <see langword="null"/>.</exception>
     public static void Register<TMessage, TToken>(this IMessenger messenger, IRecipient<TMessage> recipient, TToken token)
         where TMessage : class
         where TToken : IEquatable<TToken>
     {
+        ArgumentNullException.ThrowIfNull(messenger);
+        ArgumentNullException.ThrowIfNull(recipient);
+        ArgumentNullException.For<TToken>.ThrowIfNull(token);
+
         if (messenger is WeakReferenceMessenger weakReferenceMessenger)
         {
             weakReferenceMessenger.Register(recipient, token);
@@ -273,9 +295,14 @@ public static class IMessengerExtensions
     /// <param name="handler">The <see cref="MessageHandler{TRecipient,TMessage}"/> to invoke when a message is received.</param>
     /// <exception cref="InvalidOperationException">Thrown when trying to register the same message twice.</exception>
     /// <remarks>This method will use the default channel to perform the requested registration.</remarks>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="messenger"/>, <paramref name="recipient"/> or <paramref name="handler"/> are <see langword="null"/>.</exception>
     public static void Register<TMessage>(this IMessenger messenger, object recipient, MessageHandler<object, TMessage> handler)
         where TMessage : class
     {
+        ArgumentNullException.ThrowIfNull(messenger);
+        ArgumentNullException.ThrowIfNull(recipient);
+        ArgumentNullException.ThrowIfNull(handler);
+
         messenger.Register(recipient, default(Unit), handler);
     }
 
@@ -289,10 +316,15 @@ public static class IMessengerExtensions
     /// <param name="handler">The <see cref="MessageHandler{TRecipient,TMessage}"/> to invoke when a message is received.</param>
     /// <exception cref="InvalidOperationException">Thrown when trying to register the same message twice.</exception>
     /// <remarks>This method will use the default channel to perform the requested registration.</remarks>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="messenger"/>, <paramref name="recipient"/> or <paramref name="handler"/> are <see langword="null"/>.</exception>
     public static void Register<TRecipient, TMessage>(this IMessenger messenger, TRecipient recipient, MessageHandler<TRecipient, TMessage> handler)
         where TRecipient : class
         where TMessage : class
     {
+        ArgumentNullException.ThrowIfNull(messenger);
+        ArgumentNullException.ThrowIfNull(recipient);
+        ArgumentNullException.ThrowIfNull(handler);
+
         messenger.Register(recipient, default(Unit), handler);
     }
 
@@ -306,10 +338,16 @@ public static class IMessengerExtensions
     /// <param name="token">A token used to determine the receiving channel to use.</param>
     /// <param name="handler">The <see cref="MessageHandler{TRecipient,TMessage}"/> to invoke when a message is received.</param>
     /// <exception cref="InvalidOperationException">Thrown when trying to register the same message twice.</exception>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="messenger"/>, <paramref name="recipient"/> or <paramref name="handler"/> are <see langword="null"/>.</exception>
     public static void Register<TMessage, TToken>(this IMessenger messenger, object recipient, TToken token, MessageHandler<object, TMessage> handler)
         where TMessage : class
         where TToken : IEquatable<TToken>
     {
+        ArgumentNullException.ThrowIfNull(messenger);
+        ArgumentNullException.ThrowIfNull(recipient);
+        ArgumentNullException.For<TToken>.ThrowIfNull(token);
+        ArgumentNullException.ThrowIfNull(handler);
+
         messenger.Register(recipient, token, handler);
     }
 
@@ -323,9 +361,13 @@ public static class IMessengerExtensions
     /// This method will unregister the target recipient only from the default channel.
     /// If the recipient has no registered handler, this method does nothing.
     /// </remarks>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="messenger"/> or <paramref name="recipient"/> are <see langword="null"/>.</exception>
     public static void Unregister<TMessage>(this IMessenger messenger, object recipient)
         where TMessage : class
     {
+        ArgumentNullException.ThrowIfNull(messenger);
+        ArgumentNullException.ThrowIfNull(recipient);
+
         messenger.Unregister<TMessage, Unit>(recipient, default);
     }
 
@@ -340,9 +382,12 @@ public static class IMessengerExtensions
     /// message type exposes a parameterless constructor: it will automatically create
     /// a new <typeparamref name="TMessage"/> instance and send that to its recipients.
     /// </remarks>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="messenger"/> is <see langword="null"/>.</exception>
     public static TMessage Send<TMessage>(this IMessenger messenger)
         where TMessage : class, new()
     {
+        ArgumentNullException.ThrowIfNull(messenger);
+
         return messenger.Send(new TMessage(), default(Unit));
     }
 
@@ -353,9 +398,13 @@ public static class IMessengerExtensions
     /// <param name="messenger">The <see cref="IMessenger"/> instance to use to send the message.</param>
     /// <param name="message">The message to send.</param>
     /// <returns>The message that was sent (ie. <paramref name="message"/>).</returns>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="messenger"/> or <paramref name="message"/> are <see langword="null"/>.</exception>
     public static TMessage Send<TMessage>(this IMessenger messenger, TMessage message)
         where TMessage : class
     {
+        ArgumentNullException.ThrowIfNull(messenger);
+        ArgumentNullException.ThrowIfNull(message);
+
         return messenger.Send(message, default(Unit));
     }
 
@@ -371,10 +420,14 @@ public static class IMessengerExtensions
     /// This method will automatically create a new <typeparamref name="TMessage"/> instance
     /// just like <see cref="Send{TMessage}(IMessenger)"/>, and then send it to the right recipients.
     /// </remarks>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="messenger"/> or <paramref name="token"/> are <see langword="null"/>.</exception>
     public static TMessage Send<TMessage, TToken>(this IMessenger messenger, TToken token)
         where TMessage : class, new()
         where TToken : IEquatable<TToken>
     {
+        ArgumentNullException.ThrowIfNull(messenger);
+        ArgumentNullException.For<TToken>.ThrowIfNull(token);
+
         return messenger.Send(new TMessage(), token);
     }
 }

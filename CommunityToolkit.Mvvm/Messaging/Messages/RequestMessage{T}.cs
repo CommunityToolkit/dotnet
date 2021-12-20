@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 #pragma warning disable CS8618
 
@@ -59,15 +60,19 @@ public class RequestMessage<T>
     /// Implicitly gets the response from a given <see cref="RequestMessage{T}"/> instance.
     /// </summary>
     /// <param name="message">The input <see cref="RequestMessage{T}"/> instance.</param>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="message"/> is <see langword="null"/>.</exception>
     /// <exception cref="InvalidOperationException">Thrown when <see cref="HasReceivedResponse"/> is <see langword="false"/>.</exception>
     public static implicit operator T(RequestMessage<T> message)
     {
+        ArgumentNullException.ThrowIfNull(message);
+
         return message.Response;
     }
 
     /// <summary>
     /// Throws an <see cref="InvalidOperationException"/> when a response is not available.
     /// </summary>
+    [DoesNotReturn]
     private static void ThrowInvalidOperationExceptionForNoResponseReceived()
     {
         throw new InvalidOperationException("No response was received for the given request message");
@@ -76,6 +81,7 @@ public class RequestMessage<T>
     /// <summary>
     /// Throws an <see cref="InvalidOperationException"/> when <see cref="Reply"/> is called twice.
     /// </summary>
+    [DoesNotReturn]
     private static void ThrowInvalidOperationExceptionForDuplicateReply()
     {
         throw new InvalidOperationException("A response has already been issued for the current message");

@@ -95,6 +95,9 @@ public sealed class WeakReferenceMessenger : IMessenger
         where TMessage : class
         where TToken : IEquatable<TToken>
     {
+        ArgumentNullException.ThrowIfNull(recipient);
+        ArgumentNullException.For<TToken>.ThrowIfNull(token);
+
         lock (this.recipientsMap)
         {
             Type2 type2 = new(typeof(TMessage), typeof(TToken));
@@ -125,6 +128,10 @@ public sealed class WeakReferenceMessenger : IMessenger
         where TMessage : class
         where TToken : IEquatable<TToken>
     {
+        ArgumentNullException.ThrowIfNull(recipient);
+        ArgumentNullException.For<TToken>.ThrowIfNull(token);
+        ArgumentNullException.ThrowIfNull(handler);
+
         Register<TMessage, TToken>(recipient, token, new MessageHandlerDispatcher.For<TRecipient, TMessage>(handler));
     }
 
@@ -200,6 +207,8 @@ public sealed class WeakReferenceMessenger : IMessenger
     /// <inheritdoc/>
     public void UnregisterAll(object recipient)
     {
+        ArgumentNullException.ThrowIfNull(recipient);
+
         lock (this.recipientsMap)
         {
             Dictionary2<Type2, ConditionalWeakTable2<object, object?>>.Enumerator enumerator = this.recipientsMap.GetEnumerator();
@@ -218,6 +227,9 @@ public sealed class WeakReferenceMessenger : IMessenger
     public void UnregisterAll<TToken>(object recipient, TToken token)
         where TToken : IEquatable<TToken>
     {
+        ArgumentNullException.ThrowIfNull(recipient);
+        ArgumentNullException.For<TToken>.ThrowIfNull(token);
+
         // This method is never called with the unit type. See more details in
         // the comments in the corresponding method in StrongReferenceMessenger.
         if (typeof(TToken) == typeof(Unit))
@@ -250,6 +262,9 @@ public sealed class WeakReferenceMessenger : IMessenger
         where TMessage : class
         where TToken : IEquatable<TToken>
     {
+        ArgumentNullException.ThrowIfNull(recipient);
+        ArgumentNullException.For<TToken>.ThrowIfNull(token);
+
         lock (this.recipientsMap)
         {
             Type2 type2 = new(typeof(TMessage), typeof(TToken));
@@ -275,6 +290,9 @@ public sealed class WeakReferenceMessenger : IMessenger
         where TMessage : class
         where TToken : IEquatable<TToken>
     {
+        ArgumentNullException.ThrowIfNull(message);
+        ArgumentNullException.For<TToken>.ThrowIfNull(token);
+
         ArrayPoolBufferWriter<object?> bufferWriter;
         int i = 0;
 

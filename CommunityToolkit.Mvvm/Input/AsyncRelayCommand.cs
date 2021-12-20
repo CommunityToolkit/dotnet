@@ -75,8 +75,11 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand
     /// Initializes a new instance of the <see cref="AsyncRelayCommand"/> class that can always execute.
     /// </summary>
     /// <param name="execute">The execution logic.</param>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="execute"/> is <see langword="null"/>.</exception>
     public AsyncRelayCommand(Func<Task> execute)
     {
+        ArgumentNullException.ThrowIfNull(execute);
+
         this.execute = execute;
         this.allowConcurrentExecutions = true;
     }
@@ -86,8 +89,11 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand
     /// </summary>
     /// <param name="execute">The execution logic.</param>
     /// <param name="allowConcurrentExecutions">Whether or not to allow concurrent executions of the command.</param>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="execute"/> is <see langword="null"/>.</exception>
     public AsyncRelayCommand(Func<Task> execute, bool allowConcurrentExecutions)
     {
+        ArgumentNullException.ThrowIfNull(execute);
+
         this.execute = execute;
         this.allowConcurrentExecutions = allowConcurrentExecutions;
     }
@@ -96,8 +102,11 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand
     /// Initializes a new instance of the <see cref="AsyncRelayCommand"/> class that can always execute.
     /// </summary>
     /// <param name="cancelableExecute">The cancelable execution logic.</param>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="cancelableExecute"/> is <see langword="null"/>.</exception>
     public AsyncRelayCommand(Func<CancellationToken, Task> cancelableExecute)
     {
+        ArgumentNullException.ThrowIfNull(cancelableExecute);
+
         this.cancelableExecute = cancelableExecute;
         this.allowConcurrentExecutions = true;
     }
@@ -107,8 +116,11 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand
     /// </summary>
     /// <param name="cancelableExecute">The cancelable execution logic.</param>
     /// <param name="allowConcurrentExecutions">Whether or not to allow concurrent executions of the command.</param>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="cancelableExecute"/> is <see langword="null"/>.</exception>
     public AsyncRelayCommand(Func<CancellationToken, Task> cancelableExecute, bool allowConcurrentExecutions)
     {
+        ArgumentNullException.ThrowIfNull(cancelableExecute);
+
         this.cancelableExecute = cancelableExecute;
         this.allowConcurrentExecutions = allowConcurrentExecutions;
     }
@@ -118,8 +130,12 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand
     /// </summary>
     /// <param name="execute">The execution logic.</param>
     /// <param name="canExecute">The execution status logic.</param>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="execute"/> or <paramref name="canExecute"/> are <see langword="null"/>.</exception>
     public AsyncRelayCommand(Func<Task> execute, Func<bool> canExecute)
     {
+        ArgumentNullException.ThrowIfNull(execute);
+        ArgumentNullException.ThrowIfNull(canExecute);
+
         this.execute = execute;
         this.canExecute = canExecute;
         this.allowConcurrentExecutions = true;
@@ -131,8 +147,12 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand
     /// <param name="execute">The execution logic.</param>
     /// <param name="canExecute">The execution status logic.</param>
     /// <param name="allowConcurrentExecutions">Whether or not to allow concurrent executions of the command.</param>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="execute"/> or <paramref name="canExecute"/> are <see langword="null"/>.</exception>
     public AsyncRelayCommand(Func<Task> execute, Func<bool> canExecute, bool allowConcurrentExecutions)
     {
+        ArgumentNullException.ThrowIfNull(execute);
+        ArgumentNullException.ThrowIfNull(canExecute);
+
         this.execute = execute;
         this.canExecute = canExecute;
         this.allowConcurrentExecutions = allowConcurrentExecutions;
@@ -143,8 +163,12 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand
     /// </summary>
     /// <param name="cancelableExecute">The cancelable execution logic.</param>
     /// <param name="canExecute">The execution status logic.</param>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="cancelableExecute"/> or <paramref name="canExecute"/> are <see langword="null"/>.</exception>
     public AsyncRelayCommand(Func<CancellationToken, Task> cancelableExecute, Func<bool> canExecute)
     {
+        ArgumentNullException.ThrowIfNull(cancelableExecute);
+        ArgumentNullException.ThrowIfNull(canExecute);
+
         this.cancelableExecute = cancelableExecute;
         this.canExecute = canExecute;
         this.allowConcurrentExecutions = true;
@@ -156,8 +180,12 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand
     /// <param name="cancelableExecute">The cancelable execution logic.</param>
     /// <param name="canExecute">The execution status logic.</param>
     /// <param name="allowConcurrentExecutions">Whether or not to allow concurrent executions of the command.</param>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="cancelableExecute"/> or <paramref name="canExecute"/> are <see langword="null"/>.</exception>
     public AsyncRelayCommand(Func<CancellationToken, Task> cancelableExecute, Func<bool> canExecute, bool allowConcurrentExecutions)
     {
+        ArgumentNullException.ThrowIfNull(cancelableExecute);
+        ArgumentNullException.ThrowIfNull(canExecute);
+
         this.cancelableExecute = cancelableExecute;
         this.canExecute = canExecute;
         this.allowConcurrentExecutions = allowConcurrentExecutions;

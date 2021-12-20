@@ -36,8 +36,11 @@ public abstract class ObservableRecipient : ObservableObject
     /// Initializes a new instance of the <see cref="ObservableRecipient"/> class.
     /// </summary>
     /// <param name="messenger">The <see cref="IMessenger"/> instance to use to send messages.</param>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="messenger"/> is <see langword="null"/>.</exception>
     protected ObservableRecipient(IMessenger messenger)
     {
+        ArgumentNullException.ThrowIfNull(messenger);
+
         Messenger = messenger;
     }
 
@@ -166,8 +169,11 @@ public abstract class ObservableRecipient : ObservableObject
     /// <param name="broadcast">If <see langword="true"/>, <see cref="Broadcast{T}"/> will also be invoked.</param>
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="comparer"/> is <see langword="null"/>.</exception>
     protected bool SetProperty<T>([NotNullIfNotNull("newValue")] ref T field, T newValue, IEqualityComparer<T> comparer, bool broadcast, [CallerMemberName] string? propertyName = null)
     {
+        ArgumentNullException.ThrowIfNull(comparer);
+
         T oldValue = field;
 
         bool propertyChanged = SetProperty(ref field, newValue, comparer, propertyName);
@@ -200,8 +206,11 @@ public abstract class ObservableRecipient : ObservableObject
     /// the <see cref="ObservableObject.PropertyChanging"/> and <see cref="ObservableObject.PropertyChanged"/> events
     /// are not raised if the current and new value for the target property are the same.
     /// </remarks>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="callback"/> is <see langword="null"/>.</exception>
     protected bool SetProperty<T>(T oldValue, T newValue, Action<T> callback, bool broadcast, [CallerMemberName] string? propertyName = null)
     {
+        ArgumentNullException.ThrowIfNull(callback);
+
         bool propertyChanged = SetProperty(oldValue, newValue, callback, propertyName);
 
         if (propertyChanged && broadcast)
@@ -226,8 +235,12 @@ public abstract class ObservableRecipient : ObservableObject
     /// <param name="broadcast">If <see langword="true"/>, <see cref="Broadcast{T}"/> will also be invoked.</param>
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="comparer"/> or <paramref name="callback"/> are <see langword="null"/>.</exception>
     protected bool SetProperty<T>(T oldValue, T newValue, IEqualityComparer<T> comparer, Action<T> callback, bool broadcast, [CallerMemberName] string? propertyName = null)
     {
+        ArgumentNullException.ThrowIfNull(comparer);
+        ArgumentNullException.ThrowIfNull(callback);
+
         bool propertyChanged = SetProperty(oldValue, newValue, comparer, callback, propertyName);
 
         if (propertyChanged && broadcast)
@@ -255,9 +268,13 @@ public abstract class ObservableRecipient : ObservableObject
     /// <param name="broadcast">If <see langword="true"/>, <see cref="Broadcast{T}"/> will also be invoked.</param>
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="model"/> or <paramref name="callback"/> are <see langword="null"/>.</exception>
     protected bool SetProperty<TModel, T>(T oldValue, T newValue, TModel model, Action<TModel, T> callback, bool broadcast, [CallerMemberName] string? propertyName = null)
         where TModel : class
     {
+        ArgumentNullException.ThrowIfNull(model);
+        ArgumentNullException.ThrowIfNull(callback);
+
         bool propertyChanged = SetProperty(oldValue, newValue, model, callback, propertyName);
 
         if (propertyChanged && broadcast)
@@ -287,9 +304,14 @@ public abstract class ObservableRecipient : ObservableObject
     /// <param name="broadcast">If <see langword="true"/>, <see cref="Broadcast{T}"/> will also be invoked.</param>
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="comparer"/>, <paramref name="model"/> or <paramref name="callback"/> are <see langword="null"/>.</exception>
     protected bool SetProperty<TModel, T>(T oldValue, T newValue, IEqualityComparer<T> comparer, TModel model, Action<TModel, T> callback, bool broadcast, [CallerMemberName] string? propertyName = null)
         where TModel : class
     {
+        ArgumentNullException.ThrowIfNull(comparer);
+        ArgumentNullException.ThrowIfNull(model);
+        ArgumentNullException.ThrowIfNull(callback);
+
         bool propertyChanged = SetProperty(oldValue, newValue, comparer, model, callback, propertyName);
 
         if (propertyChanged && broadcast)

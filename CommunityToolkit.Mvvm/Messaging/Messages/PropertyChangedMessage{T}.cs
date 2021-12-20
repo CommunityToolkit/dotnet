@@ -20,8 +20,11 @@ public class PropertyChangedMessage<T>
     /// <param name="propertyName">The name of the property that changed.</param>
     /// <param name="oldValue">The value that the property had before the change.</param>
     /// <param name="newValue">The value that the property has after the change.</param>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="sender"/> is <see langword="null"/>.</exception>
     public PropertyChangedMessage(object sender, string? propertyName, T oldValue, T newValue)
     {
+        ArgumentNullException.ThrowIfNull(sender);
+
         Sender = sender;
         PropertyName = propertyName;
         OldValue = oldValue;

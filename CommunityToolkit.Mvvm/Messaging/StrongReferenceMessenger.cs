@@ -105,6 +105,9 @@ public sealed class StrongReferenceMessenger : IMessenger
         where TMessage : class
         where TToken : IEquatable<TToken>
     {
+        ArgumentNullException.ThrowIfNull(recipient);
+        ArgumentNullException.For<TToken>.ThrowIfNull(token);
+
         lock (this.recipientsMap)
         {
             if (typeof(TToken) == typeof(Unit))
@@ -140,6 +143,10 @@ public sealed class StrongReferenceMessenger : IMessenger
         where TMessage : class
         where TToken : IEquatable<TToken>
     {
+        ArgumentNullException.ThrowIfNull(recipient);
+        ArgumentNullException.For<TToken>.ThrowIfNull(token);
+        ArgumentNullException.ThrowIfNull(handler);
+
         Register<TMessage, TToken>(recipient, token, new MessageHandlerDispatcher.For<TRecipient, TMessage>(handler));
     }
 
@@ -218,6 +225,8 @@ public sealed class StrongReferenceMessenger : IMessenger
     /// <inheritdoc/>
     public void UnregisterAll(object recipient)
     {
+        ArgumentNullException.ThrowIfNull(recipient);
+
         lock (this.recipientsMap)
         {
             // If the recipient has no registered messages at all, ignore
@@ -255,6 +264,9 @@ public sealed class StrongReferenceMessenger : IMessenger
     public void UnregisterAll<TToken>(object recipient, TToken token)
         where TToken : IEquatable<TToken>
     {
+        ArgumentNullException.ThrowIfNull(recipient);
+        ArgumentNullException.For<TToken>.ThrowIfNull(token);
+
         // This method is never called with the unit type, so this path is not implemented. This
         // exception should not ever be thrown, it's here just to double check for regressions in
         // case a bug was introduced that caused this path to somehow be invoked with the Unit type.
@@ -384,6 +396,9 @@ public sealed class StrongReferenceMessenger : IMessenger
         where TMessage : class
         where TToken : IEquatable<TToken>
     {
+        ArgumentNullException.ThrowIfNull(recipient);
+        ArgumentNullException.For<TToken>.ThrowIfNull(token);
+
         lock (this.recipientsMap)
         {
             if (typeof(TToken) == typeof(Unit))
@@ -478,6 +493,9 @@ public sealed class StrongReferenceMessenger : IMessenger
         where TMessage : class
         where TToken : IEquatable<TToken>
     {
+        ArgumentNullException.ThrowIfNull(message);
+        ArgumentNullException.For<TToken>.ThrowIfNull(token);
+
         object?[] rentedArray;
         Span<object?> pairs;
         int i = 0;

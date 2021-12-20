@@ -75,8 +75,11 @@ public class AsyncCollectionRequestMessage<T> : IAsyncEnumerable<T>
     /// Replies to the current request message.
     /// </summary>
     /// <param name="response">The response to use to reply to the request message.</param>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="response"/> is <see langword="null"/>.</exception>
     public void Reply(Task<T> response)
     {
+        ArgumentNullException.ThrowIfNull(response);
+
         this.responses.Add((response, null));
     }
 
@@ -84,8 +87,11 @@ public class AsyncCollectionRequestMessage<T> : IAsyncEnumerable<T>
     /// Replies to the current request message.
     /// </summary>
     /// <param name="response">The response to use to reply to the request message.</param>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="response"/> is <see langword="null"/>.</exception>
     public void Reply(Func<CancellationToken, Task<T>> response)
     {
+        ArgumentNullException.ThrowIfNull(response);
+
         this.responses.Add((null, response));
     }
 
