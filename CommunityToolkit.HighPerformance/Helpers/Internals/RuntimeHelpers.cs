@@ -191,6 +191,13 @@ internal static class RuntimeHelpers
             return false;
         }
 
+        // Explicitly check for pointer types first
+        if (type.IsPointer)
+        {
+            return false;
+        }
+
+        // Check for value types (this has to be after checking for pointers)
         if (!type.IsValueType)
         {
             return true;

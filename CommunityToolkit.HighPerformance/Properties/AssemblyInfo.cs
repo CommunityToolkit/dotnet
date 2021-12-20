@@ -9,3 +9,8 @@ using System.Runtime.CompilerServices;
 // are relying on the JIT ensuring that all local memory is zeroed out to work. Doing
 // this can provide some minor performance benefits, depending on the workload.
 [module: SkipLocalsInit]
+
+// We need to test the RuntimeHelpers polyfills on applicable runtimes
+#if !NETSTANDARD2_1_OR_GREATER
+[assembly: InternalsVisibleTo("CommunityToolkit.HighPerformance.UnitTests")]
+#endif
