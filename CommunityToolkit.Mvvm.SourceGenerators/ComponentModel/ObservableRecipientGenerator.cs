@@ -30,18 +30,25 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
     }
 
     /// <inheritdoc/>
-    protected override ObservableRecipientInfo GetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData)
+    protected override IncrementalValuesProvider<(INamedTypeSymbol Symbol, ObservableRecipientInfo Info)> GetInfo(
+        IncrementalGeneratorInitializationContext context,
+        IncrementalValuesProvider<(INamedTypeSymbol Symbol, AttributeData AttributeData)> source)
     {
-        string typeName = typeSymbol.Name;
-        bool hasExplicitConstructors = !(typeSymbol.InstanceConstructors.Length == 1 && typeSymbol.InstanceConstructors[0] is { Parameters.IsEmpty: true, IsImplicitlyDeclared: true });
-        bool isAbstract = typeSymbol.IsAbstract;
-        bool isObservableValidator = typeSymbol.InheritsFrom("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator");
+        static ObservableRecipientInfo GetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData)
+        {
+            string typeName = typeSymbol.Name;
+            bool hasExplicitConstructors = !(typeSymbol.InstanceConstructors.Length == 1 && typeSymbol.InstanceConstructors[0] is { Parameters.IsEmpty: true, IsImplicitlyDeclared: true });
+            bool isAbstract = typeSymbol.IsAbstract;
+            bool isObservableValidator = typeSymbol.InheritsFrom("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator");
 
-        return new(
-            typeName,
-            hasExplicitConstructors,
-            isAbstract,
-            isObservableValidator);
+            return new(
+                typeName,
+                hasExplicitConstructors,
+                isAbstract,
+                isObservableValidator);
+        }
+
+        return source.Select(static (item, _) => (item.Symbol, GetInfo(item.Symbol, item.AttributeData)));
     }
 
     /// <inheritdoc/>

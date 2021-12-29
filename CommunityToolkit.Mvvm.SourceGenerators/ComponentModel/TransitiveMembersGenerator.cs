@@ -80,13 +80,15 @@ public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGe
                 static (context, _) => (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!);
 
         // Filter the types with the target attribute
-        IncrementalValuesProvider<(INamedTypeSymbol Symbol, TInfo Info)> typeSymbolsWithInfo =
+        IncrementalValuesProvider<(INamedTypeSymbol Symbol, AttributeData AttributeData)> typeSymbolsWithAttributeData =
             typeSymbols
             .Select((item, _) => (
                 Symbol: item,
                 Attribute: item.GetAttributes().FirstOrDefault(a => a.AttributeClass?.HasFullyQualifiedName(this.attributeType) == true)))
-            .Where(static item => item.Attribute is not null)!
-            .Select((item, _) => (item.Symbol, GetInfo(item.Symbol, item.Attribute!)));
+            .Where(static item => item.Attribute is not null)!;
+
+        // Transform the input data
+        IncrementalValuesProvider<(INamedTypeSymbol Symbol, TInfo Info)> typeSymbolsWithInfo = GetInfo(context, typeSymbolsWithAttributeData);
 
         // Filter by language version
         context.FilterWithLanguageVersion(ref typeSymbolsWithInfo, LanguageVersion.CSharp8, UnsupportedCSharpLanguageVersionError);
@@ -129,12 +131,14 @@ public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGe
     }
 
     /// <summary>
-    /// Gets an info model from a retrieved <see cref="AttributeData"/> instance.
+    /// Gathers info from a source <see cref="IncrementalValuesProvider{TValues}"/> input.
     /// </summary>
-    /// <param name="typeSymbol">The <see cref="INamedTypeSymbol"/> instance for the target type.</param>
-    /// <param name="attributeData">The input <see cref="AttributeData"/> to get info from.</param>
-    /// <returns>A <typeparamref name="TInfo"/> instance with data extracted from <paramref name="attributeData"/>.</returns>
-    protected abstract TInfo GetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData);
+    /// <param name="context">The <see cref="IncrementalGeneratorInitializationContext"/> instance in use.</param>
+    /// <param name="source">The source <see cref="IncrementalValuesProvider{TValues}"/> input.</param>
+    /// <returns>A transformed <see cref="IncrementalValuesProvider{TValues}"/> instance with the gathered data.</returns>
+    protected abstract IncrementalValuesProvider<(INamedTypeSymbol Symbol, TInfo Info)> GetInfo(
+        IncrementalGeneratorInitializationContext context,
+        IncrementalValuesProvider<(INamedTypeSymbol Symbol, AttributeData AttributeData)> source);
 
     /// <summary>
     /// Validates a target type being processed.
