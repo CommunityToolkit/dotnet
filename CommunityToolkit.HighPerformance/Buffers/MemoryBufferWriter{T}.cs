@@ -5,7 +5,6 @@
 using System;
 using System.Buffers;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using CommunityToolkit.HighPerformance.Buffers.Views;
 
@@ -144,7 +143,6 @@ public sealed class MemoryBufferWriter<T> : IBuffer<T>
     }
 
     /// <inheritdoc/>
-    [Pure]
     public override string ToString()
     {
         // See comments in MemoryOwner<T> about this

@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -101,7 +100,6 @@ public abstract partial class TransitiveMembersGenerator : ISourceGenerator
     /// Loads the source syntax tree for the current generator.
     /// </summary>
     /// <returns>The syntax tree with the elements to emit in the generated code.</returns>
-    [Pure]
     private SyntaxTree LoadSourceSyntaxTree()
     {
         string filename = $"CommunityToolkit.Mvvm.SourceGenerators.EmbeddedResources.{this.attributeTypeName.Replace("Attribute", string.Empty)}.cs";

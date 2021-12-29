@@ -6,7 +6,6 @@
 // See https://github.com/dotnet/corefx/blob/release/2.1/src/System.Memory/src/System/SpanHelpers.cs.
 
 using System;
-using System.Diagnostics.Contracts;
 #if !NETSTANDARD2_1_OR_GREATER
 using System.Reflection;
 #endif
@@ -27,7 +26,6 @@ internal static class RuntimeHelpers
     /// <typeparam name="TTo">The target type of items.</typeparam>
     /// <param name="length">The input length to convert.</param>
     /// <returns>The converted length for the specified argument and types.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe int ConvertLength<TFrom, TTo>(int length)
         where TFrom : unmanaged
@@ -60,7 +58,6 @@ internal static class RuntimeHelpers
     /// is only visible as a non-generic <see cref="Array"/> instance, because the C# compiler will
     /// not be able to emit the <see langword="ldlen"/> opcode instead of calling the right method.
     /// </remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static nint GetArrayNativeLength<T>(T[] array)
     {
@@ -72,7 +69,6 @@ internal static class RuntimeHelpers
     /// </summary>
     /// <param name="array">The input <see cref="Array"/> instance.</param>
     /// <returns>The total length of <paramref name="array"/> as a native integer.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static nint GetArrayNativeLength(Array array)
     {
@@ -85,7 +81,6 @@ internal static class RuntimeHelpers
     /// </summary>
     /// <typeparam name="T">The type of values in the array.</typeparam>
     /// <returns>The byte offset to the first <typeparamref name="T"/> element in a SZ array.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IntPtr GetArrayDataByteOffset<T>()
     {
@@ -98,7 +93,6 @@ internal static class RuntimeHelpers
     /// </summary>
     /// <typeparam name="T">The type of values in the array.</typeparam>
     /// <returns>The byte offset to the first <typeparamref name="T"/> element in a 2D array.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IntPtr GetArray2DDataByteOffset<T>()
     {
@@ -110,7 +104,6 @@ internal static class RuntimeHelpers
     /// </summary>
     /// <typeparam name="T">The type of values in the array.</typeparam>
     /// <returns>The byte offset to the first <typeparamref name="T"/> element in a 3D array.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IntPtr GetArray3DDataByteOffset<T>()
     {
@@ -131,7 +124,6 @@ internal static class RuntimeHelpers
     /// The <see cref="IntPtr"/> value representing the offset to the target field from the start of the object data
     /// for the parameter <paramref name="obj"/>, or the value of the raw pointer passed as a tracked reference.
     /// </returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe IntPtr GetObjectDataOrReferenceByteOffset<T>(object? obj, ref T data)
     {
@@ -153,7 +145,6 @@ internal static class RuntimeHelpers
     /// <param name="obj">The input <see cref="object"/> hosting the target field.</param>
     /// <param name="offset">The input byte offset for the <typeparamref name="T"/> reference to retrieve.</param>
     /// <returns>A <typeparamref name="T"/> reference matching the given parameters.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe ref T GetObjectDataAtOffsetOrPointerReference<T>(object? obj, IntPtr offset)
     {
@@ -170,7 +161,6 @@ internal static class RuntimeHelpers
     /// </summary>
     /// <typeparam name="T">The type to check.</typeparam>
     /// <returns>Whether or not <typeparamref name="T"/> respects the <see langword="unmanaged"/> constraint.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsReferenceOrContainsReferences<T>()
     {
@@ -182,7 +172,6 @@ internal static class RuntimeHelpers
     /// </summary>
     /// <param name="type">The current type to check.</param>
     /// <returns>Whether or not <paramref name="type"/> is a reference type or contains references.</returns>
-    [Pure]
     private static bool IsReferenceOrContainsReferences(Type type)
     {
         // Common case, for primitive types
@@ -259,7 +248,6 @@ internal static class RuntimeHelpers
         /// Computes the value for <see cref="ArrayDataByteOffset"/>.
         /// </summary>
         /// <returns>The value of <see cref="ArrayDataByteOffset"/> for the current runtime.</returns>
-        [Pure]
         private static IntPtr MeasureArrayDataByteOffset()
         {
             T[]? array = new T[1];
@@ -271,7 +259,6 @@ internal static class RuntimeHelpers
         /// Computes the value for <see cref="Array2DDataByteOffset"/>.
         /// </summary>
         /// <returns>The value of <see cref="Array2DDataByteOffset"/> for the current runtime.</returns>
-        [Pure]
         private static IntPtr MeasureArray2DDataByteOffset()
         {
             T[,]? array = new T[1, 1];
@@ -283,7 +270,6 @@ internal static class RuntimeHelpers
         /// Computes the value for <see cref="Array3DDataByteOffset"/>.
         /// </summary>
         /// <returns>The value of <see cref="Array3DDataByteOffset"/> for the current runtime.</returns>
-        [Pure]
         private static IntPtr MeasureArray3DDataByteOffset()
         {
             T[,,]? array = new T[1, 1, 1];

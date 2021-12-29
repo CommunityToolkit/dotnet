@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using CommunityToolkit.HighPerformance.Enumerables;
@@ -23,7 +22,6 @@ public static class ReadOnlySpanExtensions
     /// <param name="span">The input <see cref="ReadOnlySpan{T}"/> instance.</param>
     /// <returns>A reference to the first element within <paramref name="span"/>.</returns>
     /// <remarks>This method doesn't do any bounds checks, therefore it is responsibility of the caller to perform checks in case the returned value is dereferenced.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref T DangerousGetReference<T>(this ReadOnlySpan<T> span)
     {
@@ -38,7 +36,6 @@ public static class ReadOnlySpanExtensions
     /// <param name="i">The index of the element to retrieve within <paramref name="span"/>.</param>
     /// <returns>A reference to the element within <paramref name="span"/> at the index specified by <paramref name="i"/>.</returns>
     /// <remarks>This method doesn't do any bounds checks, therefore it is responsibility of the caller to ensure the <paramref name="i"/> parameter is valid.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref T DangerousGetReferenceAt<T>(this ReadOnlySpan<T> span, int i)
     {
@@ -86,7 +83,6 @@ public static class ReadOnlySpanExtensions
     /// <param name="i">The index of the element to retrieve within <paramref name="span"/>.</param>
     /// <returns>A reference to the element within <paramref name="span"/> at the index specified by <paramref name="i"/>.</returns>
     /// <remarks>This method doesn't do any bounds checks, therefore it is responsibility of the caller to ensure the <paramref name="i"/> parameter is valid.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref T DangerousGetReferenceAt<T>(this ReadOnlySpan<T> span, nint i)
     {
@@ -133,7 +129,6 @@ public static class ReadOnlySpanExtensions
     /// A reference to the element within <paramref name="span"/> at the index specified by <paramref name="i"/>,
     /// or a reference to the first element within <paramref name="span"/> if <paramref name="i"/> was not a valid index.
     /// </returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe ref readonly T DangerousGetLookupReferenceAt<T>(this ReadOnlySpan<T> span, int i)
     {
@@ -178,7 +173,6 @@ public static class ReadOnlySpanExtensions
     /// <exception cref="ArgumentException">
     /// Thrown when the requested area is outside of bounds for <paramref name="span"/>.
     /// </exception>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ReadOnlySpan2D<T> AsSpan2D<T>(this ReadOnlySpan<T> span, int height, int width)
     {
@@ -201,7 +195,6 @@ public static class ReadOnlySpanExtensions
     /// <exception cref="ArgumentException">
     /// Thrown when the requested area is outside of bounds for <paramref name="span"/>.
     /// </exception>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ReadOnlySpan2D<T> AsSpan2D<T>(this ReadOnlySpan<T> span, int offset, int height, int width, int pitch)
     {
@@ -217,7 +210,6 @@ public static class ReadOnlySpanExtensions
     /// <param name="value">The reference to the target item to get the index for.</param>
     /// <returns>The index of <paramref name="value"/> within <paramref name="span"/>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> does not belong to <paramref name="span"/>.</exception>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int IndexOf<T>(this ReadOnlySpan<T> span, in T value)
     {
@@ -242,7 +234,6 @@ public static class ReadOnlySpanExtensions
     /// <param name="span">The input <see cref="ReadOnlySpan{T}"/> instance to read.</param>
     /// <param name="value">The <typeparamref name="T"/> value to look for.</param>
     /// <returns>The number of occurrences of <paramref name="value"/> in <paramref name="span"/>.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int Count<T>(this ReadOnlySpan<T> span, T value)
         where T : IEquatable<T>
@@ -262,7 +253,6 @@ public static class ReadOnlySpanExtensions
     /// <exception cref="OverflowException">
     /// Thrown if the <see cref="ReadOnlySpan{T}.Length"/> property of the new <see cref="ReadOnlySpan{T}"/> would exceed <see cref="int.MaxValue"/>.
     /// </exception>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ReadOnlySpan<byte> AsBytes<T>(this ReadOnlySpan<T> span)
         where T : unmanaged
@@ -280,7 +270,6 @@ public static class ReadOnlySpanExtensions
     /// <remarks>
     /// Supported only for platforms that support misaligned memory access or when the memory block is aligned by other means.
     /// </remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ReadOnlySpan<TTo> Cast<TFrom, TTo>(this ReadOnlySpan<TFrom> span)
         where TFrom : unmanaged
@@ -308,7 +297,6 @@ public static class ReadOnlySpanExtensions
     /// <param name="span">The source <see cref="ReadOnlySpan{T}"/> to enumerate.</param>
     /// <returns>A wrapper type that will handle the value/index enumeration for <paramref name="span"/>.</returns>
     /// <remarks>The returned <see cref="ReadOnlySpanEnumerable{T}"/> value shouldn't be used directly: use this extension in a <see langword="foreach"/> loop.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ReadOnlySpanEnumerable<T> Enumerate<T>(this ReadOnlySpan<T> span)
     {
@@ -333,7 +321,6 @@ public static class ReadOnlySpanExtensions
     /// <param name="separator">The separator <typeparamref name="T"/> item to use.</param>
     /// <returns>A wrapper type that will handle the tokenization for <paramref name="span"/>.</returns>
     /// <remarks>The returned <see cref="ReadOnlySpanTokenizer{T}"/> value shouldn't be used directly: use this extension in a <see langword="foreach"/> loop.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ReadOnlySpanTokenizer<T> Tokenize<T>(this ReadOnlySpan<T> span, T separator)
         where T : IEquatable<T>
@@ -360,7 +347,6 @@ public static class ReadOnlySpanExtensions
     /// <param name="span">The input <see cref="ReadOnlySpan{T}"/> instance.</param>
     /// <returns>The Djb2 value for the input <see cref="ReadOnlySpan{T}"/> instance.</returns>
     /// <remarks>The Djb2 hash is fully deterministic and with no random components.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetDjb2HashCode<T>(this ReadOnlySpan<T> span)
         where T : notnull

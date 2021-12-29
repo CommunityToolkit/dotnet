@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 #if NETCOREAPP3_1_OR_GREATER
 using System.Runtime.Intrinsics.X86;
@@ -26,7 +25,6 @@ public static class BitHelper
     /// If the parameter is not valid, the result will just be inconsistent.
     /// Additionally, no conditional branches are used to retrieve the flag.
     /// </remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe bool HasFlag(uint value, int n)
     {
@@ -72,7 +70,6 @@ public static class BitHelper
     /// For best results, as shown in the sample code, both <paramref name="table"/> and <paramref name="min"/>
     /// should be compile-time constants, so that the JIT compiler will be able to produce more efficient code.
     /// </remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe bool HasLookupFlag(uint table, int x, int min = 0)
     {
@@ -113,7 +110,6 @@ public static class BitHelper
     /// This method contains no branches.
     /// For more background on this subject, see <see href="https://graphics.stanford.edu/~seander/bithacks.html#ZeroInWord"/>.
     /// </remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool HasZeroByte(uint value)
     {
@@ -126,7 +122,6 @@ public static class BitHelper
     /// </summary>
     /// <param name="value">The input value to check.</param>
     /// <returns>Whether <paramref name="value"/> has any bytes set to 0.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool HasZeroByte(ulong value)
     {
@@ -143,7 +138,6 @@ public static class BitHelper
     /// This method contains no branches.
     /// For more info, see <see href="https://graphics.stanford.edu/~seander/bithacks.html#ZeroInWord"/>.
     /// </remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool HasByteEqualTo(uint value, byte target)
     {
@@ -157,7 +151,6 @@ public static class BitHelper
     /// <param name="value">The input value to check.</param>
     /// <param name="target">The target byte to look for.</param>
     /// <returns>Whether <paramref name="value"/> has any bytes set to <paramref name="target"/>.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool HasByteEqualTo(ulong value, byte target)
     {
@@ -191,7 +184,6 @@ public static class BitHelper
     /// Just like <see cref="HasFlag(uint,int)"/>, this method doesn't validate <paramref name="n"/>
     /// and does not contain branching instructions, so it's well suited for use in tight loops as well.
     /// </remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe uint SetFlag(uint value, int n, bool flag)
     {
@@ -229,7 +221,6 @@ public static class BitHelper
     /// that case, which would just be equivalent to assigning the <see cref="uint"/> value.
     /// Additionally, no conditional branches are used to retrieve the range.
     /// </remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static uint ExtractRange(uint value, byte start, byte length)
     {
@@ -272,7 +263,6 @@ public static class BitHelper
     /// Just like <see cref="ExtractRange(uint,byte,byte)"/>, this method doesn't validate the parameters
     /// and does not contain branching instructions, so it's well suited for use in tight loops as well.
     /// </remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static uint SetRange(uint value, byte start, byte length, uint flags)
     {
@@ -301,7 +291,6 @@ public static class BitHelper
     /// If the parameter is not valid, the result will just be inconsistent.
     /// Additionally, no conditional branches are used to retrieve the flag.
     /// </remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe bool HasFlag(ulong value, int n)
     {
@@ -323,7 +312,6 @@ public static class BitHelper
     /// For best results, as shown in the sample code, both <paramref name="table"/> and <paramref name="min"/>
     /// should be compile-time constants, so that the JIT compiler will be able to produce more efficient code.
     /// </remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe bool HasLookupFlag(ulong table, int x, int min = 0)
     {
@@ -367,7 +355,6 @@ public static class BitHelper
     /// Just like <see cref="HasFlag(ulong,int)"/>, this method doesn't validate <paramref name="n"/>
     /// and does not contain branching instructions, so it's well suited for use in tight loops as well.
     /// </remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe ulong SetFlag(ulong value, int n, bool flag)
     {
@@ -396,7 +383,6 @@ public static class BitHelper
     /// that case, which would just be equivalent to assigning the <see cref="ulong"/> value.
     /// Additionally, no conditional branches are used to retrieve the range.
     /// </remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ulong ExtractRange(ulong value, byte start, byte length)
     {
@@ -439,7 +425,6 @@ public static class BitHelper
     /// Just like <see cref="ExtractRange(ulong,byte,byte)"/>, this method doesn't validate the parameters
     /// and does not contain branching instructions, so it's well suited for use in tight loops as well.
     /// </remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ulong SetRange(ulong value, byte start, byte length, ulong flags)
     {

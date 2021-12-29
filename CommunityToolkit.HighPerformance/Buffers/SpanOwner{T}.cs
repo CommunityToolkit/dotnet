@@ -5,7 +5,6 @@
 using System;
 using System.Buffers;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 #if NETCOREAPP3_1_OR_GREATER
 using System.Runtime.InteropServices;
@@ -75,7 +74,6 @@ public readonly ref struct SpanOwner<T>
     /// <summary>
     /// Gets an empty <see cref="SpanOwner{T}"/> instance.
     /// </summary>
-    [Pure]
     public static SpanOwner<T> Empty
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -89,7 +87,6 @@ public readonly ref struct SpanOwner<T>
     /// <returns>A <see cref="SpanOwner{T}"/> instance of the requested length.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="size"/> is not valid.</exception>
     /// <remarks>This method is just a proxy for the <see langword="private"/> constructor, for clarity.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static SpanOwner<T> Allocate(int size) => new(size, ArrayPool<T>.Shared, AllocationMode.Default);
 
@@ -101,7 +98,6 @@ public readonly ref struct SpanOwner<T>
     /// <returns>A <see cref="SpanOwner{T}"/> instance of the requested length.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="size"/> is not valid.</exception>
     /// <remarks>This method is just a proxy for the <see langword="private"/> constructor, for clarity.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static SpanOwner<T> Allocate(int size, ArrayPool<T> pool) => new(size, pool, AllocationMode.Default);
 
@@ -113,7 +109,6 @@ public readonly ref struct SpanOwner<T>
     /// <returns>A <see cref="SpanOwner{T}"/> instance of the requested length.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="size"/> is not valid.</exception>
     /// <remarks>This method is just a proxy for the <see langword="private"/> constructor, for clarity.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static SpanOwner<T> Allocate(int size, AllocationMode mode) => new(size, ArrayPool<T>.Shared, mode);
 
@@ -126,7 +121,6 @@ public readonly ref struct SpanOwner<T>
     /// <returns>A <see cref="SpanOwner{T}"/> instance of the requested length.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="size"/> is not valid.</exception>
     /// <remarks>This method is just a proxy for the <see langword="private"/> constructor, for clarity.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static SpanOwner<T> Allocate(int size, ArrayPool<T> pool, AllocationMode mode) => new(size, pool, mode);
 
@@ -161,7 +155,6 @@ public readonly ref struct SpanOwner<T>
     /// Returns a reference to the first element within the current instance, with no bounds check.
     /// </summary>
     /// <returns>A reference to the first element within the current instance.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ref T DangerousGetReference()
     {
@@ -178,7 +171,6 @@ public readonly ref struct SpanOwner<T>
     /// not used after the current <see cref="SpanOwner{T}"/> instance is disposed. Doing so is considered undefined behavior,
     /// as the same array might be in use within another <see cref="SpanOwner{T}"/> instance.
     /// </remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ArraySegment<T> DangerousGetArray()
     {
@@ -195,7 +187,6 @@ public readonly ref struct SpanOwner<T>
     }
 
     /// <inheritdoc/>
-    [Pure]
     public override string ToString()
     {
         if (typeof(T) == typeof(char) &&

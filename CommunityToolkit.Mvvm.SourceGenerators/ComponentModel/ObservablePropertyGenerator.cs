@@ -4,7 +4,6 @@
 
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -166,7 +165,6 @@ public sealed partial class ObservablePropertyGenerator : ISourceGenerator
     /// <param name="propertyChangedNames">The collection of discovered property changed names.</param>
     /// <param name="propertyChangingNames">The collection of discovered property changing names.</param>
     /// <returns>A generated <see cref="PropertyDeclarationSyntax"/> instance for the input field.</returns>
-    [Pure]
     private static PropertyDeclarationSyntax CreatePropertyDeclaration(
         GeneratorExecutionContext context,
         SyntaxTriviaList leadingTrivia,
@@ -443,7 +441,6 @@ public sealed partial class ObservablePropertyGenerator : ISourceGenerator
     /// </summary>
     /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
     /// <returns>The generated property name for <paramref name="fieldSymbol"/>.</returns>
-    [Pure]
     public static string GetGeneratedPropertyName(IFieldSymbol fieldSymbol)
     {
         string propertyName = fieldSymbol.Name;
@@ -534,7 +531,6 @@ public sealed partial class ObservablePropertyGenerator : ISourceGenerator
     /// <param name="type">The type of cached property change argument (either <see cref="PropertyChangedEventArgs"/> or <see cref="PropertyChangingEventArgs"/>).</param>
     /// <param name="propertyName">The name of the cached property name.</param>
     /// <returns>A <see cref="FieldDeclarationSyntax"/> instance for the input cached property name.</returns>
-    [Pure]
     private static FieldDeclarationSyntax CreateFieldDeclaration(INamedTypeSymbol type, string propertyName)
     {
         // Create a static field with a cached property changed/changing argument for a specified property.

@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Diagnostics.Contracts;
 using System.IO;
 using System.Runtime.CompilerServices;
 using CommunityToolkit.HighPerformance.Buffers;
@@ -21,7 +20,6 @@ public static class ArrayPoolBufferWriterExtensions
     /// <param name="writer">The target <see cref="ArrayPoolBufferWriter{T}"/> instance.</param>
     /// <returns>A <see cref="Stream"/> wrapping <paramref name="writer"/> and writing data to its underlying buffer.</returns>
     /// <remarks>The returned <see cref="Stream"/> can only be written to and does not support seeking.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Stream AsStream(this ArrayPoolBufferWriter<byte> writer)
     {

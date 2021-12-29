@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics.Contracts;
 
 namespace CommunityToolkit.Mvvm.Messaging;
 
@@ -69,7 +68,6 @@ public interface IMessenger
     /// <param name="token">The token used to identify the target channel to check.</param>
     /// <returns>Whether or not <paramref name="recipient"/> has already been registered for the specified message.</returns>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="recipient"/> or <paramref name="token"/> are <see langword="null"/>.</exception>
-    [Pure]
     bool IsRegistered<TMessage, TToken>(object recipient, TToken token)
         where TMessage : class
         where TToken : IEquatable<TToken>;

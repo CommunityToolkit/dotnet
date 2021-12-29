@@ -4,7 +4,6 @@
 
 using System;
 using System.Buffers;
-using System.Diagnostics.Contracts;
 using System.IO;
 using System.Runtime.CompilerServices;
 using MemoryStream = CommunityToolkit.HighPerformance.Streams.MemoryStream;
@@ -26,7 +25,6 @@ public static class IMemoryOwnerExtensions
     /// instance, as the returned <see cref="Stream"/> will take care of disposing that buffer when it is closed.
     /// </remarks>
     /// <exception cref="ArgumentException">Thrown when <paramref name="memoryOwner"/> has an invalid data store.</exception>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Stream AsStream(this IMemoryOwner<byte> memoryOwner)
     {

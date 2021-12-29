@@ -4,7 +4,6 @@
 
 using System;
 using System.Buffers;
-using System.Diagnostics.Contracts;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -24,7 +23,6 @@ public static class IBufferWriterExtensions
     /// <param name="writer">The target <see cref="IBufferWriter{T}"/> instance.</param>
     /// <returns>A <see cref="Stream"/> wrapping <paramref name="writer"/> and writing data to its underlying buffer.</returns>
     /// <remarks>The returned <see cref="Stream"/> can only be written to and does not support seeking.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Stream AsStream(this IBufferWriter<byte> writer)
     {

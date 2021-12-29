@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics.Contracts;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
@@ -22,7 +21,6 @@ internal static partial class SpanHelper
     /// <param name="value">The <typeparamref name="T"/> value to look for.</param>
     /// <typeparam name="T">The type of value to look for.</typeparam>
     /// <returns>The number of occurrences of <paramref name="value"/> in the search space</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static nint Count<T>(ref T r0, nint length, T value)
         where T : IEquatable<T>
@@ -77,7 +75,6 @@ internal static partial class SpanHelper
     /// <summary>
     /// Implements <see cref="Count{T}"/> with a sequential search.
     /// </summary>
-    [Pure]
     private static nint CountSequential<T>(ref T r0, nint length, T value)
         where T : IEquatable<T>
     {
@@ -126,7 +123,6 @@ internal static partial class SpanHelper
     /// <summary>
     /// Implements <see cref="Count{T}"/> with a vectorized search.
     /// </summary>
-    [Pure]
     private static nint CountSimd<T>(ref T r0, nint length, T value)
         where T : unmanaged, IEquatable<T>
     {
@@ -288,7 +284,6 @@ internal static partial class SpanHelper
     /// </summary>
     /// <typeparam name="T">The type argument currently in use.</typeparam>
     /// <returns>The native <see cref="int"/> value representing the upper bound.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static unsafe nint GetUpperBound<T>()
         where T : unmanaged
@@ -334,7 +329,6 @@ internal static partial class SpanHelper
     /// <typeparam name="T">The input type to cast.</typeparam>
     /// <param name="value">The input <typeparamref name="T"/> value to cast to native <see cref="int"/>.</param>
     /// <returns>The native <see cref="int"/> cast of <paramref name="value"/>.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static nint CastToNativeInt<T>(T value)
         where T : unmanaged

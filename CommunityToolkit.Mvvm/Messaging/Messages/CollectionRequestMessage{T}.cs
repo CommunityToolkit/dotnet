@@ -5,7 +5,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 
 namespace CommunityToolkit.Mvvm.Messaging.Messages;
@@ -33,7 +32,6 @@ public class CollectionRequestMessage<T> : IEnumerable<T>
     }
 
     /// <inheritdoc/>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [EditorBrowsable(EditorBrowsableState.Never)]
     public IEnumerator<T> GetEnumerator()

@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
@@ -48,7 +47,6 @@ public static class TypeExtensions
     /// </summary>
     /// <param name="type">The input type.</param>
     /// <returns>The string representation of <paramref name="type"/>.</returns>
-    [Pure]
     public static string ToTypeString(this Type type)
     {
         // Local function to create the formatted string for a given type

@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -482,14 +481,12 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     }
 
     /// <inheritdoc cref="INotifyDataErrorInfo.GetErrors(string)"/>
-    [Pure]
     public IEnumerable<ValidationResult> GetErrors(string? propertyName = null)
     {
         // Get entity-level errors when the target property is null or empty
         if (string.IsNullOrEmpty(propertyName))
         {
             // Local function to gather all the entity-level errors
-            [Pure]
             [MethodImpl(MethodImplOptions.NoInlining)]
             IEnumerable<ValidationResult> GetAllErrors()
             {
@@ -514,7 +511,6 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     }
 
     /// <inheritdoc/>
-    [Pure]
     IEnumerable INotifyDataErrorInfo.GetErrors(string? propertyName) => GetErrors(propertyName);
 
     /// <summary>

@@ -5,7 +5,6 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 #if !NETSTANDARD2_1_OR_GREATER
@@ -527,7 +526,6 @@ public readonly ref partial struct Span2D<T>
     /// <param name="pitch">The pitch of the 2D memory area to map (the distance between each row).</param>
     /// <returns>A <see cref="Span2D{T}"/> instance with the specified parameters.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when one of the parameters are negative.</exception>
-    [Pure]
     public static Span2D<T> DangerousCreate(ref T value, int height, int width, int pitch)
     {
         if (width < 0)
@@ -896,7 +894,6 @@ public readonly ref partial struct Span2D<T>
     /// and is required to support the use of span within a fixed statement.
     /// </summary>
     /// <returns>A reference to the 0th element, or a <see langword="null"/> reference.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [EditorBrowsable(EditorBrowsableState.Never)]
     public unsafe ref T GetPinnableReference()
@@ -919,7 +916,6 @@ public readonly ref partial struct Span2D<T>
     /// Returns a reference to the first element within the current instance, with no bounds check.
     /// </summary>
     /// <returns>A reference to the first element within the current instance.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ref T DangerousGetReference()
     {
@@ -936,7 +932,6 @@ public readonly ref partial struct Span2D<T>
     /// <param name="i">The target row to get the element from.</param>
     /// <param name="j">The target column to get the element from.</param>
     /// <returns>A reference to the element at the specified indices.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ref T DangerousGetReferenceAt(int i, int j)
     {
@@ -962,7 +957,6 @@ public readonly ref partial struct Span2D<T>
     /// are negative or not within the bounds that are valid for the current instance.
     /// </exception>
     /// <returns>A new <see cref="Span2D{T}"/> instance representing a slice of the current one.</returns>
-    [Pure]
     public Span2D<T> Slice(int row, int column, int height, int width)
     {
         if ((uint)row >= Height)
@@ -1006,7 +1000,6 @@ public readonly ref partial struct Span2D<T>
     /// <param name="row">The index of the target row to retrieve.</param>
     /// <exception cref="ArgumentOutOfRangeException">Throw when <paramref name="row"/> is out of range.</exception>
     /// <returns>The resulting row <see cref="Span{T}"/>.</returns>
-    [Pure]
     public Span<T> GetRowSpan(int row)
     {
         if ((uint)row >= (uint)Height)
@@ -1077,7 +1070,6 @@ public readonly ref partial struct Span2D<T>
     /// Copies the contents of the current <see cref="Span2D{T}"/> instance into a new 2D array.
     /// </summary>
     /// <returns>A 2D array containing the data in the current <see cref="Span2D{T}"/> instance.</returns>
-    [Pure]
     public T[,] ToArray()
     {
         T[,] array = new T[Height, this.width];

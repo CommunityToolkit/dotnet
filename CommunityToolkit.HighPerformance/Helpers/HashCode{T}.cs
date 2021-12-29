@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using CommunityToolkit.HighPerformance.Helpers.Internals;
@@ -36,7 +35,6 @@ public struct HashCode<T>
     /// <param name="span">The input <see cref="ReadOnlySpan{T}"/> instance</param>
     /// <returns>The xxHash32 value for the input <see cref="ReadOnlySpan{T}"/> instance</returns>
     /// <remarks>The xxHash32 is only guaranteed to be deterministic within the scope of a single app execution</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int Combine(ReadOnlySpan<T> span)
     {
@@ -51,7 +49,6 @@ public struct HashCode<T>
     /// <param name="span">The input <see cref="ReadOnlySpan{T}"/> instance</param>
     /// <returns>The hash code for the input <see cref="ReadOnlySpan{T}"/> instance</returns>
     /// <remarks>The returned hash code is not processed through <see cref="HashCode"/> APIs.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static int CombineValues(ReadOnlySpan<T> span)
     {

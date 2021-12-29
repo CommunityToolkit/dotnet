@@ -6,7 +6,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -30,7 +29,6 @@ public static class ListExtensions
     /// scenario, the <see cref="Span{T}"/> would end up wrapping an array no longer in use. Always make sure to use
     /// the returned <see cref="Span{T}"/> while the target <see cref="List{T}"/> is not modified.
     /// </remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Span<T> AsSpan<T>(this List<T>? list)
     {

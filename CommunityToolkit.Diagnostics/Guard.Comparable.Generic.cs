@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 
 namespace CommunityToolkit.Diagnostics;
@@ -191,7 +190,6 @@ public static partial class Guard
     }
 
     // Compares 64 bits of data from two given memory locations for bitwise equality
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static unsafe bool Bit64Compare(ref ulong left, ref ulong right)
     {

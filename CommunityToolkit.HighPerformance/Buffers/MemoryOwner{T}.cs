@@ -5,7 +5,6 @@
 using System;
 using System.Buffers;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 #if NETCOREAPP3_1_OR_GREATER
 using System.Runtime.InteropServices;
@@ -86,7 +85,6 @@ public sealed class MemoryOwner<T> : IMemoryOwner<T>
     /// <summary>
     /// Gets an empty <see cref="MemoryOwner{T}"/> instance.
     /// </summary>
-    [Pure]
     public static MemoryOwner<T> Empty
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -100,7 +98,6 @@ public sealed class MemoryOwner<T> : IMemoryOwner<T>
     /// <returns>A <see cref="MemoryOwner{T}"/> instance of the requested length.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="size"/> is not valid.</exception>
     /// <remarks>This method is just a proxy for the <see langword="private"/> constructor, for clarity.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static MemoryOwner<T> Allocate(int size) => new(size, ArrayPool<T>.Shared, AllocationMode.Default);
 
@@ -112,7 +109,6 @@ public sealed class MemoryOwner<T> : IMemoryOwner<T>
     /// <returns>A <see cref="MemoryOwner{T}"/> instance of the requested length.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="size"/> is not valid.</exception>
     /// <remarks>This method is just a proxy for the <see langword="private"/> constructor, for clarity.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static MemoryOwner<T> Allocate(int size, ArrayPool<T> pool) => new(size, pool, AllocationMode.Default);
 
@@ -124,7 +120,6 @@ public sealed class MemoryOwner<T> : IMemoryOwner<T>
     /// <returns>A <see cref="MemoryOwner{T}"/> instance of the requested length.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="size"/> is not valid.</exception>
     /// <remarks>This method is just a proxy for the <see langword="private"/> constructor, for clarity.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static MemoryOwner<T> Allocate(int size, AllocationMode mode) => new(size, ArrayPool<T>.Shared, mode);
 
@@ -137,7 +132,6 @@ public sealed class MemoryOwner<T> : IMemoryOwner<T>
     /// <returns>A <see cref="MemoryOwner{T}"/> instance of the requested length.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="size"/> is not valid.</exception>
     /// <remarks>This method is just a proxy for the <see langword="private"/> constructor, for clarity.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static MemoryOwner<T> Allocate(int size, ArrayPool<T> pool, AllocationMode mode) => new(size, pool, mode);
 
@@ -211,7 +205,6 @@ public sealed class MemoryOwner<T> : IMemoryOwner<T>
     /// the buffer itself has been disposed or not. This check should not be removed, and it's also
     /// the reason why the method to get a reference at a specified offset is not present.
     /// </remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ref T DangerousGetReference()
     {
@@ -236,7 +229,6 @@ public sealed class MemoryOwner<T> : IMemoryOwner<T>
     /// not used after the current <see cref="MemoryOwner{T}"/> instance is disposed. Doing so is considered undefined behavior,
     /// as the same array might be in use within another <see cref="MemoryOwner{T}"/> instance.
     /// </remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ArraySegment<T> DangerousGetArray()
     {
@@ -311,7 +303,6 @@ public sealed class MemoryOwner<T> : IMemoryOwner<T>
     }
 
     /// <inheritdoc/>
-    [Pure]
     public override string ToString()
     {
         // Normally we would throw if the array has been disposed,

@@ -6,7 +6,6 @@
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
 
 namespace System.Runtime.CompilerServices;
 
@@ -49,7 +48,6 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
     }
 
     /// <inheritdoc cref="IEnumerable{T}.GetEnumerator"/>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Enumerator GetEnumerator() => new(this);
 

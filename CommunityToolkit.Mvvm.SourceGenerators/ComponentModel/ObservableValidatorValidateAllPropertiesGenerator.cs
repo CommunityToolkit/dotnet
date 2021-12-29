@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -169,7 +168,6 @@ public sealed partial class ObservableValidatorValidateAllPropertiesGenerator : 
     /// <param name="validationSymbol">The type symbol for the <c>ValidationAttribute</c> type.</param>
     /// <param name="observablePropertySymbol">The type symbol for the <c>ObservablePropertyAttribute</c> type.</param>
     /// <returns>The sequence of <see cref="StatementSyntax"/> instances to validate declared properties.</returns>
-    [Pure]
     private static IEnumerable<StatementSyntax> EnumerateValidationStatements(INamedTypeSymbol classSymbol, INamedTypeSymbol validationSymbol, INamedTypeSymbol observablePropertySymbol)
     {
         foreach (ISymbol? memberSymbol in classSymbol.GetMembers())

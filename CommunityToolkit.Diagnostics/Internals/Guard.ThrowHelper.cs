@@ -4,7 +4,6 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
 
 namespace CommunityToolkit.Diagnostics;
 
@@ -23,7 +22,6 @@ public static partial class Guard
         /// </summary>
         /// <param name="obj">The input <see cref="object"/> to format.</param>
         /// <returns>A formatted representation of <paramref name="obj"/> to display in error messages.</returns>
-        [Pure]
         private static string AssertString(object? obj)
         {
             return obj switch

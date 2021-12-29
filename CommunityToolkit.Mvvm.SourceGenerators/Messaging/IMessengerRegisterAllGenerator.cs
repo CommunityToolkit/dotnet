@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -221,7 +220,6 @@ public sealed partial class IMessengerRegisterAllGenerator : ISourceGenerator
     /// <param name="classSymbol">The input <see cref="INamedTypeSymbol"/> instance to process.</param>
     /// <param name="iRecipientSymbol">The type symbol for the <c>IRecipient&lt;T&gt;</c> interface.</param>
     /// <returns>The sequence of <see cref="StatementSyntax"/> instances to register message handleers.</returns>
-    [Pure]
     private static IEnumerable<StatementSyntax> EnumerateRegistrationStatements(INamedTypeSymbol classSymbol, INamedTypeSymbol iRecipientSymbol)
     {
         foreach (INamedTypeSymbol? interfaceSymbol in classSymbol.AllInterfaces)
@@ -255,7 +253,6 @@ public sealed partial class IMessengerRegisterAllGenerator : ISourceGenerator
     /// <param name="classSymbol">The input <see cref="INamedTypeSymbol"/> instance to process.</param>
     /// <param name="iRecipientSymbol">The type symbol for the <c>IRecipient&lt;T&gt;</c> interface.</param>
     /// <returns>The sequence of <see cref="StatementSyntax"/> instances to register message handleers.</returns>
-    [Pure]
     private static IEnumerable<StatementSyntax> EnumerateRegistrationStatementsWithTokens(INamedTypeSymbol classSymbol, INamedTypeSymbol iRecipientSymbol)
     {
         foreach (INamedTypeSymbol? interfaceSymbol in classSymbol.AllInterfaces)

@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using CommunityToolkit.HighPerformance.Helpers;
 #if NETSTANDARD2_1_OR_GREATER
@@ -27,7 +26,6 @@ public static partial class ArrayExtensions
     /// <param name="array">The input <typeparamref name="T"/> array instance.</param>
     /// <returns>A reference to the first element within <paramref name="array"/>, or the location it would have used, if <paramref name="array"/> is empty.</returns>
     /// <remarks>This method doesn't do any bounds checks, therefore it is responsibility of the caller to perform checks in case the returned value is dereferenced.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref T DangerousGetReference<T>(this T[,,] array)
     {
@@ -60,7 +58,6 @@ public static partial class ArrayExtensions
     /// array, and will just assume that the input index is 0-based. It is responsibility of the caller to adjust the input
     /// indices to account for the actual lower bounds, if the input array has either axis not starting at 0.
     /// </remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref T DangerousGetReferenceAt<T>(this T[,,] array, int i, int j, int k)
     {
@@ -123,7 +120,6 @@ public static partial class ArrayExtensions
     /// <typeparam name="T">The type of elements in the input 3D <typeparamref name="T"/> array instance.</typeparam>
     /// <param name="array">The input 3D <typeparamref name="T"/> array instance.</param>
     /// <returns>A <see cref="Memory{T}"/> instance with the values of <paramref name="array"/>.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Memory<T> AsMemory<T>(this T[,,]? array)
     {
@@ -149,7 +145,6 @@ public static partial class ArrayExtensions
     /// <typeparam name="T">The type of elements in the input 3D <typeparamref name="T"/> array instance.</typeparam>
     /// <param name="array">The input 3D <typeparamref name="T"/> array instance.</param>
     /// <returns>A <see cref="Span{T}"/> instance with the values of <paramref name="array"/>.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Span<T> AsSpan<T>(this T[,,]? array)
     {
@@ -178,7 +173,6 @@ public static partial class ArrayExtensions
     /// <exception cref="ArrayTypeMismatchException">Thrown when <paramref name="array"/> doesn't match <typeparamref name="T"/>.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="depth"/> is invalid.</exception>
     /// <returns>A <see cref="Span{T}"/> instance wrapping the target layer within <paramref name="array"/>.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Span<T> AsSpan<T>(this T[,,] array, int depth)
     {
@@ -207,7 +201,6 @@ public static partial class ArrayExtensions
     /// <exception cref="ArrayTypeMismatchException">Thrown when <paramref name="array"/> doesn't match <typeparamref name="T"/>.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="depth"/> is invalid.</exception>
     /// <returns>A <see cref="Memory{T}"/> instance wrapping the target layer within <paramref name="array"/>.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Memory<T> AsMemory<T>(this T[,,] array, int depth)
     {
@@ -240,7 +233,6 @@ public static partial class ArrayExtensions
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when either <paramref name="depth"/> is invalid.</exception>
     /// <returns>A <see cref="Span2D{T}"/> instance wrapping the target layer within <paramref name="array"/>.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Span2D<T> AsSpan2D<T>(this T[,,] array, int depth)
     {
@@ -258,7 +250,6 @@ public static partial class ArrayExtensions
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when either <paramref name="depth"/> is invalid.</exception>
     /// <returns>A <see cref="Memory2D{T}"/> instance wrapping the target layer within <paramref name="array"/>.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Memory2D<T> AsMemory2D<T>(this T[,,] array, int depth)
     {
@@ -272,7 +263,6 @@ public static partial class ArrayExtensions
     /// <param name="array">The input 3D <typeparamref name="T"/> array instance.</param>
     /// <param name="value">The <typeparamref name="T"/> value to look for.</param>
     /// <returns>The number of occurrences of <paramref name="value"/> in <paramref name="array"/>.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int Count<T>(this T[,,] array, T value)
         where T : IEquatable<T>
@@ -297,7 +287,6 @@ public static partial class ArrayExtensions
     /// <param name="array">The input 3D <typeparamref name="T"/> array instance.</param>
     /// <returns>The Djb2 value for the input 3D <typeparamref name="T"/> array instance.</returns>
     /// <remarks>The Djb2 hash is fully deterministic and with no random components.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetDjb2HashCode<T>(this T[,,] array)
         where T : notnull
@@ -314,7 +303,6 @@ public static partial class ArrayExtensions
     /// <typeparam name="T">The type of items in the input <typeparamref name="T"/> array instance.</typeparam>
     /// <param name="array">The input <typeparamref name="T"/> array instance.</param>
     /// <returns>Whether or not <paramref name="array"/> is covariant.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsCovariant<T>(this T[,,] array)
     {

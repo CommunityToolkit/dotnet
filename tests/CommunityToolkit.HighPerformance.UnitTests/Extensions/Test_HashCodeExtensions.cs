@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics.Contracts;
 using System.Runtime.InteropServices;
 using CommunityToolkit.HighPerformance;
 using CommunityToolkit.HighPerformance.Helpers;
@@ -92,7 +91,6 @@ public class Test_HashCodeExtensions
     /// <typeparam name="T">The type of items to put in the array.</typeparam>
     /// <param name="count">The number of array items to create.</param>
     /// <returns>An array of random <typeparamref name="T"/> elements.</returns>
-    [Pure]
     private static T[] CreateRandomData<T>(int count)
         where T : unmanaged
     {

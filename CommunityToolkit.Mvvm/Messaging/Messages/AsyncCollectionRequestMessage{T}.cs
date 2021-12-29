@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics.Contracts;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -100,7 +99,6 @@ public class AsyncCollectionRequestMessage<T> : IAsyncEnumerable<T>
     /// </summary>
     /// <param name="cancellationToken">A <see cref="System.Threading.CancellationToken"/> value to stop the operation.</param>
     /// <returns>The collection of received response items.</returns>
-    [Pure]
     public async Task<IReadOnlyCollection<T>> GetResponsesAsync(CancellationToken cancellationToken = default)
     {
         if (cancellationToken.CanBeCanceled)
@@ -119,7 +117,6 @@ public class AsyncCollectionRequestMessage<T> : IAsyncEnumerable<T>
     }
 
     /// <inheritdoc/>
-    [Pure]
     [EditorBrowsable(EditorBrowsableState.Never)]
     public async IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
     {

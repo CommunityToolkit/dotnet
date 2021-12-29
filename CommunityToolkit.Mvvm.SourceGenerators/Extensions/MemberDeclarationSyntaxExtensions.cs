@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Diagnostics.Contracts;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -22,7 +21,6 @@ internal static class MemberDeclarationSyntaxExtensions
     /// <param name="oldKind">The target modifier kind to replace.</param>
     /// <param name="newKind">The new modifier kind to add or replace.</param>
     /// <returns>A <see cref="MemberDeclarationSyntax"/> instance with the target modifier.</returns>
-    [Pure]
     public static MemberDeclarationSyntax ReplaceModifier(this MemberDeclarationSyntax memberDeclaration, SyntaxKind oldKind, SyntaxKind newKind)
     {
         int index = memberDeclaration.Modifiers.IndexOf(oldKind);
@@ -41,7 +39,6 @@ internal static class MemberDeclarationSyntaxExtensions
     /// <param name="memberDeclaration">The input <see cref="MemberDeclarationSyntax"/> instance.</param>
     /// <param name="kind">The modifier kind to remove.</param>
     /// <returns>A <see cref="MemberDeclarationSyntax"/> instance without the specified modifier.</returns>
-    [Pure]
     public static MemberDeclarationSyntax RemoveModifier(this MemberDeclarationSyntax memberDeclaration, SyntaxKind kind)
     {
         int index = memberDeclaration.Modifiers.IndexOf(kind);

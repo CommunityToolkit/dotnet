@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 #if NETSTANDARD2_1_OR_GREATER
 using System.Runtime.InteropServices;
@@ -85,7 +84,6 @@ public readonly ref struct ReadOnlyRefEnumerable<T>
     /// <param name="step">The distance between items in the sequence to enumerate.</param>
     /// <returns>A <see cref="ReadOnlyRefEnumerable{T}"/> instance with the specified parameters.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when one of the parameters are negative.</exception>
-    [Pure]
     public static ReadOnlyRefEnumerable<T> DangerousCreate(in T value, int length, int step)
     {
         if (length < 0)
@@ -180,7 +178,6 @@ public readonly ref struct ReadOnlyRefEnumerable<T>
 #endif
 
     /// <inheritdoc cref="System.Collections.IEnumerable.GetEnumerator"/>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Enumerator GetEnumerator()
     {
@@ -316,7 +313,6 @@ public readonly ref struct ReadOnlyRefEnumerable<T>
     }
 
     /// <inheritdoc cref="RefEnumerable{T}.ToArray"/>
-    [Pure]
     public T[] ToArray()
     {
 #if NETSTANDARD2_1_OR_GREATER

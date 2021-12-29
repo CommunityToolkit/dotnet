@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 #if NETCOREAPP3_1_OR_GREATER
 using System.Runtime.InteropServices;
@@ -29,7 +28,6 @@ public static partial class ArrayExtensions
     /// <param name="array">The input <typeparamref name="T"/> array instance.</param>
     /// <returns>A reference to the first element within <paramref name="array"/>, or the location it would have used, if <paramref name="array"/> is empty.</returns>
     /// <remarks>This method doesn't do any bounds checks, therefore it is responsibility of the caller to perform checks in case the returned value is dereferenced.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref T DangerousGetReference<T>(this T[] array)
     {
@@ -55,7 +53,6 @@ public static partial class ArrayExtensions
     /// <param name="i">The index of the element to retrieve within <paramref name="array"/>.</param>
     /// <returns>A reference to the element within <paramref name="array"/> at the index specified by <paramref name="i"/>.</returns>
     /// <remarks>This method doesn't do any bounds checks, therefore it is responsibility of the caller to ensure the <paramref name="i"/> parameter is valid.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref T DangerousGetReferenceAt<T>(this T[] array, int i)
     {
@@ -106,7 +103,6 @@ public static partial class ArrayExtensions
     /// <param name="array">The input <typeparamref name="T"/> array instance.</param>
     /// <param name="value">The <typeparamref name="T"/> value to look for.</param>
     /// <returns>The number of occurrences of <paramref name="value"/> in <paramref name="array"/>.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int Count<T>(this T[] array, T value)
         where T : IEquatable<T>
@@ -142,7 +138,6 @@ public static partial class ArrayExtensions
     /// <param name="array">The source <typeparamref name="T"/> array to enumerate.</param>
     /// <returns>A wrapper type that will handle the reference/index enumeration for <paramref name="array"/>.</returns>
     /// <remarks>The returned <see cref="SpanEnumerable{T}"/> value shouldn't be used directly: use this extension in a <see langword="foreach"/> loop.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static SpanEnumerable<T> Enumerate<T>(this T[] array)
     {
@@ -167,7 +162,6 @@ public static partial class ArrayExtensions
     /// <param name="separator">The separator <typeparamref name="T"/> item to use.</param>
     /// <returns>A wrapper type that will handle the tokenization for <paramref name="array"/>.</returns>
     /// <remarks>The returned <see cref="SpanTokenizer{T}"/> value shouldn't be used directly: use this extension in a <see langword="foreach"/> loop.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static SpanTokenizer<T> Tokenize<T>(this T[] array, T separator)
         where T : IEquatable<T>
@@ -183,7 +177,6 @@ public static partial class ArrayExtensions
     /// <param name="array">The input <typeparamref name="T"/> array instance.</param>
     /// <returns>The Djb2 value for the input <typeparamref name="T"/> array instance.</returns>
     /// <remarks>The Djb2 hash is fully deterministic and with no random components.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetDjb2HashCode<T>(this T[] array)
         where T : notnull
@@ -200,7 +193,6 @@ public static partial class ArrayExtensions
     /// <typeparam name="T">The type of items in the input <typeparamref name="T"/> array instance.</typeparam>
     /// <param name="array">The input <typeparamref name="T"/> array instance.</param>
     /// <returns>Whether or not <paramref name="array"/> is covariant.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsCovariant<T>(this T[] array)
     {

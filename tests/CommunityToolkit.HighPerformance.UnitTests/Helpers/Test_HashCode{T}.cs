@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics.Contracts;
 using System.Runtime.InteropServices;
 using CommunityToolkit.HighPerformance.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -107,7 +106,6 @@ public class Test_HashCodeOfT
     /// <typeparam name="T">The type of items to put in the array.</typeparam>
     /// <param name="count">The number of array items to create.</param>
     /// <returns>An array of random <typeparamref name="T"/> elements.</returns>
-    [Pure]
     private static UnmanagedSpanOwner<T> CreateRandomData<T>(int count)
         where T : unmanaged
     {

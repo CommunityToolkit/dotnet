@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using CommunityToolkit.HighPerformance.Enumerables;
@@ -23,7 +22,6 @@ public static class SpanExtensions
     /// <param name="span">The input <see cref="Span{T}"/> instance.</param>
     /// <returns>A reference to the first element within <paramref name="span"/>.</returns>
     /// <remarks>This method doesn't do any bounds checks, therefore it is responsibility of the caller to perform checks in case the returned value is dereferenced.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref T DangerousGetReference<T>(this Span<T> span)
     {
@@ -38,7 +36,6 @@ public static class SpanExtensions
     /// <param name="i">The index of the element to retrieve within <paramref name="span"/>.</param>
     /// <returns>A reference to the element within <paramref name="span"/> at the index specified by <paramref name="i"/>.</returns>
     /// <remarks>This method doesn't do any bounds checks, therefore it is responsibility of the caller to ensure the <paramref name="i"/> parameter is valid.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref T DangerousGetReferenceAt<T>(this Span<T> span, int i)
     {
@@ -56,7 +53,6 @@ public static class SpanExtensions
     /// <param name="i">The index of the element to retrieve within <paramref name="span"/>.</param>
     /// <returns>A reference to the element within <paramref name="span"/> at the index specified by <paramref name="i"/>.</returns>
     /// <remarks>This method doesn't do any bounds checks, therefore it is responsibility of the caller to ensure the <paramref name="i"/> parameter is valid.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref T DangerousGetReferenceAt<T>(this Span<T> span, nint i)
     {
@@ -81,7 +77,6 @@ public static class SpanExtensions
     /// <exception cref="ArgumentException">
     /// Thrown when the requested area is outside of bounds for <paramref name="span"/>.
     /// </exception>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Span2D<T> AsSpan2D<T>(this Span<T> span, int height, int width)
     {
@@ -104,7 +99,6 @@ public static class SpanExtensions
     /// <exception cref="ArgumentException">
     /// Thrown when the requested area is outside of bounds for <paramref name="span"/>.
     /// </exception>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Span2D<T> AsSpan2D<T>(this Span<T> span, int offset, int height, int width, int pitch)
     {
@@ -121,7 +115,6 @@ public static class SpanExtensions
     /// <exception cref="OverflowException">
     /// Thrown if the <see cref="Span{T}.Length"/> property of the new <see cref="Span{T}"/> would exceed <see cref="int.MaxValue"/>.
     /// </exception>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Span<byte> AsBytes<T>(this Span<T> span)
         where T : unmanaged
@@ -139,7 +132,6 @@ public static class SpanExtensions
     /// <remarks>
     /// Supported only for platforms that support misaligned memory access or when the memory block is aligned by other means.
     /// </remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Span<TTo> Cast<TFrom, TTo>(this Span<TFrom> span)
         where TFrom : unmanaged
@@ -156,7 +148,6 @@ public static class SpanExtensions
     /// <param name="value">The reference to the target item to get the index for.</param>
     /// <returns>The index of <paramref name="value"/> within <paramref name="span"/>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> does not belong to <paramref name="span"/>.</exception>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int IndexOf<T>(this Span<T> span, ref T value)
     {
@@ -180,7 +171,6 @@ public static class SpanExtensions
     /// <param name="span">The input <see cref="Span{T}"/> instance to read.</param>
     /// <param name="value">The <typeparamref name="T"/> value to look for.</param>
     /// <returns>The number of occurrences of <paramref name="value"/> in <paramref name="span"/>.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int Count<T>(this Span<T> span, T value)
         where T : IEquatable<T>
@@ -210,7 +200,6 @@ public static class SpanExtensions
     /// <param name="span">The source <see cref="Span{T}"/> to enumerate.</param>
     /// <returns>A wrapper type that will handle the reference/index enumeration for <paramref name="span"/>.</returns>
     /// <remarks>The returned <see cref="SpanEnumerable{T}"/> value shouldn't be used directly: use this extension in a <see langword="foreach"/> loop.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static SpanEnumerable<T> Enumerate<T>(this Span<T> span)
     {
@@ -235,7 +224,6 @@ public static class SpanExtensions
     /// <param name="separator">The separator <typeparamref name="T"/> item to use.</param>
     /// <returns>A wrapper type that will handle the tokenization for <paramref name="span"/>.</returns>
     /// <remarks>The returned <see cref="SpanTokenizer{T}"/> value shouldn't be used directly: use this extension in a <see langword="foreach"/> loop.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static SpanTokenizer<T> Tokenize<T>(this Span<T> span, T separator)
         where T : IEquatable<T>
@@ -251,7 +239,6 @@ public static class SpanExtensions
     /// <param name="span">The input <see cref="Span{T}"/> instance.</param>
     /// <returns>The Djb2 value for the input <see cref="Span{T}"/> instance.</returns>
     /// <remarks>The Djb2 hash is fully deterministic and with no random components.</remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int GetDjb2HashCode<T>(this Span<T> span)
         where T : notnull

@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -27,7 +26,6 @@ public static class ObjectMarshal
     /// <remarks>The input parameters are not validated, and it's responsibility of the caller to ensure that
     /// the <paramref name="data"/> reference is actually pointing to a memory location within <paramref name="obj"/>.
     /// </remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IntPtr DangerousGetObjectDataByteOffset<T>(object obj, ref T data)
     {
@@ -51,7 +49,6 @@ public static class ObjectMarshal
     /// desired data, which would break the type system. Or, if the offset causes the retrieved reference to point
     /// to a memory location outside of the input <see cref="object"/> instance, that might lead to runtime crashes.
     /// </remarks>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref T DangerousGetObjectDataReferenceAt<T>(object obj, IntPtr offset)
     {
@@ -135,7 +132,6 @@ public static class ObjectMarshal
     /// <param name="obj">The input <see cref="object"/> instance, representing a boxed <typeparamref name="T"/> value.</param>
     /// <returns>The <typeparamref name="T"/> value boxed in <paramref name="obj"/>.</returns>
     /// <exception cref="InvalidCastException">Thrown when <paramref name="obj"/> is not of type <typeparamref name="T"/>.</exception>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref T DangerousUnbox<T>(object obj)
         where T : struct

@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 
 namespace CommunityToolkit.HighPerformance.Enumerables;
@@ -56,7 +55,6 @@ public ref struct SpanTokenizer<T>
     /// Implements the duck-typed <see cref="IEnumerable{T}.GetEnumerator"/> method.
     /// </summary>
     /// <returns>An <see cref="SpanTokenizer{T}"/> instance targeting the current <see cref="Span{T}"/> value.</returns>
-    [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly SpanTokenizer<T> GetEnumerator() => this;
 
