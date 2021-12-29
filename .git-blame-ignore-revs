@@ -4,3 +4,6 @@ eab4b9ed28c27db0c4194478eaa7c6e91664195d
 
 # Switch to file-scoped namespaces
 c176080d37953a2d811c81181192acc8695bbf73
+
+# Fix leftover file-scoped namespaces
+0693d6c9647c8bea852de8f670e6c32516b18228
