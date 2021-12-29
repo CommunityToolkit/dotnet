@@ -270,6 +270,30 @@ public partial class Test_ICommandAttribute
         Assert.IsTrue(model.AwaitForInputTaskCommand.CanExecute(null));
     }
 
+    // See https://github.com/CommunityToolkit/dotnet/issues/13
+    [TestMethod]
+    public void Test_ICommandAttribute_ViewModelRightAfterRegion()
+    {
+        ViewModelForIssue13 model = new();
+
+        Assert.IsNotNull(model.GreetCommand);
+        Assert.IsInstanceOfType(model.GreetCommand, typeof(RelayCommand));
+    }
+
+    #region Region
+    public class Region
+    {
+    }
+    #endregion
+
+    public partial class ViewModelForIssue13
+    {
+        [ICommand]
+        private void Greet()
+        {
+        }
+    }
+
     public sealed partial class MyViewModel
     {
         public Task? ExternalTask { get; set; }

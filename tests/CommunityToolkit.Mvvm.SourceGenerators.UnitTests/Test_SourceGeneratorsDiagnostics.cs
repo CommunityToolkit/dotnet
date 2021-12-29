@@ -33,7 +33,7 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        VerifyGeneratedDiagnostics<INotifyPropertyChangedGenerator>(source, "MVVMTK0004");
+        VerifyGeneratedDiagnostics<INotifyPropertyChangedGenerator>(source, "MVVMTK0001");
     }
 
     [TestMethod]
@@ -60,7 +60,7 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        VerifyGeneratedDiagnostics<INotifyPropertyChangedGenerator>(source, "MVVMTK0004");
+        VerifyGeneratedDiagnostics<INotifyPropertyChangedGenerator>(source, "MVVMTK0001");
     }
 
     [TestMethod]
@@ -79,7 +79,7 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0005");
+        VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0002");
     }
 
     [TestMethod]
@@ -105,7 +105,7 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0005");
+        VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0002");
     }
 
     [TestMethod]
@@ -124,7 +124,7 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0006");
+        VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0003");
     }
 
     [TestMethod]
@@ -147,7 +147,7 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0006");
+        VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0003");
     }
 
     [TestMethod]
@@ -171,7 +171,7 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ObservableRecipientGenerator>(source, "MVVMTK0007");
+        VerifyGeneratedDiagnostics<ObservableRecipientGenerator>(source, "MVVMTK0004");
     }
 
     [TestMethod]
@@ -188,7 +188,7 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ObservableRecipientGenerator>(source, "MVVMTK0008");
+        VerifyGeneratedDiagnostics<ObservableRecipientGenerator>(source, "MVVMTK0005");
     }
 
     [TestMethod]
@@ -209,7 +209,7 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0009");
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0006");
     }
 
     [TestMethod]
@@ -227,7 +227,7 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0012");
+        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0007");
     }
 
     [TestMethod]
@@ -246,7 +246,7 @@ public class Test_SourceGeneratorsDiagnostics
 
         VerifyGeneratedDiagnostics<INotifyPropertyChangedGenerator>(
             CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)),
-            "MVVMTK0013");
+            "MVVMTK0008");
     }
 
     [TestMethod]
@@ -265,7 +265,7 @@ public class Test_SourceGeneratorsDiagnostics
 
         VerifyGeneratedDiagnostics<ObservableObjectGenerator>(
             CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)),
-            "MVVMTK0013");
+            "MVVMTK0008");
     }
 
     [TestMethod]
@@ -286,7 +286,7 @@ public class Test_SourceGeneratorsDiagnostics
 
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(
             CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)),
-            "MVVMTK0013");
+            "MVVMTK0008");
     }
 
     [TestMethod]
@@ -304,7 +304,7 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        // This is explicitly allowed in C# < 9.0, as it doesn't use any new features
+        // This is explicitly allowed in C# < 8.0, as it doesn't use any new features
         VerifyGeneratedDiagnostics<ObservableValidatorValidateAllPropertiesGenerator>(
             CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)));
     }
@@ -328,7 +328,7 @@ public class Test_SourceGeneratorsDiagnostics
 
         VerifyGeneratedDiagnostics<ICommandGenerator>(
             CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)),
-            "MVVMTK0013");
+            "MVVMTK0008");
     }
 
     [TestMethod]
@@ -351,7 +351,7 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        // This is explicitly allowed in C# < 9.0, as it doesn't use any new features
+        // This is explicitly allowed in C# < 8.0, as it doesn't use any new features
         VerifyGeneratedDiagnostics<IMessengerRegisterAllGenerator>(
             CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)));
     }
@@ -375,7 +375,7 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0014");
+        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0009");
     }
 
     [TestMethod]
@@ -399,7 +399,7 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0015");
+        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0010");
     }
 
     [TestMethod]
@@ -421,7 +421,7 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0016");
+        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0011");
     }
 
     [TestMethod]
@@ -443,7 +443,7 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0016");
+        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0011");
     }
 
     [TestMethod]
@@ -465,7 +465,7 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0016");
+        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0011");
     }
 
     [TestMethod]
@@ -487,7 +487,7 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0016");
+        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0011");
     }
 
     [TestMethod]
@@ -509,7 +509,7 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0016");
+        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0011");
     }
 
     [TestMethod]
@@ -531,7 +531,7 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0016");
+        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0011");
     }
 
     [TestMethod]
@@ -551,7 +551,7 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0017");
+        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0012");
     }
 
     /// <summary>
@@ -561,7 +561,7 @@ public class Test_SourceGeneratorsDiagnostics
     /// <param name="source">The input source to process.</param>
     /// <param name="diagnosticsIds">The diagnostic ids to expect for the input source code.</param>
     private static void VerifyGeneratedDiagnostics<TGenerator>(string source, params string[] diagnosticsIds)
-        where TGenerator : class, ISourceGenerator, new()
+        where TGenerator : class, IIncrementalGenerator, new()
     {
         VerifyGeneratedDiagnostics<TGenerator>(CSharpSyntaxTree.ParseText(source), diagnosticsIds);
     }
@@ -573,7 +573,7 @@ public class Test_SourceGeneratorsDiagnostics
     /// <param name="syntaxTree">The input source tree to process.</param>
     /// <param name="diagnosticsIds">The diagnostic ids to expect for the input source code.</param>
     private static void VerifyGeneratedDiagnostics<TGenerator>(SyntaxTree syntaxTree, params string[] diagnosticsIds)
-        where TGenerator : class, ISourceGenerator, new()
+        where TGenerator : class, IIncrementalGenerator, new()
     {
         Type observableObjectType = typeof(ObservableObject);
         Type validationAttributeType = typeof(ValidationAttribute);
@@ -590,9 +590,9 @@ public class Test_SourceGeneratorsDiagnostics
             references,
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
-        ISourceGenerator generator = new TGenerator();
+        IIncrementalGenerator generator = new TGenerator();
 
-        CSharpGeneratorDriver driver = CSharpGeneratorDriver.Create(new[] { generator }, parseOptions: (CSharpParseOptions)syntaxTree.Options);
+        GeneratorDriver driver = CSharpGeneratorDriver.Create(generator).WithUpdatedParseOptions((CSharpParseOptions)syntaxTree.Options);
 
         _ = driver.RunGeneratorsAndUpdateCompilation(compilation, out Compilation outputCompilation, out ImmutableArray<Diagnostic> diagnostics);
 

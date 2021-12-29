@@ -2,21 +2,17 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
+using System.Collections.Immutable;
 using System.Linq;
-using System.Reflection;
 using System.Text;
+using CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
+using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
+using CommunityToolkit.Mvvm.SourceGenerators.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-using CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
-using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-using static Microsoft.CodeAnalysis.SymbolDisplayTypeQualificationStyle;
 using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators;
@@ -24,242 +20,136 @@ namespace CommunityToolkit.Mvvm.SourceGenerators;
 /// <summary>
 /// A source generator for a given attribute type.
 /// </summary>
-public abstract partial class TransitiveMembersGenerator : ISourceGenerator
+/// <typeparam name="TInfo">The type of info gathered for each target type to process.</typeparam>
+public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGenerator
 {
     /// <summary>
     /// The fully qualified name of the attribute type to look for.
     /// </summary>
-    private readonly string attributeTypeFullName;
+    private readonly string attributeType;
 
     /// <summary>
-    /// The name of the attribute type to look for.
+    /// An <see cref="IEqualityComparer{T}"/> instance to compare intermediate models.
     /// </summary>
-    private readonly string attributeTypeName;
+    /// <remarks>
+    /// This is needed to cache extracted info on attributes used to annotate target types.
+    /// </remarks>
+    private readonly IEqualityComparer<TInfo> comparer;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TransitiveMembersGenerator"/> class.
+    /// The preloaded <see cref="ClassDeclarationSyntax"/> instance with members to generate.
     /// </summary>
-    /// <param name="attributeTypeFullName">The fully qualified name of the attribute type to look for.</param>
-    protected TransitiveMembersGenerator(string attributeTypeFullName)
+    private readonly ClassDeclarationSyntax classDeclaration;
+
+    /// <summary>
+    /// The sequence of member declarations for sealed types.
+    /// </summary>
+    private ImmutableArray<MemberDeclarationSyntax> sealedMemberDeclarations;
+
+    /// <summary>
+    /// The resulting sequence of member declarations for non sealed types.
+    /// </summary>
+    private ImmutableArray<MemberDeclarationSyntax> nonSealedMemberDeclarations;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TransitiveMembersGenerator{TInfo}"/> class.
+    /// </summary>
+    /// <param name="attributeType">The fully qualified name of the attribute type to look for.</param>
+    /// <param name="comparer">An <see cref="IEqualityComparer{T}"/> instance to compare intermediate models.</param>
+    private protected TransitiveMembersGenerator(string attributeType, IEqualityComparer<TInfo>? comparer = null)
     {
-        this.attributeTypeFullName = attributeTypeFullName;
-        this.attributeTypeName = attributeTypeFullName.Split('.').Last();
-    }
+        this.attributeType = attributeType;
+        this.comparer = comparer ?? EqualityComparer<TInfo>.Default;
+        this.classDeclaration = Execute.LoadClassDeclaration(attributeType);
 
-    /// <summary>
-    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when the generation failed for a given type.
-    /// </summary>
-    protected abstract DiagnosticDescriptor TargetTypeErrorDescriptor { get; }
+        Execute.ProcessMemberDeclarations(
+            GetType(),
+            this.classDeclaration.Members.ToImmutableArray(),
+            out this.sealedMemberDeclarations,
+            out this.nonSealedMemberDeclarations);
+    }
 
     /// <inheritdoc/>
-    public void Initialize(GeneratorInitializationContext context)
+    public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        context.RegisterForSyntaxNotifications(() => new SyntaxReceiver(this.attributeTypeFullName));
-    }
+        // Get all class declarations
+        IncrementalValuesProvider<INamedTypeSymbol> typeSymbols =
+            context.SyntaxProvider
+            .CreateSyntaxProvider(
+                static (node, _) => node is ClassDeclarationSyntax { AttributeLists.Count: > 0 },
+                static (context, _) => (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!);
 
-    /// <inheritdoc/>
-    public void Execute(GeneratorExecutionContext context)
-    {
-        // Get the syntax receiver with the candidate nodes
-        if (context.SyntaxContextReceiver is not SyntaxReceiver syntaxReceiver ||
-            syntaxReceiver.GatheredInfo.Count == 0)
+        // Filter the types with the target attribute
+        IncrementalValuesProvider<(INamedTypeSymbol Symbol, TInfo Info)> typeSymbolsWithInfo =
+            typeSymbols
+            .Select((item, _) => (
+                Symbol: item,
+                Attribute: item.GetAttributes().FirstOrDefault(a => a.AttributeClass?.HasFullyQualifiedName(this.attributeType) == true)))
+            .Where(static item => item.Attribute is not null)!
+            .Select((item, _) => (item.Symbol, GetInfo(item.Symbol, item.Attribute!)));
+
+        // Filter by language version
+        context.FilterWithLanguageVersion(ref typeSymbolsWithInfo, LanguageVersion.CSharp8, UnsupportedCSharpLanguageVersionError);
+
+        // Gather all generation info, and any diagnostics
+        IncrementalValuesProvider<Result<(HierarchyInfo Hierarchy, bool IsSealed, TInfo Info)>> generationInfoWithErrors =
+            typeSymbolsWithInfo.Select((item, _) =>
+            {
+                if (ValidateTargetType(item.Symbol, item.Info, out ImmutableArray<Diagnostic> diagnostics))
+                {
+                    return new Result<(HierarchyInfo, bool, TInfo)>(
+                        (HierarchyInfo.From(item.Symbol), item.Symbol.IsSealed, item.Info),
+                        ImmutableArray<Diagnostic>.Empty);
+                }
+
+                return new Result<(HierarchyInfo, bool, TInfo)>(default, diagnostics);
+            });
+
+        // Emit the diagnostic, if needed
+        context.ReportDiagnostics(generationInfoWithErrors.Select(static (item, _) => item.Errors));
+
+        // Get the filtered sequence to enable caching
+        IncrementalValuesProvider<(HierarchyInfo Hierarchy, bool IsSealed, TInfo Info)> generationInfo =
+            generationInfoWithErrors
+            .Where(static item => item.Errors.IsEmpty)
+            .Select(static (item, _) => item.Value)
+            .WithComparers(HierarchyInfo.Comparer.Default, EqualityComparer<bool>.Default, this.comparer);
+
+        // Generate the required members
+        context.RegisterSourceOutput(generationInfo, (context, item) =>
         {
-            return;
-        }
+            ImmutableArray<MemberDeclarationSyntax> sourceMemberDeclarations = item.IsSealed ? this.sealedMemberDeclarations : this.nonSealedMemberDeclarations;
+            ImmutableArray<MemberDeclarationSyntax> filteredMemberDeclarations = FilterDeclaredMembers(item.Info, sourceMemberDeclarations);
+            CompilationUnitSyntax compilationUnit = item.Hierarchy.GetCompilationUnit(filteredMemberDeclarations, this.classDeclaration.BaseList);
 
-        // Validate the language version
-        if (context.ParseOptions is not CSharpParseOptions { LanguageVersion: >= LanguageVersion.CSharp9 })
-        {
-            context.ReportDiagnostic(Diagnostic.Create(UnsupportedCSharpLanguageVersionError, null));
-        }
-
-        // Load the syntax tree with the members to generate
-        SyntaxTree sourceSyntaxTree = LoadSourceSyntaxTree();
-
-        foreach (SyntaxReceiver.Item item in syntaxReceiver.GatheredInfo)
-        {
-            if (!ValidateTargetType(context, item.AttributeData, item.ClassDeclaration, item.ClassSymbol, out DiagnosticDescriptor? descriptor))
-            {
-                context.ReportDiagnostic(descriptor, item.AttributeSyntax, item.ClassSymbol);
-
-                continue;
-            }
-
-            try
-            {
-                OnExecute(context, item.AttributeData, item.ClassDeclaration, item.ClassSymbol, sourceSyntaxTree);
-            }
-            catch
-            {
-                context.ReportDiagnostic(TargetTypeErrorDescriptor, item.AttributeSyntax, item.ClassSymbol);
-            }
-        }
-    }
-
-    /// <summary>
-    /// Loads the source syntax tree for the current generator.
-    /// </summary>
-    /// <returns>The syntax tree with the elements to emit in the generated code.</returns>
-    private SyntaxTree LoadSourceSyntaxTree()
-    {
-        string filename = $"CommunityToolkit.Mvvm.SourceGenerators.EmbeddedResources.{this.attributeTypeName.Replace("Attribute", string.Empty)}.cs";
-
-        Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(filename);
-        StreamReader reader = new(stream);
-
-        string observableObjectSource = reader.ReadToEnd();
-
-        return CSharpSyntaxTree.ParseText(observableObjectSource);
-    }
-
-    /// <summary>
-    /// Processes a given target type.
-    /// </summary>
-    /// <param name="context">The input <see cref="GeneratorExecutionContext"/> instance to use.</param>
-    /// <param name="attributeData">The <see cref="AttributeData"/> for the current attribute being processed.</param>
-    /// <param name="classDeclaration">The <see cref="ClassDeclarationSyntax"/> node to process.</param>
-    /// <param name="classDeclarationSymbol">The <see cref="INamedTypeSymbol"/> for <paramref name="classDeclaration"/>.</param>
-    /// <param name="sourceSyntaxTree">The <see cref="Microsoft.CodeAnalysis.SyntaxTree"/> for the target parsed source.</param>
-    private void OnExecute(
-        GeneratorExecutionContext context,
-        AttributeData attributeData,
-        ClassDeclarationSyntax classDeclaration,
-        INamedTypeSymbol classDeclarationSymbol,
-        SyntaxTree sourceSyntaxTree)
-    {
-        ClassDeclarationSyntax sourceDeclaration = sourceSyntaxTree.GetRoot().DescendantNodes().OfType<ClassDeclarationSyntax>().First();
-
-        // Create the class declaration for the user type. This will produce a tree as follows:
-        //
-        // <MODIFIERS> <CLASS_NAME> : <BASE_TYPES>
-        // {
-        //     <MEMBERS>
-        // }
-        ClassDeclarationSyntax? classDeclarationSyntax =
-            ClassDeclaration(classDeclaration.Identifier.Text)
-            .WithModifiers(classDeclaration.Modifiers)
-            .WithBaseList(sourceDeclaration.BaseList)
-            .AddMembers(OnLoadDeclaredMembers(context, attributeData, classDeclaration, classDeclarationSymbol, sourceDeclaration).ToArray());
-
-        TypeDeclarationSyntax typeDeclarationSyntax = classDeclarationSyntax;
-
-        // Add all parent types in ascending order, if any
-        foreach (TypeDeclarationSyntax? parentType in classDeclaration.Ancestors().OfType<TypeDeclarationSyntax>())
-        {
-            typeDeclarationSyntax = parentType
-                .WithMembers(SingletonList<MemberDeclarationSyntax>(typeDeclarationSyntax))
-                .WithConstraintClauses(List<TypeParameterConstraintClauseSyntax>())
-                .WithBaseList(null)
-                .WithAttributeLists(List<AttributeListSyntax>())
-                .WithoutTrivia();
-        }
-
-        // Create the compilation unit with the namespace and target member.
-        // From this, we can finally generate the source code to output.
-        string? namespaceName = classDeclarationSymbol.ContainingNamespace.ToDisplayString(new(typeQualificationStyle: NameAndContainingTypesAndNamespaces));
-
-        // Create the final compilation unit to generate (with the full type declaration)
-        string? source =
-            CompilationUnit()
-            .AddMembers(NamespaceDeclaration(IdentifierName(namespaceName))
-            .WithLeadingTrivia(TriviaList(
-                Comment("// <auto-generated/>"),
-                Trivia(PragmaWarningDirectiveTrivia(Token(SyntaxKind.DisableKeyword), true))))
-            .AddMembers(typeDeclarationSyntax))
-            .NormalizeWhitespace()
-            .ToFullString();
-
-        // Add the partial type
-        context.AddSource($"{classDeclarationSymbol.GetFullMetadataNameForFileName()}.cs", SourceText.From(source, Encoding.UTF8));
-    }
-
-    /// <summary>
-    /// Loads the <see cref="MemberDeclarationSyntax"/> nodes to generate from the input parsed tree.
-    /// </summary>
-    /// <param name="context">The input <see cref="GeneratorExecutionContext"/> instance to use.</param>
-    /// <param name="attributeData">The <see cref="AttributeData"/> for the current attribute being processed.</param>
-    /// <param name="classDeclaration">The <see cref="ClassDeclarationSyntax"/> node to process.</param>
-    /// <param name="classDeclarationSymbol">The <see cref="INamedTypeSymbol"/> for <paramref name="classDeclaration"/>.</param>
-    /// <param name="sourceDeclaration">The parsed <see cref="ClassDeclarationSyntax"/> instance with the source nodes.</param>
-    /// <returns>A sequence of <see cref="MemberDeclarationSyntax"/> nodes to emit in the generated file.</returns>
-    private IEnumerable<MemberDeclarationSyntax> OnLoadDeclaredMembers(
-        GeneratorExecutionContext context,
-        AttributeData attributeData,
-        ClassDeclarationSyntax classDeclaration,
-        INamedTypeSymbol classDeclarationSymbol,
-        ClassDeclarationSyntax sourceDeclaration)
-    {
-        IEnumerable<MemberDeclarationSyntax> generatedMembers = FilterDeclaredMembers(context, attributeData, classDeclaration, classDeclarationSymbol, sourceDeclaration);
-
-        // Add the attributes on each member
-        return generatedMembers.Select(member =>
-        {
-            // [GeneratedCode] is always present
-            member = member
-            .WithoutLeadingTrivia()
-            .AddAttributeLists(AttributeList(SingletonSeparatedList(
-                Attribute(IdentifierName($"global::System.CodeDom.Compiler.GeneratedCode"))
-                .AddArgumentListArguments(
-                    AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(GetType().FullName))),
-                    AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(GetType().Assembly.GetName().Version.ToString())))))))
-            .WithLeadingTrivia(member.GetLeadingTrivia());
-
-            // [DebuggerNonUserCode] is not supported over interfaces, events or fields
-            if (member.Kind() is not SyntaxKind.InterfaceDeclaration and not SyntaxKind.EventFieldDeclaration and not SyntaxKind.FieldDeclaration)
-            {
-                member = member.AddAttributeLists(AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.DebuggerNonUserCode")))));
-            }
-
-            // [ExcludeFromCodeCoverage] is not supported on interfaces and fields
-            if (member.Kind() is not SyntaxKind.InterfaceDeclaration and not SyntaxKind.FieldDeclaration)
-            {
-                member = member.AddAttributeLists(AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage")))));
-            }
-
-            // If the target class is sealed, make protected members private and remove the virtual modifier
-            if (classDeclarationSymbol.IsSealed)
-            {
-                return member
-                    .ReplaceModifier(SyntaxKind.ProtectedKeyword, SyntaxKind.PrivateKeyword)
-                    .RemoveModifier(SyntaxKind.VirtualKeyword);
-            }
-
-            return member;
+            context.AddSource(
+                hintName: $"{item.Hierarchy.FilenameHint}.cs",
+                sourceText: SourceText.From(compilationUnit.ToFullString(), Encoding.UTF8));
         });
     }
 
     /// <summary>
+    /// Gets an info model from a retrieved <see cref="AttributeData"/> instance.
+    /// </summary>
+    /// <param name="typeSymbol">The <see cref="INamedTypeSymbol"/> instance for the target type.</param>
+    /// <param name="attributeData">The input <see cref="AttributeData"/> to get info from.</param>
+    /// <returns>A <typeparamref name="TInfo"/> instance with data extracted from <paramref name="attributeData"/>.</returns>
+    protected abstract TInfo GetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData);
+
+    /// <summary>
     /// Validates a target type being processed.
     /// </summary>
-    /// <param name="context">The input <see cref="GeneratorExecutionContext"/> instance to use.</param>
-    /// <param name="attributeData">The <see cref="AttributeData"/> for the current attribute being processed.</param>
-    /// <param name="classDeclaration">The <see cref="ClassDeclarationSyntax"/> node to process.</param>
-    /// <param name="classDeclarationSymbol">The <see cref="INamedTypeSymbol"/> for <paramref name="classDeclaration"/>.</param>
-    /// <param name="descriptor">The resulting <see cref="DiagnosticDescriptor"/> to emit in case the target type isn't valid.</param>
+    /// <param name="typeSymbol">The <see cref="INamedTypeSymbol"/> instance for the target type.</param>
+    /// <param name="info">The <typeparamref name="TInfo"/> instance with the current processing info.</param>
+    /// <param name="diagnostics">The resulting diagnostics from the processing operation.</param>
     /// <returns>Whether or not the target type is valid and can be processed normally.</returns>
-    protected abstract bool ValidateTargetType(
-        GeneratorExecutionContext context,
-        AttributeData attributeData,
-        ClassDeclarationSyntax classDeclaration,
-        INamedTypeSymbol classDeclarationSymbol,
-        [NotNullWhen(false)] out DiagnosticDescriptor? descriptor);
+    protected abstract bool ValidateTargetType(INamedTypeSymbol typeSymbol, TInfo info, out ImmutableArray<Diagnostic> diagnostics);
 
     /// <summary>
     /// Filters the <see cref="MemberDeclarationSyntax"/> nodes to generate from the input parsed tree.
     /// </summary>
-    /// <param name="context">The input <see cref="GeneratorExecutionContext"/> instance to use.</param>
-    /// <param name="attributeData">The <see cref="AttributeData"/> for the current attribute being processed.</param>
-    /// <param name="classDeclaration">The <see cref="ClassDeclarationSyntax"/> node to process.</param>
-    /// <param name="classDeclarationSymbol">The <see cref="INamedTypeSymbol"/> for <paramref name="classDeclaration"/>.</param>
-    /// <param name="sourceDeclaration">The parsed <see cref="ClassDeclarationSyntax"/> instance with the source nodes.</param>
+    /// <param name="info">The <typeparamref name="TInfo"/> instance with the current processing info.</param>
+    /// <param name="memberDeclarations">The input sequence of <see cref="MemberDeclarationSyntax"/> instances to generate.</param>
     /// <returns>A sequence of <see cref="MemberDeclarationSyntax"/> nodes to emit in the generated file.</returns>
-    protected virtual IEnumerable<MemberDeclarationSyntax> FilterDeclaredMembers(
-        GeneratorExecutionContext context,
-        AttributeData attributeData,
-        ClassDeclarationSyntax classDeclaration,
-        INamedTypeSymbol classDeclarationSymbol,
-        ClassDeclarationSyntax sourceDeclaration)
-    {
-        return sourceDeclaration.Members;
-    }
+    protected abstract ImmutableArray<MemberDeclarationSyntax> FilterDeclaredMembers(TInfo info, ImmutableArray<MemberDeclarationSyntax> memberDeclarations);
 }

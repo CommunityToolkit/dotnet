@@ -18,7 +18,6 @@
       - Ioc: a helper class to configure dependency injection service containers.
     </Description>
     <PackageTags>MVVM;Toolkit;MVVMToolkit;INotifyPropertyChanged;Observable;IOC;DI;Dependency Injection;Object Messaging;Extensions;Helpers</PackageTags>
-    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);CopyAnalyzerProjectReferencesToPackage</TargetsForTfmSpecificContentInPackage>
   </PropertyGroup>
 
   <!-- .NET Standard 2.0 doesn't have the Span<T> and IAsyncEnumerable<T> types -->
@@ -36,22 +35,23 @@
   </ItemGroup>
     
   <!-- Source generator project reference for packing -->
-  <ItemGroup>
-    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.csproj" PrivateAssets="all" />
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
-  <!--
-      Target to pack the source generator into the "analyzers\dotnet\cs" package folder.
-      The condition is set to .NET Standard 2.0 so that the analyzer is only added to the package
-      when that target is being built, instead of once for all three targets, which would fail.
-      It will still be available for all targets anyway though, as analyzers don't have a target.
-  -->
-  <Target Name="CopyAnalyzerProjectReferencesToPackage" DependsOnTargets="BuildOnlySettings;ResolveReferences" Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-    <ItemGroup>
-      <TfmSpecificPackageFile Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference')->WithMetadataValue('PrivateAssets', 'All'))">
-        <PackagePath>analyzers\dotnet\cs</PackagePath>
-      </TfmSpecificPackageFile>
-    </ItemGroup>
-  </Target>
+  <ItemGroup Label="Package">
+    
+    <!-- Include the custom .targets file to check the source generator (.NET 6 is not needed as it guarantees Roslyn 4.x) -->
+    <None Include="CommunityToolkit.Mvvm.targets" PackagePath="buildTransitive\netstandard2.0" Pack="true" />
+    <None Include="CommunityToolkit.Mvvm.targets" PackagePath="buildTransitive\netstandard2.1" Pack="true" />
+    <None Include="CommunityToolkit.Mvvm.targets" PackagePath="build\netstandard2.0" Pack="true" />
+    <None Include="CommunityToolkit.Mvvm.targets" PackagePath="build\netstandard2.1" Pack="true" />
+
+    <!-- Pack the source generator to the right package folder -->
+    <None Include="..\CommunityToolkit.Mvvm.SourceGenerators\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.SourceGenerators.dll"
+          PackagePath="analyzers\dotnet\roslyn4.0\cs"
+          Pack="true"
+          Visible="false" />
+  </ItemGroup>
 
 </Project>

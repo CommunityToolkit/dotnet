@@ -38,7 +38,7 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 ///
 ///     public bool IsEnabled
 ///     {
-///         get => name;
+///         get => isEnabled;
 ///         set => SetProperty(ref isEnabled, value);
 ///     }
 /// }

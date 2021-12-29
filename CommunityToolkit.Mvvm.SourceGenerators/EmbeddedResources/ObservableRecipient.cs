@@ -103,7 +103,7 @@ public abstract class ObservableRecipient
     /// </remarks>
     protected virtual void Broadcast<T>(T oldValue, T newValue, string? propertyName)
     {
-        global::CommunityToolkit.Mvvm.Messaging.Messages.PropertyChangedMessage<T> message = new(this, propertyName, oldValue, newValue);
+        var message = new global::CommunityToolkit.Mvvm.Messaging.Messages.PropertyChangedMessage<T>(this, propertyName, oldValue, newValue);
 
         _ = global::CommunityToolkit.Mvvm.Messaging.IMessengerExtensions.Send(Messenger, message);
     }
@@ -129,8 +129,6 @@ public abstract class ObservableRecipient
     {
         T oldValue = field;
 
-        // We duplicate the code as in the base class here to leverage
-        // the intrinsics support for EqualityComparer<T>.Default.Equals.
         bool propertyChanged = SetProperty(ref field, newValue, propertyName);
 
         if (propertyChanged && broadcast)
