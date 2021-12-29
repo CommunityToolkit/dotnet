@@ -427,7 +427,7 @@ public abstract class ObservableObject : global::System.ComponentModel.INotifyPr
 
         if (isAlreadyCompletedOrNull)
         {
-            if (callback != null)
+            if ((object?)callback != null)
             {
                 callback(newValue);
             }
@@ -450,7 +450,7 @@ public abstract class ObservableObject : global::System.ComponentModel.INotifyPr
                 OnPropertyChanged(propertyName);
             }
 
-            if (callback != null)
+            if ((object?)callback != null)
             {
                 callback(newValue);
             }
