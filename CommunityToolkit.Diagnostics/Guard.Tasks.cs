@@ -8,10 +8,8 @@ using System.Threading.Tasks;
 
 namespace CommunityToolkit.Diagnostics;
 
-/// <summary>
-/// Helper methods to verify conditions when running code.
-/// </summary>
-public static partial class Guard
+/// <inheritdoc/>
+partial class Guard
 {
     /// <summary>
     /// Asserts that the input <see cref="Task"/> instance is in a completed state.

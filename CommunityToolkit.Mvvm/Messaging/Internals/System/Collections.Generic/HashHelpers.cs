@@ -9,7 +9,7 @@ namespace System.Collections.Generic;
 /// <summary>
 /// A helper class for <see cref="Dictionary2{TKey,TValue}"/>.
 /// </summary>
-internal static partial class HashHelpers
+internal static class HashHelpers
 {
     /// <summary>
     /// Maximum prime smaller than the maximum array length.

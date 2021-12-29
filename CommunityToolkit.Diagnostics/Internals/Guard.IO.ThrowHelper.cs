@@ -8,15 +8,11 @@ using System.IO;
 
 namespace CommunityToolkit.Diagnostics;
 
-/// <summary>
-/// Helper methods to verify conditions when running code.
-/// </summary>
-public static partial class Guard
+/// <inheritdoc/>
+partial class Guard
 {
-    /// <summary>
-    /// Helper methods to efficiently throw exceptions.
-    /// </summary>
-    private static partial class ThrowHelper
+    /// <inheritdoc/>
+    partial class ThrowHelper
     {
         /// <summary>
         /// Throws an <see cref="ArgumentException"/> when <see cref="CanRead"/> fails.

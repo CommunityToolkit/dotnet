@@ -11,10 +11,8 @@ using System.Threading;
 
 namespace CommunityToolkit.Diagnostics;
 
-/// <summary>
-/// Helper methods to efficiently throw exceptions.
-/// </summary>
-public static partial class ThrowHelper
+/// <inheritdoc/>
+partial class ThrowHelper
 {
     /// <summary>
     /// Throws a new <see cref="ArrayTypeMismatchException"/>.

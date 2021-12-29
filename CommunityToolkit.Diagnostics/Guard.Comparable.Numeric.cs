@@ -7,10 +7,8 @@ using System.Runtime.CompilerServices;
 
 namespace CommunityToolkit.Diagnostics;
 
-/// <summary>
-/// Helper methods to verify conditions when running code.
-/// </summary>
-public static partial class Guard
+/// <inheritdoc/>
+partial class Guard
 {
     /// <summary>
     /// Asserts that the input value must be within a given distance from a specified value.

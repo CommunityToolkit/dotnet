@@ -6,10 +6,8 @@ using System;
 
 namespace CommunityToolkit.HighPerformance.Helpers;
 
-/// <summary>
-/// Helpers to work with parallel code in a highly optimized manner.
-/// </summary>
-public static partial class ParallelHelper
+/// <inheritdoc/>
+partial class ParallelHelper
 {
     /// <summary>
     /// Throws an <see cref="ArgumentOutOfRangeException"/> when an invalid parameter is specified for the minimum actions per thread.

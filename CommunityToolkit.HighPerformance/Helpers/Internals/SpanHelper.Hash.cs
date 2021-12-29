@@ -7,10 +7,8 @@ using System.Runtime.CompilerServices;
 
 namespace CommunityToolkit.HighPerformance.Helpers.Internals;
 
-/// <summary>
-/// Helpers to process sequences of values by reference.
-/// </summary>
-internal static partial class SpanHelper
+/// <inheritdoc/>
+partial class SpanHelper
 {
     /// <summary>
     /// Calculates the djb2 hash for the target sequence of items of a given type.

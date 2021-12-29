@@ -14,10 +14,8 @@ using RuntimeHelpers = CommunityToolkit.HighPerformance.Helpers.Internals.Runtim
 
 namespace CommunityToolkit.HighPerformance;
 
-/// <summary>
-/// Helpers for working with the <see cref="Array"/> type.
-/// </summary>
-public static partial class ArrayExtensions
+/// <inheritdoc/>
+partial class ArrayExtensions
 {
     /// <summary>
     /// Returns a reference to the first element within a given 3D <typeparamref name="T"/> array, with no bounds checks.

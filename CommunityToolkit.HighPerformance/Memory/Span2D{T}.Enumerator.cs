@@ -14,8 +14,8 @@ using RuntimeHelpers = CommunityToolkit.HighPerformance.Helpers.Internals.Runtim
 
 namespace CommunityToolkit.HighPerformance;
 
-/// <inheritdoc cref="Span2D{T}"/>
-public readonly ref partial struct Span2D<T>
+/// <inheritdoc/>
+partial struct Span2D<T>
 {
     /// <summary>
     /// Gets an enumerable that traverses items in a specified row.

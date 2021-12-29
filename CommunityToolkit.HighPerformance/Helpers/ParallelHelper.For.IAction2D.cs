@@ -9,10 +9,8 @@ using System.Threading.Tasks;
 
 namespace CommunityToolkit.HighPerformance.Helpers;
 
-/// <summary>
-/// Helpers to work with parallel code in a highly optimized manner.
-/// </summary>
-public static partial class ParallelHelper
+/// <inheritdoc/>
+partial class ParallelHelper
 {
 #if NETSTANDARD2_1_OR_GREATER
     /// <summary>
