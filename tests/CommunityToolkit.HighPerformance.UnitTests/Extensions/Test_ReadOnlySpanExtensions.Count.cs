@@ -4,7 +4,6 @@
 
 using System;
 using System.Runtime.InteropServices;
-using CommunityToolkit.HighPerformance;
 using CommunityToolkit.HighPerformance.UnitTests.Buffers.Internals;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -48,6 +47,15 @@ public partial class Test_ReadOnlySpanExtensions
         TestForType((ulong)47128480128401, CreateRandomData);
         TestForType(Math.PI, CreateRandomData);
     }
+
+#if NET6_0_OR_GREATER
+    [TestMethod]
+    public void Test_ReadOnlySpanExtensions_RandomCountPtr()
+    {
+        TestForType(nint.MaxValue / 2, CreateRandomData);
+        TestForType(nuint.MaxValue / 2, CreateRandomData);
+    }
+#endif
 
     [TestMethod]
     public void Test_ReadOnlySpanExtensions_RandomCountManaged()
@@ -147,6 +155,15 @@ public partial class Test_ReadOnlySpanExtensions
         TestForType((long)47128480128401, (count, _) => CreateFilledData(count, (long)47128480128401));
         TestForType((ulong)47128480128401, (count, _) => CreateFilledData(count, (ulong)47128480128401));
     }
+
+#if NET6_0_OR_GREATER
+    [TestMethod]
+    public void Test_ReadOnlySpanExtensions_FilledCountPtr()
+    {
+        TestForType((nint)37438941, (count, _) => CreateFilledData(count, (nint)37438941));
+        TestForType((nuint)37438941, (count, _) => CreateFilledData(count, (nuint)37438941));
+    }
+#endif
 
     /// <summary>
     /// Performs a test for a specified type.
