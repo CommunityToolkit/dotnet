@@ -24,7 +24,6 @@ public static partial class Guard
     /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is not <see langword="null"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNull<T>(T? value, [CallerArgumentExpression("value")] string name = "")
-        where T : class
     {
         if (value is null)
         {
@@ -63,7 +62,6 @@ public static partial class Guard
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is <see langword="null"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNotNull<T>([NotNull] T? value, [CallerArgumentExpression("value")] string name = "")
-        where T : class
     {
         if (value is not null)
         {

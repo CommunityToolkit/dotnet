@@ -38,9 +38,8 @@ partial class Guard
         /// <typeparam name="T">The type of the input value.</typeparam>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsNull<T>(T value, string name)
-            where T : class
         {
-            throw new ArgumentException($"Parameter {AssertString(name)} ({typeof(T).ToTypeString()}) must be null, was {AssertString(value)} ({value.GetType().ToTypeString()}).", name);
+            throw new ArgumentException($"Parameter {AssertString(name)} ({typeof(T).ToTypeString()}) must be null, was {AssertString(value)} ({value!.GetType().ToTypeString()}).", name);
         }
 
         /// <summary>
