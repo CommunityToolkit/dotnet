@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Diagnostics;
 using System.Linq;
 using CommunityToolkit.Mvvm.Input;
 
@@ -49,6 +50,7 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// </code>
 /// </summary>
 [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = false)]
+[Conditional("MVVMTOOLKIT_KEEP_SOURCE_GENERATOR_ATTRIBUTES")]
 public sealed class AlsoNotifyCanExecuteForAttribute : Attribute
 {
     /// <summary>

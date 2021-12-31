@@ -4,6 +4,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace CommunityToolkit.Mvvm.ComponentModel;
 
@@ -24,6 +25,7 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// </para>
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+[Conditional("MVVMTOOLKIT_KEEP_SOURCE_GENERATOR_ATTRIBUTES")]
 public sealed class INotifyPropertyChangedAttribute : Attribute
 {
     /// <summary>
