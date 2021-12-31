@@ -52,7 +52,7 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
         // Check whether [RequiresUnreferencedCode] is available
         IncrementalValueProvider<bool> isRequiresUnreferencedCodeAttributeAvailable =
             context.CompilationProvider
-            .Select(static (item, _) => item.GetTypeByMetadataName("System.Diagnostics.CodeAnalysis.RequiresUnreferencedCodeAttribute") is not null);
+            .Select(static (item, _) => item.GetTypeByMetadataName("System.Diagnostics.CodeAnalysis.RequiresUnreferencedCodeAttribute") is { DeclaredAccessibility: Accessibility.Public });
 
         return
             source
@@ -128,7 +128,7 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
                     member
                     .DescendantNodes()
                     .OfType<AttributeListSyntax>()
-                    .First(node => ((IdentifierNameSyntax)((QualifiedNameSyntax)node.Attributes[0].Name).Right).Identifier.ValueText == "RequiresUnreferencedCode");
+                    .First(node => node.Attributes[0].Name is QualifiedNameSyntax { Right: IdentifierNameSyntax { Identifier.ValueText: "RequiresUnreferencedCode" } });
 
                 return member.RemoveNode(attributeNode, SyntaxRemoveOptions.KeepExteriorTrivia)!;
             }
