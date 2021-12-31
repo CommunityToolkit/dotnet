@@ -11,8 +11,10 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 /// <param name="HasExplicitConstructors">Whether or not the target type has explicit constructors.</param>
 /// <param name="IsAbstract">Whether or not the target type is abstract.</param>
 /// <param name="IsObservableValidator">Whether or not the target type inherits from <c>ObservableValidator</c>.</param>
+/// <param name="IsRequiresUnreferencedCodeAttributeAvailable">Whether or not the <c>RequiresUnreferencedCodeAttribute</c> type is available.</param>
 public sealed record ObservableRecipientInfo(
     string TypeName,
     bool HasExplicitConstructors,
     bool IsAbstract,
-    bool IsObservableValidator);
+    bool IsObservableValidator,
+    bool IsRequiresUnreferencedCodeAttributeAvailable);

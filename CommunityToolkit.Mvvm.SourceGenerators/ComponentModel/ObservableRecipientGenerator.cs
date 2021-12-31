@@ -34,7 +34,7 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
         IncrementalGeneratorInitializationContext context,
         IncrementalValuesProvider<(INamedTypeSymbol Symbol, AttributeData AttributeData)> source)
     {
-        static ObservableRecipientInfo GetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData)
+        static ObservableRecipientInfo GetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData, bool isRequiresUnreferencedCodeAttributeAvailable)
         {
             string typeName = typeSymbol.Name;
             bool hasExplicitConstructors = !(typeSymbol.InstanceConstructors.Length == 1 && typeSymbol.InstanceConstructors[0] is { Parameters.IsEmpty: true, IsImplicitlyDeclared: true });
@@ -45,10 +45,19 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
                 typeName,
                 hasExplicitConstructors,
                 isAbstract,
-                isObservableValidator);
+                isObservableValidator,
+                isRequiresUnreferencedCodeAttributeAvailable);
         }
 
-        return source.Select(static (item, _) => (item.Symbol, GetInfo(item.Symbol, item.AttributeData)));
+        // Check whether [RequiresUnreferencedCode] is available
+        IncrementalValueProvider<bool> isRequiresUnreferencedCodeAttributeAvailable =
+            context.CompilationProvider
+            .Select(static (item, _) => item.GetTypeByMetadataName("System.Diagnostics.CodeAnalysis.RequiresUnreferencedCodeAttribute") is not null);
+
+        return
+            source
+            .Combine(isRequiresUnreferencedCodeAttributeAvailable)
+            .Select(static (item, _) => (item.Left.Symbol, GetInfo(item.Left.Symbol, item.Left.AttributeData, item.Right)));
     }
 
     /// <inheritdoc/>
@@ -110,6 +119,23 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
             }
         }
 
+        MemberDeclarationSyntax RemoveRequiresUnreferencedCodeAttributeIfNeeded(MemberDeclarationSyntax member)
+        {
+            if (!info.IsRequiresUnreferencedCodeAttributeAvailable &&
+                member is PropertyDeclarationSyntax { Identifier.ValueText: "IsActive" } or MethodDeclarationSyntax { Identifier.ValueText: "OnActivated" })
+            {
+                SyntaxNode attributeNode =
+                    member
+                    .DescendantNodes()
+                    .OfType<AttributeListSyntax>()
+                    .First(node => ((IdentifierNameSyntax)((QualifiedNameSyntax)node.Attributes[0].Name).Right).Identifier.ValueText == "RequiresUnreferencedCode");
+
+                return member.RemoveNode(attributeNode, SyntaxRemoveOptions.KeepExteriorTrivia)!;
+            }
+
+            return member;
+        }
+
         // Skip the SetProperty overloads if the target type inherits from ObservableValidator, to avoid conflicts
         if (info.IsObservableValidator)
         {
@@ -117,7 +143,7 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
             {
                 if (member is not MethodDeclarationSyntax { Identifier.ValueText: "SetProperty" })
                 {
-                    builder.Add(member);
+                    builder.Add(RemoveRequiresUnreferencedCodeAttributeIfNeeded(member));
                 }
             }
 
@@ -127,7 +153,7 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
         // If the target type has at least one custom constructor, only generate methods
         foreach (MemberDeclarationSyntax member in memberDeclarations.Where(static member => member is not ConstructorDeclarationSyntax))
         {
-            builder.Add(member);
+            builder.Add(RemoveRequiresUnreferencedCodeAttributeIfNeeded(member));
         }
 
         return builder.ToImmutable();

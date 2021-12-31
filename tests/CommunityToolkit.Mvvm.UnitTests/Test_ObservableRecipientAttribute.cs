@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -95,6 +96,61 @@ public partial class Test_ObservableRecipientAttribute
 
     [ObservableRecipient]
     public partial class NonAbstractPerson : ObservableObject
+    {
+    }
+
+    [TestMethod]
+    public void Test_ObservableRecipientAttribute_TrimmingAnnoations_IsActive()
+    {
+        bool shouldHaveTrimmingAnnotations =
+#if NET6_0_OR_GREATER
+            true;
+#else
+            false;
+#endif
+
+        MethodInfo isActivePropertySetter = typeof(TestRecipient).GetProperty(nameof(TestRecipient.IsActive))!.SetMethod!;
+
+        if (shouldHaveTrimmingAnnotations)
+        {
+            Attribute[] attributes = isActivePropertySetter.GetCustomAttributes().ToArray();
+
+            Assert.AreEqual(1, attributes.Length);
+            Assert.AreEqual("System.Diagnostics.CodeAnalysis.RequiresUnreferencedCodeAttribute", attributes[0].GetType().ToString());
+        }
+        else
+        {
+            Attribute[] attributes = isActivePropertySetter.GetCustomAttributes().ToArray();
+
+            Assert.AreEqual(0, attributes.Length);
+        }
+    }
+
+    [TestMethod]
+    public void Test_ObservableRecipientAttribute_TrimmingAnnoations_OnActivated()
+    {
+        bool shouldHaveTrimmingAnnotations =
+#if NET6_0_OR_GREATER
+            true;
+#else
+            false;
+#endif
+
+        MethodInfo onActivatedMethod = typeof(TestRecipient).GetMethod("OnActivated", BindingFlags.Instance | BindingFlags.NonPublic)!;
+        IEnumerable<Attribute> attributes = onActivatedMethod.GetCustomAttributes();
+
+        if (shouldHaveTrimmingAnnotations)
+        {
+            Assert.IsTrue(attributes.Any(static a => a.GetType().ToString() == "System.Diagnostics.CodeAnalysis.RequiresUnreferencedCodeAttribute"));
+        }
+        else
+        {
+            Assert.IsFalse(attributes.Any(static a => a.GetType().ToString() == "System.Diagnostics.CodeAnalysis.RequiresUnreferencedCodeAttribute"));
+        }
+    }
+
+    [ObservableRecipient]
+    public abstract partial class TestRecipient : ObservableObject
     {
     }
 }
