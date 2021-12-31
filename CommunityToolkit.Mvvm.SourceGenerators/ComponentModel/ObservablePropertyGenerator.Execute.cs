@@ -349,7 +349,7 @@ partial class ObservablePropertyGenerator
                                 SyntaxKind.StringLiteralExpression,
                                 Literal("This type is not intended to be used directly by user code")))))))
                     .AddMembers(names.Select(name => CreateFieldDeclaration(ArgsTypeName, name)).ToArray())))
-                .NormalizeWhitespace(eol: "\n");
+                .NormalizeWhitespace();
         }
 
         /// <summary>

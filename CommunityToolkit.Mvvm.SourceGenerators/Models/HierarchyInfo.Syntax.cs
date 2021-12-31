@@ -74,6 +74,6 @@ partial record HierarchyInfo
                 Trivia(PragmaWarningDirectiveTrivia(Token(SyntaxKind.DisableKeyword), true)),
                 Trivia(NullableDirectiveTrivia(Token(SyntaxKind.EnableKeyword), true))))
             .AddMembers(typeDeclarationSyntax))
-            .NormalizeWhitespace(eol: "\n");
+            .NormalizeWhitespace();
     }
 }
