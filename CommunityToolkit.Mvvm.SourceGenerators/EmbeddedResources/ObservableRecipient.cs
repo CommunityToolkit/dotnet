@@ -66,16 +66,9 @@ public abstract class ObservableRecipient
     }
 
     /// <summary>
-    /// Raised whenever the <see cref="IsActive"/> property is set to <see langword="true"/>.
+    /// Invoked whenever the <see cref="IsActive"/> property is set to <see langword="true"/>.
     /// Use this method to register to messages and do other initialization for this instance.
     /// </summary>
-    /// <remarks>
-    /// The base implementation registers all messages for this recipients that have been declared
-    /// explicitly through the <see cref="global::CommunityToolkit.Mvvm.Messaging.IRecipient{TMessage}"/> interface, using the default channel.
-    /// For more details on how this works, see the <see cref="global::CommunityToolkit.Mvvm.Messaging.IMessengerExtensions.RegisterAll"/> method.
-    /// If you need more fine tuned control, want to register messages individually or just prefer
-    /// the lambda-style syntax for message registration, override this method and register manually.
-    /// </remarks>
     [global::System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode(
         "This method requires the generated CommunityToolkit.Mvvm.Messaging.__Internals.__IMessengerExtensions type not to be removed to use the fast path. " +
         "If this type is removed by the linker, or if the target recipient was created dynamically and was missed by the source generator, a slower fallback " +
@@ -87,15 +80,9 @@ public abstract class ObservableRecipient
     }
 
     /// <summary>
-    /// Raised whenever the <see cref="IsActive"/> property is set to <see langword="false"/>.
+    /// Invoked whenever the <see cref="IsActive"/> property is set to <see langword="false"/>.
     /// Use this method to unregister from messages and do general cleanup for this instance.
     /// </summary>
-    /// <remarks>
-    /// The base implementation unregisters all messages for this recipient. It does so by
-    /// invoking <see cref="global::CommunityToolkit.Mvvm.Messaging.IMessenger.UnregisterAll"/>, which removes all registered
-    /// handlers for a given subscriber, regardless of what token was used to register them.
-    /// That is, all registered handlers across all subscription channels will be removed.
-    /// </remarks>
     protected virtual void OnDeactivated()
     {
         Messenger.UnregisterAll(this);

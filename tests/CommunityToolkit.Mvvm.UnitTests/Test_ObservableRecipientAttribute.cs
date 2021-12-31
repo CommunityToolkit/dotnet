@@ -153,4 +153,79 @@ public partial class Test_ObservableRecipientAttribute
     public abstract partial class TestRecipient : ObservableObject
     {
     }
+
+    [TestMethod]
+    public void Test_ObservableRecipientAttribute_PersonWithCustomOnActivated()
+    {
+        PersonWithCustomOnActivated model = new();
+
+        model.IsActive = true;
+
+        Assert.IsTrue(model.Result);
+    }
+
+    [ObservableRecipient]
+    public partial class PersonWithCustomOnActivated : ObservableObject
+    {
+        public bool Result { get; private set; }
+
+        protected virtual partial void OnActivated()
+        {
+            Result = true;
+        }
+    }
+
+    [TestMethod]
+    public void Test_ObservableRecipientAttribute_PersonWithCustomOnDeactivated()
+    {
+        PersonWithCustomOnDeactivated model = new();
+
+        model.IsActive = true;
+        model.IsActive = false;
+
+        Assert.IsTrue(model.Result);
+    }
+
+    [ObservableRecipient]
+    public partial class PersonWithCustomOnDeactivated : ObservableObject
+    {
+        public bool Result { get; private set; }
+
+        protected virtual partial void OnDeactivated()
+        {
+            Result = true;
+        }
+    }
+
+    [TestMethod]
+    public void Test_ObservableRecipientAttribute_PersonWithCustomOnActivatedAndOnDeactivated()
+    {
+        PersonWithCustomOnActivatedAndOnDeactivated model = new();
+
+        model.IsActive = true;
+
+        Assert.IsTrue(model.OnActivatedResult);
+
+        model.IsActive = false;
+
+        Assert.IsTrue(model.OnDeactivatedResult);
+    }
+
+    [ObservableRecipient]
+    public partial class PersonWithCustomOnActivatedAndOnDeactivated : ObservableObject
+    {
+        public bool OnActivatedResult { get; private set; }
+
+        public bool OnDeactivatedResult { get; private set; }
+
+        protected virtual partial void OnActivated()
+        {
+            OnActivatedResult = true;
+        }
+
+        protected virtual partial void OnDeactivated()
+        {
+            OnDeactivatedResult = true;
+        }
+    }
 }

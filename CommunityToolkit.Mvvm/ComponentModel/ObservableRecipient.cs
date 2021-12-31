@@ -81,7 +81,7 @@ public abstract class ObservableRecipient : ObservableObject
     }
 
     /// <summary>
-    /// Raised whenever the <see cref="IsActive"/> property is set to <see langword="true"/>.
+    /// Invoked whenever the <see cref="IsActive"/> property is set to <see langword="true"/>.
     /// Use this method to register to messages and do other initialization for this instance.
     /// </summary>
     /// <remarks>
@@ -102,7 +102,7 @@ public abstract class ObservableRecipient : ObservableObject
     }
 
     /// <summary>
-    /// Raised whenever the <see cref="IsActive"/> property is set to <see langword="false"/>.
+    /// Invoked whenever the <see cref="IsActive"/> property is set to <see langword="false"/>.
     /// Use this method to unregister from messages and do general cleanup for this instance.
     /// </summary>
     /// <remarks>

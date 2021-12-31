@@ -40,13 +40,17 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
             bool hasExplicitConstructors = !(typeSymbol.InstanceConstructors.Length == 1 && typeSymbol.InstanceConstructors[0] is { Parameters.IsEmpty: true, IsImplicitlyDeclared: true });
             bool isAbstract = typeSymbol.IsAbstract;
             bool isObservableValidator = typeSymbol.InheritsFrom("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator");
+            bool hasOnActivatedMethod = typeSymbol.GetMembers().Any(m => m is IMethodSymbol { Parameters.IsEmpty: true, Name: "OnActivated" });
+            bool hasOnDeactivatedMethod = typeSymbol.GetMembers().Any(m => m is IMethodSymbol { Parameters.IsEmpty: true, Name: "OnDeactivated" });
 
             return new(
                 typeName,
                 hasExplicitConstructors,
                 isAbstract,
                 isObservableValidator,
-                isRequiresUnreferencedCodeAttributeAvailable);
+                isRequiresUnreferencedCodeAttributeAvailable,
+                hasOnActivatedMethod,
+                hasOnDeactivatedMethod);
         }
 
         // Check whether [RequiresUnreferencedCode] is available
@@ -119,8 +123,38 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
             }
         }
 
-        MemberDeclarationSyntax RemoveRequiresUnreferencedCodeAttributeIfNeeded(MemberDeclarationSyntax member)
+        MemberDeclarationSyntax FixupFilteredMemberDeclaration(MemberDeclarationSyntax member)
         {
+            // Make OnActivated partial if the type already has the method
+            if (info.HasOnActivatedMethod &&
+                member is MethodDeclarationSyntax { Identifier.ValueText: "OnActivated" } onActivatdMethod)
+            {
+                SyntaxNode attributeNode =
+                    member
+                    .DescendantNodes()
+                    .OfType<AttributeListSyntax>()
+                    .First(node => node.Attributes[0].Name is QualifiedNameSyntax { Right: IdentifierNameSyntax { Identifier.ValueText: "RequiresUnreferencedCode" } });
+
+                return
+                    onActivatdMethod
+                    .RemoveNode(attributeNode, SyntaxRemoveOptions.KeepExteriorTrivia)!
+                    .AddModifiers(Token(SyntaxKind.PartialKeyword))
+                    .WithBody(null)
+                    .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+            }
+
+            // Make OnDeactivated partial if the type already has the method
+            if (info.HasOnDeactivatedMethod &&
+                member is MethodDeclarationSyntax { Identifier.ValueText: "OnDeactivated" } onDeactivatedMethod)
+            {
+                return
+                    onDeactivatedMethod
+                    .AddModifiers(Token(SyntaxKind.PartialKeyword))
+                    .WithBody(null)
+                    .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+            }
+
+            // Remove [RequiresUnreferencedCode] if the attribute is not available
             if (!info.IsRequiresUnreferencedCodeAttributeAvailable &&
                 member is PropertyDeclarationSyntax { Identifier.ValueText: "IsActive" } or MethodDeclarationSyntax { Identifier.ValueText: "OnActivated" })
             {
@@ -143,7 +177,7 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
             {
                 if (member is not MethodDeclarationSyntax { Identifier.ValueText: "SetProperty" })
                 {
-                    builder.Add(RemoveRequiresUnreferencedCodeAttributeIfNeeded(member));
+                    builder.Add(FixupFilteredMemberDeclaration(member));
                 }
             }
 
@@ -153,7 +187,7 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
         // If the target type has at least one custom constructor, only generate methods
         foreach (MemberDeclarationSyntax member in memberDeclarations.Where(static member => member is not ConstructorDeclarationSyntax))
         {
-            builder.Add(RemoveRequiresUnreferencedCodeAttributeIfNeeded(member));
+            builder.Add(FixupFilteredMemberDeclaration(member));
         }
 
         return builder.ToImmutable();
