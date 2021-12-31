@@ -228,4 +228,36 @@ public partial class Test_ObservableRecipientAttribute
             OnDeactivatedResult = true;
         }
     }
+
+    [TestMethod]
+    public void Test_ObservableRecipientAttribute_SealedPersonWithCustomOnActivatedAndOnDeactivated()
+    {
+        SealedPersonWithCustomOnActivatedAndOnDeactivated model = new();
+
+        model.IsActive = true;
+
+        Assert.IsTrue(model.OnActivatedResult);
+
+        model.IsActive = false;
+
+        Assert.IsTrue(model.OnDeactivatedResult);
+    }
+
+    [ObservableRecipient]
+    public sealed partial class SealedPersonWithCustomOnActivatedAndOnDeactivated : ObservableObject
+    {
+        public bool OnActivatedResult { get; private set; }
+
+        public bool OnDeactivatedResult { get; private set; }
+
+        private partial void OnActivated()
+        {
+            OnActivatedResult = true;
+        }
+
+        private partial void OnDeactivated()
+        {
+            OnDeactivatedResult = true;
+        }
+    }
 }

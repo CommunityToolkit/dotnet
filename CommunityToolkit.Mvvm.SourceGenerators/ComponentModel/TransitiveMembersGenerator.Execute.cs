@@ -86,6 +86,13 @@ partial class TransitiveMembersGenerator<TInfo>
             // If the target class is sealed, make protected members private and remove the virtual modifier
             sealedMemberDeclarations = annotatedMemberDeclarations.Select(static member =>
             {
+                // Constructors become public for sealed types
+                if (member is ConstructorDeclarationSyntax)
+                {
+                    return member.ReplaceModifier(SyntaxKind.ProtectedKeyword, SyntaxKind.PublicKeyword);
+                }
+
+                // Other members become private
                 return
                     member
                     .ReplaceModifier(SyntaxKind.ProtectedKeyword, SyntaxKind.PrivateKeyword)
