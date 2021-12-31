@@ -9,10 +9,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.Messaging.Internals;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommunityToolkit.Mvvm.UnitTests.Internals;
+namespace CommunityToolkit.Mvvm.Internals.UnitTests;
 
 [TestClass]
 public class Test_ConditionalWeakTable2

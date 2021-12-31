@@ -4,4 +4,4 @@
 
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("CommunityToolkit.Mvvm.UnitTests")]
+[assembly: InternalsVisibleTo("CommunityToolkit.Mvvm.Internals.UnitTests")]
