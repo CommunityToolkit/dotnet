@@ -2,14 +2,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
 
@@ -30,11 +28,18 @@ public sealed class INotifyPropertyChangedGenerator : TransitiveMembersGenerator
     }
 
     /// <inheritdoc/>
-    protected override INotifyPropertyChangedInfo GetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData)
+    protected override IncrementalValuesProvider<(INamedTypeSymbol Symbol, INotifyPropertyChangedInfo Info)> GetInfo(
+        IncrementalGeneratorInitializationContext context,
+        IncrementalValuesProvider<(INamedTypeSymbol Symbol, AttributeData AttributeData)> source)
     {
-        bool includeAdditionalHelperMethods = attributeData.GetNamedArgument<bool>("IncludeAdditionalHelperMethods", true);
+        static INotifyPropertyChangedInfo GetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData)
+        {
+            bool includeAdditionalHelperMethods = attributeData.GetNamedArgument<bool>("IncludeAdditionalHelperMethods", true);
 
-        return new(includeAdditionalHelperMethods);
+            return new(includeAdditionalHelperMethods);
+        }
+
+        return source.Select(static (item, _) => (item.Symbol, GetInfo(item.Symbol, item.AttributeData)));
     }
 
     /// <inheritdoc/>

@@ -34,9 +34,12 @@
       </ItemGroup>
     </When>
 
+    <!-- Enable trimming support on .NET 6 -->
     <When Condition="'$(TargetFramework)' == 'net6.0'">
       <PropertyGroup>
         <DefineConstants>NETSTANDARD2_1_OR_GREATER</DefineConstants>
+        <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+        <IsTrimmable>true</IsTrimmable>
       </PropertyGroup>
     </When>
   </Choose>

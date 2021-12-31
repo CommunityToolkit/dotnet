@@ -25,6 +25,8 @@ public static class __ObservableValidatorHelper
     [Obsolete("This method is not intended to be called directly by user code")]
     public static void ValidateProperty(ObservableValidator instance, object? value, string propertyName)
     {
+#pragma warning disable IL2026
         instance.ValidateProperty(value, propertyName);
+#pragma warning restore IL2026
     }
 }

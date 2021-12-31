@@ -150,7 +150,7 @@ partial class ObservableValidatorValidateAllPropertiesGenerator
                         AttributeArgument(LiteralExpression(
                             SyntaxKind.StringLiteralExpression,
                             Literal("This type is not intended to be used directly by user code")))))))))
-                .NormalizeWhitespace(eol: "\n");
+                .NormalizeWhitespace();
         }
 
         /// <summary>
@@ -229,7 +229,7 @@ partial class ObservableValidatorValidateAllPropertiesGenerator
                                             IdentifierName("obj")))))))
                             .AddStatements(EnumerateValidationStatements(validationInfo).ToArray())),
                         ReturnStatement(IdentifierName("ValidateAllProperties")))))))
-                .NormalizeWhitespace(eol: "\n");
+                .NormalizeWhitespace();
         }
 
         /// <summary>

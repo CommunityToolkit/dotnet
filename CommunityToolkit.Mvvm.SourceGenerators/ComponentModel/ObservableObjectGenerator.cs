@@ -28,9 +28,11 @@ public sealed class ObservableObjectGenerator : TransitiveMembersGenerator<objec
     }
 
     /// <inheritdoc/>
-    protected override object? GetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData)
+    protected override IncrementalValuesProvider<(INamedTypeSymbol Symbol, object? Info)> GetInfo(
+        IncrementalGeneratorInitializationContext context,
+        IncrementalValuesProvider<(INamedTypeSymbol Symbol, AttributeData AttributeData)> source)
     {
-        return null;
+        return source.Select(static (item, _) => (item.Symbol, (object?)null));
     }
 
     /// <inheritdoc/>

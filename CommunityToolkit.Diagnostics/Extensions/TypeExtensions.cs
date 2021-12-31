@@ -128,19 +128,7 @@ public static class TypeExtensions
             // If the type is nested, recursively format the hierarchy as well
             if (type.IsNested)
             {
-                Type? openDeclaringType = type.DeclaringType!;
-                Type[]? rootGenericArguments = typeArguments.Slice(0, typeArguments.Length - genericTypeOffset).ToArray();
-
-                // If the declaring type is generic, we need to reconstruct the closed type
-                // manually, as the declaring type instance doesn't retain type information.
-                if (rootGenericArguments.Length > 0)
-                {
-                    Type? closedDeclaringType = openDeclaringType.GetGenericTypeDefinition().MakeGenericType(rootGenericArguments);
-
-                    return $"{FormatDisplayString(closedDeclaringType, genericTypeOffset, typeArguments)}.{displayName}";
-                }
-
-                return $"{FormatDisplayString(openDeclaringType, genericTypeOffset, typeArguments)}.{displayName}";
+                return $"{FormatDisplayString(type.DeclaringType!, genericTypeOffset, typeArguments)}.{displayName}";
             }
 
             return $"{type.Namespace}.{displayName}";
@@ -149,21 +137,21 @@ public static class TypeExtensions
         // Atomically get or build the display string for the current type.
         return DisplayNames.GetValue(type, t =>
         {
-                // By-ref types are displayed as T&
-                if (t.IsByRef)
+            // By-ref types are displayed as T&
+            if (t.IsByRef)
             {
                 t = t.GetElementType()!;
 
                 return $"{FormatDisplayString(t, 0, t.GetGenericArguments())}&";
             }
 
-                // Pointer types are displayed as T*
-                if (t.IsPointer)
+            // Pointer types are displayed as T*
+            if (t.IsPointer)
             {
                 int depth = 0;
 
-                    // Calculate the pointer indirection level
-                    while (t.IsPointer)
+                // Calculate the pointer indirection level
+                while (t.IsPointer)
                 {
                     depth++;
                     t = t.GetElementType()!;
@@ -172,8 +160,8 @@ public static class TypeExtensions
                 return $"{FormatDisplayString(t, 0, t.GetGenericArguments())}{new string('*', depth)}";
             }
 
-                // Standard path for concrete types
-                return FormatDisplayString(t, 0, t.GetGenericArguments());
+            // Standard path for concrete types
+            return FormatDisplayString(t, 0, t.GetGenericArguments());
         });
     }
 }

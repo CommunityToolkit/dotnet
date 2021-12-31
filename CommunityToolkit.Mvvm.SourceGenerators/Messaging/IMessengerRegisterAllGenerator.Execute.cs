@@ -108,7 +108,7 @@ partial class IMessengerRegisterAllGenerator
                         AttributeArgument(LiteralExpression(
                             SyntaxKind.StringLiteralExpression,
                             Literal("This type is not intended to be used directly by user code")))))))))
-                .NormalizeWhitespace(eol: "\n");
+                .NormalizeWhitespace();
         }
 
         /// <summary>
@@ -252,7 +252,7 @@ partial class IMessengerRegisterAllGenerator
                     Trivia(PragmaWarningDirectiveTrivia(Token(SyntaxKind.DisableKeyword), true)))).AddMembers(
                 ClassDeclaration("__IMessengerExtensions").AddModifiers(Token(SyntaxKind.PartialKeyword))
                 .AddMembers(defaultChannelMethodDeclaration, customChannelMethodDeclaration)))
-                .NormalizeWhitespace(eol: "\n");
+                .NormalizeWhitespace();
         }
 
         /// <summary>

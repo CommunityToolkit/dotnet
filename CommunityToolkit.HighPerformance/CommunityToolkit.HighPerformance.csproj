@@ -47,9 +47,12 @@
 
     <When Condition="'$(TargetFramework)' == 'net6.0'">
 
-      <!-- NETSTANDARD2_1_OR_GREATER: includes both .NET Standard 2.1, .NET Core 3.1 and .NET 6 -->
+      <!-- NETSTANDARD2_1_OR_GREATER: includes both .NET Standard 2.1, .NET Core 3.1 and .NET 6.
+           Additionally, also enable trimming support on .NET 6. -->
       <PropertyGroup>
         <DefineConstants>NETSTANDARD2_1_OR_GREATER</DefineConstants>
+        <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+        <IsTrimmable>true</IsTrimmable>
       </PropertyGroup>
     </When>
 

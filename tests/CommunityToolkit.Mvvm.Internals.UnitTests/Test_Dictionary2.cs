@@ -8,7 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommunityToolkit.Mvvm.UnitTests.Internals;
+namespace CommunityToolkit.Mvvm.Internals.UnitTests;
 
 [TestClass]
 public class Test_Dictionary2
