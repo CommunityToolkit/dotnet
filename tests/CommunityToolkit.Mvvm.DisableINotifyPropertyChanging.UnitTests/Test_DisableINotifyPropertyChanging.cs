@@ -7,7 +7,7 @@ using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommunityToolkit.Mvvm.UnitTests.Configuration;
+namespace CommunityToolkit.Mvvm.DisableINotifyPropertyChanging.UnitTests;
 
 [TestClass]
 public class Test_DisableINotifyPropertyChanging

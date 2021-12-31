@@ -4,6 +4,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace CommunityToolkit.Mvvm.ComponentModel;
 
@@ -26,6 +27,7 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// And with this, the same APIs from <see cref="ObservableObject"/> will be available on this type as well.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+[Conditional("MVVMTOOLKIT_KEEP_SOURCE_GENERATOR_ATTRIBUTES")]
 public sealed class ObservableObjectAttribute : Attribute
 {
 }
