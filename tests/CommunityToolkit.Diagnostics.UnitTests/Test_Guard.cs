@@ -15,6 +15,14 @@ public partial class Test_Guard
     {
         Guard.IsNull<object>(null, nameof(Test_Guard_IsNull_Ok));
         Guard.IsNull<int>(null, nameof(Test_Guard_IsNull_Ok));
+
+        static void Test<T>(T? obj)
+        {
+            Guard.IsNull(obj, nameof(Test_Guard_IsNull_Ok));
+        }
+
+        Test<string>(null);
+        Test<int?>(null);
     }
 
     [TestMethod]
@@ -28,14 +36,47 @@ public partial class Test_Guard
     [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsNull_StructFail()
     {
-        Guard.IsNull<int>(7, nameof(Test_Guard_IsNull_StructFail));
+        Guard.IsNull(7, nameof(Test_Guard_IsNull_StructFail));
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void Test_Guard_IsNull_GenericClassFail()
+    {
+        static void Test<T>(T? obj)
+        {
+            Guard.IsNull(obj, nameof(Test_Guard_IsNull_GenericClassFail));
+        }
+
+        Test("Hi!");
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void Test_Guard_IsNull_GenericStructFail()
+    {
+        static void Test<T>(T? obj)
+        {
+            Guard.IsNull(obj, nameof(Test_Guard_IsNull_GenericStructFail));
+        }
+
+        Test(42);
     }
 
     [TestMethod]
     public void Test_Guard_IsNotNull_Ok()
     {
         Guard.IsNotNull(new object(), nameof(Test_Guard_IsNotNull_Ok));
-        Guard.IsNotNull<int>(7, nameof(Test_Guard_IsNotNull_Ok));
+        Guard.IsNotNull(7, nameof(Test_Guard_IsNotNull_Ok));
+
+        static void Test<T>(T? obj)
+        {
+            Guard.IsNotNull(obj, nameof(Test_Guard_IsNotNull_Ok));
+        }
+
+        Test("Hi!");
+        Test(42);
+        Test<int?>(42);
     }
 
     [TestMethod]
@@ -50,6 +91,30 @@ public partial class Test_Guard
     public void Test_Guard_IsNotNull_StructFail()
     {
         Guard.IsNotNull<int>(null, nameof(Test_Guard_IsNotNull_StructFail));
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentNullException))]
+    public void Test_Guard_IsNotNull_GenericClassFail()
+    {
+        static void Test<T>(T? obj)
+        {
+            Guard.IsNotNull(obj, nameof(Test_Guard_IsNotNull_GenericClassFail));
+        }
+
+        Test<string>(null);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentNullException))]
+    public void Test_Guard_IsNotNull_GenericStructFail()
+    {
+        static void Test<T>(T? obj)
+        {
+            Guard.IsNotNull(obj, nameof(Test_Guard_IsNotNull_GenericClassFail));
+        }
+
+        Test<int?>(null);
     }
 
     [TestMethod]
