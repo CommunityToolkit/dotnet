@@ -474,7 +474,7 @@ public readonly ref partial struct ReadOnlySpan2D<T>
 
         OverflowHelper.EnsureIsInNativeIntRange(height, width, pitch);
 
-        return new ReadOnlySpan2D<T>(in value, height, width, pitch);
+        return new(in value, height, width, pitch);
     }
 #endif
 
@@ -829,11 +829,11 @@ public readonly ref partial struct ReadOnlySpan2D<T>
 #if NETSTANDARD2_1_OR_GREATER
         ref T r0 = ref this.span.DangerousGetReferenceAt(shift);
 
-        return new ReadOnlySpan2D<T>(in r0, height, width, pitch);
+        return new(in r0, height, width, pitch);
 #else
         IntPtr offset = this.offset + (shift * (nint)(uint)Unsafe.SizeOf<T>());
 
-        return new ReadOnlySpan2D<T>(this.instance, offset, height, width, pitch);
+        return new(this.instance, offset, height, width, pitch);
 #endif
     }
 
@@ -1015,9 +1015,9 @@ public readonly ref partial struct ReadOnlySpan2D<T>
     public static implicit operator ReadOnlySpan2D<T>(Span2D<T> span)
     {
 #if NETSTANDARD2_1_OR_GREATER
-        return new ReadOnlySpan2D<T>(in span.DangerousGetReference(), span.Height, span.Width, span.Stride - span.Width);
+        return new(in span.DangerousGetReference(), span.Height, span.Width, span.Stride - span.Width);
 #else
-        return new ReadOnlySpan2D<T>(span.Instance!, span.Offset, span.Height, span.Width, span.Stride - span.Width);
+        return new(span.Instance!, span.Offset, span.Height, span.Width, span.Stride - span.Width);
 #endif
     }
 }

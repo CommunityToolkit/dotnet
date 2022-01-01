@@ -81,7 +81,7 @@ public readonly ref struct RefEnumerable<T>
 
         OverflowHelper.EnsureIsInNativeIntRange(length, 1, step);
 
-        return new RefEnumerable<T>(ref value, length, step);
+        return new(ref value, length, step);
     }
 #else
     /// <summary>
@@ -165,9 +165,9 @@ public readonly ref struct RefEnumerable<T>
     public Enumerator GetEnumerator()
     {
 #if NETSTANDARD2_1_OR_GREATER
-        return new Enumerator(this.Span, this.Step);
+        return new(this.Span, this.Step);
 #else
-        return new Enumerator(this.Instance, this.Offset, this.Length, this.Step);
+        return new(this.Instance, this.Offset, this.Length, this.Step);
 #endif
     }
 

@@ -590,7 +590,7 @@ public class Test_MemoryExtensions
             ref T r0 = ref this.array[elementIndex];
             void* p = Unsafe.AsPointer(ref r0);
 
-            return new MemoryHandle(p, handle);
+            return new(p, handle);
         }
 
         public override void Unpin()

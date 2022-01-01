@@ -98,7 +98,7 @@ public readonly ref struct ReadOnlyRefEnumerable<T>
 
         OverflowHelper.EnsureIsInNativeIntRange(length, 1, step);
 
-        return new ReadOnlyRefEnumerable<T>(in value, length, step);
+        return new(in value, length, step);
     }
 #else
     /// <summary>
@@ -182,9 +182,9 @@ public readonly ref struct ReadOnlyRefEnumerable<T>
     public Enumerator GetEnumerator()
     {
 #if NETSTANDARD2_1_OR_GREATER
-        return new Enumerator(this.span, this.step);
+        return new(this.span, this.step);
 #else
-        return new Enumerator(this.instance, this.offset, this.length, this.step);
+        return new(this.instance, this.offset, this.length, this.step);
 #endif
     }
 
@@ -342,9 +342,9 @@ public readonly ref struct ReadOnlyRefEnumerable<T>
     public static implicit operator ReadOnlyRefEnumerable<T>(RefEnumerable<T> enumerable)
     {
 #if NETSTANDARD2_1_OR_GREATER
-        return new ReadOnlyRefEnumerable<T>(enumerable.Span, enumerable.Step);
+        return new(enumerable.Span, enumerable.Step);
 #else
-        return new ReadOnlyRefEnumerable<T>(enumerable.Instance, enumerable.Offset, enumerable.Length, enumerable.Step);
+        return new(enumerable.Instance, enumerable.Offset, enumerable.Length, enumerable.Step);
 #endif
     }
 

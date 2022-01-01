@@ -325,7 +325,7 @@ public sealed class ArrayPoolBufferWriter<T> : IBuffer<T>, IMemoryOwner<T>
         if (typeof(T) == typeof(char) &&
             this.array is char[] chars)
         {
-            return new string(chars, 0, this.index);
+            return new(chars, 0, this.index);
         }
 
         // Same representation used in Span<T>

@@ -36,11 +36,11 @@ partial struct ReadOnlySpan2D<T>
         ref T r1 = ref Unsafe.Add(ref r0, startIndex);
 
 #if NETSTANDARD2_1_OR_GREATER
-        return new ReadOnlyRefEnumerable<T>(in r1, Width, 1);
+        return new(in r1, Width, 1);
 #else
         IntPtr offset = RuntimeHelpers.GetObjectDataOrReferenceByteOffset(this.instance, ref r1);
 
-        return new ReadOnlyRefEnumerable<T>(this.instance!, offset, this.width, 1);
+        return new(this.instance!, offset, this.width, 1);
 #endif
     }
 
@@ -62,11 +62,11 @@ partial struct ReadOnlySpan2D<T>
         ref T r1 = ref Unsafe.Add(ref r0, (nint)(uint)column);
 
 #if NETSTANDARD2_1_OR_GREATER
-        return new ReadOnlyRefEnumerable<T>(in r1, Height, this.stride);
+        return new(in r1, Height, this.stride);
 #else
         IntPtr offset = RuntimeHelpers.GetObjectDataOrReferenceByteOffset(this.instance, ref r1);
 
-        return new ReadOnlyRefEnumerable<T>(this.instance!, offset, Height, this.stride);
+        return new(this.instance!, offset, Height, this.stride);
 #endif
     }
 

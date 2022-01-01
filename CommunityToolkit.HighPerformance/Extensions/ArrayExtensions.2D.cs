@@ -136,12 +136,12 @@ partial class ArrayExtensions
 #if NETSTANDARD2_1_OR_GREATER
         ref T r0 = ref array.DangerousGetReferenceAt(row, 0);
 
-        return new RefEnumerable<T>(ref r0, width, 1);
+        return new(ref r0, width, 1);
 #else
         ref T r0 = ref array.DangerousGetReferenceAt(row, 0);
         IntPtr offset = ObjectMarshal.DangerousGetObjectDataByteOffset(array, ref r0);
 
-        return new RefEnumerable<T>(array, offset, width, 1);
+        return new(array, offset, width, 1);
 #endif
     }
 
@@ -189,12 +189,12 @@ partial class ArrayExtensions
 #if NETSTANDARD2_1_OR_GREATER
         ref T r0 = ref array.DangerousGetReferenceAt(0, column);
 
-        return new RefEnumerable<T>(ref r0, height, width);
+        return new(ref r0, height, width);
 #else
         ref T r0 = ref array.DangerousGetReferenceAt(0, column);
         IntPtr offset = ObjectMarshal.DangerousGetObjectDataByteOffset(array, ref r0);
 
-        return new RefEnumerable<T>(array, offset, height, width);
+        return new(array, offset, height, width);
 #endif
     }
 

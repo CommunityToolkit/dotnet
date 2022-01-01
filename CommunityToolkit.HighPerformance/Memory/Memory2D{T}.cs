@@ -545,7 +545,7 @@ public readonly struct Memory2D<T> : IEquatable<Memory2D<T>>
 
         IntPtr offset = ObjectMarshal.DangerousGetObjectDataByteOffset(instance, ref value);
 
-        return new Memory2D<T>(instance, offset, height, width, pitch);
+        return new(instance, offset, height, width, pitch);
     }
 
     /// <summary>
@@ -605,16 +605,16 @@ public readonly struct Memory2D<T> : IEquatable<Memory2D<T>>
                     ref T r0 = ref memoryManager.GetSpan().DangerousGetReference();
                     ref T r1 = ref Unsafe.Add(ref r0, this.offset);
 
-                    return new Span2D<T>(ref r1, this.height, this.width, this.pitch);
+                    return new(ref r1, this.height, this.width, this.pitch);
                 }
                 else
                 {
                     ref T r0 = ref ObjectMarshal.DangerousGetObjectDataReferenceAt<T>(this.instance, this.offset);
 
-                    return new Span2D<T>(ref r0, this.height, this.width, this.pitch);
+                    return new(ref r0, this.height, this.width, this.pitch);
                 }
 #else
-                return new Span2D<T>(this.instance, this.offset, this.height, this.width, this.pitch);
+                return new(this.instance, this.offset, this.height, this.width, this.pitch);
 #endif
             }
 
@@ -684,7 +684,7 @@ public readonly struct Memory2D<T> : IEquatable<Memory2D<T>>
 
         IntPtr offset = this.offset + (shift * Unsafe.SizeOf<T>());
 
-        return new Memory2D<T>(this.instance!, offset, height, width, pitch);
+        return new(this.instance!, offset, height, width, pitch);
     }
 
     /// <summary>
@@ -743,7 +743,7 @@ public readonly struct Memory2D<T> : IEquatable<Memory2D<T>>
 
             void* pointer = Unsafe.AsPointer(ref ObjectMarshal.DangerousGetObjectDataReferenceAt<T>(this.instance, this.offset));
 
-            return new MemoryHandle(pointer, handle);
+            return new(pointer, handle);
         }
 
         return default;

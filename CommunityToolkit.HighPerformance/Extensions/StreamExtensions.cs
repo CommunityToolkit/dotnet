@@ -31,13 +31,13 @@ public static class StreamExtensions
     {
         if (cancellationToken.IsCancellationRequested)
         {
-            return new ValueTask<int>(Task.FromCanceled<int>(cancellationToken));
+            return new(Task.FromCanceled<int>(cancellationToken));
         }
 
         // If the memory wraps an array, extract it and use it directly
         if (MemoryMarshal.TryGetArray(buffer, out ArraySegment<byte> segment))
         {
-            return new ValueTask<int>(stream.ReadAsync(segment.Array!, segment.Offset, segment.Count, cancellationToken));
+            return new(stream.ReadAsync(segment.Array!, segment.Offset, segment.Count, cancellationToken));
         }
 
         // Local function used as the fallback path. This happens when the input memory
@@ -68,7 +68,7 @@ public static class StreamExtensions
             }
         }
 
-        return new ValueTask<int>(ReadAsyncFallback(stream, buffer, cancellationToken));
+        return new(ReadAsyncFallback(stream, buffer, cancellationToken));
     }
 
     /// <summary>
@@ -82,12 +82,12 @@ public static class StreamExtensions
     {
         if (cancellationToken.IsCancellationRequested)
         {
-            return new ValueTask(Task.FromCanceled(cancellationToken));
+            return new(Task.FromCanceled(cancellationToken));
         }
 
         if (MemoryMarshal.TryGetArray(buffer, out ArraySegment<byte> segment))
         {
-            return new ValueTask(stream.WriteAsync(segment.Array!, segment.Offset, segment.Count, cancellationToken));
+            return new(stream.WriteAsync(segment.Array!, segment.Offset, segment.Count, cancellationToken));
         }
 
         // Local function, same idea as above
@@ -107,7 +107,7 @@ public static class StreamExtensions
             }
         }
 
-        return new ValueTask(WriteAsyncFallback(stream, buffer, cancellationToken));
+        return new(WriteAsyncFallback(stream, buffer, cancellationToken));
     }
 
     /// <summary>

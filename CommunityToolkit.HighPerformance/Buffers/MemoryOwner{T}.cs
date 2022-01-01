@@ -157,7 +157,7 @@ public sealed class MemoryOwner<T> : IMemoryOwner<T>
                 ThrowObjectDisposedException();
             }
 
-            return new Memory<T>(array!, this.start, this.length);
+            return new(array!, this.start, this.length);
         }
     }
 
@@ -190,7 +190,7 @@ public sealed class MemoryOwner<T> : IMemoryOwner<T>
             // especially if T is a value type, in which case the covariance check is JIT removed.
             return MemoryMarshal.CreateSpan(ref r0, this.length);
 #else
-            return new Span<T>(array!, this.start, this.length);
+            return new(array!, this.start, this.length);
 #endif
         }
     }
@@ -239,7 +239,7 @@ public sealed class MemoryOwner<T> : IMemoryOwner<T>
             ThrowObjectDisposedException();
         }
 
-        return new ArraySegment<T>(array!, this.start, this.length);
+        return new(array!, this.start, this.length);
     }
 
     /// <summary>
@@ -282,7 +282,7 @@ public sealed class MemoryOwner<T> : IMemoryOwner<T>
         // suppress the finalizer to reduce the overhead on the garbage collector.
         GC.SuppressFinalize(this);
 
-        return new MemoryOwner<T>(start, length, this.pool, array!);
+        return new(start, length, this.pool, array!);
     }
 
     /// <inheritdoc/>
@@ -312,7 +312,7 @@ public sealed class MemoryOwner<T> : IMemoryOwner<T>
         if (typeof(T) == typeof(char) &&
             this.array is char[] chars)
         {
-            return new string(chars, this.start, this.length);
+            return new(chars, this.start, this.length);
         }
 
         // Same representation used in Span<T>

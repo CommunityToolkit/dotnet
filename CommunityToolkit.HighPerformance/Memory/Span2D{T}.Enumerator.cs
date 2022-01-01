@@ -36,11 +36,11 @@ partial struct Span2D<T>
         ref T r1 = ref Unsafe.Add(ref r0, startIndex);
 
 #if NETSTANDARD2_1_OR_GREATER
-        return new RefEnumerable<T>(ref r1, Width, 1);
+        return new(ref r1, Width, 1);
 #else
         IntPtr offset = RuntimeHelpers.GetObjectDataOrReferenceByteOffset(this.Instance, ref r1);
 
-        return new RefEnumerable<T>(this.Instance, offset, this.width, 1);
+        return new(this.Instance, offset, this.width, 1);
 #endif
     }
 
@@ -62,11 +62,11 @@ partial struct Span2D<T>
         ref T r1 = ref Unsafe.Add(ref r0, (nint)(uint)column);
 
 #if NETSTANDARD2_1_OR_GREATER
-        return new RefEnumerable<T>(ref r1, Height, this.Stride);
+        return new(ref r1, Height, this.Stride);
 #else
         IntPtr offset = RuntimeHelpers.GetObjectDataOrReferenceByteOffset(this.Instance, ref r1);
 
-        return new RefEnumerable<T>(this.Instance, offset, Height, this.Stride);
+        return new(this.Instance, offset, Height, this.Stride);
 #endif
     }
 

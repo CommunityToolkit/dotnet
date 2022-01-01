@@ -132,7 +132,7 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
         // a lock for the entire lifetime of the enumerator, and just release it once once we're done.
         Monitor.Enter(this.lockObject);
 
-        return new Enumerator(this);
+        return new(this);
     }
 
     /// <summary>

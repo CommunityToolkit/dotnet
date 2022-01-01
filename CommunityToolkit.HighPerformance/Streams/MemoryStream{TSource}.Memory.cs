@@ -31,22 +31,22 @@ partial class MemoryStream<TSource>
     {
         if (cancellationToken.IsCancellationRequested)
         {
-            return new ValueTask<int>(Task.FromCanceled<int>(cancellationToken));
+            return new(Task.FromCanceled<int>(cancellationToken));
         }
 
         try
         {
             int result = Read(buffer.Span);
 
-            return new ValueTask<int>(result);
+            return new(result);
         }
         catch (OperationCanceledException e)
         {
-            return new ValueTask<int>(Task.FromCanceled<int>(e.CancellationToken));
+            return new(Task.FromCanceled<int>(e.CancellationToken));
         }
         catch (Exception e)
         {
-            return new ValueTask<int>(Task.FromException<int>(e));
+            return new(Task.FromException<int>(e));
         }
     }
 
@@ -55,7 +55,7 @@ partial class MemoryStream<TSource>
     {
         if (cancellationToken.IsCancellationRequested)
         {
-            return new ValueTask(Task.FromCanceled(cancellationToken));
+            return new(Task.FromCanceled(cancellationToken));
         }
 
         try
@@ -66,11 +66,11 @@ partial class MemoryStream<TSource>
         }
         catch (OperationCanceledException e)
         {
-            return new ValueTask(Task.FromCanceled(e.CancellationToken));
+            return new(Task.FromCanceled(e.CancellationToken));
         }
         catch (Exception e)
         {
-            return new ValueTask(Task.FromException(e));
+            return new(Task.FromException(e));
         }
     }
 

@@ -31,7 +31,7 @@ partial class IBufferWriterStream<TWriter>
     {
         if (cancellationToken.IsCancellationRequested)
         {
-            return new ValueTask(Task.FromCanceled(cancellationToken));
+            return new(Task.FromCanceled(cancellationToken));
         }
 
         try
@@ -42,11 +42,11 @@ partial class IBufferWriterStream<TWriter>
         }
         catch (OperationCanceledException e)
         {
-            return new ValueTask(Task.FromCanceled(e.CancellationToken));
+            return new(Task.FromCanceled(e.CancellationToken));
         }
         catch (Exception e)
         {
-            return new ValueTask(Task.FromException(e));
+            return new(Task.FromException(e));
         }
     }
 

@@ -146,7 +146,7 @@ public readonly ref struct SpanOwner<T>
 
             return MemoryMarshal.CreateSpan(ref r0, this.length);
 #else
-            return new Span<T>(this.array, 0, this.length);
+            return new(this.array, 0, this.length);
 #endif
         }
     }
@@ -192,7 +192,7 @@ public readonly ref struct SpanOwner<T>
         if (typeof(T) == typeof(char) &&
             this.array is char[] chars)
         {
-            return new string(chars, 0, this.length);
+            return new(chars, 0, this.length);
         }
 
         // Same representation used in Span<T>

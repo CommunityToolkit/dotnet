@@ -86,7 +86,7 @@ internal sealed class ArrayMemoryManager<TFrom, TTo> : MemoryManager<TTo>, IMemo
         ref byte r2 = ref Unsafe.Add(ref r1, byteOffset);
         void* pi = Unsafe.AsPointer(ref r2);
 
-        return new MemoryHandle(pi, handle);
+        return new(pi, handle);
     }
 
     /// <inheritdoc/>

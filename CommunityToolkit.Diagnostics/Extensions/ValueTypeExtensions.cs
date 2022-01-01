@@ -63,6 +63,6 @@ public static class ValueTypeExtensions
             p[j] = (char)Unsafe.Add(ref rh, high);
         }
 
-        return new string(p, 0, bufferSize);
+        return new(p, 0, bufferSize);
     }
 }

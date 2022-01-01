@@ -578,7 +578,7 @@ public class Test_ObservableValidator
                 return ValidationResult.Success!;
             }
 
-            return new ValidationResult("The current value is smaller than the other one");
+            return new("The current value is smaller than the other one");
         }
     }
 
@@ -611,7 +611,7 @@ public class Test_ObservableValidator
                 return ValidationResult.Success!;
             }
 
-            return new ValidationResult("Missing the magic number");
+            return new("Missing the magic number");
         }
     }
 
@@ -660,7 +660,7 @@ public class Test_ObservableValidator
                 return ValidationResult.Success!;
             }
 
-            return new ValidationResult("The name contains invalid characters");
+            return new("The name contains invalid characters");
         }
     }
 

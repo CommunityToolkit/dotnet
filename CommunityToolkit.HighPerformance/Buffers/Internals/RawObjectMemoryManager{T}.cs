@@ -72,7 +72,7 @@ internal sealed class RawObjectMemoryManager<T> : MemoryManager<T>
         ref T r1 = ref Unsafe.Add(ref r0, (nint)(uint)elementIndex);
         void* p = Unsafe.AsPointer(ref r1);
 
-        return new MemoryHandle(p, handle);
+        return new(p, handle);
     }
 
     /// <inheritdoc/>

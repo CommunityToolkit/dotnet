@@ -64,7 +64,7 @@ internal sealed unsafe class UnmanagedSpanOwner<T> : MemoryManager<T>
     /// <inheritdoc/>
     public override Span<T> GetSpan()
     {
-        return new Span<T>((void*)this.ptr, this.length);
+        return new((void*)this.ptr, this.length);
     }
 
     /// <inheritdoc/>
