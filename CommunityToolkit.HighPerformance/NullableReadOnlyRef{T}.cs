@@ -7,6 +7,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 
 namespace CommunityToolkit.HighPerformance;
 
@@ -14,6 +15,9 @@ namespace CommunityToolkit.HighPerformance;
 /// A <see langword="struct"/> that can store an optional readonly reference to a value of a specified type.
 /// </summary>
 /// <typeparam name="T">The type of value to reference.</typeparam>
+[RequiresPreviewFeatures(
+    "The NullableReadOnlyRef<T> type has no compiler support to ensure the lifetime of referenced values is respected, and as such using it incorrectly may lead to GC holes.",
+    Url = "https://github.com/dotnet/runtime/issues/46104")]
 public readonly ref struct NullableReadOnlyRef<T>
 {
     /// <summary>

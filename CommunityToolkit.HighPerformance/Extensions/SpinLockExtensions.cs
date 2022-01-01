@@ -4,6 +4,7 @@
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Runtime.Versioning;
 using System.Threading;
 
 namespace CommunityToolkit.HighPerformance;
@@ -94,6 +95,9 @@ public static class SpinLockExtensions
     /// <param name="spinLock">The target <see cref="SpinLock"/> to use</param>
     /// <returns>A wrapper type that will release <paramref name="spinLock"/> when its <see cref="System.IDisposable.Dispose"/> method is called.</returns>
     /// <remarks>The returned <see cref="Lock"/> value shouldn't be used directly: use this extension in a <see langword="using"/> block or statement.</remarks>
+    [RequiresPreviewFeatures(
+        "The Lock type has no compiler support to ensure the lifetime of referenced values is respected, and as such using it incorrectly may lead to GC holes.",
+        Url = "https://github.com/dotnet/runtime/issues/46104")]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Lock Enter(ref this SpinLock spinLock)
     {
@@ -131,6 +135,9 @@ public static class SpinLockExtensions
     /// A <see langword="struct"/> that is used to enter and hold a <see cref="SpinLock"/> through a <see langword="using"/> block or statement.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
+    [RequiresPreviewFeatures(
+        "The Lock type has no compiler support to ensure the lifetime of referenced values is respected, and as such using it incorrectly may lead to GC holes.",
+        Url = "https://github.com/dotnet/runtime/issues/46104")]
     public readonly ref struct Lock
     {
         /// <summary>
