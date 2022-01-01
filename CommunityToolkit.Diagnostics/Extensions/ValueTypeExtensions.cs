@@ -41,7 +41,6 @@ public static class ValueTypeExtensions
     /// Console.WriteLine((-1).ToHexString()); // "0xFFFFFFFF"
     /// </code>
     /// </remarks>
-    [SkipLocalsInit]
     public static unsafe string ToHexString<T>(this T value)
         where T : unmanaged
     {

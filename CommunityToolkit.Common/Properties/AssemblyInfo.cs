@@ -6,5 +6,3 @@ using System.Runtime.CompilerServices;
 
 // See notes in CommunityToolkit.HighPerformance for more info
 [module: SkipLocalsInit]
-
-[assembly: InternalsVisibleTo("CommunityToolkit.Mvvm.Internals.UnitTests")]
