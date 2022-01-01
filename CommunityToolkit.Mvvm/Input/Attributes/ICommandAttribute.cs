@@ -69,7 +69,7 @@ public sealed class ICommandAttribute : Attribute
     /// generated command can be executed at any given time. The referenced member needs to return
     /// a <see cref="bool"/> value, and has to have a signature compatible with the target command.
     /// </summary>
-    public string? CanExecute { get; set; }
+    public string? CanExecute { get; init; }
 
     /// <summary>
     /// Gets or sets a value indicating whether or not to allow concurrent executions for an asynchronous command.
@@ -78,5 +78,5 @@ public sealed class ICommandAttribute : Attribute
     /// when an execution is invoked while a previous one is still running. It is the same as creating an instance of
     /// these command types with a constructor such as <see cref="AsyncRelayCommand(Func{System.Threading.Tasks.Task}, bool)"/>.
     /// </summary>
-    public bool AllowConcurrentExecutions { get; set; } = true;
+    public bool AllowConcurrentExecutions { get; init; } = true;
 }

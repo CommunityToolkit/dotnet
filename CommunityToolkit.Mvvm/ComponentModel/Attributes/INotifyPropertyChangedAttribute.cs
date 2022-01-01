@@ -35,5 +35,5 @@ public sealed class INotifyPropertyChangedAttribute : Attribute
     /// the two <see cref="ObservableObject.OnPropertyChanged(PropertyChangedEventArgs)"/> overloads will be generated.
     /// The default value is <see langword="true"/>.
     /// </summary>
-    public bool IncludeAdditionalHelperMethods { get; set; } = true;
+    public bool IncludeAdditionalHelperMethods { get; init; } = true;
 }
