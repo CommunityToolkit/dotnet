@@ -6,7 +6,6 @@
 // more info in ThirdPartyNotices.txt in the root of the project.
 
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using Microsoft.CodeAnalysis;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators.Extensions;
