@@ -33,7 +33,7 @@
         <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
         <PackageReference Include="System.Memory" Version="4.5.4" />
         <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
-        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
+        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
       </ItemGroup>
     </When>
 
@@ -41,7 +41,7 @@
 
       <!-- .NET Standard 2.1 doesn't have the Unsafe type -->
       <ItemGroup>
-        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
+        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
       </ItemGroup>
     </When>
 
@@ -63,7 +63,7 @@
       
       <!-- .NET Core 3.1 has the Unsafe type, but the version it ships with lacks Unsafe.IsNullRef<T> -->
       <ItemGroup>
-        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
+        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
       </ItemGroup>
     </When>
   </Choose>
