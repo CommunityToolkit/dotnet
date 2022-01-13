@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
@@ -38,7 +39,7 @@ public sealed class NullabilityAttributesGenerator : ISourceGenerator
         // this works fine both in .NET (Core) and .NET Standard implementations, we also need to check
         // that the target types are declared as public (we assume that in this case those types are from the BCL).
         // This avoids issues on .NET Standard with Roslyn also seeing internal types from referenced assemblies.
-        if (context.Compilation.GetTypeByMetadataName(typeFullName) is { DeclaredAccessibility: Accessibility.Public })
+        if (context.Compilation.HasAccessibleTypeWithMetadataName(typeFullName))
         {
             return;
         }
