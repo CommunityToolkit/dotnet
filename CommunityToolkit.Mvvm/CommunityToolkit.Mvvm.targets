@@ -9,49 +9,48 @@
 
   <!-- Remove the analyzer if using Roslyn 3.x (incremental generators require Roslyn 4.x) -->
   <Target Name="_MVVMToolkitRemoveAnalyzersForRoslyn3"
+          Condition="'$(CSharpCoreTargetsPath)' != ''"
           AfterTargets="ResolvePackageDependenciesForBuild;ResolveNuGetPackageAssets"
           DependsOnTargets="_MVVMToolkitGatherAnalyzers">
 
-    <Choose>
-      <When Condition="'$(CSharpCoreTargetsPath)' != ''">
+    <!-- Use the CSharpCoreTargetsPath property to find the version of the compiler we are using. This is the same mechanism
+         MSBuild uses to find the compiler. We could check the assembly version for any compiler assembly (since they all have
+         the same version) but Microsoft.Build.Tasks.CodeAnalysis.dll is where MSBuild loads the compiler tasks from so if
+         someone is getting creative with msbuild tasks/targets this is the "most correct" assembly to check. -->
+    <GetAssemblyIdentity AssemblyFiles="$([System.IO.Path]::Combine(`$([System.IO.Path]::GetDirectoryName($(CSharpCoreTargetsPath)))`,`Microsoft.Build.Tasks.CodeAnalysis.dll`))">
+      <Output TaskParameter="Assemblies" ItemName="CurrentCompilerAssemblyIdentity"/>
+    </GetAssemblyIdentity>
 
-        <!-- Use the CSharpCoreTargetsPath property to find the version of the compiler we are using. This is the same mechanism
-             MSBuild uses to find the compiler. We could check the assembly version for any compiler assembly (since they all have
-             the same version) but Microsoft.Build.Tasks.CodeAnalysis.dll is where MSBuild loads the compiler tasks from so if
-             someone is getting creative with msbuild tasks/targets this is the "most correct" assembly to check. -->
-        <GetAssemblyIdentity AssemblyFiles="$([System.IO.Path]::Combine(`$([System.IO.Path]::GetDirectoryName($(CSharpCoreTargetsPath)))`,`Microsoft.Build.Tasks.CodeAnalysis.dll`))">
-          <Output TaskParameter="Assemblies" ItemName="CurrentCompilerAssemblyIdentity"/>
-        </GetAssemblyIdentity>
+    <PropertyGroup>
 
-        <PropertyGroup>
+      <!-- Transform the resulting item from GetAssemblyIdentity into a property representing its assembly version -->
+      <CurrentCompilerVersion>@(CurrentCompilerAssemblyIdentity->'%(Version)')</CurrentCompilerVersion>
 
-          <!-- Transform the resulting item from GetAssemblyIdentity into a property representing its assembly version -->
-          <CurrentCompilerVersion>@(CurrentCompilerAssemblyIdentity->'%(Version)')</CurrentCompilerVersion>
+      <!-- The CurrentCompilerVersionIsNotNewEnough property can now be defined based on the Roslyn assembly version -->
+      <CurrentCompilerVersionIsNotNewEnough Condition="$([MSBuild]::VersionLessThan($(CurrentCompilerVersion), 4.0))">true</CurrentCompilerVersionIsNotNewEnough>
+    </PropertyGroup>
 
-          <!-- The CurrentCompilerVersionIsNotNewEnough property can now be defined based on the Roslyn assembly version -->
-          <CurrentCompilerVersionIsNotNewEnough Condition="$([MSBuild]::VersionLessThan($(CurrentCompilerVersion), 4.0))">true</CurrentCompilerVersionIsNotNewEnough>
-          <CurrentCompilerVersionIsNotNewEnough Condition="'$(CurrentCompilerVersionIsNotNewEnough)' == ''">false</CurrentCompilerVersionIsNotNewEnough>
-        </PropertyGroup>
+    <!-- If the Roslyn version is < 4.0, disable the source generators -->
+    <ItemGroup Condition ="'$(CurrentCompilerVersionIsNotNewEnough)' == 'true'">
+      <Analyzer Remove="@(_MVVMToolkitAnalyzer)"/>
+    </ItemGroup>
 
-        <!-- If the Roslyn version is < 4.0, disable the source generators -->
-        <ItemGroup Condition ="'$(CurrentCompilerVersionIsNotNewEnough)' == 'true'">
-          <Analyzer Remove="@(_MVVMToolkitAnalyzer)"/>
-        </ItemGroup>
+    <!-- If the source generators are disabled, also emit a warning. This would've been produced by MSBuild itself as well, but
+         emitting this manually lets us customize the message to inform developers as to why exactly the generators have been
+         disabled, and that the rest of the MVVM Toolkit will still keep working as intended, just without additional features. -->
+    <Warning Condition ="'$(CurrentCompilerVersionIsNotNewEnough)' == 'true'" Text="The MVVM Toolkit source generators have been disabled on the current configuration, as they need Roslyn 4.x in order to work. The MVVM Toolkit will work just fine, but features relying on the source generators will not be available."/>  
+  </Target>
+  
+  <!-- Remove the analyzer if Roslyn is missing -->
+  <Target Name="_MVVMToolkitRemoveAnalyzersForRosynNotFound"
+          Condition="'$(CSharpCoreTargetsPath)' == ''"
+          AfterTargets="ResolvePackageDependenciesForBuild;ResolveNuGetPackageAssets"
+          DependsOnTargets="_MVVMToolkitGatherAnalyzers">
 
-        <!-- If the source generators are disabled, also emit a warning. This would've been produced by MSBuild itself as well, but
-             emitting this manually lets us customize the message to inform developers as to why exactly the generators have been
-             disabled, and that the rest of the MVVM Toolkit will still keep working as intended, just without additional features. -->
-        <Warning Condition ="'$(CurrentCompilerVersionIsNotNewEnough)' == 'true'" Text="The MVVM Toolkit source generators have been disabled on the current configuration, as they need Roslyn 4.x in order to work. The MVVM Toolkit will work just fine, but features relying on the source generators will not be available."/>
-      </When>
-
-      <Otherwise>
-
-        <!-- If no Roslyn assembly could be found, just remove the analyzer without emitting a warning -->
-        <ItemGroup>
-          <Analyzer Remove="@(_MVVMToolkitAnalyzer)"/>
-        </ItemGroup>
-      </Otherwise>
-    </Choose>    
+    <!-- If no Roslyn assembly could be found, just remove the analyzer without emitting a warning -->
+    <ItemGroup>
+      <Analyzer Remove="@(_MVVMToolkitAnalyzer)"/>
+    </ItemGroup>
   </Target>
 
 </Project>
