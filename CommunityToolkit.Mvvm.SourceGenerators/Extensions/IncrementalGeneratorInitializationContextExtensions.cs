@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
@@ -61,5 +62,26 @@ internal static class IncrementalGeneratorInitializationContextExtensions
             dataWithSupportedInfo
             .Where(static item => item.IsGeneratorSupported)
             .Select(static (item, _) => item.Data);
+    }
+
+    /// <summary>
+    /// Conditionally invokes <see cref="IncrementalGeneratorInitializationContext.RegisterImplementationSourceOutput{TSource}(IncrementalValueProvider{TSource}, System.Action{SourceProductionContext, TSource})"/>
+    /// if the value produced by the input <see cref="IncrementalValueProvider{TValue}"/> is <see langword="true"/>.
+    /// </summary>
+    /// <param name="context">The input <see cref="IncrementalGeneratorInitializationContext"/> value being used.</param>
+    /// <param name="source">The source <see cref="IncrementalValueProvider{TValues}"/> instance.</param>
+    /// <param name="action">The conditional <see cref="Action{T}"/> to invoke.</param>
+    public static void RegisterConditionalImplementationSourceOutput(
+        this IncrementalGeneratorInitializationContext context,
+        IncrementalValueProvider<bool> source,
+        Action<SourceProductionContext> action)
+    {
+        context.RegisterImplementationSourceOutput(source, (context, flag) =>
+        {
+            if (flag)
+            {
+                action(context);
+            }
+        });
     }
 }

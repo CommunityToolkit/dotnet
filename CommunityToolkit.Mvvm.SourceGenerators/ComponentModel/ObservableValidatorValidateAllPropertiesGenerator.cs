@@ -4,6 +4,7 @@
 
 using System.Linq;
 using System.Text;
+using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -42,7 +43,7 @@ public sealed partial class ObservableValidatorValidateAllPropertiesGenerator : 
             .Select(static (item, _) => item.Length > 0);
 
         // Generate the header file with the attributes
-        context.RegisterImplementationSourceOutput(isHeaderFileNeeded, static (context, item) =>
+        context.RegisterConditionalImplementationSourceOutput(isHeaderFileNeeded, static context =>
         {
             CompilationUnitSyntax compilationUnit = Execute.GetSyntax();
 
