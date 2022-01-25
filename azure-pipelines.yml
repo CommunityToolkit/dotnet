@@ -18,9 +18,9 @@ jobs:
 
   # Install NuGet
   - task: NuGetToolInstaller@0
-    displayName: Install NuGet 5.6.0
+    displayName: Install NuGet 6.0
     inputs:
-      versionSpec: 5.6.0
+      versionSpec: 6.0.0
 
   # Install NerdBank GitVersioning
   - task: DotNetCoreCLI@2
@@ -28,28 +28,30 @@ jobs:
     inputs:
       command: custom
       custom: tool
-      arguments: install --tool-path . nbgv
+      arguments: install -g nbgv
+
+  # Set Build Version
   - script: nbgv cloud
     displayName: Set NBGV version
 
   # Verify headers
-  - powershell: .\build\build.ps1 -Target Verify
+  - pwsh: build/Update-Headers.ps1 -Verify
     displayName: Verify headers
 
   # Build solution
-  - powershell: dotnet build -c Release
+  - script: dotnet build -c Release
     displayName: Build solution
 
   # Run .NET 6 tests
-  - powershell: dotnet test --logger "trx;LogFileName=VsTestResultsNet6.trx" --framework net6.0 --configuration Release
+  - script: dotnet test -c Release -f net6.0 -l "trx;LogFileName=VSTestResults_net6.0.trx"
     displayName: Run .NET 6 unit tests
 
   # Run .NET Core 3.1 tests
-  - powershell: dotnet test --logger "trx;LogFileName=VsTestResultsNetCore31.trx" --framework netcoreapp3.1 --configuration Release
+  - script: dotnet test -c Release -f netcoreapp3.1 -l "trx;LogFileName=VSTestResults_netcoreapp3.1.trx"
     displayName: Run .NET Core 3.1 unit tests
 
   # Run .NET Framework 4.7.2 tests
-  - powershell: dotnet test --logger "trx;LogFileName=VsTestResultsNet472.trx" --framework net472 --configuration Release
+  - script: dotnet test -c Release -f net472 -l "trx;LogFileName=VSTestResults_net472.trx"
     displayName: Run .NET Framework 4.7.2 unit tests
 
   # Publish test results
@@ -57,27 +59,23 @@ jobs:
     displayName: Publish test results
     inputs:
       testResultsFormat: 'VSTest'
-      testResultsFiles: '**/VsTestResults*.trx'
+      testResultsFiles: '**/VSTestResults*.trx'
     condition: always()
 
   # Create the NuGet package(s)
-  - powershell: dotnet pack --configuration Release
+  - script: dotnet pack -c Release
     displayName: Create NuGet package(s)
 
   # Sign package(s)
-  - task: PowerShell@2
+  - pwsh: build/Sign-Package.ps1
     displayName: Authenticode sign packages
-    inputs:
-      filePath: build/Sign-Package.ps1
     env:
       SignClientUser: $(SignClientUser)
       SignClientSecret: $(SignClientSecret)
-      ArtifactDirectory: bin\nupkg
-    condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
+      ArtifactDirectory: bin/nupkg
+    condition: and(succeeded(), not(eq(variables['Build.Reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
 
   # Publish build artifacts
-  - task: PublishPipelineArtifact@1
+  - publish: bin/nupkg
+    artifact: Packages
     displayName: Publish package artifacts
-    inputs:
-      targetPath: .\bin\nupkg
-      artifactName: Packages

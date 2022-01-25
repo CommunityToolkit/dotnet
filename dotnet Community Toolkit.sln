@@ -50,22 +50,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Common.Uni
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{CD16E790-7B7B-411E-9CE7-768E759CC22D}"
 	ProjectSection(SolutionItems) = preProject
-		build\Build.bat = build\Build.bat
-		build\build.cake = build\build.cake
-		build\build.ps1 = build\build.ps1
 		build\Community.Toolkit.Common.props = build\Community.Toolkit.Common.props
 		build\Community.Toolkit.Common.targets = build\Community.Toolkit.Common.targets
 		build\header.txt = build\header.txt
 		build\nuget.png = build\nuget.png
 		build\Sign-Package.ps1 = build\Sign-Package.ps1
 		build\SignClientSettings.json = build\SignClientSettings.json
-		build\StyleXaml.bat = build\StyleXaml.bat
-		build\UpdateHeaders.bat = build\UpdateHeaders.bat
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{11CB82CB-F72A-4690-9C0F-0AD5303C79B6}"
-	ProjectSection(SolutionItems) = preProject
-		build\tools\packages.config = build\tools\packages.config
+		build\Update-Headers.ps1 = build\Update-Headers.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration", "Configuration", "{6640D447-C28D-4DBB-91F4-3ADCE0CA64AD}"
@@ -383,7 +374,6 @@ Global
 		{59212E0A-878C-4097-A1CE-58CE3375F8D7} = {B30036C4-D514-4E5B-A323-587A061772CE}
 		{17522D0B-CA70-40B6-AFD8-8B8D45E75D92} = {B30036C4-D514-4E5B-A323-587A061772CE}
 		{CD16E790-7B7B-411E-9CE7-768E759CC22D} = {CFA75BE0-5A44-45DE-8114-426A605B062B}
-		{11CB82CB-F72A-4690-9C0F-0AD5303C79B6} = {CD16E790-7B7B-411E-9CE7-768E759CC22D}
 		{6640D447-C28D-4DBB-91F4-3ADCE0CA64AD} = {B30036C4-D514-4E5B-A323-587A061772CE}
 		{9E09DA49-4389-4ECE-8B68-EBDB1221DA90} = {6640D447-C28D-4DBB-91F4-3ADCE0CA64AD}
 		{743D74BA-12AE-4639-AD77-B9DDA9C03255} = {B30036C4-D514-4E5B-A323-587A061772CE}
