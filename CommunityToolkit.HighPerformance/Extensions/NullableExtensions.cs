@@ -1,6 +1,5 @@
 // Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
+// The .NET Foundation licenses this file under the MIT license.
 
 // This extension is restricted to the .NET 6 because it shares the same BCL
 // across all targets, ensuring that the layout of our Nullable<T> mapping type

@@ -1,6 +1,5 @@
 // Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
+// The .NET Foundation licenses this file under the MIT license.
 
 using System;
 using System.Collections.Generic;
@@ -689,7 +688,7 @@ public partial class Test_RelayCommandAttribute
             await task;
         }
     }
-    
+
     public sealed partial class CanExecuteViewModel : ObservableObject
     {
         public int Counter { get; private set; }
@@ -1031,7 +1030,7 @@ public partial class Test_RelayCommandAttribute
 
         bool CanDoSomething3((int A, string? B) parameter)
         {
-            return !string.IsNullOrEmpty(parameter.B); 
+            return !string.IsNullOrEmpty(parameter.B);
         }
 
         [RelayCommand(CanExecute = (nameof(CanDoSomething3)))]

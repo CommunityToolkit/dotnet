@@ -1,6 +1,5 @@
 // Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
+// The .NET Foundation licenses this file under the MIT license.
 
 using System;
 using System.Buffers;
@@ -26,7 +25,7 @@ public sealed class StrongReferenceMessenger : IMessenger
     //   Dictionary2<Recipient, HashSet<IMapping>> recipientsMap;
     //                   |                 \________________[*]IDictionary2<Recipient, IDictionary2<TToken>>
     //                   |                  \_______________[*]IDictionary2<Recipient, object?>       /
-    //                   |                                           \_________/_________/___        / 
+    //                   |                                           \_________/_________/___        /
     //                   |\                       _(recipients registrations)_/         /    \      /
     //                   | \__________________   /    _____(channel registrations)_____/______\____/
     //                   |                    \ /    /      __________________________/        \

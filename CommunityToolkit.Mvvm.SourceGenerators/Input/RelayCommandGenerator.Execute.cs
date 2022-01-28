@@ -1,6 +1,5 @@
 // Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
+// The .NET Foundation licenses this file under the MIT license.
 
 using System;
 using System.Collections.Immutable;
@@ -75,7 +74,7 @@ partial class RelayCommandGenerator
                 in builder,
                 out bool allowConcurrentExecutions))
             {
-                goto Failure;   
+                goto Failure;
             }
 
             // Check the switch to control exception flow
@@ -484,7 +483,7 @@ partial class RelayCommandGenerator
                 commandClassType = "global::CommunityToolkit.Mvvm.Input.RelayCommand";
                 delegateType = "global::System.Action";
                 supportsCancellation = false;
-                commandTypeArguments = ImmutableArray<string>.Empty; 
+                commandTypeArguments = ImmutableArray<string>.Empty;
                 commandTypeArgumentsWithNullabilityAnnotations = ImmutableArray<string>.Empty;
                 delegateTypeArgumentsWithNullabilityAnnotations = ImmutableArray<string>.Empty;
 
@@ -578,7 +577,7 @@ partial class RelayCommandGenerator
             delegateType = null;
             supportsCancellation = false;
             commandTypeArguments = ImmutableArray<string>.Empty;
-            commandTypeArgumentsWithNullabilityAnnotations = ImmutableArray<string>.Empty; 
+            commandTypeArgumentsWithNullabilityAnnotations = ImmutableArray<string>.Empty;
             delegateTypeArgumentsWithNullabilityAnnotations = ImmutableArray<string>.Empty;
 
             return false;

@@ -45,7 +45,7 @@ insert_final_newline = true
 [*.cs]
 
 #### File Header Template ####
-file_header_template = Licensed to the .NET Foundation under one or more agreements.\nThe .NET Foundation licenses this file to you under the MIT license.\nSee the LICENSE file in the project root for more information.
+file_header_template = Licensed to the .NET Foundation under one or more agreements.\nThe .NET Foundation licenses this file under the MIT license.
 
 #### .NET Coding Conventions ####
 

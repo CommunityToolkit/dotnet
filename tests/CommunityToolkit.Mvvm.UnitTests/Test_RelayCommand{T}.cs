@@ -1,6 +1,5 @@
 // Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
+// The .NET Foundation licenses this file under the MIT license.
 
 using System;
 using CommunityToolkit.Mvvm.Input;
@@ -24,7 +23,7 @@ public class Test_RelayCommandOfT
 
         ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(new object()), "parameter");
         ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(42), "parameter");
-        
+
         ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.Execute(new object()), "parameter");
         ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.Execute(42), "parameter");
 
@@ -58,7 +57,7 @@ public class Test_RelayCommandOfT
 
         ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(new object()), "parameter");
         ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(42), "parameter");
-        
+
         ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.Execute(new object()), "parameter");
         ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.Execute(42), "parameter");
 

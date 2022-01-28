@@ -1,6 +1,5 @@
 // Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
+// The .NET Foundation licenses this file under the MIT license.
 
 // Ported from Roslyn, see: https://github.com/dotnet/roslyn/blob/main/src/Dependencies/PooledObjects/ObjectPool%601.cs.
 
@@ -24,14 +23,14 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 ///   </item>
 ///   <item>
 ///     It is implied that if object was obtained from a pool, the caller will return it back in
-///     a relatively short time. Keeping checked out objects for long durations is ok, but 
+///     a relatively short time. Keeping checked out objects for long durations is ok, but
 ///     reduces usefulness of pooling. Just new up your own.
 ///   </item>
 /// </list>
 /// </para>
 /// <para>
-/// Not returning objects to the pool in not detrimental to the pool's work, but is a bad practice. 
-/// Rationale: if there is no intent for reusing the object, do not use pool - just use "new". 
+/// Not returning objects to the pool in not detrimental to the pool's work, but is a bad practice.
+/// Rationale: if there is no intent for reusing the object, do not use pool - just use "new".
 /// </para>
 /// </summary>
 /// <typeparam name="T">The type of objects to pool.</typeparam>
