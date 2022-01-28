@@ -44,10 +44,6 @@ jobs:
   - script: nbgv cloud
     displayName: Set NBGV version
 
-  # Verify headers
-  - pwsh: build/Update-Headers.ps1 -Verify
-    displayName: Verify headers
-
   # Restore solution
   - script: dotnet restore -p:Configuration=$(Build.Configuration)
     displayName: Restore solution
