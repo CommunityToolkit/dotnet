@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
@@ -435,6 +436,14 @@ partial class ICommandGenerator
 
             if (canExecuteSymbols.IsEmpty)
             {
+                // Special case for when the target member is a generated property from [ObservableProperty]
+                if (TryGetCanExecuteMemberFromGeneratedProperty(memberName, methodSymbol.ContainingType, commandTypeArguments, out canExecuteExpressionType))
+                {
+                    canExecuteMemberName = memberName;
+
+                    return true;
+                }
+
                 diagnostics.Add(InvalidCanExecuteMemberName, methodSymbol, memberName, methodSymbol.ContainingType);
             }
             else if (canExecuteSymbols.Length > 1)
@@ -527,6 +536,64 @@ partial class ICommandGenerator
             }
 
             Failure:
+            canExecuteExpressionType = null;
+
+            return false;
+        }
+
+        /// <summary>
+        /// Gets the expression type for the can execute logic, if possible.
+        /// </summary>
+        /// <param name="memberName">The member name passed to <c>[ICommand(CanExecute = ...)]</c>.</param>
+        /// <param name="containingType">The containing type for the method annotated with <c>[ICommand]</c>.</param>
+        /// <param name="commandTypeArguments">The type arguments for the command interface, if any.</param>
+        /// <param name="canExecuteExpressionType">The resulting can execute expression type, if available.</param>
+        /// <returns>Whether or not <paramref name="canExecuteExpressionType"/> was set and the input symbol was valid.</returns>
+        private static bool TryGetCanExecuteMemberFromGeneratedProperty(
+            string memberName,
+            INamedTypeSymbol containingType,
+            ImmutableArray<string> commandTypeArguments,
+            [NotNullWhen(true)] out CanExecuteExpressionType? canExecuteExpressionType)
+        {
+            foreach (ISymbol memberSymbol in containingType.GetMembers())
+            {
+                // Only look for instance fields of bool type
+                if (memberSymbol is not IFieldSymbol fieldSymbol ||
+                    fieldSymbol is { IsStatic: true } ||
+                    !fieldSymbol.Type.HasFullyQualifiedName("bool"))
+                {
+                    continue;
+                }
+
+                ImmutableArray<AttributeData> attributes = memberSymbol.GetAttributes();
+
+                // Only filter fields with the [ObservableProperty] attribute
+                if (memberSymbol is IFieldSymbol &&
+                    !attributes.Any(static a => a.AttributeClass?.HasFullyQualifiedName(
+                        "global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute") == true))
+                {
+                    continue;
+                }
+
+                // Get the target property name either directly or matching the generated one
+                string propertyName = ObservablePropertyGenerator.Execute.GetGeneratedPropertyName(fieldSymbol);
+
+                // If the generated property name matches, get the right expression type
+                if (memberName == propertyName)
+                {
+                    if (commandTypeArguments.Length > 0)
+                    {
+                        canExecuteExpressionType = CanExecuteExpressionType.PropertyAccessLambdaWithDiscard;
+                    }
+                    else
+                    {
+                        canExecuteExpressionType = CanExecuteExpressionType.PropertyAccessLambda;
+                    }
+
+                    return true;
+                }
+            }
+
             canExecuteExpressionType = null;
 
             return false;
