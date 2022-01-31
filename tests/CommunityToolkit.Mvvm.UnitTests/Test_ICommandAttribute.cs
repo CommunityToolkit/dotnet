@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -77,6 +78,24 @@ public partial class Test_ICommandAttribute
     }
 
     [TestMethod]
+    public void Test_ICommandAttribute_CanExecute_NoParameters_GeneratedProperty()
+    {
+        CanExecuteViewModel model = new();
+
+        model.SetGeneratedFlag(true);
+
+        model.IncrementCounter_NoParameters_GeneratedPropertyCommand.Execute(null);
+
+        Assert.AreEqual(model.Counter, 1);
+
+        model.SetGeneratedFlag(false);
+
+        model.IncrementCounter_NoParameters_GeneratedPropertyCommand.Execute(null);
+
+        Assert.AreEqual(model.Counter, 1);
+    }
+
+    [TestMethod]
     public void Test_ICommandAttribute_CanExecute_WithParameter_Property()
     {
         CanExecuteViewModel model = new();
@@ -90,6 +109,24 @@ public partial class Test_ICommandAttribute
         model.Flag = false;
 
         model.IncrementCounter_WithParameter_PropertyCommand.Execute(null);
+
+        Assert.AreEqual(model.Counter, 1);
+    }
+
+    [TestMethod]
+    public void Test_ICommandAttribute_CanExecute_WithParameter_GeneratedProperty()
+    {
+        CanExecuteViewModel model = new();
+
+        model.SetGeneratedFlag(true);
+
+        model.IncrementCounter_WithParameter_GeneratedPropertyCommand.Execute(null);
+
+        Assert.AreEqual(model.Counter, 1);
+
+        model.SetGeneratedFlag(false);
+
+        model.IncrementCounter_WithParameter_GeneratedPropertyCommand.Execute(null);
 
         Assert.AreEqual(model.Counter, 1);
     }
@@ -384,11 +421,19 @@ public partial class Test_ICommandAttribute
         }
     }
     
-    public sealed partial class CanExecuteViewModel
+    public sealed partial class CanExecuteViewModel : ObservableObject
     {
         public int Counter { get; private set; }
 
         public bool Flag { get; set; }
+
+        public void SetGeneratedFlag(bool flag)
+        {
+            GeneratedFlag = flag;
+        }
+
+        [ObservableProperty]
+        private bool generatedFlag;
 
         private bool GetFlag1() => Flag;
 
@@ -402,6 +447,18 @@ public partial class Test_ICommandAttribute
 
         [ICommand(CanExecute = nameof(Flag))]
         private void IncrementCounter_WithParameter_Property(User user)
+        {
+            Counter++;
+        }
+
+        [ICommand(CanExecute = nameof(GeneratedFlag))]
+        private void IncrementCounter_NoParameters_GeneratedProperty()
+        {
+            Counter++;
+        }
+
+        [ICommand(CanExecute = nameof(GeneratedFlag))]
+        private void IncrementCounter_WithParameter_GeneratedProperty(User user)
         {
             Counter++;
         }
@@ -434,6 +491,22 @@ public partial class Test_ICommandAttribute
 
         [ICommand(CanExecute = nameof(Flag))]
         private async Task IncrementCounter_Async_WithParameter_Property(User user)
+        {
+            Counter++;
+
+            await Task.Delay(100);
+        }
+
+        [ICommand(CanExecute = nameof(GeneratedFlag))]
+        private async Task IncrementCounter_Async_NoParameters_GeneratedProperty()
+        {
+            Counter++;
+
+            await Task.Delay(100);
+        }
+
+        [ICommand(CanExecute = nameof(GeneratedFlag))]
+        private async Task IncrementCounter_Async_WithParameter_GeneratedProperty(User user)
         {
             Counter++;
 
