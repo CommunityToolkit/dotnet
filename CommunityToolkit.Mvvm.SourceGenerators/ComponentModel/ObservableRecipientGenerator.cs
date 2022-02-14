@@ -82,8 +82,8 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
         // In order to use [ObservableRecipient], the target type needs to inherit from ObservableObject,
         // or be annotated with [ObservableObject] or [INotifyPropertyChanged] (with additional helpers).
         if (!typeSymbol.InheritsFrom("global::CommunityToolkit.Mvvm.ComponentModel.ObservableObject") &&
-            !typeSymbol.GetAttributes().Any(static a => a.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute") == true) &&
-            !typeSymbol.GetAttributes().Any(static a =>
+            !typeSymbol.HasOrInheritsAttribute(static a => a.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute") == true) &&
+            !typeSymbol.HasOrInheritsAttribute(static a =>
                 a.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.INotifyPropertyChangedAttribute") == true &&
                 !a.HasNamedArgument("IncludeAdditionalHelperMethods", false)))
         {

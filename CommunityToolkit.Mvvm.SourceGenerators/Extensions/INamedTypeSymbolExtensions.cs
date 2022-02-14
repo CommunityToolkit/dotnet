@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
+using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
 
@@ -58,6 +60,25 @@ internal static class INamedTypeSymbolExtensions
             }
 
             baseType = baseType.BaseType;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Checks whether or not a given <see cref="INamedTypeSymbol"/> has or inherits a specified attribute.
+    /// </summary>
+    /// <param name="typeSymbol">The target <see cref="INamedTypeSymbol"/> instance to check.</param>
+    /// <param name="predicate">The predicate used to match available attributes.</param>
+    /// <returns>Whether or not <paramref name="typeSymbol"/> has an attribute matching <paramref name="predicate"/>.</returns>
+    public static bool HasOrInheritsAttribute(this INamedTypeSymbol typeSymbol, Func<AttributeData, bool> predicate)
+    {
+        for (INamedTypeSymbol? currentType = typeSymbol; currentType is not null; currentType = currentType.BaseType)
+        {
+            if (currentType.GetAttributes().Any(predicate))
+            {
+                return true;
+            }
         }
 
         return false;

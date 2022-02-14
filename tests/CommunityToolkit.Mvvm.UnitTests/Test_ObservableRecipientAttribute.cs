@@ -260,4 +260,25 @@ public partial class Test_ObservableRecipientAttribute
             OnDeactivatedResult = true;
         }
     }
+
+    // See https://github.com/CommunityToolkit/dotnet/issues/109
+    [TestMethod]
+    public void Test_ObservableRecipientAttribute_WorksWithBaseClassWithObservableObjectAttribute()
+    {
+        ViewModelWithOnlyObservableRecipientAttribute model = new();
+
+        // This test method really only needs the two classes below to compile at all
+        Assert.IsTrue(model is INotifyPropertyChanged); // From [ObservableObject]
+        Assert.IsFalse(model.IsActive); // From [ObservableRecipient]
+    }
+
+    [ObservableObject]
+    public partial class BaseViewModelWithObservableObjectAttribute
+    {
+    }
+
+    [ObservableRecipient]
+    public partial class ViewModelWithOnlyObservableRecipientAttribute : BaseViewModelWithObservableObjectAttribute
+    {
+    }
 }
