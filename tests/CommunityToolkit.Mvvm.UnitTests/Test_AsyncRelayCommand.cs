@@ -325,4 +325,97 @@ public class Test_AsyncRelayCommand
 
         Assert.IsTrue(success);
     }
+
+    // See https://github.com/CommunityToolkit/dotnet/issues/108
+    [TestMethod]
+    public void Test_AsyncRelayCommand_ExecuteDoesNotRaisesCanExecuteChanged()
+    {
+        TaskCompletionSource<object?> tcs = new();
+
+        AsyncRelayCommand command = new(() => tcs.Task, allowConcurrentExecutions: true);
+
+        (object? Sender, EventArgs? Args) args = default;
+
+        command.CanExecuteChanged += (s, e) => args = (s, e);
+
+        Assert.IsTrue(command.CanExecute(null));
+
+        command.Execute(null);
+
+        Assert.IsNull(args.Sender);
+        Assert.IsNull(args.Args);
+
+        Assert.IsTrue(command.CanExecute(null));
+
+        tcs.SetResult(null);
+    }
+
+    [TestMethod]
+    public void Test_AsyncRelayCommand_ExecuteWithoutConcurrencyRaisesCanExecuteChanged()
+    {
+        TaskCompletionSource<object?> tcs = new();
+
+        AsyncRelayCommand command = new(() => tcs.Task, allowConcurrentExecutions: false);
+
+        (object? Sender, EventArgs? Args) args = default;
+
+        command.CanExecuteChanged += (s, e) => args = (s, e);
+
+        Assert.IsTrue(command.CanExecute(null));
+
+        command.Execute(null);
+
+        Assert.AreSame(command, args.Sender);
+        Assert.AreSame(EventArgs.Empty, args.Args);
+
+        Assert.IsFalse(command.CanExecute(null));
+
+        tcs.SetResult(null);
+    }
+
+    [TestMethod]
+    public void Test_AsyncRelayCommand_ExecuteDoesNotRaisesCanExecuteChanged_WithCancellation()
+    {
+        TaskCompletionSource<object?> tcs = new();
+
+        AsyncRelayCommand command = new(token => tcs.Task, allowConcurrentExecutions: true);
+
+        (object? Sender, EventArgs? Args) args = default;
+
+        command.CanExecuteChanged += (s, e) => args = (s, e);
+
+        Assert.IsTrue(command.CanExecute(null));
+
+        command.Execute(null);
+
+        Assert.IsNull(args.Sender);
+        Assert.IsNull(args.Args);
+
+        Assert.IsTrue(command.CanExecute(null));
+
+        tcs.SetResult(null);
+    }
+
+    [TestMethod]
+    public void Test_AsyncRelayCommand_ExecuteWithoutConcurrencyRaisesCanExecuteChanged_WithToken()
+    {
+        TaskCompletionSource<object?> tcs = new();
+
+        AsyncRelayCommand command = new(token => tcs.Task, allowConcurrentExecutions: false);
+
+        (object? Sender, EventArgs? Args) args = default;
+
+        command.CanExecuteChanged += (s, e) => args = (s, e);
+
+        Assert.IsTrue(command.CanExecute(null));
+
+        command.Execute(null);
+
+        Assert.AreSame(command, args.Sender);
+        Assert.AreSame(EventArgs.Empty, args.Args);
+
+        Assert.IsFalse(command.CanExecute(null));
+
+        tcs.SetResult(null);
+    }
 }
