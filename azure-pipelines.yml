@@ -28,7 +28,7 @@ jobs:
     inputs:
       command: custom
       custom: tool
-      arguments: install -g nbgv
+      arguments: update -g nbgv
 
   # Set Build Version
   - script: nbgv cloud
