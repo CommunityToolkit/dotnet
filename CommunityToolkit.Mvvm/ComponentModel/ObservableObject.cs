@@ -19,6 +19,9 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel.__Internals;
+
+#pragma warning disable CS0618
 
 namespace CommunityToolkit.Mvvm.ComponentModel;
 
@@ -525,14 +528,8 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
         // which would result in a confusing behavior for users.
         async void MonitorTask()
         {
-            try
-            {
-                // Await the task and ignore any exceptions
-                await newValue!;
-            }
-            catch
-            {
-            }
+            // Await the task and ignore any exceptions
+            await newValue!.GetAwaitableWithoutEndValidation();
 
             // Only notify if the property hasn't changed
             if (ReferenceEquals(taskNotifier.Task, newValue))

@@ -389,13 +389,7 @@ public abstract class INotifyPropertyChanged : global::System.ComponentModel.INo
 
         async void MonitorTask()
         {
-            try
-            {
-                await newValue!;
-            }
-            catch
-            {
-            }
+            await global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__TaskExtensions.GetAwaitableWithoutEndValidation(newValue!);
 
             if (ReferenceEquals(taskNotifier.Task, newValue))
             {
