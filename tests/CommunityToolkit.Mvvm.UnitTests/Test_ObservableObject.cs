@@ -6,6 +6,7 @@ using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.UnitTests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommunityToolkit.Mvvm.UnitTests;
@@ -223,6 +224,73 @@ public class Test_ObservableObject
         {
             get => data;
             set => SetPropertyAndNotifyOnCompletion(ref data, value);
+        }
+    }
+
+    [TestMethod]
+    public async Task Test_ObservableObject_ThrowingTaskBubblesToUnobservedTaskException()
+    {
+        SampleModelWithTask model = new();
+
+        static async Task TestMethodAsync(Action action)
+        {
+            await Task.Delay(100);
+
+            action();
+        }
+
+        async void TestCallback(Action throwAction, Action completeAction)
+        {
+            model.Data = TestMethodAsync(throwAction);
+            model.Data = null;
+
+            await Task.Delay(200);
+
+            completeAction();
+        }
+
+        bool success = await TaskSchedulerTestHelper.IsExceptionBubbledUpToUnobservedTaskExceptionAsync(TestCallback);
+
+        Assert.IsTrue(success);
+    }
+
+    [TestMethod]
+    public async Task Test_ObservableObject_ThrowingTaskOfTBubblesToUnobservedTaskException()
+    {
+        SampleModelWithTask<int> model = new();
+
+        static async Task<int> TestMethodAsync(Action action)
+        {
+            await Task.Delay(100);
+
+            action();
+
+            return 42;
+        }
+
+        async void TestCallback(Action throwAction, Action completeAction)
+        {
+            model.Data = TestMethodAsync(throwAction);
+            model.Data = null;
+
+            await Task.Delay(200);
+
+            completeAction();
+        }
+
+        bool success = await TaskSchedulerTestHelper.IsExceptionBubbledUpToUnobservedTaskExceptionAsync(TestCallback);
+
+        Assert.IsTrue(success);
+    }
+
+    public class SampleModelWithTask : ObservableObject
+    {
+        private TaskNotifier? taskNotifier;
+
+        public Task? Data
+        {
+            get => taskNotifier;
+            set => SetPropertyAndNotifyOnCompletion(ref taskNotifier, value);
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.UnitTests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommunityToolkit.Mvvm.UnitTests;
@@ -297,5 +298,31 @@ public class Test_AsyncRelayCommand
         await task;
 
         Assert.IsFalse(command.IsRunning);
+    }
+
+    [TestMethod]
+    public async Task Test_AsyncRelayCommand_ThrowingTaskBubblesToUnobservedTaskException()
+    {
+        static async Task TestMethodAsync(Action action)
+        {
+            await Task.Delay(100);
+
+            action();
+        }
+
+        async void TestCallback(Action throwAction, Action completeAction)
+        {
+            AsyncRelayCommand command = new(() => TestMethodAsync(throwAction));
+
+            command.Execute(null);
+
+            await Task.Delay(200);
+
+            completeAction();
+        }
+
+        bool success = await TaskSchedulerTestHelper.IsExceptionBubbledUpToUnobservedTaskExceptionAsync(TestCallback);
+
+        Assert.IsTrue(success);
     }
 }

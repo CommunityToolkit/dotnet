@@ -5,6 +5,7 @@
 using System;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.UnitTests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommunityToolkit.Mvvm.UnitTests;
@@ -195,5 +196,31 @@ public class Test_AsyncRelayCommandOfT
         Assert.IsFalse(command.IsRunning);
 
         _ = Assert.ThrowsException<InvalidCastException>(() => command.Execute(new object()));
+    }
+
+    [TestMethod]
+    public async Task Test_AsyncRelayCommandOfT_ThrowingTaskBubblesToUnobservedTaskException()
+    {
+        static async Task TestMethodAsync(Action action)
+        {
+            await Task.Delay(100);
+
+            action();
+        }
+
+        async void TestCallback(Action throwAction, Action completeAction)
+        {
+            AsyncRelayCommand<string> command = new(s => TestMethodAsync(throwAction));
+
+            command.Execute(null);
+
+            await Task.Delay(200);
+
+            completeAction();
+        }
+
+        bool success = await TaskSchedulerTestHelper.IsExceptionBubbledUpToUnobservedTaskExceptionAsync(TestCallback);
+
+        Assert.IsTrue(success);
     }
 }
