@@ -16,11 +16,11 @@ public partial class Test_IRecipientGenerator
     [TestMethod]
     public void Test_IRecipientGenerator_GeneratedRegistration()
     {
-        StrongReferenceMessenger? messenger = new();
-        RecipientWithSomeMessages? recipient = new();
+        StrongReferenceMessenger messenger = new();
+        RecipientWithSomeMessages recipient = new();
 
-        MessageA? messageA = new();
-        MessageB? messageB = new();
+        MessageA messageA = new();
+        MessageB messageB = new();
 
         Action<IMessenger, object, int> registrator = Messaging.__Internals.__IMessengerExtensions.CreateAllMessagesRegistratorWithToken<int>(recipient);
 
@@ -41,6 +41,15 @@ public partial class Test_IRecipientGenerator
 
         Assert.AreSame(recipient.A, messageA);
         Assert.AreSame(recipient.B, messageB);
+    }
+
+    [TestMethod]
+    public void Test_IRecipientGenerator_TypeWithMultipleClassDeclarations()
+    {
+        RecipientWithMultipleClassDeclarations recipient = new();
+
+        // This test really just needs to verify this compiles and executes normally
+        _ = Messaging.__Internals.__IMessengerExtensions.CreateAllMessagesRegistratorWithToken<int>(recipient);
     }
 
     public sealed class RecipientWithSomeMessages :
@@ -67,6 +76,19 @@ public partial class Test_IRecipientGenerator
     }
 
     public sealed class MessageB
+    {
+    }
+
+    public sealed partial class RecipientWithMultipleClassDeclarations : IRecipient<MessageA>
+    {
+        public void Receive(MessageA message)
+        {
+        }
+    }
+
+    // This empty partial type declarations needs to be present to ensure the generator
+    // correctly handles cases where the source type has multiple class declarations.
+    partial class RecipientWithMultipleClassDeclarations
     {
     }
 }

@@ -36,10 +36,15 @@ public sealed partial class IMessengerRegisterAllGenerator : IIncrementalGenerat
             .Select(static (item, _) => (item, Interfaces: Execute.GetInterfaces(item)))
             .Where(static item => !item.Interfaces.IsEmpty);
 
-        // Get the recipient info for all target types
+        // Get the recipient info for all target types. This pipeline step also needs to filter out
+        // duplicate recipient definitions (it might happen if a recipient has partial declarations)
         IncrementalValuesProvider<RecipientInfo> recipientInfo =
             typeAndInterfaceSymbols
             .Select(static (item, _) => Execute.GetInfo(item.Type, item.Interfaces))
+            .WithComparer(RecipientInfo.Comparer.Default)
+            .Collect()
+            .Select(static (item, _) => item.Distinct(RecipientInfo.EqualityComparerByFilenameHint))
+            .SelectMany(static (item, _) => item)
             .WithComparer(RecipientInfo.Comparer.Default);
 
         // Check whether the header file is needed
