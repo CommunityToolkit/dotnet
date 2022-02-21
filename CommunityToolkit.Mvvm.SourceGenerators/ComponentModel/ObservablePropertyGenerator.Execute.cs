@@ -146,6 +146,14 @@ partial class ObservablePropertyGenerator
         {
             ImmutableArray<StatementSyntax>.Builder setterStatements = ImmutableArray.CreateBuilder<StatementSyntax>();
 
+            // Add the OnPropertyChanging() call first:
+            //
+            // On<PROPERTY_NAME>Changing(value);
+            setterStatements.Add(
+                ExpressionStatement(
+                    InvocationExpression(IdentifierName($"On{propertyInfo.PropertyName}Changing"))
+                    .AddArgumentListArguments(Argument(IdentifierName("value")))));
+
             // Gather the statements to notify dependent properties
             foreach (string propertyName in propertyInfo.PropertyChangingNames)
             {
@@ -191,6 +199,14 @@ partial class ObservablePropertyGenerator
                             Argument(IdentifierName("value")),
                             Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(propertyInfo.PropertyName))))));
             }
+
+            // Add the OnPropertyChanged() call:
+            //
+            // On<PROPERTY_NAME>Changed(value);
+            setterStatements.Add(
+                ExpressionStatement(
+                    InvocationExpression(IdentifierName($"On{propertyInfo.PropertyName}Changed"))
+                    .AddArgumentListArguments(Argument(IdentifierName("value")))));
 
             // Gather the statements to notify dependent properties
             foreach (string propertyName in propertyInfo.PropertyChangedNames)
