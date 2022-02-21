@@ -69,17 +69,18 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
             .GroupBy(HierarchyInfo.Comparer.Default)
             .WithComparers(HierarchyInfo.Comparer.Default, PropertyInfo.Comparer.Default.ForImmutableArray());
 
-        // Generate the requested properties
+        // Generate the requested properties and methods
         context.RegisterSourceOutput(groupedPropertyInfo, static (context, item) =>
         {
-            // Generate all properties for the current type
-            ImmutableArray<MemberDeclarationSyntax> propertyDeclarations =
+            // Generate all member declarations for the current type
+            ImmutableArray<MemberDeclarationSyntax> memberDeclarations =
                 item.Properties
-                .Select(Execute.GetSyntax)
+                .Select(Execute.GetPropertySyntax)
+                .Concat(item.Properties.Select(Execute.GetOnPropertyChangeMethodsSyntax).SelectMany(static l => l))
                 .ToImmutableArray();
 
-            // Insert all properties into the same partial type declaration
-            CompilationUnitSyntax compilationUnit = item.Hierarchy.GetCompilationUnit(propertyDeclarations);
+            // Insert all members into the same partial type declaration
+            CompilationUnitSyntax compilationUnit = item.Hierarchy.GetCompilationUnit(memberDeclarations);
 
             context.AddSource(
                 hintName: $"{item.Hierarchy.FilenameHint}.cs",

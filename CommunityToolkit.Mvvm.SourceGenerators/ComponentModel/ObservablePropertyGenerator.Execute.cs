@@ -142,7 +142,7 @@ partial class ObservablePropertyGenerator
         /// </summary>
         /// <param name="propertyInfo">The input <see cref="PropertyInfo"/> instance to process.</param>
         /// <returns>The generated <see cref="MemberDeclarationSyntax"/> instance for <paramref name="propertyInfo"/>.</returns>
-        public static MemberDeclarationSyntax GetSyntax(PropertyInfo propertyInfo)
+        public static MemberDeclarationSyntax GetPropertySyntax(PropertyInfo propertyInfo)
         {
             ImmutableArray<StatementSyntax>.Builder setterStatements = ImmutableArray.CreateBuilder<StatementSyntax>();
 
@@ -290,6 +290,57 @@ partial class ObservablePropertyGenerator
                     .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)),
                     AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
                     .WithBody(Block(setterIfStatement)));
+        }
+
+        /// <summary>
+        /// Gets the <see cref="MemberDeclarationSyntax"/> instances for the <c>OnPropertyChanging</c> and <c>OnPropertyChanged</c> methods for the input field.
+        /// </summary>
+        /// <param name="propertyInfo">The input <see cref="PropertyInfo"/> instance to process.</param>
+        /// <returns>The generated <see cref="MemberDeclarationSyntax"/> instances for the <c>OnPropertyChanging</c> and <c>OnPropertyChanged</c> methods.</returns>
+        public static ImmutableArray<MemberDeclarationSyntax> GetOnPropertyChangeMethodsSyntax(PropertyInfo propertyInfo)
+        {
+            // Get the parameter type syntax (adding the nullability annotation, if needed)
+            TypeSyntax parameterType = propertyInfo.IsNullableReferenceType
+                ? NullableType(IdentifierName(propertyInfo.TypeName))
+                : IdentifierName(propertyInfo.TypeName);
+
+            // Construct the generated method as follows:
+            //
+            // /// <summary>Executes the logic for when <see cref="<PROPERTY_NAME>"/> is changing.</summary>
+            // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
+            // partial void On<PROPERTY_NAME>Changing(<PROPERTY_TYPE> value);
+            MemberDeclarationSyntax onPropertyChangingDeclaration =
+                MethodDeclaration(PredefinedType(Token(SyntaxKind.VoidKeyword)), Identifier($"On{propertyInfo.PropertyName}Changing"))
+                .AddModifiers(Token(SyntaxKind.PartialKeyword))
+                .AddParameterListParameters(Parameter(Identifier("value")).WithType(parameterType))
+                .AddAttributeLists(
+                    AttributeList(SingletonSeparatedList(
+                        Attribute(IdentifierName("global::System.CodeDom.Compiler.GeneratedCode"))
+                        .AddArgumentListArguments(
+                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ICommandGenerator).FullName))),
+                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ICommandGenerator).Assembly.GetName().Version.ToString()))))))
+                    .WithOpenBracketToken(Token(TriviaList(Comment($"/// <summary>Executes the logic for when <see cref=\"{propertyInfo.PropertyName}\"/> is changing.</summary>")), SyntaxKind.OpenBracketToken, TriviaList())))
+                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+
+            // Construct the generated method as follows:
+            //
+            // /// <summary>Executes the logic for when <see cref="<PROPERTY_NAME>"/> ust changed.</summary>
+            // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
+            // partial void On<PROPERTY_NAME>Changed(<PROPERTY_TYPE> value);
+            MemberDeclarationSyntax onPropertyChangedDeclaration =
+                MethodDeclaration(PredefinedType(Token(SyntaxKind.VoidKeyword)), Identifier($"On{propertyInfo.PropertyName}Changed"))
+                .AddModifiers(Token(SyntaxKind.PartialKeyword))
+                .AddParameterListParameters(Parameter(Identifier("value")).WithType(parameterType))
+                .AddAttributeLists(
+                    AttributeList(SingletonSeparatedList(
+                        Attribute(IdentifierName("global::System.CodeDom.Compiler.GeneratedCode"))
+                        .AddArgumentListArguments(
+                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ICommandGenerator).FullName))),
+                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ICommandGenerator).Assembly.GetName().Version.ToString()))))))
+                    .WithOpenBracketToken(Token(TriviaList(Comment($"/// <summary>Executes the logic for when <see cref=\"{propertyInfo.PropertyName}\"/> just changed.</summary>")), SyntaxKind.OpenBracketToken, TriviaList())))
+                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+
+            return ImmutableArray.Create(onPropertyChangingDeclaration, onPropertyChangedDeclaration);
         }
 
         /// <summary>
