@@ -273,6 +273,21 @@ public partial class Test_ObservablePropertyAttribute
         CollectionAssert.AreEqual(new[] { nameof(model.Surname), nameof(model.FullName), nameof(model.Alias) }, propertyNames);
     }
 
+    [TestMethod]
+    public void Test_OnPropertyChangingAndChangedPartialMethods()
+    {
+        ViewModelWithImplementedUpdateMethods model = new();
+
+        model.Name = nameof(Test_OnPropertyChangingAndChangedPartialMethods);
+
+        Assert.AreEqual(nameof(Test_OnPropertyChangingAndChangedPartialMethods), model.NameChangingValue);
+        Assert.AreEqual(nameof(Test_OnPropertyChangingAndChangedPartialMethods), model.NameChangedValue);
+
+        model.Number = 99;
+
+        Assert.AreEqual(99, model.NumberChangedValue);
+    }
+
     public partial class SampleModel : ObservableObject
     {
         /// <summary>
@@ -397,5 +412,35 @@ public partial class Test_ObservablePropertyAttribute
         public string last = "Jones";
 
         public void RunValidation() => ValidateAllProperties();
+    }
+
+    public partial class ViewModelWithImplementedUpdateMethods : ObservableObject
+    {
+        [ObservableProperty]
+        public string? name = "Bob";
+
+        [ObservableProperty]
+        public int number = 42;
+
+        public string? NameChangingValue { get; private set; }
+
+        public string? NameChangedValue { get; private set; }
+
+        public int NumberChangedValue { get; private set; }
+
+        partial void OnNameChanging(string? value)
+        {
+            NameChangingValue = value;
+        }
+
+        partial void OnNameChanged(string? value)
+        {
+            NameChangedValue = value;
+        }
+
+        partial void OnNumberChanged(int value)
+        {
+            NumberChangedValue = value;
+        }
     }
 }
