@@ -4,6 +4,11 @@
     <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0</TargetFrameworks>
   </PropertyGroup>
 
+  <!-- Workaround for .NET 6.0.x regression (see https://github.com/dotnet/linker/issues/2642) -->
+  <PropertyGroup>
+    <NoWarn>AD0001</NoWarn>
+  </PropertyGroup>
+
   <PropertyGroup>
     <Title>.NET Community Toolkit - MVVM</Title>
     <Description>
