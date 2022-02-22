@@ -207,9 +207,18 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand
 
             PropertyChanged?.Invoke(this, ExecutionTaskChangedEventArgs);
             PropertyChanged?.Invoke(this, IsRunningChangedEventArgs);
-            PropertyChanged?.Invoke(this, CanBeCanceledChangedEventArgs);
 
-            if (value?.IsCompleted ?? true)
+            bool isAlreadyCompletedOrNull = value?.IsCompleted ?? true;
+
+            if (this.cancellationTokenSource is not null)
+            {
+                PropertyChanged?.Invoke(this, CanBeCanceledChangedEventArgs);
+                PropertyChanged?.Invoke(this, IsCancellationRequestedChangedEventArgs);
+            }
+
+            // The branch is on a condition evaluated before raising the events above if
+            // needed, to avoid race conditions with a task completing right after them.
+            if (isAlreadyCompletedOrNull)
             {
                 return;
             }
@@ -222,7 +231,11 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand
                 {
                     @this.PropertyChanged?.Invoke(@this, ExecutionTaskChangedEventArgs);
                     @this.PropertyChanged?.Invoke(@this, IsRunningChangedEventArgs);
-                    @this.PropertyChanged?.Invoke(@this, CanBeCanceledChangedEventArgs);
+
+                    if (@this.cancellationTokenSource is not null)
+                    {
+                        @this.PropertyChanged?.Invoke(@this, CanBeCanceledChangedEventArgs);
+                    }
                 }
             }
 
@@ -231,13 +244,13 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand
     }
 
     /// <inheritdoc/>
-    public bool CanBeCanceled => this.cancelableExecute is not null && IsRunning;
+    public bool CanBeCanceled => IsRunning && this.cancellationTokenSource is { IsCancellationRequested: false };
 
     /// <inheritdoc/>
-    public bool IsCancellationRequested => this.cancellationTokenSource?.IsCancellationRequested == true;
+    public bool IsCancellationRequested => this.cancellationTokenSource is { IsCancellationRequested: true };
 
     /// <inheritdoc/>
-    public bool IsRunning => ExecutionTask?.IsCompleted == false;
+    public bool IsRunning => ExecutionTask is { IsCompleted: false };
 
     /// <inheritdoc/>
     public void NotifyCanExecuteChanged()
@@ -251,7 +264,7 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand
     {
         bool canExecute = this.canExecute?.Invoke() != false;
 
-        return canExecute && (this.allowConcurrentExecutions || ExecutionTask?.IsCompleted != false);
+        return canExecute && (this.allowConcurrentExecutions || ExecutionTask is not { IsCompleted: false });
     }
 
     /// <inheritdoc/>
@@ -300,9 +313,12 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand
     /// <inheritdoc/>
     public void Cancel()
     {
-        this.cancellationTokenSource?.Cancel();
+        if (this.cancellationTokenSource is CancellationTokenSource { IsCancellationRequested: false } cancellationTokenSource)
+        {
+            cancellationTokenSource.Cancel();
 
-        PropertyChanged?.Invoke(this, IsCancellationRequestedChangedEventArgs);
-        PropertyChanged?.Invoke(this, CanBeCanceledChangedEventArgs);
+            PropertyChanged?.Invoke(this, CanBeCanceledChangedEventArgs);
+            PropertyChanged?.Invoke(this, IsCancellationRequestedChangedEventArgs);
+        }
     }
 }
