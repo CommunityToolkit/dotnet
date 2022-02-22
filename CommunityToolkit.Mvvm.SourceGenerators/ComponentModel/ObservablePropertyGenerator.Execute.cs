@@ -333,8 +333,8 @@ partial class ObservablePropertyGenerator
                     AttributeList(SingletonSeparatedList(
                         Attribute(IdentifierName("global::System.CodeDom.Compiler.GeneratedCode"))
                         .AddArgumentListArguments(
-                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ICommandGenerator).FullName))),
-                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ICommandGenerator).Assembly.GetName().Version.ToString()))))))
+                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservablePropertyGenerator).FullName))),
+                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservablePropertyGenerator).Assembly.GetName().Version.ToString()))))))
                     .WithOpenBracketToken(Token(TriviaList(Comment($"/// <summary>Executes the logic for when <see cref=\"{propertyInfo.PropertyName}\"/> is changing.</summary>")), SyntaxKind.OpenBracketToken, TriviaList())))
                 .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
 
@@ -351,8 +351,8 @@ partial class ObservablePropertyGenerator
                     AttributeList(SingletonSeparatedList(
                         Attribute(IdentifierName("global::System.CodeDom.Compiler.GeneratedCode"))
                         .AddArgumentListArguments(
-                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ICommandGenerator).FullName))),
-                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ICommandGenerator).Assembly.GetName().Version.ToString()))))))
+                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservablePropertyGenerator).FullName))),
+                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservablePropertyGenerator).Assembly.GetName().Version.ToString()))))))
                     .WithOpenBracketToken(Token(TriviaList(Comment($"/// <summary>Executes the logic for when <see cref=\"{propertyInfo.PropertyName}\"/> just changed.</summary>")), SyntaxKind.OpenBracketToken, TriviaList())))
                 .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
 
