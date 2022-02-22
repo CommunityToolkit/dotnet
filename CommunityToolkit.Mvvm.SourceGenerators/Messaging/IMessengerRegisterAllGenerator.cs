@@ -27,7 +27,7 @@ public sealed partial class IMessengerRegisterAllGenerator : IIncrementalGenerat
         IncrementalValuesProvider<INamedTypeSymbol> typeSymbols =
             context.SyntaxProvider
             .CreateSyntaxProvider(
-                static (node, _) => node is ClassDeclarationSyntax,
+                static (node, _) => node is ClassDeclarationSyntax { BaseList.Types.Count: > 0 },
                 static (context, _) => (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!);
 
         // Get the target IRecipient<TMessage> interfaces and filter out other types
