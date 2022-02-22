@@ -4,11 +4,6 @@
     <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0</TargetFrameworks>
   </PropertyGroup>
 
-  <!-- Workaround for .NET 6.0.x regression (see https://github.com/dotnet/linker/issues/2642) -->
-  <PropertyGroup>
-    <NoWarn>AD0001</NoWarn>
-  </PropertyGroup>
-
   <PropertyGroup>
     <Title>.NET Community Toolkit - MVVM</Title>
     <Description>
@@ -41,8 +36,10 @@
 
   <!-- Enable trimming support on .NET 6 -->
   <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
-    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
     <IsTrimmable>true</IsTrimmable>
+
+    <!-- Workaround for .NET 6.0.x regression (see https://github.com/dotnet/linker/issues/2642), enable again when fixed in SDK -->
+    <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
   </PropertyGroup>
     
   <!-- Source generator project reference for packing -->
