@@ -23,11 +23,6 @@ internal sealed record RecipientInfo(
     ImmutableArray<string> MessageTypes)
 {
     /// <summary>
-    /// Gets an <see cref="IEqualityComparer{T}"/> implementation only matching by <see cref="FilenameHint"/>.
-    /// </summary>
-    public static IEqualityComparer<RecipientInfo> EqualityComparerByFilenameHint { get; } = new FilenameHintComparer();
-
-    /// <summary>
     /// An <see cref="IEqualityComparer{T}"/> implementation for <see cref="RecipientInfo"/>.
     /// </summary>
     public sealed class Comparer : Comparer<RecipientInfo, Comparer>
@@ -47,24 +42,6 @@ internal sealed record RecipientInfo(
                 x.FilenameHint == y.FilenameHint &&
                 x.TypeName == y.TypeName &&
                 x.MessageTypes.SequenceEqual(y.MessageTypes);
-        }
-    }
-
-    /// <summary>
-    /// An <see cref="IEqualityComparer{T}"/> implementation only matching by <see cref="FilenameHint"/>.
-    /// </summary>
-    private sealed class FilenameHintComparer : IEqualityComparer<RecipientInfo>
-    {
-        /// <inheritdoc/>
-        public bool Equals(RecipientInfo x, RecipientInfo y)
-        {
-            return x.FilenameHint == y.FilenameHint;
-        }
-
-        /// <inheritdoc/>
-        public int GetHashCode(RecipientInfo obj)
-        {
-            return obj.FilenameHint.GetHashCode();
         }
     }
 }

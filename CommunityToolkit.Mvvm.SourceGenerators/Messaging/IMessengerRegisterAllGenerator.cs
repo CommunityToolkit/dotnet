@@ -23,12 +23,21 @@ public sealed partial class IMessengerRegisterAllGenerator : IIncrementalGenerat
     /// <inheritdoc/>
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        // Get all class declarations
+        // Get all class declarations. This pipeline step also needs to filter out duplicate recipient
+        // definitions (it might happen if a recipient has partial declarations). To do this, all pairs
+        // of class declarations and associated symbols are gathered, and then only the pair where the
+        // class declaration is the first syntax reference for the associated symbol is kept.
         IncrementalValuesProvider<INamedTypeSymbol> typeSymbols =
             context.SyntaxProvider
             .CreateSyntaxProvider(
-                static (node, _) => node is ClassDeclarationSyntax { BaseList.Types.Count: > 0 },
-                static (context, _) => (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!);
+                static (node, _) => node is ClassDeclarationSyntax,
+                static (context, _) => (context.Node, Symbol: (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!))
+            .Where(static item =>
+                item.Symbol.DeclaringSyntaxReferences.Length > 0 &&
+                item.Symbol.DeclaringSyntaxReferences[0] is SyntaxReference syntaxReference &&
+                syntaxReference.SyntaxTree == item.Node.SyntaxTree &&
+                syntaxReference.Span == item.Node.Span)
+            .Select(static (item, _) => item.Symbol);
 
         // Get the target IRecipient<TMessage> interfaces and filter out other types
         IncrementalValuesProvider<(INamedTypeSymbol Type, ImmutableArray<INamedTypeSymbol> Interfaces)> typeAndInterfaceSymbols =
@@ -36,15 +45,10 @@ public sealed partial class IMessengerRegisterAllGenerator : IIncrementalGenerat
             .Select(static (item, _) => (item, Interfaces: Execute.GetInterfaces(item)))
             .Where(static item => !item.Interfaces.IsEmpty);
 
-        // Get the recipient info for all target types. This pipeline step also needs to filter out
-        // duplicate recipient definitions (it might happen if a recipient has partial declarations)
+        // Get the recipient info for all target types
         IncrementalValuesProvider<RecipientInfo> recipientInfo =
             typeAndInterfaceSymbols
             .Select(static (item, _) => Execute.GetInfo(item.Type, item.Interfaces))
-            .WithComparer(RecipientInfo.Comparer.Default)
-            .Collect()
-            .Select(static (item, _) => item.Distinct(RecipientInfo.EqualityComparerByFilenameHint))
-            .SelectMany(static (item, _) => item)
             .WithComparer(RecipientInfo.Comparer.Default);
 
         // Check whether the header file is needed
