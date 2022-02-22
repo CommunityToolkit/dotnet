@@ -6,6 +6,8 @@ using System.ComponentModel;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
+#pragma warning disable IDE0090 // Use 'new DiagnosticDescriptor(...)'
+
 namespace CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
 
 /// <summary>
@@ -19,7 +21,7 @@ internal static class DiagnosticDescriptors
     /// Format: <c>"Cannot apply [INotifyPropertyChangedAttribute] to type {0}, as it already declares the INotifyPropertyChanged interface"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor DuplicateINotifyPropertyChangedInterfaceForINotifyPropertyChangedAttributeError = new(
+    public static readonly DiagnosticDescriptor DuplicateINotifyPropertyChangedInterfaceForINotifyPropertyChangedAttributeError = new DiagnosticDescriptor(
         id: "MVVMTK0001",
         title: $"Duplicate {nameof(INotifyPropertyChanged)} definition",
         messageFormat: $"Cannot apply [INotifyPropertyChanged] to type {{0}}, as it already declares the {nameof(INotifyPropertyChanged)} interface",
@@ -35,7 +37,7 @@ internal static class DiagnosticDescriptors
     /// Format: <c>"Cannot apply [ObservableObjectAttribute] to type {0}, as it already declares the INotifyPropertyChanged interface"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor DuplicateINotifyPropertyChangedInterfaceForObservableObjectAttributeError = new(
+    public static readonly DiagnosticDescriptor DuplicateINotifyPropertyChangedInterfaceForObservableObjectAttributeError = new DiagnosticDescriptor(
         id: "MVVMTK0002",
         title: $"Duplicate {nameof(INotifyPropertyChanged)} definition",
         messageFormat: $"Cannot apply [ObservableObject] to type {{0}}, as it already declares the {nameof(INotifyPropertyChanged)} interface",
@@ -51,7 +53,7 @@ internal static class DiagnosticDescriptors
     /// Format: <c>"Cannot apply [ObservableObjectAttribute] to type {0}, as it already declares the INotifyPropertyChanging interface"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor DuplicateINotifyPropertyChangingInterfaceForObservableObjectAttributeError = new(
+    public static readonly DiagnosticDescriptor DuplicateINotifyPropertyChangingInterfaceForObservableObjectAttributeError = new DiagnosticDescriptor(
         id: "MVVMTK0003",
         title: $"Duplicate {nameof(INotifyPropertyChanging)} definition",
         messageFormat: $"Cannot apply [ObservableObject] to type {{0}}, as it already declares the {nameof(INotifyPropertyChanging)} interface",
@@ -67,7 +69,7 @@ internal static class DiagnosticDescriptors
     /// Format: <c>"Cannot apply [ObservableRecipientAttribute] to type {0}, as it already inherits from the ObservableRecipient class"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor DuplicateObservableRecipientError = new(
+    public static readonly DiagnosticDescriptor DuplicateObservableRecipientError = new DiagnosticDescriptor(
         id: "MVVMTK0004",
         title: "Duplicate ObservableRecipient definition",
         messageFormat: $"Cannot apply [ObservableRecipient] to type {{0}}, as it already inherits from the ObservableRecipient class",
@@ -83,7 +85,7 @@ internal static class DiagnosticDescriptors
     /// Format: <c>"Cannot apply [ObservableRecipientAttribute] to type {0}, as it lacks necessary base functionality (it should either inherit from ObservableObject, or be annotated with [ObservableObjectAttribute] or [INotifyPropertyChangedAttribute])"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor MissingBaseObservableObjectFunctionalityError = new(
+    public static readonly DiagnosticDescriptor MissingBaseObservableObjectFunctionalityError = new DiagnosticDescriptor(
         id: "MVVMTK0005",
         title: "Missing base ObservableObject functionality",
         messageFormat: $"Cannot apply [ObservableRecipient] to type {{0}}, as it lacks necessary base functionality (it should either inherit from ObservableObject, or be annotated with [ObservableObject] or [INotifyPropertyChanged])",
@@ -99,7 +101,7 @@ internal static class DiagnosticDescriptors
     /// Format: <c>"The field {0}.{1} cannot be used to generate an observable property, as it has {2} validation attribute(s) but is declared in a type that doesn't inherit from ObservableValidator"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor MissingObservableValidatorInheritanceError = new(
+    public static readonly DiagnosticDescriptor MissingObservableValidatorInheritanceError = new DiagnosticDescriptor(
         id: "MVVMTK0006",
         title: "Missing ObservableValidator inheritance",
         messageFormat: "The field {0}.{1} cannot be used to generate an observable property, as it has {2} validation attribute(s) but is declared in a type that doesn't inherit from ObservableValidator",
@@ -115,7 +117,7 @@ internal static class DiagnosticDescriptors
     /// Format: <c>"The method {0}.{1} cannot be used to generate a command property, as its signature isn't compatible with any of the existing relay command types"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor InvalidICommandMethodSignatureError = new(
+    public static readonly DiagnosticDescriptor InvalidICommandMethodSignatureError = new DiagnosticDescriptor(
         id: "MVVMTK0007",
         title: "Invalid ICommand method signature",
         messageFormat: "The method {0}.{1} cannot be used to generate a command property, as its signature isn't compatible with any of the existing relay command types",
@@ -128,7 +130,7 @@ internal static class DiagnosticDescriptors
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when an unsupported C# language version is being used.
     /// </summary>
-    public static readonly DiagnosticDescriptor UnsupportedCSharpLanguageVersionError = new(
+    public static readonly DiagnosticDescriptor UnsupportedCSharpLanguageVersionError = new DiagnosticDescriptor(
         id: "MVVMTK0008",
         title: "Unsupported C# language version",
         messageFormat: "The source generator features from the MVVM Toolkit require consuming projects to set the C# language version to at least C# 8.0",
@@ -144,7 +146,7 @@ internal static class DiagnosticDescriptors
     /// Format: <c>"The CanExecute name must refer to a valid member, but "{0}" has no matches in type {1}"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor InvalidCanExecuteMemberName = new(
+    public static readonly DiagnosticDescriptor InvalidCanExecuteMemberName = new DiagnosticDescriptor(
         id: "MVVMTK0009",
         title: "Invalid ICommand.CanExecute member name",
         messageFormat: "The CanExecute name must refer to a valid member, but \"{0}\" has no matches in type {1}",
@@ -160,7 +162,7 @@ internal static class DiagnosticDescriptors
     /// Format: <c>"The CanExecute name must refer to a single member, but "{0}" has multiple matches in type {1}"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor MultipleCanExecuteMemberNameMatches = new(
+    public static readonly DiagnosticDescriptor MultipleCanExecuteMemberNameMatches = new DiagnosticDescriptor(
         id: "MVVMTK0010",
         title: "Multiple ICommand.CanExecute member name matches",
         messageFormat: "The CanExecute name must refer to a single member, but \"{0}\" has multiple matches in type {1}",
@@ -176,7 +178,7 @@ internal static class DiagnosticDescriptors
     /// Format: <c>"The CanExecute name must refer to a compatible member, but no valid members were found for "{0}" in type {1}"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor InvalidCanExecuteMember = new(
+    public static readonly DiagnosticDescriptor InvalidCanExecuteMember = new DiagnosticDescriptor(
         id: "MVVMTK0011",
         title: "No valid ICommand.CanExecute member match",
         messageFormat: "The CanExecute name must refer to a compatible member, but no valid members were found for \"{0}\" in type {1}",
@@ -192,7 +194,7 @@ internal static class DiagnosticDescriptors
     /// Format: <c>"The method {0}.{1} cannot be annotated with the [ICommand] attribute specifying a concurrency control setting, as it maps to a non-asynchronous command type"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor InvalidConcurrentExecutionsParameterError = new(
+    public static readonly DiagnosticDescriptor InvalidConcurrentExecutionsParameterError = new DiagnosticDescriptor(
         id: "MVVMTK0012",
         title: "Invalid concurrency control setting usage",
         messageFormat: "The method {0}.{1} cannot be annotated with the [ICommand] attribute specifying a concurrency control setting, as it maps to a non-asynchronous command type",
