@@ -19,9 +19,11 @@
   </PropertyGroup>
 
   <PropertyGroup Label="Build">
+    <NoWarn>NU1507</NoWarn>
     <IsPackable>true</IsPackable>
     <IsPublishable>true</IsPublishable>
     <ContinuousIntegrationBuild>$(TF_BUILD)</ContinuousIntegrationBuild>
+    <ProjectName>$(MSBuildProjectName.Replace('CommunityToolkit.', ''))</ProjectName>
   </PropertyGroup>
 
   <ItemDefinitionGroup>
@@ -33,8 +35,8 @@
 
   <PropertyGroup Label="Outputs">
     <!-- Common Outputs -->
-    <BuildDir>~build\</BuildDir>
-    <PublishDir>~publish\</PublishDir>
+    <BuildDir>$(RepositoryDirectory)~build\$(ProjectName)\</BuildDir>
+    <PublishDir>$(RepositoryDirectory)~publish\$(ProjectName)\</PublishDir>
     <!-- Build Outputs -->
     <BaseOutputPath>$(BuildDir)bin\</BaseOutputPath>
     <BaseIntermediateOutputPath>$(BuildDir)obj\</BaseIntermediateOutputPath>
@@ -44,6 +46,8 @@
     <!-- Pack Outputs -->
     <PackageOutputPath>$(RepositoryDirectory)~packages\bin\</PackageOutputPath>
     <NuSpecOutputPath>$(RepositoryDirectory)~packages\obj\</NuSpecOutputPath>
+    <!-- Test Outputs -->
+    <VSTestResultsDirectory>$(BuildDir)TestResults\</VSTestResultsDirectory>
   </PropertyGroup>
 
 </Project>

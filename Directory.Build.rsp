@@ -1,0 +1,4 @@
+-NoLogo
+-MaxCPUCount
+-NodeReuse:False
+-Verbosity:Normal

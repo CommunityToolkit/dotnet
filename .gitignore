@@ -11,6 +11,7 @@
 # Working folders
 ~build/
 ~publish/
+~packages/
 
 # Build results
 [Bb]in/
