@@ -81,7 +81,6 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand
         ArgumentNullException.ThrowIfNull(execute);
 
         this.execute = execute;
-        this.allowConcurrentExecutions = true;
     }
 
     /// <summary>
@@ -108,7 +107,6 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand
         ArgumentNullException.ThrowIfNull(cancelableExecute);
 
         this.cancelableExecute = cancelableExecute;
-        this.allowConcurrentExecutions = true;
     }
 
     /// <summary>
@@ -138,7 +136,6 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand
 
         this.execute = execute;
         this.canExecute = canExecute;
-        this.allowConcurrentExecutions = true;
     }
 
     /// <summary>
@@ -171,7 +168,6 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand
 
         this.cancelableExecute = cancelableExecute;
         this.canExecute = canExecute;
-        this.allowConcurrentExecutions = true;
     }
 
     /// <summary>

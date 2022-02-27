@@ -134,11 +134,26 @@ public class Test_AsyncRelayCommandOfT
     }
 
     [TestMethod]
-    public async Task Test_AsyncRelayCommandOfT_WithConcurrencyControl()
+    public async Task Test_AsyncRelayCommandOfT_AllowConcurrentExecutions_Disabled()
+    {
+        await Test_AsyncRelayCommandOfT_AllowConcurrentExecutions_TestLogic(static task => new(async _ => await task, allowConcurrentExecutions: false));
+    }
+
+    [TestMethod]
+    public async Task Test_AsyncRelayCommandOfT_AllowConcurrentExecutions_Default()
+    {
+        await Test_AsyncRelayCommandOfT_AllowConcurrentExecutions_TestLogic(static task => new(async _ => await task));
+    }
+
+    /// <summary>
+    /// Shared logic for <see cref="Test_AsyncRelayCommandOfT_AllowConcurrentExecutions_Disabled"/> and <see cref="Test_AsyncRelayCommandOfT_AllowConcurrentExecutions_Default"/>.
+    /// </summary>
+    /// <param name="factory">A factory to create the <see cref="AsyncRelayCommand{T}"/> instance to test.</param>
+    private static async Task Test_AsyncRelayCommandOfT_AllowConcurrentExecutions_TestLogic(Func<Task, AsyncRelayCommand<string>> factory)
     {
         TaskCompletionSource<object?> tcs = new();
 
-        AsyncRelayCommand<string> command = new(async s => await tcs.Task, allowConcurrentExecutions: false);
+        AsyncRelayCommand<string> command = factory(tcs.Task);
 
         Assert.IsTrue(command.CanExecute(null));
         Assert.IsTrue(command.CanExecute("1"));

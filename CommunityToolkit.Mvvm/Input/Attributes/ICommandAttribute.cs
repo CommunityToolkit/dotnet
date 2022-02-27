@@ -78,5 +78,5 @@ public sealed class ICommandAttribute : Attribute
     /// when an execution is invoked while a previous one is still running. It is the same as creating an instance of
     /// these command types with a constructor such as <see cref="AsyncRelayCommand(Func{System.Threading.Tasks.Task}, bool)"/>.
     /// </summary>
-    public bool AllowConcurrentExecutions { get; init; } = true;
+    public bool AllowConcurrentExecutions { get; init; }
 }

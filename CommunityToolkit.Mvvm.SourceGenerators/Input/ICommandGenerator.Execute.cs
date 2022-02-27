@@ -183,10 +183,10 @@ partial class ICommandGenerator
                 commandCreationArguments.Add(Argument(canExecuteExpression));
             }
 
-            // Disable concurrent executions, if requested
-            if (!commandInfo.AllowConcurrentExecutions)
+            // Enable concurrent executions, if requested
+            if (commandInfo.AllowConcurrentExecutions)
             {
-                commandCreationArguments.Add(Argument(LiteralExpression(SyntaxKind.FalseLiteralExpression)));
+                commandCreationArguments.Add(Argument(LiteralExpression(SyntaxKind.TrueLiteralExpression)));
             }
 
             // Construct the generated property as follows (the explicit delegate cast is needed to avoid overload resolution conflicts):
@@ -366,7 +366,7 @@ partial class ICommandGenerator
         /// <param name="attributeData">The <see cref="AttributeData"/> instance the method was annotated with.</param>
         /// <param name="commandClassType">The command class type name.</param>
         /// <param name="diagnostics">The current collection of gathered diagnostics.</param>
-        /// <param name="allowConcurrentExecutions">Whether or not concurrent executions have been disabled.</param>
+        /// <param name="allowConcurrentExecutions">Whether or not concurrent executions have been enabled.</param>
         /// <returns>Whether or not a value for <paramref name="allowConcurrentExecutions"/> could be retrieved successfully.</returns>
         private static bool TryGetAllowConcurrentExecutionsSwitch(
             IMethodSymbol methodSymbol,
@@ -375,11 +375,10 @@ partial class ICommandGenerator
             ImmutableArray<Diagnostic>.Builder diagnostics,
             out bool allowConcurrentExecutions)
         {
-            // Try to get the custom switch for concurrent executions. If the switch is not present, the
-            // default value is set to true, to avoid breaking backwards compatibility with the first release.
+            // Try to get the custom switch for concurrent executions (the default is false)
             if (!attributeData.TryGetNamedArgument("AllowConcurrentExecutions", out allowConcurrentExecutions))
             {
-                allowConcurrentExecutions = true;
+                allowConcurrentExecutions = false;
 
                 return true;
             }
