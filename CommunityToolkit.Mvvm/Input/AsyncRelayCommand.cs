@@ -72,7 +72,7 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand
     public event EventHandler? CanExecuteChanged;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AsyncRelayCommand"/> class that can always execute.
+    /// Initializes a new instance of the <see cref="AsyncRelayCommand"/> class.
     /// </summary>
     /// <param name="execute">The execution logic.</param>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="execute"/> is <see langword="null"/>.</exception>
@@ -84,7 +84,7 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AsyncRelayCommand"/> class that can always execute.
+    /// Initializes a new instance of the <see cref="AsyncRelayCommand"/> class.
     /// </summary>
     /// <param name="execute">The execution logic.</param>
     /// <param name="allowConcurrentExecutions">Whether or not to allow concurrent executions of the command.</param>
@@ -98,7 +98,7 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AsyncRelayCommand"/> class that can always execute.
+    /// Initializes a new instance of the <see cref="AsyncRelayCommand"/> class.
     /// </summary>
     /// <param name="cancelableExecute">The cancelable execution logic.</param>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="cancelableExecute"/> is <see langword="null"/>.</exception>
@@ -110,7 +110,7 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AsyncRelayCommand"/> class that can always execute.
+    /// Initializes a new instance of the <see cref="AsyncRelayCommand"/> class.
     /// </summary>
     /// <param name="cancelableExecute">The cancelable execution logic.</param>
     /// <param name="allowConcurrentExecutions">Whether or not to allow concurrent executions of the command.</param>
