@@ -7,6 +7,9 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel.__Internals;
+
+#pragma warning disable CS0618
 
 namespace CommunityToolkit.Mvvm.Input;
 
@@ -213,13 +216,7 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand
 
             static async void MonitorTask(AsyncRelayCommand @this, Task task)
             {
-                try
-                {
-                    await task;
-                }
-                catch
-                {
-                }
+                await task.GetAwaitableWithoutEndValidation();
 
                 if (ReferenceEquals(@this.executionTask, task))
                 {

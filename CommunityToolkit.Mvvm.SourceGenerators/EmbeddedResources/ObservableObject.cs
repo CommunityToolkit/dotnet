@@ -437,13 +437,7 @@ public abstract class ObservableObject : global::System.ComponentModel.INotifyPr
 
         async void MonitorTask()
         {
-            try
-            {
-                await newValue!;
-            }
-            catch
-            {
-            }
+            await global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__TaskExtensions.GetAwaitableWithoutEndValidation(newValue!);
 
             if (ReferenceEquals(taskNotifier.Task, newValue))
             {
