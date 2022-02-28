@@ -269,21 +269,34 @@ public sealed class AsyncRelayCommand<T> : IAsyncRelayCommand<T>
     {
         if (CanExecute(parameter))
         {
-            // Non cancelable command delegate
+            Task executionTask;
+
+            
             if (this.execute is not null)
             {
-                return ExecutionTask = this.execute(parameter);
+                // Non cancelable command delegate
+                executionTask = ExecutionTask = this.execute(parameter);
+            }
+            else
+            {
+                // Cancel the previous operation, if one is pending
+                this.cancellationTokenSource?.Cancel();
+
+                CancellationTokenSource cancellationTokenSource = this.cancellationTokenSource = new();
+
+                PropertyChanged?.Invoke(this, AsyncRelayCommand.IsCancellationRequestedChangedEventArgs);
+
+                // Invoke the cancelable command delegate with a new linked token
+                executionTask = ExecutionTask = this.cancelableExecute!(parameter, cancellationTokenSource.Token);
             }
 
-            // Cancel the previous operation, if one is pending
-            this.cancellationTokenSource?.Cancel();
+            // If concurrent executions are disabled, notify the can execute change as well
+            if (!this.allowConcurrentExecutions)
+            {
+                CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+            }
 
-            CancellationTokenSource cancellationTokenSource = this.cancellationTokenSource = new();
-
-            PropertyChanged?.Invoke(this, AsyncRelayCommand.IsCancellationRequestedChangedEventArgs);
-
-            // Invoke the cancelable command delegate with a new linked token
-            return ExecutionTask = this.cancelableExecute!(parameter, cancellationTokenSource.Token);
+            return executionTask;
         }
 
         return Task.CompletedTask;
