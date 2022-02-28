@@ -61,7 +61,12 @@ internal static class TaskSchedulerTestHelper
             // Await for the continuation to actually run
             _ = await tcs.Task;
 
-            // Some additional time to ensure the exception is propagated
+            // Wait for some additional time to ensure the exception is propagated. This is a bit counterintuitive, but the delay is
+            // not actually for the event to be raised, but to ensure the task that is throwing has had time to be scheduled and fail.
+            // The event is raised only when the exception wrapper inside that task is collected and its finalizer has run (that's where
+            // the logic to raise the event is executed), which is why we're then calling GC.Collect() and GC.WaitForPendingFinalizers().
+            // That is, we can't use a task completion source from that event, because that event is only guaranteed to actually be raised
+            // when the finalizer for that task run, which is why we're calling the GC after the delay here.
             await Task.Delay(200);
 
             GC.Collect();
