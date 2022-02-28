@@ -119,7 +119,7 @@ partial class ICommandGenerator
 
             // Construct the generated field as follows:
             //
-            // <summary>The backing field for <see cref="<COMMAND_PROPERTY_NAME>"/></summary>
+            // /// <summary>The backing field for <see cref="<COMMAND_PROPERTY_NAME>"/></summary>
             // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
             // private <COMMAND_TYPE>? <COMMAND_FIELD_NAME>;
             FieldDeclarationSyntax fieldDeclaration =
@@ -191,7 +191,7 @@ partial class ICommandGenerator
 
             // Construct the generated property as follows (the explicit delegate cast is needed to avoid overload resolution conflicts):
             //
-            // <summary>Gets an <see cref="<COMMAND_INTERFACE_TYPE>" instance wrapping <see cref="<METHOD_NAME>"/> and <see cref="<OPTIONAL_CAN_EXECUTE>"/>.</summary>
+            // /// <summary>Gets an <see cref="<COMMAND_INTERFACE_TYPE>" instance wrapping <see cref="<METHOD_NAME>"/> and <see cref="<OPTIONAL_CAN_EXECUTE>"/>.</summary>
             // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
             // [global::System.Diagnostics.DebuggerNonUserCode]
             // [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
