@@ -224,7 +224,7 @@ public class Test_AsyncRelayCommandOfT
         Assert.IsTrue(success);
     }
 
-    public void Test_AsyncRelayCommand_ExecuteDoesNotRaisesCanExecuteChanged()
+    public void Test_AsyncRelayCommand_ExecuteDoesNotRaiseCanExecuteChanged()
     {
         TaskCompletionSource<object?> tcs = new();
 
@@ -270,7 +270,7 @@ public class Test_AsyncRelayCommandOfT
     }
 
     [TestMethod]
-    public void Test_AsyncRelayCommand_ExecuteDoesNotRaisesCanExecuteChanged_WithCancellation()
+    public void Test_AsyncRelayCommand_ExecuteDoesNotRaiseCanExecuteChanged_WithCancellation()
     {
         TaskCompletionSource<object?> tcs = new();
 

@@ -328,7 +328,7 @@ public class Test_AsyncRelayCommand
 
     // See https://github.com/CommunityToolkit/dotnet/issues/108
     [TestMethod]
-    public void Test_AsyncRelayCommand_ExecuteDoesNotRaisesCanExecuteChanged()
+    public void Test_AsyncRelayCommand_ExecuteDoesNotRaiseCanExecuteChanged()
     {
         TaskCompletionSource<object?> tcs = new();
 
@@ -374,7 +374,7 @@ public class Test_AsyncRelayCommand
     }
 
     [TestMethod]
-    public void Test_AsyncRelayCommand_ExecuteDoesNotRaisesCanExecuteChanged_WithCancellation()
+    public void Test_AsyncRelayCommand_ExecuteDoesNotRaiseCanExecuteChanged_WithCancellation()
     {
         TaskCompletionSource<object?> tcs = new();
 
