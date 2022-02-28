@@ -48,7 +48,7 @@ public sealed class AsyncRelayCommand<T> : IAsyncRelayCommand<T>
     public event EventHandler? CanExecuteChanged;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AsyncRelayCommand{T}"/> class that can always execute.
+    /// Initializes a new instance of the <see cref="AsyncRelayCommand{T}"/> class.
     /// </summary>
     /// <param name="execute">The execution logic.</param>
     /// <remarks>See notes in <see cref="RelayCommand{T}(Action{T})"/>.</remarks>
@@ -58,11 +58,10 @@ public sealed class AsyncRelayCommand<T> : IAsyncRelayCommand<T>
         ArgumentNullException.ThrowIfNull(execute);
 
         this.execute = execute;
-        this.allowConcurrentExecutions = true;
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AsyncRelayCommand{T}"/> class that can always execute.
+    /// Initializes a new instance of the <see cref="AsyncRelayCommand{T}"/> class.
     /// </summary>
     /// <param name="execute">The execution logic.</param>
     /// <param name="allowConcurrentExecutions">Whether or not to allow concurrent executions of the command.</param>
@@ -77,7 +76,7 @@ public sealed class AsyncRelayCommand<T> : IAsyncRelayCommand<T>
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AsyncRelayCommand{T}"/> class that can always execute.
+    /// Initializes a new instance of the <see cref="AsyncRelayCommand{T}"/> class.
     /// </summary>
     /// <param name="cancelableExecute">The cancelable execution logic.</param>
     /// <remarks>See notes in <see cref="RelayCommand{T}(Action{T})"/>.</remarks>
@@ -87,11 +86,10 @@ public sealed class AsyncRelayCommand<T> : IAsyncRelayCommand<T>
         ArgumentNullException.ThrowIfNull(cancelableExecute);
 
         this.cancelableExecute = cancelableExecute;
-        this.allowConcurrentExecutions = true;
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AsyncRelayCommand{T}"/> class that can always execute.
+    /// Initializes a new instance of the <see cref="AsyncRelayCommand{T}"/> class.
     /// </summary>
     /// <param name="cancelableExecute">The cancelable execution logic.</param>
     /// <param name="allowConcurrentExecutions">Whether or not to allow concurrent executions of the command.</param>
@@ -119,7 +117,6 @@ public sealed class AsyncRelayCommand<T> : IAsyncRelayCommand<T>
 
         this.execute = execute;
         this.canExecute = canExecute;
-        this.allowConcurrentExecutions = true;
     }
 
     /// <summary>
@@ -154,7 +151,6 @@ public sealed class AsyncRelayCommand<T> : IAsyncRelayCommand<T>
 
         this.cancelableExecute = cancelableExecute;
         this.canExecute = canExecute;
-        this.allowConcurrentExecutions = true;
     }
 
     /// <summary>

@@ -177,11 +177,84 @@ public class Test_AsyncRelayCommand
     }
 
     [TestMethod]
-    public async Task Test_AsyncRelayCommand_WithConcurrencyControl()
+    public async Task Test_AsyncRelayCommand_AllowConcurrentExecutions_Enable()
+    {
+        int index = 0;
+        TaskCompletionSource<object?>[] cancellationTokenSources = new TaskCompletionSource<object?>[]
+        {
+            new TaskCompletionSource<object?>(),
+            new TaskCompletionSource<object?>()
+        };
+
+        AsyncRelayCommand? command = new(() => cancellationTokenSources[index++].Task, allowConcurrentExecutions: true);
+
+        Assert.IsTrue(command.CanExecute(null));
+        Assert.IsTrue(command.CanExecute(new object()));
+
+        Assert.IsFalse(command.CanBeCanceled);
+        Assert.IsFalse(command.IsCancellationRequested);
+
+        (object?, EventArgs?) args = default;
+
+        command.CanExecuteChanged += (s, e) => args = (s, e);
+
+        command.NotifyCanExecuteChanged();
+
+        Assert.AreSame(args.Item1, command);
+        Assert.AreSame(args.Item2, EventArgs.Empty);
+
+        Assert.IsNull(command.ExecutionTask);
+        Assert.IsFalse(command.IsRunning);
+
+        Task task = command.ExecuteAsync(null);
+
+        Assert.IsNotNull(command.ExecutionTask);
+        Assert.AreSame(command.ExecutionTask, task);
+        Assert.AreSame(command.ExecutionTask, cancellationTokenSources[0].Task);
+        Assert.IsTrue(command.IsRunning);
+
+        // The command can still be executed now
+        Assert.IsTrue(command.CanExecute(null));
+        Assert.IsTrue(command.CanExecute(new object()));
+
+        Assert.IsFalse(command.CanBeCanceled);
+        Assert.IsFalse(command.IsCancellationRequested);
+
+        Task newTask = command.ExecuteAsync(null);
+
+        // A new task was returned
+        Assert.AreSame(command.ExecutionTask, newTask);
+        Assert.AreSame(command.ExecutionTask, cancellationTokenSources[1].Task);
+
+        cancellationTokenSources[0].SetResult(null);
+        cancellationTokenSources[1].SetResult(null);
+
+        _ = await Task.WhenAll(cancellationTokenSources[0].Task, cancellationTokenSources[1].Task);
+
+        Assert.IsFalse(command.IsRunning);
+    }
+
+    [TestMethod]
+    public async Task Test_AsyncRelayCommand_AllowConcurrentExecutions_Disabled()
+    {
+        await Test_AsyncRelayCommand_AllowConcurrentExecutions_TestLogic(static task => new(async () => await task, allowConcurrentExecutions: false));
+    }
+
+    [TestMethod]
+    public async Task Test_AsyncRelayCommand_AllowConcurrentExecutions_Default()
+    {
+        await Test_AsyncRelayCommand_AllowConcurrentExecutions_TestLogic(static task => new(async () => await task));
+    }
+
+    /// <summary>
+    /// Shared logic for <see cref="Test_AsyncRelayCommand_AllowConcurrentExecutions_Disabled"/> and <see cref="Test_AsyncRelayCommand_AllowConcurrentExecutions_Default"/>.
+    /// </summary>
+    /// <param name="factory">A factory to create the <see cref="AsyncRelayCommand"/> instance to test.</param>
+    private static async Task Test_AsyncRelayCommand_AllowConcurrentExecutions_TestLogic(Func<Task, AsyncRelayCommand> factory)
     {
         TaskCompletionSource<object?> tcs = new();
 
-        AsyncRelayCommand? command = new(async () => await tcs.Task, allowConcurrentExecutions: false);
+        AsyncRelayCommand? command = factory(tcs.Task);
 
         Assert.IsTrue(command.CanExecute(null));
         Assert.IsTrue(command.CanExecute(new object()));

@@ -57,6 +57,23 @@ public partial class Test_ICommandAttribute
         CollectionAssert.AreEqual(model.Values, Enumerable.Range(0, 10).ToArray());
 
         await Task.WhenAll(tasks);
+
+        tasks.Clear();
+
+        for (int i = 10; i < 20; i++)
+        {
+            tasks.Add(model.AddValueToListAndDelayWithDefaultConcurrencyCommand.ExecuteAsync(i));
+        }
+
+        Assert.AreEqual(10, tasks.Count);
+
+        // Only the first item should have been added
+        CollectionAssert.AreEqual(model.Values, Enumerable.Range(0, 11).ToArray());
+
+        for (int i = 1; i < tasks.Count; i++)
+        {
+            Assert.AreSame(Task.CompletedTask, tasks[i]);
+        }
     }
 
     [TestMethod]
@@ -366,12 +383,20 @@ public partial class Test_ICommandAttribute
             Counter += 1;
         }
 
-        [ICommand]
+        [ICommand(AllowConcurrentExecutions = true)]
         private async Task AddValueToListAndDelayAsync(int value)
         {
             Values.Add(value);
 
             await Task.Delay(100);
+        }
+
+        [ICommand]
+        private async Task AddValueToListAndDelayWithDefaultConcurrencyAsync(int value)
+        {
+            Values.Add(value);
+
+            await Task.Delay(1000);
         }
 
         #region Test region
