@@ -292,8 +292,6 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand
 
                 CancellationTokenSource cancellationTokenSource = this.cancellationTokenSource = new();
 
-                PropertyChanged?.Invoke(this, IsCancellationRequestedChangedEventArgs);
-
                 // Invoke the cancelable command delegate with a new linked token
                 executionTask = ExecutionTask = this.cancelableExecute!(cancellationTokenSource.Token);
             }

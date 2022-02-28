@@ -3,6 +3,8 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.UnitTests.Helpers;
@@ -132,6 +134,50 @@ public class Test_AsyncRelayCommandOfT
 
         Assert.IsFalse(command.CanExecute(null));
         _ = Assert.ThrowsException<NullReferenceException>(() => command.Execute(null));
+    }
+
+    [TestMethod]
+    public async Task Test_AsyncRelayCommandOfT_WithCancellation()
+    {
+        // See comments in Test_AsyncRelayCommand_WithCancellation for the logic below
+        TaskCompletionSource<object?> tcs = new();
+        AsyncRelayCommand<string> command = new((s, token) => tcs.Task);
+
+        List<PropertyChangedEventArgs> args = new();
+
+        command.PropertyChanged += (s, e) => args.Add(e);
+
+        Assert.IsTrue(command.CanExecute(null));
+        Assert.IsTrue(command.CanExecute("Hello"));
+
+        Assert.IsFalse(command.CanBeCanceled);
+        Assert.IsFalse(command.IsCancellationRequested);
+
+        command.Execute(null);
+
+        Assert.IsTrue(command.CanBeCanceled);
+        Assert.IsFalse(command.IsCancellationRequested);
+
+        Assert.AreEqual(args.Count, 4);
+        Assert.AreEqual(args[0].PropertyName, nameof(IAsyncRelayCommand.ExecutionTask));
+        Assert.AreEqual(args[1].PropertyName, nameof(IAsyncRelayCommand.IsRunning));
+        Assert.AreEqual(args[2].PropertyName, nameof(IAsyncRelayCommand.CanBeCanceled));
+        Assert.AreEqual(args[3].PropertyName, nameof(IAsyncRelayCommand.IsCancellationRequested));
+
+        command.Cancel();
+
+        Assert.AreEqual(args.Count, 6);
+        Assert.AreEqual(args[4].PropertyName, nameof(IAsyncRelayCommand.CanBeCanceled));
+        Assert.AreEqual(args[5].PropertyName, nameof(IAsyncRelayCommand.IsCancellationRequested));
+
+        Assert.IsTrue(command.IsCancellationRequested);
+
+        tcs.SetResult(null);
+
+        await command.ExecutionTask!;
+
+        Assert.IsFalse(command.CanBeCanceled);
+        Assert.IsTrue(command.IsCancellationRequested);
     }
 
     [TestMethod]
