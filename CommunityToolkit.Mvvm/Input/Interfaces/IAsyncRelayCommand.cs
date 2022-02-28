@@ -19,8 +19,32 @@ public interface IAsyncRelayCommand : IRelayCommand, INotifyPropertyChanged
     Task? ExecutionTask { get; }
 
     /// <summary>
-    /// Gets a value indicating whether running operations for this command can be canceled.
+    /// Gets a value indicating whether a running operation for this command can currently be canceled.
     /// </summary>
+    /// <remarks>
+    /// The exact sequence of events that types implementing this interface should raise is as follows:
+    /// <list type="bullet">
+    /// <item>
+    /// The command is initially not running: <see cref="IsRunning"/>, <see cref="CanBeCanceled"/>
+    /// and <see cref="IsCancellationRequested"/> are <see langword="false"/>.
+    /// </item>
+    /// <item>
+    /// The command starts running: <see cref="IsRunning"/> and <see cref="CanBeCanceled"/> switch to
+    /// <see langword="true"/>. <see cref="IsCancellationRequested"/> is set to <see langword="false"/>.
+    /// </item>
+    /// <item>
+    /// If the operation is canceled: <see cref="CanBeCanceled"/> switches to <see langword="false"/>
+    /// and <see cref="IsCancellationRequested"/> switches to <see langword="true"/>.
+    /// </item>
+    /// <item>
+    /// The operation completes: <see cref="IsRunning"/> and <see cref="CanBeCanceled"/> switch
+    /// to <see langword="false"/>. The state of <see cref="IsCancellationRequested"/> is undefined.
+    /// </item>
+    /// </list>
+    /// This only applies if the underlying logic for the command actually supports cancelation. If that is
+    /// not the case, then <see cref="CanBeCanceled"/> and <see cref="IsCancellationRequested"/> will always remain
+    /// <see langword="false"/> regardless of the current state of the command.
+    /// </remarks>
     bool CanBeCanceled { get; }
 
     /// <summary>
