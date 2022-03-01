@@ -236,6 +236,71 @@ partial class ICommandGenerator
                             .AddArgumentListArguments(commandCreationArguments.ToArray()))))
                 .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
 
+            // Conditionally declare the additional members for the cancel commands
+            if (commandInfo.IncludeCancelCommand)
+            {
+                // Prepare all necessary member and type names
+                string cancelCommandFieldName = $"{commandInfo.FieldName.Substring(0, commandInfo.FieldName.Length - "Command".Length)}CancelCommand";
+                string cancelCommandPropertyName = $"{commandInfo.PropertyName.Substring(0, commandInfo.PropertyName.Length - "Command".Length)}CancelCommand";
+
+                // Construct the generated field for the cancel command as follows:
+                //
+                // /// <summary>The backing field for <see cref="<COMMAND_PROPERTY_NAME>"/></summary>
+                // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
+                // private global::System.Windows.Input.ICommand? <CANCEL_COMMAND_FIELD_NAME>;
+                FieldDeclarationSyntax cancelCommandFieldDeclaration =
+                    FieldDeclaration(
+                    VariableDeclaration(NullableType(IdentifierName("global::System.Windows.Input.ICommand")))
+                    .AddVariables(VariableDeclarator(Identifier(cancelCommandFieldName))))
+                    .AddModifiers(Token(SyntaxKind.PrivateKeyword))
+                    .AddAttributeLists(
+                        AttributeList(SingletonSeparatedList(
+                            Attribute(IdentifierName("global::System.CodeDom.Compiler.GeneratedCode"))
+                            .AddArgumentListArguments(
+                                AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ICommandGenerator).FullName))),
+                                AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ICommandGenerator).Assembly.GetName().Version.ToString()))))))
+                        .WithOpenBracketToken(Token(TriviaList(Comment($"/// <summary>The backing field for <see cref=\"{cancelCommandPropertyName}\"/>.</summary>")), SyntaxKind.OpenBracketToken, TriviaList())));
+
+                // Construct the generated property as follows (the explicit delegate cast is needed to avoid overload resolution conflicts):
+                //
+                // /// <summary>Gets an <see cref="global::System.Windows.Input.ICommand" instance that can be used to cancel <see cref="<COMMAND_PROPERTY_NAME>"/>.</summary>
+                // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
+                // [global::System.Diagnostics.DebuggerNonUserCode]
+                // [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+                // public global::System.Windows.Input.ICommand <CANCEL_COMMAND_PROPERTY_NAME> => <CANCEL_COMMAND_FIELD_NAME> ??= global::CommunityToolkit.Mvvm.Input.IAsyncRelayCommandExtensions.CreateCancelCommand(<COMMAND_PROPERTY_NAME>);
+                PropertyDeclarationSyntax cancelCommandPropertyDeclaration =
+                    PropertyDeclaration(
+                        IdentifierName("global::System.Windows.Input.ICommand"),
+                        Identifier(cancelCommandPropertyName))
+                    .AddModifiers(Token(SyntaxKind.PublicKeyword))
+                    .AddAttributeLists(
+                        AttributeList(SingletonSeparatedList(
+                            Attribute(IdentifierName("global::System.CodeDom.Compiler.GeneratedCode"))
+                            .AddArgumentListArguments(
+                                AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ICommandGenerator).FullName))),
+                                AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ICommandGenerator).Assembly.GetName().Version.ToString()))))))
+                        .WithOpenBracketToken(Token(TriviaList(Comment(
+                            $"/// <summary>Gets an <see cref=\"global::System.Windows.Input.ICommand\"/> instance that can be used to cancel <see cref=\"{commandInfo.PropertyName}\"/>.</summary>")),
+                            SyntaxKind.OpenBracketToken,
+                            TriviaList())),
+                        AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.DebuggerNonUserCode")))),
+                        AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage")))))
+                    .WithExpressionBody(
+                        ArrowExpressionClause(
+                            AssignmentExpression(
+                                SyntaxKind.CoalesceAssignmentExpression,
+                                IdentifierName(cancelCommandFieldName),
+                                InvocationExpression(
+                                    MemberAccessExpression(
+                                        SyntaxKind.SimpleMemberAccessExpression,
+                                        IdentifierName("global::CommunityToolkit.Mvvm.Input.IAsyncRelayCommandExtensions"),
+                                        IdentifierName("CreateCancelCommand")))
+                                .AddArgumentListArguments(Argument(IdentifierName(commandInfo.PropertyName))))))
+                    .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+
+                return ImmutableArray.Create<MemberDeclarationSyntax>(fieldDeclaration, propertyDeclaration, cancelCommandFieldDeclaration, cancelCommandPropertyDeclaration);
+            }
+
             return ImmutableArray.Create<MemberDeclarationSyntax>(fieldDeclaration, propertyDeclaration);
         }
 
