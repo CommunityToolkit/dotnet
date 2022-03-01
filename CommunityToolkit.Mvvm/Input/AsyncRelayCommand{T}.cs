@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel.__Internals;
+using CommunityToolkit.Mvvm.Input.Internals;
 
 #pragma warning disable CS0618
 
@@ -17,7 +18,7 @@ namespace CommunityToolkit.Mvvm.Input;
 /// A generic command that provides a more specific version of <see cref="AsyncRelayCommand"/>.
 /// </summary>
 /// <typeparam name="T">The type of parameter being passed as input to the callbacks.</typeparam>
-public sealed class AsyncRelayCommand<T> : IAsyncRelayCommand<T>
+public sealed class AsyncRelayCommand<T> : IAsyncRelayCommand<T>, ICancellationAwareCommand
 {
     /// <summary>
     /// The <see cref="Func{TResult}"/> to invoke when <see cref="Execute(T)"/> is used.
@@ -233,6 +234,9 @@ public sealed class AsyncRelayCommand<T> : IAsyncRelayCommand<T>
 
     /// <inheritdoc/>
     public bool IsRunning => ExecutionTask is { IsCompleted: false };
+
+    /// <inheritdoc/>
+    bool ICancellationAwareCommand.IsCancellationSupported => this.execute is null;
 
     /// <inheritdoc/>
     public void NotifyCanExecuteChanged()
