@@ -273,6 +273,38 @@ public partial class Test_ObservablePropertyAttribute
         CollectionAssert.AreEqual(new[] { nameof(model.Surname), nameof(model.FullName), nameof(model.Alias) }, propertyNames);
     }
 
+    [TestMethod]
+    public void Test_OnPropertyChangingAndChangedPartialMethods()
+    {
+        ViewModelWithImplementedUpdateMethods model = new();
+
+        model.Name = nameof(Test_OnPropertyChangingAndChangedPartialMethods);
+
+        Assert.AreEqual(nameof(Test_OnPropertyChangingAndChangedPartialMethods), model.NameChangingValue);
+        Assert.AreEqual(nameof(Test_OnPropertyChangingAndChangedPartialMethods), model.NameChangedValue);
+
+        model.Number = 99;
+
+        Assert.AreEqual(99, model.NumberChangedValue);
+    }
+
+    [TestMethod]
+    public void Test_OnPropertyChangingAndChangedPartialMethodWithAdditionalValidation()
+    {
+        ViewModelWithImplementedUpdateMethodAndAdditionalValidation model = new();
+
+        // The actual validation is performed inside the model itself.
+        // This test validates that the order with which methods/events are generated is:
+        //   - On<PROPERTY_NAME>Changing(value);
+        //   - OnProperyChanging();
+        //   - field = value;
+        //   - On<PROPERTY_NAME>Changed(value);
+        //   - OnProperyChanged();
+        model.Name = "B";
+
+        Assert.AreEqual("B", model.Name);
+    }
+
     public partial class SampleModel : ObservableObject
     {
         /// <summary>
@@ -397,5 +429,85 @@ public partial class Test_ObservablePropertyAttribute
         public string last = "Jones";
 
         public void RunValidation() => ValidateAllProperties();
+    }
+
+    public partial class ViewModelWithImplementedUpdateMethods : ObservableObject
+    {
+        [ObservableProperty]
+        public string? name = "Bob";
+
+        [ObservableProperty]
+        public int number = 42;
+
+        public string? NameChangingValue { get; private set; }
+
+        public string? NameChangedValue { get; private set; }
+
+        public int NumberChangedValue { get; private set; }
+
+        partial void OnNameChanging(string? value)
+        {
+            NameChangingValue = value;
+        }
+
+        partial void OnNameChanged(string? value)
+        {
+            NameChangedValue = value;
+        }
+
+        partial void OnNumberChanged(int value)
+        {
+            NumberChangedValue = value;
+        }
+    }
+
+    public partial class ViewModelWithImplementedUpdateMethodAndAdditionalValidation : ObservableObject
+    {
+        private int step;
+
+        [ObservableProperty]
+        public string? name = "A";
+
+        partial void OnNameChanging(string? value)
+        {
+            Assert.AreEqual(0, this.step);
+
+            this.step = 1;
+
+            Assert.AreEqual("A", this.name);
+            Assert.AreEqual("B", value);
+        }
+
+        partial void OnNameChanged(string? value)
+        {
+            Assert.AreEqual(2, this.step);
+
+            this.step = 3;
+
+            Assert.AreEqual("B", this.name);
+            Assert.AreEqual("B", value);
+        }
+
+        protected override void OnPropertyChanging(PropertyChangingEventArgs e)
+        {
+            base.OnPropertyChanging(e);
+
+            Assert.AreEqual(1, this.step);
+
+            this.step = 2;
+
+            Assert.AreEqual("A", this.name);
+            Assert.AreEqual(nameof(Name), e.PropertyName);
+        }
+
+        protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+        {
+            base.OnPropertyChanged(e);
+
+            Assert.AreEqual(3, this.step);
+
+            Assert.AreEqual("B", this.name);
+            Assert.AreEqual(nameof(Name), e.PropertyName);
+        }
     }
 }
