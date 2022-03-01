@@ -46,6 +46,7 @@ partial class ICommandGenerator
                 out string? commandInterfaceType,
                 out string? commandClassType,
                 out string? delegateType,
+                out bool supportsCancellation,
                 out ImmutableArray<string> commandTypeArguments,
                 out ImmutableArray<string> delegateTypeArguments))
             {
@@ -75,6 +76,18 @@ partial class ICommandGenerator
                 goto Failure;
             }
 
+            // Get the option to include a cancel command, if any
+            if (!TryGetIncludeCancelCommandSwitch(
+                methodSymbol,
+                attributeData,
+                commandClassType,
+                supportsCancellation,
+                builder,
+                out bool generateCancelCommand))
+            {
+                goto Failure;
+            }
+
             diagnostics = builder.ToImmutable();
 
             return new(
@@ -88,7 +101,8 @@ partial class ICommandGenerator
                 delegateTypeArguments,
                 canExecuteMemberName,
                 canExecuteExpressionType,
-                allowConcurrentExecutions);
+                allowConcurrentExecutions,
+                generateCancelCommand);
 
             Failure:
             diagnostics = builder.ToImmutable();
@@ -255,6 +269,7 @@ partial class ICommandGenerator
         /// <param name="commandInterfaceType">The command interface type name.</param>
         /// <param name="commandClassType">The command class type name.</param>
         /// <param name="delegateType">The delegate type name for the wrapped method.</param>
+        /// <param name="supportsCancellation">Indicates whether or not the resulting command supports cancellation.</param>
         /// <param name="commandTypeArguments">The type arguments for <paramref name="commandInterfaceType"/> and <paramref name="commandClassType"/>, if any.</param>
         /// <param name="delegateTypeArguments">The type arguments for <paramref name="delegateType"/>, if any.</param>
         /// <returns>Whether or not <paramref name="methodSymbol"/> was valid and the requested types have been set.</returns>
@@ -264,6 +279,7 @@ partial class ICommandGenerator
             [NotNullWhen(true)] out string? commandInterfaceType,
             [NotNullWhen(true)] out string? commandClassType,
             [NotNullWhen(true)] out string? delegateType,
+            out bool supportsCancellation,
             out ImmutableArray<string> commandTypeArguments,
             out ImmutableArray<string> delegateTypeArguments)
         {
@@ -273,6 +289,7 @@ partial class ICommandGenerator
                 commandInterfaceType = "global::CommunityToolkit.Mvvm.Input.IRelayCommand";
                 commandClassType = "global::CommunityToolkit.Mvvm.Input.RelayCommand";
                 delegateType = "global::System.Action";
+                supportsCancellation = false;
                 commandTypeArguments = ImmutableArray<string>.Empty;
                 delegateTypeArguments = ImmutableArray<string>.Empty;
 
@@ -287,6 +304,7 @@ partial class ICommandGenerator
                 commandInterfaceType = "global::CommunityToolkit.Mvvm.Input.IRelayCommand";
                 commandClassType = "global::CommunityToolkit.Mvvm.Input.RelayCommand";
                 delegateType = "global::System.Action";
+                supportsCancellation = false;
                 commandTypeArguments = ImmutableArray.Create(parameter.Type.GetFullyQualifiedName());
                 delegateTypeArguments = ImmutableArray.Create(parameter.Type.GetFullyQualifiedName());
 
@@ -301,6 +319,7 @@ partial class ICommandGenerator
                     commandInterfaceType = "global::CommunityToolkit.Mvvm.Input.IAsyncRelayCommand";
                     commandClassType = "global::CommunityToolkit.Mvvm.Input.AsyncRelayCommand";
                     delegateType = "global::System.Func";
+                    supportsCancellation = false;
                     commandTypeArguments = ImmutableArray<string>.Empty;
                     delegateTypeArguments = ImmutableArray.Create("global::System.Threading.Tasks.Task");
 
@@ -316,8 +335,9 @@ partial class ICommandGenerator
                         commandInterfaceType = "global::CommunityToolkit.Mvvm.Input.IAsyncRelayCommand";
                         commandClassType = "global::CommunityToolkit.Mvvm.Input.AsyncRelayCommand";
                         delegateType = "global::System.Func";
+                        supportsCancellation = true;
                         commandTypeArguments = ImmutableArray<string>.Empty;
-                        delegateTypeArguments = ImmutableArray.Create("global::System.Threading.CancellationToken", "global::System.Threading.Tasks.Task");
+                        delegateTypeArguments = ImmutableArray.Create(singleParameter.Type.GetFullyQualifiedName(), "global::System.Threading.Tasks.Task");
 
                         return true;
                     }
@@ -326,6 +346,7 @@ partial class ICommandGenerator
                     commandInterfaceType = "global::CommunityToolkit.Mvvm.Input.IAsyncRelayCommand";
                     commandClassType = "global::CommunityToolkit.Mvvm.Input.AsyncRelayCommand";
                     delegateType = "global::System.Func";
+                    supportsCancellation = false;
                     commandTypeArguments = ImmutableArray.Create(singleParameter.Type.GetFullyQualifiedName());
                     delegateTypeArguments = ImmutableArray.Create(singleParameter.Type.GetFullyQualifiedName(), "global::System.Threading.Tasks.Task");
 
@@ -341,6 +362,7 @@ partial class ICommandGenerator
                     commandInterfaceType = "global::CommunityToolkit.Mvvm.Input.IAsyncRelayCommand";
                     commandClassType = "global::CommunityToolkit.Mvvm.Input.AsyncRelayCommand";
                     delegateType = "global::System.Func";
+                    supportsCancellation = true;
                     commandTypeArguments = ImmutableArray.Create(firstParameter.Type.GetFullyQualifiedName());
                     delegateTypeArguments = ImmutableArray.Create(firstParameter.Type.GetFullyQualifiedName(), secondParameter.Type.GetFullyQualifiedName(), "global::System.Threading.Tasks.Task");
 
@@ -353,6 +375,7 @@ partial class ICommandGenerator
             commandInterfaceType = null;
             commandClassType = null;
             delegateType = null;
+            supportsCancellation = false;
             commandTypeArguments = ImmutableArray<string>.Empty;
             delegateTypeArguments = ImmutableArray<string>.Empty;
 
@@ -392,6 +415,47 @@ partial class ICommandGenerator
             else
             {
                 diagnostics.Add(InvalidConcurrentExecutionsParameterError, methodSymbol, methodSymbol.ContainingType, methodSymbol);
+
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Checks whether or not the user has requested to also generate a cancel command.
+        /// </summary>
+        /// <param name="methodSymbol">The input <see cref="IMethodSymbol"/> instance to process.</param>
+        /// <param name="attributeData">The <see cref="AttributeData"/> instance the method was annotated with.</param>
+        /// <param name="commandClassType">The command class type name.</param>
+        /// <param name="supportsCancellation">Indicates whether or not the command supports cancellation.</param>
+        /// <param name="diagnostics">The current collection of gathered diagnostics.</param>
+        /// <param name="generateCancelCommand">Whether or not concurrent executions have been enabled.</param>
+        /// <returns>Whether or not a value for <paramref name="generateCancelCommand"/> could be retrieved successfully.</returns>
+        private static bool TryGetIncludeCancelCommandSwitch(
+            IMethodSymbol methodSymbol,
+            AttributeData attributeData,
+            string commandClassType,
+            bool supportsCancellation,
+            ImmutableArray<Diagnostic>.Builder diagnostics,
+            out bool generateCancelCommand)
+        {
+            // Try to get the custom switch for cancel command generation (the default is false)
+            if (!attributeData.TryGetNamedArgument("IncludeCancelCommand", out generateCancelCommand))
+            {
+                generateCancelCommand = false;
+
+                return true;
+            }
+
+            // If the current type is an async command type and cancellation is supported, pass that value to the constructor.
+            // Otherwise, the current attribute use is not valid, so a diagnostic message should be produced.
+            if (commandClassType is "global::CommunityToolkit.Mvvm.Input.AsyncRelayCommand" &&
+                supportsCancellation)
+            {
+                return true;
+            }
+            else
+            {
+                diagnostics.Add(InvalidIncludeCancelCommandParameterError, methodSymbol, methodSymbol.ContainingType, methodSymbol);
 
                 return false;
             }

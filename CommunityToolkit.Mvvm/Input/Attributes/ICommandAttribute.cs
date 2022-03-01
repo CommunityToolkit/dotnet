@@ -78,5 +78,12 @@ public sealed class ICommandAttribute : Attribute
     /// when an execution is invoked while a previous one is still running. It is the same as creating an instance of
     /// these command types with a constructor such as <see cref="AsyncRelayCommand(Func{System.Threading.Tasks.Task}, bool)"/>.
     /// </summary>
+    /// <remarks>Using this property is not valid if the target command doesn't map to an asynchronous command.</remarks>
     public bool AllowConcurrentExecutions { get; init; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether a cancel command should also be generated for an asynchronous command.
+    /// </summary>
+    /// <remarks>Using this property is not valid if the target command doesn't map to a cancellable asynchronous command.</remarks>
+    public bool IncludeCancelCommand { get; init; }
 }
