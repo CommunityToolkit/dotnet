@@ -112,11 +112,13 @@ public class Test_AsyncRelayCommand
 
         command.Execute(null);
 
-        Assert.AreEqual(ticks, 0);
+        // It is the caller's responsibility to ensure that CanExecute is true
+        // before calling Execute. This check verifies the logic is still called.
+        Assert.AreEqual(ticks, 1);
 
         command.Execute(new object());
 
-        Assert.AreEqual(ticks, 0);
+        Assert.AreEqual(ticks, 2);
     }
 
     [TestMethod]
@@ -288,11 +290,6 @@ public class Test_AsyncRelayCommand
 
         Assert.IsFalse(command.CanBeCanceled);
         Assert.IsFalse(command.IsCancellationRequested);
-
-        Task newTask = command.ExecuteAsync(null);
-
-        // Execution failed, so a completed task was returned
-        Assert.AreSame(newTask, Task.CompletedTask);
 
         tcs.SetResult(null);
 

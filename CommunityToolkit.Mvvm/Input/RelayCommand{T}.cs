@@ -94,10 +94,7 @@ public sealed class RelayCommand<T> : IRelayCommand<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Execute(T? parameter)
     {
-        if (CanExecute(parameter))
-        {
-            this.execute(parameter);
-        }
+        this.execute(parameter);
     }
 
     /// <inheritdoc/>

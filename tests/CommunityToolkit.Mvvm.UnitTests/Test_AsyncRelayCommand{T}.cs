@@ -105,11 +105,12 @@ public class Test_AsyncRelayCommandOfT
 
         command.Execute("2");
 
-        Assert.AreEqual(ticks, 0);
+        // Like in the RelayCommand test, ensure Execute is unconditionally invoked
+        Assert.AreEqual(ticks, 2);
 
         command.Execute("42");
 
-        Assert.AreEqual(ticks, 0);
+        Assert.AreEqual(ticks, 42);
     }
 
     [TestMethod]
@@ -230,11 +231,6 @@ public class Test_AsyncRelayCommandOfT
 
         Assert.IsFalse(command.CanBeCanceled);
         Assert.IsFalse(command.IsCancellationRequested);
-
-        Task newTask = command.ExecuteAsync(null);
-
-        // Execution failed, so a completed task was returned
-        Assert.AreSame(newTask, Task.CompletedTask);
 
         tcs.SetResult(null);
 

@@ -282,37 +282,31 @@ public sealed class AsyncRelayCommand<T> : IAsyncRelayCommand<T>, ICancellationA
     /// <inheritdoc/>
     public Task ExecuteAsync(T? parameter)
     {
-        if (CanExecute(parameter))
+        Task executionTask;
+
+        if (this.execute is not null)
         {
-            Task executionTask;
+            // Non cancelable command delegate
+            executionTask = ExecutionTask = this.execute(parameter);
+        }
+        else
+        {
+            // Cancel the previous operation, if one is pending
+            this.cancellationTokenSource?.Cancel();
 
-            
-            if (this.execute is not null)
-            {
-                // Non cancelable command delegate
-                executionTask = ExecutionTask = this.execute(parameter);
-            }
-            else
-            {
-                // Cancel the previous operation, if one is pending
-                this.cancellationTokenSource?.Cancel();
+            CancellationTokenSource cancellationTokenSource = this.cancellationTokenSource = new();
 
-                CancellationTokenSource cancellationTokenSource = this.cancellationTokenSource = new();
-
-                // Invoke the cancelable command delegate with a new linked token
-                executionTask = ExecutionTask = this.cancelableExecute!(parameter, cancellationTokenSource.Token);
-            }
-
-            // If concurrent executions are disabled, notify the can execute change as well
-            if (!this.allowConcurrentExecutions)
-            {
-                CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-            }
-
-            return executionTask;
+            // Invoke the cancelable command delegate with a new linked token
+            executionTask = ExecutionTask = this.cancelableExecute!(parameter, cancellationTokenSource.Token);
         }
 
-        return Task.CompletedTask;
+        // If concurrent executions are disabled, notify the can execute change as well
+        if (!this.allowConcurrentExecutions)
+        {
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        return executionTask;
     }
 
     /// <inheritdoc/>

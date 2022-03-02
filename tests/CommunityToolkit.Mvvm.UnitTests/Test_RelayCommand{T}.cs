@@ -59,7 +59,8 @@ public class Test_RelayCommandOfT
 
         command.Execute(null);
 
-        Assert.AreEqual(text, "Hello");
+        // Logic is unconditionally invoked, the caller should check CanExecute first
+        Assert.IsNull(text);
     }
 
     [TestMethod]
