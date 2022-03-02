@@ -7,6 +7,7 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using CommunityToolkit.Mvvm.Input.Internals;
 
 namespace CommunityToolkit.Mvvm.Input;
 
@@ -16,7 +17,7 @@ namespace CommunityToolkit.Mvvm.Input;
 /// method is <see langword="true"/>. This type does not allow you to accept command parameters
 /// in the <see cref="Execute"/> and <see cref="CanExecute"/> callback methods.
 /// </summary>
-public sealed class RelayCommand : IRelayCommand
+public sealed class RelayCommand : CommandBase, IRelayCommand
 {
     /// <summary>
     /// The <see cref="Action"/> to invoke when <see cref="Execute"/> is used.
@@ -27,9 +28,6 @@ public sealed class RelayCommand : IRelayCommand
     /// The optional action to invoke when <see cref="CanExecute"/> is used.
     /// </summary>
     private readonly Func<bool>? canExecute;
-
-    /// <inheritdoc/>
-    public event EventHandler? CanExecuteChanged;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RelayCommand"/> class that can always execute.
@@ -59,20 +57,14 @@ public sealed class RelayCommand : IRelayCommand
     }
 
     /// <inheritdoc/>
-    public void NotifyCanExecuteChanged()
-    {
-        CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-    }
-
-    /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool CanExecute(object? parameter)
+    public override bool CanExecute(object? parameter)
     {
         return this.canExecute?.Invoke() != false;
     }
 
     /// <inheritdoc/>
-    public void Execute(object? parameter)
+    public override void Execute(object? parameter)
     {
         if (CanExecute(parameter))
         {

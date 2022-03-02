@@ -18,7 +18,7 @@ namespace CommunityToolkit.Mvvm.Input;
 /// A generic command that provides a more specific version of <see cref="AsyncRelayCommand"/>.
 /// </summary>
 /// <typeparam name="T">The type of parameter being passed as input to the callbacks.</typeparam>
-public sealed class AsyncRelayCommand<T> : IAsyncRelayCommand<T>, ICancellationAwareCommand
+public sealed class AsyncRelayCommand<T> : CommandBase, IAsyncRelayCommand<T>, ICancellationAwareCommand
 {
     /// <summary>
     /// The <see cref="Func{TResult}"/> to invoke when <see cref="Execute(T)"/> is used.
@@ -47,9 +47,6 @@ public sealed class AsyncRelayCommand<T> : IAsyncRelayCommand<T>, ICancellationA
 
     /// <inheritdoc/>
     public event PropertyChangedEventHandler? PropertyChanged;
-
-    /// <inheritdoc/>
-    public event EventHandler? CanExecuteChanged;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AsyncRelayCommand{T}"/> class.
@@ -239,12 +236,6 @@ public sealed class AsyncRelayCommand<T> : IAsyncRelayCommand<T>, ICancellationA
     bool ICancellationAwareCommand.IsCancellationSupported => this.execute is null;
 
     /// <inheritdoc/>
-    public void NotifyCanExecuteChanged()
-    {
-        CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-    }
-
-    /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool CanExecute(T? parameter)
     {
@@ -255,7 +246,7 @@ public sealed class AsyncRelayCommand<T> : IAsyncRelayCommand<T>, ICancellationA
 
     /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool CanExecute(object? parameter)
+    public override bool CanExecute(object? parameter)
     {
         if (default(T) is not null &&
             parameter is null)
@@ -274,7 +265,7 @@ public sealed class AsyncRelayCommand<T> : IAsyncRelayCommand<T>, ICancellationA
     }
 
     /// <inheritdoc/>
-    public void Execute(object? parameter)
+    public override void Execute(object? parameter)
     {
         _ = ExecuteAsync((T?)parameter);
     }
@@ -306,7 +297,7 @@ public sealed class AsyncRelayCommand<T> : IAsyncRelayCommand<T>, ICancellationA
             // If concurrent executions are disabled, notify the can execute change as well
             if (!this.allowConcurrentExecutions)
             {
-                CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+                ((IRelayCommand)this).NotifyCanExecuteChanged();
             }
 
             return executionTask;

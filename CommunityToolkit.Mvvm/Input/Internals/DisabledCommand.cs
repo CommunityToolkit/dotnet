@@ -10,10 +10,10 @@ namespace CommunityToolkit.Mvvm.Input.Internals;
 /// <summary>
 /// A reusable <see cref="ICommand"/> instance that is always disabled.
 /// </summary>
-internal sealed class DisabledCommand : ICommand
+internal sealed class DisabledCommand : CommandBase
 {
     /// <inheritdoc/>
-    public event EventHandler? CanExecuteChanged
+    public override event EventHandler? CanExecuteChanged
     {
         add { }
         remove { }
@@ -31,13 +31,13 @@ internal sealed class DisabledCommand : ICommand
     public static DisabledCommand Instance { get; } = new();
 
     /// <inheritdoc/>
-    public bool CanExecute(object? parameter)
+    public override bool CanExecute(object? parameter)
     {
         return false;
     }
 
     /// <inheritdoc/>
-    public void Execute(object? parameter)
+    public override void Execute(object? parameter)
     {
     }
 }

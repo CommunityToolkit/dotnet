@@ -7,6 +7,7 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using CommunityToolkit.Mvvm.Input.Internals;
 
 namespace CommunityToolkit.Mvvm.Input;
 
@@ -17,7 +18,7 @@ namespace CommunityToolkit.Mvvm.Input;
 /// in the <see cref="Execute(T)"/> and <see cref="CanExecute(T)"/> callback methods.
 /// </summary>
 /// <typeparam name="T">The type of parameter being passed as input to the callbacks.</typeparam>
-public sealed class RelayCommand<T> : IRelayCommand<T>
+public sealed class RelayCommand<T> : CommandBase, IRelayCommand<T>
 {
     /// <summary>
     /// The <see cref="Action"/> to invoke when <see cref="Execute(T)"/> is used.
@@ -28,9 +29,6 @@ public sealed class RelayCommand<T> : IRelayCommand<T>
     /// The optional action to invoke when <see cref="CanExecute(T)"/> is used.
     /// </summary>
     private readonly Predicate<T?>? canExecute;
-
-    /// <inheritdoc/>
-    public event EventHandler? CanExecuteChanged;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RelayCommand{T}"/> class that can always execute.
@@ -66,12 +64,6 @@ public sealed class RelayCommand<T> : IRelayCommand<T>
     }
 
     /// <inheritdoc/>
-    public void NotifyCanExecuteChanged()
-    {
-        CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-    }
-
-    /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool CanExecute(T? parameter)
     {
@@ -79,7 +71,7 @@ public sealed class RelayCommand<T> : IRelayCommand<T>
     }
 
     /// <inheritdoc/>
-    public bool CanExecute(object? parameter)
+    public override bool CanExecute(object? parameter)
     {
         if (default(T) is not null &&
             parameter is null)
@@ -101,7 +93,7 @@ public sealed class RelayCommand<T> : IRelayCommand<T>
     }
 
     /// <inheritdoc/>
-    public void Execute(object? parameter)
+    public override void Execute(object? parameter)
     {
         Execute((T?)parameter);
     }

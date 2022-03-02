@@ -11,7 +11,7 @@ namespace CommunityToolkit.Mvvm.Input.Internals;
 /// <summary>
 /// A <see cref="ICommand"/> implementation wrapping <see cref="IAsyncRelayCommand"/> to support cancellation.
 /// </summary>
-internal sealed class CancelCommand : ICommand
+internal sealed class CancelCommand : CommandBase, ICommand
 {
     /// <summary>
     /// The wrapped <see cref="IAsyncRelayCommand"/> instance.
@@ -30,16 +30,13 @@ internal sealed class CancelCommand : ICommand
     }
 
     /// <inheritdoc/>
-    public event EventHandler? CanExecuteChanged;
-
-    /// <inheritdoc/>
-    public bool CanExecute(object? parameter)
+    public override bool CanExecute(object? parameter)
     {
         return this.command.CanBeCanceled;
     }
 
     /// <inheritdoc/>
-    public void Execute(object? parameter)
+    public override void Execute(object? parameter)
     {
         this.command.Cancel();
     }
@@ -49,7 +46,7 @@ internal sealed class CancelCommand : ICommand
     {
         if (e.PropertyName is null or nameof(IAsyncRelayCommand.CanBeCanceled))
         {
-            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+            ((IRelayCommand)this).NotifyCanExecuteChanged();
         }
     }
 }

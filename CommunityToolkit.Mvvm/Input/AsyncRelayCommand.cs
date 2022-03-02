@@ -20,7 +20,7 @@ namespace CommunityToolkit.Mvvm.Input;
 /// action, and providing an <see cref="ExecutionTask"/> property that notifies changes when
 /// <see cref="ExecuteAsync"/> is invoked and when the returned <see cref="Task"/> completes.
 /// </summary>
-public sealed class AsyncRelayCommand : IAsyncRelayCommand, ICancellationAwareCommand
+public sealed class AsyncRelayCommand : CommandBase, IAsyncRelayCommand, ICancellationAwareCommand
 {
     /// <summary>
     /// The cached <see cref="PropertyChangedEventArgs"/> for <see cref="ExecutionTask"/>.
@@ -71,9 +71,6 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand, ICancellationAwareCo
 
     /// <inheritdoc/>
     public event PropertyChangedEventHandler? PropertyChanged;
-
-    /// <inheritdoc/>
-    public event EventHandler? CanExecuteChanged;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AsyncRelayCommand"/> class.
@@ -257,14 +254,8 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand, ICancellationAwareCo
     bool ICancellationAwareCommand.IsCancellationSupported => this.execute is null;
 
     /// <inheritdoc/>
-    public void NotifyCanExecuteChanged()
-    {
-        CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-    }
-
-    /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool CanExecute(object? parameter)
+    public override bool CanExecute(object? parameter)
     {
         bool canExecute = this.canExecute?.Invoke() != false;
 
@@ -272,7 +263,7 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand, ICancellationAwareCo
     }
 
     /// <inheritdoc/>
-    public void Execute(object? parameter)
+    public override void Execute(object? parameter)
     {
         _ = ExecuteAsync(parameter);
     }
@@ -303,7 +294,7 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand, ICancellationAwareCo
             // If concurrent executions are disabled, notify the can execute change as well
             if (!this.allowConcurrentExecutions)
             {
-                CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+                ((IRelayCommand)this).NotifyCanExecuteChanged();
             }
 
             return executionTask;
