@@ -69,10 +69,8 @@ public sealed class AsyncRelayCommand<T> : CommandBase, IAsyncRelayCommand<T>, I
     /// <remarks>See notes in <see cref="RelayCommand{T}(Action{T})"/>.</remarks>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="execute"/> is <see langword="null"/>.</exception>
     public AsyncRelayCommand(Func<T?, Task> execute, bool allowConcurrentExecutions)
+        : this(execute)
     {
-        ArgumentNullException.ThrowIfNull(execute);
-
-        this.execute = execute;
         this.allowConcurrentExecutions = allowConcurrentExecutions;
     }
 
@@ -97,10 +95,8 @@ public sealed class AsyncRelayCommand<T> : CommandBase, IAsyncRelayCommand<T>, I
     /// <remarks>See notes in <see cref="RelayCommand{T}(Action{T})"/>.</remarks>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="cancelableExecute"/> is <see langword="null"/>.</exception>
     public AsyncRelayCommand(Func<T?, CancellationToken, Task> cancelableExecute, bool allowConcurrentExecutions)
+        : this(cancelableExecute)
     {
-        ArgumentNullException.ThrowIfNull(cancelableExecute);
-
-        this.cancelableExecute = cancelableExecute;
         this.allowConcurrentExecutions = allowConcurrentExecutions;
     }
 
@@ -112,11 +108,10 @@ public sealed class AsyncRelayCommand<T> : CommandBase, IAsyncRelayCommand<T>, I
     /// <remarks>See notes in <see cref="RelayCommand{T}(Action{T})"/>.</remarks>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="execute"/> or <paramref name="canExecute"/> are <see langword="null"/>.</exception>
     public AsyncRelayCommand(Func<T?, Task> execute, Predicate<T?> canExecute)
+        : this(execute)
     {
-        ArgumentNullException.ThrowIfNull(execute);
         ArgumentNullException.ThrowIfNull(canExecute);
 
-        this.execute = execute;
         this.canExecute = canExecute;
     }
 
@@ -129,12 +124,8 @@ public sealed class AsyncRelayCommand<T> : CommandBase, IAsyncRelayCommand<T>, I
     /// <remarks>See notes in <see cref="RelayCommand{T}(Action{T})"/>.</remarks>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="execute"/> or <paramref name="canExecute"/> are <see langword="null"/>.</exception>
     public AsyncRelayCommand(Func<T?, Task> execute, Predicate<T?> canExecute, bool allowConcurrentExecutions)
+        : this(execute, canExecute)
     {
-        ArgumentNullException.ThrowIfNull(execute);
-        ArgumentNullException.ThrowIfNull(canExecute);
-
-        this.execute = execute;
-        this.canExecute = canExecute;
         this.allowConcurrentExecutions = allowConcurrentExecutions;
     }
 
@@ -146,11 +137,10 @@ public sealed class AsyncRelayCommand<T> : CommandBase, IAsyncRelayCommand<T>, I
     /// <remarks>See notes in <see cref="RelayCommand{T}(Action{T})"/>.</remarks>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="cancelableExecute"/> or <paramref name="canExecute"/> are <see langword="null"/>.</exception>
     public AsyncRelayCommand(Func<T?, CancellationToken, Task> cancelableExecute, Predicate<T?> canExecute)
+        :this(cancelableExecute)
     {
-        ArgumentNullException.ThrowIfNull(cancelableExecute);
         ArgumentNullException.ThrowIfNull(canExecute);
 
-        this.cancelableExecute = cancelableExecute;
         this.canExecute = canExecute;
     }
 
@@ -163,12 +153,8 @@ public sealed class AsyncRelayCommand<T> : CommandBase, IAsyncRelayCommand<T>, I
     /// <remarks>See notes in <see cref="RelayCommand{T}(Action{T})"/>.</remarks>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="cancelableExecute"/> or <paramref name="canExecute"/> are <see langword="null"/>.</exception>
     public AsyncRelayCommand(Func<T?, CancellationToken, Task> cancelableExecute, Predicate<T?> canExecute, bool allowConcurrentExecutions)
+        : this(cancelableExecute, canExecute)
     {
-        ArgumentNullException.ThrowIfNull(cancelableExecute);
-        ArgumentNullException.ThrowIfNull(canExecute);
-
-        this.cancelableExecute = cancelableExecute;
-        this.canExecute = canExecute;
         this.allowConcurrentExecutions = allowConcurrentExecutions;
     }
 

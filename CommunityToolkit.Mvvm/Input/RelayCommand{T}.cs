@@ -55,11 +55,10 @@ public sealed class RelayCommand<T> : CommandBase, IRelayCommand<T>
     /// <remarks>See notes in <see cref="RelayCommand{T}(Action{T})"/>.</remarks>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="execute"/> or <paramref name="canExecute"/> are <see langword="null"/>.</exception>
     public RelayCommand(Action<T?> execute, Predicate<T?> canExecute)
+        : this(execute)
     {
-        ArgumentNullException.ThrowIfNull(execute);
         ArgumentNullException.ThrowIfNull(canExecute);
 
-        this.execute = execute;
         this.canExecute = canExecute;
     }
 

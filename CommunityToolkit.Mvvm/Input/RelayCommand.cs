@@ -48,11 +48,10 @@ public sealed class RelayCommand : CommandBase, IRelayCommand
     /// <param name="canExecute">The execution status logic.</param>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="execute"/> or <paramref name="canExecute"/> are <see langword="null"/>.</exception>
     public RelayCommand(Action execute, Func<bool> canExecute)
+        : this(execute)
     {
-        ArgumentNullException.ThrowIfNull(execute);
         ArgumentNullException.ThrowIfNull(canExecute);
 
-        this.execute = execute;
         this.canExecute = canExecute;
     }
 
