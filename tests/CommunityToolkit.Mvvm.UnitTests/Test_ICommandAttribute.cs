@@ -348,7 +348,7 @@ public partial class Test_ICommandAttribute
     }
 
     [TestMethod]
-    public async void Test_ICommandAttribute_CancelCommands()
+    public async Task Test_ICommandAttribute_CancelCommands()
     {
         CancelCommandViewModel model = new();
 
@@ -360,19 +360,19 @@ public partial class Test_ICommandAttribute
 
         await Task.Yield();
 
-        Assert.IsTrue(model.Tcs1.Task.IsCompleted);
-        Assert.IsTrue(model.Tcs1.Task.Result is OperationCanceledException);
+        Assert.IsTrue(model.Tcs1.Task.IsCanceled);
+        Assert.IsTrue(model.Result1 is OperationCanceledException);
 
-        model.DoWorkWithParameterCommand.Execute(null);
+        model.DoWorkWithParameterCommand.Execute(42);
 
         Assert.IsTrue(model.DoWorkWithParameterCancelCommand.CanExecute(null));
 
-        model.DoWorkWithParameterCancelCommand.Execute(42);
+        model.DoWorkWithParameterCancelCommand.Execute(null);
 
         await Task.Yield();
 
-        Assert.IsTrue(model.Tcs2.Task.IsCompleted);
-        Assert.IsTrue(model.Tcs2.Task.Result is 42);
+        Assert.IsTrue(model.Tcs2.Task.IsCanceled);
+        Assert.IsTrue(model.Result2 is OperationCanceledException);
     }
 
     #region Region
@@ -621,7 +621,11 @@ public partial class Test_ICommandAttribute
     {
         public TaskCompletionSource<object?> Tcs1 { get; } = new();
 
+        public object? Result1 { get; private set; }
+
         public TaskCompletionSource<object?> Tcs2 { get; } = new();
+
+        public object? Result2 { get; private set; }
 
         [ICommand(IncludeCancelCommand = true)]
         private async Task DoWorkAsync(CancellationToken token)
@@ -632,11 +636,11 @@ public partial class Test_ICommandAttribute
             {
                 _ = await Tcs1.Task;
 
-                _ = Tcs1.TrySetResult(null);
+                Result1 = 42;
             }
             catch (OperationCanceledException e)
             {
-                _ = Tcs1.TrySetResult(e);
+                Result1 = e;
             }
         }
 
@@ -649,11 +653,11 @@ public partial class Test_ICommandAttribute
             {
                 _ = await Tcs2.Task;
 
-                _ = Tcs2.TrySetResult(null);
+                Result2 = 42;
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException e)
             {
-                _ = Tcs2.TrySetResult(number);
+                Result2 = e;
             }
         }
     }
