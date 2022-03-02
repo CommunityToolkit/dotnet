@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.UnitTests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -417,5 +418,69 @@ public class Test_AsyncRelayCommand
         Assert.IsFalse(command.CanExecute(null));
 
         tcs.SetResult(null);
+    }
+
+    [TestMethod]
+    public void Test_AsyncRelayCommand_GetCancelCommand_DisabledCommand()
+    {
+        TaskCompletionSource<object?> tcs = new();
+
+        AsyncRelayCommand command = new(() => tcs.Task);
+
+        ICommand cancelCommand = command.CreateCancelCommand();
+
+        Assert.IsNotNull(cancelCommand);
+        Assert.IsFalse(cancelCommand.CanExecute(null));
+
+        // No-op
+        cancelCommand.Execute(null);
+
+        Assert.AreEqual("CommunityToolkit.Mvvm.Input.Internals.DisabledCommand", cancelCommand.GetType().ToString());
+
+        ICommand cancelCommand2 = command.CreateCancelCommand();
+
+        Assert.IsNotNull(cancelCommand2);
+        Assert.IsFalse(cancelCommand2.CanExecute(null));
+
+        Assert.AreSame(cancelCommand, cancelCommand2);
+    }
+
+    [TestMethod]
+    public void Test_AsyncRelayCommand_GetCancelCommand_WithToken()
+    {
+        TaskCompletionSource<object?> tcs = new();
+
+        AsyncRelayCommand command = new(token => tcs.Task);
+
+        ICommand cancelCommand = command.CreateCancelCommand();
+
+        Assert.IsNotNull(cancelCommand);
+        Assert.IsFalse(cancelCommand.CanExecute(null));
+
+        // No-op
+        cancelCommand.Execute(null);
+
+        Assert.AreEqual("CommunityToolkit.Mvvm.Input.Internals.CancelCommand", cancelCommand.GetType().ToString());
+
+        List<(object? Sender, EventArgs Args)> cancelCommandCanExecuteChangedArgs = new();
+
+        cancelCommand.CanExecuteChanged += (s, e) => cancelCommandCanExecuteChangedArgs.Add((s, e));
+
+        command.Execute(null);
+
+        Assert.AreEqual(1, cancelCommandCanExecuteChangedArgs.Count);
+        Assert.AreSame(cancelCommand, cancelCommandCanExecuteChangedArgs[0].Sender);
+        Assert.AreSame(EventArgs.Empty, cancelCommandCanExecuteChangedArgs[0].Args);
+
+        Assert.IsTrue(cancelCommand.CanExecute(null));
+
+        cancelCommand.Execute(null);
+
+        Assert.IsFalse(cancelCommand.CanExecute(null));
+        Assert.AreEqual(2, cancelCommandCanExecuteChangedArgs.Count);
+        Assert.AreSame(cancelCommand, cancelCommandCanExecuteChangedArgs[1].Sender);
+        Assert.AreSame(EventArgs.Empty, cancelCommandCanExecuteChangedArgs[1].Args);
+        Assert.IsFalse(command.CanBeCanceled);
+        Assert.IsTrue(command.IsCancellationRequested);
     }
 }
