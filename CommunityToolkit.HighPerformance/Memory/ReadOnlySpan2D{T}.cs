@@ -1003,13 +1003,13 @@ public readonly ref partial struct ReadOnlySpan2D<T>
     }
 
     /// <summary>
-    /// Implicily converts a given 2D array into a <see cref="ReadOnlySpan2D{T}"/> instance.
+    /// Implicitly converts a given 2D array into a <see cref="ReadOnlySpan2D{T}"/> instance.
     /// </summary>
     /// <param name="array">The input 2D array to convert.</param>
     public static implicit operator ReadOnlySpan2D<T>(T[,]? array) => new(array);
 
     /// <summary>
-    /// Implicily converts a given <see cref="Span2D{T}"/> into a <see cref="ReadOnlySpan2D{T}"/> instance.
+    /// Implicitly converts a given <see cref="Span2D{T}"/> into a <see cref="ReadOnlySpan2D{T}"/> instance.
     /// </summary>
     /// <param name="span">The input <see cref="Span2D{T}"/> to convert.</param>
     public static implicit operator ReadOnlySpan2D<T>(Span2D<T> span)
