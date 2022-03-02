@@ -24,7 +24,8 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
 /// <param name="DelegateTypeArguments">The type arguments for <paramref name="DelegateType"/>, if any.</param>
 /// <param name="CanExecuteMemberName">The member name for the can execute check, if available.</param>
 /// <param name="CanExecuteExpressionType">The can execute expression type, if available.</param>
-/// <param name="AllowConcurrentExecutions">Whether or not concurrent executions have been disabled.</param>
+/// <param name="AllowConcurrentExecutions">Whether or not concurrent executions have been enabled.</param>
+/// <param name="IncludeCancelCommand">Whether or not to also generate a cancel command.</param>
 internal sealed record CommandInfo(
     string MethodName,
     string FieldName,
@@ -36,7 +37,8 @@ internal sealed record CommandInfo(
     ImmutableArray<string> DelegateTypeArguments,
     string? CanExecuteMemberName,
     CanExecuteExpressionType? CanExecuteExpressionType,
-    bool AllowConcurrentExecutions)
+    bool AllowConcurrentExecutions,
+    bool IncludeCancelCommand)
 {
     /// <summary>
     /// An <see cref="IEqualityComparer{T}"/> implementation for <see cref="CommandInfo"/>.
@@ -57,6 +59,7 @@ internal sealed record CommandInfo(
             hashCode.Add(obj.CanExecuteMemberName);
             hashCode.Add(obj.CanExecuteExpressionType);
             hashCode.Add(obj.AllowConcurrentExecutions);
+            hashCode.Add(obj.IncludeCancelCommand);
         }
 
         /// <inheritdoc/>
@@ -73,7 +76,8 @@ internal sealed record CommandInfo(
                 x.DelegateTypeArguments.SequenceEqual(y.CommandTypeArguments) &&
                 x.CanExecuteMemberName == y.CanExecuteMemberName &&
                 x.CanExecuteExpressionType == y.CanExecuteExpressionType &&
-                x.AllowConcurrentExecutions == y.AllowConcurrentExecutions;
+                x.AllowConcurrentExecutions == y.AllowConcurrentExecutions &&
+                x.IncludeCancelCommand == y.IncludeCancelCommand;
         }
     }
 }

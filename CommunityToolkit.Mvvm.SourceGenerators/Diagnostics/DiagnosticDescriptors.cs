@@ -203,4 +203,20 @@ internal static class DiagnosticDescriptors
         isEnabledByDefault: true,
         description: "Cannot apply the [ICommand] attribute specifying a concurrency control setting to methods mapping to non-asynchronous command types.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>ICommandAttribute.IncludeCancelCommandParameter</c> is being set for an invalid method.
+    /// <para>
+    /// Format: <c>"The method {0}.{1} cannot be annotated with the [ICommand] attribute specifying to include a cancel command, as it does not map to an asynchronous command type taking a cancellation token"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor InvalidIncludeCancelCommandParameterError = new DiagnosticDescriptor(
+        id: "MVVMTK0013",
+        title: "Invalid concurrency control setting usage",
+        messageFormat: "The method {0}.{1} cannot be annotated with the [ICommand] attribute specifying to include a cancel command, as it does not map to an asynchronous command type taking a cancellation token",
+        category: typeof(ICommandGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "Cannot apply the [ICommand] attribute specifying to include a cancel command to methods not mapping to an asynchronous command type accepting a cancellation token.",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit");
 }

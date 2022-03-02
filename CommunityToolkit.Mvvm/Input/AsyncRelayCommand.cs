@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel.__Internals;
+using CommunityToolkit.Mvvm.Input.Internals;
 
 #pragma warning disable CS0618
 
@@ -19,7 +20,7 @@ namespace CommunityToolkit.Mvvm.Input;
 /// action, and providing an <see cref="ExecutionTask"/> property that notifies changes when
 /// <see cref="ExecuteAsync"/> is invoked and when the returned <see cref="Task"/> completes.
 /// </summary>
-public sealed class AsyncRelayCommand : IAsyncRelayCommand
+public sealed class AsyncRelayCommand : IAsyncRelayCommand, ICancellationAwareCommand
 {
     /// <summary>
     /// The cached <see cref="PropertyChangedEventArgs"/> for <see cref="ExecutionTask"/>.
@@ -251,6 +252,9 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand
 
     /// <inheritdoc/>
     public bool IsRunning => ExecutionTask is { IsCompleted: false };
+
+    /// <inheritdoc/>
+    bool ICancellationAwareCommand.IsCancellationSupported => this.execute is null;
 
     /// <inheritdoc/>
     public void NotifyCanExecuteChanged()
