@@ -271,7 +271,7 @@ public sealed class AsyncRelayCommand : CommandBase, IAsyncRelayCommand, ICancel
                 // Cancel the previous operation, if one is pending
                 this.cancellationTokenSource?.Cancel();
 
-                CancellationTokenSource cancellationTokenSource = this.cancellationTokenSource = new();
+                this.cancellationTokenSource = new();
 
                 // Invoke the cancelable command delegate with a new linked token
                 executionTask = ExecutionTask = this.cancelableExecute!(cancellationTokenSource.Token);
