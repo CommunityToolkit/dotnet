@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -74,6 +75,18 @@ public partial class Test_ICommandAttribute
         {
             Assert.AreSame(Task.CompletedTask, tasks[i]);
         }
+
+        tasks.Clear();
+
+        for (int i = 11; i < 21; i++)
+        {
+            tasks.Add(model.AddValueToListAndDelayWithDefaultConcurrencyAsync_WithCancelCommandCommand.ExecuteAsync(i));
+        }
+
+        Assert.AreEqual(10, tasks.Count);
+
+        // Only the first item should have been added, like the previous case
+        CollectionAssert.AreEqual(model.Values, Enumerable.Range(0, 12).ToArray());
     }
 
     [TestMethod]
@@ -334,6 +347,34 @@ public partial class Test_ICommandAttribute
         Assert.IsInstanceOfType(model.GreetCommand, typeof(RelayCommand));
     }
 
+    [TestMethod]
+    public async void Test_ICommandAttribute_CancelCommands()
+    {
+        CancelCommandViewModel model = new();
+
+        model.DoWorkCommand.Execute(null);
+
+        Assert.IsTrue(model.DoWorkCancelCommand.CanExecute(null));
+
+        model.DoWorkCancelCommand.Execute(null);
+
+        await Task.Yield();
+
+        Assert.IsTrue(model.Tcs1.Task.IsCompleted);
+        Assert.IsTrue(model.Tcs1.Task.Result is OperationCanceledException);
+
+        model.DoWorkWithParameterCommand.Execute(null);
+
+        Assert.IsTrue(model.DoWorkWithParameterCancelCommand.CanExecute(null));
+
+        model.DoWorkWithParameterCancelCommand.Execute(42);
+
+        await Task.Yield();
+
+        Assert.IsTrue(model.Tcs2.Task.IsCompleted);
+        Assert.IsTrue(model.Tcs2.Task.Result is 42);
+    }
+
     #region Region
     public class Region
     {
@@ -393,6 +434,14 @@ public partial class Test_ICommandAttribute
 
         [ICommand]
         private async Task AddValueToListAndDelayWithDefaultConcurrencyAsync(int value)
+        {
+            Values.Add(value);
+
+            await Task.Delay(1000);
+        }
+
+        [ICommand(IncludeCancelCommand = true)]
+        private async Task AddValueToListAndDelayWithDefaultConcurrencyAsync_WithCancelCommand(int value, CancellationToken token)
         {
             Values.Add(value);
 
@@ -566,5 +615,46 @@ public partial class Test_ICommandAttribute
     public sealed class User
     {
         public string? Name { get; set; }
+    }
+
+    public partial class CancelCommandViewModel
+    {
+        public TaskCompletionSource<object?> Tcs1 { get; } = new();
+
+        public TaskCompletionSource<object?> Tcs2 { get; } = new();
+
+        [ICommand(IncludeCancelCommand = true)]
+        private async Task DoWorkAsync(CancellationToken token)
+        {
+            using CancellationTokenRegistration registration = token.Register(static state => ((TaskCompletionSource<object?>)state!).TrySetCanceled(), Tcs1);
+
+            try
+            {
+                _ = await Tcs1.Task;
+
+                _ = Tcs1.TrySetResult(null);
+            }
+            catch (OperationCanceledException e)
+            {
+                _ = Tcs1.TrySetResult(e);
+            }
+        }
+
+        [ICommand(IncludeCancelCommand = true)]
+        private async Task DoWorkWithParameterAsync(int number, CancellationToken token)
+        {
+            using CancellationTokenRegistration registration = token.Register(static state => ((TaskCompletionSource<object?>)state!).TrySetCanceled(), Tcs2);
+
+            try
+            {
+                _ = await Tcs2.Task;
+
+                _ = Tcs2.TrySetResult(null);
+            }
+            catch (OperationCanceledException)
+            {
+                _ = Tcs2.TrySetResult(number);
+            }
+        }
     }
 }

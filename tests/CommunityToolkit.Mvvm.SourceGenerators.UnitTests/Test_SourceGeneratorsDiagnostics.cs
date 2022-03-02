@@ -554,6 +554,68 @@ public class Test_SourceGeneratorsDiagnostics
         VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0012");
     }
 
+    [TestMethod]
+    public void InvalidICommandIncludeCancelCommandSettings_SynchronousMethod()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.Input;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel
+                {
+                    [ICommand(IncludeCancelCommand = true)]
+                    private void GreetUser(User user)
+                    {
+                    }
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0013");
+    }
+
+    [TestMethod]
+    public void InvalidICommandIncludeCancelCommandSettings_AsynchronousMethodWithNoCancellationToken()
+    {
+        string source = @"
+            using System.Threading.Tasks;
+            using CommunityToolkit.Mvvm.Input;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel
+                {
+                    [ICommand(IncludeCancelCommand = true)]
+                    private async Task DoWorkAsync()
+                    {
+                    }
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0013");
+    }
+
+    [TestMethod]
+    public void InvalidICommandIncludeCancelCommandSettings_AsynchronousMethodWithParameterAndNoCancellationToken()
+    {
+        string source = @"
+            using System.Threading.Tasks;
+            using CommunityToolkit.Mvvm.Input;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel
+                {
+                    [ICommand(IncludeCancelCommand = true)]
+                    private async Task GreetUserAsync(User user)
+                    {
+                    }
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0013");
+    }
+
     /// <summary>
     /// Verifies the output of a source generator.
     /// </summary>
