@@ -62,9 +62,10 @@ public partial class Test_ICommandAttribute
 
         await Task.WhenAll(tasks);
 
+        model.Values.Clear();
         tasks.Clear();
 
-        for (int i = 10; i < 20; i++)
+        for (int i = 0; i < 10; i++)
         {
             if (model.AddValueToListAndDelayWithDefaultConcurrencyCommand.CanExecute(i))
             {
@@ -79,24 +80,54 @@ public partial class Test_ICommandAttribute
         Assert.AreEqual(1, tasks.Count);
 
         // Only the first item should have been added
-        CollectionAssert.AreEqual(model.Values, Enumerable.Range(0, 11).ToArray());
+        CollectionAssert.AreEqual(model.Values, new[] { 0 });
 
-        for (int i = 1; i < tasks.Count; i++)
-        {
-            Assert.AreSame(Task.CompletedTask, tasks[i]);
-        }
-
+        model.ResetTcs();
+        model.Values.Clear();
         tasks.Clear();
 
-        for (int i = 11; i < 21; i++)
+        for (int i = 0; i < 10; i++)
         {
+            // Ignore the checks
+            tasks.Add(model.AddValueToListAndDelayWithDefaultConcurrencyCommand.ExecuteAsync(i));
+        }
+
+        model.Tcs.SetResult(null);
+
+        await Task.WhenAll(tasks);
+
+        Assert.AreEqual(10, tasks.Count);
+
+        CollectionAssert.AreEqual(model.Values, Enumerable.Range(0, 10).ToArray());
+
+        model.Values.Clear();
+        tasks.Clear();
+
+        for (int i = 0; i < 10; i++)
+        {
+            if (model.AddValueToListAndDelayWithDefaultConcurrencyAsync_WithCancelCommandCommand.CanExecute(i))
+            {
+                tasks.Add(model.AddValueToListAndDelayWithDefaultConcurrencyAsync_WithCancelCommandCommand.ExecuteAsync(i));
+            }
+        }
+
+        Assert.AreEqual(1, tasks.Count);
+
+        // Same as above, only the first one is added
+        CollectionAssert.AreEqual(model.Values, new[] { 0 });
+
+        model.Values.Clear();
+        tasks.Clear();
+
+        for (int i = 0; i < 10; i++)
+        {
+            // Ignore the checks
             tasks.Add(model.AddValueToListAndDelayWithDefaultConcurrencyAsync_WithCancelCommandCommand.ExecuteAsync(i));
         }
 
         Assert.AreEqual(10, tasks.Count);
 
-        // Only the first item should have been added, like the previous case
-        CollectionAssert.AreEqual(model.Values, Enumerable.Range(0, 12).ToArray());
+        CollectionAssert.AreEqual(model.Values, Enumerable.Range(0, 10).ToArray());
     }
 
     [TestMethod]
@@ -432,7 +463,9 @@ public partial class Test_ICommandAttribute
 
         public List<int> Values { get; } = new();
 
-        public TaskCompletionSource<object?> Tcs { get; } = new();
+        public TaskCompletionSource<object?> Tcs { get; private set; } = new();
+
+        public void ResetTcs() => Tcs = new TaskCompletionSource<object?>();
 
         /// <summary>This is a single line summary.</summary>
         [ICommand]
