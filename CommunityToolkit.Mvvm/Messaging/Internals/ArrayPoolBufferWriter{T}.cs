@@ -43,11 +43,16 @@ internal ref struct ArrayPoolBufferWriter<T>
     /// <summary>
     /// Creates a new instance of the <see cref="ArrayPoolBufferWriter{T}"/> struct.
     /// </summary>
+    /// <returns>A new <see cref="ArrayPoolBufferWriter{T}"/> instance.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ArrayPoolBufferWriter()
+    public static ArrayPoolBufferWriter<T> Create()
     {
-        this.span = this.array = ArrayPool<T>.Shared.Rent(DefaultInitialBufferSize);
-        this.index = 0;
+        ArrayPoolBufferWriter<T> instance;
+
+        instance.span = instance.array = ArrayPool<T>.Shared.Rent(DefaultInitialBufferSize);
+        instance.index = 0;
+
+        return instance;
     }
 
     /// <summary>
