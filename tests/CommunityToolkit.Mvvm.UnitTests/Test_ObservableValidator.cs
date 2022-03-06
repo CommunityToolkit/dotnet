@@ -12,6 +12,8 @@ using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+#pragma warning disable CS0618
+
 namespace CommunityToolkit.Mvvm.UnitTests;
 
 [TestClass]
@@ -475,6 +477,23 @@ public class Test_ObservableValidator
         Func<Type, Action<object>> validationFunc = (Func<Type, Action<object>>)validationMethod.CreateDelegate(typeof(Func<Type, Action<object>>));
 
         validationFunc(viewmodel.GetType())(viewmodel);
+    }
+
+    [TestMethod]
+    public void Test_ObservableValidator_VerifyTrimmingAnnotation()
+    {
+#if NET6_0_OR_GREATER
+        System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembersAttribute? attribute =
+            typeof(ComponentModel.__Internals.__ObservableValidatorExtensions)
+            .GetCustomAttribute<System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembersAttribute>();
+
+        Assert.IsNotNull(attribute);
+        Assert.AreEqual(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicMethods, attribute.MemberTypes);
+#else
+        IEnumerable<Attribute> attributes = typeof(ComponentModel.__Internals.__ObservableValidatorExtensions).GetCustomAttributes();
+
+        Assert.IsFalse(attributes.Any(static a => a.GetType().Name is "DynamicallyAccessedMembersAttribute"));
+#endif
     }
 
     public class Person : ObservableValidator
