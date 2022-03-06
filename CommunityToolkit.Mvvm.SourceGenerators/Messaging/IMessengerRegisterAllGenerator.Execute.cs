@@ -66,6 +66,7 @@ partial class IMessengerRegisterAllGenerator
         /// <summary>
         /// Gets the head <see cref="CompilationUnitSyntax"/> instance.
         /// </summary>
+        /// <param name="isDynamicallyAccessedMembersAttributeAvailable">Indicates whether <c>[DynamicallyAccessedMembers]</c> should be generated.</param>
         /// <returns>The head <see cref="CompilationUnitSyntax"/> instance with the type attributes.</returns>
         public static CompilationUnitSyntax GetSyntax(bool isDynamicallyAccessedMembersAttributeAvailable)
         {
