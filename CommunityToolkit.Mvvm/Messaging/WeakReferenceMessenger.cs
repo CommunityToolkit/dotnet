@@ -306,7 +306,7 @@ public sealed class WeakReferenceMessenger : IMessenger
                 return message;
             }
 
-            bufferWriter = new ArrayPoolBufferWriter<object?>();
+            bufferWriter = ArrayPoolBufferWriter<object?>.Create();
 
             // We need a local, temporary copy of all the pending recipients and handlers to
             // invoke, to avoid issues with handlers unregistering from messages while we're
@@ -470,8 +470,8 @@ public sealed class WeakReferenceMessenger : IMessenger
     /// </summary>
     private void CleanupWithoutLock()
     {
-        using ArrayPoolBufferWriter<Type2> type2s = new();
-        using ArrayPoolBufferWriter<object> emptyRecipients = new();
+        using ArrayPoolBufferWriter<Type2> type2s = ArrayPoolBufferWriter<Type2>.Create();
+        using ArrayPoolBufferWriter<object> emptyRecipients = ArrayPoolBufferWriter<object>.Create();
 
         Dictionary2<Type2, ConditionalWeakTable2<object, object?>>.Enumerator type2Enumerator = this.recipientsMap.GetEnumerator();
 
