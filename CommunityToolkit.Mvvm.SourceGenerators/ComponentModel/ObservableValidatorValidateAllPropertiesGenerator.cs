@@ -45,7 +45,7 @@ public sealed partial class ObservableValidatorValidateAllPropertiesGenerator : 
         // Check whether [DynamicallyAccessedMembers] is available
         IncrementalValueProvider<bool> isDynamicallyAccessedMembersAttributeAvailable =
             context.CompilationProvider
-            .Select(static (item, _) => item.GetTypeByMetadataName("System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembersAttribute") is { DeclaredAccessibility: Accessibility.Public });
+            .Select(static (item, _) => item.HasAccessibleTypeWithMetadataName("System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembersAttribute"));
 
         // Gather the conditional flag and attribute availability
         IncrementalValueProvider<(bool IsHeaderFileNeeded, bool IsDynamicallyAccessedMembersAttributeAvailable)> headerFileInfo =
