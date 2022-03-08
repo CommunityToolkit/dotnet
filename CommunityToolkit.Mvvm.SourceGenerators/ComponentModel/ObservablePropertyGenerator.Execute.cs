@@ -276,7 +276,6 @@ partial class ObservablePropertyGenerator
             //
             // /// <inheritdoc cref="<FIELD_NAME>"/>
             // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
-            // [global::System.Diagnostics.DebuggerNonUserCode]
             // [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
             // <VALIDATION_ATTRIBUTES>
             // public <FIELD_TYPE><NULLABLE_ANNOTATION?> <PROPERTY_NAME>
@@ -296,7 +295,6 @@ partial class ObservablePropertyGenerator
                             AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservablePropertyGenerator).FullName))),
                             AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservablePropertyGenerator).Assembly.GetName().Version.ToString()))))))
                     .WithOpenBracketToken(Token(TriviaList(Comment($"/// <inheritdoc cref=\"{propertyInfo.FieldName}\"/>")), SyntaxKind.OpenBracketToken, TriviaList())),
-                    AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.DebuggerNonUserCode")))),
                     AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage")))))
                 .AddAttributeLists(validationAttributes.ToArray())
                 .AddModifiers(Token(SyntaxKind.PublicKeyword))

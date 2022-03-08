@@ -207,7 +207,6 @@ partial class ICommandGenerator
             //
             // /// <summary>Gets an <see cref="<COMMAND_INTERFACE_TYPE>" instance wrapping <see cref="<METHOD_NAME>"/> and <see cref="<OPTIONAL_CAN_EXECUTE>"/>.</summary>
             // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
-            // [global::System.Diagnostics.DebuggerNonUserCode]
             // [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
             // public <COMMAND_TYPE> <COMMAND_PROPERTY_NAME> => <COMMAND_FIELD_NAME> ??= new <RELAY_COMMAND_TYPE>(<COMMAND_CREATION_ARGUMENTS>);
             PropertyDeclarationSyntax propertyDeclaration =
@@ -225,7 +224,6 @@ partial class ICommandGenerator
                         $"/// <summary>Gets an <see cref=\"{commandInterfaceTypeXmlName}\"/> instance wrapping <see cref=\"{commandInfo.MethodName}\"/>.</summary>")),
                         SyntaxKind.OpenBracketToken,
                         TriviaList())),
-                    AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.DebuggerNonUserCode")))),
                     AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage")))))
                 .WithExpressionBody(
                     ArrowExpressionClause(
@@ -265,7 +263,6 @@ partial class ICommandGenerator
                 //
                 // /// <summary>Gets an <see cref="global::System.Windows.Input.ICommand" instance that can be used to cancel <see cref="<COMMAND_PROPERTY_NAME>"/>.</summary>
                 // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
-                // [global::System.Diagnostics.DebuggerNonUserCode]
                 // [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                 // public global::System.Windows.Input.ICommand <CANCEL_COMMAND_PROPERTY_NAME> => <CANCEL_COMMAND_FIELD_NAME> ??= global::CommunityToolkit.Mvvm.Input.IAsyncRelayCommandExtensions.CreateCancelCommand(<COMMAND_PROPERTY_NAME>);
                 PropertyDeclarationSyntax cancelCommandPropertyDeclaration =
@@ -283,7 +280,6 @@ partial class ICommandGenerator
                             $"/// <summary>Gets an <see cref=\"global::System.Windows.Input.ICommand\"/> instance that can be used to cancel <see cref=\"{commandInfo.PropertyName}\"/>.</summary>")),
                             SyntaxKind.OpenBracketToken,
                             TriviaList())),
-                        AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.DebuggerNonUserCode")))),
                         AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage")))))
                     .WithExpressionBody(
                         ArrowExpressionClause(
