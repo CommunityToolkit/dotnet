@@ -74,9 +74,6 @@ public sealed class RelayCommand : IRelayCommand
     /// <inheritdoc/>
     public void Execute(object? parameter)
     {
-        if (CanExecute(parameter))
-        {
-            this.execute();
-        }
+        this.execute();
     }
 }

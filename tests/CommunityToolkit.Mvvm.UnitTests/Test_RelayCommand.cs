@@ -70,10 +70,11 @@ public class Test_RelayCommand
 
         command.Execute(null);
 
-        Assert.AreEqual(ticks, 0);
+        // Logic is unconditionally invoked, the caller should check CanExecute first
+        Assert.AreEqual(ticks, 1);
 
         command.Execute(new object());
 
-        Assert.AreEqual(ticks, 0);
+        Assert.AreEqual(ticks, 2);
     }
 }

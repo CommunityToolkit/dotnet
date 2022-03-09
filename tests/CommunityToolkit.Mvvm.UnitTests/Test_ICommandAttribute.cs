@@ -49,7 +49,10 @@ public partial class Test_ICommandAttribute
 
         for (int i = 0; i < 10; i++)
         {
-            tasks.Add(model.AddValueToListAndDelayCommand.ExecuteAsync(i));
+            if (model.AddValueToListAndDelayCommand.CanExecute(i))
+            {
+                tasks.Add(model.AddValueToListAndDelayCommand.ExecuteAsync(i));
+            }
         }
 
         // All values should already be in the list, as commands are executed
@@ -59,34 +62,72 @@ public partial class Test_ICommandAttribute
 
         await Task.WhenAll(tasks);
 
+        model.Values.Clear();
         tasks.Clear();
 
-        for (int i = 10; i < 20; i++)
+        for (int i = 0; i < 10; i++)
         {
+            if (model.AddValueToListAndDelayWithDefaultConcurrencyCommand.CanExecute(i))
+            {
+                tasks.Add(model.AddValueToListAndDelayWithDefaultConcurrencyCommand.ExecuteAsync(i));
+            }
+        }
+
+        model.Tcs.SetResult(null);
+
+        await Task.WhenAll(tasks);
+
+        Assert.AreEqual(1, tasks.Count);
+
+        // Only the first item should have been added
+        CollectionAssert.AreEqual(model.Values, new[] { 0 });
+
+        model.ResetTcs();
+        model.Values.Clear();
+        tasks.Clear();
+
+        for (int i = 0; i < 10; i++)
+        {
+            // Ignore the checks
             tasks.Add(model.AddValueToListAndDelayWithDefaultConcurrencyCommand.ExecuteAsync(i));
         }
 
+        model.Tcs.SetResult(null);
+
+        await Task.WhenAll(tasks);
+
         Assert.AreEqual(10, tasks.Count);
 
-        // Only the first item should have been added
-        CollectionAssert.AreEqual(model.Values, Enumerable.Range(0, 11).ToArray());
+        CollectionAssert.AreEqual(model.Values, Enumerable.Range(0, 10).ToArray());
 
-        for (int i = 1; i < tasks.Count; i++)
-        {
-            Assert.AreSame(Task.CompletedTask, tasks[i]);
-        }
-
+        model.Values.Clear();
         tasks.Clear();
 
-        for (int i = 11; i < 21; i++)
+        for (int i = 0; i < 10; i++)
         {
+            if (model.AddValueToListAndDelayWithDefaultConcurrencyAsync_WithCancelCommandCommand.CanExecute(i))
+            {
+                tasks.Add(model.AddValueToListAndDelayWithDefaultConcurrencyAsync_WithCancelCommandCommand.ExecuteAsync(i));
+            }
+        }
+
+        Assert.AreEqual(1, tasks.Count);
+
+        // Same as above, only the first one is added
+        CollectionAssert.AreEqual(model.Values, new[] { 0 });
+
+        model.Values.Clear();
+        tasks.Clear();
+
+        for (int i = 0; i < 10; i++)
+        {
+            // Ignore the checks
             tasks.Add(model.AddValueToListAndDelayWithDefaultConcurrencyAsync_WithCancelCommandCommand.ExecuteAsync(i));
         }
 
         Assert.AreEqual(10, tasks.Count);
 
-        // Only the first item should have been added, like the previous case
-        CollectionAssert.AreEqual(model.Values, Enumerable.Range(0, 12).ToArray());
+        CollectionAssert.AreEqual(model.Values, Enumerable.Range(0, 10).ToArray());
     }
 
     [TestMethod]
@@ -102,9 +143,12 @@ public partial class Test_ICommandAttribute
 
         model.Flag = false;
 
+        Assert.IsFalse(model.IncrementCounter_NoParameters_PropertyCommand.CanExecute(null));
+
+        // This and all test above also verify the logic is unconditionally invoked if CanExecute is ignored
         model.IncrementCounter_NoParameters_PropertyCommand.Execute(null);
 
-        Assert.AreEqual(model.Counter, 1);
+        Assert.AreEqual(model.Counter, 2);
     }
 
     [TestMethod]
@@ -120,9 +164,11 @@ public partial class Test_ICommandAttribute
 
         model.SetGeneratedFlag(false);
 
+        Assert.IsFalse(model.IncrementCounter_NoParameters_GeneratedPropertyCommand.CanExecute(null));
+
         model.IncrementCounter_NoParameters_GeneratedPropertyCommand.Execute(null);
 
-        Assert.AreEqual(model.Counter, 1);
+        Assert.AreEqual(model.Counter, 2);
     }
 
     [TestMethod]
@@ -138,9 +184,11 @@ public partial class Test_ICommandAttribute
 
         model.Flag = false;
 
+        Assert.IsFalse(model.IncrementCounter_WithParameter_PropertyCommand.CanExecute(null));
+
         model.IncrementCounter_WithParameter_PropertyCommand.Execute(null);
 
-        Assert.AreEqual(model.Counter, 1);
+        Assert.AreEqual(model.Counter, 2);
     }
 
     [TestMethod]
@@ -156,9 +204,11 @@ public partial class Test_ICommandAttribute
 
         model.SetGeneratedFlag(false);
 
+        Assert.IsFalse(model.IncrementCounter_WithParameter_GeneratedPropertyCommand.CanExecute(null));
+
         model.IncrementCounter_WithParameter_GeneratedPropertyCommand.Execute(null);
 
-        Assert.AreEqual(model.Counter, 1);
+        Assert.AreEqual(model.Counter, 2);
     }
 
     [TestMethod]
@@ -174,9 +224,11 @@ public partial class Test_ICommandAttribute
 
         model.Flag = false;
 
+        Assert.IsFalse(model.IncrementCounter_WithParameter_PropertyCommand.CanExecute(null));
+
         model.IncrementCounter_WithParameter_PropertyCommand.Execute(null);
 
-        Assert.AreEqual(model.Counter, 1);
+        Assert.AreEqual(model.Counter, 2);
     }
 
     [TestMethod]
@@ -192,9 +244,11 @@ public partial class Test_ICommandAttribute
 
         model.Flag = false;
 
-        model.IncrementCounter_WithParameter_PropertyCommand.Execute(null);
+        Assert.IsFalse(model.IncrementCounter_WithParameters_MethodWithNoParametersCommand.CanExecute(null));
 
-        Assert.AreEqual(model.Counter, 1);
+        model.IncrementCounter_WithParameters_MethodWithNoParametersCommand.Execute(null);
+
+        Assert.AreEqual(model.Counter, 2);
     }
 
     [TestMethod]
@@ -206,9 +260,11 @@ public partial class Test_ICommandAttribute
 
         Assert.AreEqual(model.Counter, 1);
 
-        model.IncrementCounter_WithParameter_PropertyCommand.Execute(new User());
+        Assert.IsFalse(model.IncrementCounter_WithParameters_MethodWithMatchingParameterCommand.CanExecute(new User()));
 
-        Assert.AreEqual(model.Counter, 1);
+        model.IncrementCounter_WithParameters_MethodWithMatchingParameterCommand.Execute(new User());
+
+        Assert.AreEqual(model.Counter, 2);
     }
 
     [TestMethod]
@@ -224,9 +280,11 @@ public partial class Test_ICommandAttribute
 
         model.Flag = false;
 
+        Assert.IsFalse(model.IncrementCounter_Async_NoParameters_PropertyCommand.CanExecute(null));
+
         await model.IncrementCounter_Async_NoParameters_PropertyCommand.ExecuteAsync(null);
 
-        Assert.AreEqual(model.Counter, 1);
+        Assert.AreEqual(model.Counter, 2);
     }
 
     [TestMethod]
@@ -242,9 +300,11 @@ public partial class Test_ICommandAttribute
 
         model.Flag = false;
 
+        Assert.IsFalse(model.IncrementCounter_Async_WithParameter_PropertyCommand.CanExecute(null));
+
         await model.IncrementCounter_Async_WithParameter_PropertyCommand.ExecuteAsync(null);
 
-        Assert.AreEqual(model.Counter, 1);
+        Assert.AreEqual(model.Counter, 2);
     }
 
     [TestMethod]
@@ -260,9 +320,11 @@ public partial class Test_ICommandAttribute
 
         model.Flag = false;
 
+        Assert.IsFalse(model.IncrementCounter_Async_WithParameter_PropertyCommand.CanExecute(null));
+
         await model.IncrementCounter_Async_WithParameter_PropertyCommand.ExecuteAsync(null);
 
-        Assert.AreEqual(model.Counter, 1);
+        Assert.AreEqual(model.Counter, 2);
     }
 
     [TestMethod]
@@ -278,9 +340,11 @@ public partial class Test_ICommandAttribute
 
         model.Flag = false;
 
-        await model.IncrementCounter_Async_WithParameter_PropertyCommand.ExecuteAsync(null);
+        Assert.IsFalse(model.IncrementCounter_Async_WithParameters_MethodWithNoParametersCommand.CanExecute(null));
 
-        Assert.AreEqual(model.Counter, 1);
+        await model.IncrementCounter_Async_WithParameters_MethodWithNoParametersCommand.ExecuteAsync(null);
+
+        Assert.AreEqual(model.Counter, 2);
     }
 
     [TestMethod]
@@ -292,9 +356,11 @@ public partial class Test_ICommandAttribute
 
         Assert.AreEqual(model.Counter, 1);
 
-        await model.IncrementCounter_Async_WithParameter_PropertyCommand.ExecuteAsync(new User());
+        Assert.IsFalse(model.IncrementCounter_Async_WithParameters_MethodWithMatchingParameterCommand.CanExecute(new User()));
 
-        Assert.AreEqual(model.Counter, 1);
+        await model.IncrementCounter_Async_WithParameters_MethodWithMatchingParameterCommand.ExecuteAsync(new User());
+
+        Assert.AreEqual(model.Counter, 2);
     }
 
     [TestMethod]
@@ -397,6 +463,10 @@ public partial class Test_ICommandAttribute
 
         public List<int> Values { get; } = new();
 
+        public TaskCompletionSource<object?> Tcs { get; private set; } = new();
+
+        public void ResetTcs() => Tcs = new TaskCompletionSource<object?>();
+
         /// <summary>This is a single line summary.</summary>
         [ICommand]
         private void IncrementCounter()
@@ -437,7 +507,7 @@ public partial class Test_ICommandAttribute
         {
             Values.Add(value);
 
-            await Task.Delay(1000);
+            _ = await Tcs.Task;
         }
 
         [ICommand(IncludeCancelCommand = true)]
