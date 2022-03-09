@@ -57,10 +57,19 @@ public sealed partial class IMessengerRegisterAllGenerator : IIncrementalGenerat
             .Collect()
             .Select(static (item, _) => item.Length > 0);
 
+        // Check whether [DynamicallyAccessedMembers] is available
+        IncrementalValueProvider<bool> isDynamicallyAccessedMembersAttributeAvailable =
+            context.CompilationProvider
+            .Select(static (item, _) => item.HasAccessibleTypeWithMetadataName("System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembersAttribute"));
+
+        // Gather the conditional flag and attribute availability
+        IncrementalValueProvider<(bool IsHeaderFileNeeded, bool IsDynamicallyAccessedMembersAttributeAvailable)> headerFileInfo =
+            isHeaderFileNeeded.Combine(isDynamicallyAccessedMembersAttributeAvailable);
+
         // Generate the header file with the attributes
-        context.RegisterConditionalImplementationSourceOutput(isHeaderFileNeeded, static context =>
+        context.RegisterConditionalImplementationSourceOutput(headerFileInfo, static (context, item) =>
         {
-            CompilationUnitSyntax compilationUnit = Execute.GetSyntax();
+            CompilationUnitSyntax compilationUnit = Execute.GetSyntax(item);
 
             context.AddSource(
                 hintName: "__IMessengerExtensions.cs",

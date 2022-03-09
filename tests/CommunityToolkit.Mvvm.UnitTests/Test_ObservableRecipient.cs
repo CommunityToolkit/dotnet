@@ -3,10 +3,17 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+#if !NET6_0_OR_GREATER
+using System.Collections.Generic;
+using System.Linq;
+#endif
+using System.Reflection;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+#pragma warning disable CS0618
 
 namespace CommunityToolkit.Mvvm.UnitTests;
 
@@ -83,6 +90,23 @@ public class Test_ObservableRecipient
         Assert.AreEqual(message.OldValue, 0);
         Assert.AreEqual(message.NewValue, 42);
         Assert.AreEqual(message.PropertyName, nameof(SomeRecipient<int>.Data));
+    }
+
+    [TestMethod]
+    public void Test_IRecipient_VerifyTrimmingAnnotation()
+    {
+#if NET6_0_OR_GREATER
+        System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembersAttribute? attribute =
+            typeof(Messaging.__Internals.__IMessengerExtensions)
+            .GetCustomAttribute<System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembersAttribute>();
+
+        Assert.IsNotNull(attribute);
+        Assert.AreEqual(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicMethods, attribute.MemberTypes);
+#else
+        IEnumerable<Attribute> attributes = typeof(Messaging.__Internals.__IMessengerExtensions).GetCustomAttributes();
+
+        Assert.IsFalse(attributes.Any(static a => a.GetType().Name is "DynamicallyAccessedMembersAttribute"));
+#endif
     }
 
     public class SomeRecipient<T> : ObservableRecipient

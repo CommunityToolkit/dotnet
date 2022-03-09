@@ -65,22 +65,22 @@ internal static class IncrementalGeneratorInitializationContextExtensions
     }
 
     /// <summary>
-    /// Conditionally invokes <see cref="IncrementalGeneratorInitializationContext.RegisterImplementationSourceOutput{TSource}(IncrementalValueProvider{TSource}, System.Action{SourceProductionContext, TSource})"/>
-    /// if the value produced by the input <see cref="IncrementalValueProvider{TValue}"/> is <see langword="true"/>.
+    /// Conditionally invokes <see cref="IncrementalGeneratorInitializationContext.RegisterImplementationSourceOutput{TSource}(IncrementalValueProvider{TSource}, Action{SourceProductionContext, TSource})"/>
+    /// if the value produced by the input <see cref="IncrementalValueProvider{TValue}"/> is <see langword="true"/>, and also supplying a given input state.
     /// </summary>
     /// <param name="context">The input <see cref="IncrementalGeneratorInitializationContext"/> value being used.</param>
     /// <param name="source">The source <see cref="IncrementalValueProvider{TValues}"/> instance.</param>
     /// <param name="action">The conditional <see cref="Action{T}"/> to invoke.</param>
-    public static void RegisterConditionalImplementationSourceOutput(
+    public static void RegisterConditionalImplementationSourceOutput<T>(
         this IncrementalGeneratorInitializationContext context,
-        IncrementalValueProvider<bool> source,
-        Action<SourceProductionContext> action)
+        IncrementalValueProvider<(bool Condition, T State)> source,
+        Action<SourceProductionContext, T> action)
     {
-        context.RegisterImplementationSourceOutput(source, (context, flag) =>
+        context.RegisterImplementationSourceOutput(source, (context, item) =>
         {
-            if (flag)
+            if (item.Condition)
             {
-                action(context);
+                action(context, item.State);
             }
         });
     }
