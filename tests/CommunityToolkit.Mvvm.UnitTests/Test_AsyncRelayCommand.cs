@@ -207,6 +207,8 @@ public class Test_AsyncRelayCommand
         Assert.AreSame(args.Item1, command);
         Assert.AreSame(args.Item2, EventArgs.Empty);
 
+        args = default;
+
         Assert.IsNull(command.ExecutionTask);
         Assert.IsFalse(command.IsRunning);
 
@@ -236,6 +238,10 @@ public class Test_AsyncRelayCommand
         _ = await Task.WhenAll(cancellationTokenSources[0].Task, cancellationTokenSources[1].Task);
 
         Assert.IsFalse(command.IsRunning);
+
+        // CanExecute isn't raised again when the command completes, if concurrent executions are allowed
+        Assert.IsNull(args.Item1);
+        Assert.IsNull(args.Item2);
     }
 
     [TestMethod]
@@ -275,10 +281,18 @@ public class Test_AsyncRelayCommand
         Assert.AreSame(args.Item1, command);
         Assert.AreSame(args.Item2, EventArgs.Empty);
 
+        args = default;
+
         Assert.IsNull(command.ExecutionTask);
         Assert.IsFalse(command.IsRunning);
 
         Task task = command.ExecuteAsync(null);
+
+        // CanExecute is raised upon execution
+        Assert.AreSame(args.Item1, command);
+        Assert.AreSame(args.Item2, EventArgs.Empty);
+
+        args = default;
 
         Assert.IsNotNull(command.ExecutionTask);
         Assert.AreSame(command.ExecutionTask, task);
@@ -291,11 +305,19 @@ public class Test_AsyncRelayCommand
         Assert.IsFalse(command.CanBeCanceled);
         Assert.IsFalse(command.IsCancellationRequested);
 
+        // CanExecute hasn't been raised again
+        Assert.IsNull(args.Item1);
+        Assert.IsNull(args.Item2);
+
         tcs.SetResult(null);
 
         await task;
 
         Assert.IsFalse(command.IsRunning);
+
+        // CanExecute is raised automatically when command execution completes, if concurrent executions are disabled
+        Assert.AreSame(args.Item1, command);
+        Assert.AreSame(args.Item2, EventArgs.Empty);
     }
 
     [TestMethod]

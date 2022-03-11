@@ -219,6 +219,11 @@ public sealed class AsyncRelayCommand<T> : IAsyncRelayCommand<T>, ICancellationA
                     {
                         @this.PropertyChanged?.Invoke(@this, AsyncRelayCommand.CanBeCanceledChangedEventArgs);
                     }
+
+                    if (!@this.allowConcurrentExecutions)
+                    {
+                        @this.CanExecuteChanged?.Invoke(@this, EventArgs.Empty);
+                    }
                 }
             }
 
