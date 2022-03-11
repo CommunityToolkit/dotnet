@@ -4,7 +4,7 @@
 
 using System.ComponentModel;
 
-namespace CommunityToolkit.Common.Collections;
+namespace CommunityToolkit.Mvvm.Collections;
 
 /// <summary>
 /// An interface for a grouped collection of items.
