@@ -267,7 +267,7 @@ public class Test_AsyncRelayCommandOfT
         Assert.IsTrue(success);
     }
 
-    public void Test_AsyncRelayCommand_ExecuteDoesNotRaiseCanExecuteChanged()
+    public async Task Test_AsyncRelayCommand_ExecuteDoesNotRaiseCanExecuteChanged()
     {
         TaskCompletionSource<object?> tcs = new();
 
@@ -284,13 +284,21 @@ public class Test_AsyncRelayCommandOfT
         Assert.IsNull(args.Sender);
         Assert.IsNull(args.Args);
 
+        args = default;
+
         Assert.IsTrue(command.CanExecute(""));
 
         tcs.SetResult(null);
+
+        _ = await tcs.Task;
+
+        // CanExecute isn't raised when the command completes
+        Assert.IsNull(args.Sender);
+        Assert.IsNull(args.Args);
     }
 
     [TestMethod]
-    public void Test_AsyncRelayCommand_ExecuteWithoutConcurrencyRaisesCanExecuteChanged()
+    public async Task Test_AsyncRelayCommand_ExecuteWithoutConcurrencyRaisesCanExecuteChanged()
     {
         TaskCompletionSource<object?> tcs = new();
 
@@ -309,7 +317,15 @@ public class Test_AsyncRelayCommandOfT
 
         Assert.IsFalse(command.CanExecute(""));
 
+        args = default;
+
         tcs.SetResult(null);
+
+        _ = await tcs.Task;
+
+        // CanExecute is raised again when the command completes
+        Assert.AreSame(command, args.Sender);
+        Assert.AreSame(EventArgs.Empty, args.Args);
     }
 
     [TestMethod]
