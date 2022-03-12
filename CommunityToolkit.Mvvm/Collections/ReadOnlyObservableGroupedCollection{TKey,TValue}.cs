@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -23,18 +22,18 @@ public sealed class ReadOnlyObservableGroupedCollection<TKey, TValue> : ReadOnly
     /// Initializes a new instance of the <see cref="ReadOnlyObservableGroupedCollection{TKey, TValue}"/> class.
     /// </summary>
     /// <param name="collection">The source collection to wrap.</param>
-    public ReadOnlyObservableGroupedCollection(ObservableGroupedCollection<TKey, TValue> collection)
-        : this(collection.Select(static g => new ReadOnlyObservableGroup<TKey, TValue>(g)))
+    public ReadOnlyObservableGroupedCollection(ObservableCollection<ObservableGroup<TKey, TValue>> collection)
+        : base(new ObservableCollection<ReadOnlyObservableGroup<TKey, TValue>>(collection.Select(static g => new ReadOnlyObservableGroup<TKey, TValue>(g))))
     {
-        ((INotifyCollectionChanged)collection).CollectionChanged += OnSourceCollectionChanged;
+        collection.CollectionChanged += OnSourceCollectionChanged;
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ReadOnlyObservableGroupedCollection{TKey, TValue}"/> class.
     /// </summary>
-    /// <param name="collection">The initial data to add in the grouped collection.</param>
-    public ReadOnlyObservableGroupedCollection(IEnumerable<ReadOnlyObservableGroup<TKey, TValue>> collection)
-        : base(new ObservableCollection<ReadOnlyObservableGroup<TKey, TValue>>(collection))
+    /// <param name="collection">The source collection to wrap.</param>
+    public ReadOnlyObservableGroupedCollection(ObservableCollection<ReadOnlyObservableGroup<TKey, TValue>> collection)
+        : base(collection)
     {
     }
 
