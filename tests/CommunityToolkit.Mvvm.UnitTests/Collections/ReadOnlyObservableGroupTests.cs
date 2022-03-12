@@ -38,7 +38,7 @@ public class ReadOnlyObservableGroupTests
     [TestMethod]
     public void Ctor_WithKeyAndCollection_ShouldHaveExpectedInitialState()
     {
-        int[]? source = new[] { 1, 2, 3 };
+        ObservableCollection<int> source = new() { 1, 2, 3 };
         ReadOnlyObservableGroup<string, int>? group = new("key", source);
 
         Assert.AreEqual(group.Key, "key");

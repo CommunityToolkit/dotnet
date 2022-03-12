@@ -38,15 +38,6 @@ public sealed class ReadOnlyObservableGroupedCollection<TKey, TValue> : ReadOnly
     {
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ReadOnlyObservableGroupedCollection{TKey, TValue}"/> class.
-    /// </summary>
-    /// <param name="collection">The initial data to add in the grouped collection.</param>
-    public ReadOnlyObservableGroupedCollection(IEnumerable<IGrouping<TKey, TValue>> collection)
-        : this(collection.Select(static g => new ReadOnlyObservableGroup<TKey, TValue>(g.Key, g)))
-    {
-    }
-
     private void OnSourceCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         // Even if NotifyCollectionChangedEventArgs allows multiple items, the actual implementation

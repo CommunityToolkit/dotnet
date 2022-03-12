@@ -48,31 +48,12 @@ public class ReadOnlyObservableGroupedCollectionTests
     }
 
     [TestMethod]
-    public void Ctor_WithListOfIGroupingSource_ShoudInitializeObject()
-    {
-        List<IGrouping<string, int>>? source = new()
-        {
-            new IntGroup("A", new[] { 1, 3, 5 }),
-            new IntGroup("B", new[] { 2, 4, 6 }),
-        };
-        ReadOnlyObservableGroupedCollection<string, int>? readOnlyGroup = new(source);
-
-        Assert.AreEqual(readOnlyGroup.Count, 2);
-
-        Assert.AreEqual(readOnlyGroup.ElementAt(0).Key, "A");
-        CollectionAssert.AreEquivalent(readOnlyGroup.ElementAt(0), new[] { 1, 3, 5 });
-
-        Assert.AreEqual(readOnlyGroup.ElementAt(1).Key, "B");
-        CollectionAssert.AreEquivalent(readOnlyGroup.ElementAt(1), new[] { 2, 4, 6 });
-    }
-
-    [TestMethod]
     public void Ctor_WithListOfReadOnlyObservableGroupSource_ShoudInitializeObject()
     {
-        List<ReadOnlyObservableGroup<string, int>>? source = new()
+        ObservableCollection<ReadOnlyObservableGroup<string, int>>? source = new()
         {
-            new ReadOnlyObservableGroup<string, int>("A", new[] { 1, 3, 5 }),
-            new ReadOnlyObservableGroup<string, int>("B", new[] { 2, 4, 6 }),
+            new ReadOnlyObservableGroup<string, int>("A", new ObservableCollection<int> { 1, 3, 5 }),
+            new ReadOnlyObservableGroup<string, int>("B", new ObservableCollection<int> { 2, 4, 6 }),
         };
         ReadOnlyObservableGroupedCollection<string, int>? readOnlyGroup = new(source);
 
