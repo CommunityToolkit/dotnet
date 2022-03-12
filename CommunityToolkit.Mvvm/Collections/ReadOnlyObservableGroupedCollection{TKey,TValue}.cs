@@ -5,7 +5,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace CommunityToolkit.Mvvm.Collections;
@@ -37,56 +37,93 @@ public sealed class ReadOnlyObservableGroupedCollection<TKey, TValue> : ReadOnly
     {
     }
 
+    /// <summary>
+    /// Forwards the <see cref="INotifyCollectionChanged.CollectionChanged"/> event whenever it is raised by the wrapped collection.
+    /// </summary>
+    /// <param name="sender">The wrapped collection (an <see cref="ObservableCollection{T}"/> of <see cref="ReadOnlyObservableGroup{TKey, TValue}"/> instance).</param>
+    /// <param name="e">The <see cref="NotifyCollectionChangedEventArgs"/> arguments.</param>
+    /// <exception cref="NotSupportedException">Thrown if a range operation is requested.</exception>
     private void OnSourceCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         // Even if NotifyCollectionChangedEventArgs allows multiple items, the actual implementation
-        // is only reporting the changes one by one. We consider only this case for now.
-        if (e.OldItems?.Count > 1 || e.NewItems?.Count > 1)
+        // is only reporting the changes one by one. We consider only this case for now. If this is
+        // added in a new version of .NET, this type will need to be updated accordingly in a new version.
+        [DoesNotReturn]
+        static void ThrowNotSupportedExceptionForRangeOperation()
         {
-            static void ThrowNotSupportedException()
-            {
-                throw new NotSupportedException(
-                    "ReadOnlyObservableGroupedCollection<TKey, TValue> doesn't support operations on multiple items at once.\n" +
-                    "If this exception was thrown, it likely means support for batched item updates has been added to the " +
-                    "underlying ObservableCollection<T> type, and this implementation doesn't support that feature yet.\n" +
-                    "Please consider opening an issue in https://aka.ms/windowstoolkit to report this.");
-            }
-
-            ThrowNotSupportedException();
+            throw new NotSupportedException(
+                "ReadOnlyObservableGroupedCollection<TKey, TValue> doesn't support operations on multiple items at once.\n" +
+                "If this exception was thrown, it likely means support for batched item updates has been added to the " +
+                "underlying ObservableCollection<T> type, and this implementation doesn't support that feature yet.\n" +
+                "Please consider opening an issue in https://aka.ms/toolkit/dotnet to report this.");
         }
+
+        // The inner Items list is ObservableCollection<ReadOnlyObservableGroup<TKey, TValue>>, so doing a direct cast here will always succeed
+        ObservableCollection<ReadOnlyObservableGroup<TKey, TValue>> items = (ObservableCollection<ReadOnlyObservableGroup<TKey, TValue>>)Items;
 
         switch (e.Action)
         {
-            case NotifyCollectionChangedAction.Add or NotifyCollectionChangedAction.Replace:
-
-                // We only need to find the new item if the operation is either add or remove. In this
-                // case we just directly find the first item that was modified, or throw if it's not present.
-                // This normally never happens anyway - add and replace should always have a target element.
-                ObservableGroup<TKey, TValue> newItem = e.NewItems!.Cast<ObservableGroup<TKey, TValue>>().First();
-
-                if (e.Action == NotifyCollectionChangedAction.Add)
+            // Insert a single item for an "Add" operation, fail if multiple items are added
+            case NotifyCollectionChangedAction.Add:
+                if (e.NewItems!.Count == 1)
                 {
-                    Items.Insert(e.NewStartingIndex, new ReadOnlyObservableGroup<TKey, TValue>(newItem));
+                    ObservableGroup<TKey, TValue> newItem = (ObservableGroup<TKey, TValue>)e.NewItems![0]!;
+
+                    items.Insert(e.NewStartingIndex, new ReadOnlyObservableGroup<TKey, TValue>(newItem));
                 }
-                else
+                else if (e.NewItems!.Count > 1)
                 {
-                    Items[e.OldStartingIndex] = new ReadOnlyObservableGroup<TKey, TValue>(newItem);
+                    ThrowNotSupportedExceptionForRangeOperation();
                 }
 
                 break;
-            case NotifyCollectionChangedAction.Move:
 
-                // Our inner Items list is our own ObservableCollection<ReadOnlyObservableGroup<TKey, TValue>> so we can safely cast Items to its concrete type here.
-                ((ObservableCollection<ReadOnlyObservableGroup<TKey, TValue>>)Items).Move(e.OldStartingIndex, e.NewStartingIndex);
-                break;
+            // Remove a single item at offset for a "Remove" operation, fail if multiple items are removed
             case NotifyCollectionChangedAction.Remove:
-                Items.RemoveAt(e.OldStartingIndex);
+                if (e.OldItems!.Count == 1)
+                {
+                    items.RemoveAt(e.OldStartingIndex);
+                }
+                else if (e.OldItems!.Count > 1)
+                {
+                    ThrowNotSupportedExceptionForRangeOperation();
+                }
+
                 break;
+
+            // Replace a single item at offset for a "Replace" operation, fail if multiple items are replaced
+            case NotifyCollectionChangedAction.Replace:
+                if (e.OldItems!.Count == 1 && e.NewItems!.Count == 1)
+                {
+                    ObservableGroup<TKey, TValue> replacedItem = (ObservableGroup<TKey, TValue>)e.NewItems![0]!;
+
+                    items[e.OldStartingIndex] = new ReadOnlyObservableGroup<TKey, TValue>(replacedItem);
+                }
+                else if (e.OldItems!.Count > 1 || e.NewItems!.Count > 1)
+                {
+                    ThrowNotSupportedExceptionForRangeOperation();
+                }
+
+                break;
+
+            // Move a single item between offsets for a "Move" operation, fail if multiple items are moved
+            case NotifyCollectionChangedAction.Move:
+                if (e.OldItems!.Count == 1 && e.NewItems!.Count == 1)
+                {
+                    items.Move(e.OldStartingIndex, e.NewStartingIndex);
+                }
+                else if (e.OldItems!.Count > 1 || e.NewItems!.Count > 1)
+                {
+                    ThrowNotSupportedExceptionForRangeOperation();
+                }
+
+                break;
+
+            // A "Reset" operation is just forwarded normally
             case NotifyCollectionChangedAction.Reset:
-                Items.Clear();
+                items.Clear();
                 break;
             default:
-                Debug.Fail("unsupported value");
                 break;
         }
     }
