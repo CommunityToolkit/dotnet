@@ -17,7 +17,7 @@ namespace CommunityToolkit.Mvvm.Collections;
 /// <typeparam name="TKey">The type of the group key.</typeparam>
 /// <typeparam name="TValue">The type of the items in the collection.</typeparam>
 [DebuggerDisplay("Key = {Key}, Count = {Count}")]
-public class ObservableGroup<TKey, TValue> : ObservableCollection<TValue>, IGrouping<TKey, TValue>, IReadOnlyObservableGroup
+public class ObservableGroup<TKey, TValue> : ObservableCollection<TValue>, IGrouping<TKey, TValue>, IReadOnlyObservableGroup<TKey>
     where TKey : notnull
 {
     /// <summary>
