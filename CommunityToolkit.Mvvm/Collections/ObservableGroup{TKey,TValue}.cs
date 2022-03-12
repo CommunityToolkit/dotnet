@@ -4,9 +4,9 @@
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using CommunityToolkit.Mvvm.Collections.Internals;
 
 namespace CommunityToolkit.Mvvm.Collections;
 
@@ -20,11 +20,6 @@ namespace CommunityToolkit.Mvvm.Collections;
 public class ObservableGroup<TKey, TValue> : ObservableCollection<TValue>, IGrouping<TKey, TValue>, IReadOnlyObservableGroup<TKey>
     where TKey : notnull
 {
-    /// <summary>
-    /// The cached <see cref="PropertyChangedEventArgs"/> for <see cref="Key"/>
-    /// </summary>
-    private static readonly PropertyChangedEventArgs KeyChangedEventArgs = new(nameof(Key));
-
     /// <summary>
     /// Initializes a new instance of the <see cref="ObservableGroup{TKey, TValue}"/> class.
     /// </summary>
@@ -69,7 +64,7 @@ public class ObservableGroup<TKey, TValue> : ObservableCollection<TValue>, IGrou
             {
                 this.key = value;
 
-                OnPropertyChanged(KeyChangedEventArgs);
+                OnPropertyChanged(ObservableGroupHelper.KeyChangedEventArgs);
             }
         }
     }
