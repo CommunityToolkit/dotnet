@@ -219,4 +219,20 @@ internal static class DiagnosticDescriptors
         isEnabledByDefault: true,
         description: "Cannot apply the [ICommand] attribute specifying to include a cancel command to methods not mapping to an asynchronous command type accepting a cancellation token.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a generated property created with <c>[ObservableProperty]</c> would collide with the source field.
+    /// <para>
+    /// Format: <c>"The field {0}.{1} cannot be used to generate an observable property, as its name would collide with the field name (instance fields should use the "lowerCamel", "_lowerCamel" or "m_lowerCamel" pattern)</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor ObservablePropertyNameCollisionError = new DiagnosticDescriptor(
+        id: "MVVMTK0014",
+        title: "Name collision for generated property",
+        messageFormat: "The field {0}.{1} cannot be used to generate an observable property, as its name would collide with the field name (instance fields should use the \"lowerCamel\", \"_lowerCamel\" or \"m_lowerCamel\" pattern)",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: $"The name of fields annotated with [ObservableProperty] should use \"lowerCamel\", \"_lowerCamel\" or \"m_lowerCamel\" pattern to avoid collisions with the generated properties.",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit");
 }
