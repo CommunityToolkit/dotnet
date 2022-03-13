@@ -18,10 +18,10 @@ MVVMTK0010 | CommunityToolkit.Mvvm.SourceGenerators.ICommandGenerator | Error | 
 MVVMTK0011 | CommunityToolkit.Mvvm.SourceGenerators.ICommandGenerator | Error | See https://aka.ms/mvvmtoolkit/error
 MVVMTK0012 | CommunityToolkit.Mvvm.SourceGenerators.ICommandGenerator | Error | See https://aka.ms/mvvmtoolkit/error
 MVVMTK0013 | CommunityToolkit.Mvvm.SourceGenerators.ICommandGenerator | Error | See https://aka.ms/mvvmtoolkit/error
-MVVMTK0014 | CommunityToolkit.Mvvm.SourceGenerators.ICommandGenerator | Error | See https://aka.ms/mvvmtoolkit/error
-MVVMTK0015 | CommunityToolkit.Mvvm.SourceGenerators.ICommandGenerator | Error | See https://aka.ms/mvvmtoolkit/error
-MVVMTK0016 | CommunityToolkit.Mvvm.SourceGenerators.ICommandGenerator | Error | See https://aka.ms/mvvmtoolkit/error
-MVVMTK0017 | CommunityToolkit.Mvvm.SourceGenerators.ICommandGenerator | Error | See https://aka.ms/mvvmtoolkit/error
-MVVMTK0018 | CommunityToolkit.Mvvm.SourceGenerators.ICommandGenerator | Error | See https://aka.ms/mvvmtoolkit/error
-MVVMTK0019 | CommunityToolkit.Mvvm.SourceGenerators.ICommandGenerator | Error | See https://aka.ms/mvvmtoolkit/error
-MVVMTK0020 | CommunityToolkit.Mvvm.SourceGenerators.ICommandGenerator | Error | See https://aka.ms/mvvmtoolkit/error
+MVVMTK0014 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Error | See https://aka.ms/mvvmtoolkit/error
+MVVMTK0015 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Error | See https://aka.ms/mvvmtoolkit/error
+MVVMTK0016 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Error | See https://aka.ms/mvvmtoolkit/error
+MVVMTK0017 | CommunityToolkit.Mvvm.SourceGenerators.INotifyPropertyChangedGenerator | Error | See https://aka.ms/mvvmtoolkit/error
+MVVMTK0018 | CommunityToolkit.Mvvm.SourceGenerators.ObservableObjectGenerator | Error | See https://aka.ms/mvvmtoolkit/error
+MVVMTK0019 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Error | See https://aka.ms/mvvmtoolkit/error
+MVVMTK0020 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Error | See https://aka.ms/mvvmtoolkit/error
