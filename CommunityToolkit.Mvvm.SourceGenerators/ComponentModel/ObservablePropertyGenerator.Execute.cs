@@ -73,20 +73,16 @@ partial class ObservablePropertyGenerator
             // Gather attributes info
             foreach (AttributeData attributeData in fieldSymbol.GetAttributes())
             {
-                if (TryGatherDependentPropertyChangedNames(fieldSymbol, attributeData, propertyChangedNames, builder))
+                // Gather dependent property and command names
+                if (TryGatherDependentPropertyChangedNames(fieldSymbol, attributeData, propertyChangedNames, builder) ||
+                    TryGatherDependentCommandNames(fieldSymbol, attributeData, notifiedCommandNames, builder))
                 {
+                    continue;
                 }
-                else if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoNotifyCanExecuteForAttribute") == true)
+
+                // Track the current validation attribute, if applicable
+                if (attributeData.AttributeClass?.InheritsFrom("global::System.ComponentModel.DataAnnotations.ValidationAttribute") == true)
                 {
-                    // Add dependent relay command notifications, if needed
-                    foreach (string commandName in attributeData.GetConstructorArguments<string>())
-                    {
-                        notifiedCommandNames.Add(commandName);
-                    }
-                }
-                else if (attributeData.AttributeClass?.InheritsFrom("global::System.ComponentModel.DataAnnotations.ValidationAttribute") == true)
-                {
-                    // Track the current validation attribute
                     validationAttributes.Add(AttributeInfo.From(attributeData));
                 }
             }
@@ -148,6 +144,49 @@ partial class ObservablePropertyGenerator
                             dependentPropertyName ?? "",
                             fieldSymbol.ContainingType);
                     }                    
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Tries to gather dependent commands from the given attribute.
+        /// </summary>
+        /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
+        /// <param name="attributeData">The <see cref="AttributeData"/> instance for <paramref name="fieldSymbol"/>.</param>
+        /// <param name="notifiedCommandNames">The target collection of dependent command names to populate.</param>
+        /// <param name="diagnostics">The current collection of gathered diagnostics.</param>
+        /// <returns>Whether or not <paramref name="attributeData"/> was an attribute containing any dependent commands.</returns>
+        private static bool TryGatherDependentCommandNames(
+            IFieldSymbol fieldSymbol,
+            AttributeData attributeData,
+            ImmutableArray<string>.Builder notifiedCommandNames,
+            ImmutableArray<Diagnostic>.Builder diagnostics)
+        {
+            if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoNotifyCanExecuteForAttribute") == true)
+            {
+                foreach (string? commandName in attributeData.GetConstructorArguments<string>())
+                {
+                    // Each target must be a string matching the name of a property from the containing type of the annotated field, and the
+                    // property must be of type IRelayCommand, or any type that implements that interface (to avoid generating invalid code).
+                    if (commandName is { Length: > 0 } &&
+                        fieldSymbol.ContainingType.GetMembers(commandName).OfType<IPropertySymbol>().FirstOrDefault() is IPropertySymbol propertySymbol &&
+                        propertySymbol is INamedTypeSymbol typeSymbol &&
+                        typeSymbol.InheritsFrom("global::CommunityToolkit.Mvvm.Input.IRelayCommand"))
+                    {
+                        notifiedCommandNames.Add(commandName);
+                    }
+                    else
+                    {
+                        diagnostics.Add(
+                            AlsoNotifyCanExecuteForInvalidTargetError,
+                            fieldSymbol,
+                            commandName ?? "",
+                            fieldSymbol.ContainingType);
+                    }
                 }
 
                 return true;

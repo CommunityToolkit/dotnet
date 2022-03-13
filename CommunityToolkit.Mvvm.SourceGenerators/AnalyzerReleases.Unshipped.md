@@ -20,3 +20,4 @@ MVVMTK0012 | CommunityToolkit.Mvvm.SourceGenerators.ICommandGenerator | Error | 
 MVVMTK0013 | CommunityToolkit.Mvvm.SourceGenerators.ICommandGenerator | Error | See https://aka.ms/mvvmtoolkit/error
 MVVMTK0014 | CommunityToolkit.Mvvm.SourceGenerators.ICommandGenerator | Error | See https://aka.ms/mvvmtoolkit/error
 MVVMTK0015 | CommunityToolkit.Mvvm.SourceGenerators.ICommandGenerator | Error | See https://aka.ms/mvvmtoolkit/error
+MVVMTK0016 | CommunityToolkit.Mvvm.SourceGenerators.ICommandGenerator | Error | See https://aka.ms/mvvmtoolkit/error

@@ -244,11 +244,27 @@ internal static class DiagnosticDescriptors
     /// </summary>
     public static readonly DiagnosticDescriptor AlsoNotifyChangeForInvalidTargetError = new DiagnosticDescriptor(
         id: "MVVMTK0015",
-        title: "Name collision for generated property",
+        title: "Invalid target name for [AlsoNotifyChangeFor]",
         messageFormat: "The target(s) of [AlsoNotifyChangeFor] must be an accessible property, but \"{0}\" has no matches in type {1}",
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "The target(s) of [AlsoNotifyChangeFor] must be an accessible property in its parent type.",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when the specified target for <c>[AlsoNotifyCanExecuteFor]</c> is not valid.
+    /// <para>
+    /// Format: <c>"The target(s) of [AlsoNotifyCanExecuteFor] must be an accessible <c>IRelayCommand</c> property, but "{0}" has no matches in type {1}</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor AlsoNotifyCanExecuteForInvalidTargetError = new DiagnosticDescriptor(
+        id: "MVVMTK0016",
+        title: "Invalid target name for [AlsoNotifyCanExecuteFor]",
+        messageFormat: "The target(s) of [AlsoNotifyCanExecuteFor] must be an accessible IRelayCommand property, but \"{0}\" has no matches in type {1}",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "The target(s) of [AlsoNotifyCanExecuteFor] must be an accessible IRelayCommand property in its parent type.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 }
