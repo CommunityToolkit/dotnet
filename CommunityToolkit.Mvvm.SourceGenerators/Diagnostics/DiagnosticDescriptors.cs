@@ -319,17 +319,17 @@ internal static class DiagnosticDescriptors
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[ObservableProperty]</c> is applied to a field in an invalid type.
     /// <para>
-    /// Format: <c>"The field {0}.{1} needs to be annotated with [ObservableProperty] in order to enable using [AlsoNotifyChangeFor] and [AlsoNotifyCanExecuteFor]"</c>.
+    /// Format: <c>"The field {0}.{1} needs to be annotated with [ObservableProperty] in order to enable using [AlsoNotifyChangeFor], [AlsoNotifyCanExecuteFor] and [AlsoBroadcastChange]"</c>.
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor FieldWithOrphanedDependentObservablePropertyAttributesError = new DiagnosticDescriptor(
         id: "MVVMTK0020",
         title: "Invalid use of attributes dependent on [ObservableProperty]",
-        messageFormat: "The field {0}.{1} needs to be annotated with [ObservableProperty] in order to enable using [AlsoNotifyChangeFor] and [AlsoNotifyCanExecuteFor]",
+        messageFormat: "The field {0}.{1} needs to be annotated with [ObservableProperty] in order to enable using [AlsoNotifyChangeFor], [AlsoNotifyCanExecuteFor] and [AlsoBroadcastChange]",
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Fields not annotated with [ObservableProperty] cannot use [AlsoNotifyChangeFor] and [AlsoNotifyCanExecuteFor].",
+        description: "Fields not annotated with [ObservableProperty] cannot use [AlsoNotifyChangeFor], [AlsoNotifyCanExecuteFor] and [AlsoBroadcastChange].",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>
