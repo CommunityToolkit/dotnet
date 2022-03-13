@@ -331,4 +331,20 @@ internal static class DiagnosticDescriptors
         isEnabledByDefault: true,
         description: "Fields not annotated with [ObservableProperty] cannot use [AlsoNotifyChangeFor] and [AlsoNotifyCanExecuteFor].",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[ObservableRecipient]</c> is applied to a type with an attribute already.
+    /// <para>
+    /// Format: <c>"Cannot apply [ObservableRecipient] to type {0}, as it already inherits this attribute from a base type"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor InvalidAttributeCombinationForObservableRecipientAttributeError = new DiagnosticDescriptor(
+        id: "MVVMTK0021",
+        title: "Invalid target type for [ObservableRecipient]",
+        messageFormat: "Cannot apply [ObservableRecipient] to type {0}, as it already inherits this attribute from a base type",
+        category: typeof(ObservableRecipientGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "Cannot apply [ObservableRecipient] to a type that already inherits this attribute from a base type.",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit");
 }

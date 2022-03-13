@@ -79,6 +79,16 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
             return false;
         }
 
+        // Check if the type already inherits [ObservableRecipient]
+        if (typeSymbol.InheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableRecipientAttribute"))
+        {
+            builder.Add(InvalidAttributeCombinationForObservableRecipientAttributeError, typeSymbol, typeSymbol);
+
+            diagnostics = builder.ToImmutable();
+
+            return false;
+        }
+
         // In order to use [ObservableRecipient], the target type needs to inherit from ObservableObject,
         // or be annotated with [ObservableObject] or [INotifyPropertyChanged] (with additional helpers).
         if (!typeSymbol.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableObject") &&

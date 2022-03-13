@@ -998,6 +998,28 @@ public class Test_SourceGeneratorsDiagnostics
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0020");
     }
 
+    [TestMethod]
+    public void InvalidAttributeCombinationForObservableRecipientAttributeError()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                [ObservableRecipient]
+                public partial class A : ObservableObject
+                {
+                }
+
+                [ObservableRecipient]
+                public partial class B : A
+                {
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservableRecipientGenerator>(source, "MVVMTK0021");
+    }
+
     /// <summary>
     /// Verifies the output of a source generator.
     /// </summary>
