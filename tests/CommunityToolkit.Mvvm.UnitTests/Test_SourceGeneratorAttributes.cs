@@ -36,9 +36,11 @@ public partial class Test_SourceGeneratorAttributes
     public partial class TestModel
     {
         [ObservableProperty]
-        [AlsoNotifyChangeFor(nameof(Name))]
+        [AlsoNotifyChangeFor(nameof(Foo))]
         [AlsoNotifyCanExecuteFor(nameof(TestCommand))]
         public string? name;
+
+        public string? Foo { get; set; }
 
         [ICommand]
         public void Test()

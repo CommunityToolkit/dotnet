@@ -48,7 +48,7 @@ internal static class INamedTypeSymbolExtensions
     /// <param name="typeSymbol">The target <see cref="INamedTypeSymbol"/> instance to check.</param>
     /// <param name="name">The full name of the type to check for inheritance.</param>
     /// <returns>Whether or not <paramref name="typeSymbol"/> inherits from <paramref name="name"/>.</returns>
-    public static bool InheritsFrom(this INamedTypeSymbol typeSymbol, string name)
+    public static bool InheritsFromFullyQualifiedName(this INamedTypeSymbol typeSymbol, string name)
     {
         INamedTypeSymbol? baseType = typeSymbol.BaseType;
 
@@ -60,6 +60,25 @@ internal static class INamedTypeSymbolExtensions
             }
 
             baseType = baseType.BaseType;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Checks whether or not a given <see cref="INamedTypeSymbol"/> implements an interface with a specied name.
+    /// </summary>
+    /// <param name="typeSymbol">The target <see cref="INamedTypeSymbol"/> instance to check.</param>
+    /// <param name="name">The full name of the type to check for interface implementation.</param>
+    /// <returns>Whether or not <paramref name="typeSymbol"/> has an interface with the specified name.</returns>
+    public static bool HasInterfaceWithFullyQualifiedName(this INamedTypeSymbol typeSymbol, string name)
+    {
+        foreach (INamedTypeSymbol interfaceType in typeSymbol.AllInterfaces)
+        {
+            if (interfaceType.HasFullyQualifiedName(name))
+            {
+                return true;
+            }
         }
 
         return false;

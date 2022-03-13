@@ -35,8 +35,8 @@ partial class ObservablePropertyGenerator
             ImmutableArray<Diagnostic>.Builder builder = ImmutableArray.CreateBuilder<Diagnostic>();
 
             // Check whether the containing type implements INotifyPropertyChanging and whether it inherits from ObservableValidator
-            bool isObservableObject = fieldSymbol.ContainingType.InheritsFrom("global::CommunityToolkit.Mvvm.ComponentModel.ObservableObject");
-            bool isObservableValidator = fieldSymbol.ContainingType.InheritsFrom("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator");
+            bool isObservableObject = fieldSymbol.ContainingType.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableObject");
+            bool isObservableValidator = fieldSymbol.ContainingType.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator");
             bool isNotifyPropertyChanging = fieldSymbol.ContainingType.AllInterfaces.Any(static i => i.HasFullyQualifiedName("global::System.ComponentModel.INotifyPropertyChanging"));
             bool hasObservableObjectAttribute = fieldSymbol.ContainingType.GetAttributes().Any(static a => a.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute") == true);
 
@@ -81,7 +81,7 @@ partial class ObservablePropertyGenerator
                 }
 
                 // Track the current validation attribute, if applicable
-                if (attributeData.AttributeClass?.InheritsFrom("global::System.ComponentModel.DataAnnotations.ValidationAttribute") == true)
+                if (attributeData.AttributeClass?.InheritsFromFullyQualifiedName("global::System.ComponentModel.DataAnnotations.ValidationAttribute") == true)
                 {
                     validationAttributes.Add(AttributeInfo.From(attributeData));
                 }
@@ -130,42 +130,44 @@ partial class ObservablePropertyGenerator
             {
                 foreach (string? dependentPropertyName in attributeData.GetConstructorArguments<string>())
                 {
+                    if (dependentPropertyName is null or "")
+                    {
+                        goto InvalidProperty;
+                    }
+
                     // Each target must be a string matching the name of a property from the containing type of the annotated field
-                    if (dependentPropertyName is { Length: > 0 } &&
-                        fieldSymbol.ContainingType.GetMembers(dependentPropertyName).OfType<IPropertySymbol>().Any())
+                    if (fieldSymbol.ContainingType.GetMembers(dependentPropertyName).OfType<IPropertySymbol>().Any())
                     {
                         propertyChangedNames.Add(dependentPropertyName);
+
+                        goto ValidProperty;
                     }
-                    else
+
+                    // Check for generated properties too
+                    foreach (ISymbol member in fieldSymbol.ContainingType.GetMembers())
                     {
-                        bool isTargetValid = false;
-
-                        // Check for generated properties too
-                        foreach (ISymbol member in fieldSymbol.ContainingType.GetMembers())
+                        if (member is IFieldSymbol otherFieldSymbol &&
+                            !SymbolEqualityComparer.Default.Equals(fieldSymbol, otherFieldSymbol) &&
+                            otherFieldSymbol.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute") &&
+                            dependentPropertyName == GetGeneratedPropertyName(otherFieldSymbol))
                         {
-                            if (member is IFieldSymbol otherFieldSymbol &&
-                                !SymbolEqualityComparer.Default.Equals(fieldSymbol, otherFieldSymbol) &&
-                                otherFieldSymbol.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute") &&
-                                dependentPropertyName == GetGeneratedPropertyName(otherFieldSymbol))
-                            {
-                                propertyChangedNames.Add(dependentPropertyName);
+                            propertyChangedNames.Add(dependentPropertyName);
 
-                                isTargetValid = true;
-
-                                break;
-                            }
-                        }
-
-                        // Add the diagnostic if the target is definitely invalid
-                        if (!isTargetValid)
-                        {
-                            diagnostics.Add(
-                                AlsoNotifyChangeForInvalidTargetError,
-                                fieldSymbol,
-                                dependentPropertyName ?? "",
-                                fieldSymbol.ContainingType);
+                            goto ValidProperty;
                         }
                     }
+
+                    ValidProperty:
+
+                    continue;
+
+                    InvalidProperty:
+
+                    diagnostics.Add(
+                        AlsoNotifyChangeForInvalidTargetError,
+                        fieldSymbol,
+                        dependentPropertyName ?? "",
+                        fieldSymbol.ContainingType);
                 }
 
                 return true;
@@ -192,44 +194,46 @@ partial class ObservablePropertyGenerator
             {
                 foreach (string? commandName in attributeData.GetConstructorArguments<string>())
                 {
+                    if (commandName is null or "")
+                    {
+                        goto InvalidProperty;
+                    }
+
                     // Each target must be a string matching the name of a property from the containing type of the annotated field, and the
                     // property must be of type IRelayCommand, or any type that implements that interface (to avoid generating invalid code).
-                    if (commandName is { Length: > 0 } &&
-                        fieldSymbol.ContainingType.GetMembers(commandName).OfType<IPropertySymbol>().FirstOrDefault() is IPropertySymbol propertySymbol &&
+                    if (fieldSymbol.ContainingType.GetMembers(commandName).OfType<IPropertySymbol>().FirstOrDefault() is IPropertySymbol propertySymbol &&
                         propertySymbol is INamedTypeSymbol typeSymbol &&
-                        typeSymbol.InheritsFrom("global::CommunityToolkit.Mvvm.Input.IRelayCommand"))
+                        typeSymbol.HasInterfaceWithFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.IRelayCommand"))
                     {
                         notifiedCommandNames.Add(commandName);
+
+                        goto ValidProperty;
                     }
-                    else
+
+                    // Check for generated commands too
+                    foreach (ISymbol member in fieldSymbol.ContainingType.GetMembers())
                     {
-                        bool isTargetValid = false;
-
-                        // Check for generated commands too
-                        foreach (ISymbol member in fieldSymbol.ContainingType.GetMembers())
+                        if (member is IMethodSymbol methodSymbol &&
+                            methodSymbol.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.ICommandAttribute") &&
+                            commandName == ICommandGenerator.Execute.GetGeneratedFieldAndPropertyNames(methodSymbol).PropertyName)
                         {
-                            if (member is IMethodSymbol methodSymbol &&
-                                methodSymbol.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.ICommandAttribute") &&
-                                commandName == ICommandGenerator.Execute.GetGeneratedFieldAndPropertyNames(methodSymbol).PropertyName)
-                            {
-                                notifiedCommandNames.Add(commandName);
+                            notifiedCommandNames.Add(commandName);
 
-                                isTargetValid = true;
-
-                                break;
-                            }
-                        }
-
-                        // Add the diagnostic if the target is definitely invalid
-                        if (!isTargetValid)
-                        {
-                            diagnostics.Add(
-                            AlsoNotifyCanExecuteForInvalidTargetError,
-                            fieldSymbol,
-                            commandName ?? "",
-                            fieldSymbol.ContainingType);
+                            goto ValidProperty;
                         }
                     }
+
+                    ValidProperty:
+
+                    continue;
+
+                    InvalidProperty:
+
+                    diagnostics.Add(
+                        AlsoNotifyCanExecuteForInvalidTargetError,
+                        fieldSymbol,
+                        commandName ?? "",
+                        fieldSymbol.ContainingType);
                 }
 
                 return true;

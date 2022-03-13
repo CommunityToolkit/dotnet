@@ -239,17 +239,17 @@ internal static class DiagnosticDescriptors
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when the specified target for <c>[AlsoNotifyChangeFor]</c> is not valid.
     /// <para>
-    /// Format: <c>"The target(s) of [AlsoNotifyChangeFor] must be an accessible property, but "{0}" has no matches in type {1}</c>.
+    /// Format: <c>"The target(s) of [AlsoNotifyChangeFor] must be a (different) accessible property, but "{0}" has no (other) matches in type {1}</c>.
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor AlsoNotifyChangeForInvalidTargetError = new DiagnosticDescriptor(
         id: "MVVMTK0015",
         title: "Invalid target name for [AlsoNotifyChangeFor]",
-        messageFormat: "The target(s) of [AlsoNotifyChangeFor] must be an accessible property, but \"{0}\" has no matches in type {1}",
+        messageFormat: "The target(s) of [AlsoNotifyChangeFor] must be a (different) accessible property, but \"{0}\" has no (other) matches in type {1}",
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "The target(s) of [AlsoNotifyChangeFor] must be an accessible property in its parent type.",
+        description: "The target(s) of [AlsoNotifyChangeFor] must be a (different) accessible property in its parent type.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>

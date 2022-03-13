@@ -29,7 +29,7 @@ partial class ObservableValidatorValidateAllPropertiesGenerator
         /// <returns>Whether <paramref name="typeSymbol"/> inherits from <c>ObservableValidator</c>.</returns>
         public static bool IsObservableValidator(INamedTypeSymbol typeSymbol)
         {
-            return typeSymbol.InheritsFrom("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator");
+            return typeSymbol.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator");
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ partial class ObservableValidatorValidateAllPropertiesGenerator
                 }
 
                 // Skip the current member if there are no validation attributes applied to it
-                if (!attributes.Any(a => a.AttributeClass?.InheritsFrom(
+                if (!attributes.Any(a => a.AttributeClass?.InheritsFromFullyQualifiedName(
                     "global::System.ComponentModel.DataAnnotations.ValidationAttribute") == true))
                 {
                     continue;

@@ -656,6 +656,26 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
+    public void AlsoNotifyChangeForInvalidTargetError_SamePropertyAsGeneratedOneFromSelf()
+    {
+        string source = @"
+            using System.ComponentModel.DataAnnotations;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    [AlsoNotifyChangeFor(nameof(Name))]
+                    private string Name;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0015");
+    }
+
+    [TestMethod]
     public void AlsoNotifyChangeForInvalidTargetError_Missing()
     {
         string source = @"
