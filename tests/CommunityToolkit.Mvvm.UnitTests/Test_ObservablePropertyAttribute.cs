@@ -274,6 +274,60 @@ public partial class Test_ObservablePropertyAttribute
     }
 
     [TestMethod]
+    public void Test_AlsoNotifyChangeFor_GeneratedCommand()
+    {
+        DependentPropertyModel2 model = new();
+
+        List<string?> propertyNames = new();
+        int canExecuteRequests = 0;
+
+        model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
+        model.MyCommand.CanExecuteChanged += (s, e) => canExecuteRequests++;
+
+        model.Text = "Ross";
+
+        Assert.AreEqual(1, canExecuteRequests);
+
+        CollectionAssert.AreEqual(new[] { nameof(model.Text), nameof(model.FullName), nameof(model.Alias) }, propertyNames);
+    }
+
+    [TestMethod]
+    public void Test_AlsoNotifyChangeFor_IRelayCommandProperty()
+    {
+        DependentPropertyModel3 model = new();
+
+        List<string?> propertyNames = new();
+        int canExecuteRequests = 0;
+
+        model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
+        model.MyCommand.CanExecuteChanged += (s, e) => canExecuteRequests++;
+
+        model.Text = "Ross";
+
+        Assert.AreEqual(1, canExecuteRequests);
+
+        CollectionAssert.AreEqual(new[] { nameof(model.Text), nameof(model.FullName), nameof(model.Alias) }, propertyNames);
+    }
+
+    [TestMethod]
+    public void Test_AlsoNotifyChangeFor_IAsyncRelayCommandOfTProperty()
+    {
+        DependentPropertyModel4 model = new();
+
+        List<string?> propertyNames = new();
+        int canExecuteRequests = 0;
+
+        model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
+        model.MyCommand.CanExecuteChanged += (s, e) => canExecuteRequests++;
+
+        model.Text = "Ross";
+
+        Assert.AreEqual(1, canExecuteRequests);
+
+        CollectionAssert.AreEqual(new[] { nameof(model.Text), nameof(model.FullName), nameof(model.Alias) }, propertyNames);
+    }
+
+    [TestMethod]
     public void Test_OnPropertyChangingAndChangedPartialMethods()
     {
         ViewModelWithImplementedUpdateMethods model = new();
@@ -342,6 +396,56 @@ public partial class Test_ObservablePropertyAttribute
         public string Alias => $"{Name?.ToLower()}{Surname?.ToLower()}";
 
         public RelayCommand MyCommand { get; } = new(() => { });
+    }
+
+    [INotifyPropertyChanged]
+    public sealed partial class DependentPropertyModel2
+    {
+        [ObservableProperty]
+        [AlsoNotifyChangeFor(nameof(FullName), nameof(Alias))]
+        [AlsoNotifyCanExecuteFor(nameof(TestFromMethodCommand))]
+        private string? text;
+
+        public string FullName => "";
+
+        public string Alias => "";
+
+        public RelayCommand MyCommand { get; } = new(() => { });
+
+        [ICommand]
+        private void TestFromMethod()
+        {
+        }
+    }
+
+    [INotifyPropertyChanged]
+    public sealed partial class DependentPropertyModel3
+    {
+        [ObservableProperty]
+        [AlsoNotifyChangeFor(nameof(FullName), nameof(Alias))]
+        [AlsoNotifyCanExecuteFor(nameof(MyCommand))]
+        private string? text;
+
+        public string FullName => "";
+
+        public string Alias => "";
+
+        public IRelayCommand MyCommand { get; } = null!;
+    }
+
+    [INotifyPropertyChanged]
+    public sealed partial class DependentPropertyModel4
+    {
+        [ObservableProperty]
+        [AlsoNotifyChangeFor(nameof(FullName), nameof(Alias))]
+        [AlsoNotifyCanExecuteFor(nameof(MyCommand))]
+        private string? text;
+
+        public string FullName => "";
+
+        public string Alias => "";
+
+        public IAsyncRelayCommand<string> MyCommand { get; } = null!;
     }
 
     public partial class MyFormViewModel : ObservableValidator
