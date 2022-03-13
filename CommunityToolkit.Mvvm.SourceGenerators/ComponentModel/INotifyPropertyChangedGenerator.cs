@@ -34,7 +34,7 @@ public sealed class INotifyPropertyChangedGenerator : TransitiveMembersGenerator
     {
         static INotifyPropertyChangedInfo GetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData)
         {
-            bool includeAdditionalHelperMethods = attributeData.GetNamedArgument<bool>("IncludeAdditionalHelperMethods", true);
+            bool includeAdditionalHelperMethods = attributeData.GetNamedArgument("IncludeAdditionalHelperMethods", true);
 
             return new(includeAdditionalHelperMethods);
         }

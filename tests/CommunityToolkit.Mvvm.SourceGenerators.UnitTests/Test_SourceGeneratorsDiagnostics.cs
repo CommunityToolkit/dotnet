@@ -620,7 +620,6 @@ public class Test_SourceGeneratorsDiagnostics
     public void NameCollisionForGeneratedObservableProperty()
     {
         string source = @"
-            using System.ComponentModel.DataAnnotations;
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -639,7 +638,6 @@ public class Test_SourceGeneratorsDiagnostics
     public void AlsoNotifyChangeForInvalidTargetError_Null()
     {
         string source = @"
-            using System.ComponentModel.DataAnnotations;
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -659,7 +657,6 @@ public class Test_SourceGeneratorsDiagnostics
     public void AlsoNotifyChangeForInvalidTargetError_SamePropertyAsGeneratedOneFromSelf()
     {
         string source = @"
-            using System.ComponentModel.DataAnnotations;
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -679,7 +676,6 @@ public class Test_SourceGeneratorsDiagnostics
     public void AlsoNotifyChangeForInvalidTargetError_Missing()
     {
         string source = @"
-            using System.ComponentModel.DataAnnotations;
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -699,7 +695,6 @@ public class Test_SourceGeneratorsDiagnostics
     public void AlsoNotifyChangeForInvalidTargetError_InvalidType()
     {
         string source = @"
-            using System.ComponentModel.DataAnnotations;
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -723,7 +718,6 @@ public class Test_SourceGeneratorsDiagnostics
     public void AlsoNotifyCanExecuteForInvalidTargetError_Null()
     {
         string source = @"
-            using System.ComponentModel.DataAnnotations;
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -743,7 +737,6 @@ public class Test_SourceGeneratorsDiagnostics
     public void AlsoNotifyCanExecuteForInvalidTargetError_Missing()
     {
         string source = @"
-            using System.ComponentModel.DataAnnotations;
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -763,7 +756,6 @@ public class Test_SourceGeneratorsDiagnostics
     public void AlsoNotifyCanExecuteForInvalidTargetError_InvalidMemberType()
     {
         string source = @"
-            using System.ComponentModel.DataAnnotations;
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -787,7 +779,6 @@ public class Test_SourceGeneratorsDiagnostics
     public void AlsoNotifyCanExecuteForInvalidTargetError_InvalidPropertyType()
     {
         string source = @"
-            using System.ComponentModel.DataAnnotations;
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -809,7 +800,6 @@ public class Test_SourceGeneratorsDiagnostics
     public void AlsoNotifyCanExecuteForInvalidTargetError_InvalidCommandType()
     {
         string source = @"
-            using System.ComponentModel.DataAnnotations;
             using CommunityToolkit.Mvvm.ComponentModel;
             using CommunityToolkit.Mvvm.Input;
 
@@ -832,9 +822,7 @@ public class Test_SourceGeneratorsDiagnostics
     public void InvalidAttributeCombinationForINotifyPropertyChangedAttributeError_InheritingINotifyPropertyChangedAttribute()
     {
         string source = @"
-            using System.ComponentModel.DataAnnotations;
             using CommunityToolkit.Mvvm.ComponentModel;
-            using CommunityToolkit.Mvvm.Input;
 
             namespace MyApp
             {
@@ -856,9 +844,7 @@ public class Test_SourceGeneratorsDiagnostics
     public void InvalidAttributeCombinationForINotifyPropertyChangedAttributeError_InheritingObservableObjectAttribute()
     {
         string source = @"
-            using System.ComponentModel.DataAnnotations;
             using CommunityToolkit.Mvvm.ComponentModel;
-            using CommunityToolkit.Mvvm.Input;
 
             namespace MyApp
             {
@@ -880,9 +866,7 @@ public class Test_SourceGeneratorsDiagnostics
     public void InvalidAttributeCombinationForINotifyPropertyChangedAttributeError_WithAlsoObservableObjectAttribute()
     {
         string source = @"
-            using System.ComponentModel.DataAnnotations;
             using CommunityToolkit.Mvvm.ComponentModel;
-            using CommunityToolkit.Mvvm.Input;
 
             namespace MyApp
             {
@@ -900,9 +884,7 @@ public class Test_SourceGeneratorsDiagnostics
     public void InvalidAttributeCombinationForObservableObjectAttributeError_InheritingINotifyPropertyChangedAttribute()
     {
         string source = @"
-            using System.ComponentModel.DataAnnotations;
             using CommunityToolkit.Mvvm.ComponentModel;
-            using CommunityToolkit.Mvvm.Input;
 
             namespace MyApp
             {
@@ -924,9 +906,7 @@ public class Test_SourceGeneratorsDiagnostics
     public void InvalidAttributeCombinationForObservableObjectAttributeError_InheritingObservableObjectAttribute()
     {
         string source = @"
-            using System.ComponentModel.DataAnnotations;
             using CommunityToolkit.Mvvm.ComponentModel;
-            using CommunityToolkit.Mvvm.Input;
 
             namespace MyApp
             {
@@ -948,9 +928,7 @@ public class Test_SourceGeneratorsDiagnostics
     public void InvalidAttributeCombinationForObservableObjectAttributeError_WithAlsoINotifyPropertyChangedAttribute()
     {
         string source = @"
-            using System.ComponentModel.DataAnnotations;
             using CommunityToolkit.Mvvm.ComponentModel;
-            using CommunityToolkit.Mvvm.Input;
 
             namespace MyApp
             {
@@ -962,6 +940,26 @@ public class Test_SourceGeneratorsDiagnostics
             }";
 
         VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0018");
+    }
+
+    [TestMethod]
+    public void InvalidContainingTypeForObservablePropertyFieldError()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class MyViewModel : INotifyPropertyChanged
+                {
+                    [ObservableProperty]
+                    public int number;
+
+                    public event PropertyChangedEventHandler PropertyChanged;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0019");
     }
 
     /// <summary>

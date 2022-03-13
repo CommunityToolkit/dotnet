@@ -34,11 +34,19 @@ partial class ObservablePropertyGenerator
         {
             ImmutableArray<Diagnostic>.Builder builder = ImmutableArray.CreateBuilder<Diagnostic>();
 
-            // Check whether the containing type implements INotifyPropertyChanging and whether it inherits from ObservableValidator
-            bool isObservableObject = fieldSymbol.ContainingType.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableObject");
-            bool isObservableValidator = fieldSymbol.ContainingType.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator");
-            bool isNotifyPropertyChanging = fieldSymbol.ContainingType.AllInterfaces.Any(static i => i.HasFullyQualifiedName("global::System.ComponentModel.INotifyPropertyChanging"));
-            bool hasObservableObjectAttribute = fieldSymbol.ContainingType.GetAttributes().Any(static a => a.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute") == true);
+            // Validate the target type
+            if (!IsTargetTypeValid(fieldSymbol, out bool shouldInvokeOnPropertyChanging))
+            {
+                builder.Add(
+                    InvalidContainingTypeForObservablePropertyFieldError,
+                    fieldSymbol,
+                    fieldSymbol.ContainingType,
+                    fieldSymbol.Name);
+
+                diagnostics = builder.ToImmutable();
+
+                return null;
+            }
 
             // Get the property type and name
             string typeName = fieldSymbol.Type.GetFullyQualifiedName();
@@ -69,7 +77,7 @@ partial class ObservablePropertyGenerator
             ImmutableArray<AttributeInfo>.Builder validationAttributes = ImmutableArray.CreateBuilder<AttributeInfo>();
 
             // Track the property changing event for the property, if the type supports it
-            if (isObservableObject || isNotifyPropertyChanging || hasObservableObjectAttribute)
+            if (shouldInvokeOnPropertyChanging)
             {
                 propertyChangingNames.Add(propertyName);
             }
@@ -96,7 +104,7 @@ partial class ObservablePropertyGenerator
 
             // Log the diagnostics if needed
             if (validationAttributes.Count > 0 &&
-                !isObservableValidator)
+                !fieldSymbol.ContainingType.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator"))
             {
                 builder.Add(
                     MissingObservableValidatorInheritanceError,
@@ -122,6 +130,30 @@ partial class ObservablePropertyGenerator
                 propertyChangedNames.ToImmutable(),
                 notifiedCommandNames.ToImmutable(),
                 validationAttributes.ToImmutable());
+        }
+
+        /// <summary>
+        /// Validates the containing type for a given field being annotated.
+        /// </summary>
+        /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
+        /// <param name="shouldInvokeOnPropertyChanging">Whether or not property changing events should also be raised.</param>
+        /// <returns>Whether or not the containing type for <paramref name="fieldSymbol"/> is valid.</returns>
+        private static bool IsTargetTypeValid(
+            IFieldSymbol fieldSymbol,
+            out bool shouldInvokeOnPropertyChanging)
+        {
+            // The [ObservableProperty] attribute can only be used in types that are known to expose the necessary OnPropertyChanged and OnPropertyChanging methods.
+            // That means that the containing type for the field needs to match one of the following conditions:
+            //   - It inherits from ObservableObject (in which case it also implements INotifyPropertyChanging).
+            //   - It has the [ObservableObject] attribute (on itself or any of its base types).
+            //   - It has the [INotifyPropertyChanged] attribute (on itself or any of its base types).
+            bool isObservableObject = fieldSymbol.ContainingType.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableObject");
+            bool hasObservableObjectAttribute = fieldSymbol.ContainingType.HasOrInheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute");
+            bool hasINotifyPropertyChangedAttribute = fieldSymbol.ContainingType.HasOrInheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.INotifyPropertyChangedAttribute");
+
+            shouldInvokeOnPropertyChanging = isObservableObject || hasObservableObjectAttribute;
+
+            return isObservableObject || hasObservableObjectAttribute || hasINotifyPropertyChangedAttribute;
         }
 
         /// <summary>
