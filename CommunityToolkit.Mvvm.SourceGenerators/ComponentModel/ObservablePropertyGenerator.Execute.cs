@@ -138,12 +138,34 @@ partial class ObservablePropertyGenerator
                     }
                     else
                     {
-                        diagnostics.Add(
-                            AlsoNotifyChangeForInvalidTargetError,
-                            fieldSymbol,
-                            dependentPropertyName ?? "",
-                            fieldSymbol.ContainingType);
-                    }                    
+                        bool isTargetValid = false;
+
+                        // Check for generated properties too
+                        foreach (ISymbol member in fieldSymbol.ContainingType.GetMembers())
+                        {
+                            if (member is IFieldSymbol otherFieldSymbol &&
+                                !SymbolEqualityComparer.Default.Equals(fieldSymbol, otherFieldSymbol) &&
+                                otherFieldSymbol.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute") &&
+                                dependentPropertyName == GetGeneratedPropertyName(otherFieldSymbol))
+                            {
+                                propertyChangedNames.Add(dependentPropertyName);
+
+                                isTargetValid = true;
+
+                                break;
+                            }
+                        }
+
+                        // Add the diagnostic if the target is definitely invalid
+                        if (!isTargetValid)
+                        {
+                            diagnostics.Add(
+                                AlsoNotifyChangeForInvalidTargetError,
+                                fieldSymbol,
+                                dependentPropertyName ?? "",
+                                fieldSymbol.ContainingType);
+                        }
+                    }
                 }
 
                 return true;

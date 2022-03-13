@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators.Extensions;
@@ -30,6 +31,27 @@ internal static class ISymbolExtensions
     public static bool HasFullyQualifiedName(this ISymbol symbol, string name)
     {
         return symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) == name;
+    }
+
+    /// <summary>
+    /// Checks whether or not a given symbol has an attribute with the specified full name.
+    /// </summary>
+    /// <param name="symbol">The input <see cref="ISymbol"/> instance to check.</param>
+    /// <param name="name">The attribute name to look for.</param>
+    /// <returns>Whether or not <paramref name="symbol"/> has an attribute with the specified name.</returns>
+    public static bool HasAttributeWithFullyQualifiedName(this ISymbol symbol, string name)
+    {
+        ImmutableArray<AttributeData> attributes = symbol.GetAttributes();
+
+        foreach (AttributeData attribute in attributes)
+        {
+            if (attribute.AttributeClass?.HasFullyQualifiedName(name) == true)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /// <summary>
