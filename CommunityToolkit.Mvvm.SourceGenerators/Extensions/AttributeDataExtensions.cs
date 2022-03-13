@@ -87,15 +87,16 @@ internal static class AttributeDataExtensions
     /// <typeparam name="T">The type of constructor arguments to retrieve.</typeparam>
     /// <param name="attributeData">The target <see cref="AttributeData"/> instance to get the arguments from.</param>
     /// <returns>A sequence of all constructor arguments of the specified type from <paramref name="attributeData"/>.</returns>
-    public static IEnumerable<T> GetConstructorArguments<T>(this AttributeData attributeData)
+    public static IEnumerable<T?> GetConstructorArguments<T>(this AttributeData attributeData)
+        where T : class
     {
-        static IEnumerable<T> Enumerate(IEnumerable<TypedConstant> constants)
+        static IEnumerable<T?> Enumerate(IEnumerable<TypedConstant> constants)
         {
             foreach (TypedConstant constant in constants)
             {
                 if (constant.IsNull)
                 {
-                    continue;
+                    yield return null;
                 }
 
                 if (constant.Kind == TypedConstantKind.Primitive &&
@@ -105,7 +106,7 @@ internal static class AttributeDataExtensions
                 }
                 else if (constant.Kind == TypedConstantKind.Array)
                 {
-                    foreach (T item in Enumerate(constant.Values))
+                    foreach (T? item in Enumerate(constant.Values))
                     {
                         yield return item;
                     }

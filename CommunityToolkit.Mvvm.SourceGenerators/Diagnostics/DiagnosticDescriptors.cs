@@ -235,4 +235,20 @@ internal static class DiagnosticDescriptors
         isEnabledByDefault: true,
         description: $"The name of fields annotated with [ObservableProperty] should use \"lowerCamel\", \"_lowerCamel\" or \"m_lowerCamel\" pattern to avoid collisions with the generated properties.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when the specified target for <c>[AlsoNotifyChangeFor]</c> is not valid.
+    /// <para>
+    /// Format: <c>"The target(s) of [AlsoNotifyChangeFor] must be an accessible property, but "{0}" has no matches in type {1}</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor AlsoNotifyChangeForInvalidTargetError = new DiagnosticDescriptor(
+        id: "MVVMTK0015",
+        title: "Name collision for generated property",
+        messageFormat: "The target(s) of [AlsoNotifyChangeFor] must be an accessible property, but \"{0}\" has no matches in type {1}",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "The target(s) of [AlsoNotifyChangeFor] must be an accessible property in its parent type.",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit");
 }

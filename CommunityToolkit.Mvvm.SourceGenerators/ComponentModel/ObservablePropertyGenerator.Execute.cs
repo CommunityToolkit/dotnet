@@ -73,13 +73,8 @@ partial class ObservablePropertyGenerator
             // Gather attributes info
             foreach (AttributeData attributeData in fieldSymbol.GetAttributes())
             {
-                // Add dependent property notifications, if needed
-                if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoNotifyChangeForAttribute") == true)
+                if (TryGatherDependentPropertyChangedNames(fieldSymbol, attributeData, propertyChangedNames, builder))
                 {
-                    foreach (string dependentPropertyName in attributeData.GetConstructorArguments<string>())
-                    {
-                        propertyChangedNames.Add(dependentPropertyName);
-                    }
                 }
                 else if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoNotifyCanExecuteForAttribute") == true)
                 {
@@ -119,6 +114,46 @@ partial class ObservablePropertyGenerator
                 propertyChangedNames.ToImmutable(),
                 notifiedCommandNames.ToImmutable(),
                 validationAttributes.ToImmutable());
+        }
+
+        /// <summary>
+        /// Tries to gather dependent properties from the given attribute.
+        /// </summary>
+        /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
+        /// <param name="attributeData">The <see cref="AttributeData"/> instance for <paramref name="fieldSymbol"/>.</param>
+        /// <param name="propertyChangedNames">The target collection of dependent property names to populate.</param>
+        /// <param name="diagnostics">The current collection of gathered diagnostics.</param>
+        /// <returns>Whether or not <paramref name="attributeData"/> was an attribute containing any dependent properties.</returns>
+        private static bool TryGatherDependentPropertyChangedNames(
+            IFieldSymbol fieldSymbol,
+            AttributeData attributeData,
+            ImmutableArray<string>.Builder propertyChangedNames,
+            ImmutableArray<Diagnostic>.Builder diagnostics)
+        {
+            if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoNotifyChangeForAttribute") == true)
+            {
+                foreach (string? dependentPropertyName in attributeData.GetConstructorArguments<string>())
+                {
+                    // Each target must be a string matching the name of a property from the containing type of the annotated field
+                    if (dependentPropertyName is { Length: > 0 } &&
+                        fieldSymbol.ContainingType.GetMembers(dependentPropertyName).OfType<IPropertySymbol>().Any())
+                    {
+                        propertyChangedNames.Add(dependentPropertyName);
+                    }
+                    else
+                    {
+                        diagnostics.Add(
+                            AlsoNotifyChangeForInvalidTargetError,
+                            fieldSymbol,
+                            dependentPropertyName ?? "",
+                            fieldSymbol.ContainingType);
+                    }                    
+                }
+
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
