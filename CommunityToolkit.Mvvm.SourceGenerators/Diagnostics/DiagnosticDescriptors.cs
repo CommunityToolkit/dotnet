@@ -347,4 +347,20 @@ internal static class DiagnosticDescriptors
         isEnabledByDefault: true,
         description: "Cannot apply [ObservableRecipient] to a type that already inherits this attribute from a base type.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[AlsoBroadcastChange]</c> is applied to a field in an invalid type.
+    /// <para>
+    /// Format: <c>"The field {0}.{1} cannot be annotated with [AlsoBroadcastChange], as its containing type doesn't inherit from ObservableRecipient, nor does it use [ObservableRecipient]"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor InvalidContainingTypeForAlsoBroadcastChangeFieldError = new DiagnosticDescriptor(
+        id: "MVVMTK0022",
+        title: "Invalid containing type for [ObservableProperty] field",
+        messageFormat: "The field {0}.{1} cannot be annotated with [AlsoBroadcastChange], as its containing type doesn't inherit from ObservableRecipient, nor does it use [ObservableRecipient]",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "Fields annotated with [AlsoBroadcastChange] must be contained in a type that inherits from ObservableRecipient or that is annotated with [ObservableRecipient] (including base types).",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit");
 }
