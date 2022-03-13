@@ -44,14 +44,14 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
         context.FilterWithLanguageVersion(ref fieldSymbolsWithAttribute, LanguageVersion.CSharp8, UnsupportedCSharpLanguageVersionError);
 
         // Gather info for all annotated fields
-        IncrementalValuesProvider<(HierarchyInfo Hierarchy, Result<PropertyInfo> Info)> propertyInfoWithErrors =
+        IncrementalValuesProvider<(HierarchyInfo Hierarchy, Result<PropertyInfo?> Info)> propertyInfoWithErrors =
             fieldSymbolsWithAttribute
             .Select(static (item, _) =>
             {
                 HierarchyInfo hierarchy = HierarchyInfo.From(item.ContainingType);
-                PropertyInfo propertyInfo = Execute.GetInfo(item, out ImmutableArray<Diagnostic> diagnostics);
+                PropertyInfo? propertyInfo = Execute.TryGetInfo(item, out ImmutableArray<Diagnostic> diagnostics);
 
-                return (hierarchy, new Result<PropertyInfo>(propertyInfo, diagnostics));
+                return (hierarchy, new Result<PropertyInfo?>(propertyInfo, diagnostics));
             });
 
         // Output the diagnostics
@@ -60,7 +60,8 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
         // Get the filtered sequence to enable caching
         IncrementalValuesProvider<(HierarchyInfo Hierarchy, PropertyInfo Info)> propertyInfo =
             propertyInfoWithErrors
-            .Select(static (item, _) => (item.Hierarchy, item.Info.Value))
+            .Select(static (item, _) => (item.Hierarchy, Info: item.Info.Value))
+            .Where(static item => item.Info is not null)!
             .WithComparers(HierarchyInfo.Comparer.Default, PropertyInfo.Comparer.Default);
 
         // Split and group by containing type

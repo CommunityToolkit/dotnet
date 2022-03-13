@@ -29,8 +29,8 @@ partial class ObservablePropertyGenerator
         /// </summary>
         /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
         /// <param name="diagnostics">The resulting diagnostics from the processing operation.</param>
-        /// <returns>The resulting <see cref="PropertyInfo"/> instance for <paramref name="fieldSymbol"/>.</returns>
-        public static PropertyInfo GetInfo(IFieldSymbol fieldSymbol, out ImmutableArray<Diagnostic> diagnostics)
+        /// <returns>The resulting <see cref="PropertyInfo"/> instance for <paramref name="fieldSymbol"/>, if successful.</returns>
+        public static PropertyInfo? TryGetInfo(IFieldSymbol fieldSymbol, out ImmutableArray<Diagnostic> diagnostics)
         {
             ImmutableArray<Diagnostic>.Builder builder = ImmutableArray.CreateBuilder<Diagnostic>();
 
@@ -54,6 +54,13 @@ partial class ObservablePropertyGenerator
                     fieldSymbol,
                     fieldSymbol.ContainingType,
                     fieldSymbol.Name);
+
+                diagnostics = builder.ToImmutable();
+
+                // If the generated property would collide, skip generating it entirely. This makes sure that
+                // users only get the helpful diagnostic about the collsiion, and not the normal compiler error
+                // about a definition for "Property" already existing on the target type, which might be confusing.
+                return null;
             }
 
             ImmutableArray<string>.Builder propertyChangedNames = ImmutableArray.CreateBuilder<string>();
