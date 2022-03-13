@@ -92,4 +92,21 @@ internal static class ITypeSymbolExtensions
 
         return false;
     }
+
+    /// <summary>
+    /// Checks whether or not a given <see cref="ITypeSymbol"/> inherits a specified attribute.
+    /// If the type has no base type, this method will automatically handle that and return <see langword="false"/>.
+    /// </summary>
+    /// <param name="typeSymbol">The target <see cref="ITypeSymbol"/> instance to check.</param>
+    /// <param name="name">The name of the attribute to look for.</param>
+    /// <returns>Whether or not <paramref name="typeSymbol"/> has an attribute with the specified type name.</returns>
+    public static bool InheritsAttributeWithFullyQualifiedName(this ITypeSymbol typeSymbol, string name)
+    {
+        if (typeSymbol.BaseType is INamedTypeSymbol baseTypeSymbol)
+        {
+            return HasOrInheritsAttributeWithFullyQualifiedName(baseTypeSymbol, name);
+        }
+
+        return false;
+    }
 }

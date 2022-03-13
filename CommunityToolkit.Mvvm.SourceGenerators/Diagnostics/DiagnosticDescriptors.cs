@@ -267,4 +267,36 @@ internal static class DiagnosticDescriptors
         isEnabledByDefault: true,
         description: "The target(s) of [AlsoNotifyCanExecuteFor] must be an accessible IRelayCommand property in its parent type.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[INotifyPropertyChanged]</c> is applied to a type with an attribute already.
+    /// <para>
+    /// Format: <c>"Cannot apply [INotifyPropertyChanged] to type {0}, as it already has this attribute or [ObservableObject] applied to it (including base types)"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor InvalidAttributeCombinationForINotifyPropertyChangedAttributeError = new DiagnosticDescriptor(
+        id: "MVVMTK0017",
+        title: $"Invalid target type for [INotifyPropertyChanged]",
+        messageFormat: $"Cannot apply [INotifyPropertyChanged] to type {{0}}, as it already has this attribute or [ObservableObject] applied to it (including base types)",
+        category: typeof(INotifyPropertyChangedGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: $"Cannot apply [INotifyPropertyChanged] to a type that already has this attribute or [ObservableObject] applied to it (including base types).",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[ObservableObject]</c> is applied to a type with an attribute already.
+    /// <para>
+    /// Format: <c>"Cannot apply [ObservableObject] to type {0}, as it already has this attribute or [INotifyPropertyChanged] applied to it (including base types)"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor InvalidAttributeCombinationForObservableObjectAttributeError = new DiagnosticDescriptor(
+        id: "MVVMTK0018",
+        title: $"Invalid target type for [ObservableObject]",
+        messageFormat: $"Cannot apply [ObservableObject] to type {{0}}, as it already has this attribute or [INotifyPropertyChanged] applied to it (including base types)",
+        category: typeof(ObservableObjectGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: $"Cannot apply [ObservableObject] to a type that already has this attribute or [INotifyPropertyChanged] applied to it (including base types).",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit");
 }

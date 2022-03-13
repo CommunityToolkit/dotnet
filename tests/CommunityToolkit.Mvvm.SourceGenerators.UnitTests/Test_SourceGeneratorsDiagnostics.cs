@@ -828,6 +828,142 @@ public class Test_SourceGeneratorsDiagnostics
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0016");
     }
 
+    [TestMethod]
+    public void InvalidAttributeCombinationForINotifyPropertyChangedAttributeError_InheritingINotifyPropertyChangedAttribute()
+    {
+        string source = @"
+            using System.ComponentModel.DataAnnotations;
+            using CommunityToolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.Input;
+
+            namespace MyApp
+            {
+                [INotifyPropertyChanged]
+                public partial class A
+                {
+                }
+
+                [INotifyPropertyChanged]
+                public partial class B : A
+                {
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<INotifyPropertyChangedGenerator>(source, "MVVMTK0017");
+    }
+
+    [TestMethod]
+    public void InvalidAttributeCombinationForINotifyPropertyChangedAttributeError_InheritingObservableObjectAttribute()
+    {
+        string source = @"
+            using System.ComponentModel.DataAnnotations;
+            using CommunityToolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.Input;
+
+            namespace MyApp
+            {
+                [ObservableObject]
+                public partial class A
+                {
+                }
+
+                [INotifyPropertyChanged]
+                public partial class B : A
+                {
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<INotifyPropertyChangedGenerator>(source, "MVVMTK0017");
+    }
+
+    [TestMethod]
+    public void InvalidAttributeCombinationForINotifyPropertyChangedAttributeError_WithAlsoObservableObjectAttribute()
+    {
+        string source = @"
+            using System.ComponentModel.DataAnnotations;
+            using CommunityToolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.Input;
+
+            namespace MyApp
+            {
+                [INotifyPropertyChanged]
+                [ObservableObject]
+                public partial class A
+                {
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<INotifyPropertyChangedGenerator>(source, "MVVMTK0017");
+    }
+
+    [TestMethod]
+    public void InvalidAttributeCombinationForObservableObjectAttributeError_InheritingINotifyPropertyChangedAttribute()
+    {
+        string source = @"
+            using System.ComponentModel.DataAnnotations;
+            using CommunityToolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.Input;
+
+            namespace MyApp
+            {
+                [INotifyPropertyChanged]
+                public partial class A
+                {
+                }
+
+                [ObservableObject]
+                public partial class B : A
+                {
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0018");
+    }
+
+    [TestMethod]
+    public void InvalidAttributeCombinationForObservableObjectAttributeError_InheritingObservableObjectAttribute()
+    {
+        string source = @"
+            using System.ComponentModel.DataAnnotations;
+            using CommunityToolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.Input;
+
+            namespace MyApp
+            {
+                [ObservableObject]
+                public partial class A
+                {
+                }
+
+                [ObservableObject]
+                public partial class B : A
+                {
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0018");
+    }
+
+    [TestMethod]
+    public void InvalidAttributeCombinationForObservableObjectAttributeError_WithAlsoINotifyPropertyChangedAttribute()
+    {
+        string source = @"
+            using System.ComponentModel.DataAnnotations;
+            using CommunityToolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.Input;
+
+            namespace MyApp
+            {
+                [INotifyPropertyChanged]
+                [ObservableObject]
+                public partial class A
+                {
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0018");
+    }
+
     /// <summary>
     /// Verifies the output of a source generator.
     /// </summary>

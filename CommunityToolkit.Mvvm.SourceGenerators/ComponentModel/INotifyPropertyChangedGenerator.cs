@@ -57,6 +57,17 @@ public sealed class INotifyPropertyChangedGenerator : TransitiveMembersGenerator
             return false;
         }
 
+        // Check if the type uses [INotifyPropertyChanged] or [ObservableObject] already (in the type hierarchy too)
+        if (typeSymbol.HasOrInheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute") ||
+            typeSymbol.InheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.INotifyPropertyChangedAttribute"))
+        {
+            builder.Add(InvalidAttributeCombinationForINotifyPropertyChangedAttributeError, typeSymbol, typeSymbol);
+
+            diagnostics = builder.ToImmutable();
+
+            return false;
+        }
+
         diagnostics = builder.ToImmutable();
 
         return true;
