@@ -276,8 +276,8 @@ internal static class DiagnosticDescriptors
     /// </summary>
     public static readonly DiagnosticDescriptor InvalidAttributeCombinationForINotifyPropertyChangedAttributeError = new DiagnosticDescriptor(
         id: "MVVMTK0017",
-        title: $"Invalid target type for [INotifyPropertyChanged]",
-        messageFormat: $"Cannot apply [INotifyPropertyChanged] to type {{0}}, as it already has this attribute or [ObservableObject] applied to it (including base types)",
+        title: "Invalid target type for [INotifyPropertyChanged]",
+        messageFormat: "Cannot apply [INotifyPropertyChanged] to type {0}, as it already has this attribute or [ObservableObject] applied to it (including base types)",
         category: typeof(INotifyPropertyChangedGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
@@ -292,8 +292,8 @@ internal static class DiagnosticDescriptors
     /// </summary>
     public static readonly DiagnosticDescriptor InvalidAttributeCombinationForObservableObjectAttributeError = new DiagnosticDescriptor(
         id: "MVVMTK0018",
-        title: $"Invalid target type for [ObservableObject]",
-        messageFormat: $"Cannot apply [ObservableObject] to type {{0}}, as it already has this attribute or [INotifyPropertyChanged] applied to it (including base types)",
+        title: "Invalid target type for [ObservableObject]",
+        messageFormat: "Cannot apply [ObservableObject] to type {0}, as it already has this attribute or [INotifyPropertyChanged] applied to it (including base types)",
         category: typeof(ObservableObjectGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
@@ -308,11 +308,27 @@ internal static class DiagnosticDescriptors
     /// </summary>
     public static readonly DiagnosticDescriptor InvalidContainingTypeForObservablePropertyFieldError = new DiagnosticDescriptor(
         id: "MVVMTK0019",
-        title: $"Invalid containing type for [ObservableProperty] field",
-        messageFormat: $"The field {{0}}.{{1}} cannot be used to generate an observable property, as its containing type doesn't inherit from ObservableObject, nor does it use [ObservableObject] or [INotifyPropertyChanged]",
+        title: "Invalid containing type for [ObservableProperty] field",
+        messageFormat: "The field {0}.{1} cannot be used to generate an observable property, as its containing type doesn't inherit from ObservableObject, nor does it use [ObservableObject] or [INotifyPropertyChanged]",
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Fields annotated with [ObservableProperty] must be contained in a type that inherits from ObservableObject or that is annotated with [ObservableObject] or [INotifyPropertyChanged] (including base types).",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[ObservableProperty]</c> is applied to a field in an invalid type.
+    /// <para>
+    /// Format: <c>"The field {0}.{1} needs to be annotated with [ObservableProperty] in order to enable using [AlsoNotifyChangeFor] and [AlsoNotifyCanExecuteFor]"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor FieldWithOrphanedDependentObservablePropertyAttributesError = new DiagnosticDescriptor(
+        id: "MVVMTK0020",
+        title: "Invalid use of attributes dependent on [ObservableProperty]",
+        messageFormat: "The field {0}.{1} needs to be annotated with [ObservableProperty] in order to enable using [AlsoNotifyChangeFor] and [AlsoNotifyCanExecuteFor]",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "Fields not annotated with [ObservableProperty] cannot use [AlsoNotifyChangeFor] and [AlsoNotifyCanExecuteFor].",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 }

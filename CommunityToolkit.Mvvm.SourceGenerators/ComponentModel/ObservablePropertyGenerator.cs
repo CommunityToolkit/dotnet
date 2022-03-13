@@ -7,7 +7,6 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
-using CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using CommunityToolkit.Mvvm.SourceGenerators.Models;
 using Microsoft.CodeAnalysis;
@@ -39,6 +38,18 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
         IncrementalValuesProvider<IFieldSymbol> fieldSymbolsWithAttribute =
             fieldSymbols
             .Where(static item => item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute"));
+
+        // Get diagnostics for fields using [AlsoNotifyChangeFor] and [AlsoNotifyCanExecuteFor], but not [ObservableProperty]
+        IncrementalValuesProvider<Diagnostic> fieldSymbolsWithOrphanedDependentAttributeWithErrors =
+            fieldSymbols
+            .Where(static item =>
+                (item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoNotifyChangeForAttribute") ||
+                 item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoNotifyCanExecuteForAttribute")) &&
+                 !item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute"))
+            .Select(static (item, _) => Execute.GetDiagnosticForFieldWithOrphanedDependentAttributes(item));
+
+        // Output the diagnostics
+        context.ReportDiagnostics(fieldSymbolsWithOrphanedDependentAttributeWithErrors);
 
         // Filter by language version
         context.FilterWithLanguageVersion(ref fieldSymbolsWithAttribute, LanguageVersion.CSharp8, UnsupportedCSharpLanguageVersionError);

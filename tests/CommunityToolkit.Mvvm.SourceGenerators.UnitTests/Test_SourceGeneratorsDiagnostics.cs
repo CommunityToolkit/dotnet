@@ -962,6 +962,42 @@ public class Test_SourceGeneratorsDiagnostics
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0019");
     }
 
+    [TestMethod]
+    public void FieldWithOrphanedDependentObservablePropertyAttributesError_AlsoNotifyChangeFor()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class MyViewModel
+                {
+                    [AlsoNotifyChangeFor("")]
+                    public int number;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0020");
+    }
+
+    [TestMethod]
+    public void FieldWithOrphanedDependentObservablePropertyAttributesError_AlsoNotifyCanExecuteFor()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class MyViewModel
+                {
+                    [AlsoNotifyCanExecuteFor("")]
+                    public int number;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0020");
+    }
+
     /// <summary>
     /// Verifies the output of a source generator.
     /// </summary>

@@ -133,6 +133,19 @@ partial class ObservablePropertyGenerator
         }
 
         /// <summary>
+        /// Gets the diagnostics for a field with invalid attribute uses.
+        /// </summary>
+        /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
+        /// <returns>The resulting <see cref="Diagnostic"/> instance for <paramref name="fieldSymbol"/>.</returns>
+        public static Diagnostic GetDiagnosticForFieldWithOrphanedDependentAttributes(IFieldSymbol fieldSymbol)
+        {
+            return FieldWithOrphanedDependentObservablePropertyAttributesError.CreateDiagnostic(
+                fieldSymbol,
+                fieldSymbol.ContainingType,
+                fieldSymbol.Name);
+        }
+
+        /// <summary>
         /// Validates the containing type for a given field being annotated.
         /// </summary>
         /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
