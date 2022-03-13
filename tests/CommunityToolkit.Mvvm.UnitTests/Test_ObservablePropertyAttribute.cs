@@ -11,6 +11,8 @@ using System.Reflection;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommunityToolkit.Mvvm.UnitTests;
@@ -360,6 +362,61 @@ public partial class Test_ObservablePropertyAttribute
         Assert.AreEqual("B", model.Name);
     }
 
+    [TestMethod]
+    public void Test_AlsoBroadcastChange_WithObservableObject()
+    {
+        Test_AlsoBroadcastChange_Test(
+           factory: static messenger => new BroadcastingViewModel(messenger),
+           setter: static (model, value) => model.Name = value,
+           propertyName: nameof(BroadcastingViewModel.Name));
+    }
+
+    [TestMethod]
+    public void Test_AlsoBroadcastChange_WithObservableRecipientAttribute()
+    {
+        Test_AlsoBroadcastChange_Test(
+            factory: static messenger => new BroadcastingViewModelWithAttribute(messenger),
+            setter: static (model, value) => model.Name = value,
+            propertyName: nameof(BroadcastingViewModelWithAttribute.Name));
+    }
+
+    [TestMethod]
+    public void Test_AlsoBroadcastChange_WithInheritedObservableRecipientAttribute()
+    {
+        Test_AlsoBroadcastChange_Test(
+            factory: static messenger => new BroadcastingViewModelWithInheritedAttribute(messenger),
+            setter: static (model, value) => model.Name2 = value,
+            propertyName: nameof(BroadcastingViewModelWithInheritedAttribute.Name2));
+    }
+
+    private void Test_AlsoBroadcastChange_Test<T>(Func<IMessenger, T> factory, Action<T, string?> setter, string propertyName)
+        where T : notnull
+    {
+        IMessenger messenger = new StrongReferenceMessenger();
+
+        T model = factory(messenger);
+
+        List<(object Sender, PropertyChangedMessage<string?> Message)> messages = new();
+
+        messenger.Register<PropertyChangedMessage<string?>>(model, (r, m) => messages.Add((r, m)));
+
+        setter(model, "Bob");
+
+        Assert.AreEqual(1, messages.Count);
+        Assert.AreSame(model, messages[0].Sender);
+        Assert.AreEqual(null, messages[0].Message.OldValue);
+        Assert.AreEqual("Bob", messages[0].Message.NewValue);
+        Assert.AreEqual(propertyName, messages[0].Message.PropertyName);
+
+        setter(model, "Ross");
+
+        Assert.AreEqual(2, messages.Count);
+        Assert.AreSame(model, messages[1].Sender);
+        Assert.AreEqual("Bob", messages[1].Message.OldValue);
+        Assert.AreEqual("Ross", messages[1].Message.NewValue);
+        Assert.AreEqual(propertyName, messages[0].Message.PropertyName);
+    }
+
     public partial class SampleModel : ObservableObject
     {
         /// <summary>
@@ -614,5 +671,37 @@ public partial class Test_ObservablePropertyAttribute
             Assert.AreEqual("B", this.name);
             Assert.AreEqual(nameof(Name), e.PropertyName);
         }
+    }
+
+    partial class BroadcastingViewModel : ObservableRecipient
+    {
+        public BroadcastingViewModel(IMessenger messenger)
+            : base(messenger)
+        {
+        }
+
+        [ObservableProperty]
+        [AlsoBroadcastChange]
+        private string? name;
+    }
+
+    [ObservableRecipient]
+    partial class BroadcastingViewModelWithAttribute : ObservableObject
+    {
+        [ObservableProperty]
+        [AlsoBroadcastChange]
+        private string? name;
+    }
+
+    partial class BroadcastingViewModelWithInheritedAttribute : BroadcastingViewModelWithAttribute
+    {
+        public BroadcastingViewModelWithInheritedAttribute(IMessenger messenger)
+            : base(messenger)
+        {
+        }
+
+        [ObservableProperty]
+        [AlsoBroadcastChange]
+        private string? name2;
     }
 }
