@@ -2,8 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
-using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
 
@@ -40,66 +38,5 @@ internal static class INamedTypeSymbolExtensions
         // to avoid errors when generating code. This is a known issue with source generators not accepting
         // those characters at the moment, see: https://github.com/dotnet/roslyn/issues/58476.
         return BuildFrom(symbol, new StringBuilder(256)).ToString().Replace('`', '-').Replace('+', '.');
-    }
-
-    /// <summary>
-    /// Checks whether or not a given <see cref="INamedTypeSymbol"/> inherits from a specified type.
-    /// </summary>
-    /// <param name="typeSymbol">The target <see cref="INamedTypeSymbol"/> instance to check.</param>
-    /// <param name="name">The full name of the type to check for inheritance.</param>
-    /// <returns>Whether or not <paramref name="typeSymbol"/> inherits from <paramref name="name"/>.</returns>
-    public static bool InheritsFromFullyQualifiedName(this INamedTypeSymbol typeSymbol, string name)
-    {
-        INamedTypeSymbol? baseType = typeSymbol.BaseType;
-
-        while (baseType != null)
-        {
-            if (baseType.HasFullyQualifiedName(name))
-            {
-                return true;
-            }
-
-            baseType = baseType.BaseType;
-        }
-
-        return false;
-    }
-
-    /// <summary>
-    /// Checks whether or not a given <see cref="INamedTypeSymbol"/> implements an interface with a specied name.
-    /// </summary>
-    /// <param name="typeSymbol">The target <see cref="INamedTypeSymbol"/> instance to check.</param>
-    /// <param name="name">The full name of the type to check for interface implementation.</param>
-    /// <returns>Whether or not <paramref name="typeSymbol"/> has an interface with the specified name.</returns>
-    public static bool HasInterfaceWithFullyQualifiedName(this INamedTypeSymbol typeSymbol, string name)
-    {
-        foreach (INamedTypeSymbol interfaceType in typeSymbol.AllInterfaces)
-        {
-            if (interfaceType.HasFullyQualifiedName(name))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /// <summary>
-    /// Checks whether or not a given <see cref="INamedTypeSymbol"/> has or inherits a specified attribute.
-    /// </summary>
-    /// <param name="typeSymbol">The target <see cref="INamedTypeSymbol"/> instance to check.</param>
-    /// <param name="predicate">The predicate used to match available attributes.</param>
-    /// <returns>Whether or not <paramref name="typeSymbol"/> has an attribute matching <paramref name="predicate"/>.</returns>
-    public static bool HasOrInheritsAttribute(this INamedTypeSymbol typeSymbol, Func<AttributeData, bool> predicate)
-    {
-        for (INamedTypeSymbol? currentType = typeSymbol; currentType is not null; currentType = currentType.BaseType)
-        {
-            if (currentType.GetAttributes().Any(predicate))
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 }
