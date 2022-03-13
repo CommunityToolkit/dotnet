@@ -157,10 +157,6 @@ partial class ObservablePropertyGenerator
                         }
                     }
 
-                    ValidProperty:
-
-                    continue;
-
                     InvalidProperty:
 
                     diagnostics.Add(
@@ -168,6 +164,10 @@ partial class ObservablePropertyGenerator
                         fieldSymbol,
                         dependentPropertyName ?? "",
                         fieldSymbol.ContainingType);
+
+                    ValidProperty:
+
+                    continue;
                 }
 
                 return true;
@@ -201,13 +201,21 @@ partial class ObservablePropertyGenerator
 
                     // Each target must be a string matching the name of a property from the containing type of the annotated field, and the
                     // property must be of type IRelayCommand, or any type that implements that interface (to avoid generating invalid code).
-                    if (fieldSymbol.ContainingType.GetMembers(commandName).OfType<IPropertySymbol>().FirstOrDefault() is IPropertySymbol propertySymbol &&
-                        propertySymbol is INamedTypeSymbol typeSymbol &&
-                        typeSymbol.HasInterfaceWithFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.IRelayCommand"))
+                    if (fieldSymbol.ContainingType.GetMembers(commandName).OfType<IPropertySymbol>().FirstOrDefault() is IPropertySymbol propertySymbol)
                     {
-                        notifiedCommandNames.Add(commandName);
+                        // If there is a property member with the specified name, check that it's valid. If it isn't, the
+                        // target is definitely not valid, and the additional checks below can just be skipped. The property
+                        // is valid if it's of type IRelayCommand, or it has IRelayCommand in the set of all interfaces.
+                        if (propertySymbol.Type is INamedTypeSymbol typeSymbol &&
+                            (typeSymbol.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.IRelayCommand") ||
+                             typeSymbol.HasInterfaceWithFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.IRelayCommand")))
+                        {
+                            notifiedCommandNames.Add(commandName);
 
-                        goto ValidProperty;
+                            goto ValidProperty;
+                        }
+
+                        goto InvalidProperty;
                     }
 
                     // Check for generated commands too
@@ -223,10 +231,6 @@ partial class ObservablePropertyGenerator
                         }
                     }
 
-                    ValidProperty:
-
-                    continue;
-
                     InvalidProperty:
 
                     diagnostics.Add(
@@ -234,6 +238,10 @@ partial class ObservablePropertyGenerator
                         fieldSymbol,
                         commandName ?? "",
                         fieldSymbol.ContainingType);
+
+                    ValidProperty:
+
+                    continue;
                 }
 
                 return true;

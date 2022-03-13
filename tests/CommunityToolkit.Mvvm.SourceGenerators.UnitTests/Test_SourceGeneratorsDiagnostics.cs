@@ -648,7 +648,7 @@ public class Test_SourceGeneratorsDiagnostics
                 {
                     [ObservableProperty]
                     [AlsoNotifyChangeFor(null)]
-                    private string Name;
+                    private string name;
                 }
             }";
 
@@ -668,7 +668,7 @@ public class Test_SourceGeneratorsDiagnostics
                 {
                     [ObservableProperty]
                     [AlsoNotifyChangeFor(nameof(Name))]
-                    private string Name;
+                    private string name;
                 }
             }";
 
@@ -688,7 +688,7 @@ public class Test_SourceGeneratorsDiagnostics
                 {
                     [ObservableProperty]
                     [AlsoNotifyChangeFor(""FooBar"")]
-                    private string Name;
+                    private string name;
                 }
             }";
 
@@ -708,7 +708,7 @@ public class Test_SourceGeneratorsDiagnostics
                 {
                     [ObservableProperty]
                     [AlsoNotifyChangeFor(nameof(Foo))]
-                    private string Name;
+                    private string name;
 
                     public void Foo()
                     {
@@ -732,7 +732,7 @@ public class Test_SourceGeneratorsDiagnostics
                 {
                     [ObservableProperty]
                     [AlsoNotifyCanExecuteFor(null)]
-                    private string Name;
+                    private string name;
                 }
             }";
 
@@ -752,7 +752,7 @@ public class Test_SourceGeneratorsDiagnostics
                 {
                     [ObservableProperty]
                     [AlsoNotifyCanExecuteFor(""FooBar"")]
-                    private string Name;
+                    private string name;
                 }
             }";
 
@@ -772,7 +772,7 @@ public class Test_SourceGeneratorsDiagnostics
                 {
                     [ObservableProperty]
                     [AlsoNotifyCanExecuteFor(nameof(Foo))]
-                    private string Name;
+                    private string name;
 
                     public void Foo()
                     {
@@ -796,7 +796,7 @@ public class Test_SourceGeneratorsDiagnostics
                 {
                     [ObservableProperty]
                     [AlsoNotifyCanExecuteFor(nameof(Foo))]
-                    private string Name;
+                    private string name;
 
                     public string Foo { get; }
                 }
@@ -819,7 +819,7 @@ public class Test_SourceGeneratorsDiagnostics
                 {
                     [ObservableProperty]
                     [AlsoNotifyCanExecuteFor(nameof(FooCommand))]
-                    private string Name;
+                    private string name;
 
                     public ICommand FooCommand { get; }
                 }

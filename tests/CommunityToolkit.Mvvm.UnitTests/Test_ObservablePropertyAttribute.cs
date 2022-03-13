@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -282,7 +283,7 @@ public partial class Test_ObservablePropertyAttribute
         int canExecuteRequests = 0;
 
         model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
-        model.MyCommand.CanExecuteChanged += (s, e) => canExecuteRequests++;
+        model.TestFromMethodCommand.CanExecuteChanged += (s, e) => canExecuteRequests++;
 
         model.Text = "Ross";
 
@@ -430,7 +431,7 @@ public partial class Test_ObservablePropertyAttribute
 
         public string Alias => "";
 
-        public IRelayCommand MyCommand { get; } = null!;
+        public IRelayCommand MyCommand { get; } = new RelayCommand(() => { });
     }
 
     [INotifyPropertyChanged]
@@ -445,7 +446,7 @@ public partial class Test_ObservablePropertyAttribute
 
         public string Alias => "";
 
-        public IAsyncRelayCommand<string> MyCommand { get; } = null!;
+        public IAsyncRelayCommand<string> MyCommand { get; } = new AsyncRelayCommand<string>(_ => Task.CompletedTask);
     }
 
     public partial class MyFormViewModel : ObservableValidator
