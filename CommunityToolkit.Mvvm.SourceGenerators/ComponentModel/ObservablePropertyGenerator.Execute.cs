@@ -203,11 +203,32 @@ partial class ObservablePropertyGenerator
                     }
                     else
                     {
-                        diagnostics.Add(
+                        bool isTargetValid = false;
+
+                        // Check for generated commands too
+                        foreach (ISymbol member in fieldSymbol.ContainingType.GetMembers())
+                        {
+                            if (member is IMethodSymbol methodSymbol &&
+                                methodSymbol.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.ICommandAttribute") &&
+                                commandName == ICommandGenerator.Execute.GetGeneratedFieldAndPropertyNames(methodSymbol).PropertyName)
+                            {
+                                notifiedCommandNames.Add(commandName);
+
+                                isTargetValid = true;
+
+                                break;
+                            }
+                        }
+
+                        // Add the diagnostic if the target is definitely invalid
+                        if (!isTargetValid)
+                        {
+                            diagnostics.Add(
                             AlsoNotifyCanExecuteForInvalidTargetError,
                             fieldSymbol,
                             commandName ?? "",
                             fieldSymbol.ContainingType);
+                        }
                     }
                 }
 
