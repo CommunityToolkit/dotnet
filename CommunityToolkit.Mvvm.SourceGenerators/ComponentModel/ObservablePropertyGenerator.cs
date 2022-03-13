@@ -38,7 +38,7 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
         // Filter the fields using [ObservableProperty]
         IncrementalValuesProvider<IFieldSymbol> fieldSymbolsWithAttribute =
             fieldSymbols
-            .Where(static item => item.GetAttributes().Any(a => a.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute") == true));
+            .Where(static item => item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute"));
 
         // Filter by language version
         context.FilterWithLanguageVersion(ref fieldSymbolsWithAttribute, LanguageVersion.CSharp8, UnsupportedCSharpLanguageVersionError);
