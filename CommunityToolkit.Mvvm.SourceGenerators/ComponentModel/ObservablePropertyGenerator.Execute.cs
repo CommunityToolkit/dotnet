@@ -97,6 +97,11 @@ partial class ObservablePropertyGenerator
                     fieldSymbol.ContainingType,
                     fieldSymbol.Name,
                     validationAttributes.Count);
+
+                // Remove all validation attributes so that the generated code doesn't cause a build error about the
+                // "ValidateProperty" method not existing (as the type doesn't inherit from ObservableValidator). The
+                // compilation will still fail due to this diagnostics, but with just this easier to understand error.
+                validationAttributes.Clear();
             }
 
             diagnostics = builder.ToImmutable();
