@@ -635,6 +635,179 @@ public class Test_SourceGeneratorsDiagnostics
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0014");
     }
 
+    [TestMethod]
+    public void AlsoNotifyChangeForInvalidTargetError_Null()
+    {
+        string source = @"
+            using System.ComponentModel.DataAnnotations;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    [AlsoNotifyChangeFor(null)]
+                    private string Name;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0015");
+    }
+
+    [TestMethod]
+    public void AlsoNotifyChangeForInvalidTargetError_Missing()
+    {
+        string source = @"
+            using System.ComponentModel.DataAnnotations;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    [AlsoNotifyChangeFor(""FooBar"")]
+                    private string Name;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0015");
+    }
+
+    [TestMethod]
+    public void AlsoNotifyChangeForInvalidTargetError_InvalidType()
+    {
+        string source = @"
+            using System.ComponentModel.DataAnnotations;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    [AlsoNotifyChangeFor(nameof(Foo))]
+                    private string Name;
+
+                    public void Foo()
+                    {
+                    }
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0015");
+    }
+
+    [TestMethod]
+    public void AlsoNotifyCanExecuteForInvalidTargetError_Null()
+    {
+        string source = @"
+            using System.ComponentModel.DataAnnotations;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    [AlsoNotifyCanExecuteFor(null)]
+                    private string Name;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0016");
+    }
+
+    [TestMethod]
+    public void AlsoNotifyCanExecuteForInvalidTargetError_Missing()
+    {
+        string source = @"
+            using System.ComponentModel.DataAnnotations;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    [AlsoNotifyCanExecuteFor(""FooBar"")]
+                    private string Name;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0016");
+    }
+
+    [TestMethod]
+    public void AlsoNotifyCanExecuteForInvalidTargetError_InvalidMemberType()
+    {
+        string source = @"
+            using System.ComponentModel.DataAnnotations;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    [AlsoNotifyCanExecuteFor(nameof(Foo))]
+                    private string Name;
+
+                    public void Foo()
+                    {
+                    }
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0016");
+    }
+
+    [TestMethod]
+    public void AlsoNotifyCanExecuteForInvalidTargetError_InvalidPropertyType()
+    {
+        string source = @"
+            using System.ComponentModel.DataAnnotations;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    [AlsoNotifyCanExecuteFor(nameof(Foo))]
+                    private string Name;
+
+                    public string Foo { get; }
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0016");
+    }
+
+    [TestMethod]
+    public void AlsoNotifyCanExecuteForInvalidTargetError_InvalidCommandType()
+    {
+        string source = @"
+            using System.ComponentModel.DataAnnotations;
+            using CommunityToolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.Input;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    [AlsoNotifyCanExecuteFor(nameof(FooCommand))]
+                    private string Name;
+
+                    public ICommand FooCommand { get; }
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0016");
+    }
+
     /// <summary>
     /// Verifies the output of a source generator.
     /// </summary>
