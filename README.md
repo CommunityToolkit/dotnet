@@ -1,6 +1,6 @@
 # 🧰 .NET Community Toolkit
 
-.NET Community Toolkit is a collection of helpers and APIs that work for all .NET developers and are agnostic of any specific UI platform.
+.NET Community Toolkit is a collection of helpers and APIs that work for all .NET developers and are agnostic of any specific UI platform. The toolkit is maintained and published by Microsoft, and part of the .NET Foundation.
 
 | Target | Branch | Status | Recommended package version |
 | ------ | ------ | ------ | ------ |
