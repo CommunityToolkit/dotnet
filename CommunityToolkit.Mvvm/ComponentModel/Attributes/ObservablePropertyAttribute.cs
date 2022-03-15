@@ -10,10 +10,11 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 
 /// <summary>
 /// An attribute that indicates that a given field should be wrapped by a generated observable property.
-/// In order to use this attribute, the containing type has to implement the <see cref="INotifyPropertyChanged"/> interface
-/// and expose a method with the same signature as <see cref="ObservableObject.OnPropertyChanged(string?)"/>. If the containing
-/// type also implements the <see cref="INotifyPropertyChanging"/> interface and exposes a method with the same signature as
-/// <see cref="ObservableObject.OnPropertyChanging(string?)"/>, then this method will be invoked as well by the property setter.
+/// In order to use this attribute, the containing type has to inherit from <see cref="ObservableObject"/>, or it
+/// must be using <see cref="ObservableObjectAttribute"/> or <see cref="INotifyPropertyChangedAttribute"/>.
+/// If the containing type also implements the <see cref="INotifyPropertyChanging"/> (that is, if it either inherits from
+/// <see cref="ObservableObject"/> or is using <see cref="ObservableObjectAttribute"/>), then the generated code will
+/// also invoke <see cref="ObservableObject.OnPropertyChanging(PropertyChangingEventArgs)"/> to signal that event.
 /// <para>
 /// This attribute can be used as follows:
 /// <code>

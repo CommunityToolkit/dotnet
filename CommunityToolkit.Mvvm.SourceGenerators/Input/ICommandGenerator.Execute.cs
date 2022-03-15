@@ -23,7 +23,7 @@ partial class ICommandGenerator
     /// <summary>
     /// A container for all the logic for <see cref="ICommandGenerator"/>.
     /// </summary>
-    private static class Execute
+    internal static class Execute
     {
         /// <summary>
         /// Processes a given target method.
@@ -305,7 +305,7 @@ partial class ICommandGenerator
         /// </summary>
         /// <param name="methodSymbol">The input <see cref="IMethodSymbol"/> instance to process.</param>
         /// <returns>The generated field and property names for <paramref name="methodSymbol"/>.</returns>
-        private static (string FieldName, string PropertyName) GetGeneratedFieldAndPropertyNames(IMethodSymbol methodSymbol)
+        public static (string FieldName, string PropertyName) GetGeneratedFieldAndPropertyNames(IMethodSymbol methodSymbol)
         {
             string propertyName = methodSymbol.Name;
 

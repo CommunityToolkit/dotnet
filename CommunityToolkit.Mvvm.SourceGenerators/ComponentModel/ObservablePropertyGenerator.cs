@@ -7,7 +7,6 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
-using CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using CommunityToolkit.Mvvm.SourceGenerators.Models;
 using Microsoft.CodeAnalysis;
@@ -38,20 +37,32 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
         // Filter the fields using [ObservableProperty]
         IncrementalValuesProvider<IFieldSymbol> fieldSymbolsWithAttribute =
             fieldSymbols
-            .Where(static item => item.GetAttributes().Any(a => a.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute") == true));
+            .Where(static item => item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute"));
+
+        // Get diagnostics for fields using [AlsoNotifyChangeFor] and [AlsoNotifyCanExecuteFor], but not [ObservableProperty]
+        IncrementalValuesProvider<Diagnostic> fieldSymbolsWithOrphanedDependentAttributeWithErrors =
+            fieldSymbols
+            .Where(static item =>
+                (item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoNotifyChangeForAttribute") ||
+                 item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoNotifyCanExecuteForAttribute")) &&
+                 !item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute"))
+            .Select(static (item, _) => Execute.GetDiagnosticForFieldWithOrphanedDependentAttributes(item));
+
+        // Output the diagnostics
+        context.ReportDiagnostics(fieldSymbolsWithOrphanedDependentAttributeWithErrors);
 
         // Filter by language version
         context.FilterWithLanguageVersion(ref fieldSymbolsWithAttribute, LanguageVersion.CSharp8, UnsupportedCSharpLanguageVersionError);
 
         // Gather info for all annotated fields
-        IncrementalValuesProvider<(HierarchyInfo Hierarchy, Result<PropertyInfo> Info)> propertyInfoWithErrors =
+        IncrementalValuesProvider<(HierarchyInfo Hierarchy, Result<PropertyInfo?> Info)> propertyInfoWithErrors =
             fieldSymbolsWithAttribute
             .Select(static (item, _) =>
             {
                 HierarchyInfo hierarchy = HierarchyInfo.From(item.ContainingType);
-                PropertyInfo propertyInfo = Execute.GetInfo(item, out ImmutableArray<Diagnostic> diagnostics);
+                PropertyInfo? propertyInfo = Execute.TryGetInfo(item, out ImmutableArray<Diagnostic> diagnostics);
 
-                return (hierarchy, new Result<PropertyInfo>(propertyInfo, diagnostics));
+                return (hierarchy, new Result<PropertyInfo?>(propertyInfo, diagnostics));
             });
 
         // Output the diagnostics
@@ -60,7 +71,8 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
         // Get the filtered sequence to enable caching
         IncrementalValuesProvider<(HierarchyInfo Hierarchy, PropertyInfo Info)> propertyInfo =
             propertyInfoWithErrors
-            .Select(static (item, _) => (item.Hierarchy, item.Info.Value))
+            .Select(static (item, _) => (item.Hierarchy, Info: item.Info.Value))
+            .Where(static item => item.Info is not null)!
             .WithComparers(HierarchyInfo.Comparer.Default, PropertyInfo.Comparer.Default);
 
         // Split and group by containing type

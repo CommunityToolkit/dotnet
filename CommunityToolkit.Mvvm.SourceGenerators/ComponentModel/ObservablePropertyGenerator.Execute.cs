@@ -29,16 +29,24 @@ partial class ObservablePropertyGenerator
         /// </summary>
         /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
         /// <param name="diagnostics">The resulting diagnostics from the processing operation.</param>
-        /// <returns>The resulting <see cref="PropertyInfo"/> instance for <paramref name="fieldSymbol"/>.</returns>
-        public static PropertyInfo GetInfo(IFieldSymbol fieldSymbol, out ImmutableArray<Diagnostic> diagnostics)
+        /// <returns>The resulting <see cref="PropertyInfo"/> instance for <paramref name="fieldSymbol"/>, if successful.</returns>
+        public static PropertyInfo? TryGetInfo(IFieldSymbol fieldSymbol, out ImmutableArray<Diagnostic> diagnostics)
         {
             ImmutableArray<Diagnostic>.Builder builder = ImmutableArray.CreateBuilder<Diagnostic>();
 
-            // Check whether the containing type implements INotifyPropertyChanging and whether it inherits from ObservableValidator
-            bool isObservableObject = fieldSymbol.ContainingType.InheritsFrom("global::CommunityToolkit.Mvvm.ComponentModel.ObservableObject");
-            bool isObservableValidator = fieldSymbol.ContainingType.InheritsFrom("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator");
-            bool isNotifyPropertyChanging = fieldSymbol.ContainingType.AllInterfaces.Any(static i => i.HasFullyQualifiedName("global::System.ComponentModel.INotifyPropertyChanging"));
-            bool hasObservableObjectAttribute = fieldSymbol.ContainingType.GetAttributes().Any(static a => a.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute") == true);
+            // Validate the target type
+            if (!IsTargetTypeValid(fieldSymbol, out bool shouldInvokeOnPropertyChanging))
+            {
+                builder.Add(
+                    InvalidContainingTypeForObservablePropertyFieldError,
+                    fieldSymbol,
+                    fieldSymbol.ContainingType,
+                    fieldSymbol.Name);
+
+                diagnostics = builder.ToImmutable();
+
+                return null;
+            }
 
             // Get the property type and name
             string typeName = fieldSymbol.Type.GetFullyQualifiedName();
@@ -46,13 +54,30 @@ partial class ObservablePropertyGenerator
             string fieldName = fieldSymbol.Name;
             string propertyName = GetGeneratedPropertyName(fieldSymbol);
 
+            // Check for name collisions
+            if (fieldName == propertyName)
+            {
+                builder.Add(
+                    ObservablePropertyNameCollisionError,
+                    fieldSymbol,
+                    fieldSymbol.ContainingType,
+                    fieldSymbol.Name);
+
+                diagnostics = builder.ToImmutable();
+
+                // If the generated property would collide, skip generating it entirely. This makes sure that
+                // users only get the helpful diagnostic about the collsiion, and not the normal compiler error
+                // about a definition for "Property" already existing on the target type, which might be confusing.
+                return null;
+            }
+
             ImmutableArray<string>.Builder propertyChangedNames = ImmutableArray.CreateBuilder<string>();
             ImmutableArray<string>.Builder propertyChangingNames = ImmutableArray.CreateBuilder<string>();
             ImmutableArray<string>.Builder notifiedCommandNames = ImmutableArray.CreateBuilder<string>();
             ImmutableArray<AttributeInfo>.Builder validationAttributes = ImmutableArray.CreateBuilder<AttributeInfo>();
 
             // Track the property changing event for the property, if the type supports it
-            if (isObservableObject || isNotifyPropertyChanging || hasObservableObjectAttribute)
+            if (shouldInvokeOnPropertyChanging)
             {
                 propertyChangingNames.Add(propertyName);
             }
@@ -63,32 +88,23 @@ partial class ObservablePropertyGenerator
             // Gather attributes info
             foreach (AttributeData attributeData in fieldSymbol.GetAttributes())
             {
-                // Add dependent property notifications, if needed
-                if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoNotifyChangeForAttribute") == true)
+                // Gather dependent property and command names
+                if (TryGatherDependentPropertyChangedNames(fieldSymbol, attributeData, propertyChangedNames, builder) ||
+                    TryGatherDependentCommandNames(fieldSymbol, attributeData, notifiedCommandNames, builder))
                 {
-                    foreach (string dependentPropertyName in attributeData.GetConstructorArguments<string>())
-                    {
-                        propertyChangedNames.Add(dependentPropertyName);
-                    }
+                    continue;
                 }
-                else if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoNotifyCanExecuteForAttribute") == true)
+
+                // Track the current validation attribute, if applicable
+                if (attributeData.AttributeClass?.InheritsFromFullyQualifiedName("global::System.ComponentModel.DataAnnotations.ValidationAttribute") == true)
                 {
-                    // Add dependent relay command notifications, if needed
-                    foreach (string commandName in attributeData.GetConstructorArguments<string>())
-                    {
-                        notifiedCommandNames.Add(commandName);
-                    }
-                }
-                else if (attributeData.AttributeClass?.InheritsFrom("global::System.ComponentModel.DataAnnotations.ValidationAttribute") == true)
-                {
-                    // Track the current validation attribute
                     validationAttributes.Add(AttributeInfo.From(attributeData));
                 }
             }
 
             // Log the diagnostics if needed
             if (validationAttributes.Count > 0 &&
-                !isObservableValidator)
+                !fieldSymbol.ContainingType.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator"))
             {
                 builder.Add(
                     MissingObservableValidatorInheritanceError,
@@ -96,6 +112,11 @@ partial class ObservablePropertyGenerator
                     fieldSymbol.ContainingType,
                     fieldSymbol.Name,
                     validationAttributes.Count);
+
+                // Remove all validation attributes so that the generated code doesn't cause a build error about the
+                // "ValidateProperty" method not existing (as the type doesn't inherit from ObservableValidator). The
+                // compilation will still fail due to this diagnostics, but with just this easier to understand error.
+                validationAttributes.Clear();
             }
 
             diagnostics = builder.ToImmutable();
@@ -109,6 +130,200 @@ partial class ObservablePropertyGenerator
                 propertyChangedNames.ToImmutable(),
                 notifiedCommandNames.ToImmutable(),
                 validationAttributes.ToImmutable());
+        }
+
+        /// <summary>
+        /// Gets the diagnostics for a field with invalid attribute uses.
+        /// </summary>
+        /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
+        /// <returns>The resulting <see cref="Diagnostic"/> instance for <paramref name="fieldSymbol"/>.</returns>
+        public static Diagnostic GetDiagnosticForFieldWithOrphanedDependentAttributes(IFieldSymbol fieldSymbol)
+        {
+            return FieldWithOrphanedDependentObservablePropertyAttributesError.CreateDiagnostic(
+                fieldSymbol,
+                fieldSymbol.ContainingType,
+                fieldSymbol.Name);
+        }
+
+        /// <summary>
+        /// Validates the containing type for a given field being annotated.
+        /// </summary>
+        /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
+        /// <param name="shouldInvokeOnPropertyChanging">Whether or not property changing events should also be raised.</param>
+        /// <returns>Whether or not the containing type for <paramref name="fieldSymbol"/> is valid.</returns>
+        private static bool IsTargetTypeValid(
+            IFieldSymbol fieldSymbol,
+            out bool shouldInvokeOnPropertyChanging)
+        {
+            // The [ObservableProperty] attribute can only be used in types that are known to expose the necessary OnPropertyChanged and OnPropertyChanging methods.
+            // That means that the containing type for the field needs to match one of the following conditions:
+            //   - It inherits from ObservableObject (in which case it also implements INotifyPropertyChanging).
+            //   - It has the [ObservableObject] attribute (on itself or any of its base types).
+            //   - It has the [INotifyPropertyChanged] attribute (on itself or any of its base types).
+            bool isObservableObject = fieldSymbol.ContainingType.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableObject");
+            bool hasObservableObjectAttribute = fieldSymbol.ContainingType.HasOrInheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute");
+            bool hasINotifyPropertyChangedAttribute = fieldSymbol.ContainingType.HasOrInheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.INotifyPropertyChangedAttribute");
+
+            shouldInvokeOnPropertyChanging = isObservableObject || hasObservableObjectAttribute;
+
+            return isObservableObject || hasObservableObjectAttribute || hasINotifyPropertyChangedAttribute;
+        }
+
+        /// <summary>
+        /// Tries to gather dependent properties from the given attribute.
+        /// </summary>
+        /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
+        /// <param name="attributeData">The <see cref="AttributeData"/> instance for <paramref name="fieldSymbol"/>.</param>
+        /// <param name="propertyChangedNames">The target collection of dependent property names to populate.</param>
+        /// <param name="diagnostics">The current collection of gathered diagnostics.</param>
+        /// <returns>Whether or not <paramref name="attributeData"/> was an attribute containing any dependent properties.</returns>
+        private static bool TryGatherDependentPropertyChangedNames(
+            IFieldSymbol fieldSymbol,
+            AttributeData attributeData,
+            ImmutableArray<string>.Builder propertyChangedNames,
+            ImmutableArray<Diagnostic>.Builder diagnostics)
+        {
+            // Validates a property name using existing properties
+            bool IsPropertyNameValid(string propertyName)
+            {
+                return fieldSymbol.ContainingType.GetMembers(propertyName).OfType<IPropertySymbol>().Any();
+            }
+
+            // Validate a property name including generated properties too
+            bool IsPropertyNameValidWithGeneratedMembers(string propertyName)
+            {
+                foreach (ISymbol member in fieldSymbol.ContainingType.GetMembers())
+                {
+                    if (member is IFieldSymbol otherFieldSymbol &&
+                        !SymbolEqualityComparer.Default.Equals(fieldSymbol, otherFieldSymbol) &&
+                        otherFieldSymbol.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute") &&
+                        propertyName == GetGeneratedPropertyName(otherFieldSymbol))
+                    {
+                        propertyChangedNames.Add(propertyName);
+
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoNotifyChangeForAttribute") == true)
+            {
+                foreach (string? dependentPropertyName in attributeData.GetConstructorArguments<string>())
+                {
+                    // Each target must be a (not null and not empty) string matching the name of a property from the containing type
+                    // of the annotated field being processed, or alternatively it must match the name of a property being generated.
+                    if (dependentPropertyName is not (null or "") &&
+                        (IsPropertyNameValid(dependentPropertyName) ||
+                         IsPropertyNameValidWithGeneratedMembers(dependentPropertyName)))
+                    {
+                        propertyChangedNames.Add(dependentPropertyName);
+                    }
+                    else
+                    {
+                        diagnostics.Add(
+                            AlsoNotifyChangeForInvalidTargetError,
+                            fieldSymbol,
+                            dependentPropertyName ?? "",
+                            fieldSymbol.ContainingType);
+                    }
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Tries to gather dependent commands from the given attribute.
+        /// </summary>
+        /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
+        /// <param name="attributeData">The <see cref="AttributeData"/> instance for <paramref name="fieldSymbol"/>.</param>
+        /// <param name="notifiedCommandNames">The target collection of dependent command names to populate.</param>
+        /// <param name="diagnostics">The current collection of gathered diagnostics.</param>
+        /// <returns>Whether or not <paramref name="attributeData"/> was an attribute containing any dependent commands.</returns>
+        private static bool TryGatherDependentCommandNames(
+            IFieldSymbol fieldSymbol,
+            AttributeData attributeData,
+            ImmutableArray<string>.Builder notifiedCommandNames,
+            ImmutableArray<Diagnostic>.Builder diagnostics)
+        {
+            // Validates a command name using existing properties
+            bool IsCommandNameValid(string commandName, out bool shouldLookForGeneratedMembersToo)
+            {
+                // Each target must be a string matching the name of a property from the containing type of the annotated field, and the
+                // property must be of type IRelayCommand, or any type that implements that interface (to avoid generating invalid code).
+                if (fieldSymbol.ContainingType.GetMembers(commandName).OfType<IPropertySymbol>().FirstOrDefault() is IPropertySymbol propertySymbol)
+                {
+                    // If there is a property member with the specified name, check that it's valid. If it isn't, the
+                    // target is definitely not valid, and the additional checks below can just be skipped. The property
+                    // is valid if it's of type IRelayCommand, or it has IRelayCommand in the set of all interfaces.
+                    if (propertySymbol.Type is INamedTypeSymbol typeSymbol &&
+                        (typeSymbol.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.IRelayCommand") ||
+                         typeSymbol.HasInterfaceWithFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.IRelayCommand")))
+                    {
+                        shouldLookForGeneratedMembersToo = true;
+
+                        return true;
+                    }
+
+                    // If a property with this name exists but is not valid, the search should stop immediately, as
+                    // the target is already known not to be valid, so there is no reason to look for other members.
+                    shouldLookForGeneratedMembersToo = false;
+
+                    return false;
+                }
+
+                shouldLookForGeneratedMembersToo = true;
+
+                return false;
+            }
+
+            // Validate a command name including generated command too
+            bool IsCommandNameValidWithGeneratedMembers(string commandName)
+            {
+                foreach (ISymbol member in fieldSymbol.ContainingType.GetMembers())
+                {
+                    if (member is IMethodSymbol methodSymbol &&
+                        methodSymbol.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.ICommandAttribute") &&
+                        commandName == ICommandGenerator.Execute.GetGeneratedFieldAndPropertyNames(methodSymbol).PropertyName)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoNotifyCanExecuteForAttribute") == true)
+            {
+                foreach (string? commandName in attributeData.GetConstructorArguments<string>())
+                {
+                    // Each command must be a (not null and not empty) string matching the name of an existing command from the containing
+                    // type (just like for properties), or it must match a generated command. The only caveat is the case where a property
+                    // with the requested name does exist, but it is not of the right type. In that case the search should stop immediately.
+                    if (commandName is not (null or "") &&
+                        (IsCommandNameValid(commandName, out bool shouldLookForGeneratedMembersToo) ||
+                         shouldLookForGeneratedMembersToo && IsCommandNameValidWithGeneratedMembers(commandName)))
+                    {
+                        notifiedCommandNames.Add(commandName);
+                    }
+                    else
+                    {
+                        diagnostics.Add(
+                           AlsoNotifyCanExecuteForInvalidTargetError,
+                           fieldSymbol,
+                           commandName ?? "",
+                           fieldSymbol.ContainingType);
+                    }
+                }
+
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>

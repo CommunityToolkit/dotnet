@@ -34,7 +34,7 @@ public sealed class INotifyPropertyChangedGenerator : TransitiveMembersGenerator
     {
         static INotifyPropertyChangedInfo GetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData)
         {
-            bool includeAdditionalHelperMethods = attributeData.GetNamedArgument<bool>("IncludeAdditionalHelperMethods", true);
+            bool includeAdditionalHelperMethods = attributeData.GetNamedArgument("IncludeAdditionalHelperMethods", true);
 
             return new(includeAdditionalHelperMethods);
         }
@@ -51,6 +51,17 @@ public sealed class INotifyPropertyChangedGenerator : TransitiveMembersGenerator
         if (typeSymbol.AllInterfaces.Any(i => i.HasFullyQualifiedName("global::System.ComponentModel.INotifyPropertyChanged")))
         {
             builder.Add(DuplicateINotifyPropertyChangedInterfaceForINotifyPropertyChangedAttributeError, typeSymbol, typeSymbol);
+
+            diagnostics = builder.ToImmutable();
+
+            return false;
+        }
+
+        // Check if the type uses [INotifyPropertyChanged] or [ObservableObject] already (in the type hierarchy too)
+        if (typeSymbol.HasOrInheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute") ||
+            typeSymbol.InheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.INotifyPropertyChangedAttribute"))
+        {
+            builder.Add(InvalidAttributeCombinationForINotifyPropertyChangedAttributeError, typeSymbol, typeSymbol);
 
             diagnostics = builder.ToImmutable();
 

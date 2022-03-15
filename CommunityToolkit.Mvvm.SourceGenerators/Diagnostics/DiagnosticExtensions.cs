@@ -12,7 +12,7 @@ using Microsoft.CodeAnalysis;
 namespace CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
 
 /// <summary>
-/// Extension methods for <see cref="GeneratorExecutionContext"/>, specifically for reporting diagnostics.
+/// Extension methods specifically for creating diagnostics.
 /// </summary>
 internal static class DiagnosticExtensions
 {
@@ -29,22 +29,18 @@ internal static class DiagnosticExtensions
         ISymbol symbol,
         params object[] args)
     {
-        diagnostics.Add(Diagnostic.Create(descriptor, symbol.Locations.FirstOrDefault(), args));
+        diagnostics.Add(descriptor.CreateDiagnostic(symbol, args));
     }
 
     /// <summary>
-    /// Registers an output node into an <see cref="IncrementalGeneratorInitializationContext"/> to output diagnostics.
+    /// Creates a new <see cref="Diagnostic"/> instance with the specified parameters.
     /// </summary>
-    /// <param name="context">The input <see cref="IncrementalGeneratorInitializationContext"/> instance.</param>
-    /// <param name="diagnostics">The input <see cref="IncrementalValuesProvider{TValues}"/> sequence of diagnostics.</param>
-    public static void ReportDiagnostics(this IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<ImmutableArray<Diagnostic>> diagnostics)
+    /// <param name="descriptor">The input <see cref="DiagnosticDescriptor"/> for the diagnostics to create.</param>
+    /// <param name="symbol">The source <see cref="ISymbol"/> to attach the diagnostics to.</param>
+    /// <param name="args">The optional arguments for the formatted message to include.</param>
+    /// <returns>The resulting <see cref="Diagnostic"/> instance.</returns>
+    public static Diagnostic CreateDiagnostic(this DiagnosticDescriptor descriptor, ISymbol symbol, params object[] args)
     {
-        context.RegisterSourceOutput(diagnostics, static (context, diagnostics) =>
-        {
-            foreach (Diagnostic diagnostic in diagnostics)
-            {
-                context.ReportDiagnostic(diagnostic);
-            }
-        });
+        return Diagnostic.Create(descriptor, symbol.Locations.FirstOrDefault(), args);
     }
 }

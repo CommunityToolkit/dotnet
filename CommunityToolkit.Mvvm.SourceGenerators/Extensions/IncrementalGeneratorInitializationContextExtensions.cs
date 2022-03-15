@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
@@ -83,5 +84,31 @@ internal static class IncrementalGeneratorInitializationContextExtensions
                 action(context, item.State);
             }
         });
+    }
+
+    /// <summary>
+    /// Registers an output node into an <see cref="IncrementalGeneratorInitializationContext"/> to output diagnostics.
+    /// </summary>
+    /// <param name="context">The input <see cref="IncrementalGeneratorInitializationContext"/> instance.</param>
+    /// <param name="diagnostics">The input <see cref="IncrementalValuesProvider{TValues}"/> sequence of diagnostics.</param>
+    public static void ReportDiagnostics(this IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<ImmutableArray<Diagnostic>> diagnostics)
+    {
+        context.RegisterSourceOutput(diagnostics, static (context, diagnostics) =>
+        {
+            foreach (Diagnostic diagnostic in diagnostics)
+            {
+                context.ReportDiagnostic(diagnostic);
+            }
+        });
+    }
+
+    /// <summary>
+    /// Registers an output node into an <see cref="IncrementalGeneratorInitializationContext"/> to output diagnostics.
+    /// </summary>
+    /// <param name="context">The input <see cref="IncrementalGeneratorInitializationContext"/> instance.</param>
+    /// <param name="diagnostics">The input <see cref="IncrementalValuesProvider{TValues}"/> sequence of diagnostics.</param>
+    public static void ReportDiagnostics(this IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<Diagnostic> diagnostics)
+    {
+        context.RegisterSourceOutput(diagnostics, static (context, diagnostic) => context.ReportDiagnostic(diagnostic));
     }
 }

@@ -616,6 +616,410 @@ public class Test_SourceGeneratorsDiagnostics
         VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0013");
     }
 
+    [TestMethod]
+    public void NameCollisionForGeneratedObservableProperty()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    private string Name;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0014");
+    }
+
+    [TestMethod]
+    public void AlsoNotifyChangeForInvalidTargetError_Null()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    [AlsoNotifyChangeFor(null)]
+                    private string name;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0015");
+    }
+
+    [TestMethod]
+    public void AlsoNotifyChangeForInvalidTargetError_SamePropertyAsGeneratedOneFromSelf()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    [AlsoNotifyChangeFor(nameof(Name))]
+                    private string name;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0015");
+    }
+
+    [TestMethod]
+    public void AlsoNotifyChangeForInvalidTargetError_Missing()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    [AlsoNotifyChangeFor(""FooBar"")]
+                    private string name;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0015");
+    }
+
+    [TestMethod]
+    public void AlsoNotifyChangeForInvalidTargetError_InvalidType()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    [AlsoNotifyChangeFor(nameof(Foo))]
+                    private string name;
+
+                    public void Foo()
+                    {
+                    }
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0015");
+    }
+
+    [TestMethod]
+    public void AlsoNotifyCanExecuteForInvalidTargetError_Null()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    [AlsoNotifyCanExecuteFor(null)]
+                    private string name;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0016");
+    }
+
+    [TestMethod]
+    public void AlsoNotifyCanExecuteForInvalidTargetError_Missing()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    [AlsoNotifyCanExecuteFor(""FooBar"")]
+                    private string name;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0016");
+    }
+
+    [TestMethod]
+    public void AlsoNotifyCanExecuteForInvalidTargetError_InvalidMemberType()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    [AlsoNotifyCanExecuteFor(nameof(Foo))]
+                    private string name;
+
+                    public void Foo()
+                    {
+                    }
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0016");
+    }
+
+    [TestMethod]
+    public void AlsoNotifyCanExecuteForInvalidTargetError_InvalidPropertyType()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    [AlsoNotifyCanExecuteFor(nameof(Foo))]
+                    private string name;
+
+                    public string Foo { get; }
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0016");
+    }
+
+    [TestMethod]
+    public void AlsoNotifyCanExecuteForInvalidTargetError_InvalidCommandType()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.Input;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    [AlsoNotifyCanExecuteFor(nameof(FooCommand))]
+                    private string name;
+
+                    public ICommand FooCommand { get; }
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0016");
+    }
+
+    [TestMethod]
+    public void InvalidAttributeCombinationForINotifyPropertyChangedAttributeError_InheritingINotifyPropertyChangedAttribute()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                [INotifyPropertyChanged]
+                public partial class A
+                {
+                }
+
+                [INotifyPropertyChanged]
+                public partial class B : A
+                {
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<INotifyPropertyChangedGenerator>(source, "MVVMTK0017");
+    }
+
+    [TestMethod]
+    public void InvalidAttributeCombinationForINotifyPropertyChangedAttributeError_InheritingObservableObjectAttribute()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                [ObservableObject]
+                public partial class A
+                {
+                }
+
+                [INotifyPropertyChanged]
+                public partial class B : A
+                {
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<INotifyPropertyChangedGenerator>(source, "MVVMTK0017");
+    }
+
+    [TestMethod]
+    public void InvalidAttributeCombinationForINotifyPropertyChangedAttributeError_WithAlsoObservableObjectAttribute()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                [INotifyPropertyChanged]
+                [ObservableObject]
+                public partial class A
+                {
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<INotifyPropertyChangedGenerator>(source, "MVVMTK0017");
+    }
+
+    [TestMethod]
+    public void InvalidAttributeCombinationForObservableObjectAttributeError_InheritingINotifyPropertyChangedAttribute()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                [INotifyPropertyChanged]
+                public partial class A
+                {
+                }
+
+                [ObservableObject]
+                public partial class B : A
+                {
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0018");
+    }
+
+    [TestMethod]
+    public void InvalidAttributeCombinationForObservableObjectAttributeError_InheritingObservableObjectAttribute()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                [ObservableObject]
+                public partial class A
+                {
+                }
+
+                [ObservableObject]
+                public partial class B : A
+                {
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0018");
+    }
+
+    [TestMethod]
+    public void InvalidAttributeCombinationForObservableObjectAttributeError_WithAlsoINotifyPropertyChangedAttribute()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                [INotifyPropertyChanged]
+                [ObservableObject]
+                public partial class A
+                {
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0018");
+    }
+
+    [TestMethod]
+    public void InvalidContainingTypeForObservablePropertyFieldError()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class MyViewModel : INotifyPropertyChanged
+                {
+                    [ObservableProperty]
+                    public int number;
+
+                    public event PropertyChangedEventHandler PropertyChanged;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0019");
+    }
+
+    [TestMethod]
+    public void FieldWithOrphanedDependentObservablePropertyAttributesError_AlsoNotifyChangeFor()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class MyViewModel
+                {
+                    [AlsoNotifyChangeFor("")]
+                    public int number;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0020");
+    }
+
+    [TestMethod]
+    public void FieldWithOrphanedDependentObservablePropertyAttributesError_AlsoNotifyCanExecuteFor()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class MyViewModel
+                {
+                    [AlsoNotifyCanExecuteFor("")]
+                    public int number;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0020");
+    }
+
+    [TestMethod]
+    public void InvalidAttributeCombinationForObservableRecipientAttributeError()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                [ObservableRecipient]
+                public partial class A : ObservableObject
+                {
+                }
+
+                [ObservableRecipient]
+                public partial class B : A
+                {
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservableRecipientGenerator>(source, "MVVMTK0021");
+    }
+
     /// <summary>
     /// Verifies the output of a source generator.
     /// </summary>
