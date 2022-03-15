@@ -183,48 +183,51 @@ partial class ObservablePropertyGenerator
             ImmutableArray<string>.Builder propertyChangedNames,
             ImmutableArray<Diagnostic>.Builder diagnostics)
         {
+            // Validates a property name using existing properties
+            bool IsPropertyNameValid(string propertyName)
+            {
+                return fieldSymbol.ContainingType.GetMembers(propertyName).OfType<IPropertySymbol>().Any();
+            }
+
+            // Validate a property name including generated properties too
+            bool IsPropertyNameValidWithGeneratedMembers(string propertyName)
+            {
+                foreach (ISymbol member in fieldSymbol.ContainingType.GetMembers())
+                {
+                    if (member is IFieldSymbol otherFieldSymbol &&
+                        !SymbolEqualityComparer.Default.Equals(fieldSymbol, otherFieldSymbol) &&
+                        otherFieldSymbol.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute") &&
+                        propertyName == GetGeneratedPropertyName(otherFieldSymbol))
+                    {
+                        propertyChangedNames.Add(propertyName);
+
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
             if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoNotifyChangeForAttribute") == true)
             {
                 foreach (string? dependentPropertyName in attributeData.GetConstructorArguments<string>())
                 {
-                    if (dependentPropertyName is null or "")
-                    {
-                        goto InvalidProperty;
-                    }
-
-                    // Each target must be a string matching the name of a property from the containing type of the annotated field
-                    if (fieldSymbol.ContainingType.GetMembers(dependentPropertyName).OfType<IPropertySymbol>().Any())
+                    // Each target must be a (not null and not empty) string matching the name of a property from the containing type
+                    // of the annotated field being processed, or alternatively it must match the name of a property being generated.
+                    if (dependentPropertyName is not (null or "") &&
+                        (IsPropertyNameValid(dependentPropertyName) ||
+                         IsPropertyNameValidWithGeneratedMembers(dependentPropertyName)))
                     {
                         propertyChangedNames.Add(dependentPropertyName);
-
-                        goto ValidProperty;
                     }
-
-                    // Check for generated properties too
-                    foreach (ISymbol member in fieldSymbol.ContainingType.GetMembers())
+                    else
                     {
-                        if (member is IFieldSymbol otherFieldSymbol &&
-                            !SymbolEqualityComparer.Default.Equals(fieldSymbol, otherFieldSymbol) &&
-                            otherFieldSymbol.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute") &&
-                            dependentPropertyName == GetGeneratedPropertyName(otherFieldSymbol))
-                        {
-                            propertyChangedNames.Add(dependentPropertyName);
-
-                            goto ValidProperty;
-                        }
+                        diagnostics.Add(
+                            AlsoNotifyChangeForInvalidTargetError,
+                            fieldSymbol,
+                            dependentPropertyName ?? "",
+                            fieldSymbol.ContainingType);
                     }
-
-                    InvalidProperty:
-
-                    diagnostics.Add(
-                        AlsoNotifyChangeForInvalidTargetError,
-                        fieldSymbol,
-                        dependentPropertyName ?? "",
-                        fieldSymbol.ContainingType);
-
-                    ValidProperty:
-
-                    continue;
                 }
 
                 return true;
@@ -247,58 +250,74 @@ partial class ObservablePropertyGenerator
             ImmutableArray<string>.Builder notifiedCommandNames,
             ImmutableArray<Diagnostic>.Builder diagnostics)
         {
+            // Validates a command name using existing properties
+            bool IsCommandNameValid(string commandName, out bool shouldLookForGeneratedMembersToo)
+            {
+                // Each target must be a string matching the name of a property from the containing type of the annotated field, and the
+                // property must be of type IRelayCommand, or any type that implements that interface (to avoid generating invalid code).
+                if (fieldSymbol.ContainingType.GetMembers(commandName).OfType<IPropertySymbol>().FirstOrDefault() is IPropertySymbol propertySymbol)
+                {
+                    // If there is a property member with the specified name, check that it's valid. If it isn't, the
+                    // target is definitely not valid, and the additional checks below can just be skipped. The property
+                    // is valid if it's of type IRelayCommand, or it has IRelayCommand in the set of all interfaces.
+                    if (propertySymbol.Type is INamedTypeSymbol typeSymbol &&
+                        (typeSymbol.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.IRelayCommand") ||
+                         typeSymbol.HasInterfaceWithFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.IRelayCommand")))
+                    {
+                        shouldLookForGeneratedMembersToo = true;
+
+                        return true;
+                    }
+
+                    // If a property with this name exists but is not valid, the search should stop immediately, as
+                    // the target is already known not to be valid, so there is no reason to look for other members.
+                    shouldLookForGeneratedMembersToo = false;
+
+                    return false;
+                }
+
+                shouldLookForGeneratedMembersToo = true;
+
+                return false;
+            }
+
+            // Validate a command name including generated command too
+            bool IsCommandNameValidWithGeneratedMembers(string commandName)
+            {
+                foreach (ISymbol member in fieldSymbol.ContainingType.GetMembers())
+                {
+                    if (member is IMethodSymbol methodSymbol &&
+                        methodSymbol.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.ICommandAttribute") &&
+                        commandName == ICommandGenerator.Execute.GetGeneratedFieldAndPropertyNames(methodSymbol).PropertyName)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
             if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoNotifyCanExecuteForAttribute") == true)
             {
                 foreach (string? commandName in attributeData.GetConstructorArguments<string>())
                 {
-                    if (commandName is null or "")
+                    // Each command must be a (not null and not empty) string matching the name of an existing command from the containing
+                    // type (just like for properties), or it must match a generated command. The only caveat is the case where a property
+                    // with the requested name does exist, but it is not of the right type. In that case the search should stop immediately.
+                    if (commandName is not (null or "") &&
+                        (IsCommandNameValid(commandName, out bool shouldLookForGeneratedMembersToo) ||
+                         shouldLookForGeneratedMembersToo && IsCommandNameValidWithGeneratedMembers(commandName)))
                     {
-                        goto InvalidProperty;
+                        notifiedCommandNames.Add(commandName);
                     }
-
-                    // Each target must be a string matching the name of a property from the containing type of the annotated field, and the
-                    // property must be of type IRelayCommand, or any type that implements that interface (to avoid generating invalid code).
-                    if (fieldSymbol.ContainingType.GetMembers(commandName).OfType<IPropertySymbol>().FirstOrDefault() is IPropertySymbol propertySymbol)
+                    else
                     {
-                        // If there is a property member with the specified name, check that it's valid. If it isn't, the
-                        // target is definitely not valid, and the additional checks below can just be skipped. The property
-                        // is valid if it's of type IRelayCommand, or it has IRelayCommand in the set of all interfaces.
-                        if (propertySymbol.Type is INamedTypeSymbol typeSymbol &&
-                            (typeSymbol.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.IRelayCommand") ||
-                             typeSymbol.HasInterfaceWithFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.IRelayCommand")))
-                        {
-                            notifiedCommandNames.Add(commandName);
-
-                            goto ValidProperty;
-                        }
-
-                        goto InvalidProperty;
+                        diagnostics.Add(
+                           AlsoNotifyCanExecuteForInvalidTargetError,
+                           fieldSymbol,
+                           commandName ?? "",
+                           fieldSymbol.ContainingType);
                     }
-
-                    // Check for generated commands too
-                    foreach (ISymbol member in fieldSymbol.ContainingType.GetMembers())
-                    {
-                        if (member is IMethodSymbol methodSymbol &&
-                            methodSymbol.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.ICommandAttribute") &&
-                            commandName == ICommandGenerator.Execute.GetGeneratedFieldAndPropertyNames(methodSymbol).PropertyName)
-                        {
-                            notifiedCommandNames.Add(commandName);
-
-                            goto ValidProperty;
-                        }
-                    }
-
-                    InvalidProperty:
-
-                    diagnostics.Add(
-                        AlsoNotifyCanExecuteForInvalidTargetError,
-                        fieldSymbol,
-                        commandName ?? "",
-                        fieldSymbol.ContainingType);
-
-                    ValidProperty:
-
-                    continue;
                 }
 
                 return true;
