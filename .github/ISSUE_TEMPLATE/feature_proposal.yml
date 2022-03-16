@@ -1,0 +1,77 @@
+name: Feature request
+description: Propose a new feature
+labels: "feature request :mailbox_with_mail:"
+body:
+- type: markdown
+  attributes: 
+    value: |
+      ## Before you begin
+      
+      🚨 **Please do not skip instructions** 🚨
+      
+      This info is essential to properly review your proposal. Proposals with missing information may be closed without investigation. Please make sure to look for existing proposals about the same thing before opening a new one. If you're uncertain about the problem you're trying to solve, [find or start a discussion](https://github.com/CommunityToolkit/dotnet/discussions), where you can get insight from the community regarding your proposal. 
+- type: textarea
+  id: description
+  validations:
+    required: true
+  attributes:
+     label: Overview
+     description: A clear and concise overview of the problem this proposal would solve.
+- type: textarea
+  id: api-breakdown
+  validations:
+    required: true
+  attributes:
+     label: API breakdown
+     description: A complete API breakdown of the new proposed feature or change.
+     placeholder: |
+        ```csharp
+        namespace CommunityToolkit.SomePackage;
+
+        public class MyProposedClass
+        {
+            public void MyProposedApi();
+            // Other APIs and types as needed...
+        }
+        ```
+- type: textarea
+  id: usage-example
+  validations:
+    required: true
+  attributes:
+     label: Usage example
+     description: An example of of the new API would be used in practice.
+- type: dropdown
+  id: breaking-change
+  validations:
+    required: true
+  attributes:
+     label: Breaking change?
+     description: Is the proposed change going to break existing APIs?
+     options:
+       - Yes
+       - No
+       - Not sure
+- type: textarea
+  id: alternatives
+  validations:
+    required: true
+  attributes:
+     label: Alternatives
+     description: An example of alternative approaches that can currently be used, if any.
+- type: textarea
+  id: additional-context
+  attributes:
+     label: Additional context
+     description: Add any other context about the problem here.
+- type: dropdown
+  id: contribution
+  validations:
+    required: true
+  attributes:
+     label: Help us help you
+     description: Would you like to contribute a solution to this issue?
+     options:
+       - Yes, I'd like to be assigned to work on this item
+       - Yes, but only if others can assist
+       - No, just wanted to propose this
