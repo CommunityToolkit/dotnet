@@ -54,6 +54,8 @@ body:
      description: If applicable, add screenshots to help explain your problem.
 - type: dropdown
   id: ide-version
+  validations:
+    required: true
   attributes: 
      multiple: true
      label: IDE and version
