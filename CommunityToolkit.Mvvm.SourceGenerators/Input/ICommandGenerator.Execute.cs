@@ -309,8 +309,9 @@ partial class ICommandGenerator
         {
             string propertyName = methodSymbol.Name;
 
-            if (methodSymbol.ReturnType.HasFullyQualifiedName("global::System.Threading.Tasks.Task") &&
-                methodSymbol.Name.EndsWith("Async"))
+            if (methodSymbol.Name.EndsWith("Async") &&
+                (methodSymbol.ReturnType.HasFullyQualifiedName("global::System.Threading.Tasks.Task") ||
+                 methodSymbol.ReturnType.InheritsFromFullyQualifiedName("global::System.Threading.Tasks.Task")))
             {
                 propertyName = propertyName.Substring(0, propertyName.Length - "Async".Length);
             }
@@ -372,7 +373,9 @@ partial class ICommandGenerator
                 return true;
             }
 
-            if (methodSymbol.ReturnType.HasFullyQualifiedName("global::System.Threading.Tasks.Task"))
+            // Map all Task-returning methods
+            if (methodSymbol.ReturnType.HasFullyQualifiedName("global::System.Threading.Tasks.Task") ||
+                methodSymbol.ReturnType.InheritsFromFullyQualifiedName("global::System.Threading.Tasks.Task"))
             {
                 // Map <void, Task> to IAsyncRelayCommand, AsyncRelayCommand, Func<Task>
                 if (methodSymbol.Parameters.Length == 0)
