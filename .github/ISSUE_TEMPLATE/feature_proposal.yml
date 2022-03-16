@@ -49,9 +49,9 @@ body:
      label: Breaking change?
      description: Is the proposed change going to break existing APIs?
      options:
-       - Yes
-       - No
-       - Not sure
+       - 'Yes'
+       - 'No'
+       - I'm not sure
 - type: textarea
   id: alternatives
   validations:

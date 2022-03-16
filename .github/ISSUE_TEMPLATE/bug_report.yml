@@ -69,7 +69,7 @@ body:
   attributes:
      label: IDE version
      description: What's the exact build number of your IDE? (For Visual Studio, go to Help -> About Microsoft Visual Studio)
-- type: textarea
+- type: checkboxes
   id: nuget-packages
   validations:
     required: true
