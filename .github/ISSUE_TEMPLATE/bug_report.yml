@@ -1,0 +1,99 @@
+name: Bug report
+description: Create a report to help us fix something that isn't working as expected
+labels: "bug :bug:"
+body:
+- type: markdown
+  attributes: 
+    value: |
+      ## Before you begin
+      
+      🚨 **Please do not skip instructions** 🚨
+      
+      This info is essential for investigating your bug report. Issues with missing information may be closed without investigation. Please make sure to look for existing issues about the same problem before opening a new one. If you're uncertain about the problem, [find or start a discussion](https://github.com/CommunityToolkit/dotnet/discussions), where you can get insight from the community regarding your issue. 
+- type: textarea
+  id: description
+  validations:
+    required: true
+  attributes:
+     label: Describe the bug
+     description: A clear and concise description of what the bug is.
+- type: input
+  id: last-working-toolkit-version
+  attributes:
+      label: Regression
+      description: If this is a regression, what toolkit version did you last see it work?
+      placeholder: 
+  validations:
+      required: false
+- type: textarea
+  id: repro-steps
+  validations:
+    required: true
+  attributes:
+     label: Steps to reproduce
+     render: text
+     description: Provide steps to reproduce the issue, or let us know why it can't be reproduced (e.g. more complex setup, environment, dependencies, etc...). If you want to insert a code snippet, make sure to properly format it (add 3 backticks ` at the start and end of your code, followed by the language in use, eg. "csharp") and to remove leading whitespace in each line (if you're pasting code from another IDE where it was indented).
+     placeholder: |
+        Example repro steps:
+        1. Given the following environment (.NET version, framework in use, project type, VS version, etc.)
+        2. Paste the followin code: <SNIPPET>
+        3. Click on '....'
+        4. Scroll down to '....'
+        5. See error
+- type: textarea
+  id: expected-behavior
+  validations:
+    required: true
+  attributes:
+     label: Expected behavior
+     description: A clear and concise description of what you expected to happen.
+- type: textarea
+  id: screenshots
+  attributes:
+     label: Screenshots
+     description: If applicable, add screenshots to help explain your problem.
+- type: dropdown
+  id: ide-version
+  attributes: 
+     multiple: true
+     label: IDE and version
+     description: Check one or more of the following options
+     options:
+       - VS 2019
+       - VS 2022
+       - VS 2022 Preview
+       - Rider
+       - Other
+- type: input
+  id: IDE-exact-build
+  attributes:
+     label: IDE version
+     description: What's the exact build number of your IDE? (For Visual Studio, go to Help -> About Microsoft Visual Studio)
+- type: textarea
+  id: nuget-packages
+  validations:
+    required: true
+  attributes:
+     label: Nuget packages
+     description: Which NuGet packages have you used? Include the version number.
+     options:
+       - label: CommunityToolkit.Common
+       - label: CommunityToolkit.Diagnostics
+       - label: CommunityToolkit.HighPerformance
+       - label: CommunityToolkit.Mvvm (aka MVVM Toolkit)
+- type: textarea
+  id: additional-context
+  attributes:
+     label: Additional context
+     description: Add any other context about the problem here.
+- type: dropdown
+  id: contribution
+  validations:
+    required: true
+  attributes:
+     label: Help us help you
+     description: Would you like to contribute a solution to this issue?
+     options:
+       - Yes, I'd like to be assigned to work on this item.
+       - Yes, but only if others can assist.
+       - No, just wanted to report this.
