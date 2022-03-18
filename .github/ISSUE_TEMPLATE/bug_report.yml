@@ -83,6 +83,13 @@ body:
        - label: CommunityToolkit.Diagnostics
        - label: CommunityToolkit.HighPerformance
        - label: CommunityToolkit.Mvvm (aka MVVM Toolkit)
+- type: input
+  id: nuget-package-version
+  validations:
+    required: true
+  attributes:
+     label: Nuget package version(s)
+     description: What's the exact version number of the Nuget package(s) you're using?
 - type: textarea
   id: additional-context
   attributes:
