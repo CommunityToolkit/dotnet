@@ -41,4 +41,7 @@ public sealed class ReadOnlyObservableGroup<TKey, TValue> : ReadOnlyObservableCo
 
     /// <inheritdoc/>
     object IReadOnlyObservableGroup.Key => Key;
+
+    /// <inheritdoc/>
+    object? IReadOnlyObservableGroup.this[int index] => this[index];
 }

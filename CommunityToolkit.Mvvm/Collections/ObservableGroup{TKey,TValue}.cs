@@ -71,4 +71,7 @@ public class ObservableGroup<TKey, TValue> : ObservableCollection<TValue>, IGrou
 
     /// <inheritdoc/>
     object IReadOnlyObservableGroup.Key => Key;
+
+    /// <inheritdoc/>
+    object? IReadOnlyObservableGroup.this[int index] => this[index];
 }
