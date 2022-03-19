@@ -69,7 +69,7 @@ public static class ObservableGroupedCollectionExtensions
         [MethodImpl(MethodImplOptions.NoInlining)]
         static ObservableGroup<TKey, TValue>? FirstOrDefaultWithLinq(ObservableGroupedCollection<TKey, TValue> source, TKey key)
         {
-            return source.FirstOrDefault(group => EqualityComparer<TKey>.Default.Equals(group.Key, key));
+            return Enumerable.FirstOrDefault<ObservableGroup<TKey, TValue>>(source, group => EqualityComparer<TKey>.Default.Equals(group.Key, key));
         }
 
         return FirstOrDefaultWithLinq(source, key);

@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
@@ -15,7 +16,7 @@ namespace CommunityToolkit.Mvvm.Collections;
 /// </summary>
 /// <typeparam name="TKey">The type of the group keys.</typeparam>
 /// <typeparam name="TElement">The type of elements in the collection.</typeparam>
-public sealed class ReadOnlyObservableGroupedCollection<TKey, TElement> : ReadOnlyObservableCollection<ReadOnlyObservableGroup<TKey, TElement>>
+public sealed class ReadOnlyObservableGroupedCollection<TKey, TElement> : ReadOnlyObservableCollection<ReadOnlyObservableGroup<TKey, TElement>>, ILookup<TKey, TElement>
     where TKey : notnull
 {
     /// <summary>
@@ -35,6 +36,26 @@ public sealed class ReadOnlyObservableGroupedCollection<TKey, TElement> : ReadOn
     public ReadOnlyObservableGroupedCollection(ObservableCollection<ReadOnlyObservableGroup<TKey, TElement>> collection)
         : base(collection)
     {
+    }
+
+    /// <inheritdoc/>
+    IEnumerable<TElement> ILookup<TKey, TElement>.this[TKey key]
+    {
+        // TODO: optimize this
+        get => Enumerable.FirstOrDefault<ReadOnlyObservableGroup<TKey, TElement>>(this, item => EqualityComparer<TKey>.Default.Equals(item.Key, key)) ?? Enumerable.Empty<TElement>();
+    }
+
+    /// <inheritdoc/>
+    bool ILookup<TKey, TElement>.Contains(TKey key)
+    {
+        // TODO: optimize this
+        return Enumerable.Any<ReadOnlyObservableGroup<TKey, TElement>>(this, item => EqualityComparer<TKey>.Default.Equals(item.Key, key));
+    }
+
+    /// <inheritdoc/>
+    IEnumerator<IGrouping<TKey, TElement>> IEnumerable<IGrouping<TKey, TElement>>.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 
     /// <summary>

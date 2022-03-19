@@ -15,7 +15,7 @@ namespace CommunityToolkit.Mvvm.Collections;
 /// </summary>
 /// <typeparam name="TKey">The type of the group keys.</typeparam>
 /// <typeparam name="TElement">The type of elements in the collection.</typeparam>
-public sealed class ObservableGroupedCollection<TKey, TElement> : ObservableCollection<ObservableGroup<TKey, TElement>>
+public sealed class ObservableGroupedCollection<TKey, TElement> : ObservableCollection<ObservableGroup<TKey, TElement>>, ILookup<TKey, TElement>
     where TKey : notnull
 {
     /// <summary>
@@ -30,8 +30,15 @@ public sealed class ObservableGroupedCollection<TKey, TElement> : ObservableColl
     /// </summary>
     /// <param name="collection">The initial data to add in the grouped collection.</param>
     public ObservableGroupedCollection(IEnumerable<IGrouping<TKey, TElement>> collection)
-        : base(collection.Select(static c => new ObservableGroup<TKey, TElement>(c)))
+        : base(collection.Select(static group => new ObservableGroup<TKey, TElement>(group)))
     {
+    }
+
+    /// <inheritdoc/>
+    IEnumerable<TElement> ILookup<TKey, TElement>.this[TKey key]
+    {
+        // TODO: optimize this
+        get => Enumerable.FirstOrDefault<ObservableGroup<TKey, TElement>>(this, item => EqualityComparer<TKey>.Default.Equals(item.Key, key)) ?? Enumerable.Empty<TElement>();
     }
 
     /// <summary>
@@ -45,5 +52,18 @@ public sealed class ObservableGroupedCollection<TKey, TElement> : ObservableColl
         list = Items as List<ObservableGroup<TKey, TElement>>;
 
         return list is not null;
+    }
+
+    /// <inheritdoc/>
+    bool ILookup<TKey, TElement>.Contains(TKey key)
+    {
+        // TODO: optimize this
+        return Enumerable.Any<ObservableGroup<TKey, TElement>>(this, item => EqualityComparer<TKey>.Default.Equals(item.Key, key));
+    }
+
+    /// <inheritdoc/>
+    IEnumerator<IGrouping<TKey, TElement>> IEnumerable<IGrouping<TKey, TElement>>.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 }
