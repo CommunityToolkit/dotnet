@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace CommunityToolkit.Mvvm.Collections;
 
@@ -11,6 +12,7 @@ namespace CommunityToolkit.Mvvm.Collections;
 /// </summary>
 /// <typeparam name="TKey">The type of the group key.</typeparam>
 /// <typeparam name="TElement">The type of elements in the group.</typeparam>
+[DebuggerDisplay("Key = {Key}, Count = {Count}")]
 public sealed class ReadOnlyObservableGroup<TKey, TElement> : ReadOnlyObservableCollection<TElement>, IReadOnlyObservableGroup<TKey, TElement>
     where TKey : notnull
 {
