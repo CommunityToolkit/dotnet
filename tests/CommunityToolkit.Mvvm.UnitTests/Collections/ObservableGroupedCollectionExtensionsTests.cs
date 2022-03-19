@@ -4,10 +4,10 @@
 
 using System;
 using System.Linq;
-using CommunityToolkit.Common.Collections;
+using CommunityToolkit.Mvvm.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommunityToolkit.Common.UnitTests.Collections;
+namespace CommunityToolkit.Mvvm.UnitTests;
 
 [TestClass]
 public class ObservableGroupedCollectionExtensionsTests
