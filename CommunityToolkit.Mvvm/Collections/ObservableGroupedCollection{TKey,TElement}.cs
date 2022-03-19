@@ -13,9 +13,9 @@ namespace CommunityToolkit.Mvvm.Collections;
 /// <summary>
 /// An observable list of observable groups.
 /// </summary>
-/// <typeparam name="TKey">The type of the group key.</typeparam>
-/// <typeparam name="TValue">The type of the items in the collection.</typeparam>
-public sealed class ObservableGroupedCollection<TKey, TValue> : ObservableCollection<ObservableGroup<TKey, TValue>>
+/// <typeparam name="TKey">The type of the group keys.</typeparam>
+/// <typeparam name="TElement">The type of elements in the collection.</typeparam>
+public sealed class ObservableGroupedCollection<TKey, TElement> : ObservableCollection<ObservableGroup<TKey, TElement>>
     where TKey : notnull
 {
     /// <summary>
@@ -29,8 +29,8 @@ public sealed class ObservableGroupedCollection<TKey, TValue> : ObservableCollec
     /// Initializes a new instance of the <see cref="ObservableGroupedCollection{TKey, TValue}"/> class.
     /// </summary>
     /// <param name="collection">The initial data to add in the grouped collection.</param>
-    public ObservableGroupedCollection(IEnumerable<IGrouping<TKey, TValue>> collection)
-        : base(collection.Select(static c => new ObservableGroup<TKey, TValue>(c)))
+    public ObservableGroupedCollection(IEnumerable<IGrouping<TKey, TElement>> collection)
+        : base(collection.Select(static c => new ObservableGroup<TKey, TElement>(c)))
     {
     }
 
@@ -40,9 +40,9 @@ public sealed class ObservableGroupedCollection<TKey, TValue> : ObservableCollec
     /// <param name="list">The resulting <see cref="List{T}"/>, if one was in use.</param>
     /// <returns>Whether or not a <see cref="List{T}"/> instance has been found.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal bool TryGetList([NotNullWhen(true)] out List<ObservableGroup<TKey, TValue>>? list)
+    internal bool TryGetList([NotNullWhen(true)] out List<ObservableGroup<TKey, TElement>>? list)
     {
-        list = Items as List<ObservableGroup<TKey, TValue>>;
+        list = Items as List<ObservableGroup<TKey, TElement>>;
 
         return list is not null;
     }

@@ -15,9 +15,9 @@ namespace CommunityToolkit.Mvvm.Collections;
 /// It associates a <see cref="Key"/> to an <see cref="ObservableCollection{T}"/>.
 /// </summary>
 /// <typeparam name="TKey">The type of the group key.</typeparam>
-/// <typeparam name="TValue">The type of the items in the collection.</typeparam>
+/// <typeparam name="TElement">The type of elements in the group.</typeparam>
 [DebuggerDisplay("Key = {Key}, Count = {Count}")]
-public class ObservableGroup<TKey, TValue> : ObservableCollection<TValue>, IReadOnlyObservableGroup<TKey, TValue>
+public class ObservableGroup<TKey, TElement> : ObservableCollection<TElement>, IReadOnlyObservableGroup<TKey, TElement>
     where TKey : notnull
 {
     /// <summary>
@@ -33,7 +33,7 @@ public class ObservableGroup<TKey, TValue> : ObservableCollection<TValue>, IRead
     /// Initializes a new instance of the <see cref="ObservableGroup{TKey, TValue}"/> class.
     /// </summary>
     /// <param name="grouping">The grouping to fill the group.</param>
-    public ObservableGroup(IGrouping<TKey, TValue> grouping)
+    public ObservableGroup(IGrouping<TKey, TElement> grouping)
         : base(grouping)
     {
         this.key = grouping.Key;
@@ -44,7 +44,7 @@ public class ObservableGroup<TKey, TValue> : ObservableCollection<TValue>, IRead
     /// </summary>
     /// <param name="key">The key for the group.</param>
     /// <param name="collection">The initial collection of data to add to the group.</param>
-    public ObservableGroup(TKey key, IEnumerable<TValue> collection)
+    public ObservableGroup(TKey key, IEnumerable<TElement> collection)
         : base(collection)
     {
         this.key = key;

@@ -10,8 +10,8 @@ namespace CommunityToolkit.Mvvm.Collections;
 /// A read-only observable group. It associates a <see cref="Key"/> to a <see cref="ReadOnlyObservableCollection{T}"/>.
 /// </summary>
 /// <typeparam name="TKey">The type of the group key.</typeparam>
-/// <typeparam name="TValue">The type of the items in the collection.</typeparam>
-public sealed class ReadOnlyObservableGroup<TKey, TValue> : ReadOnlyObservableCollection<TValue>, IReadOnlyObservableGroup<TKey, TValue>
+/// <typeparam name="TElement">The type of elements in the group.</typeparam>
+public sealed class ReadOnlyObservableGroup<TKey, TElement> : ReadOnlyObservableCollection<TElement>, IReadOnlyObservableGroup<TKey, TElement>
     where TKey : notnull
 {
     /// <summary>
@@ -19,7 +19,7 @@ public sealed class ReadOnlyObservableGroup<TKey, TValue> : ReadOnlyObservableCo
     /// </summary>
     /// <param name="key">The key of the group.</param>
     /// <param name="collection">The collection of items to add in the group.</param>
-    public ReadOnlyObservableGroup(TKey key, ObservableCollection<TValue> collection)
+    public ReadOnlyObservableGroup(TKey key, ObservableCollection<TElement> collection)
         : base(collection)
     {
         Key = key;
@@ -29,7 +29,7 @@ public sealed class ReadOnlyObservableGroup<TKey, TValue> : ReadOnlyObservableCo
     /// Initializes a new instance of the <see cref="ReadOnlyObservableGroup{TKey, TValue}"/> class.
     /// </summary>
     /// <param name="group">The <see cref="ObservableGroup{TKey, TValue}"/> to wrap.</param>
-    public ReadOnlyObservableGroup(ObservableGroup<TKey, TValue> group)
+    public ReadOnlyObservableGroup(ObservableGroup<TKey, TElement> group)
         : base(group)
     {
         Key = group.Key;

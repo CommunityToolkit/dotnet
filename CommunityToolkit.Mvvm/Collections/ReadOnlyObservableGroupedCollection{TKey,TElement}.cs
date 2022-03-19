@@ -13,17 +13,17 @@ namespace CommunityToolkit.Mvvm.Collections;
 /// <summary>
 /// A read-only list of groups.
 /// </summary>
-/// <typeparam name="TKey">The type of the group key.</typeparam>
-/// <typeparam name = "TValue" > The type of the items in the collection.</typeparam>
-public sealed class ReadOnlyObservableGroupedCollection<TKey, TValue> : ReadOnlyObservableCollection<ReadOnlyObservableGroup<TKey, TValue>>
+/// <typeparam name="TKey">The type of the group keys.</typeparam>
+/// <typeparam name="TElement">The type of elements in the collection.</typeparam>
+public sealed class ReadOnlyObservableGroupedCollection<TKey, TElement> : ReadOnlyObservableCollection<ReadOnlyObservableGroup<TKey, TElement>>
     where TKey : notnull
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ReadOnlyObservableGroupedCollection{TKey, TValue}"/> class.
     /// </summary>
     /// <param name="collection">The source collection to wrap.</param>
-    public ReadOnlyObservableGroupedCollection(ObservableCollection<ObservableGroup<TKey, TValue>> collection)
-        : base(new ObservableCollection<ReadOnlyObservableGroup<TKey, TValue>>(collection.Select(static g => new ReadOnlyObservableGroup<TKey, TValue>(g))))
+    public ReadOnlyObservableGroupedCollection(ObservableCollection<ObservableGroup<TKey, TElement>> collection)
+        : base(new ObservableCollection<ReadOnlyObservableGroup<TKey, TElement>>(collection.Select(static g => new ReadOnlyObservableGroup<TKey, TElement>(g))))
     {
         collection.CollectionChanged += OnSourceCollectionChanged;
     }
@@ -32,7 +32,7 @@ public sealed class ReadOnlyObservableGroupedCollection<TKey, TValue> : ReadOnly
     /// Initializes a new instance of the <see cref="ReadOnlyObservableGroupedCollection{TKey, TValue}"/> class.
     /// </summary>
     /// <param name="collection">The source collection to wrap.</param>
-    public ReadOnlyObservableGroupedCollection(ObservableCollection<ReadOnlyObservableGroup<TKey, TValue>> collection)
+    public ReadOnlyObservableGroupedCollection(ObservableCollection<ReadOnlyObservableGroup<TKey, TElement>> collection)
         : base(collection)
     {
     }
@@ -59,7 +59,7 @@ public sealed class ReadOnlyObservableGroupedCollection<TKey, TValue> : ReadOnly
         }
 
         // The inner Items list is ObservableCollection<ReadOnlyObservableGroup<TKey, TValue>>, so doing a direct cast here will always succeed
-        ObservableCollection<ReadOnlyObservableGroup<TKey, TValue>> items = (ObservableCollection<ReadOnlyObservableGroup<TKey, TValue>>)Items;
+        ObservableCollection<ReadOnlyObservableGroup<TKey, TElement>> items = (ObservableCollection<ReadOnlyObservableGroup<TKey, TElement>>)Items;
 
         switch (e.Action)
         {
@@ -67,9 +67,9 @@ public sealed class ReadOnlyObservableGroupedCollection<TKey, TValue> : ReadOnly
             case NotifyCollectionChangedAction.Add:
                 if (e.NewItems!.Count == 1)
                 {
-                    ObservableGroup<TKey, TValue> newItem = (ObservableGroup<TKey, TValue>)e.NewItems![0]!;
+                    ObservableGroup<TKey, TElement> newItem = (ObservableGroup<TKey, TElement>)e.NewItems![0]!;
 
-                    items.Insert(e.NewStartingIndex, new ReadOnlyObservableGroup<TKey, TValue>(newItem));
+                    items.Insert(e.NewStartingIndex, new ReadOnlyObservableGroup<TKey, TElement>(newItem));
                 }
                 else if (e.NewItems!.Count > 1)
                 {
@@ -95,9 +95,9 @@ public sealed class ReadOnlyObservableGroupedCollection<TKey, TValue> : ReadOnly
             case NotifyCollectionChangedAction.Replace:
                 if (e.OldItems!.Count == 1 && e.NewItems!.Count == 1)
                 {
-                    ObservableGroup<TKey, TValue> replacedItem = (ObservableGroup<TKey, TValue>)e.NewItems![0]!;
+                    ObservableGroup<TKey, TElement> replacedItem = (ObservableGroup<TKey, TElement>)e.NewItems![0]!;
 
-                    items[e.OldStartingIndex] = new ReadOnlyObservableGroup<TKey, TValue>(replacedItem);
+                    items[e.OldStartingIndex] = new ReadOnlyObservableGroup<TKey, TElement>(replacedItem);
                 }
                 else if (e.OldItems!.Count > 1 || e.NewItems!.Count > 1)
                 {
