@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace CommunityToolkit.Mvvm.Collections;
 
@@ -12,7 +11,7 @@ namespace CommunityToolkit.Mvvm.Collections;
 /// </summary>
 /// <typeparam name="TKey">The type of the group key.</typeparam>
 /// <typeparam name="TValue">The type of the items in the collection.</typeparam>
-public sealed class ReadOnlyObservableGroup<TKey, TValue> : ReadOnlyObservableCollection<TValue>, IGrouping<TKey, TValue>, IReadOnlyObservableGroup<TKey>
+public sealed class ReadOnlyObservableGroup<TKey, TValue> : ReadOnlyObservableCollection<TValue>, IReadOnlyObservableGroup<TKey, TValue>
     where TKey : notnull
 {
     /// <summary>
