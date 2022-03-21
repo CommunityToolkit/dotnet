@@ -66,24 +66,6 @@ partial class Guard
     }
 
     /// <summary>
-    /// Asserts that the input <see cref="string"/> instance must be <see langword="null"/> or whitespace.
-    /// </summary>
-    /// <param name="text">The input <see cref="string"/> instance to test.</param>
-    /// <param name="name">The name of the input parameter being tested.</param>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="text"/> is neither <see langword="null"/> nor whitespace.</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    [Obsolete("Use " + nameof(IsNullOrWhiteSpace))]
-    public static void IsNullOrWhitespace(string? text, [CallerArgumentExpression("text")] string name = "")
-    {
-        if (string.IsNullOrWhiteSpace(text))
-        {
-            return;
-        }
-
-        ThrowHelper.ThrowArgumentExceptionForIsNullOrWhiteSpace(text, name);
-    }
-
-    /// <summary>
     /// Asserts that the input <see cref="string"/> instance must not be <see langword="null"/> or whitespace.
     /// </summary>
     /// <param name="text">The input <see cref="string"/> instance to test.</param>
@@ -92,24 +74,6 @@ partial class Guard
     /// <exception cref="ArgumentException">Thrown if <paramref name="text"/> is whitespace.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNotNullOrWhiteSpace([NotNull] string? text, [CallerArgumentExpression("text")] string name = "")
-    {
-        if (!string.IsNullOrWhiteSpace(text))
-        {
-            return;
-        }
-
-        ThrowHelper.ThrowArgumentExceptionForIsNotNullOrWhiteSpace(text, name);
-    }
-
-    /// <summary>
-    /// Asserts that the input <see cref="string"/> instance must not be <see langword="null"/> or whitespace.
-    /// </summary>
-    /// <param name="text">The input <see cref="string"/> instance to test.</param>
-    /// <param name="name">The name of the input parameter being tested.</param>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="text"/> is <see langword="null"/> or whitespace.</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    [Obsolete("Use " + nameof(IsNotNullOrWhiteSpace))]
-    public static void IsNotNullOrWhitespace([NotNull] string? text, [CallerArgumentExpression("text")] string name = "")
     {
         if (!string.IsNullOrWhiteSpace(text))
         {
@@ -171,24 +135,6 @@ partial class Guard
     }
 
     /// <summary>
-    /// Asserts that the input <see cref="string"/> instance must be whitespace.
-    /// </summary>
-    /// <param name="text">The input <see cref="string"/> instance to test.</param>
-    /// <param name="name">The name of the input parameter being tested.</param>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="text"/> is neither <see langword="null"/> nor whitespace.</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    [Obsolete("Use " + nameof(IsWhiteSpace))]
-    public static void IsWhitespace(string text, [CallerArgumentExpression("text")] string name = "")
-    {
-        if (string.IsNullOrWhiteSpace(text))
-        {
-            return;
-        }
-
-        ThrowHelper.ThrowArgumentExceptionForIsWhiteSpace(text, name);
-    }
-
-    /// <summary>
     /// Asserts that the input <see cref="string"/> instance must not be <see langword="null"/> or whitespace.
     /// </summary>
     /// <param name="text">The input <see cref="string"/> instance to test.</param>
@@ -196,24 +142,6 @@ partial class Guard
     /// <exception cref="ArgumentException">Thrown if <paramref name="text"/> is <see langword="null"/> or whitespace.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNotWhiteSpace(string text, [CallerArgumentExpression("text")] string name = "")
-    {
-        if (!string.IsNullOrWhiteSpace(text))
-        {
-            return;
-        }
-
-        ThrowHelper.ThrowArgumentExceptionForIsNotWhiteSpace(text, name);
-    }
-
-    /// <summary>
-    /// Asserts that the input <see cref="string"/> instance must not be <see langword="null"/> or whitespace.
-    /// </summary>
-    /// <param name="text">The input <see cref="string"/> instance to test.</param>
-    /// <param name="name">The name of the input parameter being tested.</param>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="text"/> is <see langword="null"/> or whitespace.</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    [Obsolete("Use " + nameof(IsNotWhiteSpace))]
-    public static void IsNotWhitespace(string text, [CallerArgumentExpression("text")] string name = "")
     {
         if (!string.IsNullOrWhiteSpace(text))
         {

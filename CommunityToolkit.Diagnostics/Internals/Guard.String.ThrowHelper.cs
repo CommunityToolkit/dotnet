@@ -44,7 +44,7 @@ partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="IsNullOrWhitespace"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsNullOrWhiteSpace"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsNullOrWhiteSpace(string? text, string name)
@@ -53,7 +53,7 @@ partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="IsNotNullOrWhitespace"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsNotNullOrWhiteSpace"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsNotNullOrWhiteSpace(string? text, string name)
@@ -91,7 +91,7 @@ partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="IsWhitespace"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsWhiteSpace"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsWhiteSpace(string text, string name)
@@ -100,7 +100,7 @@ partial class Guard
         }
 
         /// <summary>
-        /// Throws an <see cref="ArgumentException"/> when <see cref="IsNotWhitespace"/> fails.
+        /// Throws an <see cref="ArgumentException"/> when <see cref="IsNotWhiteSpace"/> fails.
         /// </summary>
         [DoesNotReturn]
         public static void ThrowArgumentExceptionForIsNotWhiteSpace(string text, string name)
