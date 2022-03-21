@@ -114,7 +114,7 @@ partial class Guard
             return;
         }
 
-        ThrowHelper.ThrowArgumentExceptionForIsNotEmpty(text, name);
+        ThrowHelper.ThrowArgumentExceptionForIsNotEmpty(name);
     }
 
     /// <summary>

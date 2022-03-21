@@ -85,7 +85,7 @@ partial class Guard
         /// Throws an <see cref="ArgumentException"/> when <see cref="IsNotEmpty"/> fails.
         /// </summary>
         [DoesNotReturn]
-        public static void ThrowArgumentExceptionForIsNotEmpty(string text, string name)
+        public static void ThrowArgumentExceptionForIsNotEmpty(string name)
         {
             throw new ArgumentException($"Parameter {AssertString(name)} (string) must not be empty.", name);
         }
