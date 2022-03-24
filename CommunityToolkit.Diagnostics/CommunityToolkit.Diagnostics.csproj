@@ -45,6 +45,14 @@
   </Choose>
 
   <ItemGroup>
+    <None Update="Generated\Check.Collection.tt">
+      <LastGenOutput>Check.Collection.g.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="Generated\Check.Comparable.Numeric.tt">
+      <LastGenOutput>Check.Comparable.Numeric.g.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
     <None Update="Generated\Guard.Comparable.Numeric.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Guard.Comparable.Numeric.g.cs</LastGenOutput>
@@ -69,6 +77,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Generated\Check.Collection.g.cs">
+      <DependentUpon>Check.Collection.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Generated\Check.Comparable.Numeric.g.cs">
+      <DependentUpon>Check.Comparable.Numeric.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="Generated\Guard.Comparable.Numeric.g.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

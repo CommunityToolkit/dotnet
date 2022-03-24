@@ -1,0 +1,169 @@
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+<#@include file="TypeInfo.ttinclude" #>
+using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+
+namespace CommunityToolkit.Diagnostics;
+
+/// <inheritdoc/>
+partial class Check
+{
+<#
+GenerateTextForItems(EnumerableTypes, item =>
+{
+#>
+    /// <summary>
+    /// Checks that the input <#=item.XmlType#> instance must be empty.
+    /// </summary>
+    /// <typeparam name="T">The item of items in the input <#=item.XmlType#> instance.</typeparam>
+    /// <param name="<#=item.Name#>">The input <#=item.XmlType#> instance to check the size for.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsEmpty<T>(<#=item.Type#> <#=item.Name#>)
+    {
+        return <#=item.Name#>.<#=item.Size#> == 0;
+    }
+
+    /// <summary>
+    /// Checks that the input <#=item.XmlType#> instance must not be empty.
+    /// </summary>
+    /// <typeparam name="T">The item of items in the input <#=item.XmlType#> instance.</typeparam>
+    /// <param name="<#=item.Name#>">The input <#=item.XmlType#> instance to check the size for.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsNotEmpty<T>(<#=item.Type#> <#=item.Name#>)
+    {
+        return <#=item.Name#>.<#=item.Size#> != 0;
+    }
+
+    /// <summary>
+    /// Checks that the input <#=item.XmlType#> instance must have a size of a specified value.
+    /// </summary>
+    /// <typeparam name="T">The item of items in the input <#=item.XmlType#> instance.</typeparam>
+    /// <param name="<#=item.Name#>">The input <#=item.XmlType#> instance to check the size for.</param>
+    /// <param name="size">The target size to test.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool HasSizeEqualTo<T>(<#=item.Type#> <#=item.Name#>, int size)
+    {
+        return <#=item.Name#>.<#=item.Size#> == size;
+    }
+
+    /// <summary>
+    /// Checks that the input <#=item.XmlType#> instance must have a size not equal to a specified value.
+    /// </summary>
+    /// <typeparam name="T">The item of items in the input <#=item.XmlType#> instance.</typeparam>
+    /// <param name="<#=item.Name#>">The input <#=item.XmlType#> instance to check the size for.</param>
+    /// <param name="size">The target size to test.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool HasSizeNotEqualTo<T>(<#=item.Type#> <#=item.Name#>, int size)
+    {
+        return <#=item.Name#>.<#=item.Size#> != size;
+    }
+
+    /// <summary>
+    /// Checks that the input <#=item.XmlType#> instance must have a size over a specified value.
+    /// </summary>
+    /// <typeparam name="T">The item of items in the input <#=item.XmlType#> instance.</typeparam>
+    /// <param name="<#=item.Name#>">The input <#=item.XmlType#> instance to check the size for.</param>
+    /// <param name="size">The target size to test.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool HasSizeGreaterThan<T>(<#=item.Type#> <#=item.Name#>, int size)
+    {
+        return <#=item.Name#>.<#=item.Size#> > size;
+    }
+
+    /// <summary>
+    /// Checks that the input <#=item.XmlType#> instance must have a size of at least or equal to a specified value.
+    /// </summary>
+    /// <typeparam name="T">The item of items in the input <#=item.XmlType#> instance.</typeparam>
+    /// <param name="<#=item.Name#>">The input <#=item.XmlType#> instance to check the size for.</param>
+    /// <param name="size">The target size to test.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool HasSizeGreaterThanOrEqualTo<T>(<#=item.Type#> <#=item.Name#>, int size)
+    {
+        return <#=item.Name#>.<#=item.Size#> >= size;
+    }
+
+    /// <summary>
+    /// Checks that the input <#=item.XmlType#> instance must have a size of less than a specified value.
+    /// </summary>
+    /// <typeparam name="T">The item of items in the input <#=item.XmlType#> instance.</typeparam>
+    /// <param name="<#=item.Name#>">The input <#=item.XmlType#> instance to check the size for.</param>
+    /// <param name="size">The target size to test.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool HasSizeLessThan<T>(<#=item.Type#> <#=item.Name#>, int size)
+    {
+        return <#=item.Name#>.<#=item.Size#> < size;
+    }
+
+    /// <summary>
+    /// Checks that the input <#=item.XmlType#> instance must have a size of less than or equal to a specified value.
+    /// </summary>
+    /// <typeparam name="T">The item of items in the input <#=item.XmlType#> instance.</typeparam>
+    /// <param name="<#=item.Name#>">The input <#=item.XmlType#> instance to check the size for.</param>
+    /// <param name="size">The target size to test.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool HasSizeLessThanOrEqualTo<T>(<#=item.Type#> <#=item.Name#>, int size)
+    {
+        return <#=item.Name#>.<#=item.Size#> <= size;
+    }
+
+    /// <summary>
+    /// Checks that the source <#=item.XmlType#> instance must have the same size of a destination <#=item.XmlType#> instance.
+    /// </summary>
+    /// <typeparam name="T">The item of items in the input <#=item.XmlType#> instance.</typeparam>
+    /// <param name="source">The source <#=item.XmlType#> instance to check the size for.</param>
+    /// <param name="destination">The destination <#=item.XmlType#> instance to check the size for.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool HasSizeEqualTo<T>(<#=item.Type#> source, <#=item.DestinationType#> destination)
+    {
+        return source.<#=item.Size#> == destination.<#=item.Size#>;
+    }
+
+    /// <summary>
+    /// Checks that the source <#=item.XmlType#> instance must have a size of less than or equal to that of a destination <#=item.XmlType#> instance.
+    /// </summary>
+    /// <typeparam name="T">The item of items in the input <#=item.XmlType#> instance.</typeparam>
+    /// <param name="source">The source <#=item.XmlType#> instance to check the size for.</param>
+    /// <param name="destination">The destination <#=item.XmlType#> instance to check the size for.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool HasSizeLessThanOrEqualTo<T>(<#=item.Type#> source, <#=item.DestinationType#> destination)
+    {
+        return source.<#=item.Size#> <= destination.<#=item.Size#>;
+    }
+
+    /// <summary>
+    /// Checks that the input index is valid for a given <#=item.XmlType#> instance.
+    /// </summary>
+    /// <typeparam name="T">The item of items in the input <#=item.XmlType#> instance.</typeparam>
+    /// <param name="index">The input index to be used to access <paramref name="<#=item.Name#>"/>.</param>
+    /// <param name="<#=item.Name#>">The input <#=item.XmlType#> instance to use to validate <paramref name="index"/>.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsInRangeFor<T>(int index, <#=item.Type#> <#=item.Name#>)
+    {
+<#
+// Here we're leveraging the fact that signed integers are represented
+// in 2-complement to perform the bounds check with a single compare operation.
+// This is the same trick used throughout CoreCLR as well.
+// For more info and code sample, see the original conversation here:
+// https://github.com/CommunityToolkit/WindowsCommunityToolkit/pull/3131#discussion_r390682835
+#>
+        return (uint)index < (uint)<#=item.Name#>.<#=item.Size#>;
+    }
+
+    /// <summary>
+    /// Checks that the input index is not valid for a given <#=item.XmlType#> instance.
+    /// </summary>
+    /// <typeparam name="T">The item of items in the input <#=item.XmlType#> instance.</typeparam>
+    /// <param name="index">The input index to be used to access <paramref name="<#=item.Name#>"/>.</param>
+    /// <param name="<#=item.Name#>">The input <#=item.XmlType#> instance to use to validate <paramref name="index"/>.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsNotInRangeFor<T>(int index, <#=item.Type#> <#=item.Name#>)
+    {
+        return (uint)index >= (uint)<#=item.Name#>.<#=item.Size#>;
+    }
+<#
+});
+#>
+}
