@@ -25,7 +25,7 @@ public static partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNull<T>(T? value, [CallerArgumentExpression("value")] string name = "")
     {
-        if (value is null)
+        if (Check.IsNull(value))
         {
             return;
         }
@@ -44,7 +44,7 @@ public static partial class Guard
     public static void IsNull<T>(T? value, [CallerArgumentExpression("value")] string name = "")
         where T : struct
     {
-        if (value is null)
+        if (Check.IsNull(value))
         {
             return;
         }
@@ -62,7 +62,7 @@ public static partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNotNull<T>([NotNull] T? value, [CallerArgumentExpression("value")] string name = "")
     {
-        if (value is not null)
+        if (Check.IsNotNull(value))
         {
             return;
         }
@@ -81,7 +81,7 @@ public static partial class Guard
     public static void IsNotNull<T>([NotNull] T? value, [CallerArgumentExpression("value")] string name = "")
         where T : struct
     {
-        if (value is not null)
+        if (Check.IsNotNull(value))
         {
             return;
         }
@@ -99,7 +99,7 @@ public static partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsOfType<T>(object value, [CallerArgumentExpression("value")] string name = "")
     {
-        if (value.GetType() == typeof(T))
+        if (Check.IsOfType<T>(value))
         {
             return;
         }
@@ -117,7 +117,7 @@ public static partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNotOfType<T>(object value, [CallerArgumentExpression("value")] string name = "")
     {
-        if (value.GetType() != typeof(T))
+        if (Check.IsNotOfType<T>(value))
         {
             return;
         }
@@ -135,7 +135,7 @@ public static partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsOfType(object value, Type type, [CallerArgumentExpression("value")] string name = "")
     {
-        if (value.GetType() == type)
+        if (Check.IsOfType(value, type))
         {
             return;
         }
@@ -153,7 +153,7 @@ public static partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNotOfType(object value, Type type, [CallerArgumentExpression("value")] string name = "")
     {
-        if (value.GetType() != type)
+        if (Check.IsNotOfType(value, type))
         {
             return;
         }
@@ -171,7 +171,7 @@ public static partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsAssignableToType<T>(object value, [CallerArgumentExpression("value")] string name = "")
     {
-        if (value is T)
+        if (Check.IsAssignableToType<T>(value))
         {
             return;
         }
@@ -189,7 +189,7 @@ public static partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNotAssignableToType<T>(object value, [CallerArgumentExpression("value")] string name = "")
     {
-        if (value is not T)
+        if (Check.IsNotAssignableToType<T>(value))
         {
             return;
         }
@@ -207,7 +207,7 @@ public static partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsAssignableToType(object value, Type type, [CallerArgumentExpression("value")] string name = "")
     {
-        if (type.IsInstanceOfType(value))
+        if (Check.IsAssignableToType(value, type))
         {
             return;
         }
@@ -225,7 +225,7 @@ public static partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNotAssignableToType(object value, Type type, [CallerArgumentExpression("value")] string name = "")
     {
-        if (!type.IsInstanceOfType(value))
+        if (Check.IsNotAssignableToType(value, type))
         {
             return;
         }
@@ -246,7 +246,7 @@ public static partial class Guard
     public static void IsReferenceEqualTo<T>(T value, T target, [CallerArgumentExpression("value")] string name = "")
         where T : class
     {
-        if (ReferenceEquals(value, target))
+        if (Check.IsReferenceEqualTo<T>(value, target))
         {
             return;
         }
@@ -267,7 +267,7 @@ public static partial class Guard
     public static void IsReferenceNotEqualTo<T>(T value, T target, [CallerArgumentExpression("value")] string name = "")
         where T : class
     {
-        if (!ReferenceEquals(value, target))
+        if (Check.IsReferenceNotEqualTo<T>(value, target))
         {
             return;
         }

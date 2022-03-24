@@ -22,7 +22,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNullOrEmpty(string? text, [CallerArgumentExpression("text")] string name = "")
     {
-        if (string.IsNullOrEmpty(text))
+        if (Check.IsNullOrEmpty(text))
         {
             return;
         }
@@ -40,7 +40,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNotNullOrEmpty([NotNull] string? text, [CallerArgumentExpression("text")] string name = "")
     {
-        if (!string.IsNullOrEmpty(text))
+        if (Check.IsNotNullOrEmpty(text))
         {
             return;
         }
@@ -57,7 +57,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNullOrWhiteSpace(string? text, [CallerArgumentExpression("text")] string name = "")
     {
-        if (string.IsNullOrWhiteSpace(text))
+        if (Check.IsNullOrWhiteSpace(text))
         {
             return;
         }
@@ -75,7 +75,7 @@ partial class Guard
     [Obsolete("Use " + nameof(IsNullOrWhiteSpace))]
     public static void IsNullOrWhitespace(string? text, [CallerArgumentExpression("text")] string name = "")
     {
-        if (string.IsNullOrWhiteSpace(text))
+        if (Check.IsNullOrWhiteSpace(text))
         {
             return;
         }
@@ -93,7 +93,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNotNullOrWhiteSpace([NotNull] string? text, [CallerArgumentExpression("text")] string name = "")
     {
-        if (!string.IsNullOrWhiteSpace(text))
+        if (Check.IsNotNullOrWhiteSpace(text))
         {
             return;
         }
@@ -111,7 +111,7 @@ partial class Guard
     [Obsolete("Use " + nameof(IsNotNullOrWhiteSpace))]
     public static void IsNotNullOrWhitespace([NotNull] string? text, [CallerArgumentExpression("text")] string name = "")
     {
-        if (!string.IsNullOrWhiteSpace(text))
+        if (Check.IsNotNullOrWhiteSpace(text))
         {
             return;
         }
@@ -128,7 +128,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsEmpty(string text, [CallerArgumentExpression("text")] string name = "")
     {
-        if (text.Length == 0)
+        if (Check.IsEmpty(text))
         {
             return;
         }
@@ -145,7 +145,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNotEmpty(string text, [CallerArgumentExpression("text")] string name = "")
     {
-        if (text.Length != 0)
+        if (Check.IsNotEmpty(text))
         {
             return;
         }
@@ -162,7 +162,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsWhiteSpace(string text, [CallerArgumentExpression("text")] string name = "")
     {
-        if (string.IsNullOrWhiteSpace(text))
+        if (Check.IsWhiteSpace(text))
         {
             return;
         }
@@ -180,7 +180,7 @@ partial class Guard
     [Obsolete("Use " + nameof(IsWhiteSpace))]
     public static void IsWhitespace(string text, [CallerArgumentExpression("text")] string name = "")
     {
-        if (string.IsNullOrWhiteSpace(text))
+        if (Check.IsWhiteSpace(text))
         {
             return;
         }
@@ -197,7 +197,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNotWhiteSpace(string text, [CallerArgumentExpression("text")] string name = "")
     {
-        if (!string.IsNullOrWhiteSpace(text))
+        if (Check.IsNotWhiteSpace(text))
         {
             return;
         }
@@ -215,7 +215,7 @@ partial class Guard
     [Obsolete("Use " + nameof(IsNotWhiteSpace))]
     public static void IsNotWhitespace(string text, [CallerArgumentExpression("text")] string name = "")
     {
-        if (!string.IsNullOrWhiteSpace(text))
+        if (Check.IsNotWhiteSpace(text))
         {
             return;
         }
@@ -233,7 +233,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void HasSizeEqualTo(string text, int size, [CallerArgumentExpression("text")] string name = "")
     {
-        if (text.Length == size)
+        if (Check.HasSizeEqualTo(text, size))
         {
             return;
         }
@@ -251,7 +251,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void HasSizeNotEqualTo(string text, int size, [CallerArgumentExpression("text")] string name = "")
     {
-        if (text.Length != size)
+        if (Check.HasSizeNotEqualTo(text, size))
         {
             return;
         }
@@ -269,7 +269,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void HasSizeGreaterThan(string text, int size, [CallerArgumentExpression("text")] string name = "")
     {
-        if (text.Length > size)
+        if (Check.HasSizeGreaterThan(text, size))
         {
             return;
         }
@@ -287,7 +287,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void HasSizeGreaterThanOrEqualTo(string text, int size, [CallerArgumentExpression("text")] string name = "")
     {
-        if (text.Length >= size)
+        if (Check.HasSizeGreaterThanOrEqualTo(text, size))
         {
             return;
         }
@@ -305,7 +305,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void HasSizeLessThan(string text, int size, [CallerArgumentExpression("text")] string name = "")
     {
-        if (text.Length < size)
+        if (Check.HasSizeLessThan(text, size))
         {
             return;
         }
@@ -323,7 +323,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void HasSizeLessThanOrEqualTo(string text, int size, [CallerArgumentExpression("text")] string name = "")
     {
-        if (text.Length <= size)
+        if (Check.HasSizeLessThanOrEqualTo(text, size))
         {
             return;
         }
@@ -342,7 +342,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void HasSizeEqualTo(string text, string destination, [CallerArgumentExpression("text")] string name = "")
     {
-        if (text.Length == destination.Length)
+        if (Check.HasSizeEqualTo(text, destination))
         {
             return;
         }
@@ -361,7 +361,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void HasSizeLessThanOrEqualTo(string text, string destination, [CallerArgumentExpression("text")] string name = "")
     {
-        if (text.Length <= destination.Length)
+        if (Check.HasSizeLessThanOrEqualTo(text, destination))
         {
             return;
         }
@@ -379,7 +379,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsInRangeFor(int index, string text, [CallerArgumentExpression("index")] string name = "")
     {
-        if ((uint)index < (uint)text.Length)
+        if (Check.IsInRangeFor(index, text))
         {
             return;
         }
@@ -397,7 +397,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNotInRangeFor(int index, string text, [CallerArgumentExpression("index")] string name = "")
     {
-        if ((uint)index >= (uint)text.Length)
+        if (Check.IsNotInRangeFor(index, text))
         {
             return;
         }

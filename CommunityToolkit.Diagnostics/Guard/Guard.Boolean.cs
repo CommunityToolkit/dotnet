@@ -22,7 +22,7 @@ public static partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsTrue([DoesNotReturnIf(false)] bool value, [CallerArgumentExpression("value")] string name = "")
     {
-        if (value)
+        if (Check.IsTrue(value))
         {
             return;
         }
@@ -40,7 +40,7 @@ public static partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsTrue([DoesNotReturnIf(false)] bool value, string name, string message)
     {
-        if (value)
+        if (Check.IsTrue(value))
         {
             return;
         }
@@ -57,7 +57,7 @@ public static partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsFalse([DoesNotReturnIf(true)] bool value, [CallerArgumentExpression("value")] string name = "")
     {
-        if (!value)
+        if (Check.IsFalse(value))
         {
             return;
         }
@@ -75,7 +75,7 @@ public static partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsFalse([DoesNotReturnIf(true)] bool value, string name, string message)
     {
-        if (!value)
+        if (Check.IsFalse(value))
         {
             return;
         }
@@ -94,7 +94,7 @@ public static partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsTrue([DoesNotReturnIf(false)] bool value, string name, [InterpolatedStringHandlerArgument("value")] ref IsTrueInterpolatedStringHandler message)
     {
-        if (value)
+        if (Check.IsTrue(value))
         {
             return;
         }
@@ -112,7 +112,7 @@ public static partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsFalse([DoesNotReturnIf(true)] bool value, string name, [InterpolatedStringHandlerArgument("value")] ref IsFalseInterpolatedStringHandler message)
     {
-        if (!value)
+        if (Check.IsFalse(value))
         {
             return;
         }

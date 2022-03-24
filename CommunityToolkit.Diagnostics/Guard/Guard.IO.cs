@@ -20,7 +20,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void CanRead(Stream stream, [CallerArgumentExpression("stream")] string name = "")
     {
-        if (stream.CanRead)
+        if (Check.CanRead(stream))
         {
             return;
         }
@@ -37,7 +37,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void CanWrite(Stream stream, [CallerArgumentExpression("stream")] string name = "")
     {
-        if (stream.CanWrite)
+        if (Check.CanWrite(stream))
         {
             return;
         }
@@ -54,7 +54,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void CanSeek(Stream stream, [CallerArgumentExpression("stream")] string name = "")
     {
-        if (stream.CanSeek)
+        if (Check.CanSeek(stream))
         {
             return;
         }
@@ -71,7 +71,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsAtStartPosition(Stream stream, [CallerArgumentExpression("stream")] string name = "")
     {
-        if (stream.Position == 0)
+        if (Check.IsAtStartPosition(stream))
         {
             return;
         }

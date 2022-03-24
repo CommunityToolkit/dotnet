@@ -21,18 +21,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsCloseTo(int value, int target, uint delta, [CallerArgumentExpression("value")] string name = "")
     {
-        uint difference;
-
-        if (value >= target)
-        {
-            difference = (uint)(value - target);
-        }
-        else
-        {
-            difference = (uint)(target - value);
-        }
-
-        if (difference <= delta)
+        if (Check.IsCloseTo(value, target, delta))
         {
             return;
         }
@@ -51,18 +40,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNotCloseTo(int value, int target, uint delta, [CallerArgumentExpression("value")] string name = "")
     {
-        uint difference;
-
-        if (value >= target)
-        {
-            difference = (uint)(value - target);
-        }
-        else
-        {
-            difference = (uint)(target - value);
-        }
-
-        if (difference > delta)
+        if (Check.IsNotCloseTo(value, target, delta))
         {
             return;
         }
@@ -81,18 +59,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsCloseTo(long value, long target, ulong delta, [CallerArgumentExpression("value")] string name = "")
     {
-        ulong difference;
-
-        if (value >= target)
-        {
-            difference = (ulong)(value - target);
-        }
-        else
-        {
-            difference = (ulong)(target - value);
-        }
-
-        if (difference <= delta)
+        if (Check.IsCloseTo(value, target, delta))
         {
             return;
         }
@@ -111,18 +78,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNotCloseTo(long value, long target, ulong delta, [CallerArgumentExpression("value")] string name = "")
     {
-        ulong difference;
-
-        if (value >= target)
-        {
-            difference = (ulong)(value - target);
-        }
-        else
-        {
-            difference = (ulong)(target - value);
-        }
-
-        if (difference > delta)
+        if (Check.IsNotCloseTo(value, target, delta))
         {
             return;
         }
@@ -141,7 +97,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsCloseTo(float value, float target, float delta, [CallerArgumentExpression("value")] string name = "")
     {
-        if (Math.Abs(value - target) <= delta)
+        if (Check.IsCloseTo(value, target, delta))
         {
             return;
         }
@@ -160,7 +116,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNotCloseTo(float value, float target, float delta, [CallerArgumentExpression("value")] string name = "")
     {
-        if (Math.Abs(value - target) > delta)
+        if (Check.IsNotCloseTo(value, target, delta))
         {
             return;
         }
@@ -179,7 +135,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsCloseTo(double value, double target, double delta, [CallerArgumentExpression("value")] string name = "")
     {
-        if (Math.Abs(value - target) <= delta)
+        if (Check.IsCloseTo(value, target, delta))
         {
             return;
         }
@@ -198,7 +154,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNotCloseTo(double value, double target, double delta, [CallerArgumentExpression("value")] string name = "")
     {
-        if (Math.Abs(value - target) > delta)
+        if (Check.IsNotCloseTo(value, target, delta))
         {
             return;
         }
@@ -217,18 +173,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsCloseTo(nint value, nint target, nuint delta, [CallerArgumentExpression("value")] string name = "")
     {
-        nuint difference;
-
-        if (value >= target)
-        {
-            difference = (nuint)(value - target);
-        }
-        else
-        {
-            difference = (nuint)(target - value);
-        }
-
-        if (difference <= delta)
+        if (Check.IsCloseTo(value, target, delta))
         {
             return;
         }
@@ -247,18 +192,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNotCloseTo(nint value, nint target, nuint delta, [CallerArgumentExpression("value")] string name = "")
     {
-        nuint difference;
-
-        if (value >= target)
-        {
-            difference = (nuint)(value - target);
-        }
-        else
-        {
-            difference = (nuint)(target - value);
-        }
-
-        if (difference > delta)
+        if (Check.IsNotCloseTo(value, target, delta))
         {
             return;
         }

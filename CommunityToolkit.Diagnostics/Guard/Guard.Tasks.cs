@@ -20,7 +20,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsCompleted(Task task, [CallerArgumentExpression("task")] string name = "")
     {
-        if (task.IsCompleted)
+        if (Check.IsCompleted(task))
         {
             return;
         }
@@ -37,7 +37,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNotCompleted(Task task, [CallerArgumentExpression("task")] string name = "")
     {
-        if (!task.IsCompleted)
+        if (Check.IsNotCompleted(task))
         {
             return;
         }
@@ -54,7 +54,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsCompletedSuccessfully(Task task, [CallerArgumentExpression("task")] string name = "")
     {
-        if (task.Status == TaskStatus.RanToCompletion)
+        if (Check.IsCompletedSuccessfully(task))
         {
             return;
         }
@@ -71,7 +71,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNotCompletedSuccessfully(Task task, [CallerArgumentExpression("task")] string name = "")
     {
-        if (task.Status != TaskStatus.RanToCompletion)
+        if (Check.IsNotCompletedSuccessfully(task))
         {
             return;
         }
@@ -88,7 +88,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsFaulted(Task task, [CallerArgumentExpression("task")] string name = "")
     {
-        if (task.IsFaulted)
+        if (Check.IsFaulted(task))
         {
             return;
         }
@@ -105,7 +105,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNotFaulted(Task task, [CallerArgumentExpression("task")] string name = "")
     {
-        if (!task.IsFaulted)
+        if (Check.IsNotFaulted(task))
         {
             return;
         }
@@ -122,7 +122,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsCanceled(Task task, [CallerArgumentExpression("task")] string name = "")
     {
-        if (task.IsCanceled)
+        if (Check.IsCanceled(task))
         {
             return;
         }
@@ -139,7 +139,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNotCanceled(Task task, [CallerArgumentExpression("task")] string name = "")
     {
-        if (!task.IsCanceled)
+        if (Check.IsNotCanceled(task))
         {
             return;
         }
@@ -157,7 +157,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void HasStatusEqualTo(Task task, TaskStatus status, [CallerArgumentExpression("task")] string name = "")
     {
-        if (task.Status == status)
+        if (Check.HasStatusEqualTo(task, status))
         {
             return;
         }
@@ -175,7 +175,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void HasStatusNotEqualTo(Task task, TaskStatus status, [CallerArgumentExpression("task")] string name = "")
     {
-        if (task.Status != status)
+        if (Check.HasStatusNotEqualTo(task, status))
         {
             return;
         }
