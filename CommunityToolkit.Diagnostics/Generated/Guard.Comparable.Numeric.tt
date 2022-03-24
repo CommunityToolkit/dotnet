@@ -25,7 +25,7 @@ var (type, prefix) = typeInfo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsEqualTo(<#=type#> value, <#=type#> target, [CallerArgumentExpression("value")] string name = "")
     {
-        if (value == target)
+        if (Check.IsEqualTo(value, target))
         {
             return;
         }
@@ -44,7 +44,7 @@ var (type, prefix) = typeInfo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNotEqualTo(<#=type#> value, <#=type#> target, [CallerArgumentExpression("value")] string name = "")
     {
-        if (value != target)
+        if (Check.IsNotEqualTo(value, target))
         {
             return;
         }
@@ -63,7 +63,7 @@ var (type, prefix) = typeInfo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsLessThan(<#=type#> value, <#=type#> maximum, [CallerArgumentExpression("value")] string name = "")
     {
-        if (value < maximum)
+        if (Check.IsLessThan(value, maximum))
         {
             return;
         }
@@ -82,7 +82,7 @@ var (type, prefix) = typeInfo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsLessThanOrEqualTo(<#=type#> value, <#=type#> maximum, [CallerArgumentExpression("value")] string name = "")
     {
-        if (value <= maximum)
+        if (Check.IsLessThanOrEqualTo(value, maximum))
         {
             return;
         }
@@ -101,7 +101,7 @@ var (type, prefix) = typeInfo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsGreaterThan(<#=type#> value, <#=type#> minimum, [CallerArgumentExpression("value")] string name = "")
     {
-        if (value > minimum)
+        if (Check.IsGreaterThan(value, minimum))
         {
             return;
         }
@@ -120,7 +120,7 @@ var (type, prefix) = typeInfo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsGreaterThanOrEqualTo(<#=type#> value, <#=type#> minimum, [CallerArgumentExpression("value")] string name = "")
     {
-        if (value >= minimum)
+        if (Check.IsGreaterThanOrEqualTo(value, minimum))
         {
             return;
         }
@@ -143,7 +143,7 @@ var (type, prefix) = typeInfo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsInRange(<#=type#> value, <#=type#> minimum, <#=type#> maximum, [CallerArgumentExpression("value")] string name = "")
     {
-        if (value >= minimum && value < maximum)
+        if (Check.IsInRange(value, minimum, maximum))
         {
             return;
         }
@@ -166,7 +166,7 @@ var (type, prefix) = typeInfo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNotInRange(<#=type#> value, <#=type#> minimum, <#=type#> maximum, [CallerArgumentExpression("value")] string name = "")
     {
-        if (value < minimum || value >= maximum)
+        if (Check.IsNotInRange(value, minimum, maximum))
         {
             return;
         }
@@ -189,7 +189,7 @@ var (type, prefix) = typeInfo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsBetween(<#=type#> value, <#=type#> minimum, <#=type#> maximum, [CallerArgumentExpression("value")] string name = "")
     {
-        if (value > minimum && value < maximum)
+        if (Check.IsBetween(value, minimum, maximum))
         {
             return;
         }
@@ -212,7 +212,7 @@ var (type, prefix) = typeInfo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNotBetween(<#=type#> value, <#=type#> minimum, <#=type#> maximum, [CallerArgumentExpression("value")] string name = "")
     {
-        if (value <= minimum || value >= maximum)
+        if (Check.IsNotBetween(value, minimum, maximum))
         {
             return;
         }
@@ -235,7 +235,7 @@ var (type, prefix) = typeInfo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsBetweenOrEqualTo(<#=type#> value, <#=type#> minimum, <#=type#> maximum, [CallerArgumentExpression("value")] string name = "")
     {
-        if (value >= minimum && value <= maximum)
+        if (Check.IsBetweenOrEqualTo(value, minimum, maximum))
         {
             return;
         }
@@ -258,7 +258,7 @@ var (type, prefix) = typeInfo;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNotBetweenOrEqualTo(<#=type#> value, <#=type#> minimum, <#=type#> maximum, [CallerArgumentExpression("value")] string name = "")
     {
-        if (value < minimum || value > maximum)
+        if (Check.IsNotBetweenOrEqualTo(value, minimum, maximum))
         {
             return;
         }
