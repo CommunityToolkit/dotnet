@@ -29,31 +29,31 @@ public sealed class NullabilityAttributesGenerator : IIncrementalGenerator
     /// <inheritdoc/>
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        // Check that the target attributes are not available in the consuming project. To ensure that
-        // this works fine both in .NET (Core) and .NET Standard implementations, we also need to check
-        // that the target types are declared as public (we assume that in this case those types are from the BCL).
+        // Check that the target attributes are not available in the consuming project. To ensure that this
+        // works fine both in .NET (Core) and .NET Standard implementations, we also need to check that the
+        // target types are declared as public (we assume that in this case those types are from the BCL).
         // This avoids issues on .NET Standard with Roslyn also seeing internal types from referenced assemblies.
 
-        // Check whether [NotNull] is available
-        IncrementalValueProvider<bool> isNotNullAttributeAvailable =
+        // Check whether [NotNull] is not available
+        IncrementalValueProvider<bool> isNotNullAttributeNotAvailable =
             context.CompilationProvider
-            .Select(static (item, _) => item.HasAccessibleTypeWithMetadataName(NotNullAttributeMetadataName));
+            .Select(static (item, _) => !item.HasAccessibleTypeWithMetadataName(NotNullAttributeMetadataName));
 
         // Generate the [NotNull] type
-        context.RegisterConditionalSourceOutput(isNotNullAttributeAvailable, static context =>
+        context.RegisterConditionalSourceOutput(isNotNullAttributeNotAvailable, static context =>
         {
             string source = LoadAttributeSourceWithMetadataName(NotNullAttributeMetadataName);
 
             context.AddSource(NotNullAttributeMetadataName, source);
         });
 
-        // Check whether [NotNullIfNotNull] is available
-        IncrementalValueProvider<bool> isNotNullIfNotNullAttributeAvailable =
+        // Check whether [NotNullIfNotNull] is not available
+        IncrementalValueProvider<bool> isNotNullIfNotNullAttributeNotAvailable =
             context.CompilationProvider
-            .Select(static (item, _) => item.HasAccessibleTypeWithMetadataName(NotNullIfNotNullAttributeMetadataName));
+            .Select(static (item, _) => !item.HasAccessibleTypeWithMetadataName(NotNullIfNotNullAttributeMetadataName));
 
         // Generate the [NotNullIfNotNull] type
-        context.RegisterConditionalSourceOutput(isNotNullIfNotNullAttributeAvailable, static context =>
+        context.RegisterConditionalSourceOutput(isNotNullIfNotNullAttributeNotAvailable, static context =>
         {
             string source = LoadAttributeSourceWithMetadataName(NotNullIfNotNullAttributeMetadataName);
 
