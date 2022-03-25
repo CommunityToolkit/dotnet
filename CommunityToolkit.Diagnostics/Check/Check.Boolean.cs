@@ -13,6 +13,7 @@ public static partial class Check
     /// Checks that the input value must be <see langword="true"/>.
     /// </summary>
     /// <param name="value">The input <see cref="bool"/> to test.</param>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is <see langword="true"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsTrue(bool value)
     {
@@ -23,6 +24,7 @@ public static partial class Check
     /// Checks that the input value must be <see langword="false"/>.
     /// </summary>
     /// <param name="value">The input <see cref="bool"/> to test.</param>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is <see langword="false"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsFalse(bool value)
     {

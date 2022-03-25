@@ -15,6 +15,7 @@ partial class Check
     /// </summary>
     /// <typeparam name="T">The type of <see langword="struct"/> value type being tested.</typeparam>
     /// <param name="value">The input value to test.</param>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is <see langword="default"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsDefault<T>(T value)
         where T : struct, IEquatable<T>
@@ -27,6 +28,7 @@ partial class Check
     /// </summary>
     /// <typeparam name="T">The type of <see langword="struct"/> value type being tested.</typeparam>
     /// <param name="value">The input value to test.</param>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is not <see langword="default"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNotDefault<T>(T value)
         where T : struct, IEquatable<T>
@@ -41,6 +43,7 @@ partial class Check
     /// <param name="value">The input <typeparamref name="T"/> value to test.</param>
     /// <param name="target">The target <typeparamref name="T"/> value to test for.</param>
     /// <remarks>The method is generic to avoid boxing the parameters, if they are value types.</remarks>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is equal to <paramref name="target"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsEqualTo<T>(T value, T target)
         where T : notnull, IEquatable<T>
@@ -55,6 +58,7 @@ partial class Check
     /// <param name="value">The input <typeparamref name="T"/> value to test.</param>
     /// <param name="target">The target <typeparamref name="T"/> value to test for.</param>
     /// <remarks>The method is generic to avoid boxing the parameters, if they are value types.</remarks>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is not equal to <paramref name="target"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNotEqualTo<T>(T value, T target)
         where T : notnull, IEquatable<T>
@@ -68,6 +72,7 @@ partial class Check
     /// <typeparam name="T">The type of input values to compare.</typeparam>
     /// <param name="value">The input <typeparamref name="T"/> value to test.</param>
     /// <param name="target">The target <typeparamref name="T"/> value to test for.</param>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is a bitwise match to <paramref name="target"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe bool IsBitwiseEqualTo<T>(T value, T target)
         where T : unmanaged
@@ -156,6 +161,7 @@ partial class Check
     /// <param name="value">The input <typeparamref name="T"/> value to test.</param>
     /// <param name="maximum">The exclusive maximum <typeparamref name="T"/> value that is accepted.</param>
     /// <remarks>The method is generic to avoid boxing the parameters, if they are value types.</remarks>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is less than <paramref name="maximum"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsLessThan<T>(T value, T maximum)
         where T : notnull, IComparable<T>
@@ -170,6 +176,7 @@ partial class Check
     /// <param name="value">The input <typeparamref name="T"/> value to test.</param>
     /// <param name="maximum">The inclusive maximum <typeparamref name="T"/> value that is accepted.</param>
     /// <remarks>The method is generic to avoid boxing the parameters, if they are value types.</remarks>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is less than or equal to <paramref name="maximum"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsLessThanOrEqualTo<T>(T value, T maximum)
         where T : notnull, IComparable<T>
@@ -184,6 +191,7 @@ partial class Check
     /// <param name="value">The input <typeparamref name="T"/> value to test.</param>
     /// <param name="minimum">The exclusive minimum <typeparamref name="T"/> value that is accepted.</param>
     /// <remarks>The method is generic to avoid boxing the parameters, if they are value types.</remarks>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is greater than <paramref name="minimum"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsGreaterThan<T>(T value, T minimum)
         where T : notnull, IComparable<T>
@@ -198,6 +206,7 @@ partial class Check
     /// <param name="value">The input <typeparamref name="T"/> value to test.</param>
     /// <param name="minimum">The inclusive minimum <typeparamref name="T"/> value that is accepted.</param>
     /// <remarks>The method is generic to avoid boxing the parameters, if they are value types.</remarks>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is greater than or equal to <paramref name="minimum"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsGreaterThanOrEqualTo<T>(T value, T minimum)
         where T : notnull, IComparable<T>
@@ -216,6 +225,7 @@ partial class Check
     /// This API Checks the equivalent of "<paramref name="value"/> in [<paramref name="minimum"/>, <paramref name="maximum"/>)", using arithmetic notation.
     /// The method is generic to avoid boxing the parameters, if they are value types.
     /// </remarks>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is within the range <paramref name="minimum"/> to <paramref name="maximum"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsInRange<T>(T value, T minimum, T maximum)
         where T : notnull, IComparable<T>
@@ -234,6 +244,7 @@ partial class Check
     /// This API Checks the equivalent of "<paramref name="value"/> not in [<paramref name="minimum"/>, <paramref name="maximum"/>)", using arithmetic notation.
     /// The method is generic to avoid boxing the parameters, if they are value types.
     /// </remarks>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is not within the range <paramref name="minimum"/> to <paramref name="maximum"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNotInRange<T>(T value, T minimum, T maximum)
         where T : notnull, IComparable<T>
@@ -252,6 +263,7 @@ partial class Check
     /// This API Checks the equivalent of "<paramref name="value"/> in (<paramref name="minimum"/>, <paramref name="maximum"/>)", using arithmetic notation.
     /// The method is generic to avoid boxing the parameters, if they are value types.
     /// </remarks>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is between <paramref name="minimum"/> and <paramref name="maximum"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsBetween<T>(T value, T minimum, T maximum)
         where T : notnull, IComparable<T>
@@ -270,6 +282,7 @@ partial class Check
     /// This API Checks the equivalent of "<paramref name="value"/> not in (<paramref name="minimum"/>, <paramref name="maximum"/>)", using arithmetic notation.
     /// The method is generic to avoid boxing the parameters, if they are value types.
     /// </remarks>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is not between <paramref name="minimum"/> and <paramref name="maximum"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNotBetween<T>(T value, T minimum, T maximum)
         where T : notnull, IComparable<T>
@@ -288,6 +301,7 @@ partial class Check
     /// This API Checks the equivalent of "<paramref name="value"/> in [<paramref name="minimum"/>, <paramref name="maximum"/>]", using arithmetic notation.
     /// The method is generic to avoid boxing the parameters, if they are value types.
     /// </remarks>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is between or equal to <paramref name="minimum"/> and <paramref name="maximum"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsBetweenOrEqualTo<T>(T value, T minimum, T maximum)
         where T : notnull, IComparable<T>
@@ -306,6 +320,7 @@ partial class Check
     /// This API Checks the equivalent of "<paramref name="value"/> not in [<paramref name="minimum"/>, <paramref name="maximum"/>]", using arithmetic notation.
     /// The method is generic to avoid boxing the parameters, if they are value types.
     /// </remarks>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is not between or equal to <paramref name="minimum"/> and <paramref name="maximum"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNotBetweenOrEqualTo<T>(T value, T minimum, T maximum)
         where T : notnull, IComparable<T>

@@ -16,6 +16,7 @@ partial class Check
     /// <param name="value">The input <see cref="int"/> value to test.</param>
     /// <param name="target">The target <see cref="int"/> value to test for.</param>
     /// <param name="delta">The maximum distance to allow between <paramref name="value"/> and <paramref name="target"/>.</param>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is less than or equal to <paramref name="delta"/> away from <paramref name="target"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsCloseTo(int value, int target, uint delta)
     {
@@ -39,6 +40,7 @@ partial class Check
     /// <param name="value">The input <see cref="int"/> value to test.</param>
     /// <param name="target">The target <see cref="int"/> value to test for.</param>
     /// <param name="delta">The maximum distance to allow between <paramref name="value"/> and <paramref name="target"/>.</param>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is more than <paramref name="delta"/> away from <paramref name="target"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNotCloseTo(int value, int target, uint delta)
     {
@@ -62,6 +64,7 @@ partial class Check
     /// <param name="value">The input <see cref="long"/> value to test.</param>
     /// <param name="target">The target <see cref="long"/> value to test for.</param>
     /// <param name="delta">The maximum distance to allow between <paramref name="value"/> and <paramref name="target"/>.</param>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is less than or equal to <paramref name="delta"/> away from <paramref name="target"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsCloseTo(long value, long target, ulong delta)
     {
@@ -85,6 +88,7 @@ partial class Check
     /// <param name="value">The input <see cref="long"/> value to test.</param>
     /// <param name="target">The target <see cref="long"/> value to test for.</param>
     /// <param name="delta">The maximum distance to allow between <paramref name="value"/> and <paramref name="target"/>.</param>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is more than <paramref name="delta"/> away from <paramref name="target"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNotCloseTo(long value, long target, ulong delta)
     {
@@ -108,6 +112,7 @@ partial class Check
     /// <param name="value">The input <see cref="float"/> value to test.</param>
     /// <param name="target">The target <see cref="float"/> value to test for.</param>
     /// <param name="delta">The maximum distance to allow between <paramref name="value"/> and <paramref name="target"/>.</param>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is less than or equal to <paramref name="delta"/> away from <paramref name="target"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsCloseTo(float value, float target, float delta)
     {
@@ -120,6 +125,7 @@ partial class Check
     /// <param name="value">The input <see cref="float"/> value to test.</param>
     /// <param name="target">The target <see cref="float"/> value to test for.</param>
     /// <param name="delta">The maximum distance to allow between <paramref name="value"/> and <paramref name="target"/>.</param>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is more than <paramref name="delta"/> away from <paramref name="target"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNotCloseTo(float value, float target, float delta)
     {
@@ -132,6 +138,7 @@ partial class Check
     /// <param name="value">The input <see cref="double"/> value to test.</param>
     /// <param name="target">The target <see cref="double"/> value to test for.</param>
     /// <param name="delta">The maximum distance to allow between <paramref name="value"/> and <paramref name="target"/>.</param>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is less than or equal to <paramref name="delta"/> away from <paramref name="target"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsCloseTo(double value, double target, double delta)
     {
@@ -144,6 +151,7 @@ partial class Check
     /// <param name="value">The input <see cref="double"/> value to test.</param>
     /// <param name="target">The target <see cref="double"/> value to test for.</param>
     /// <param name="delta">The maximum distance to allow between <paramref name="value"/> and <paramref name="target"/>.</param>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is more than <paramref name="delta"/> away from <paramref name="target"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNotCloseTo(double value, double target, double delta)
     {
@@ -156,6 +164,7 @@ partial class Check
     /// <param name="value">The input <see langword="nint"/> value to test.</param>
     /// <param name="target">The target <see langword="nint"/> value to test for.</param>
     /// <param name="delta">The maximum distance to allow between <paramref name="value"/> and <paramref name="target"/>.</param>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is less than or equal to <paramref name="delta"/> away from <paramref name="target"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsCloseTo(nint value, nint target, nuint delta)
     {
@@ -179,6 +188,7 @@ partial class Check
     /// <param name="value">The input <see langword="nint"/> value to test.</param>
     /// <param name="target">The target <see langword="nint"/> value to test for.</param>
     /// <param name="delta">The maximum distance to allow between <paramref name="value"/> and <paramref name="target"/>.</param>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is more than <paramref name="delta"/> away from <paramref name="target"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNotCloseTo(nint value, nint target, nuint delta)
     {

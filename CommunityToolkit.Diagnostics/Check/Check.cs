@@ -22,7 +22,7 @@ public static partial class Check
     /// </summary>
     /// <typeparam name="T">The type of reference value type being tested.</typeparam>
     /// <param name="value">The input value to test.</param>
-    /// <returns>True if the value is null, False otherwise.</returns>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is <see langword="null"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNull<T>(T? value)
     {
@@ -34,6 +34,7 @@ public static partial class Check
     /// </summary>
     /// <typeparam name="T">The type of nullable value type being tested.</typeparam>
     /// <param name="value">The input value to test.</param>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is <see langword="null"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNull<T>(T? value)
         where T : struct
@@ -46,6 +47,7 @@ public static partial class Check
     /// </summary>
     /// <typeparam name="T">The type of reference value type being tested.</typeparam>
     /// <param name="value">The input value to test.</param>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is not <see langword="null"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNotNull<T>([NotNull] T? value)
     {
@@ -57,6 +59,7 @@ public static partial class Check
     /// </summary>
     /// <typeparam name="T">The type of nullable value type being tested.</typeparam>
     /// <param name="value">The input value to test.</param>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is not <see langword="null"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNotNull<T>([NotNull] T? value)
         where T : struct
@@ -69,6 +72,7 @@ public static partial class Check
     /// </summary>
     /// <typeparam name="T">The type of the input value.</typeparam>
     /// <param name="value">The input <see cref="object"/> to test.</param>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is of type <typeparamref name="T"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsOfType<T>(object value)
     {
@@ -80,6 +84,7 @@ public static partial class Check
     /// </summary>
     /// <typeparam name="T">The type of the input value.</typeparam>
     /// <param name="value">The input <see cref="object"/> to test.</param>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is not of type <typeparamref name="T"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNotOfType<T>(object value)
     {
@@ -91,6 +96,7 @@ public static partial class Check
     /// </summary>
     /// <param name="value">The input <see cref="object"/> to test.</param>
     /// <param name="type">The type to look for.</param>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is of type <paramref name="type"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsOfType(object value, Type type)
     {
@@ -102,6 +108,7 @@ public static partial class Check
     /// </summary>
     /// <param name="value">The input <see cref="object"/> to test.</param>
     /// <param name="type">The type to look for.</param>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is not of type <paramref name="type"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNotOfType(object value, Type type)
     {
@@ -113,6 +120,7 @@ public static partial class Check
     /// </summary>
     /// <typeparam name="T">The type to check the input value against.</typeparam>
     /// <param name="value">The input <see cref="object"/> to test.</param>
+    /// <returns><see langword="true"/> if <paramref name="value"/> can be assigned to type <typeparamref name="T"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsAssignableToType<T>(object value)
     {
@@ -124,6 +132,7 @@ public static partial class Check
     /// </summary>
     /// <typeparam name="T">The type to check the input value against.</typeparam>
     /// <param name="value">The input <see cref="object"/> to test.</param>
+    /// <returns><see langword="true"/> if <paramref name="value"/> cannot be assigned to type <typeparamref name="T"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNotAssignableToType<T>(object value)
     {
@@ -135,6 +144,7 @@ public static partial class Check
     /// </summary>
     /// <param name="value">The input <see cref="object"/> to test.</param>
     /// <param name="type">The type to look for.</param>
+    /// <returns><see langword="true"/> if <paramref name="value"/> can be assigned to type <paramref name="type"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsAssignableToType(object value, Type type)
     {
@@ -146,6 +156,7 @@ public static partial class Check
     /// </summary>
     /// <param name="value">The input <see cref="object"/> to test.</param>
     /// <param name="type">The type to look for.</param>
+    /// <returns><see langword="true"/> if <paramref name="value"/> cannot be assigned to type <paramref name="type"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNotAssignableToType(object value, Type type)
     {
@@ -159,6 +170,7 @@ public static partial class Check
     /// <param name="value">The input <typeparamref name="T"/> value to test.</param>
     /// <param name="target">The target <typeparamref name="T"/> value to test for.</param>
     /// <remarks>The method is generic to prevent using it with value types.</remarks>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is the same instance as <paramref name="target"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsReferenceEqualTo<T>(T value, T target)
         where T : class
@@ -173,6 +185,7 @@ public static partial class Check
     /// <param name="value">The input <typeparamref name="T"/> value to test.</param>
     /// <param name="target">The target <typeparamref name="T"/> value to test for.</param>
     /// <remarks>The method is generic to prevent using it with value types.</remarks>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is not the same instance as <paramref name="target"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsReferenceNotEqualTo<T>(T value, T target)
         where T : class

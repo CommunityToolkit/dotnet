@@ -15,6 +15,7 @@ partial class Check
     /// Checks that the input <see cref="Task"/> instance is in a completed state.
     /// </summary>
     /// <param name="task">The input <see cref="Task"/> instance to test.</param>
+    /// <returns><see langword="true"/> if <paramref name="task"/> is in a completed state, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsCompleted(Task task)
     {
@@ -25,7 +26,7 @@ partial class Check
     /// Checks that the input <see cref="Task"/> instance is not in a completed state.
     /// </summary>
     /// <param name="task">The input <see cref="Task"/> instance to test.</param>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="task"/> is in a completed state.</exception>
+    /// <returns><see langword="true"/> if <paramref name="task"/> is not in a completed state, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNotCompleted(Task task)
     {
@@ -36,10 +37,9 @@ partial class Check
     /// Checks that the input <see cref="Task"/> instance has been completed successfully.
     /// </summary>
     /// <param name="task">The input <see cref="Task"/> instance to test.</param>
-    /// <param name="name">The name of the input parameter being tested.</param>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="task"/> has not been completed successfully.</exception>
+    /// <returns><see langword="true"/> if <paramref name="task"/> has been completed successfully, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsCompletedSuccessfully(Task task, [CallerArgumentExpression("task")] string name = "")
+    public static bool IsCompletedSuccessfully(Task task)
     {
         return task.Status == TaskStatus.RanToCompletion;
     }
@@ -48,10 +48,9 @@ partial class Check
     /// Checks that the input <see cref="Task"/> instance has not been completed successfully.
     /// </summary>
     /// <param name="task">The input <see cref="Task"/> instance to test.</param>
-    /// <param name="name">The name of the input parameter being tested.</param>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="task"/> has been completed successfully.</exception>
+    /// <returns><see langword="true"/> if <paramref name="task"/> has not been completed successfully, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsNotCompletedSuccessfully(Task task, [CallerArgumentExpression("task")] string name = "")
+    public static bool IsNotCompletedSuccessfully(Task task)
     {
         return task.Status != TaskStatus.RanToCompletion;
     }
@@ -60,10 +59,9 @@ partial class Check
     /// Checks that the input <see cref="Task"/> instance is faulted.
     /// </summary>
     /// <param name="task">The input <see cref="Task"/> instance to test.</param>
-    /// <param name="name">The name of the input parameter being tested.</param>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="task"/> is not faulted.</exception>
+    /// <returns><see langword="true"/> if <paramref name="task"/> is faulted, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsFaulted(Task task, [CallerArgumentExpression("task")] string name = "")
+    public static bool IsFaulted(Task task)
     {
         return task.IsFaulted;
     }
@@ -72,6 +70,7 @@ partial class Check
     /// Checks that the input <see cref="Task"/> instance is not faulted.
     /// </summary>
     /// <param name="task">The input <see cref="Task"/> instance to test.</param>
+    /// <returns><see langword="true"/> if <paramref name="task"/> is not faulted, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNotFaulted(Task task)
     {
@@ -82,6 +81,7 @@ partial class Check
     /// Checks that the input <see cref="Task"/> instance is canceled.
     /// </summary>
     /// <param name="task">The input <see cref="Task"/> instance to test.</param>
+    /// <returns><see langword="true"/> if <paramref name="task"/> is canceled, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsCanceled(Task task)
     {
@@ -92,6 +92,7 @@ partial class Check
     /// Checks that the input <see cref="Task"/> instance is not canceled.
     /// </summary>
     /// <param name="task">The input <see cref="Task"/> instance to test.</param>
+    /// <returns><see langword="true"/> if <paramref name="task"/> is not canceled, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNotCanceled(Task task)
     {
@@ -103,6 +104,7 @@ partial class Check
     /// </summary>
     /// <param name="task">The input <see cref="Task"/> instance to test.</param>
     /// <param name="status">The task status that is accepted.</param>
+    /// <returns><see langword="true"/> if <paramref name="task"/> is in state <paramref name="status"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool HasStatusEqualTo(Task task, TaskStatus status)
     {
@@ -114,10 +116,9 @@ partial class Check
     /// </summary>
     /// <param name="task">The input <see cref="Task"/> instance to test.</param>
     /// <param name="status">The task status that is accepted.</param>
-    /// <param name="name">The name of the input parameter being tested.</param>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="task"/> matches <paramref name="status"/>.</exception>
+    /// <returns><see langword="true"/> if <paramref name="task"/> is not in state <paramref name="status"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool HasStatusNotEqualTo(Task task, TaskStatus status, [CallerArgumentExpression("task")] string name = "")
+    public static bool HasStatusNotEqualTo(Task task, TaskStatus status)
     {
         return task.Status != status;
     }

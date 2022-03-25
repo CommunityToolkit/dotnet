@@ -14,6 +14,7 @@ partial class Check
     /// Checks that the input <see cref="Stream"/> instance must support reading.
     /// </summary>
     /// <param name="stream">The input <see cref="Stream"/> instance to test.</param>
+    /// <returns><see langword="true"/> if <paramref name="stream"/> supports reading, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool CanRead(Stream stream)
     {
@@ -24,6 +25,7 @@ partial class Check
     /// Checks that the input <see cref="Stream"/> instance must support writing.
     /// </summary>
     /// <param name="stream">The input <see cref="Stream"/> instance to test.</param>
+    /// <returns><see langword="true"/> if <paramref name="stream"/> supports writing, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool CanWrite(Stream stream)
     {
@@ -34,6 +36,7 @@ partial class Check
     /// Checks that the input <see cref="Stream"/> instance must support seeking.
     /// </summary>
     /// <param name="stream">The input <see cref="Stream"/> instance to test.</param>
+    /// <returns><see langword="true"/> if <paramref name="stream"/> supports seeking, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool CanSeek(Stream stream)
     {
@@ -44,6 +47,7 @@ partial class Check
     /// Checks that the input <see cref="Stream"/> instance must be at the starting position.
     /// </summary>
     /// <param name="stream">The input <see cref="Stream"/> instance to test.</param>
+    /// <returns><see langword="true"/> if <paramref name="stream"/> is at the starting position, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsAtStartPosition(Stream stream)
     {

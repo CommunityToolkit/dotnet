@@ -20,6 +20,7 @@ GenerateTextForItems(EnumerableTypes, item =>
     /// </summary>
     /// <typeparam name="T">The item of items in the input <#=item.XmlType#> instance.</typeparam>
     /// <param name="<#=item.Name#>">The input <#=item.XmlType#> instance to check the size for.</param>
+    /// <returns><see langword="true"/> if <paramref name="<#=item.Name#>"/> is empty, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsEmpty<T>(<#=item.Type#> <#=item.Name#>)
     {
@@ -31,6 +32,7 @@ GenerateTextForItems(EnumerableTypes, item =>
     /// </summary>
     /// <typeparam name="T">The item of items in the input <#=item.XmlType#> instance.</typeparam>
     /// <param name="<#=item.Name#>">The input <#=item.XmlType#> instance to check the size for.</param>
+    /// <returns><see langword="true"/> if <paramref name="<#=item.Name#>"/> is not empty, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNotEmpty<T>(<#=item.Type#> <#=item.Name#>)
     {
@@ -43,6 +45,7 @@ GenerateTextForItems(EnumerableTypes, item =>
     /// <typeparam name="T">The item of items in the input <#=item.XmlType#> instance.</typeparam>
     /// <param name="<#=item.Name#>">The input <#=item.XmlType#> instance to check the size for.</param>
     /// <param name="size">The target size to test.</param>
+    /// <returns><see langword="true"/> if the length of <paramref name="<#=item.Name#>"/> is <paramref name="size"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool HasSizeEqualTo<T>(<#=item.Type#> <#=item.Name#>, int size)
     {
@@ -55,6 +58,7 @@ GenerateTextForItems(EnumerableTypes, item =>
     /// <typeparam name="T">The item of items in the input <#=item.XmlType#> instance.</typeparam>
     /// <param name="<#=item.Name#>">The input <#=item.XmlType#> instance to check the size for.</param>
     /// <param name="size">The target size to test.</param>
+    /// <returns><see langword="true"/> if the length of <paramref name="<#=item.Name#>"/> not is <paramref name="size"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool HasSizeNotEqualTo<T>(<#=item.Type#> <#=item.Name#>, int size)
     {
@@ -67,6 +71,7 @@ GenerateTextForItems(EnumerableTypes, item =>
     /// <typeparam name="T">The item of items in the input <#=item.XmlType#> instance.</typeparam>
     /// <param name="<#=item.Name#>">The input <#=item.XmlType#> instance to check the size for.</param>
     /// <param name="size">The target size to test.</param>
+    /// <returns><see langword="true"/> if the length of <paramref name="<#=item.Name#>"/> is greater than <paramref name="size"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool HasSizeGreaterThan<T>(<#=item.Type#> <#=item.Name#>, int size)
     {
@@ -79,6 +84,7 @@ GenerateTextForItems(EnumerableTypes, item =>
     /// <typeparam name="T">The item of items in the input <#=item.XmlType#> instance.</typeparam>
     /// <param name="<#=item.Name#>">The input <#=item.XmlType#> instance to check the size for.</param>
     /// <param name="size">The target size to test.</param>
+    /// <returns><see langword="true"/> if the length of <paramref name="<#=item.Name#>"/> is greater than or equal to <paramref name="size"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool HasSizeGreaterThanOrEqualTo<T>(<#=item.Type#> <#=item.Name#>, int size)
     {
@@ -91,6 +97,7 @@ GenerateTextForItems(EnumerableTypes, item =>
     /// <typeparam name="T">The item of items in the input <#=item.XmlType#> instance.</typeparam>
     /// <param name="<#=item.Name#>">The input <#=item.XmlType#> instance to check the size for.</param>
     /// <param name="size">The target size to test.</param>
+    /// <returns><see langword="true"/> if the length of <paramref name="<#=item.Name#>"/> is less than <paramref name="size"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool HasSizeLessThan<T>(<#=item.Type#> <#=item.Name#>, int size)
     {
@@ -103,6 +110,7 @@ GenerateTextForItems(EnumerableTypes, item =>
     /// <typeparam name="T">The item of items in the input <#=item.XmlType#> instance.</typeparam>
     /// <param name="<#=item.Name#>">The input <#=item.XmlType#> instance to check the size for.</param>
     /// <param name="size">The target size to test.</param>
+    /// <returns><see langword="true"/> if the length of <paramref name="<#=item.Name#>"/> is less than or equal to <paramref name="size"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool HasSizeLessThanOrEqualTo<T>(<#=item.Type#> <#=item.Name#>, int size)
     {
@@ -115,6 +123,7 @@ GenerateTextForItems(EnumerableTypes, item =>
     /// <typeparam name="T">The item of items in the input <#=item.XmlType#> instance.</typeparam>
     /// <param name="source">The source <#=item.XmlType#> instance to check the size for.</param>
     /// <param name="destination">The destination <#=item.XmlType#> instance to check the size for.</param>
+    /// <returns><see langword="true"/> if <paramref name="source"/> is the same length as <paramref name="destination"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool HasSizeEqualTo<T>(<#=item.Type#> source, <#=item.DestinationType#> destination)
     {
@@ -127,6 +136,7 @@ GenerateTextForItems(EnumerableTypes, item =>
     /// <typeparam name="T">The item of items in the input <#=item.XmlType#> instance.</typeparam>
     /// <param name="source">The source <#=item.XmlType#> instance to check the size for.</param>
     /// <param name="destination">The destination <#=item.XmlType#> instance to check the size for.</param>
+    /// <returns><see langword="true"/> if the length of <paramref name="source"/> is less than or equal to the length of <paramref name="destination"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool HasSizeLessThanOrEqualTo<T>(<#=item.Type#> source, <#=item.DestinationType#> destination)
     {
@@ -139,6 +149,7 @@ GenerateTextForItems(EnumerableTypes, item =>
     /// <typeparam name="T">The item of items in the input <#=item.XmlType#> instance.</typeparam>
     /// <param name="index">The input index to be used to access <paramref name="<#=item.Name#>"/>.</param>
     /// <param name="<#=item.Name#>">The input <#=item.XmlType#> instance to use to validate <paramref name="index"/>.</param>
+    /// <returns><see langword="true"/> if <paramref name="index"/> is a valid index in <paramref name="<#=item.Name#>"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsInRangeFor<T>(int index, <#=item.Type#> <#=item.Name#>)
     {
@@ -158,6 +169,7 @@ GenerateTextForItems(EnumerableTypes, item =>
     /// <typeparam name="T">The item of items in the input <#=item.XmlType#> instance.</typeparam>
     /// <param name="index">The input index to be used to access <paramref name="<#=item.Name#>"/>.</param>
     /// <param name="<#=item.Name#>">The input <#=item.XmlType#> instance to use to validate <paramref name="index"/>.</param>
+    /// <returns><see langword="true"/> if <paramref name="index"/> is not a valid index in <paramref name="<#=item.Name#>"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNotInRangeFor<T>(int index, <#=item.Type#> <#=item.Name#>)
     {

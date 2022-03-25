@@ -20,6 +20,7 @@ var (type, prefix) = typeInfo;
     /// </summary>
     /// <param name="value">The input <see <#=prefix#>="<#=type#>"/> value to test.</param>
     /// <param name="target">The target <see <#=prefix#>="<#=type#>"/> value to test for.</param>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is equal to <paramref name="target"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsEqualTo(<#=type#> value, <#=type#> target)
     {
@@ -32,6 +33,7 @@ var (type, prefix) = typeInfo;
     /// <param name="value">The input <see <#=prefix#>="<#=type#>"/> value to test.</param>
     /// <param name="target">The target <see <#=prefix#>="<#=type#>"/> value to test for.</param>
     /// <remarks>The method is generic to avoid boxing the parameters, if they are value types.</remarks>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is not equal to <paramref name="target"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNotEqualTo(<#=type#> value, <#=type#> target)
     {
@@ -44,6 +46,7 @@ var (type, prefix) = typeInfo;
     /// <param name="value">The input <see <#=prefix#>="<#=type#>"/> value to test.</param>
     /// <param name="maximum">The exclusive maximum <see <#=prefix#>="<#=type#>"/> value that is accepted.</param>
     /// <remarks>The method is generic to avoid boxing the parameters, if they are value types.</remarks>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is less than <paramref name="maximum"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsLessThan(<#=type#> value, <#=type#> maximum)
     {
@@ -56,6 +59,7 @@ var (type, prefix) = typeInfo;
     /// <param name="value">The input <see <#=prefix#>="<#=type#>"/> value to test.</param>
     /// <param name="maximum">The inclusive maximum <see <#=prefix#>="<#=type#>"/> value that is accepted.</param>
     /// <remarks>The method is generic to avoid boxing the parameters, if they are value types.</remarks>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is less than or equal to <paramref name="maximum"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsLessThanOrEqualTo(<#=type#> value, <#=type#> maximum)
     {
@@ -68,6 +72,7 @@ var (type, prefix) = typeInfo;
     /// <param name="value">The input <see <#=prefix#>="<#=type#>"/> value to test.</param>
     /// <param name="minimum">The exclusive minimum <see <#=prefix#>="<#=type#>"/> value that is accepted.</param>
     /// <remarks>The method is generic to avoid boxing the parameters, if they are value types.</remarks>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is greater than <paramref name="minimum"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsGreaterThan(<#=type#> value, <#=type#> minimum)
     {
@@ -80,6 +85,7 @@ var (type, prefix) = typeInfo;
     /// <param name="value">The input <see <#=prefix#>="<#=type#>"/> value to test.</param>
     /// <param name="minimum">The inclusive minimum <see <#=prefix#>="<#=type#>"/> value that is accepted.</param>
     /// <remarks>The method is generic to avoid boxing the parameters, if they are value types.</remarks>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is greater than or equal to <paramref name="minimum"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsGreaterThanOrEqualTo(<#=type#> value, <#=type#> minimum)
     {
@@ -96,6 +102,7 @@ var (type, prefix) = typeInfo;
     /// This API Checks the equivalent of "<paramref name="value"/> in [<paramref name="minimum"/>, <paramref name="maximum"/>)", using arithmetic notation.
     /// The method is generic to avoid boxing the parameters, if they are value types.
     /// </remarks>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is within the range <paramref name="minimum"/> to <paramref name="maximum"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsInRange(<#=type#> value, <#=type#> minimum, <#=type#> maximum)
     {
@@ -112,6 +119,7 @@ var (type, prefix) = typeInfo;
     /// This API Checks the equivalent of "<paramref name="value"/> not in [<paramref name="minimum"/>, <paramref name="maximum"/>)", using arithmetic notation.
     /// The method is generic to avoid boxing the parameters, if they are value types.
     /// </remarks>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is not within the range <paramref name="minimum"/> to <paramref name="maximum"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNotInRange(<#=type#> value, <#=type#> minimum, <#=type#> maximum)
     {
@@ -128,6 +136,7 @@ var (type, prefix) = typeInfo;
     /// This API Checks the equivalent of "<paramref name="value"/> in (<paramref name="minimum"/>, <paramref name="maximum"/>)", using arithmetic notation.
     /// The method is generic to avoid boxing the parameters, if they are value types.
     /// </remarks>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is between <paramref name="minimum"/> and <paramref name="maximum"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsBetween(<#=type#> value, <#=type#> minimum, <#=type#> maximum)
     {
@@ -144,6 +153,7 @@ var (type, prefix) = typeInfo;
     /// This API Checks the equivalent of "<paramref name="value"/> not in (<paramref name="minimum"/>, <paramref name="maximum"/>)", using arithmetic notation.
     /// The method is generic to avoid boxing the parameters, if they are value types.
     /// </remarks>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is not between <paramref name="minimum"/> and <paramref name="maximum"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNotBetween(<#=type#> value, <#=type#> minimum, <#=type#> maximum)
     {
@@ -160,6 +170,7 @@ var (type, prefix) = typeInfo;
     /// This API Checks the equivalent of "<paramref name="value"/> in [<paramref name="minimum"/>, <paramref name="maximum"/>]", using arithmetic notation.
     /// The method is generic to avoid boxing the parameters, if they are value types.
     /// </remarks>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is between or equal to <paramref name="minimum"/> and <paramref name="maximum"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsBetweenOrEqualTo(<#=type#> value, <#=type#> minimum, <#=type#> maximum)
     {
@@ -176,6 +187,7 @@ var (type, prefix) = typeInfo;
     /// This API Checks the equivalent of "<paramref name="value"/> not in [<paramref name="minimum"/>, <paramref name="maximum"/>]", using arithmetic notation.
     /// The method is generic to avoid boxing the parameters, if they are value types.
     /// </remarks>
+    /// <returns><see langword="true"/> if <paramref name="value"/> is not between or equal to <paramref name="minimum"/> and <paramref name="maximum"/>, <see langword="false"/> otherwise.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNotBetweenOrEqualTo(<#=type#> value, <#=type#> minimum, <#=type#> maximum)
     {
