@@ -509,11 +509,9 @@ public partial class Test_ObservablePropertyAttribute
         //Assert.AreEqual(NullabilityState.NotNull, rightInfo2.ReadState);
         //Assert.AreEqual(NullabilityState.NotNull, rightInfo2.WriteState);
 
-        // The commented out lines are to work around a weird behavior of the NullabilityInfo API there.
-        // Arguably we're pushing them a bit far here, but it's fine. Even with those cases commented out,
-        // the test is already more than enough, plus we can also double check the behavior by looking at
-        // the generated code. Thoe lines can be uncommented once the behavior is either clarified, or if
-        // it happens to be a bug which is then fixed in a future version of .NET, once we upgrade as well.
+        // The commented out lines are to work around a bug in the NullabilityInfo API in .NET 6.
+        // This has been fixed for .NET 7: https://github.com/dotnet/runtime/pull/63556. The test
+        // cases above can be uncommented when the .NET 7 target (or a more recent version) is added.
     }
 #endif
 
