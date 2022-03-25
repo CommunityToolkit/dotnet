@@ -441,6 +441,27 @@ public partial class Test_ICommandAttribute
         Assert.IsTrue(model.Result2 is OperationCanceledException);
     }
 
+    [TestMethod]
+    public async Task Test_ICommandAttribute_TaskOfTReturns()
+    {
+        GenericTaskCommands model = new();
+
+        Task greetCommandTask = model.GreetCommand.ExecuteAsync(null);
+        Task greetWithTokenTask = model.GreetWithTokenCommand.ExecuteAsync(null);
+        Task greetWithParamTask = model.GreetWithParamCommand.ExecuteAsync(null);
+        Task greetWithParamAndCommandTask = model.GreetWithParamAndTokenCommand.ExecuteAsync(null);
+
+        Assert.IsInstanceOfType(greetCommandTask, typeof(Task<string>));
+        Assert.IsInstanceOfType(greetWithTokenTask, typeof(Task<string>));
+        Assert.IsInstanceOfType(greetWithParamTask, typeof(Task<string>));
+        Assert.IsInstanceOfType(greetWithParamAndCommandTask, typeof(Task<string>));
+
+        Assert.AreEqual("Hello world", await (Task<string>)greetCommandTask);
+        Assert.AreEqual("Hello world", await (Task<string>)greetWithTokenTask);
+        Assert.AreEqual("Hello world", await (Task<string>)greetWithParamTask);
+        Assert.AreEqual("Hello world", await (Task<string>)greetWithParamAndCommandTask);
+    }
+
     #region Region
     public class Region
     {
@@ -729,6 +750,41 @@ public partial class Test_ICommandAttribute
             {
                 Result2 = e;
             }
+        }
+    }
+
+    public partial class GenericTaskCommands
+    {
+        [ICommand]
+        private async Task<string> GreetAsync()
+        {
+            await Task.Yield();
+
+            return "Hello world";
+        }
+
+        [ICommand]
+        private async Task<string> GreetWithTokenAsync(CancellationToken token)
+        {
+            await Task.Yield();
+
+            return "Hello world";
+        }
+
+        [ICommand]
+        private async Task<string> GreetWithParamAsync(object _)
+        {
+            await Task.Yield();
+
+            return "Hello world";
+        }
+
+        [ICommand]
+        private async Task<string> GreetWithParamAndTokenAsync(object _, CancellationToken token)
+        {
+            await Task.Yield();
+
+            return "Hello world";
         }
     }
 }

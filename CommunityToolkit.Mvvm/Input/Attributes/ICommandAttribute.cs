@@ -51,11 +51,15 @@ namespace CommunityToolkit.Mvvm.Input;
 /// <code>
 /// Task Method();
 /// Task Method(CancellationToken);
+/// Task&lt;T&gt; Method();
+/// Task&lt;T&gt; Method(CancellationToken);
 /// </code>
 /// Will both generate an <see cref="IAsyncRelayCommand"/> property (using an <see cref="AsyncRelayCommand{T}"/> instance).
 /// <code>
 /// Task Method(T?);
 /// Task Method(T?, CancellationToken);
+/// Task&lt;T&gt; Method(T?);
+/// Task&lt;T&gt; Method(T?, CancellationToken);
 /// </code>
 /// Will both generate an <see cref="IAsyncRelayCommand{T}"/> property (using an <see cref="AsyncRelayCommand{T}"/> instance).
 /// </para>
