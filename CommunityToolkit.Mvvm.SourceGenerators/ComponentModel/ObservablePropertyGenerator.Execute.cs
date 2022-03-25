@@ -49,8 +49,7 @@ partial class ObservablePropertyGenerator
             }
 
             // Get the property type and name
-            string typeName = fieldSymbol.Type.GetFullyQualifiedName();
-            bool isNullableReferenceType = fieldSymbol.Type is { IsReferenceType: true, NullableAnnotation: NullableAnnotation.Annotated };
+            string typeNameWithNullabilityAnnotations = fieldSymbol.Type.GetFullyQualifiedNameWithNullabilityAnnotations();
             string fieldName = fieldSymbol.Name;
             string propertyName = GetGeneratedPropertyName(fieldSymbol);
 
@@ -124,8 +123,7 @@ partial class ObservablePropertyGenerator
             diagnostics = builder.ToImmutable();
 
             return new(
-                typeName,
-                isNullableReferenceType,
+                typeNameWithNullabilityAnnotations,
                 fieldName,
                 propertyName,
                 propertyChangingNames.ToImmutable(),
@@ -406,10 +404,8 @@ partial class ObservablePropertyGenerator
         {
             ImmutableArray<StatementSyntax>.Builder setterStatements = ImmutableArray.CreateBuilder<StatementSyntax>();
 
-            // Get the property type syntax (adding the nullability annotation, if needed)
-            TypeSyntax propertyType = propertyInfo.IsNullableReferenceType
-                ? NullableType(IdentifierName(propertyInfo.TypeName))
-                : IdentifierName(propertyInfo.TypeName);
+            // Get the property type syntax
+            TypeSyntax propertyType = IdentifierName(propertyInfo.TypeNameWithNullabilityAnnotations);
 
             // In case the backing field is exactly named "value", we need to add the "this." prefix to ensure that comparisons and assignments
             // with it in the generated setter body are executed correctly and without conflicts with the implicit value parameter.
@@ -602,10 +598,8 @@ partial class ObservablePropertyGenerator
         /// <returns>The generated <see cref="MemberDeclarationSyntax"/> instances for the <c>OnPropertyChanging</c> and <c>OnPropertyChanged</c> methods.</returns>
         public static ImmutableArray<MemberDeclarationSyntax> GetOnPropertyChangeMethodsSyntax(PropertyInfo propertyInfo)
         {
-            // Get the parameter type syntax (adding the nullability annotation, if needed)
-            TypeSyntax parameterType = propertyInfo.IsNullableReferenceType
-                ? NullableType(IdentifierName(propertyInfo.TypeName))
-                : IdentifierName(propertyInfo.TypeName);
+            // Get the property type syntax
+            TypeSyntax parameterType = IdentifierName(propertyInfo.TypeNameWithNullabilityAnnotations);
 
             // Construct the generated method as follows:
             //

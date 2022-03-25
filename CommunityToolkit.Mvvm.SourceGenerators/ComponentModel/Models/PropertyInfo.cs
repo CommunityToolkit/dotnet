@@ -14,8 +14,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 /// <summary>
 /// A model representing an generated property
 /// </summary>
-/// <param name="TypeName">The type name for the generated property.</param>
-/// <param name="IsNullableReferenceType">Whether or not the property is of a nullable reference type.</param>
+/// <param name="TypeNameWithNullabilityAnnotations">The type name for the generated property, including nullability annotations.</param>
 /// <param name="FieldName">The field name.</param>
 /// <param name="PropertyName">The generated property name.</param>
 /// <param name="PropertyChangingNames">The sequence of property changing properties to notify.</param>
@@ -24,8 +23,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 /// <param name="AlsoBroadcastChange">Whether or not the generated property also broadcasts changes.</param>
 /// <param name="ValidationAttributes">The sequence of validation attributes for the generated property.</param>
 internal sealed record PropertyInfo(
-    string TypeName,
-    bool IsNullableReferenceType,
+    string TypeNameWithNullabilityAnnotations,
     string FieldName,
     string PropertyName,
     ImmutableArray<string> PropertyChangingNames,
@@ -42,8 +40,7 @@ internal sealed record PropertyInfo(
         /// <inheritdoc/>
         protected override void AddToHashCode(ref HashCode hashCode, PropertyInfo obj)
         {
-            hashCode.Add(obj.TypeName);
-            hashCode.Add(obj.IsNullableReferenceType);
+            hashCode.Add(obj.TypeNameWithNullabilityAnnotations);
             hashCode.Add(obj.FieldName);
             hashCode.Add(obj.PropertyName);
             hashCode.AddRange(obj.PropertyChangingNames);
@@ -57,8 +54,7 @@ internal sealed record PropertyInfo(
         protected override bool AreEqual(PropertyInfo x, PropertyInfo y)
         {
             return
-                x.TypeName == y.TypeName &&
-                x.IsNullableReferenceType == y.IsNullableReferenceType &&
+                x.TypeNameWithNullabilityAnnotations == y.TypeNameWithNullabilityAnnotations &&
                 x.FieldName == y.FieldName &&
                 x.PropertyName == y.PropertyName &&
                 x.PropertyChangingNames.SequenceEqual(y.PropertyChangingNames) &&

@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -417,6 +418,103 @@ public partial class Test_ObservablePropertyAttribute
         Assert.AreEqual(propertyName, messages[0].Message.PropertyName);
     }
 
+#if NET6_0_OR_GREATER
+    // See https://github.com/CommunityToolkit/dotnet/issues/155
+    [TestMethod]
+    public void Test_ObservableProperty_NullabilityAnnotations_Simple()
+    {
+        // List<string?>?
+        NullabilityInfoContext context = new();
+        NullabilityInfo info = context.Create(typeof(NullableRepro).GetProperty(nameof(NullableRepro.NullableList))!);
+
+        Assert.AreEqual(typeof(List<string>), info.Type);
+        Assert.AreEqual(NullabilityState.Nullable, info.ReadState);
+        Assert.AreEqual(NullabilityState.Nullable, info.WriteState);
+        Assert.AreEqual(1, info.GenericTypeArguments.Length);
+
+        NullabilityInfo elementInfo = info.GenericTypeArguments[0];
+
+        Assert.AreEqual(typeof(string), elementInfo.Type);
+        Assert.AreEqual(NullabilityState.Nullable, elementInfo.ReadState);
+        Assert.AreEqual(NullabilityState.Nullable, elementInfo.WriteState);
+    }
+
+    // See https://github.com/CommunityToolkit/dotnet/issues/155
+    [TestMethod]
+    public void Test_ObservableProperty_NullabilityAnnotations_Complex()
+    {
+        // Foo<Foo<string?, int>.Bar<object?>?, StrongBox<Foo<int, string?>.Bar<object>?>?>?
+        NullabilityInfoContext context = new();
+        NullabilityInfo info = context.Create(typeof(NullableRepro).GetProperty(nameof(NullableRepro.NullableMess))!);
+
+        Assert.AreEqual(typeof(Foo<Foo<string?, int>.Bar<object?>?, StrongBox<Foo<int, string?>.Bar<object>?>?>), info.Type);
+        Assert.AreEqual(NullabilityState.Nullable, info.ReadState);
+        Assert.AreEqual(NullabilityState.Nullable, info.WriteState);
+        Assert.AreEqual(2, info.GenericTypeArguments.Length);
+
+        NullabilityInfo leftInfo = info.GenericTypeArguments[0];
+
+        Assert.AreEqual(typeof(Foo<string?, int>.Bar<object?>), leftInfo.Type);
+        Assert.AreEqual(NullabilityState.Nullable, leftInfo.ReadState);
+        Assert.AreEqual(NullabilityState.Nullable, leftInfo.WriteState);
+        Assert.AreEqual(3, leftInfo.GenericTypeArguments.Length);
+
+        NullabilityInfo leftInfo0 = leftInfo.GenericTypeArguments[0];
+
+        Assert.AreEqual(typeof(string), leftInfo0.Type);
+        Assert.AreEqual(NullabilityState.Nullable, leftInfo0.ReadState);
+        Assert.AreEqual(NullabilityState.Nullable, leftInfo0.WriteState);
+
+        NullabilityInfo leftInfo1 = leftInfo.GenericTypeArguments[1];
+
+        Assert.AreEqual(typeof(int), leftInfo1.Type);
+        Assert.AreEqual(NullabilityState.NotNull, leftInfo1.ReadState);
+        Assert.AreEqual(NullabilityState.NotNull, leftInfo1.WriteState);
+
+        NullabilityInfo leftInfo2 = leftInfo.GenericTypeArguments[2];
+
+        Assert.AreEqual(typeof(object), leftInfo2.Type);
+        Assert.AreEqual(NullabilityState.Nullable, leftInfo2.ReadState);
+        Assert.AreEqual(NullabilityState.Nullable, leftInfo2.WriteState);
+
+        NullabilityInfo rightInfo = info.GenericTypeArguments[1];
+
+        Assert.AreEqual(typeof(StrongBox<Foo<int, string?>.Bar<object>?>), rightInfo.Type);
+        Assert.AreEqual(NullabilityState.Nullable, rightInfo.ReadState);
+        Assert.AreEqual(NullabilityState.Nullable, rightInfo.WriteState);
+        Assert.AreEqual(1, rightInfo.GenericTypeArguments.Length);
+
+        NullabilityInfo rightInnerInfo = rightInfo.GenericTypeArguments[0];
+
+        Assert.AreEqual(typeof(Foo<int, string?>.Bar<object>), rightInnerInfo.Type);
+        Assert.AreEqual(NullabilityState.Nullable, rightInnerInfo.ReadState);
+        Assert.AreEqual(NullabilityState.Nullable, rightInnerInfo.WriteState);
+        Assert.AreEqual(3, rightInnerInfo.GenericTypeArguments.Length);
+
+        NullabilityInfo rightInfo0 = rightInnerInfo.GenericTypeArguments[0];
+
+        Assert.AreEqual(typeof(int), rightInfo0.Type);
+        Assert.AreEqual(NullabilityState.NotNull, rightInfo0.ReadState);
+        Assert.AreEqual(NullabilityState.NotNull, rightInfo0.WriteState);
+
+        NullabilityInfo rightInfo1 = rightInnerInfo.GenericTypeArguments[1];
+
+        Assert.AreEqual(typeof(string), rightInfo1.Type);
+        Assert.AreEqual(NullabilityState.Nullable, rightInfo1.ReadState);
+        Assert.AreEqual(NullabilityState.Nullable, rightInfo1.WriteState);
+
+        NullabilityInfo rightInfo2 = rightInnerInfo.GenericTypeArguments[2];
+
+        Assert.AreEqual(typeof(object), rightInfo2.Type);
+        //Assert.AreEqual(NullabilityState.NotNull, rightInfo2.ReadState);
+        //Assert.AreEqual(NullabilityState.NotNull, rightInfo2.WriteState);
+
+        // The commented out lines are to work around a bug in the NullabilityInfo API in .NET 6.
+        // This has been fixed for .NET 7: https://github.com/dotnet/runtime/pull/63556. The test
+        // cases above can be uncommented when the .NET 7 target (or a more recent version) is added.
+    }
+#endif
+
     public partial class SampleModel : ObservableObject
     {
         /// <summary>
@@ -704,4 +802,22 @@ public partial class Test_ObservablePropertyAttribute
         [AlsoBroadcastChange]
         private string? name2;
     }
+
+#if NET6_0_OR_GREATER
+    private partial class NullableRepro : ObservableObject
+    {
+        [ObservableProperty]
+        private List<string?>? nullableList;
+
+        [ObservableProperty]
+        private Foo<Foo<string?, int>.Bar<object?>?, StrongBox<Foo<int, string?>.Bar<object>?>?>? nullableMess;
+    }
+
+    private class Foo<T1, T2>
+    {
+        public class Bar<T>
+        {
+        }
+    }
+#endif
 }
