@@ -999,6 +999,47 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
+    public void FieldWithOrphanedDependentObservablePropertyAttributesError_AlsoBroadcastChange()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class MyViewModel
+                {
+                    [AlsoBroadcastChange]
+                    public int number;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0020");
+    }
+
+    [TestMethod]
+    public void FieldWithOrphanedDependentObservablePropertyAttributesError_MultipleUsesStillGenerateOnlyASingleDiagnostic()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class MyViewModel
+                {
+                    [AlsoNotifyChangeFor("")]
+                    [AlsoNotifyChangeFor("")]
+                    [AlsoNotifyChangeFor("")]
+                    [AlsoNotifyCanExecuteFor("")]
+                    [AlsoNotifyCanExecuteFor("")]
+                    [AlsoBroadcastChange]
+                    public int number;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0020");
+    }
+
+    [TestMethod]
     public void InvalidAttributeCombinationForObservableRecipientAttributeError()
     {
         string source = @"
@@ -1018,6 +1059,25 @@ public class Test_SourceGeneratorsDiagnostics
             }";
 
         VerifyGeneratedDiagnostics<ObservableRecipientGenerator>(source, "MVVMTK0021");
+    }
+
+    [TestMethod]
+    public void InvalidContainingTypeForAlsoBroadcastChangeFieldError_ObservableObject()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class MyViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    [AlsoBroadcastChange]
+                    public int number;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0022");
     }
 
     /// <summary>

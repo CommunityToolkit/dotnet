@@ -21,7 +21,7 @@ public class Test_SourceGeneratorAttributes
         Assert.Fail();
 #endif
         Assert.AreEqual(3, typeof(TestModel).GetCustomAttributes().Count(a => a.GetType().FullName!.Contains("CommunityToolkit.Mvvm")));
-        Assert.AreEqual(3, typeof(TestModel).GetField(nameof(TestModel.name))!.GetCustomAttributes().Count(a => a.GetType().FullName!.Contains("CommunityToolkit.Mvvm")));
+        Assert.AreEqual(4, typeof(TestModel).GetField(nameof(TestModel.name))!.GetCustomAttributes().Count(a => a.GetType().FullName!.Contains("CommunityToolkit.Mvvm")));
         Assert.AreEqual(1, typeof(TestModel).GetMethod(nameof(TestModel.Test))!.GetCustomAttributes().Count(a => a.GetType().FullName!.Contains("CommunityToolkit.Mvvm")));
     }
 
@@ -33,6 +33,7 @@ public class Test_SourceGeneratorAttributes
         [ObservableProperty]
         [AlsoNotifyChangeFor("")]
         [AlsoNotifyCanExecuteFor("")]
+        [AlsoBroadcastChange]
         public string? name;
 
         [ICommand]

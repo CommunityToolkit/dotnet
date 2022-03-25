@@ -75,6 +75,7 @@ partial class ObservablePropertyGenerator
             ImmutableArray<string>.Builder propertyChangingNames = ImmutableArray.CreateBuilder<string>();
             ImmutableArray<string>.Builder notifiedCommandNames = ImmutableArray.CreateBuilder<string>();
             ImmutableArray<AttributeInfo>.Builder validationAttributes = ImmutableArray.CreateBuilder<AttributeInfo>();
+            bool alsoBroadcastChange = false;
 
             // Track the property changing event for the property, if the type supports it
             if (shouldInvokeOnPropertyChanging)
@@ -90,7 +91,8 @@ partial class ObservablePropertyGenerator
             {
                 // Gather dependent property and command names
                 if (TryGatherDependentPropertyChangedNames(fieldSymbol, attributeData, propertyChangedNames, builder) ||
-                    TryGatherDependentCommandNames(fieldSymbol, attributeData, notifiedCommandNames, builder))
+                    TryGatherDependentCommandNames(fieldSymbol, attributeData, notifiedCommandNames, builder) ||
+                    TryGetIsBroadcastingChanges(fieldSymbol, attributeData, builder, out alsoBroadcastChange))
                 {
                     continue;
                 }
@@ -129,6 +131,7 @@ partial class ObservablePropertyGenerator
                 propertyChangingNames.ToImmutable(),
                 propertyChangedNames.ToImmutable(),
                 notifiedCommandNames.ToImmutable(),
+                alsoBroadcastChange,
                 validationAttributes.ToImmutable());
         }
 
@@ -327,6 +330,48 @@ partial class ObservablePropertyGenerator
         }
 
         /// <summary>
+        /// Checks whether a given generated property should also broadcast changes.
+        /// </summary>
+        /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
+        /// <param name="attributeData">The <see cref="AttributeData"/> instance for <paramref name="fieldSymbol"/>.</param>
+        /// <param name="diagnostics">The current collection of gathered diagnostics.</param>
+        /// <param name="alsoBroadcastChange">Whether or not the resulting property should also broadcast changes.</param>
+        /// <returns>Whether or not the generated property for <paramref name="fieldSymbol"/> used <c>[AlsoBroadcastChange]</c>.</returns>
+        private static bool TryGetIsBroadcastingChanges(
+            IFieldSymbol fieldSymbol,
+            AttributeData attributeData,
+            ImmutableArray<Diagnostic>.Builder diagnostics,
+            out bool alsoBroadcastChange)
+        {
+            if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoBroadcastChangeAttribute") == true)
+            {
+                // If the containing type is valid, track it
+                if (fieldSymbol.ContainingType.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableRecipient") ||
+                    fieldSymbol.ContainingType.HasOrInheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableRecipientAttribute"))
+                {
+                    alsoBroadcastChange = true;
+
+                    return true;
+                }
+
+                // Otherwise just emit the diagnostic and then ignore the attribute
+                diagnostics.Add(
+                    InvalidContainingTypeForAlsoBroadcastChangeFieldError,
+                    fieldSymbol,
+                    fieldSymbol.ContainingType,
+                    fieldSymbol.Name);
+
+                alsoBroadcastChange = false;
+
+                return true;
+            }
+
+            alsoBroadcastChange = false;
+
+            return false;
+        }
+
+        /// <summary>
         /// Gets a <see cref="CompilationUnitSyntax"/> instance with the cached args for property changing notifications.
         /// </summary>
         /// <param name="names">The sequence of property names to cache args for.</param>
@@ -361,6 +406,33 @@ partial class ObservablePropertyGenerator
         {
             ImmutableArray<StatementSyntax>.Builder setterStatements = ImmutableArray.CreateBuilder<StatementSyntax>();
 
+            // Get the property type syntax (adding the nullability annotation, if needed)
+            TypeSyntax propertyType = propertyInfo.IsNullableReferenceType
+                ? NullableType(IdentifierName(propertyInfo.TypeName))
+                : IdentifierName(propertyInfo.TypeName);
+
+            // In case the backing field is exactly named "value", we need to add the "this." prefix to ensure that comparisons and assignments
+            // with it in the generated setter body are executed correctly and without conflicts with the implicit value parameter.
+            ExpressionSyntax fieldExpression = propertyInfo.FieldName switch
+            {
+                "value" => MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, ThisExpression(), IdentifierName("value")),
+                string name => IdentifierName(name)
+            };
+
+            if (propertyInfo.AlsoBroadcastChange)
+            {
+                // If broadcasting changes are required, also store the old value.
+                // This code generates a statement as follows:
+                //
+                // <PROPERTY_TYPE> __oldValue = <FIELD_EXPRESSIONS>;
+                setterStatements.Add(
+                    LocalDeclarationStatement(
+                        VariableDeclaration(propertyType)
+                        .AddVariables(
+                            VariableDeclarator(Identifier("__oldValue"))
+                            .WithInitializer(EqualsValueClause(fieldExpression)))));
+            }
+
             // Add the OnPropertyChanging() call first:
             //
             // On<PROPERTY_NAME>Changing(value);
@@ -383,14 +455,6 @@ partial class ObservablePropertyGenerator
                             IdentifierName("global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs"),
                             IdentifierName(propertyName))))));
             }
-
-            // In case the backing field is exactly named "value", we need to add the "this." prefix to ensure that comparisons and assignments
-            // with it in the generated setter body are executed correctly and without conflicts with the implicit value parameter.
-            ExpressionSyntax fieldExpression = propertyInfo.FieldName switch
-            {
-                "value" => MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, ThisExpression(), IdentifierName("value")),
-                string name => IdentifierName(name)
-            };
 
             // Add the assignment statement:
             //
@@ -452,10 +516,20 @@ partial class ObservablePropertyGenerator
                             IdentifierName("NotifyCanExecuteChanged")))));
             }
 
-            // Get the property type syntax (adding the nullability annotation, if needed)
-            TypeSyntax propertyType = propertyInfo.IsNullableReferenceType
-                ? NullableType(IdentifierName(propertyInfo.TypeName))
-                : IdentifierName(propertyInfo.TypeName);
+            // Also broadcast the change, if requested
+            if (propertyInfo.AlsoBroadcastChange)
+            {
+                // This code generates a statement as follows:
+                //
+                // Broadcast(__oldValue, value, "<PROPERTY_NAME>");
+                setterStatements.Add(
+                    ExpressionStatement(
+                        InvocationExpression(IdentifierName("Broadcast"))
+                        .AddArgumentListArguments(
+                            Argument(IdentifierName("__oldValue")),
+                            Argument(IdentifierName("value")),
+                            Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(propertyInfo.PropertyName))))));
+            }
 
             // Generate the inner setter block as follows:
             //

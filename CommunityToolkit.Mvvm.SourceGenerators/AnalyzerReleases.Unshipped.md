@@ -26,3 +26,4 @@ MVVMTK0018 | CommunityToolkit.Mvvm.SourceGenerators.ObservableObjectGenerator | 
 MVVMTK0019 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Error | See https://aka.ms/mvvmtoolkit/error
 MVVMTK0020 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Error | See https://aka.ms/mvvmtoolkit/error
 MVVMTK0021 | CommunityToolkit.Mvvm.SourceGenerators.ObservableRecipientGenerator | Error | See https://aka.ms/mvvmtoolkit/error
+MVVMTK0022 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Error | See https://aka.ms/mvvmtoolkit/error
