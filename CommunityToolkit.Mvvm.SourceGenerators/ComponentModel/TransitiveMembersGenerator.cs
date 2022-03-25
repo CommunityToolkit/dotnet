@@ -124,9 +124,7 @@ public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGe
             ImmutableArray<MemberDeclarationSyntax> filteredMemberDeclarations = FilterDeclaredMembers(item.Info, sourceMemberDeclarations);
             CompilationUnitSyntax compilationUnit = item.Hierarchy.GetCompilationUnit(filteredMemberDeclarations, this.classDeclaration.BaseList);
 
-            context.AddSource(
-                hintName: $"{item.Hierarchy.FilenameHint}.cs",
-                sourceText: SourceText.From(compilationUnit.ToFullString(), Encoding.UTF8));
+            context.AddSource(item.Hierarchy.FilenameHint, compilationUnit.ToFullString());
         });
     }
 

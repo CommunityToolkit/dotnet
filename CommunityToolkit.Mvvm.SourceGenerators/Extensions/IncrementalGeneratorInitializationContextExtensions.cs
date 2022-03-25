@@ -50,12 +50,9 @@ internal static class IncrementalGeneratorInitializationContextExtensions
             .Select(static (item, _) => item.Length > 0);
 
         // Report them to the output
-        context.RegisterSourceOutput(isUnsupportedAttributeUsed, (context, diagnostic) =>
+        context.RegisterConditionalSourceOutput(isUnsupportedAttributeUsed, context =>
         {
-            if (diagnostic)
-            {
-                context.ReportDiagnostic(Diagnostic.Create(diagnosticDescriptor, null));
-            }
+            context.ReportDiagnostic(Diagnostic.Create(diagnosticDescriptor, null));
         });
 
         // Only let data through if the minimum language version is supported
@@ -66,9 +63,31 @@ internal static class IncrementalGeneratorInitializationContextExtensions
     }
 
     /// <summary>
+    /// Conditionally invokes <see cref="IncrementalGeneratorInitializationContext.RegisterSourceOutput{TSource}(IncrementalValueProvider{TSource}, Action{SourceProductionContext, TSource})"/>
+    /// if the value produced by the input <see cref="IncrementalValueProvider{TValue}"/> is <see langword="true"/>.
+    /// </summary>
+    /// <param name="context">The input <see cref="IncrementalGeneratorInitializationContext"/> value being used.</param>
+    /// <param name="source">The source <see cref="IncrementalValueProvider{TValues}"/> instance.</param>
+    /// <param name="action">The conditional <see cref="Action"/> to invoke.</param>
+    public static void RegisterConditionalSourceOutput(
+        this IncrementalGeneratorInitializationContext context,
+        IncrementalValueProvider<bool> source,
+        Action<SourceProductionContext> action)
+    {
+        context.RegisterSourceOutput(source, (context, condition) =>
+        {
+            if (condition)
+            {
+                action(context);
+            }
+        });
+    }
+
+    /// <summary>
     /// Conditionally invokes <see cref="IncrementalGeneratorInitializationContext.RegisterImplementationSourceOutput{TSource}(IncrementalValueProvider{TSource}, Action{SourceProductionContext, TSource})"/>
     /// if the value produced by the input <see cref="IncrementalValueProvider{TValue}"/> is <see langword="true"/>, and also supplying a given input state.
     /// </summary>
+    /// <typeparam name="T">The type of state to pass to the source production callback to invoke.</typeparam>
     /// <param name="context">The input <see cref="IncrementalGeneratorInitializationContext"/> value being used.</param>
     /// <param name="source">The source <see cref="IncrementalValueProvider{TValues}"/> instance.</param>
     /// <param name="action">The conditional <see cref="Action{T}"/> to invoke.</param>

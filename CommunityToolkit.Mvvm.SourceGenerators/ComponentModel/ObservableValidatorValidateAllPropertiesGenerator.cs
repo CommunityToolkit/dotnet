@@ -56,9 +56,7 @@ public sealed partial class ObservableValidatorValidateAllPropertiesGenerator : 
         {
             CompilationUnitSyntax compilationUnit = Execute.GetSyntax(item);
 
-            context.AddSource(
-                hintName: "__ObservableValidatorExtensions.cs",
-                sourceText: SourceText.From(compilationUnit.ToFullString(), Encoding.UTF8));
+            context.AddSource("__ObservableValidatorExtensions", compilationUnit.ToFullString());
         });
 
         // Generate the class with all validation methods
@@ -66,9 +64,7 @@ public sealed partial class ObservableValidatorValidateAllPropertiesGenerator : 
         {
             CompilationUnitSyntax compilationUnit = Execute.GetSyntax(item);
 
-            context.AddSource(
-                hintName: $"{item.FilenameHint}.cs",
-                sourceText: SourceText.From(compilationUnit.ToFullString(), Encoding.UTF8));
+            context.AddSource(item.FilenameHint, compilationUnit.ToFullString());
         });
     }
 }
