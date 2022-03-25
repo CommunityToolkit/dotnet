@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Net;
@@ -139,24 +138,6 @@ public static class StringExtensions
     /// <param name="length">The maximum length.</param>
     /// <returns>Truncated string.</returns>
     public static string Truncate(this string? value, int length) => Truncate(value, length, false);
-
-    /// <summary>
-    /// Provide better linking for resourced strings.
-    /// </summary>
-    /// <param name="format">The format of the string being linked.</param>
-    /// <param name="args">The object which will receive the linked String.</param>
-    /// <returns>Truncated string.</returns>
-    [Obsolete("This method will be removed in a future version of the Toolkit. Use the native C# string interpolation syntax instead, see: https://docs.microsoft.com/dotnet/csharp/language-reference/tokens/interpolated")]
-    public static string AsFormat(this string format, params object[] args)
-    {
-        // Note: this extension was originally added to help developers using {x:Bind} in XAML, but
-        // due to a known limitation in the UWP/WinUI XAML compiler, using either this method or the
-        // standard string.Format method from the BCL directly doesn't always work. Since this method
-        // doesn't actually provide any benefit over the built-in one, it has been marked as obsolete.
-        // For more details, see the WinUI issue on the XAML compiler limitation here:
-        // https://github.com/microsoft/microsoft-ui-xaml/issues/2654.
-        return string.Format(format, args);
-    }
 
     /// <summary>
     /// Truncates a string to the specified length.
