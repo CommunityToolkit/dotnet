@@ -317,9 +317,16 @@ partial class ICommandGenerator
             foreach (ISymbol symbol in methodSymbol.ContainingType.GetMembers(methodSymbol.Name))
             {
                 if (symbol is IMethodSymbol otherSymbol &&
-                    !SymbolEqualityComparer.Default.Equals(methodSymbol, otherSymbol) &&
                     otherSymbol.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.ICommandAttribute"))
                 {
+                    // If the first [ICommand] overload is the current symbol, return immediately. This makes it so
+                    // that if multiple overloads are present, only the ones after the first declared one will have
+                    // diagnostics generated for them, while the first one will remain valid and will keep working.
+                    if (SymbolEqualityComparer.Default.Equals(methodSymbol, otherSymbol))
+                    {
+                        return true;
+                    }
+
                     diagnostics.Add(
                         MultipleICommandMethodOverloadsError,
                         methodSymbol,
