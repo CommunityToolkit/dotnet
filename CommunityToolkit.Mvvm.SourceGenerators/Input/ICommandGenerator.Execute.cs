@@ -36,6 +36,12 @@ partial class ICommandGenerator
         {
             ImmutableArray<Diagnostic>.Builder builder = ImmutableArray.CreateBuilder<Diagnostic>();
 
+            // Validate the method definition is unique
+            if (!IsCommandDefinitionUnique(methodSymbol, builder))
+            {
+                goto Failure;
+            }
+
             // Get the command field and property names
             (string fieldName, string propertyName) = GetGeneratedFieldAndPropertyNames(methodSymbol);
 
@@ -301,6 +307,33 @@ partial class ICommandGenerator
         }
 
         /// <summary>
+        /// Validates that a target method used as source for a command is unique within its containing type.
+        /// </summary>
+        /// <param name="methodSymbol">The input <see cref="IMethodSymbol"/> instance to process.</param>
+        /// <param name="diagnostics">The current collection of gathered diagnostics.</param>
+        /// <returns>Whether or not <paramref name="methodSymbol"/> was unique within its containing type.</returns>
+        private static bool IsCommandDefinitionUnique(IMethodSymbol methodSymbol, ImmutableArray<Diagnostic>.Builder diagnostics)
+        {
+            foreach (ISymbol symbol in methodSymbol.ContainingType.GetMembers(methodSymbol.Name))
+            {
+                if (symbol is IMethodSymbol otherSymbol &&
+                    !SymbolEqualityComparer.Default.Equals(methodSymbol, otherSymbol) &&
+                    otherSymbol.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.ICommandAttribute"))
+                {
+                    diagnostics.Add(
+                        MultipleICommandMethodOverloadsError,
+                        methodSymbol,
+                        methodSymbol.ContainingType,
+                        methodSymbol);
+
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// Get the generated field and property names for the input method.
         /// </summary>
         /// <param name="methodSymbol">The input <see cref="IMethodSymbol"/> instance to process.</param>
@@ -554,7 +587,7 @@ partial class ICommandGenerator
 
             if (memberName is null)
             {
-                diagnostics.Add(InvalidCanExecuteMemberName, methodSymbol, memberName ?? string.Empty, methodSymbol.ContainingType);
+                diagnostics.Add(InvalidCanExecuteMemberNameError, methodSymbol, memberName ?? string.Empty, methodSymbol.ContainingType);
 
                 goto Failure;
             }
@@ -571,11 +604,11 @@ partial class ICommandGenerator
                     return true;
                 }
 
-                diagnostics.Add(InvalidCanExecuteMemberName, methodSymbol, memberName, methodSymbol.ContainingType);
+                diagnostics.Add(InvalidCanExecuteMemberNameError, methodSymbol, memberName, methodSymbol.ContainingType);
             }
             else if (canExecuteSymbols.Length > 1)
             {
-                diagnostics.Add(MultipleCanExecuteMemberNameMatches, methodSymbol, memberName, methodSymbol.ContainingType);
+                diagnostics.Add(MultipleCanExecuteMemberNameMatchesError, methodSymbol, memberName, methodSymbol.ContainingType);
             }
             else if (TryGetCanExecuteExpressionFromSymbol(canExecuteSymbols[0], commandTypeArguments, out canExecuteExpressionType))
             {
@@ -585,7 +618,7 @@ partial class ICommandGenerator
             }
             else
             {
-                diagnostics.Add(InvalidCanExecuteMember, methodSymbol, memberName, methodSymbol.ContainingType);
+                diagnostics.Add(InvalidCanExecuteMemberError, methodSymbol, memberName, methodSymbol.ContainingType);
             }
 
             Failure:
