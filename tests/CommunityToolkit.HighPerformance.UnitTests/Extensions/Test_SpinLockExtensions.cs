@@ -33,6 +33,7 @@ public class Test_SpinLockExtensions
         Assert.AreEqual(sum, 1000 * 10);
     }
 
+#if !NETFRAMEWORK
     [TestMethod]
     public void Test_ArrayExtensions_Ref()
     {
@@ -44,11 +45,7 @@ public class Test_SpinLockExtensions
         {
             for (int j = 0; j < 10; j++)
             {
-#if NETFRAMEWORK
-                using (SpinLockExtensions.Enter(spinLockOwner, ref spinLockOwner.Lock))
-#else
                 using (spinLockOwner.Lock.Enter())
-#endif
                 {
                     sum++;
                 }
@@ -57,6 +54,7 @@ public class Test_SpinLockExtensions
 
         Assert.AreEqual(sum, 1000 * 10);
     }
+#endif
 
     /// <summary>
     /// A dummy model that owns a <see cref="SpinLock"/> object.

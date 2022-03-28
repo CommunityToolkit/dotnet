@@ -57,7 +57,7 @@ public static class SpinLockExtensions
         /// </summary>
         /// <param name="spinLock">The target <see cref="SpinLock"/> to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public UnsafeLock(SpinLock* spinLock)
+        internal UnsafeLock(SpinLock* spinLock)
         {
             this.spinLock = spinLock;
             this.lockTaken = false;
@@ -103,33 +103,6 @@ public static class SpinLockExtensions
     {
         return new(ref spinLock);
     }
-#else
-    /// <summary>
-    /// Enters a specified <see cref="SpinLock"/> instance and returns a wrapper to use to release the lock.
-    /// This extension should be used though a <see langword="using"/> block or statement:
-    /// <code>
-    /// private SpinLock spinLock = new SpinLock();
-    ///
-    /// public void Foo()
-    /// {
-    ///     using (SpinLockExtensions.Enter(this, ref spinLock))
-    ///     {
-    ///         // Thread-safe code here...
-    ///     }
-    /// }
-    /// </code>
-    /// The compiler will take care of releasing the SpinLock when the code goes out of that <see langword="using"/> scope.
-    /// </summary>
-    /// <param name="owner">The owner <see cref="object"/> to create a portable reference for.</param>
-    /// <param name="spinLock">The target <see cref="SpinLock"/> to use (it must be within <paramref name="owner"/>).</param>
-    /// <returns>A wrapper type that will release <paramref name="spinLock"/> when its <see cref="System.IDisposable.Dispose"/> method is called.</returns>
-    /// <remarks>The returned <see cref="Lock"/> value shouldn't be used directly: use this extension in a <see langword="using"/> block or statement.</remarks>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Lock Enter(object owner, ref SpinLock spinLock)
-    {
-        return new(owner, ref spinLock);
-    }
-#endif
 
     /// <summary>
     /// A <see langword="struct"/> that is used to enter and hold a <see cref="SpinLock"/> through a <see langword="using"/> block or statement.
@@ -150,34 +123,18 @@ public static class SpinLockExtensions
         /// </summary>
         private readonly bool lockTaken;
 
-#if NETSTANDARD2_1_OR_GREATER
         /// <summary>
         /// Initializes a new instance of the <see cref="Lock"/> struct.
         /// </summary>
         /// <param name="spinLock">The target <see cref="SpinLock"/> to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Lock(ref SpinLock spinLock)
+        internal Lock(ref SpinLock spinLock)
         {
             this.spinLock = new Ref<SpinLock>(ref spinLock);
             this.lockTaken = false;
 
             spinLock.Enter(ref this.lockTaken);
         }
-#else
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Lock"/> struct.
-        /// </summary>
-        /// <param name="owner">The owner <see cref="object"/> to create a portable reference for.</param>
-        /// <param name="spinLock">The target <see cref="SpinLock"/> to use (it must be within <paramref name="owner"/>).</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Lock(object owner, ref SpinLock spinLock)
-        {
-            this.spinLock = new Ref<SpinLock>(owner, ref spinLock);
-            this.lockTaken = false;
-
-            spinLock.Enter(ref this.lockTaken);
-        }
-#endif
 
         /// <summary>
         /// Implements the duck-typed <see cref="System.IDisposable.Dispose"/> method and releases the current <see cref="SpinLock"/> instance.
@@ -191,4 +148,5 @@ public static class SpinLockExtensions
             }
         }
     }
+#endif
 }
