@@ -4,7 +4,9 @@
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+#if NETSTANDARD2_1_OR_GREATER
 using System.Runtime.Versioning;
+#endif
 using System.Threading;
 
 namespace CommunityToolkit.HighPerformance;
@@ -48,7 +50,7 @@ public static class SpinLockExtensions
         private readonly SpinLock* spinLock;
 
         /// <summary>
-        /// A value indicating whether or not the lock is taken by this <see cref="Lock"/> instance.
+        /// A value indicating whether or not the lock is taken by this <see cref="UnsafeLock"/> instance.
         /// </summary>
         private readonly bool lockTaken;
 
