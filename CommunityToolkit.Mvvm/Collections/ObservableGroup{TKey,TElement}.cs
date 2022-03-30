@@ -5,7 +5,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using CommunityToolkit.Mvvm.Collections.Internals;
 
 namespace CommunityToolkit.Mvvm.Collections;
@@ -67,6 +69,19 @@ public sealed class ObservableGroup<TKey, TElement> : ObservableCollection<TElem
                 OnPropertyChanged(ObservableGroupHelper.KeyChangedEventArgs);
             }
         }
+    }
+
+    /// <summary>
+    /// Tries to get the underlying <see cref="List{T}"/> instance, if present.
+    /// </summary>
+    /// <param name="list">The resulting <see cref="List{T}"/>, if one was in use.</param>
+    /// <returns>Whether or not a <see cref="List{T}"/> instance has been found.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal bool TryGetList([NotNullWhen(true)] out List<TElement>? list)
+    {
+        list = Items as List<TElement>;
+
+        return list is not null;
     }
 
     /// <inheritdoc/>

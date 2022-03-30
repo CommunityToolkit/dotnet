@@ -4,13 +4,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace CommunityToolkit.Mvvm.Collections;
 
 /// <summary>
-/// The extensions methods to simplify the usage of <see cref="ObservableGroupedCollection{TKey, TValue}"/>.
+/// The extensions methods to simplify the usage of <see cref="ObservableGroupedCollection{TKey, TElement}"/>.
 /// </summary>
 public static class ObservableGroupedCollectionExtensions
 {
@@ -18,18 +20,19 @@ public static class ObservableGroupedCollectionExtensions
     /// Return the first group with <paramref name="key"/> key.
     /// </summary>
     /// <typeparam name="TKey">The type of the group key.</typeparam>
-    /// <typeparam name="TValue">The type of the items in the collection.</typeparam>
-    /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TValue}"/> instance.</param>
+    /// <typeparam name="TElement">The type of the items in the collection.</typeparam>
+    /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TElement}"/> instance.</param>
     /// <param name="key">The key of the group to query.</param>
     /// <returns>The first group matching <paramref name="key"/>.</returns>
     /// <exception cref="InvalidOperationException">The target group does not exist.</exception>
-    public static ObservableGroup<TKey, TValue> First<TKey, TValue>(this ObservableGroupedCollection<TKey, TValue> source, TKey key)
+    public static ObservableGroup<TKey, TElement> FirstGroupByKey<TKey, TElement>(this ObservableGroupedCollection<TKey, TElement> source, TKey key)
         where TKey : notnull
     {
-        ObservableGroup<TKey, TValue>? group = source.FirstOrDefault(key);
+        ObservableGroup<TKey, TElement>? group = source.FirstGroupByKeyOrDefault(key);
 
         if (group is null)
         {
+            [DoesNotReturn]
             static void ThrowArgumentExceptionForKeyNotFound()
             {
                 throw new InvalidOperationException("The requested key was not present in the collection.");
@@ -38,23 +41,23 @@ public static class ObservableGroupedCollectionExtensions
             ThrowArgumentExceptionForKeyNotFound();
         }
 
-        return group!;
+        return group;
     }
 
     /// <summary>
     /// Return the first group with <paramref name="key"/> key or null if not found.
     /// </summary>
     /// <typeparam name="TKey">The type of the group key.</typeparam>
-    /// <typeparam name="TValue">The type of the items in the collection.</typeparam>
-    /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TValue}"/> instance.</param>
+    /// <typeparam name="TElement">The type of the items in the collection.</typeparam>
+    /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TElement}"/> instance.</param>
     /// <param name="key">The key of the group to query.</param>
     /// <returns>The first group matching <paramref name="key"/> or null.</returns>
-    public static ObservableGroup<TKey, TValue>? FirstOrDefault<TKey, TValue>(this ObservableGroupedCollection<TKey, TValue> source, TKey key)
+    public static ObservableGroup<TKey, TElement>? FirstGroupByKeyOrDefault<TKey, TElement>(this ObservableGroupedCollection<TKey, TElement> source, TKey key)
         where TKey : notnull
     {
-        if (source.TryGetList(out List<ObservableGroup<TKey, TValue>>? list))
+        if (source.TryGetList(out List<ObservableGroup<TKey, TElement>>? list))
         {
-            foreach (ObservableGroup<TKey, TValue>? group in list)
+            foreach (ObservableGroup<TKey, TElement>? group in list)
             {
                 if (EqualityComparer<TKey>.Default.Equals(group.Key, key))
                 {
@@ -65,111 +68,415 @@ public static class ObservableGroupedCollectionExtensions
             return null;
         }
 
-        // Fallback method
         [MethodImpl(MethodImplOptions.NoInlining)]
-        static ObservableGroup<TKey, TValue>? FirstOrDefaultWithLinq(ObservableGroupedCollection<TKey, TValue> source, TKey key)
+        static ObservableGroup<TKey, TElement>? FirstOrDefaultFallback(ObservableGroupedCollection<TKey, TElement> source, TKey key)
         {
-            return Enumerable.FirstOrDefault<ObservableGroup<TKey, TValue>>(source, group => EqualityComparer<TKey>.Default.Equals(group.Key, key));
+            return Enumerable.FirstOrDefault<ObservableGroup<TKey, TElement>>(source, group => EqualityComparer<TKey>.Default.Equals(group.Key, key));
         }
 
-        return FirstOrDefaultWithLinq(source, key);
+        return FirstOrDefaultFallback(source, key);
     }
 
     /// <summary>
-    /// Return the element at position <paramref name="index"/> from the first group with <paramref name="key"/> key.
+    /// Adds a key-value <see cref="ObservableGroup{TKey, TElement}"/> item into a target <see cref="ObservableGroupedCollection{TKey, TElement}"/>.
     /// </summary>
     /// <typeparam name="TKey">The type of the group key.</typeparam>
-    /// <typeparam name="TValue">The type of the items in the collection.</typeparam>
-    /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TValue}"/> instance.</param>
-    /// <param name="key">The key of the group to query.</param>
-    /// <param name="index">The index of the item from the targeted group.</param>
-    /// <returns>The element.</returns>
-    /// <exception cref="InvalidOperationException">The target group does not exist.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is less than zero or <paramref name="index"/> is greater than the group elements' count.</exception>
-    public static TValue ElementAt<TKey, TValue>(
-        this ObservableGroupedCollection<TKey, TValue> source,
-        TKey key,
-        int index)
-        where TKey : notnull
-        => source.First(key)[index];
-
-    /// <summary>
-    /// Return the element at position <paramref name="index"/> from the first group with <paramref name="key"/> key.
-    /// </summary>
-    /// <typeparam name="TKey">The type of the group key.</typeparam>
-    /// <typeparam name="TValue">The type of the items in the collection.</typeparam>
-    /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TValue}"/> instance.</param>
-    /// <param name="key">The key of the group to query.</param>
-    /// <param name="index">The index of the item from the targeted group.</param>
-    /// <returns>The element or default(TValue) if it does not exist.</returns>
-    public static TValue? ElementAtOrDefault<TKey, TValue>(
-        this ObservableGroupedCollection<TKey, TValue> source,
-        TKey key,
-        int index)
+    /// <typeparam name="TElement">The type of the items in the collection.</typeparam>
+    /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TElement}"/> instance.</param>
+    /// <param name="key">The key of the group to add.</param>
+    /// <returns>The added <see cref="ObservableGroup{TKey, TValue}"/>.</returns>
+    public static ObservableGroup<TKey, TElement> AddGroup<TKey, TElement>(this ObservableGroupedCollection<TKey, TElement> source, TKey key)
         where TKey : notnull
     {
-        ObservableGroup<TKey, TValue>? group = source.FirstOrDefault(key);
+        ObservableGroup<TKey, TElement> group = new(key);
 
-        if (group is null ||
-            (uint)index >= (uint)group.Count)
-        {
-            return default;
-        }
-
-        return group[index];
-    }
-
-    /// <summary>
-    /// Adds a key-value <see cref="ObservableGroup{TKey, TValue}"/> item into a target <see cref="ObservableGroupedCollection{TKey, TValue}"/>.
-    /// </summary>
-    /// <typeparam name="TKey">The type of the group key.</typeparam>
-    /// <typeparam name="TValue">The type of the items in the collection.</typeparam>
-    /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TValue}"/> instance.</param>
-    /// <param name="key">The key of the group where <paramref name="value"/> will be added.</param>
-    /// <param name="value">The value to add.</param>
-    /// <returns>The added <see cref="ObservableGroup{TKey, TValue}"/>.</returns>
-    public static ObservableGroup<TKey, TValue> AddGroup<TKey, TValue>(
-        this ObservableGroupedCollection<TKey, TValue> source,
-        TKey key,
-        TValue value)
-        where TKey : notnull
-        => AddGroup(source, key, new[] { value });
-
-    /// <summary>
-    /// Adds a key-collection <see cref="ObservableGroup{TKey, TValue}"/> item into a target <see cref="ObservableGroupedCollection{TKey, TValue}"/>.
-    /// </summary>
-    /// <typeparam name="TKey">The type of the group key.</typeparam>
-    /// <typeparam name="TValue">The type of the items in the collection.</typeparam>
-    /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TValue}"/> instance.</param>
-    /// <param name="key">The key of the group where <paramref name="collection"/> will be added.</param>
-    /// <param name="collection">The collection to add.</param>
-    /// <returns>The added <see cref="ObservableGroup{TKey, TValue}"/>.</returns>
-    public static ObservableGroup<TKey, TValue> AddGroup<TKey, TValue>(
-        this ObservableGroupedCollection<TKey, TValue> source,
-        TKey key,
-        params TValue[] collection)
-        where TKey : notnull
-        => source.AddGroup(key, (IEnumerable<TValue>)collection);
-
-    /// <summary>
-    /// Adds a key-collection <see cref="ObservableGroup{TKey, TValue}"/> item into a target <see cref="ObservableGroupedCollection{TKey, TValue}"/>.
-    /// </summary>
-    /// <typeparam name="TKey">The type of the group key.</typeparam>
-    /// <typeparam name="TValue">The type of the items in the collection.</typeparam>
-    /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TValue}"/> instance.</param>
-    /// <param name="key">The key of the group where <paramref name="collection"/> will be added.</param>
-    /// <param name="collection">The collection to add.</param>
-    /// <returns>The added <see cref="ObservableGroup{TKey, TValue}"/>.</returns>
-    public static ObservableGroup<TKey, TValue> AddGroup<TKey, TValue>(
-        this ObservableGroupedCollection<TKey, TValue> source,
-        TKey key,
-        IEnumerable<TValue> collection)
-        where TKey : notnull
-    {
-        ObservableGroup<TKey, TValue>? group = new(key, collection);
         source.Add(group);
 
         return group;
+    }
+
+    /// <summary>
+    /// Adds a key-collection <see cref="ObservableGroup{TKey, TElement}"/> item into a target <see cref="ObservableGroupedCollection{TKey, TElement}"/>.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the group key.</typeparam>
+    /// <typeparam name="TElement">The type of the items in the collection.</typeparam>
+    /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TElement}"/> instance.</param>
+    /// <param name="grouping">The group of items to add.</param>
+    /// <returns>The added <see cref="ObservableGroup{TKey, TValue}"/>.</returns>
+    public static ObservableGroup<TKey, TElement> AddGroup<TKey, TElement>(this ObservableGroupedCollection<TKey, TElement> source, IGrouping<TKey, TElement> grouping)
+        where TKey : notnull
+    {
+        ObservableGroup<TKey, TElement> group = new(grouping);
+
+        source.Add(group);
+
+        return group;
+    }
+
+    /// <summary>
+    /// Adds a key-collection <see cref="ObservableGroup{TKey, TElement}"/> item into a target <see cref="ObservableGroupedCollection{TKey, TElement}"/>.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the group key.</typeparam>
+    /// <typeparam name="TElement">The type of the items in the collection.</typeparam>
+    /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TElement}"/> instance.</param>
+    /// <param name="key">The key of the group where <paramref name="collection"/> will be added.</param>
+    /// <param name="collection">The collection to add.</param>
+    /// <returns>The added <see cref="ObservableGroup{TKey, TElement}"/>.</returns>
+    public static ObservableGroup<TKey, TElement> AddGroup<TKey, TElement>(this ObservableGroupedCollection<TKey, TElement> source, TKey key, IEnumerable<TElement> collection)
+        where TKey : notnull
+    {
+        ObservableGroup<TKey, TElement> group = new(key, collection);
+
+        source.Add(group);
+
+        return group;
+    }
+
+    /// <summary>
+    /// Adds a key-value <see cref="ObservableGroup{TKey, TElement}"/> item into a target <see cref="ObservableGroupedCollection{TKey, TElement}"/>.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the group key.</typeparam>
+    /// <typeparam name="TElement">The type of the items in the collection.</typeparam>
+    /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TElement}"/> instance.</param>
+    /// <param name="key">The key of the group to add.</param>
+    /// <returns>The added <see cref="ObservableGroup{TKey, TValue}"/>.</returns>
+    public static ObservableGroup<TKey, TElement> InsertGroup<TKey, TElement>(this ObservableGroupedCollection<TKey, TElement> source, TKey key)
+        where TKey : notnull
+    {
+        if (source.TryGetList(out List<ObservableGroup<TKey, TElement>>? list))
+        {
+            int index = 0;
+
+            foreach (ObservableGroup<TKey, TElement> group in list)
+            {
+                if (Comparer<TKey>.Default.Compare(key, group.Key) < 0)
+                {
+                    break;
+                }
+
+                index++;
+            }
+
+            ObservableGroup<TKey, TElement> newGroup = new(key);
+
+            source.Insert(index, newGroup);
+
+            return newGroup;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        static ObservableGroup<TKey, TElement> InsertGroupFallback(ObservableGroupedCollection<TKey, TElement> source, TKey key)
+        {
+            int index = 0;
+
+            foreach (ObservableGroup<TKey, TElement> group in source)
+            {
+                if (Comparer<TKey>.Default.Compare(key, group.Key) < 0)
+                {
+                    break;
+                }
+
+                index++;
+            }
+
+            ObservableGroup<TKey, TElement> newGroup = new(key);
+
+            source.Insert(index, newGroup);
+
+            return newGroup;
+        }
+
+        return InsertGroupFallback(source, key);
+    }
+
+    /// <summary>
+    /// Adds a key-value <see cref="ObservableGroup{TKey, TElement}"/> item into a target <see cref="ObservableGroupedCollection{TKey, TElement}"/>.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the group key.</typeparam>
+    /// <typeparam name="TElement">The type of the items in the collection.</typeparam>
+    /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TElement}"/> instance.</param>
+    /// <param name="grouping">The group of items to add.</param>
+    /// <returns>The added <see cref="ObservableGroup{TKey, TValue}"/>.</returns>
+    public static ObservableGroup<TKey, TElement> InsertGroup<TKey, TElement>(this ObservableGroupedCollection<TKey, TElement> source, IGrouping<TKey, TElement> grouping)
+        where TKey : notnull
+    {
+        if (source.TryGetList(out List<ObservableGroup<TKey, TElement>>? list))
+        {
+            int index = 0;
+
+            foreach (ObservableGroup<TKey, TElement> group in list)
+            {
+                if (Comparer<TKey>.Default.Compare(grouping.Key, group.Key) < 0)
+                {
+                    break;
+                }
+
+                index++;
+            }
+
+            ObservableGroup<TKey, TElement> newGroup = new(grouping);
+
+            source.Insert(index, newGroup);
+
+            return newGroup;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        static ObservableGroup<TKey, TElement> InsertGroupFallback(ObservableGroupedCollection<TKey, TElement> source, IGrouping<TKey, TElement> grouping)
+        {
+            int index = 0;
+
+            foreach (ObservableGroup<TKey, TElement> group in source)
+            {
+                if (Comparer<TKey>.Default.Compare(grouping.Key, group.Key) < 0)
+                {
+                    break;
+                }
+
+                index++;
+            }
+
+            ObservableGroup<TKey, TElement> newGroup = new(grouping);
+
+            source.Insert(index, newGroup);
+
+            return newGroup;
+        }
+
+        return InsertGroupFallback(source, grouping);
+    }
+
+    /// <summary>
+    /// Adds a key-value <see cref="ObservableGroup{TKey, TElement}"/> item into a target <see cref="ObservableGroupedCollection{TKey, TElement}"/>.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the group key.</typeparam>
+    /// <typeparam name="TElement">The type of the items in the collection.</typeparam>
+    /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TElement}"/> instance.</param>
+    /// <param name="key">The key of the group where <paramref name="collection"/> will be added.</param>
+    /// <param name="collection">The collection to add.</param>
+    /// <returns>The added <see cref="ObservableGroup{TKey, TValue}"/>.</returns>
+    public static ObservableGroup<TKey, TElement> InsertGroup<TKey, TElement>(this ObservableGroupedCollection<TKey, TElement> source, TKey key, IEnumerable<TElement> collection)
+        where TKey : notnull
+    {
+        if (source.TryGetList(out List<ObservableGroup<TKey, TElement>>? list))
+        {
+            int index = 0;
+
+            foreach (ObservableGroup<TKey, TElement> group in list)
+            {
+                if (Comparer<TKey>.Default.Compare(key, group.Key) < 0)
+                {
+                    break;
+                }
+
+                index++;
+            }
+
+            ObservableGroup<TKey, TElement> newGroup = new(key, collection);
+
+            source.Insert(index, newGroup);
+
+            return newGroup;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        static ObservableGroup<TKey, TElement> InsertGroupFallback(ObservableGroupedCollection<TKey, TElement> source, TKey key, IEnumerable<TElement> collection)
+        {
+            int index = 0;
+
+            foreach (ObservableGroup<TKey, TElement> group in source)
+            {
+                if (Comparer<TKey>.Default.Compare(key, group.Key) < 0)
+                {
+                    break;
+                }
+
+                index++;
+            }
+
+            ObservableGroup<TKey, TElement> newGroup = new(key, collection);
+
+            source.Insert(index, newGroup);
+
+            return newGroup;
+        }
+
+        return InsertGroupFallback(source, key, collection);
+    }
+
+    /// <summary>
+    /// Adds a key-value <see cref="ObservableGroup{TKey, TElement}"/> item into a target <see cref="ObservableGroupedCollection{TKey, TElement}"/>.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the group key.</typeparam>
+    /// <typeparam name="TElement">The type of the items in the collection.</typeparam>
+    /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TElement}"/> instance.</param>
+    /// <param name="key">The key of the group to add.</param>
+    /// <param name="comparer">The <see cref="IComparer{T}"/> instance to insert <typeparamref name="TKey"/> at the right position.</param>
+    /// <returns>The added <see cref="ObservableGroup{TKey, TValue}"/>.</returns>
+    public static ObservableGroup<TKey, TElement> InsertGroup<TKey, TElement>(this ObservableGroupedCollection<TKey, TElement> source, TKey key, IComparer<TKey> comparer)
+        where TKey : notnull
+    {
+        if (source.TryGetList(out List<ObservableGroup<TKey, TElement>>? list))
+        {
+            int index = 0;
+
+            foreach (ObservableGroup<TKey, TElement> group in list)
+            {
+                if (comparer.Compare(key, group.Key) < 0)
+                {
+                    break;
+                }
+
+                index++;
+            }
+
+            ObservableGroup<TKey, TElement> newGroup = new(key);
+
+            source.Insert(index, newGroup);
+
+            return newGroup;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        static ObservableGroup<TKey, TElement> InsertGroupFallback(ObservableGroupedCollection<TKey, TElement> source, TKey key, IComparer<TKey> comparer)
+        {
+            int index = 0;
+
+            foreach (ObservableGroup<TKey, TElement> group in source)
+            {
+                if (comparer.Compare(key, group.Key) < 0)
+                {
+                    break;
+                }
+
+                index++;
+            }
+
+            ObservableGroup<TKey, TElement> newGroup = new(key);
+
+            source.Insert(index, newGroup);
+
+            return newGroup;
+        }
+
+        return InsertGroupFallback(source, key, comparer);
+    }
+
+    /// <summary>
+    /// Adds a key-value <see cref="ObservableGroup{TKey, TElement}"/> item into a target <see cref="ObservableGroupedCollection{TKey, TElement}"/>.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the group key.</typeparam>
+    /// <typeparam name="TElement">The type of the items in the collection.</typeparam>
+    /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TElement}"/> instance.</param>
+    /// <param name="grouping">The group of items to add.</param>
+    /// <param name="comparer">The <see cref="IComparer{T}"/> instance to insert <typeparamref name="TKey"/> at the right position.</param>
+    /// <returns>The added <see cref="ObservableGroup{TKey, TValue}"/>.</returns>
+    public static ObservableGroup<TKey, TElement> InsertGroup<TKey, TElement>(this ObservableGroupedCollection<TKey, TElement> source, IGrouping<TKey, TElement> grouping, IComparer<TKey> comparer)
+        where TKey : notnull
+    {
+        if (source.TryGetList(out List<ObservableGroup<TKey, TElement>>? list))
+        {
+            int index = 0;
+
+            foreach (ObservableGroup<TKey, TElement> group in list)
+            {
+                if (comparer.Compare(grouping.Key, group.Key) < 0)
+                {
+                    break;
+                }
+
+                index++;
+            }
+
+            ObservableGroup<TKey, TElement> newGroup = new(grouping);
+
+            source.Insert(index, newGroup);
+
+            return newGroup;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        static ObservableGroup<TKey, TElement> InsertGroupFallback(ObservableGroupedCollection<TKey, TElement> source, IGrouping<TKey, TElement> grouping, IComparer<TKey> comparer)
+        {
+            int index = 0;
+
+            foreach (ObservableGroup<TKey, TElement> group in source)
+            {
+                if (comparer.Compare(grouping.Key, group.Key) < 0)
+                {
+                    break;
+                }
+
+                index++;
+            }
+
+            ObservableGroup<TKey, TElement> newGroup = new(grouping);
+
+            source.Insert(index, newGroup);
+
+            return newGroup;
+        }
+
+        return InsertGroupFallback(source, grouping, comparer);
+    }
+
+    /// <summary>
+    /// Adds a key-value <see cref="ObservableGroup{TKey, TElement}"/> item into a target <see cref="ObservableGroupedCollection{TKey, TElement}"/>.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the group key.</typeparam>
+    /// <typeparam name="TElement">The type of the items in the collection.</typeparam>
+    /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TElement}"/> instance.</param>
+    /// <param name="key">The key of the group where <paramref name="collection"/> will be added.</param>
+    /// <param name="comparer">The <see cref="IComparer{T}"/> instance to insert <typeparamref name="TKey"/> at the right position.</param>
+    /// <param name="collection">The collection to add.</param>
+    /// <returns>The added <see cref="ObservableGroup{TKey, TValue}"/>.</returns>
+    public static ObservableGroup<TKey, TElement> InsertGroup<TKey, TElement>(this ObservableGroupedCollection<TKey, TElement> source, TKey key, IComparer<TKey> comparer, IEnumerable<TElement> collection)
+        where TKey : notnull
+    {
+        if (source.TryGetList(out List<ObservableGroup<TKey, TElement>>? list))
+        {
+            int index = 0;
+
+            foreach (ObservableGroup<TKey, TElement> group in list)
+            {
+                if (comparer.Compare(key, group.Key) < 0)
+                {
+                    break;
+                }
+
+                index++;
+            }
+
+            ObservableGroup<TKey, TElement> newGroup = new(key, collection);
+
+            source.Insert(index, newGroup);
+
+            return newGroup;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        static ObservableGroup<TKey, TElement> InsertGroupFallback(ObservableGroupedCollection<TKey, TElement> source, TKey key, IComparer<TKey> comparer, IEnumerable<TElement> collection)
+        {
+            int index = 0;
+
+            foreach (ObservableGroup<TKey, TElement> group in source)
+            {
+                if (comparer.Compare(key, group.Key) < 0)
+                {
+                    break;
+                }
+
+                index++;
+            }
+
+            ObservableGroup<TKey, TElement> newGroup = new(key, collection);
+
+            source.Insert(index, newGroup);
+
+            return newGroup;
+        }
+
+        return InsertGroupFallback(source, key, comparer, collection);
     }
 
     /// <summary>
@@ -177,78 +484,157 @@ public static class ObservableGroupedCollectionExtensions
     /// If the group does not exist, it will be added.
     /// </summary>
     /// <typeparam name="TKey">The type of the group key.</typeparam>
-    /// <typeparam name="TValue">The type of the items in the collection.</typeparam>
-    /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TValue}"/> instance.</param>
+    /// <typeparam name="TElement">The type of the items in the collection.</typeparam>
+    /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TElement}"/> instance.</param>
     /// <param name="key">The key of the group where the <paramref name="item"/> should be added.</param>
     /// <param name="item">The item to add.</param>
-    /// <returns>The instance of the <see cref="ObservableGroup{TKey, TValue}"/> which will receive the value. It will either be an existing group or a new group.</returns>
-    public static ObservableGroup<TKey, TValue> AddItem<TKey, TValue>(
-        this ObservableGroupedCollection<TKey, TValue> source,
-        TKey key,
-        TValue item)
+    /// <returns>The instance of the <see cref="ObservableGroup{TKey, TElement}"/> which will receive the value. It will either be an existing group or a new group.</returns>
+    public static ObservableGroup<TKey, TElement> AddItem<TKey, TElement>(this ObservableGroupedCollection<TKey, TElement> source, TKey key, TElement item)
         where TKey : notnull
     {
-        ObservableGroup<TKey, TValue>? group = source.FirstOrDefault(key);
+        ObservableGroup<TKey, TElement>? group = source.FirstGroupByKeyOrDefault(key);
 
         if (group is null)
         {
-            group = new ObservableGroup<TKey, TValue>(key);
+            group = new ObservableGroup<TKey, TElement>(key) { item };
+
             source.Add(group);
         }
-
-        group.Add(item);
+        else
+        {
+            group.Add(item);
+        }
 
         return group;
     }
 
     /// <summary>
-    /// Insert <paramref name="item"/> into the first group with <paramref name="key"/> key at <paramref name="index"/>.
+    /// Insert <paramref name="item"/> into the first group with <paramref name="key"/> key.
     /// </summary>
     /// <typeparam name="TKey">The type of the group key.</typeparam>
-    /// <typeparam name="TValue">The type of the items in the collection.</typeparam>
-    /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TValue}"/> instance.</param>
+    /// <typeparam name="TElement">The type of the items in the collection.</typeparam>
+    /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TElement}"/> instance.</param>
     /// <param name="key">The key of the group where to insert <paramref name="item"/>.</param>
-    /// <param name="index">The index where to insert <paramref name="item"/>.</param>
     /// <param name="item">The item to add.</param>
-    /// <returns>The instance of the <see cref="ObservableGroup{TKey, TValue}"/> which will receive the value.</returns>
-    /// <exception cref="InvalidOperationException">The target group does not exist.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is less than zero or <paramref name="index"/> is greater than the group elements' count.</exception>
-    public static ObservableGroup<TKey, TValue> InsertItem<TKey, TValue>(
-        this ObservableGroupedCollection<TKey, TValue> source,
-        TKey key,
-        int index,
-        TValue item)
+    /// <returns>The instance of the <see cref="ObservableGroup{TKey, TElement}"/> which will receive the value.</returns>
+    public static ObservableGroup<TKey, TElement> InsertItem<TKey, TElement>(this ObservableGroupedCollection<TKey, TElement> source, TKey key, TElement item)
         where TKey : notnull
     {
-        ObservableGroup<TKey, TValue>? existingGroup = source.First(key);
-        existingGroup.Insert(index, item);
+        ObservableGroup<TKey, TElement>? group = source.FirstGroupByKeyOrDefault(key);
 
-        return existingGroup;
+        if (group is null)
+        {
+            group = source.InsertGroup(key, new[] { item });
+        }
+        else
+        {
+            if (group.TryGetList(out List<TElement>? list))
+            {
+                int index = 0;
+
+                foreach (TElement element in list)
+                {
+                    if (Comparer<TElement>.Default.Compare(item, element) < 0)
+                    {
+                        break;
+                    }
+
+                    index++;
+                }
+
+                group.Insert(index, item);
+            }
+
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            static void InsertItemFallback(ObservableCollection<TElement> source, TElement item)
+            {
+                int index = 0;
+
+                foreach (TElement element in source)
+                {
+                    if (Comparer<TElement>.Default.Compare(item, element) < 0)
+                    {
+                        break;
+                    }
+
+                    index++;
+                }
+
+                source.Insert(index, item);
+            }
+
+            InsertItemFallback(group, item);
+        }
+
+        return group;
     }
 
     /// <summary>
-    /// Replace the element at <paramref name="index"/> with <paramref name="item"/> in the first group with <paramref name="key"/> key.
+    /// Insert <paramref name="item"/> into the first group with <paramref name="key"/> key.
     /// </summary>
     /// <typeparam name="TKey">The type of the group key.</typeparam>
-    /// <typeparam name="TValue">The type of the items in the collection.</typeparam>
-    /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TValue}"/> instance.</param>
-    /// <param name="key">The key of the group where to replace the item.</param>
-    /// <param name="index">The index where to insert <paramref name="item"/>.</param>
+    /// <typeparam name="TElement">The type of the items in the collection.</typeparam>
+    /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TElement}"/> instance.</param>
+    /// <param name="key">The key of the group where to insert <paramref name="item"/>.</param>
+    /// <param name="keyComparer">The <see cref="IComparer{T}"/> instance to compare keys.</param>
     /// <param name="item">The item to add.</param>
-    /// <returns>The instance of the <see cref="ObservableGroup{TKey, TValue}"/> which will receive the value.</returns>
-    /// <exception cref="InvalidOperationException">The target group does not exist.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is less than zero or <paramref name="index"/> is greater than the group elements' count.</exception>
-    public static ObservableGroup<TKey, TValue> SetItem<TKey, TValue>(
-        this ObservableGroupedCollection<TKey, TValue> source,
+    /// <param name="itemComparer">The <see cref="IComparer{T}"/> instance to compare elements.</param>
+    /// <returns>The instance of the <see cref="ObservableGroup{TKey, TElement}"/> which will receive the value.</returns>
+    public static ObservableGroup<TKey, TElement> InsertItem<TKey, TElement>(
+        this ObservableGroupedCollection<TKey, TElement> source,
         TKey key,
-        int index,
-        TValue item)
+        IComparer<TKey> keyComparer,
+        TElement item,
+        IComparer<TElement> itemComparer)
         where TKey : notnull
     {
-        ObservableGroup<TKey, TValue>? existingGroup = source.First(key);
-        existingGroup[index] = item;
+        ObservableGroup<TKey, TElement>? group = source.FirstGroupByKeyOrDefault(key);
 
-        return existingGroup;
+        if (group is null)
+        {
+            group = source.InsertGroup(key, keyComparer, new[] { item });
+        }
+        else
+        {
+            if (group.TryGetList(out List<TElement>? list))
+            {
+                int index = 0;
+
+                foreach (TElement element in list)
+                {
+                    if (itemComparer.Compare(item, element) < 0)
+                    {
+                        break;
+                    }
+
+                    index++;
+                }
+
+                group.Insert(index, item);
+            }
+
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            static void InsertItemFallback(ObservableCollection<TElement> source, TElement item, IComparer<TElement> comparer)
+            {
+                int index = 0;
+
+                foreach (TElement element in source)
+                {
+                    if (comparer.Compare(item, element) < 0)
+                    {
+                        break;
+                    }
+
+                    index++;
+                }
+
+                source.Insert(index, item);
+            }
+
+            InsertItemFallback(group, item, itemComparer);
+        }
+
+        return group;
     }
 
     /// <summary>
@@ -259,14 +645,13 @@ public static class ObservableGroupedCollectionExtensions
     /// <typeparam name="TValue">The type of the items in the collection.</typeparam>
     /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TValue}"/> instance.</param>
     /// <param name="key">The key of the group to remove.</param>
-    public static void RemoveGroup<TKey, TValue>(
-        this ObservableGroupedCollection<TKey, TValue> source,
-        TKey key)
+    public static void RemoveGroup<TKey, TValue>(this ObservableGroupedCollection<TKey, TValue> source, TKey key)
         where TKey : notnull
     {
         if (source.TryGetList(out List<ObservableGroup<TKey, TValue>>? list))
         {
             int index = 0;
+
             foreach (ObservableGroup<TKey, TValue>? group in list)
             {
                 if (EqualityComparer<TKey>.Default.Equals(group.Key, key))
@@ -281,11 +666,11 @@ public static class ObservableGroupedCollectionExtensions
         }
         else
         {
-            // Fallback method
             [MethodImpl(MethodImplOptions.NoInlining)]
-            static void RemoveGroupWithLinq(ObservableGroupedCollection<TKey, TValue> source, TKey key)
+            static void RemoveGroupFallback(ObservableGroupedCollection<TKey, TValue> source, TKey key)
             {
                 int index = 0;
+
                 foreach (ObservableGroup<TKey, TValue>? group in source)
                 {
                     if (EqualityComparer<TKey>.Default.Equals(group.Key, key))
@@ -298,7 +683,7 @@ public static class ObservableGroupedCollectionExtensions
                 }
             }
 
-            RemoveGroupWithLinq(source, key);
+            RemoveGroupFallback(source, key);
         }
     }
 
@@ -312,16 +697,13 @@ public static class ObservableGroupedCollectionExtensions
     /// <param name="key">The key of the group where the <paramref name="item"/> should be removed.</param>
     /// <param name="item">The item to remove.</param>
     /// <param name="removeGroupIfEmpty">If true (default value), the group will be removed once it becomes empty.</param>
-    public static void RemoveItem<TKey, TValue>(
-        this ObservableGroupedCollection<TKey, TValue> source,
-        TKey key,
-        TValue item,
-        bool removeGroupIfEmpty = true)
+    public static void RemoveItem<TKey, TValue>(this ObservableGroupedCollection<TKey, TValue> source, TKey key, TValue item, bool removeGroupIfEmpty = true)
         where TKey : notnull
     {
         if (source.TryGetList(out List<ObservableGroup<TKey, TValue>>? list))
         {
             int index = 0;
+
             foreach (ObservableGroup<TKey, TValue>? group in list)
             {
                 if (EqualityComparer<TKey>.Default.Equals(group.Key, key))
@@ -341,15 +723,11 @@ public static class ObservableGroupedCollectionExtensions
         }
         else
         {
-            // Fallback method
             [MethodImpl(MethodImplOptions.NoInlining)]
-            static void RemoveItemWithLinq(
-                ObservableGroupedCollection<TKey, TValue> source,
-                TKey key,
-                TValue item,
-                bool removeGroupIfEmpty)
+            static void RemoveItemFallback(ObservableGroupedCollection<TKey, TValue> source, TKey key, TValue item, bool removeGroupIfEmpty)
             {
                 int index = 0;
+
                 foreach (ObservableGroup<TKey, TValue>? group in source)
                 {
                     if (EqualityComparer<TKey>.Default.Equals(group.Key, key))
@@ -368,78 +746,7 @@ public static class ObservableGroupedCollectionExtensions
                 }
             }
 
-            RemoveItemWithLinq(source, key, item, removeGroupIfEmpty);
-        }
-    }
-
-    /// <summary>
-    /// Remove the item at <paramref name="index"/> from the first group with <paramref name="key"/> from the <paramref name="source"/> grouped collection.
-    /// It will not do anything if the group or the item does not exist.
-    /// </summary>
-    /// <typeparam name="TKey">The type of the group key.</typeparam>
-    /// <typeparam name="TValue">The type of the items in the collection.</typeparam>
-    /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TValue}"/> instance.</param>
-    /// <param name="key">The key of the group where the item at <paramref name="index"/> should be removed.</param>
-    /// <param name="index">The index of the item to remove in the group.</param>
-    /// <param name="removeGroupIfEmpty">If true (default value), the group will be removed once it becomes empty.</param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> is less than zero or <paramref name="index"/> is greater than the group elements' count.</exception>
-    public static void RemoveItemAt<TKey, TValue>(
-        this ObservableGroupedCollection<TKey, TValue> source,
-        TKey key,
-        int index,
-        bool removeGroupIfEmpty = true)
-        where TKey : notnull
-    {
-        if (source.TryGetList(out List<ObservableGroup<TKey, TValue>>? list))
-        {
-            int groupIndex = 0;
-            foreach (ObservableGroup<TKey, TValue>? group in list)
-            {
-                if (EqualityComparer<TKey>.Default.Equals(group.Key, key))
-                {
-                    group.RemoveAt(index);
-
-                    if (removeGroupIfEmpty && group.Count == 0)
-                    {
-                        source.RemoveAt(groupIndex);
-                    }
-
-                    return;
-                }
-
-                groupIndex++;
-            }
-        }
-        else
-        {
-            // Fallback method
-            [MethodImpl(MethodImplOptions.NoInlining)]
-            static void RemoveItemAtWithLinq(
-                ObservableGroupedCollection<TKey, TValue> source,
-                TKey key,
-                int index,
-                bool removeGroupIfEmpty)
-            {
-                int groupIndex = 0;
-                foreach (ObservableGroup<TKey, TValue>? group in source)
-                {
-                    if (EqualityComparer<TKey>.Default.Equals(group.Key, key))
-                    {
-                        group.RemoveAt(index);
-
-                        if (removeGroupIfEmpty && group.Count == 0)
-                        {
-                            source.RemoveAt(groupIndex);
-                        }
-
-                        return;
-                    }
-
-                    groupIndex++;
-                }
-            }
-
-            RemoveItemAtWithLinq(source, key, index, removeGroupIfEmpty);
+            RemoveItemFallback(source, key, item, removeGroupIfEmpty);
         }
     }
 }
