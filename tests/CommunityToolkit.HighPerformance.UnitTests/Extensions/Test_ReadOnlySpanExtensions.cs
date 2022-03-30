@@ -98,19 +98,17 @@ public partial class Test_ReadOnlySpanExtensions
     {
         static void Test<T>()
         {
-            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-                {
-                    T? a = default;
+            T? a = default;
 
-                    _ = default(ReadOnlySpan<T?>).IndexOf(in a);
-                });
+            int indexOfA = default(ReadOnlySpan<T?>).IndexOf(in a);
 
-            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-                {
-                    ReadOnlySpan<T?> data = new T?[] { default };
+            Assert.AreEqual(-1, indexOfA);
 
-                    _ = data.Slice(1).IndexOf(in data[0]);
-                });
+            ReadOnlySpan<T?> data = new T?[] { default };
+
+            int indexOfData = data.Slice(1).IndexOf(in data[0]);
+
+            Assert.AreEqual(-1, indexOfData);
         }
 
         Test<byte>();
@@ -148,29 +146,27 @@ public partial class Test_ReadOnlySpanExtensions
         static void Test<T>()
         {
             // Before start
-            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-                {
-                    ReadOnlySpan<T?> data = new T?[] { default, default, default, default };
+            ReadOnlySpan<T?> data = new T?[] { default, default, default, default };
 
-                    _ = data.Slice(1).IndexOf(in data[0]);
-                });
+            int index = data.Slice(1).IndexOf(in data[0]);
+
+            Assert.AreEqual(-1, index);
 
             // After end
-            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-                {
-                    ReadOnlySpan<T?> data = new T?[] { default, default, default, default };
+            data = new T?[] { default, default, default, default };
 
-                    _ = data.Slice(0, 2).IndexOf(in data[2]);
-                });
+            index = data.Slice(0, 2).IndexOf(in data[2]);
+
+            Assert.AreEqual(-1, index);
 
             // Local variable
-            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-                {
-                    T?[]? dummy = new T?[] { default };
-                    ReadOnlySpan<T?> data = new T?[] { default, default, default, default };
+            T?[]? dummy = new T?[] { default };
 
-                    _ = data.IndexOf(in dummy[0]);
-                });
+             data = new T?[] { default, default, default, default };
+
+            index = data.IndexOf(in dummy[0]);
+
+            Assert.AreEqual(-1, index);
         }
 
         Test<byte>();

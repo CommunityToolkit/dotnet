@@ -146,8 +146,7 @@ public static class SpanExtensions
     /// <typeparam name="T">The type if items in the input <see cref="Span{T}"/>.</typeparam>
     /// <param name="span">The input <see cref="Span{T}"/> to calculate the index for.</param>
     /// <param name="value">The reference to the target item to get the index for.</param>
-    /// <returns>The index of <paramref name="value"/> within <paramref name="span"/>.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> does not belong to <paramref name="span"/>.</exception>
+    /// <returns>The index of <paramref name="value"/> within <paramref name="span"/>, or <c>-1</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int IndexOf<T>(this Span<T> span, ref T value)
     {
@@ -158,7 +157,7 @@ public static class SpanExtensions
 
         if ((nuint)elementOffset >= (uint)span.Length)
         {
-            ThrowArgumentOutOfRangeExceptionForInvalidReference();
+            return -1;
         }
 
         return (int)elementOffset;
@@ -275,13 +274,5 @@ public static class SpanExtensions
     public static bool TryCopyTo<T>(this Span<T> span, RefEnumerable<T> destination)
     {
         return destination.TryCopyFrom(span);
-    }
-
-    /// <summary>
-    /// Throws an <see cref="ArgumentOutOfRangeException"/> when the given reference is out of range.
-    /// </summary>
-    internal static void ThrowArgumentOutOfRangeExceptionForInvalidReference()
-    {
-        throw new ArgumentOutOfRangeException("value", "The input reference does not belong to an element of the input span");
     }
 }
