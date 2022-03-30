@@ -17,7 +17,7 @@ namespace CommunityToolkit.Mvvm.Collections;
 public static class ObservableGroupedCollectionExtensions
 {
     /// <summary>
-    /// Return the first group with <paramref name="key"/> key.
+    /// Returns the first group with <paramref name="key"/> key.
     /// </summary>
     /// <typeparam name="TKey">The type of the group key.</typeparam>
     /// <typeparam name="TElement">The type of the items in the collection.</typeparam>
@@ -49,13 +49,13 @@ public static class ObservableGroupedCollectionExtensions
     }
 
     /// <summary>
-    /// Return the first group with <paramref name="key"/> key or null if not found.
+    /// Returns the first group with <paramref name="key"/> key or <see langword="null"/> if not found.
     /// </summary>
     /// <typeparam name="TKey">The type of the group key.</typeparam>
     /// <typeparam name="TElement">The type of the items in the collection.</typeparam>
     /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TElement}"/> instance.</param>
     /// <param name="key">The key of the group to query.</param>
-    /// <returns>The first group matching <paramref name="key"/> or null.</returns>
+    /// <returns>The first group matching <paramref name="key"/> or <see langword="null"/>.</returns>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> or <paramref name="key"/> are <see langword="null"/>.</exception>
     public static ObservableGroup<TKey, TElement>? FirstGroupByKeyOrDefault<TKey, TElement>(this ObservableGroupedCollection<TKey, TElement> source, TKey key)
         where TKey : notnull
@@ -65,7 +65,7 @@ public static class ObservableGroupedCollectionExtensions
 
         if (source.TryGetList(out List<ObservableGroup<TKey, TElement>>? list))
         {
-            foreach (ObservableGroup<TKey, TElement>? group in list)
+            foreach (ObservableGroup<TKey, TElement> group in list)
             {
                 if (EqualityComparer<TKey>.Default.Equals(group.Key, key))
                 {
@@ -77,12 +77,12 @@ public static class ObservableGroupedCollectionExtensions
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        static ObservableGroup<TKey, TElement>? FirstOrDefaultFallback(ObservableGroupedCollection<TKey, TElement> source, TKey key)
+        static ObservableGroup<TKey, TElement>? FirstGroupByKeyOrDefaultFallback(ObservableGroupedCollection<TKey, TElement> source, TKey key)
         {
             return Enumerable.FirstOrDefault<ObservableGroup<TKey, TElement>>(source, group => EqualityComparer<TKey>.Default.Equals(group.Key, key));
         }
 
-        return FirstOrDefaultFallback(source, key);
+        return FirstGroupByKeyOrDefaultFallback(source, key);
     }
 
     /// <summary>
@@ -720,7 +720,7 @@ public static class ObservableGroupedCollectionExtensions
         {
             int index = 0;
 
-            foreach (ObservableGroup<TKey, TValue>? group in list)
+            foreach (ObservableGroup<TKey, TValue> group in list)
             {
                 if (EqualityComparer<TKey>.Default.Equals(group.Key, key))
                 {
@@ -739,7 +739,7 @@ public static class ObservableGroupedCollectionExtensions
             {
                 int index = 0;
 
-                foreach (ObservableGroup<TKey, TValue>? group in source)
+                foreach (ObservableGroup<TKey, TValue> group in source)
                 {
                     if (EqualityComparer<TKey>.Default.Equals(group.Key, key))
                     {
@@ -776,7 +776,7 @@ public static class ObservableGroupedCollectionExtensions
         {
             int index = 0;
 
-            foreach (ObservableGroup<TKey, TValue>? group in list)
+            foreach (ObservableGroup<TKey, TValue> group in list)
             {
                 if (EqualityComparer<TKey>.Default.Equals(group.Key, key))
                 {
@@ -800,7 +800,7 @@ public static class ObservableGroupedCollectionExtensions
             {
                 int index = 0;
 
-                foreach (ObservableGroup<TKey, TValue>? group in source)
+                foreach (ObservableGroup<TKey, TValue> group in source)
                 {
                     if (EqualityComparer<TKey>.Default.Equals(group.Key, key))
                     {

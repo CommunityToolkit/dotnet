@@ -40,8 +40,14 @@ public sealed class ObservableGroupedCollection<TKey, TElement> : ObservableColl
     {
         get
         {
-            // TODO: optimize this
-            return Enumerable.FirstOrDefault<ObservableGroup<TKey, TElement>>(this, item => EqualityComparer<TKey>.Default.Equals(item.Key, key)) ?? Enumerable.Empty<TElement>();
+            IEnumerable<TElement>? result = null;
+
+            if (key is not null)
+            {
+                result = this.FirstGroupByKeyOrDefault(key);
+            }
+
+            return result ?? Enumerable.Empty<TElement>();
         }
     }
 
@@ -61,8 +67,7 @@ public sealed class ObservableGroupedCollection<TKey, TElement> : ObservableColl
     /// <inheritdoc/>
     bool ILookup<TKey, TElement>.Contains(TKey key)
     {
-        // TODO: optimize this
-        return Enumerable.Any<ObservableGroup<TKey, TElement>>(this, item => EqualityComparer<TKey>.Default.Equals(item.Key, key));
+        return key is not null && this.FirstGroupByKey(key) is not null;
     }
 
     /// <inheritdoc/>

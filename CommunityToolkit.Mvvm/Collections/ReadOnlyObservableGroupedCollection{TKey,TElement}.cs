@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace CommunityToolkit.Mvvm.Collections;
 
@@ -45,16 +46,21 @@ public sealed class ReadOnlyObservableGroupedCollection<TKey, TElement> : ReadOn
     {
         get
         {
-            // TODO: optimize this
-            return Enumerable.FirstOrDefault<ReadOnlyObservableGroup<TKey, TElement>>(this, item => EqualityComparer<TKey>.Default.Equals(item.Key, key)) ?? Enumerable.Empty<TElement>();
+            IEnumerable<TElement>? result = null;
+
+            if (key is not null)
+            {
+                result = FirstGroupByKeyOrDefault(key);
+            }
+
+            return result ?? Enumerable.Empty<TElement>();
         }
     }
 
     /// <inheritdoc/>
     bool ILookup<TKey, TElement>.Contains(TKey key)
     {
-        // TODO: optimize this
-        return Enumerable.Any<ReadOnlyObservableGroup<TKey, TElement>>(this, item => EqualityComparer<TKey>.Default.Equals(item.Key, key));
+        return key is not null && FirstGroupByKeyOrDefault(key) is not null;
     }
 
     /// <inheritdoc/>
@@ -152,5 +158,34 @@ public sealed class ReadOnlyObservableGroupedCollection<TKey, TElement> : ReadOn
             default:
                 break;
         }
+    }
+
+    /// <summary>
+    /// Returns the first group with <paramref name="key"/> key or <see langword="null"/> if not found.
+    /// </summary>
+    /// <param name="key">The key of the group to query (assumed not to be <see langword="null"/>).</param>
+    /// <returns>The first group matching <paramref name="key"/>.</returns>
+    private IEnumerable<TElement>? FirstGroupByKeyOrDefault(TKey key)
+    {
+        if (Items is List<ReadOnlyObservableGroup<TKey, TElement>> list)
+        {
+            foreach (ReadOnlyObservableGroup<TKey, TElement> group in list)
+            {
+                if (EqualityComparer<TKey>.Default.Equals(group.Key, key))
+                {
+                    return group;
+                }
+            }
+
+            return null;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        static IEnumerable<TElement>? FirstGroupByKeyOrDefaultFallback(ReadOnlyObservableGroupedCollection<TKey, TElement> source, TKey key)
+        {
+            return Enumerable.FirstOrDefault<ReadOnlyObservableGroup<TKey, TElement>>(source, group => EqualityComparer<TKey>.Default.Equals(group.Key, key));
+        }
+
+        return FirstGroupByKeyOrDefaultFallback(this, key);
     }
 }
