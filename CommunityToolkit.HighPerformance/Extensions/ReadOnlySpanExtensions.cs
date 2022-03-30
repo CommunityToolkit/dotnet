@@ -209,7 +209,6 @@ public static class ReadOnlySpanExtensions
     /// <param name="span">The input <see cref="ReadOnlySpan{T}"/> to calculate the index for.</param>
     /// <param name="value">The reference to the target item to get the index for.</param>
     /// <returns>The index of <paramref name="value"/> within <paramref name="span"/>, or <c>-1</c>.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> does not belong to <paramref name="span"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int IndexOf<T>(this ReadOnlySpan<T> span, in T value)
     {
