@@ -29,16 +29,20 @@ public sealed class ObservableGroupedCollection<TKey, TElement> : ObservableColl
     /// Initializes a new instance of the <see cref="ObservableGroupedCollection{TKey, TValue}"/> class.
     /// </summary>
     /// <param name="collection">The initial data to add in the grouped collection.</param>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="collection"/> is <see langword="null"/>.</exception>
     public ObservableGroupedCollection(IEnumerable<IGrouping<TKey, TElement>> collection)
-        : base(collection.Select(static group => new ObservableGroup<TKey, TElement>(group)))
+        : base(collection?.Select(static group => new ObservableGroup<TKey, TElement>(group))!)
     {
     }
 
     /// <inheritdoc/>
     IEnumerable<TElement> ILookup<TKey, TElement>.this[TKey key]
     {
-        // TODO: optimize this
-        get => Enumerable.FirstOrDefault<ObservableGroup<TKey, TElement>>(this, item => EqualityComparer<TKey>.Default.Equals(item.Key, key)) ?? Enumerable.Empty<TElement>();
+        get
+        {
+            // TODO: optimize this
+            return Enumerable.FirstOrDefault<ObservableGroup<TKey, TElement>>(this, item => EqualityComparer<TKey>.Default.Equals(item.Key, key)) ?? Enumerable.Empty<TElement>();
+        }
     }
 
     /// <summary>

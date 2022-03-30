@@ -23,16 +23,18 @@ public sealed class ReadOnlyObservableGroupedCollection<TKey, TElement> : ReadOn
     /// Initializes a new instance of the <see cref="ReadOnlyObservableGroupedCollection{TKey, TValue}"/> class.
     /// </summary>
     /// <param name="collection">The source collection to wrap.</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="collection"/> is <see langword="null"/>.</exception>
     public ReadOnlyObservableGroupedCollection(ObservableCollection<ObservableGroup<TKey, TElement>> collection)
-        : base(new ObservableCollection<ReadOnlyObservableGroup<TKey, TElement>>(collection.Select(static g => new ReadOnlyObservableGroup<TKey, TElement>(g))))
+        : base(new ObservableCollection<ReadOnlyObservableGroup<TKey, TElement>>(collection?.Select(static g => new ReadOnlyObservableGroup<TKey, TElement>(g))!))
     {
-        collection.CollectionChanged += OnSourceCollectionChanged;
+        collection!.CollectionChanged += OnSourceCollectionChanged;
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ReadOnlyObservableGroupedCollection{TKey, TValue}"/> class.
     /// </summary>
     /// <param name="collection">The source collection to wrap.</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="collection"/> is <see langword="null"/>.</exception>
     public ReadOnlyObservableGroupedCollection(ObservableCollection<ReadOnlyObservableGroup<TKey, TElement>> collection)
         : base(collection)
     {
@@ -41,8 +43,11 @@ public sealed class ReadOnlyObservableGroupedCollection<TKey, TElement> : ReadOn
     /// <inheritdoc/>
     IEnumerable<TElement> ILookup<TKey, TElement>.this[TKey key]
     {
-        // TODO: optimize this
-        get => Enumerable.FirstOrDefault<ReadOnlyObservableGroup<TKey, TElement>>(this, item => EqualityComparer<TKey>.Default.Equals(item.Key, key)) ?? Enumerable.Empty<TElement>();
+        get
+        {
+            // TODO: optimize this
+            return Enumerable.FirstOrDefault<ReadOnlyObservableGroup<TKey, TElement>>(this, item => EqualityComparer<TKey>.Default.Equals(item.Key, key)) ?? Enumerable.Empty<TElement>();
+        }
     }
 
     /// <inheritdoc/>

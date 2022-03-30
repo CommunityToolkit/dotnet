@@ -21,9 +21,12 @@ public sealed class ReadOnlyObservableGroup<TKey, TElement> : ReadOnlyObservable
     /// </summary>
     /// <param name="key">The key of the group.</param>
     /// <param name="collection">The collection of items to add in the group.</param>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="key"/> or <paramref name="collection"/> are <see langword="null"/>.</exception>
     public ReadOnlyObservableGroup(TKey key, ObservableCollection<TElement> collection)
         : base(collection)
     {
+        ArgumentNullException.For<TKey>.ThrowIfNull(key);
+
         Key = key;
     }
 
@@ -31,6 +34,7 @@ public sealed class ReadOnlyObservableGroup<TKey, TElement> : ReadOnlyObservable
     /// Initializes a new instance of the <see cref="ReadOnlyObservableGroup{TKey, TValue}"/> class.
     /// </summary>
     /// <param name="group">The <see cref="ObservableGroup{TKey, TValue}"/> to wrap.</param>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="group"/> is <see langword="null"/>.</exception>
     public ReadOnlyObservableGroup(ObservableGroup<TKey, TElement> group)
         : base(group)
     {

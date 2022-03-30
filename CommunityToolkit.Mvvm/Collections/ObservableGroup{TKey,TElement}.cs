@@ -26,8 +26,11 @@ public sealed class ObservableGroup<TKey, TElement> : ObservableCollection<TElem
     /// Initializes a new instance of the <see cref="ObservableGroup{TKey, TValue}"/> class.
     /// </summary>
     /// <param name="key">The key for the group.</param>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="key"/> is <see langword="null"/>.</exception>
     public ObservableGroup(TKey key)
     {
+        ArgumentNullException.For<TKey>.ThrowIfNull(key);
+
         this.key = key;
     }
 
@@ -35,6 +38,7 @@ public sealed class ObservableGroup<TKey, TElement> : ObservableCollection<TElem
     /// Initializes a new instance of the <see cref="ObservableGroup{TKey, TValue}"/> class.
     /// </summary>
     /// <param name="grouping">The grouping to fill the group.</param>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="grouping"/> is <see langword="null"/>.</exception>
     public ObservableGroup(IGrouping<TKey, TElement> grouping)
         : base(grouping)
     {
@@ -46,9 +50,12 @@ public sealed class ObservableGroup<TKey, TElement> : ObservableCollection<TElem
     /// </summary>
     /// <param name="key">The key for the group.</param>
     /// <param name="collection">The initial collection of data to add to the group.</param>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="key"/> or <paramref name="collection"/> are <see langword="null"/>.</exception>
     public ObservableGroup(TKey key, IEnumerable<TElement> collection)
         : base(collection)
     {
+        ArgumentNullException.For<TKey>.ThrowIfNull(key);
+
         this.key = key;
     }
 
@@ -57,11 +64,14 @@ public sealed class ObservableGroup<TKey, TElement> : ObservableCollection<TElem
     /// <summary>
     /// Gets or sets the key of the group.
     /// </summary>
+    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="value"/> is <see langword="null"/>.</exception>
     public TKey Key
     {
         get => this.key;
         set
         {
+            ArgumentNullException.For<TKey>.ThrowIfNull(value);
+
             if (!EqualityComparer<TKey>.Default.Equals(this.key!, value))
             {
                 this.key = value;

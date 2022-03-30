@@ -24,10 +24,14 @@ public static class ObservableGroupedCollectionExtensions
     /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TElement}"/> instance.</param>
     /// <param name="key">The key of the group to query.</param>
     /// <returns>The first group matching <paramref name="key"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> or <paramref name="key"/> are <see langword="null"/>.</exception>
     /// <exception cref="InvalidOperationException">The target group does not exist.</exception>
     public static ObservableGroup<TKey, TElement> FirstGroupByKey<TKey, TElement>(this ObservableGroupedCollection<TKey, TElement> source, TKey key)
         where TKey : notnull
     {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.For<TKey>.ThrowIfNull(key);
+
         ObservableGroup<TKey, TElement>? group = source.FirstGroupByKeyOrDefault(key);
 
         if (group is null)
@@ -52,9 +56,13 @@ public static class ObservableGroupedCollectionExtensions
     /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TElement}"/> instance.</param>
     /// <param name="key">The key of the group to query.</param>
     /// <returns>The first group matching <paramref name="key"/> or null.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> or <paramref name="key"/> are <see langword="null"/>.</exception>
     public static ObservableGroup<TKey, TElement>? FirstGroupByKeyOrDefault<TKey, TElement>(this ObservableGroupedCollection<TKey, TElement> source, TKey key)
         where TKey : notnull
     {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.For<TKey>.ThrowIfNull(key);
+
         if (source.TryGetList(out List<ObservableGroup<TKey, TElement>>? list))
         {
             foreach (ObservableGroup<TKey, TElement>? group in list)
@@ -85,9 +93,13 @@ public static class ObservableGroupedCollectionExtensions
     /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TElement}"/> instance.</param>
     /// <param name="key">The key of the group to add.</param>
     /// <returns>The added <see cref="ObservableGroup{TKey, TValue}"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> or <paramref name="key"/> are <see langword="null"/>.</exception>
     public static ObservableGroup<TKey, TElement> AddGroup<TKey, TElement>(this ObservableGroupedCollection<TKey, TElement> source, TKey key)
         where TKey : notnull
     {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.For<TKey>.ThrowIfNull(key);
+
         ObservableGroup<TKey, TElement> group = new(key);
 
         source.Add(group);
@@ -103,9 +115,13 @@ public static class ObservableGroupedCollectionExtensions
     /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TElement}"/> instance.</param>
     /// <param name="grouping">The group of items to add.</param>
     /// <returns>The added <see cref="ObservableGroup{TKey, TValue}"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> or <paramref name="grouping"/> are <see langword="null"/>.</exception>
     public static ObservableGroup<TKey, TElement> AddGroup<TKey, TElement>(this ObservableGroupedCollection<TKey, TElement> source, IGrouping<TKey, TElement> grouping)
         where TKey : notnull
     {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(grouping);
+
         ObservableGroup<TKey, TElement> group = new(grouping);
 
         source.Add(group);
@@ -122,9 +138,14 @@ public static class ObservableGroupedCollectionExtensions
     /// <param name="key">The key of the group where <paramref name="collection"/> will be added.</param>
     /// <param name="collection">The collection to add.</param>
     /// <returns>The added <see cref="ObservableGroup{TKey, TElement}"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/>, <paramref name="key"/> or <paramref name="collection"/> are <see langword="null"/>.</exception>
     public static ObservableGroup<TKey, TElement> AddGroup<TKey, TElement>(this ObservableGroupedCollection<TKey, TElement> source, TKey key, IEnumerable<TElement> collection)
         where TKey : notnull
     {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.For<TKey>.ThrowIfNull(key);
+        ArgumentNullException.ThrowIfNull(collection);
+
         ObservableGroup<TKey, TElement> group = new(key, collection);
 
         source.Add(group);
@@ -140,9 +161,13 @@ public static class ObservableGroupedCollectionExtensions
     /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TElement}"/> instance.</param>
     /// <param name="key">The key of the group to add.</param>
     /// <returns>The added <see cref="ObservableGroup{TKey, TValue}"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> or <paramref name="key"/> are <see langword="null"/>.</exception>
     public static ObservableGroup<TKey, TElement> InsertGroup<TKey, TElement>(this ObservableGroupedCollection<TKey, TElement> source, TKey key)
         where TKey : notnull
     {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.For<TKey>.ThrowIfNull(key);
+
         if (source.TryGetList(out List<ObservableGroup<TKey, TElement>>? list))
         {
             int index = 0;
@@ -197,9 +222,13 @@ public static class ObservableGroupedCollectionExtensions
     /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TElement}"/> instance.</param>
     /// <param name="grouping">The group of items to add.</param>
     /// <returns>The added <see cref="ObservableGroup{TKey, TValue}"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> or <paramref name="grouping"/> are <see langword="null"/>.</exception>
     public static ObservableGroup<TKey, TElement> InsertGroup<TKey, TElement>(this ObservableGroupedCollection<TKey, TElement> source, IGrouping<TKey, TElement> grouping)
         where TKey : notnull
     {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(grouping);
+
         if (source.TryGetList(out List<ObservableGroup<TKey, TElement>>? list))
         {
             int index = 0;
@@ -255,9 +284,14 @@ public static class ObservableGroupedCollectionExtensions
     /// <param name="key">The key of the group where <paramref name="collection"/> will be added.</param>
     /// <param name="collection">The collection to add.</param>
     /// <returns>The added <see cref="ObservableGroup{TKey, TValue}"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/>, <paramref name="key"/> or <paramref name="collection"/> are <see langword="null"/>.</exception>
     public static ObservableGroup<TKey, TElement> InsertGroup<TKey, TElement>(this ObservableGroupedCollection<TKey, TElement> source, TKey key, IEnumerable<TElement> collection)
         where TKey : notnull
     {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.For<TKey>.ThrowIfNull(key);
+        ArgumentNullException.ThrowIfNull(collection);
+
         if (source.TryGetList(out List<ObservableGroup<TKey, TElement>>? list))
         {
             int index = 0;
@@ -313,9 +347,14 @@ public static class ObservableGroupedCollectionExtensions
     /// <param name="key">The key of the group to add.</param>
     /// <param name="comparer">The <see cref="IComparer{T}"/> instance to insert <typeparamref name="TKey"/> at the right position.</param>
     /// <returns>The added <see cref="ObservableGroup{TKey, TValue}"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/>, <paramref name="key"/> or <paramref name="comparer"/> are <see langword="null"/>.</exception>
     public static ObservableGroup<TKey, TElement> InsertGroup<TKey, TElement>(this ObservableGroupedCollection<TKey, TElement> source, TKey key, IComparer<TKey> comparer)
         where TKey : notnull
     {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.For<TKey>.ThrowIfNull(key);
+        ArgumentNullException.ThrowIfNull(comparer);
+
         if (source.TryGetList(out List<ObservableGroup<TKey, TElement>>? list))
         {
             int index = 0;
@@ -371,9 +410,14 @@ public static class ObservableGroupedCollectionExtensions
     /// <param name="grouping">The group of items to add.</param>
     /// <param name="comparer">The <see cref="IComparer{T}"/> instance to insert <typeparamref name="TKey"/> at the right position.</param>
     /// <returns>The added <see cref="ObservableGroup{TKey, TValue}"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/>, <paramref name="grouping"/> or <paramref name="comparer"/> are <see langword="null"/>.</exception>
     public static ObservableGroup<TKey, TElement> InsertGroup<TKey, TElement>(this ObservableGroupedCollection<TKey, TElement> source, IGrouping<TKey, TElement> grouping, IComparer<TKey> comparer)
         where TKey : notnull
     {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(grouping);
+        ArgumentNullException.ThrowIfNull(comparer);
+
         if (source.TryGetList(out List<ObservableGroup<TKey, TElement>>? list))
         {
             int index = 0;
@@ -430,9 +474,15 @@ public static class ObservableGroupedCollectionExtensions
     /// <param name="comparer">The <see cref="IComparer{T}"/> instance to insert <typeparamref name="TKey"/> at the right position.</param>
     /// <param name="collection">The collection to add.</param>
     /// <returns>The added <see cref="ObservableGroup{TKey, TValue}"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/>, <paramref name="key"/>, <paramref name="comparer"/> or <paramref name="collection"/> are <see langword="null"/>.</exception>
     public static ObservableGroup<TKey, TElement> InsertGroup<TKey, TElement>(this ObservableGroupedCollection<TKey, TElement> source, TKey key, IComparer<TKey> comparer, IEnumerable<TElement> collection)
         where TKey : notnull
     {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.For<TKey>.ThrowIfNull(key);
+        ArgumentNullException.ThrowIfNull(comparer);
+        ArgumentNullException.ThrowIfNull(collection);
+
         if (source.TryGetList(out List<ObservableGroup<TKey, TElement>>? list))
         {
             int index = 0;
@@ -489,9 +539,13 @@ public static class ObservableGroupedCollectionExtensions
     /// <param name="key">The key of the group where the <paramref name="item"/> should be added.</param>
     /// <param name="item">The item to add.</param>
     /// <returns>The instance of the <see cref="ObservableGroup{TKey, TElement}"/> which will receive the value. It will either be an existing group or a new group.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> or <paramref name="key"/> are <see langword="null"/>.</exception>
     public static ObservableGroup<TKey, TElement> AddItem<TKey, TElement>(this ObservableGroupedCollection<TKey, TElement> source, TKey key, TElement item)
         where TKey : notnull
     {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.For<TKey>.ThrowIfNull(key);
+
         ObservableGroup<TKey, TElement>? group = source.FirstGroupByKeyOrDefault(key);
 
         if (group is null)
@@ -517,9 +571,13 @@ public static class ObservableGroupedCollectionExtensions
     /// <param name="key">The key of the group where to insert <paramref name="item"/>.</param>
     /// <param name="item">The item to add.</param>
     /// <returns>The instance of the <see cref="ObservableGroup{TKey, TElement}"/> which will receive the value.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> or <paramref name="key"/> are <see langword="null"/>.</exception>
     public static ObservableGroup<TKey, TElement> InsertItem<TKey, TElement>(this ObservableGroupedCollection<TKey, TElement> source, TKey key, TElement item)
         where TKey : notnull
     {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.For<TKey>.ThrowIfNull(key);
+
         ObservableGroup<TKey, TElement>? group = source.FirstGroupByKeyOrDefault(key);
 
         if (group is null)
@@ -580,6 +638,7 @@ public static class ObservableGroupedCollectionExtensions
     /// <param name="item">The item to add.</param>
     /// <param name="itemComparer">The <see cref="IComparer{T}"/> instance to compare elements.</param>
     /// <returns>The instance of the <see cref="ObservableGroup{TKey, TElement}"/> which will receive the value.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/>, <paramref name="key"/>, <paramref name="keyComparer"/> or <paramref name="itemComparer"/> are <see langword="null"/>.</exception>
     public static ObservableGroup<TKey, TElement> InsertItem<TKey, TElement>(
         this ObservableGroupedCollection<TKey, TElement> source,
         TKey key,
@@ -588,6 +647,11 @@ public static class ObservableGroupedCollectionExtensions
         IComparer<TElement> itemComparer)
         where TKey : notnull
     {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.For<TKey>.ThrowIfNull(key);
+        ArgumentNullException.ThrowIfNull(keyComparer);
+        ArgumentNullException.ThrowIfNull(itemComparer);
+
         ObservableGroup<TKey, TElement>? group = source.FirstGroupByKeyOrDefault(key);
 
         if (group is null)
@@ -645,9 +709,13 @@ public static class ObservableGroupedCollectionExtensions
     /// <typeparam name="TValue">The type of the items in the collection.</typeparam>
     /// <param name="source">The source <see cref="ObservableGroupedCollection{TKey, TValue}"/> instance.</param>
     /// <param name="key">The key of the group to remove.</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> or <paramref name="key"/> are <see langword="null"/>.</exception>
     public static void RemoveGroup<TKey, TValue>(this ObservableGroupedCollection<TKey, TValue> source, TKey key)
         where TKey : notnull
     {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.For<TKey>.ThrowIfNull(key);
+
         if (source.TryGetList(out List<ObservableGroup<TKey, TValue>>? list))
         {
             int index = 0;
@@ -697,9 +765,13 @@ public static class ObservableGroupedCollectionExtensions
     /// <param name="key">The key of the group where the <paramref name="item"/> should be removed.</param>
     /// <param name="item">The item to remove.</param>
     /// <param name="removeGroupIfEmpty">If true (default value), the group will be removed once it becomes empty.</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> or <paramref name="key"/> are <see langword="null"/>.</exception>
     public static void RemoveItem<TKey, TValue>(this ObservableGroupedCollection<TKey, TValue> source, TKey key, TValue item, bool removeGroupIfEmpty = true)
         where TKey : notnull
     {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.For<TKey>.ThrowIfNull(key);
+
         if (source.TryGetList(out List<ObservableGroup<TKey, TValue>>? list))
         {
             int index = 0;
