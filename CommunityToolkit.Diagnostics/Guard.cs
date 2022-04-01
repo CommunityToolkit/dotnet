@@ -5,6 +5,7 @@
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 
 namespace CommunityToolkit.Diagnostics;
@@ -274,4 +275,49 @@ public static partial class Guard
 
         ThrowHelper.ThrowArgumentExceptionForIsReferenceNotEqualTo<T>(name);
     }
+
+
+    /// <summary>
+    /// Asserts that the <paramref name="predicate" /> is satisfied.
+    /// </summary>
+    /// <typeparam name="T">The type of input values to compare.</typeparam>
+    /// <param name="value">The input <typeparamref name="T"/> value to test.</param>
+    /// <param name="predicate">The predicate which must be satisfied by the <typeparamref name="T" />.</param>
+    /// <param name="name">The name of the input parameter being tested.</param>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> does not satisfy <paramref name="predicate"/>.</exception>
+    /// <remarks>The method is generic to prevent using it with value types.</remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Match<T>(T value, Expression<Func<T, bool>> predicate, [CallerArgumentExpression("value")] string name = "")
+        where T : class
+    {
+        if (predicate.Compile()(value))
+        {
+            return;
+        }
+
+        ThrowHelper.ThrowArgumentExceptionForMatch<T>(name);
+    }
+
+
+    /// <summary>
+    /// Asserts that the <paramref name="predicate" /> is not satisfied.
+    /// </summary>
+    /// <typeparam name="T">The type of input values to compare.</typeparam>
+    /// <param name="value">The input <typeparamref name="T"/> value to test.</param>
+    /// <param name="predicate">The predicate which must be not satisfied by the <typeparamref name="T" />.</param>
+    /// <param name="name">The name of the input parameter being tested.</param>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> satisfys <paramref name="predicate"/>.</exception>
+    /// <remarks>The method is generic to prevent using it with value types.</remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void NotMatch<T>(T value, Expression<Func<T, bool>> predicate, [CallerArgumentExpression("value")] string name = "")
+        where T : class
+    {
+        if (!predicate.Compile()(value))
+        {
+            return;
+        }
+
+        ThrowHelper.ThrowArgumentExceptionForNotMatch<T>(name);
+    }
+
 }

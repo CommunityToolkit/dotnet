@@ -5,6 +5,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 
 #pragma warning disable CS8777
 
@@ -331,5 +332,47 @@ partial class Guard
         }
 
         ThrowHelper.ThrowArgumentOutOfRangeExceptionForIsNotInRangeFor(index, text, name);
+    }
+
+
+
+
+    /// <summary>
+    /// Asserts that the <paramref name="regexPattern" /> is matched.
+    /// </summary> 
+    /// <param name="value">The input <see cref="string"/> value to test.</param>
+    /// <param name="regexPattern">The Regular expression which must be matched by the <typeparamref name="T" />.</param>
+    /// <param name="name">The name of the input parameter being tested.</param>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> does not match <paramref name="regexPattern"/>.</exception>
+    /// <remarks>The method is generic to prevent using it with value types.</remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Match(string value, string regexPattern, [CallerArgumentExpression("value")] string name = "")
+    {
+        if (Regex.IsMatch(value, regexPattern))
+        {
+            return;
+        }
+
+        ThrowHelper.ThrowArgumentExceptionForMatch<string>(name);
+    }
+
+
+    /// <summary>
+    /// Asserts that the <paramref name="regexPattern" /> is not matched.
+    /// </summary>  
+    /// <param name="value">The input <see cref="string"/> value to test.</param>
+    /// <param name="regexPattern">The Regular expression which must be not matched by the <typeparamref name="T" />.</param>
+    /// <param name="name">The name of the input parameter being tested.</param>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> match <paramref name="regexPattern"/>.</exception>
+    /// <remarks>The method is generic to prevent using it with value types.</remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void NotMatch(string value, string regexPattern, [CallerArgumentExpression("value")] string name = "")
+    {
+        if (!Regex.IsMatch(value, regexPattern))
+        {
+            return;
+        }
+
+        ThrowHelper.ThrowArgumentExceptionForNotMatch<string>(name);
     }
 }

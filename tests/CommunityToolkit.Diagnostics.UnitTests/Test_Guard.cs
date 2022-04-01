@@ -344,6 +344,67 @@ public partial class Test_Guard
     }
 
     [TestMethod]
+    public void Test_Guard_Match_Ok()
+    {
+        SomeClass subject = new() { Number = 5 };
+
+        Guard.Match(subject, s => s.Number == 5, nameof(Test_Guard_Match_Ok));
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void Test_Guard_Match_Fail()
+    {
+        SomeClass subject = new() { Number = 15 };
+
+        Guard.Match(subject, s => s.Number == 5, nameof(Test_Guard_Match_Fail));
+    }
+
+    [TestMethod]
+    public void Test_Guard_NotMatch_Ok()
+    {
+        SomeClass subject = new() { Number = 15 };
+
+        Guard.NotMatch(subject, s => s.Number == 5, nameof(Test_Guard_NotMatch_Ok));
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void Test_Guard_NotMatch_Fail()
+    {
+        SomeClass subject = new() { Number = 5 };
+
+        Guard.NotMatch(subject, s => s.Number == 5, nameof(Test_Guard_NotMatch_Fail));
+    }
+
+
+    [TestMethod]
+    public void Test_Guard_Match_Pattern_Ok()
+    {
+        Guard.Match("I love .NET", "^I.*T$", nameof(Test_Guard_Match_Pattern_Ok));
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void Test_Guard_Match_Pattern_Fail()
+    {
+        Guard.Match("I love .NET!", "^I.*T$", nameof(Test_Guard_Match_Pattern_Fail));
+    }
+
+    [TestMethod]
+    public void Test_Guard_NotMatch_Pattern_Ok()
+    {
+        Guard.NotMatch("I love .NET!", "^I.*T$", nameof(Test_Guard_NotMatch_Pattern_Ok));
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void Test_Guard_NotMatch_Pattern_Fail()
+    {
+        Guard.NotMatch("I love .NET", "^I.*T$", nameof(Test_Guard_NotMatch_Pattern_Fail));
+    }
+
+    [TestMethod]
     public void Test_Guard_IsTrue_Ok()
     {
         Guard.IsTrue(true, nameof(Test_Guard_IsTrue_Ok));
@@ -801,5 +862,12 @@ public partial class Test_Guard
         }
 
         Assert.Fail();
+    }
+
+    internal class SomeClass
+    {
+        public string Text { get; set; }
+
+        public int Number { get; set; }
     }
 }

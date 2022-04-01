@@ -162,6 +162,28 @@ partial class Guard
         }
 
         /// <summary>
+        /// Throws an <see cref="ArgumentException"/> when <see cref="Match{T}"/> fails.
+        /// </summary>
+        /// <typeparam name="T">The type of input value being compared.</typeparam>
+        [DoesNotReturn]
+        public static void ThrowArgumentExceptionForMatch<T>(string name)
+            where T : class
+        {
+            throw new ArgumentException($"Parameter {AssertString(name)} ({typeof(T).ToTypeString()}) must match the predicate/patterns.", name);
+        }
+
+        /// <summary>
+        /// Throws an <see cref="ArgumentException"/> when <see cref="NotMatch{T}"/> fails.
+        /// </summary>
+        /// <typeparam name="T">The type of input value being compared.</typeparam>
+        [DoesNotReturn]
+        public static void ThrowArgumentExceptionForNotMatch<T>(string name)
+            where T : class
+        {
+            throw new ArgumentException($"Parameter {AssertString(name)} ({typeof(T).ToTypeString()}) must not match the predicate/patterns.", name);
+        }
+
+        /// <summary>
         /// Throws an <see cref="ArgumentException"/> when <see cref="IsTrue(bool,string)"/> fails.
         /// </summary>
         [DoesNotReturn]
