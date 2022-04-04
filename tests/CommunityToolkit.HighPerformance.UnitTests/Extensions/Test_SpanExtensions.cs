@@ -51,19 +51,17 @@ public class Test_SpanExtensions
     {
         static void Test<T>()
         {
-            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-                {
-                    T? a = default;
+            T? a = default;
 
-                    _ = default(Span<T?>).IndexOf(ref a);
-                });
+            int indexOfA = default(Span<T?>).IndexOf(ref a);
 
-            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-                {
-                    Span<T?> data = new T?[] { default };
+            Assert.AreEqual(-1, indexOfA);
 
-                    _ = data.Slice(1).IndexOf(ref data[0]);
-                });
+            Span<T?> data = new T?[] { default };
+
+            int indexOfData = data.Slice(1).IndexOf(ref data[0]);
+
+            Assert.AreEqual(-1, indexOfData);
         }
 
         Test<byte>();
@@ -101,29 +99,27 @@ public class Test_SpanExtensions
         static void Test<T>()
         {
             // Before start
-            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-                {
-                    Span<T?> data = new T?[] { default, default, default, default };
+            Span<T?> data = new T?[] { default, default, default, default };
 
-                    _ = data.Slice(1).IndexOf(ref data[0]);
-                });
+            int index = data.Slice(1).IndexOf(ref data[0]);
+
+            Assert.AreEqual(-1, index);
 
             // After end
-            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-                {
-                    Span<T?> data = new T?[] { default, default, default, default };
+            data = new T?[] { default, default, default, default };
 
-                    _ = data.Slice(0, 2).IndexOf(ref data[2]);
-                });
+            index = data.Slice(0, 2).IndexOf(ref data[2]);
+
+            Assert.AreEqual(-1, index);
 
             // Local variable
-            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
-                {
-                    T?[]? dummy = new T?[] { default };
-                    Span<T?> data = new T?[] { default, default, default, default };
+            T?[]? dummy = new T?[] { default };
 
-                    _ = data.IndexOf(ref dummy[0]);
-                });
+            data = new T?[] { default, default, default, default };
+
+            index = data.IndexOf(ref dummy[0]);
+
+            Assert.AreEqual(-1, index);
         }
 
         Test<byte>();
