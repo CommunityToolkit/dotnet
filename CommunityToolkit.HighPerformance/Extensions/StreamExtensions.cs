@@ -8,8 +8,11 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 #if !NETSTANDARD2_1_OR_GREATER
 using System.Buffers;
+#endif
 using System.Threading;
 using System.Threading.Tasks;
+#if NETSTANDARD2_1_OR_GREATER
+using System.ComponentModel;
 #endif
 
 namespace CommunityToolkit.HighPerformance;
@@ -19,7 +22,6 @@ namespace CommunityToolkit.HighPerformance;
 /// </summary>
 public static class StreamExtensions
 {
-#if !NETSTANDARD2_1_OR_GREATER
     /// <summary>
     /// Asynchronously reads a sequence of bytes from a given <see cref="Stream"/> instance.
     /// </summary>
@@ -27,8 +29,15 @@ public static class StreamExtensions
     /// <param name="buffer">The destination <see cref="Memory{T}"/> to write data to.</param>
     /// <param name="cancellationToken">The optional <see cref="CancellationToken"/> for the operation.</param>
     /// <returns>A <see cref="ValueTask"/> representing the operation being performed.</returns>
+#if NETSTANDARD2_1_OR_GREATER
+    [Obsolete("This API is only available for binary compatibility, but Stream.ReadAsync should be used instead.")]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+#endif
     public static ValueTask<int> ReadAsync(this Stream stream, Memory<byte> buffer, CancellationToken cancellationToken = default)
     {
+#if NETSTANDARD2_1_OR_GREATER
+        return stream.ReadAsync(buffer, cancellationToken);
+#else
         if (cancellationToken.IsCancellationRequested)
         {
             return new(Task.FromCanceled<int>(cancellationToken));
@@ -69,6 +78,7 @@ public static class StreamExtensions
         }
 
         return new(ReadAsyncFallback(stream, buffer, cancellationToken));
+#endif
     }
 
     /// <summary>
@@ -78,8 +88,15 @@ public static class StreamExtensions
     /// <param name="buffer">The source <see cref="ReadOnlyMemory{T}"/> to read data from.</param>
     /// <param name="cancellationToken">The optional <see cref="CancellationToken"/> for the operation.</param>
     /// <returns>A <see cref="ValueTask"/> representing the operation being performed.</returns>
+#if NETSTANDARD2_1_OR_GREATER
+    [Obsolete("This API is only available for binary compatibility, but Stream.WriteAsync should be used instead.")]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+#endif
     public static ValueTask WriteAsync(this Stream stream, ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
     {
+#if NETSTANDARD2_1_OR_GREATER
+        return stream.WriteAsync(buffer, cancellationToken);
+#else
         if (cancellationToken.IsCancellationRequested)
         {
             return new(Task.FromCanceled(cancellationToken));
@@ -108,6 +125,7 @@ public static class StreamExtensions
         }
 
         return new(WriteAsyncFallback(stream, buffer, cancellationToken));
+#endif
     }
 
     /// <summary>
@@ -116,8 +134,15 @@ public static class StreamExtensions
     /// <param name="stream">The source <see cref="Stream"/> to read data from.</param>
     /// <param name="buffer">The target <see cref="Span{T}"/> to write data to.</param>
     /// <returns>The number of bytes that have been read.</returns>
+#if NETSTANDARD2_1_OR_GREATER
+    [Obsolete("This API is only available for binary compatibility, but Stream.Read should be used instead.")]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+#endif
     public static int Read(this Stream stream, Span<byte> buffer)
     {
+#if NETSTANDARD2_1_OR_GREATER
+        return stream.Read(buffer);
+#else
         byte[] rent = ArrayPool<byte>.Shared.Rent(buffer.Length);
 
         try
@@ -135,6 +160,7 @@ public static class StreamExtensions
         {
             ArrayPool<byte>.Shared.Return(rent);
         }
+#endif
     }
 
     /// <summary>
@@ -142,8 +168,15 @@ public static class StreamExtensions
     /// </summary>
     /// <param name="stream">The destination <see cref="Stream"/> to write data to.</param>
     /// <param name="buffer">The source <see cref="Span{T}"/> to read data from.</param>
+#if NETSTANDARD2_1_OR_GREATER
+    [Obsolete("This API is only available for binary compatibility, but Stream.Read should be used instead.")]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+#endif
     public static void Write(this Stream stream, ReadOnlySpan<byte> buffer)
     {
+#if NETSTANDARD2_1_OR_GREATER
+        stream.Write(buffer);
+#else
         byte[] rent = ArrayPool<byte>.Shared.Rent(buffer.Length);
 
         try
@@ -156,8 +189,8 @@ public static class StreamExtensions
         {
             ArrayPool<byte>.Shared.Return(rent);
         }
-    }
 #endif
+    }
 
     /// <summary>
     /// Reads a value of a specified type from a source <see cref="Stream"/> instance.

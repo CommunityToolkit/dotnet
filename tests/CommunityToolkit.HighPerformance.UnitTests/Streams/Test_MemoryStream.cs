@@ -6,7 +6,6 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using CommunityToolkit.HighPerformance;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommunityToolkit.HighPerformance.UnitTests.Streams;
