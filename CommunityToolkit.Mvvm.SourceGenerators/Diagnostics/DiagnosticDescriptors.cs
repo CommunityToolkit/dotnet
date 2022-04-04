@@ -146,7 +146,7 @@ internal static class DiagnosticDescriptors
     /// Format: <c>"The CanExecute name must refer to a valid member, but "{0}" has no matches in type {1}"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor InvalidCanExecuteMemberName = new DiagnosticDescriptor(
+    public static readonly DiagnosticDescriptor InvalidCanExecuteMemberNameError = new DiagnosticDescriptor(
         id: "MVVMTK0009",
         title: "Invalid ICommand.CanExecute member name",
         messageFormat: "The CanExecute name must refer to a valid member, but \"{0}\" has no matches in type {1}",
@@ -162,7 +162,7 @@ internal static class DiagnosticDescriptors
     /// Format: <c>"The CanExecute name must refer to a single member, but "{0}" has multiple matches in type {1}"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor MultipleCanExecuteMemberNameMatches = new DiagnosticDescriptor(
+    public static readonly DiagnosticDescriptor MultipleCanExecuteMemberNameMatchesError = new DiagnosticDescriptor(
         id: "MVVMTK0010",
         title: "Multiple ICommand.CanExecute member name matches",
         messageFormat: "The CanExecute name must refer to a single member, but \"{0}\" has multiple matches in type {1}",
@@ -178,7 +178,7 @@ internal static class DiagnosticDescriptors
     /// Format: <c>"The CanExecute name must refer to a compatible member, but no valid members were found for "{0}" in type {1}"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor InvalidCanExecuteMember = new DiagnosticDescriptor(
+    public static readonly DiagnosticDescriptor InvalidCanExecuteMemberError = new DiagnosticDescriptor(
         id: "MVVMTK0011",
         title: "No valid ICommand.CanExecute member match",
         messageFormat: "The CanExecute name must refer to a compatible member, but no valid members were found for \"{0}\" in type {1}",
@@ -362,5 +362,21 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Fields annotated with [AlsoBroadcastChange] must be contained in a type that inherits from ObservableRecipient or that is annotated with [ObservableRecipient] (including base types).",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a specified <c>[ICommand]</c> method has any overloads.
+    /// <para>
+    /// Format: <c>"The CanExecute name must refer to a single member, but "{0}" has multiple matches in type {1}"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor MultipleICommandMethodOverloadsError = new DiagnosticDescriptor(
+        id: "MVVMTK0023",
+        title: "Multiple overloads for method annotated with ICommand",
+        messageFormat: "The method {0}.{1} cannot be annotated with [ICommand], has it has multiple overloads (command methods must be unique within their containing type)",
+        category: typeof(ICommandGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "Methods with multiple overloads cannot be annotated with [ICommand], as command methods must be unique within their containing type.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 }
