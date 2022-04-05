@@ -87,4 +87,73 @@ public class Test_ArrayPoolExtensions
         Assert.AreNotSame(array, backup);
         Assert.IsTrue(backup.AsSpan(0, 16).ToArray().All(i => i == 0));
     }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentOutOfRangeException))]
+    public void Test_ArrayPoolExtensions_EnsureCapacity_InvalidCapacity()
+    {
+        int[]? array = null;
+
+        ArrayPool<int>.Shared.EnsureCapacity(ref array, -1);
+    }
+
+    [TestMethod]
+    public void Test_ArrayPoolExtensions_EnsureCapacity_IdenticalCapacity()
+    {
+        int[]? array = ArrayPool<int>.Shared.Rent(10);
+        int[]? backup = array;
+
+        ArrayPool<int>.Shared.EnsureCapacity(ref array, 10);
+        Assert.AreSame(backup, array);
+        Assert.IsTrue(array.Length >= 10);
+    }
+
+    [TestMethod]
+    public void Test_ArrayPoolExtensions_EnsureCapacity_NewArray()
+    {
+        int[]? array = null;
+
+        ArrayPool<int>.Shared.EnsureCapacity(ref array, 7);
+
+        Assert.IsNotNull(array);
+        Assert.IsTrue(array.Length >= 7);
+        int[]? backup = array;
+
+        ArrayPool<int>.Shared.EnsureCapacity(ref array, 64);
+
+        Assert.AreNotSame(backup, array);
+        Assert.IsTrue(array.Length >= 64);
+    }
+
+    [TestMethod]
+    public void Test_ArrayPoolExtensions_EnsureCapacity_SufficientCapacity()
+    {
+        int[]? array = ArrayPool<int>.Shared.Rent(16);
+        int[]? backup = array;
+
+        ArrayPool<int>.Shared.EnsureCapacity(ref array, 8);
+        Assert.AreSame(backup, array);
+
+        ArrayPool<int>.Shared.EnsureCapacity(ref array, 16);
+        Assert.AreSame(backup, array);
+
+        ArrayPool<int>.Shared.EnsureCapacity(ref array, 0);
+        Assert.AreSame(backup, array);
+    }
+
+    [TestMethod]
+    public void Test_ArrayPoolExtensions_EnsureCapacity_ClearArray()
+    {
+        int[]? array = ArrayPool<int>.Shared.Rent(16);
+        int[]? backup = array;
+
+        array.AsSpan().Fill(7);
+        Assert.IsTrue(backup.All(i => i == 7));
+
+        ArrayPool<int>.Shared.EnsureCapacity(ref array, 256, true);
+
+        Assert.AreNotSame(backup, array);
+        Assert.IsTrue(backup.All(i => i == default));
+        Assert.IsTrue(array.Length >= 256);
+    }
 }
