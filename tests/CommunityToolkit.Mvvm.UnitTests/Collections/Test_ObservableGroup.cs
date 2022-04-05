@@ -13,7 +13,7 @@ namespace CommunityToolkit.Mvvm.UnitTests.Collections;
 public class Test_ObservableGroup
 {
     [TestMethod]
-    public void Ctor_ShouldHaveExpectedState()
+    public void Test_ObservableGroup_Ctor_ShouldHaveExpectedState()
     {
         ObservableGroup<string, int> group = new("key");
 
@@ -22,7 +22,7 @@ public class Test_ObservableGroup
     }
 
     [TestMethod]
-    public void Ctor_WithGrouping_ShouldHaveExpectedState()
+    public void Test_ObservableGroup_Ctor_WithGrouping_ShouldHaveExpectedState()
     {
         IntGroup source = new("key", new[] { 1, 2, 3 });
         ObservableGroup<string, int> group = new(source);
@@ -32,7 +32,7 @@ public class Test_ObservableGroup
     }
 
     [TestMethod]
-    public void Ctor_WithCollection_ShouldHaveExpectedState()
+    public void Test_ObservableGroup_Ctor_WithCollection_ShouldHaveExpectedState()
     {
         int[] source = new[] { 1, 2, 3 };
         ObservableGroup<string, int> group = new("key", source);
@@ -42,7 +42,7 @@ public class Test_ObservableGroup
     }
 
     [TestMethod]
-    public void Add_ShouldRaiseEvent()
+    public void Test_ObservableGroup_Add_ShouldRaiseEvent()
     {
         bool collectionChangedEventRaised = false;
         int[] source = new[] { 1, 2, 3 };
@@ -58,7 +58,7 @@ public class Test_ObservableGroup
     }
 
     [TestMethod]
-    public void Update_ShouldRaiseEvent()
+    public void Test_ObservableGroup_Update_ShouldRaiseEvent()
     {
         bool collectionChangedEventRaised = false;
         int[] source = new[] { 1, 2, 3 };
@@ -74,7 +74,7 @@ public class Test_ObservableGroup
     }
 
     [TestMethod]
-    public void Remove_ShouldRaiseEvent()
+    public void Test_ObservableGroup_Remove_ShouldRaiseEvent()
     {
         bool collectionChangedEventRaised = false;
         int[] source = new[] { 1, 2, 3 };
@@ -90,7 +90,7 @@ public class Test_ObservableGroup
     }
 
     [TestMethod]
-    public void Clear_ShouldRaiseEvent()
+    public void Test_ObservableGroup_Clear_ShouldRaiseEvent()
     {
         bool collectionChangedEventRaised = false;
         int[] source = new[] { 1, 2, 3 };
@@ -108,7 +108,7 @@ public class Test_ObservableGroup
     [TestMethod]
     [DataRow(0)]
     [DataRow(3)]
-    public void IReadOnlyObservableGroup_ShouldReturnExpectedValues(int count)
+    public void Test_ObservableGroup_IReadOnlyObservableGroup_ShouldReturnExpectedValues(int count)
     {
         ObservableGroup<string, int> group = new("key", Enumerable.Range(0, count));
         IReadOnlyObservableGroup iReadOnlyObservableGroup = group;
@@ -119,35 +119,35 @@ public class Test_ObservableGroup
 
     [TestMethod]
     [ExpectedException(typeof(ArgumentNullException))]
-    public void Ctor_NullKey()
+    public void Test_ObservableGroup_Ctor_NullKey()
     {
         _ = new ObservableGroup<string, int>((string)null!);
     }
 
     [TestMethod]
     [ExpectedException(typeof(ArgumentNullException))]
-    public void Ctor_NullGroup()
+    public void Test_ObservableGroup_Ctor_NullGroup()
     {
         _ = new ObservableGroup<string, int>((IGrouping<string, int>)null!);
     }
 
     [TestMethod]
     [ExpectedException(typeof(ArgumentNullException))]
-    public void Ctor_NullKeyWithNotNullElements()
+    public void Test_ObservableGroup_Ctor_NullKeyWithNotNullElements()
     {
         _ = new ObservableGroup<string, int>(null!, new int[0]);
     }
 
     [TestMethod]
     [ExpectedException(typeof(ArgumentNullException))]
-    public void Ctor_NotNullKeyWithNullElements()
+    public void Test_ObservableGroup_Ctor_NotNullKeyWithNullElements()
     {
         _ = new ObservableGroup<string, int>("A", null!);
     }
 
     [TestMethod]
     [ExpectedException(typeof(ArgumentNullException))]
-    public void Ctor_NullKeySetter()
+    public void Test_ObservableGroup_Ctor_NullKeySetter()
     {
         ObservableGroup<string, int> group = new("A");
 

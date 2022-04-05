@@ -15,7 +15,7 @@ namespace CommunityToolkit.Mvvm.UnitTests.Collections;
 public class Test_ReadOnlyObservableGroup
 {
     [TestMethod]
-    public void Ctor_WithKeyAndOBservableCollection_ShouldHaveExpectedInitialState()
+    public void Test_ReadOnlyObservableGroup_Ctor_WithKeyAndOBservableCollection_ShouldHaveExpectedInitialState()
     {
         ObservableCollection<int> source = new(new[] { 1, 2, 3 });
         ReadOnlyObservableGroup<string, int> group = new("key", source);
@@ -25,7 +25,7 @@ public class Test_ReadOnlyObservableGroup
     }
 
     [TestMethod]
-    public void Ctor_ObservableGroup_ShouldHaveExpectedInitialState()
+    public void Test_ReadOnlyObservableGroup_Ctor_ObservableGroup_ShouldHaveExpectedInitialState()
     {
         int[] source = new[] { 1, 2, 3 };
         ObservableGroup<string, int> sourceGroup = new("key", source);
@@ -36,7 +36,7 @@ public class Test_ReadOnlyObservableGroup
     }
 
     [TestMethod]
-    public void Ctor_WithKeyAndCollection_ShouldHaveExpectedInitialState()
+    public void Test_ReadOnlyObservableGroup_Ctor_WithKeyAndCollection_ShouldHaveExpectedInitialState()
     {
         ObservableCollection<int> source = new() { 1, 2, 3 };
         ReadOnlyObservableGroup<string, int> group = new("key", source);
@@ -46,7 +46,7 @@ public class Test_ReadOnlyObservableGroup
     }
 
     [TestMethod]
-    public void Add_ShouldRaiseEvent()
+    public void Test_ReadOnlyObservableGroup_Add_ShouldRaiseEvent()
     {
         bool collectionChangedEventRaised = false;
         int[] source = new[] { 1, 2, 3 };
@@ -64,7 +64,7 @@ public class Test_ReadOnlyObservableGroup
     }
 
     [TestMethod]
-    public void Update_ShouldRaiseEvent()
+    public void Test_ReadOnlyObservableGroup_Update_ShouldRaiseEvent()
     {
         bool collectionChangedEventRaised = false;
         int[] source = new[] { 1, 2, 3 };
@@ -82,7 +82,7 @@ public class Test_ReadOnlyObservableGroup
     }
 
     [TestMethod]
-    public void Remove_ShouldRaiseEvent()
+    public void Test_ReadOnlyObservableGroup_Remove_ShouldRaiseEvent()
     {
         bool collectionChangedEventRaised = false;
         int[] source = new[] { 1, 2, 3 };
@@ -100,7 +100,7 @@ public class Test_ReadOnlyObservableGroup
     }
 
     [TestMethod]
-    public void Clear_ShouldRaiseEvent()
+    public void Test_ReadOnlyObservableGroup_Clear_ShouldRaiseEvent()
     {
         bool collectionChangedEventRaised = false;
         int[] source = new[] { 1, 2, 3 };
@@ -120,7 +120,7 @@ public class Test_ReadOnlyObservableGroup
     [TestMethod]
     [DataRow(0)]
     [DataRow(3)]
-    public void IReadOnlyObservableGroup_ShouldReturnExpectedValues(int count)
+    public void Test_ReadOnlyObservableGroup_IReadOnlyObservableGroup_ShouldReturnExpectedValues(int count)
     {
         ObservableGroup<string, int> sourceGroup = new("key", Enumerable.Range(0, count));
         ReadOnlyObservableGroup<string, int> group = new(sourceGroup);
@@ -132,21 +132,21 @@ public class Test_ReadOnlyObservableGroup
 
     [TestMethod]
     [ExpectedException(typeof(ArgumentNullException))]
-    public void Ctor_NullKeyWithNotNullElements()
+    public void Test_ReadOnlyObservableGroup_Ctor_NullKeyWithNotNullElements()
     {
         _ = new ReadOnlyObservableGroup<string, int>(null!, new ObservableCollection<int>());
     }
 
     [TestMethod]
     [ExpectedException(typeof(ArgumentNullException))]
-    public void Ctor_NotNullKeyWithNullElements()
+    public void Test_ReadOnlyObservableGroup_Ctor_NotNullKeyWithNullElements()
     {
         _ = new ReadOnlyObservableGroup<string, int>("A", null!);
     }
 
     [TestMethod]
     [ExpectedException(typeof(ArgumentNullException))]
-    public void Ctor_NullGroup()
+    public void Test_ReadOnlyObservableGroup_Ctor_NullGroup()
     {
         _ = new ReadOnlyObservableGroup<string, int>(null!);
     }

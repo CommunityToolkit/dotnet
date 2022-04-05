@@ -18,7 +18,7 @@ namespace CommunityToolkit.Mvvm.UnitTests.Collections;
 public class Test_ReadOnlyObservableGroupedCollection
 {
     [TestMethod]
-    public void Ctor_WithEmptySource_ShoudInitializeObject()
+    public void Test_ReadOnlyObservableGroupedCollection_Ctor_WithEmptySource_ShoudInitializeObject()
     {
         ObservableGroupedCollection<string, int> source = new();
         ReadOnlyObservableGroupedCollection<string, int> readOnlyGroup = new(source);
@@ -28,7 +28,7 @@ public class Test_ReadOnlyObservableGroupedCollection
     }
 
     [TestMethod]
-    public void Ctor_WithObservableGroupedCollection_ShoudInitializeObject()
+    public void Test_ReadOnlyObservableGroupedCollection_Ctor_WithObservableGroupedCollection_ShoudInitializeObject()
     {
         List<IGrouping<string, int>> groups = new()
         {
@@ -48,7 +48,7 @@ public class Test_ReadOnlyObservableGroupedCollection
     }
 
     [TestMethod]
-    public void Ctor_WithListOfReadOnlyObservableGroupSource_ShoudInitializeObject()
+    public void Test_ReadOnlyObservableGroupedCollection_Ctor_WithListOfReadOnlyObservableGroupSource_ShoudInitializeObject()
     {
         ObservableCollection<ReadOnlyObservableGroup<string, int>> source = new()
         {
@@ -67,7 +67,7 @@ public class Test_ReadOnlyObservableGroupedCollection
     }
 
     [TestMethod]
-    public void IListImplementation_Properties_ShoudReturnExpectedValues()
+    public void Test_ReadOnlyObservableGroupedCollection_IListImplementation_Properties_ShoudReturnExpectedValues()
     {
         List<IGrouping<string, int>> groups = new()
         {
@@ -97,7 +97,7 @@ public class Test_ReadOnlyObservableGroupedCollection
     }
 
     [TestMethod]
-    public void IListImplementation_MutableMethods_ShoudThrow()
+    public void Test_ReadOnlyObservableGroupedCollection_IListImplementation_MutableMethods_ShoudThrow()
     {
         List<IGrouping<string, int>> groups = new()
         {
@@ -128,7 +128,7 @@ public class Test_ReadOnlyObservableGroupedCollection
     [DataRow(0)]
     [DataRow(1)]
     [DataRow(2)]
-    public void IListImplementation_IndexOf_ShoudReturnExpectedValue(int groupIndex)
+    public void Test_ReadOnlyObservableGroupedCollection_IListImplementation_IndexOf_ShoudReturnExpectedValue(int groupIndex)
     {
         List<IGrouping<string, int>> groups = new()
         {
@@ -151,7 +151,7 @@ public class Test_ReadOnlyObservableGroupedCollection
     [DataRow(-1, false)]
     [DataRow(0, true)]
     [DataRow(1, true)]
-    public void IListImplementation_Contains_ShoudReturnExpectedValue(int groupIndex, bool expectedResult)
+    public void Test_ReadOnlyObservableGroupedCollection_IListImplementation_Contains_ShoudReturnExpectedValue(int groupIndex, bool expectedResult)
     {
         List<IGrouping<string, int>> groups = new()
         {
@@ -172,7 +172,7 @@ public class Test_ReadOnlyObservableGroupedCollection
     [TestMethod]
     [DataRow(0, 0)]
     [DataRow(3, 3)]
-    public void AddGroupInSource_ShouldAddGroup(int sourceInitialItemsCount, int expectedInsertionIndex)
+    public void Test_ReadOnlyObservableGroupedCollection_AddGroupInSource_ShouldAddGroup(int sourceInitialItemsCount, int expectedInsertionIndex)
     {
         NotifyCollectionChangedEventArgs? collectionChangedEventArgs = null;
         int collectionChangedEventsCount = 0;
@@ -215,7 +215,7 @@ public class Test_ReadOnlyObservableGroupedCollection
     [DataRow(0)]
     [DataRow(1)]
     [DataRow(2)]
-    public void InsertGroupInSource_ShouldAddGroup(int insertionIndex)
+    public void Test_ReadOnlyObservableGroupedCollection_InsertGroupInSource_ShouldAddGroup(int insertionIndex)
     {
         NotifyCollectionChangedEventArgs? collectionChangedEventArgs = null;
         int collectionChangedEventsCount = 0;
@@ -252,7 +252,7 @@ public class Test_ReadOnlyObservableGroupedCollection
     }
 
     [TestMethod]
-    public void RemoveGroupInSource_ShoudRemoveGroup()
+    public void Test_ReadOnlyObservableGroupedCollection_RemoveGroupInSource_ShoudRemoveGroup()
     {
         NotifyCollectionChangedEventArgs? collectionChangedEventArgs = null;
         int collectionChangedEventsCount = 0;
@@ -292,7 +292,7 @@ public class Test_ReadOnlyObservableGroupedCollection
     [TestMethod]
     [DataRow(1, 0)]
     [DataRow(0, 1)]
-    public void MoveGroupInSource_ShoudMoveGroup(int oldIndex, int newIndex)
+    public void Test_ReadOnlyObservableGroupedCollection_MoveGroupInSource_ShoudMoveGroup(int oldIndex, int newIndex)
     {
         NotifyCollectionChangedEventArgs? collectionChangedEventArgs = null;
         int collectionChangedEventsCount = 0;
@@ -333,7 +333,7 @@ public class Test_ReadOnlyObservableGroupedCollection
     }
 
     [TestMethod]
-    public void ClearSource_ShoudClear()
+    public void Test_ReadOnlyObservableGroupedCollection_ClearSource_ShoudClear()
     {
         NotifyCollectionChangedEventArgs? collectionChangedEventArgs = null;
         int collectionChangedEventsCount = 0;
@@ -368,7 +368,7 @@ public class Test_ReadOnlyObservableGroupedCollection
     }
 
     [TestMethod]
-    public void ReplaceGroupInSource_ShoudReplaceGroup()
+    public void Test_ReadOnlyObservableGroupedCollection_ReplaceGroupInSource_ShoudReplaceGroup()
     {
         NotifyCollectionChangedEventArgs? collectionChangedEventArgs = null;
         int collectionChangedEventsCount = 0;
@@ -465,14 +465,14 @@ public class Test_ReadOnlyObservableGroupedCollection
 
     [TestMethod]
     [ExpectedException(typeof(ArgumentNullException))]
-    public void Ctor_NullCollectionWithObservableGroups()
+    public void Test_ReadOnlyObservableGroupedCollection_Ctor_NullCollectionWithObservableGroups()
     {
         _ = new ReadOnlyObservableGroupedCollection<string, int>((ObservableCollection<ObservableGroup<string, int>>)null!);
     }
 
     [TestMethod]
     [ExpectedException(typeof(ArgumentNullException))]
-    public void Ctor_NullCollectionWithReadOnlyObservableGroups()
+    public void Test_ReadOnlyObservableGroupedCollection_Ctor_NullCollectionWithReadOnlyObservableGroups()
     {
         _ = new ReadOnlyObservableGroupedCollection<string, int>((ObservableCollection<ReadOnlyObservableGroup<string, int>>)null!);
     }

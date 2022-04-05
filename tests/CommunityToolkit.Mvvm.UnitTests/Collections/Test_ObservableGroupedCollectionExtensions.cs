@@ -12,7 +12,7 @@ namespace CommunityToolkit.Mvvm.UnitTests.Collections;
 public class Test_ObservableGroupedCollectionExtensions
 {
     [TestMethod]
-    public void First_WhenGroupExists_ShouldReturnFirstGroup()
+    public void Test_ObservableGroupedCollectionExtensions_FirstGroupByKey_WhenGroupExists_ShouldReturnFirstGroup()
     {
         ObservableGroupedCollection<string, int> groupedCollection = new();
 
@@ -29,7 +29,7 @@ public class Test_ObservableGroupedCollectionExtensions
 
     [TestMethod]
     [ExpectedException(typeof(InvalidOperationException))]
-    public void First_WhenGroupDoesNotExist_ShouldThrow()
+    public void Test_ObservableGroupedCollectionExtensions_FirstGroupByKey_WhenGroupDoesNotExist_ShouldThrow()
     {
         ObservableGroupedCollection<string, int> groupedCollection = new();
 
@@ -39,7 +39,7 @@ public class Test_ObservableGroupedCollectionExtensions
     }
 
     [TestMethod]
-    public void FirstOrDefault_WhenGroupExists_ShouldReturnFirstGroup()
+    public void Test_ObservableGroupedCollectionExtensions_FirstGroupByKeyOrDefault_WhenGroupExists_ShouldReturnFirstGroup()
     {
         ObservableGroupedCollection<string, int> groupedCollection = new();
 
@@ -55,7 +55,7 @@ public class Test_ObservableGroupedCollectionExtensions
     }
 
     [TestMethod]
-    public void FirstOrDefault_WhenGroupDoesNotExist_ShouldReturnNull()
+    public void Test_ObservableGroupedCollectionExtensions_FirstGroupByKeyOrDefault_WhenGroupDoesNotExist_ShouldReturnNull()
     {
         ObservableGroupedCollection<string, int> groupedCollection = new();
 
@@ -67,7 +67,7 @@ public class Test_ObservableGroupedCollectionExtensions
     }
 
     [TestMethod]
-    public void ElementAt_WhenGroupExistsAndIndexInRange_ShouldReturnFirstGroupValue()
+    public void Test_ObservableGroupedCollectionExtensions_FirstGroupByKey_WhenGroupExistsAndIndexInRange_ShouldReturnFirstGroupValue()
     {
         ObservableGroupedCollection<string, int> groupedCollection = new();
 
@@ -84,7 +84,7 @@ public class Test_ObservableGroupedCollectionExtensions
     [DataRow(-1)]
     [DataRow(3)]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
-    public void ElementAt_WhenGroupExistsAndIndexOutOfRange_ShouldReturnThrow(int index)
+    public void Test_ObservableGroupedCollectionExtensions_FirstGroupByKey_WhenGroupExistsAndIndexOutOfRange_ShouldReturnThrow(int index)
     {
         ObservableGroupedCollection<string, int> groupedCollection = new();
 
@@ -96,18 +96,7 @@ public class Test_ObservableGroupedCollectionExtensions
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))]
-    public void ElementAt_WhenGroupDoesNotExist_ShouldThrow()
-    {
-        ObservableGroupedCollection<string, int> groupedCollection = new();
-
-        _ = groupedCollection.AddGroup("A", new[] { 23 });
-
-        _ = groupedCollection.FirstGroupByKey("I do not exist")[0];
-    }
-
-    [TestMethod]
-    public void ElementAtOrDefault_WhenGroupExistsAndIndexInRange_ShouldReturnValue()
+    public void Test_ObservableGroupedCollectionExtensions_FirstGroupByKey_WhenGroupExistsAndIndexInRange_ShouldReturnValue()
     {
         ObservableGroupedCollection<string, int> groupedCollection = new();
 
@@ -121,7 +110,7 @@ public class Test_ObservableGroupedCollectionExtensions
     }
 
     [TestMethod]
-    public void AddGroup_WithItem_ShouldAddGroup()
+    public void Test_ObservableGroupedCollectionExtensions_AddGroup_WithItem_ShouldAddGroup()
     {
         ObservableGroupedCollection<string, int> groupedCollection = new();
 
@@ -134,7 +123,7 @@ public class Test_ObservableGroupedCollectionExtensions
     }
 
     [TestMethod]
-    public void AddGroup_WithCollection_ShouldAddGroup()
+    public void Test_ObservableGroupedCollectionExtensions_AddGroup_WithCollection_ShouldAddGroup()
     {
         ObservableGroupedCollection<string, int> groupedCollection = new();
 
@@ -147,7 +136,7 @@ public class Test_ObservableGroupedCollectionExtensions
     }
 
     [TestMethod]
-    public void AddGroup_WithParamsCollection_ShouldAddGroup()
+    public void Test_ObservableGroupedCollectionExtensions_AddGroup_WithParamsCollection_ShouldAddGroup()
     {
         ObservableGroupedCollection<string, int> groupedCollection = new();
 
@@ -160,7 +149,7 @@ public class Test_ObservableGroupedCollectionExtensions
     }
 
     [TestMethod]
-    public void AddItem_WhenTargetGroupDoesNotExists_ShouldCreateAndAddNewGroup()
+    public void Test_ObservableGroupedCollectionExtensions_AddItem_WhenTargetGroupDoesNotExists_ShouldCreateAndAddNewGroup()
     {
         ObservableGroupedCollection<string, int> groupedCollection = new();
 
@@ -173,7 +162,7 @@ public class Test_ObservableGroupedCollectionExtensions
     }
 
     [TestMethod]
-    public void AddItem_WhenSingleTargetGroupAlreadyExists_ShouldAddItemToExistingGroup()
+    public void Test_ObservableGroupedCollectionExtensions_AddItem_WhenSingleTargetGroupAlreadyExists_ShouldAddItemToExistingGroup()
     {
         ObservableGroupedCollection<string, int> groupedCollection = new();
 
@@ -202,7 +191,7 @@ public class Test_ObservableGroupedCollectionExtensions
     }
 
     [TestMethod]
-    public void AddItem_WhenSeveralTargetGroupsAlreadyExist_ShouldAddItemToFirstExistingGroup()
+    public void Test_ObservableGroupedCollectionExtensions_AddItem_WhenSeveralTargetGroupsAlreadyExist_ShouldAddItemToFirstExistingGroup()
     {
         ObservableGroupedCollection<string, int> groupedCollection = new();
 
@@ -235,7 +224,7 @@ public class Test_ObservableGroupedCollectionExtensions
     }
 
     [TestMethod]
-    public void RemoveGroup_WhenGroupDoesNotExists_ShouldDoNothing()
+    public void Test_ObservableGroupedCollectionExtensions_RemoveGroup_WhenGroupDoesNotExists_ShouldDoNothing()
     {
         ObservableGroupedCollection<string, int> groupedCollection = new();
 
@@ -249,7 +238,7 @@ public class Test_ObservableGroupedCollectionExtensions
     }
 
     [TestMethod]
-    public void RemoveGroup_WhenSingleGroupExists_ShouldRemoveGroup()
+    public void Test_ObservableGroupedCollectionExtensions_RemoveGroup_WhenSingleGroupExists_ShouldRemoveGroup()
     {
         ObservableGroupedCollection<string, int> groupedCollection = new();
 
@@ -264,7 +253,7 @@ public class Test_ObservableGroupedCollectionExtensions
     }
 
     [TestMethod]
-    public void RemoveGroup_WhenSeveralGroupsExist_ShouldRemoveFirstGroup()
+    public void Test_ObservableGroupedCollectionExtensions_RemoveGroup_WhenSeveralGroupsExist_ShouldRemoveFirstGroup()
     {
         ObservableGroupedCollection<string, int> groupedCollection = new();
 
@@ -286,7 +275,7 @@ public class Test_ObservableGroupedCollectionExtensions
     [TestMethod]
     [DataRow(true)]
     [DataRow(false)]
-    public void RemoveItem_WhenGroupDoesNotExist_ShouldDoNothing(bool removeGroupIfEmpty)
+    public void Test_ObservableGroupedCollectionExtensions_RemoveItem_WhenGroupDoesNotExist_ShouldDoNothing(bool removeGroupIfEmpty)
     {
         ObservableGroupedCollection<string, int> groupedCollection = new();
 
@@ -307,7 +296,7 @@ public class Test_ObservableGroupedCollectionExtensions
     [TestMethod]
     [DataRow(true)]
     [DataRow(false)]
-    public void RemoveItem_WhenGroupExistsAndItemDoesNotExist_ShouldDoNothing(bool removeGroupIfEmpty)
+    public void Test_ObservableGroupedCollectionExtensions_RemoveItem_WhenGroupExistsAndItemDoesNotExist_ShouldDoNothing(bool removeGroupIfEmpty)
     {
         ObservableGroupedCollection<string, int> groupedCollection = new();
 
@@ -328,7 +317,7 @@ public class Test_ObservableGroupedCollectionExtensions
     [TestMethod]
     [DataRow(true)]
     [DataRow(false)]
-    public void RemoveItem_WhenGroupAndItemExist_ShouldRemoveItemFromGroup(bool removeGroupIfEmpty)
+    public void Test_ObservableGroupedCollectionExtensions_RemoveItem_WhenGroupAndItemExist_ShouldRemoveItemFromGroup(bool removeGroupIfEmpty)
     {
         ObservableGroupedCollection<string, int> groupedCollection = new();
 
@@ -349,7 +338,7 @@ public class Test_ObservableGroupedCollectionExtensions
     [TestMethod]
     [DataRow(true, true)]
     [DataRow(false, false)]
-    public void RemoveItem_WhenRemovingLastItem_ShouldRemoveGroupIfRequired(bool removeGroupIfEmpty, bool expectGroupRemoved)
+    public void Test_ObservableGroupedCollectionExtensions_RemoveItem_WhenRemovingLastItem_ShouldRemoveGroupIfRequired(bool removeGroupIfEmpty, bool expectGroupRemoved)
     {
         ObservableGroupedCollection<string, int> groupedCollection = new();
 

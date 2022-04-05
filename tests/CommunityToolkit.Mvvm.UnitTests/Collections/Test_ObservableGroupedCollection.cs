@@ -14,7 +14,7 @@ namespace CommunityToolkit.Mvvm.UnitTests.Collections;
 public class Test_ObservableGroupedCollection
 {
     [TestMethod]
-    public void Ctor_ShouldHaveExpectedValues()
+    public void Test_ObservableGroupedCollection_Ctor_ShouldHaveExpectedValues()
     {
         ObservableGroupedCollection<string, int> groupCollection = new();
 
@@ -22,7 +22,7 @@ public class Test_ObservableGroupedCollection
     }
 
     [TestMethod]
-    public void Ctor_WithGroups_ShouldHaveExpectedValues()
+    public void Test_ObservableGroupedCollection_Ctor_WithGroups_ShouldHaveExpectedValues()
     {
         List<IGrouping<string, int>> groups = new()
         {
@@ -42,7 +42,7 @@ public class Test_ObservableGroupedCollection
 
     [TestMethod]
     [ExpectedException(typeof(ArgumentNullException))]
-    public void Ctor_NullCollection()
+    public void Test_ObservableGroupedCollection_Ctor_NullCollection()
     {
         _ = new ObservableGroupedCollection<string, int>(null!);
     }
