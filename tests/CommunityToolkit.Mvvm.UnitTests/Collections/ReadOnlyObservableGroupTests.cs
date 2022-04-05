@@ -52,6 +52,7 @@ public class ReadOnlyObservableGroupTests
         int[] source = new[] { 1, 2, 3 };
         ObservableGroup<string, int> sourceGroup = new("key", source);
         ReadOnlyObservableGroup<string, int> group = new(sourceGroup);
+
         ((INotifyCollectionChanged)group).CollectionChanged += (s, e) => collectionChangedEventRaised = true;
 
         sourceGroup.Add(4);
@@ -69,6 +70,7 @@ public class ReadOnlyObservableGroupTests
         int[] source = new[] { 1, 2, 3 };
         ObservableGroup<string, int> sourceGroup = new("key", source);
         ReadOnlyObservableGroup<string, int> group = new(sourceGroup);
+
         ((INotifyCollectionChanged)group).CollectionChanged += (s, e) => collectionChangedEventRaised = true;
 
         sourceGroup[1] = 4;
@@ -86,6 +88,7 @@ public class ReadOnlyObservableGroupTests
         int[] source = new[] { 1, 2, 3 };
         ObservableGroup<string, int> sourceGroup = new("key", source);
         ReadOnlyObservableGroup<string, int> group = new(sourceGroup);
+
         ((INotifyCollectionChanged)group).CollectionChanged += (s, e) => collectionChangedEventRaised = true;
 
         _ = sourceGroup.Remove(1);
@@ -103,6 +106,7 @@ public class ReadOnlyObservableGroupTests
         int[] source = new[] { 1, 2, 3 };
         ObservableGroup<string, int> sourceGroup = new("key", source);
         ReadOnlyObservableGroup<string, int> group = new(sourceGroup);
+
         ((INotifyCollectionChanged)group).CollectionChanged += (s, e) => collectionChangedEventRaised = true;
 
         sourceGroup.Clear();
@@ -124,5 +128,26 @@ public class ReadOnlyObservableGroupTests
 
         Assert.AreEqual(iReadOnlyObservableGroup.Key, "key");
         Assert.AreEqual(iReadOnlyObservableGroup.Count, count);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentNullException))]
+    public void Ctor_NullKeyWithNotNullElements()
+    {
+        _ = new ReadOnlyObservableGroup<string, int>(null!, new ObservableCollection<int>());
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentNullException))]
+    public void Ctor_NotNullKeyWithNullElements()
+    {
+        _ = new ReadOnlyObservableGroup<string, int>("A", null!);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentNullException))]
+    public void Ctor_NullGroup()
+    {
+        _ = new ReadOnlyObservableGroup<string, int>(null!);
     }
 }

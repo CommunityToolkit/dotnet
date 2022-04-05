@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CommunityToolkit.Mvvm.Collections;
@@ -37,5 +38,12 @@ public class ObservableGroupedCollectionTests
 
         Assert.AreEqual(groupCollection[1].Key, "B");
         CollectionAssert.AreEqual(groupCollection[1], new[] { 2, 4, 6 });
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentNullException))]
+    public void Ctor_NullCollection()
+    {
+        _ = new ObservableGroupedCollection<string, int>(null!);
     }
 }

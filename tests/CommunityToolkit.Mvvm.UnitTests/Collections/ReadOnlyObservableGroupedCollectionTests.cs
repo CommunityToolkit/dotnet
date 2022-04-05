@@ -462,4 +462,18 @@ public class ReadOnlyObservableGroupedCollectionTests
     }
 
     private static bool IsResetEventValid(NotifyCollectionChangedEventArgs args) => args.Action == NotifyCollectionChangedAction.Reset && args.NewItems == null && args.OldItems == null;
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentNullException))]
+    public void Ctor_NullCollectionWithObservableGroups()
+    {
+        _ = new ReadOnlyObservableGroupedCollection<string, int>((ObservableCollection<ObservableGroup<string, int>>)null!);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentNullException))]
+    public void Ctor_NullCollectionWithReadOnlyObservableGroups()
+    {
+        _ = new ReadOnlyObservableGroupedCollection<string, int>((ObservableCollection<ReadOnlyObservableGroup<string, int>>)null!);
+    }
 }
