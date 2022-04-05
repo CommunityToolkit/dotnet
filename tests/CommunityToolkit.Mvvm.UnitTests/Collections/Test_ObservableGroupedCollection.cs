@@ -8,10 +8,10 @@ using System.Linq;
 using CommunityToolkit.Mvvm.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommunityToolkit.Mvvm.UnitTests;
+namespace CommunityToolkit.Mvvm.UnitTests.Collections;
 
 [TestClass]
-public class ObservableGroupedCollectionTests
+public class Test_ObservableGroupedCollection
 {
     [TestMethod]
     public void Ctor_ShouldHaveExpectedValues()

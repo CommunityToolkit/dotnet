@@ -3,14 +3,13 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Linq;
 using CommunityToolkit.Mvvm.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommunityToolkit.Mvvm.UnitTests;
+namespace CommunityToolkit.Mvvm.UnitTests.Collections;
 
 [TestClass]
-public class ObservableGroupedCollectionExtensionsTests
+public class Test_ObservableGroupedCollectionExtensions
 {
     [TestMethod]
     public void First_WhenGroupExists_ShouldReturnFirstGroup()

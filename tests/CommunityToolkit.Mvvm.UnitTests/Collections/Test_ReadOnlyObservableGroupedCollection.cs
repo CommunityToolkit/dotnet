@@ -12,10 +12,10 @@ using System.Linq;
 using CommunityToolkit.Mvvm.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommunityToolkit.Mvvm.UnitTests;
+namespace CommunityToolkit.Mvvm.UnitTests.Collections;
 
 [TestClass]
-public class ReadOnlyObservableGroupedCollectionTests
+public class Test_ReadOnlyObservableGroupedCollection
 {
     [TestMethod]
     public void Ctor_WithEmptySource_ShoudInitializeObject()

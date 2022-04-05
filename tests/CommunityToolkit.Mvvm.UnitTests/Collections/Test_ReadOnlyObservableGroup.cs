@@ -3,40 +3,43 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using CommunityToolkit.Mvvm.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommunityToolkit.Mvvm.UnitTests;
+namespace CommunityToolkit.Mvvm.UnitTests.Collections;
 
 [TestClass]
-public class ObservableGroupTests
+public class Test_ReadOnlyObservableGroup
 {
     [TestMethod]
-    public void Ctor_ShouldHaveExpectedState()
+    public void Ctor_WithKeyAndOBservableCollection_ShouldHaveExpectedInitialState()
     {
-        ObservableGroup<string, int> group = new("key");
-
-        Assert.AreEqual(group.Key, "key");
-        Assert.AreEqual(group.Count, 0);
-    }
-
-    [TestMethod]
-    public void Ctor_WithGrouping_ShouldHaveExpectedState()
-    {
-        IntGroup source = new("key", new[] { 1, 2, 3 });
-        ObservableGroup<string, int> group = new(source);
+        ObservableCollection<int> source = new(new[] { 1, 2, 3 });
+        ReadOnlyObservableGroup<string, int> group = new("key", source);
 
         Assert.AreEqual(group.Key, "key");
         CollectionAssert.AreEqual(group, new[] { 1, 2, 3 });
     }
 
     [TestMethod]
-    public void Ctor_WithCollection_ShouldHaveExpectedState()
+    public void Ctor_ObservableGroup_ShouldHaveExpectedInitialState()
     {
         int[] source = new[] { 1, 2, 3 };
-        ObservableGroup<string, int> group = new("key", source);
+        ObservableGroup<string, int> sourceGroup = new("key", source);
+        ReadOnlyObservableGroup<string, int> group = new(sourceGroup);
+
+        Assert.AreEqual(group.Key, "key");
+        CollectionAssert.AreEqual(group, new[] { 1, 2, 3 });
+    }
+
+    [TestMethod]
+    public void Ctor_WithKeyAndCollection_ShouldHaveExpectedInitialState()
+    {
+        ObservableCollection<int> source = new() { 1, 2, 3 };
+        ReadOnlyObservableGroup<string, int> group = new("key", source);
 
         Assert.AreEqual(group.Key, "key");
         CollectionAssert.AreEqual(group, new[] { 1, 2, 3 });
@@ -47,14 +50,16 @@ public class ObservableGroupTests
     {
         bool collectionChangedEventRaised = false;
         int[] source = new[] { 1, 2, 3 };
-        ObservableGroup<string, int> group = new("key", source);
+        ObservableGroup<string, int> sourceGroup = new("key", source);
+        ReadOnlyObservableGroup<string, int> group = new(sourceGroup);
 
-        group.CollectionChanged += (s, e) => collectionChangedEventRaised = true;
+        ((INotifyCollectionChanged)group).CollectionChanged += (s, e) => collectionChangedEventRaised = true;
 
-        group.Add(4);
+        sourceGroup.Add(4);
 
         Assert.AreEqual(group.Key, "key");
         CollectionAssert.AreEqual(group, new[] { 1, 2, 3, 4 });
+
         Assert.IsTrue(collectionChangedEventRaised);
     }
 
@@ -63,14 +68,16 @@ public class ObservableGroupTests
     {
         bool collectionChangedEventRaised = false;
         int[] source = new[] { 1, 2, 3 };
-        ObservableGroup<string, int> group = new("key", source);
+        ObservableGroup<string, int> sourceGroup = new("key", source);
+        ReadOnlyObservableGroup<string, int> group = new(sourceGroup);
 
-        group.CollectionChanged += (s, e) => collectionChangedEventRaised = true;
+        ((INotifyCollectionChanged)group).CollectionChanged += (s, e) => collectionChangedEventRaised = true;
 
-        group[1] = 4;
+        sourceGroup[1] = 4;
 
         Assert.AreEqual(group.Key, "key");
         CollectionAssert.AreEqual(group, new[] { 1, 4, 3 });
+
         Assert.IsTrue(collectionChangedEventRaised);
     }
 
@@ -79,14 +86,16 @@ public class ObservableGroupTests
     {
         bool collectionChangedEventRaised = false;
         int[] source = new[] { 1, 2, 3 };
-        ObservableGroup<string, int>? group = new("key", source);
+        ObservableGroup<string, int> sourceGroup = new("key", source);
+        ReadOnlyObservableGroup<string, int> group = new(sourceGroup);
 
-        group.CollectionChanged += (s, e) => collectionChangedEventRaised = true;
+        ((INotifyCollectionChanged)group).CollectionChanged += (s, e) => collectionChangedEventRaised = true;
 
-        _ = group.Remove(1);
+        _ = sourceGroup.Remove(1);
 
         Assert.AreEqual(group.Key, "key");
         CollectionAssert.AreEqual(group, new[] { 2, 3 });
+
         Assert.IsTrue(collectionChangedEventRaised);
     }
 
@@ -95,14 +104,16 @@ public class ObservableGroupTests
     {
         bool collectionChangedEventRaised = false;
         int[] source = new[] { 1, 2, 3 };
-        ObservableGroup<string, int>? group = new("key", source);
+        ObservableGroup<string, int> sourceGroup = new("key", source);
+        ReadOnlyObservableGroup<string, int> group = new(sourceGroup);
 
-        group.CollectionChanged += (s, e) => collectionChangedEventRaised = true;
+        ((INotifyCollectionChanged)group).CollectionChanged += (s, e) => collectionChangedEventRaised = true;
 
-        group.Clear();
+        sourceGroup.Clear();
 
         Assert.AreEqual(group.Key, "key");
-        Assert.AreEqual(group.Count, 0);
+        CollectionAssert.AreEqual(group, Array.Empty<int>());
+
         Assert.IsTrue(collectionChangedEventRaised);
     }
 
@@ -111,7 +122,8 @@ public class ObservableGroupTests
     [DataRow(3)]
     public void IReadOnlyObservableGroup_ShouldReturnExpectedValues(int count)
     {
-        ObservableGroup<string, int> group = new("key", Enumerable.Range(0, count));
+        ObservableGroup<string, int> sourceGroup = new("key", Enumerable.Range(0, count));
+        ReadOnlyObservableGroup<string, int> group = new(sourceGroup);
         IReadOnlyObservableGroup iReadOnlyObservableGroup = group;
 
         Assert.AreEqual(iReadOnlyObservableGroup.Key, "key");
@@ -120,38 +132,22 @@ public class ObservableGroupTests
 
     [TestMethod]
     [ExpectedException(typeof(ArgumentNullException))]
-    public void Ctor_NullKey()
-    {
-        _ = new ObservableGroup<string, int>((string)null!);
-    }
-
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
-    public void Ctor_NullGroup()
-    {
-        _ = new ObservableGroup<string, int>((IGrouping<string, int>)null!);
-    }
-
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void Ctor_NullKeyWithNotNullElements()
     {
-        _ = new ObservableGroup<string, int>(null!, new int[0]);
+        _ = new ReadOnlyObservableGroup<string, int>(null!, new ObservableCollection<int>());
     }
 
     [TestMethod]
     [ExpectedException(typeof(ArgumentNullException))]
     public void Ctor_NotNullKeyWithNullElements()
     {
-        _ = new ObservableGroup<string, int>("A", null!);
+        _ = new ReadOnlyObservableGroup<string, int>("A", null!);
     }
 
     [TestMethod]
     [ExpectedException(typeof(ArgumentNullException))]
-    public void Ctor_NullKeySetter()
+    public void Ctor_NullGroup()
     {
-        ObservableGroup<string, int> group = new("A");
-
-        group.Key = null!;
+        _ = new ReadOnlyObservableGroup<string, int>(null!);
     }
 }
