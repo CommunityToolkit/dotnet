@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections.Generic;
 using CommunityToolkit.Mvvm.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -149,6 +150,38 @@ public class Test_ObservableGroupedCollectionExtensions
     }
 
     [TestMethod]
+    public void Test_ObservableGroupedCollectionExtensions_InsertGroup()
+    {
+        ObservableGroupedCollection<string, int> groupedCollection = new();
+
+        ObservableGroup<string, int> a = groupedCollection.InsertGroup("A", new[] { 1, 2, 3 });
+        ObservableGroup<string, int> d = groupedCollection.InsertGroup("D", new[] { 1, 2, 3 });
+        ObservableGroup<string, int> e = groupedCollection.InsertGroup("E", new[] { 1, 2, 3 });
+        ObservableGroup<string, int> b = groupedCollection.InsertGroup("B", new[] { 1, 2, 3 });
+        ObservableGroup<string, int> z = groupedCollection.InsertGroup("Z", new[] { 1, 2, 3 });
+        ObservableGroup<string, int> c = groupedCollection.InsertGroup("C", new[] { 1, 2, 3 });
+
+        CollectionAssert.AllItemsAreNotNull(new[] { a, d, e, b, z, c });
+        CollectionAssert.AreEqual(new[] { a, b, c, d, e, z }, groupedCollection);
+    }
+
+    [TestMethod]
+    public void Test_ObservableGroupedCollectionExtensions_InsertGroup_WithGrouping()
+    {
+        ObservableGroupedCollection<string, int> groupedCollection = new();
+
+        ObservableGroup<string, int> a = groupedCollection.InsertGroup(new IntGroup("A", new[] { 1, 2, 3 }));
+        ObservableGroup<string, int> d = groupedCollection.InsertGroup(new IntGroup("D", new[] { 1, 2, 3 }));
+        ObservableGroup<string, int> e = groupedCollection.InsertGroup(new IntGroup("E", new[] { 1, 2, 3 }));
+        ObservableGroup<string, int> b = groupedCollection.InsertGroup(new IntGroup("B", new[] { 1, 2, 3 }));
+        ObservableGroup<string, int> z = groupedCollection.InsertGroup(new IntGroup("Z", new[] { 1, 2, 3 }));
+        ObservableGroup<string, int> c = groupedCollection.InsertGroup(new IntGroup("C", new[] { 1, 2, 3 }));
+
+        CollectionAssert.AllItemsAreNotNull(new[] { a, d, e, b, z, c });
+        CollectionAssert.AreEqual(new[] { a, b, c, d, e, z }, groupedCollection);
+    }
+
+    [TestMethod]
     public void Test_ObservableGroupedCollectionExtensions_AddItem_WhenTargetGroupDoesNotExists_ShouldCreateAndAddNewGroup()
     {
         ObservableGroupedCollection<string, int> groupedCollection = new();
@@ -221,6 +254,66 @@ public class Test_ObservableGroupedCollectionExtensions
 
         Assert.AreEqual(groupedCollection[3].Key, "C");
         CollectionAssert.AreEqual(groupedCollection[3], new[] { 10, 11 });
+    }
+
+    [TestMethod]
+    public void Test_ObservableGroupedCollectionExtensions_InsertItem()
+    {
+        ObservableGroupedCollection<string, int> groupedCollection = new();
+
+        ObservableGroup<string, int> group1 = groupedCollection.InsertItem("A", 1);
+        ObservableGroup<string, int> group2 = groupedCollection.InsertItem("A", 2);
+        ObservableGroup<string, int> group6 = groupedCollection.InsertItem("A", 6);
+        ObservableGroup<string, int> group4 = groupedCollection.InsertItem("A", 4);
+        ObservableGroup<string, int> group3 = groupedCollection.InsertItem("A", 3);
+        ObservableGroup<string, int> group99 = groupedCollection.InsertItem("A", 99);
+        ObservableGroup<string, int> group8 = groupedCollection.InsertItem("B", 8);
+        ObservableGroup<string, int> group7 = groupedCollection.InsertItem("B", 7);
+
+        Assert.AreEqual(2, groupedCollection.Count);
+        CollectionAssert.AllItemsAreNotNull(new[] { group1, group2, group6, group4, group3, group99, group8, group7 });
+
+        Assert.AreSame(group1, group2);
+        Assert.AreSame(group1, group6);
+        Assert.AreSame(group1, group4);
+        Assert.AreSame(group1, group3);
+        Assert.AreSame(group1, group2);
+        Assert.AreSame(group1, group99);
+        Assert.AreNotSame(group1, group8);
+        Assert.AreSame(group8, group7);
+
+        CollectionAssert.AreEqual(new[] { 1, 2, 3, 4, 6, 99 }, group1);
+        CollectionAssert.AreEqual(new[] { 7, 8 }, group8);
+    }
+
+    [TestMethod]
+    public void Test_ObservableGroupedCollectionExtensions_InsertItem_WithComparer()
+    {
+        ObservableGroupedCollection<string, int> groupedCollection = new();
+
+        ObservableGroup<string, int> group1 = groupedCollection.InsertItem("A", Comparer<string>.Default, 1, Comparer<int>.Default);
+        ObservableGroup<string, int> group2 = groupedCollection.InsertItem("A", Comparer<string>.Default, 2, Comparer<int>.Default);
+        ObservableGroup<string, int> group6 = groupedCollection.InsertItem("A", Comparer<string>.Default, 6, Comparer<int>.Default);
+        ObservableGroup<string, int> group4 = groupedCollection.InsertItem("A", Comparer<string>.Default, 4, Comparer<int>.Default);
+        ObservableGroup<string, int> group3 = groupedCollection.InsertItem("A", Comparer<string>.Default, 3, Comparer<int>.Default);
+        ObservableGroup<string, int> group99 = groupedCollection.InsertItem("A", Comparer<string>.Default, 99, Comparer<int>.Default);
+        ObservableGroup<string, int> group8 = groupedCollection.InsertItem("B", Comparer<string>.Default, 8, Comparer<int>.Default);
+        ObservableGroup<string, int> group7 = groupedCollection.InsertItem("B", Comparer<string>.Default, 7, Comparer<int>.Default);
+
+        Assert.AreEqual(2, groupedCollection.Count);
+        CollectionAssert.AllItemsAreNotNull(new[] { group1, group2, group6, group4, group3, group99, group8, group7 });
+
+        Assert.AreSame(group1, group2);
+        Assert.AreSame(group1, group6);
+        Assert.AreSame(group1, group4);
+        Assert.AreSame(group1, group3);
+        Assert.AreSame(group1, group2);
+        Assert.AreSame(group1, group99);
+        Assert.AreNotSame(group1, group8);
+        Assert.AreSame(group8, group7);
+
+        CollectionAssert.AreEqual(new[] { 1, 2, 3, 4, 6, 99 }, group1);
+        CollectionAssert.AreEqual(new[] { 7, 8 }, group8);
     }
 
     [TestMethod]

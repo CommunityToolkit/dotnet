@@ -584,25 +584,24 @@ public static class ObservableGroupedCollectionExtensions
         {
             group = source.InsertGroup(key, new[] { item });
         }
-        else
+        else if (group.TryGetList(out List<TElement>? list))
         {
-            if (group.TryGetList(out List<TElement>? list))
+            int index = 0;
+
+            foreach (TElement element in list)
             {
-                int index = 0;
-
-                foreach (TElement element in list)
+                if (Comparer<TElement>.Default.Compare(item, element) < 0)
                 {
-                    if (Comparer<TElement>.Default.Compare(item, element) < 0)
-                    {
-                        break;
-                    }
-
-                    index++;
+                    break;
                 }
 
-                group.Insert(index, item);
+                index++;
             }
 
+            group.Insert(index, item);
+        }
+        else
+        {
             [MethodImpl(MethodImplOptions.NoInlining)]
             static void InsertItemFallback(ObservableCollection<TElement> source, TElement item)
             {
@@ -658,25 +657,24 @@ public static class ObservableGroupedCollectionExtensions
         {
             group = source.InsertGroup(key, keyComparer, new[] { item });
         }
-        else
+        else if (group.TryGetList(out List<TElement>? list))
         {
-            if (group.TryGetList(out List<TElement>? list))
+            int index = 0;
+
+            foreach (TElement element in list)
             {
-                int index = 0;
-
-                foreach (TElement element in list)
+                if (itemComparer.Compare(item, element) < 0)
                 {
-                    if (itemComparer.Compare(item, element) < 0)
-                    {
-                        break;
-                    }
-
-                    index++;
+                    break;
                 }
 
-                group.Insert(index, item);
+                index++;
             }
 
+            group.Insert(index, item);
+        }
+        else
+        {
             [MethodImpl(MethodImplOptions.NoInlining)]
             static void InsertItemFallback(ObservableCollection<TElement> source, TElement item, IComparer<TElement> comparer)
             {
