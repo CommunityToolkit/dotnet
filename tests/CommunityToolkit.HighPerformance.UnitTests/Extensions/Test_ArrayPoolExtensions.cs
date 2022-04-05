@@ -15,7 +15,7 @@ public class Test_ArrayPoolExtensions
 {
     [TestMethod]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
-    public void Test_ArrayExtensions_InvalidSize()
+    public void Test_ArrayPoolExtensions_Resize_InvalidSize()
     {
         int[]? array = null;
 
@@ -23,7 +23,7 @@ public class Test_ArrayPoolExtensions
     }
 
     [TestMethod]
-    public void Test_ArrayExtensions_NewArray()
+    public void Test_ArrayPoolExtensions_Resize_NewArray()
     {
         int[]? array = null;
 
@@ -34,7 +34,7 @@ public class Test_ArrayPoolExtensions
     }
 
     [TestMethod]
-    public void Test_ArrayExtensions_SameSize()
+    public void Test_ArrayPoolExtensions_Resize_SameSize()
     {
         int[] array = ArrayPool<int>.Shared.Rent(10);
         int[] backup = array;
@@ -45,7 +45,7 @@ public class Test_ArrayPoolExtensions
     }
 
     [TestMethod]
-    public void Test_ArrayExtensions_Expand()
+    public void Test_ArrayPoolExtensions_Resize_Expand()
     {
         int[] array = ArrayPool<int>.Shared.Rent(16);
         int[] backup = array;
@@ -60,7 +60,7 @@ public class Test_ArrayPoolExtensions
     }
 
     [TestMethod]
-    public void Test_ArrayExtensions_Shrink()
+    public void Test_ArrayPoolExtensions_Resize_Shrink()
     {
         int[] array = ArrayPool<int>.Shared.Rent(32);
         int[] backup = array;
@@ -75,7 +75,7 @@ public class Test_ArrayPoolExtensions
     }
 
     [TestMethod]
-    public void Test_ArrayExtensions_Clear()
+    public void Test_ArrayPoolExtensions_Resize_Clear()
     {
         int[] array = ArrayPool<int>.Shared.Rent(16);
         int[] backup = array;
