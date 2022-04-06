@@ -63,6 +63,12 @@ public static class ObservableGroupedCollectionExtensions
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.For<TKey>.ThrowIfNull(key);
 
+        // This pattern is used extensively in this file, with many of the public APIs having a first loop on the retrieved
+        // list, and then a fallback one sometimes with the same logic, but on the collection itself. This is done as an
+        // optimization: if a list is available, we can iterate on it directly, which will use List<T>.Enumerator and avoid
+        // allocations (the enumerator is a struct), additional indirections (the enumerator wraps the list instead of the
+        // outer collection, and additional overhead (using the value enumerator avoids the interface stub dispatches).
+        // Because of this, duplicate logic below is intentional and not actually duplicate, as it results in different code.
         if (source.TryGetList(out List<ObservableGroup<TKey, TElement>>? list))
         {
             foreach (ObservableGroup<TKey, TElement> group in list)
