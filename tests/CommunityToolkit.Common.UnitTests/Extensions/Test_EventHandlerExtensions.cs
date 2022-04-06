@@ -80,7 +80,7 @@ public class Test_EventHandlerExtensions
         Assert.IsTrue(handlersTask.IsCompleted);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0, 1)]
     [DataRow(1, 0)]
     public void Test_EventHandlerExtensions_MultipleHandlersCauseAwait(int firstToReleaseDeferral, int lastToReleaseDeferral)

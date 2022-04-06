@@ -12,99 +12,80 @@ using System.Linq;
 using CommunityToolkit.Mvvm.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommunityToolkit.Mvvm.UnitTests;
+namespace CommunityToolkit.Mvvm.UnitTests.Collections;
 
 [TestClass]
-public class ReadOnlyObservableGroupedCollectionTests
+public class Test_ReadOnlyObservableGroupedCollection
 {
     [TestMethod]
-    public void Ctor_WithEmptySource_ShoudInitializeObject()
+    public void Test_ReadOnlyObservableGroupedCollection_Ctor_WithEmptySource_ShoudInitializeObject()
     {
-        ObservableGroupedCollection<string, int>? source = new();
-        ReadOnlyObservableGroupedCollection<string, int>? readOnlyGroup = new(source);
+        ObservableGroupedCollection<string, int> source = new();
+        ReadOnlyObservableGroupedCollection<string, int> readOnlyGroup = new(source);
 
         Assert.AreEqual(readOnlyGroup.Count, 0);
         CollectionAssert.AreEqual(readOnlyGroup, Array.Empty<int>());
     }
 
     [TestMethod]
-    public void Ctor_WithObservableGroupedCollection_ShoudInitializeObject()
+    public void Test_ReadOnlyObservableGroupedCollection_Ctor_WithObservableGroupedCollection_ShoudInitializeObject()
     {
-        List<IGrouping<string, int>>? groups = new()
+        List<IGrouping<string, int>> groups = new()
         {
             new IntGroup("A", new[] { 1, 3, 5 }),
             new IntGroup("B", new[] { 2, 4, 6 }),
         };
-        ObservableGroupedCollection<string, int>? source = new(groups);
-        ReadOnlyObservableGroupedCollection<string, int>? readOnlyGroup = new(source);
+        ObservableGroupedCollection<string, int> source = new(groups);
+        ReadOnlyObservableGroupedCollection<string, int> readOnlyGroup = new(source);
 
         Assert.AreEqual(readOnlyGroup.Count, 2);
 
-        Assert.AreEqual(readOnlyGroup.ElementAt(0).Key, "A");
-        CollectionAssert.AreEquivalent(readOnlyGroup.ElementAt(0), new[] { 1, 3, 5 });
+        Assert.AreEqual(readOnlyGroup[0].Key, "A");
+        CollectionAssert.AreEquivalent(readOnlyGroup[0], new[] { 1, 3, 5 });
 
-        Assert.AreEqual(readOnlyGroup.ElementAt(1).Key, "B");
-        CollectionAssert.AreEquivalent(readOnlyGroup.ElementAt(1), new[] { 2, 4, 6 });
+        Assert.AreEqual(readOnlyGroup[1].Key, "B");
+        CollectionAssert.AreEquivalent(readOnlyGroup[1], new[] { 2, 4, 6 });
     }
 
     [TestMethod]
-    public void Ctor_WithListOfIGroupingSource_ShoudInitializeObject()
+    public void Test_ReadOnlyObservableGroupedCollection_Ctor_WithListOfReadOnlyObservableGroupSource_ShoudInitializeObject()
     {
-        List<IGrouping<string, int>>? source = new()
+        ObservableCollection<ReadOnlyObservableGroup<string, int>> source = new()
+        {
+            new ReadOnlyObservableGroup<string, int>("A", new ObservableCollection<int> { 1, 3, 5 }),
+            new ReadOnlyObservableGroup<string, int>("B", new ObservableCollection<int> { 2, 4, 6 }),
+        };
+        ReadOnlyObservableGroupedCollection<string, int> readOnlyGroup = new(source);
+
+        Assert.AreEqual(readOnlyGroup.Count, 2);
+
+        Assert.AreEqual(readOnlyGroup[0].Key, "A");
+        CollectionAssert.AreEqual(readOnlyGroup[0], new[] { 1, 3, 5 });
+
+        Assert.AreEqual(readOnlyGroup[1].Key, "B");
+        CollectionAssert.AreEqual(readOnlyGroup[1], new[] { 2, 4, 6 });
+    }
+
+    [TestMethod]
+    public void Test_ReadOnlyObservableGroupedCollection_IListImplementation_Properties_ShoudReturnExpectedValues()
+    {
+        List<IGrouping<string, int>> groups = new()
         {
             new IntGroup("A", new[] { 1, 3, 5 }),
             new IntGroup("B", new[] { 2, 4, 6 }),
         };
-        ReadOnlyObservableGroupedCollection<string, int>? readOnlyGroup = new(source);
-
-        Assert.AreEqual(readOnlyGroup.Count, 2);
-
-        Assert.AreEqual(readOnlyGroup.ElementAt(0).Key, "A");
-        CollectionAssert.AreEquivalent(readOnlyGroup.ElementAt(0), new[] { 1, 3, 5 });
-
-        Assert.AreEqual(readOnlyGroup.ElementAt(1).Key, "B");
-        CollectionAssert.AreEquivalent(readOnlyGroup.ElementAt(1), new[] { 2, 4, 6 });
-    }
-
-    [TestMethod]
-    public void Ctor_WithListOfReadOnlyObservableGroupSource_ShoudInitializeObject()
-    {
-        List<ReadOnlyObservableGroup<string, int>>? source = new()
-        {
-            new ReadOnlyObservableGroup<string, int>("A", new[] { 1, 3, 5 }),
-            new ReadOnlyObservableGroup<string, int>("B", new[] { 2, 4, 6 }),
-        };
-        ReadOnlyObservableGroupedCollection<string, int>? readOnlyGroup = new(source);
-
-        Assert.AreEqual(readOnlyGroup.Count, 2);
-
-        Assert.AreEqual(readOnlyGroup.ElementAt(0).Key, "A");
-        CollectionAssert.AreEqual(readOnlyGroup.ElementAt(0), new[] { 1, 3, 5 });
-
-        Assert.AreEqual(readOnlyGroup.ElementAt(1).Key, "B");
-        CollectionAssert.AreEqual(readOnlyGroup.ElementAt(1), new[] { 2, 4, 6 });
-    }
-
-    [TestMethod]
-    public void IListImplementation_Properties_ShoudReturnExpectedValues()
-    {
-        List<IGrouping<string, int>>? groups = new()
-        {
-            new IntGroup("A", new[] { 1, 3, 5 }),
-            new IntGroup("B", new[] { 2, 4, 6 }),
-        };
-        ObservableGroupedCollection<string, int>? source = new(groups);
-        ReadOnlyObservableGroupedCollection<string, int>? readOnlyGroup = new(source);
-        IList? list = (IList)readOnlyGroup;
+        ObservableGroupedCollection<string, int> source = new(groups);
+        ReadOnlyObservableGroupedCollection<string, int> readOnlyGroup = new(source);
+        IList list = readOnlyGroup;
 
         Assert.AreEqual(list.Count, 2);
 
-        ReadOnlyObservableGroup<string, int>? group0 = (ReadOnlyObservableGroup<string, int>)list[0]!;
+        ReadOnlyObservableGroup<string, int> group0 = (ReadOnlyObservableGroup<string, int>)list[0]!;
 
         Assert.AreEqual(group0.Key, "A");
         CollectionAssert.AreEqual(group0, new[] { 1, 3, 5 });
 
-        ReadOnlyObservableGroup<string, int>? group1 = (ReadOnlyObservableGroup<string, int>)list[1]!;
+        ReadOnlyObservableGroup<string, int> group1 = (ReadOnlyObservableGroup<string, int>)list[1]!;
 
         Assert.AreEqual(group1.Key, "B");
         CollectionAssert.AreEqual(group1, new[] { 2, 4, 6 });
@@ -116,16 +97,16 @@ public class ReadOnlyObservableGroupedCollectionTests
     }
 
     [TestMethod]
-    public void IListImplementation_MutableMethods_ShoudThrow()
+    public void Test_ReadOnlyObservableGroupedCollection_IListImplementation_MutableMethods_ShoudThrow()
     {
-        List<IGrouping<string, int>>? groups = new()
+        List<IGrouping<string, int>> groups = new()
         {
             new IntGroup("A", new[] { 1, 3, 5 }),
             new IntGroup("B", new[] { 2, 4, 6 }),
         };
-        ObservableGroupedCollection<string, int>? source = new(groups);
-        ReadOnlyObservableGroupedCollection<string, int>? readOnlyGroup = new(source);
-        IList? list = (IList)readOnlyGroup;
+        ObservableGroupedCollection<string, int> source = new(groups);
+        ReadOnlyObservableGroupedCollection<string, int> readOnlyGroup = new(source);
+        IList list = readOnlyGroup;
 
         ReadOnlyObservableGroup<string, int>? testGroup = new("test", new ObservableCollection<int>());
 
@@ -142,22 +123,22 @@ public class ReadOnlyObservableGroupedCollectionTests
         list.CopyTo(array, 0);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(-1)]
     [DataRow(0)]
     [DataRow(1)]
     [DataRow(2)]
-    public void IListImplementation_IndexOf_ShoudReturnExpectedValue(int groupIndex)
+    public void Test_ReadOnlyObservableGroupedCollection_IListImplementation_IndexOf_ShoudReturnExpectedValue(int groupIndex)
     {
-        List<IGrouping<string, int>>? groups = new()
+        List<IGrouping<string, int>> groups = new()
         {
             new IntGroup("A", new[] { 1, 3, 5 }),
             new IntGroup("B", new[] { 2, 4, 6 }),
             new IntGroup("C", new[] { 7, 8, 9 }),
         };
-        ObservableGroupedCollection<string, int>? source = new(groups);
-        ReadOnlyObservableGroupedCollection<string, int>? readOnlyGroup = new(source);
-        IList? list = (IList)readOnlyGroup;
+        ObservableGroupedCollection<string, int> source = new(groups);
+        ReadOnlyObservableGroupedCollection<string, int> readOnlyGroup = new(source);
+        IList list = readOnlyGroup;
 
         object? groupToSearch = groupIndex >= 0 ? list[groupIndex] : null;
 
@@ -166,20 +147,20 @@ public class ReadOnlyObservableGroupedCollectionTests
         Assert.AreEqual(index, groupIndex);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(-1, false)]
     [DataRow(0, true)]
     [DataRow(1, true)]
-    public void IListImplementation_Contains_ShoudReturnExpectedValue(int groupIndex, bool expectedResult)
+    public void Test_ReadOnlyObservableGroupedCollection_IListImplementation_Contains_ShoudReturnExpectedValue(int groupIndex, bool expectedResult)
     {
-        List<IGrouping<string, int>>? groups = new()
+        List<IGrouping<string, int>> groups = new()
         {
             new IntGroup("A", new[] { 1, 3, 5 }),
             new IntGroup("B", new[] { 2, 4, 6 }),
         };
-        ObservableGroupedCollection<string, int>? source = new(groups);
-        ReadOnlyObservableGroupedCollection<string, int>? readOnlyGroup = new(source);
-        IList? list = (IList)readOnlyGroup;
+        ObservableGroupedCollection<string, int> source = new(groups);
+        ReadOnlyObservableGroupedCollection<string, int> readOnlyGroup = new(source);
+        IList list = readOnlyGroup;
 
         object? groupToSearch = groupIndex >= 0 ? list[groupIndex] : null;
 
@@ -188,22 +169,22 @@ public class ReadOnlyObservableGroupedCollectionTests
         Assert.AreEqual(result, expectedResult);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0, 0)]
     [DataRow(3, 3)]
-    public void AddGroupInSource_ShouldAddGroup(int sourceInitialItemsCount, int expectedInsertionIndex)
+    public void Test_ReadOnlyObservableGroupedCollection_AddGroupInSource_ShouldAddGroup(int sourceInitialItemsCount, int expectedInsertionIndex)
     {
         NotifyCollectionChangedEventArgs? collectionChangedEventArgs = null;
         int collectionChangedEventsCount = 0;
         bool isCountPropertyChangedEventRaised = false;
-        int[]? itemsList = new[] { 1, 2, 3 };
-        ObservableGroupedCollection<string, int>? source = new();
+        int[] itemsList = new[] { 1, 2, 3 };
+        ObservableGroupedCollection<string, int> source = new();
         for (int i = 0; i < sourceInitialItemsCount; i++)
         {
             source.Add(new ObservableGroup<string, int>($"group {i}", Enumerable.Empty<int>()));
         }
 
-        ReadOnlyObservableGroupedCollection<string, int>? readOnlyGroup = new(source);
+        ReadOnlyObservableGroupedCollection<string, int> readOnlyGroup = new(source);
         ((INotifyCollectionChanged)readOnlyGroup).CollectionChanged += (s, e) =>
         {
             collectionChangedEventArgs = e;
@@ -216,10 +197,7 @@ public class ReadOnlyObservableGroupedCollectionTests
         int expectedReadOnlyGroupCount = sourceInitialItemsCount + 1;
 
         Assert.AreEqual(readOnlyGroup.Count, expectedReadOnlyGroupCount);
-
-        Assert.AreEqual(readOnlyGroup.Last().Key, "Add");
-        CollectionAssert.AreEquivalent(readOnlyGroup.Last(), itemsList);
-
+        Assert.AreEqual("Add", readOnlyGroup[readOnlyGroup.Count - 1].Key);
         Assert.IsTrue(isCountPropertyChangedEventRaised);
         Assert.IsNotNull(collectionChangedEventArgs);
         Assert.AreEqual(collectionChangedEventsCount, 1);
@@ -229,22 +207,22 @@ public class ReadOnlyObservableGroupedCollectionTests
         Assert.IsTrue(isAddEventValid);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0)]
     [DataRow(1)]
     [DataRow(2)]
-    public void InsertGroupInSource_ShouldAddGroup(int insertionIndex)
+    public void Test_ReadOnlyObservableGroupedCollection_InsertGroupInSource_ShouldAddGroup(int insertionIndex)
     {
         NotifyCollectionChangedEventArgs? collectionChangedEventArgs = null;
         int collectionChangedEventsCount = 0;
         bool isCountPropertyChangedEventRaised = false;
-        int[]? itemsList = new[] { 1, 2, 3 };
-        ObservableGroupedCollection<string, int>? source = new()
+        int[] itemsList = new[] { 1, 2, 3 };
+        ObservableGroupedCollection<string, int> source = new()
         {
             new ObservableGroup<string, int>("Group0", new[] { 10, 20, 30 }),
             new ObservableGroup<string, int>("Group1", new[] { 40, 50, 60 })
         };
-        ReadOnlyObservableGroupedCollection<string, int>? readOnlyGroup = new(source);
+        ReadOnlyObservableGroupedCollection<string, int> readOnlyGroup = new(source);
         ((INotifyCollectionChanged)readOnlyGroup).CollectionChanged += (s, e) =>
         {
             collectionChangedEventArgs = e;
@@ -255,10 +233,7 @@ public class ReadOnlyObservableGroupedCollectionTests
         source.Insert(insertionIndex, new ObservableGroup<string, int>("Add", itemsList));
 
         Assert.AreEqual(readOnlyGroup.Count, 3);
-
-        Assert.AreEqual(readOnlyGroup.ElementAt(insertionIndex).Key, "Add");
-        CollectionAssert.AreEquivalent(readOnlyGroup.ElementAt(insertionIndex), itemsList);
-
+        Assert.AreEqual("Add", readOnlyGroup[insertionIndex].Key);
         Assert.IsTrue(isCountPropertyChangedEventRaised);
         Assert.IsNotNull(collectionChangedEventArgs);
         Assert.AreEqual(collectionChangedEventsCount, 1);
@@ -269,20 +244,20 @@ public class ReadOnlyObservableGroupedCollectionTests
     }
 
     [TestMethod]
-    public void RemoveGroupInSource_ShoudRemoveGroup()
+    public void Test_ReadOnlyObservableGroupedCollection_RemoveGroupInSource_ShoudRemoveGroup()
     {
         NotifyCollectionChangedEventArgs? collectionChangedEventArgs = null;
         int collectionChangedEventsCount = 0;
         bool isCountPropertyChangedEventRaised = false;
-        int[]? aItemsList = new[] { 1, 2, 3 };
-        int[]? bItemsList = new[] { 2, 4, 6 };
-        List<IGrouping<string, int>>? groups = new()
+        int[] aItemsList = new[] { 1, 2, 3 };
+        int[] bItemsList = new[] { 2, 4, 6 };
+        List<IGrouping<string, int>> groups = new()
         {
             new IntGroup("A", aItemsList),
             new IntGroup("B", bItemsList),
         };
-        ObservableGroupedCollection<string, int>? source = new(groups);
-        ReadOnlyObservableGroupedCollection<string, int>? readOnlyGroup = new(source);
+        ObservableGroupedCollection<string, int> source = new(groups);
+        ReadOnlyObservableGroupedCollection<string, int> readOnlyGroup = new(source);
         ((INotifyCollectionChanged)readOnlyGroup).CollectionChanged += (s, e) =>
         {
             collectionChangedEventArgs = e;
@@ -294,8 +269,8 @@ public class ReadOnlyObservableGroupedCollectionTests
 
         Assert.AreEqual(readOnlyGroup.Count, 1);
 
-        Assert.AreEqual(readOnlyGroup.ElementAt(0).Key, "A");
-        CollectionAssert.AreEquivalent(readOnlyGroup.ElementAt(0), aItemsList);
+        Assert.AreEqual(readOnlyGroup[0].Key, "A");
+        CollectionAssert.AreEquivalent(readOnlyGroup[0], aItemsList);
 
         Assert.IsTrue(isCountPropertyChangedEventRaised);
         Assert.IsNotNull(collectionChangedEventArgs);
@@ -306,23 +281,28 @@ public class ReadOnlyObservableGroupedCollectionTests
         Assert.IsTrue(isRemoveEventValid);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(1, 0)]
     [DataRow(0, 1)]
-    public void MoveGroupInSource_ShoudMoveGroup(int oldIndex, int newIndex)
+    [DataRow(0, 2)]
+    public void Test_ReadOnlyObservableGroupedCollection_MoveGroupInSource_ShoudMoveGroup(int oldIndex, int newIndex)
     {
         NotifyCollectionChangedEventArgs? collectionChangedEventArgs = null;
         int collectionChangedEventsCount = 0;
         bool isCountPropertyChangedEventRaised = false;
-        int[]? aItemsList = new[] { 1, 2, 3 };
-        int[]? bItemsList = new[] { 2, 4, 6 };
-        List<IGrouping<string, int>>? groups = new()
+        int[] aItemsList = new[] { 1, 2, 3 };
+        int[] bItemsList = new[] { 4, 5, 6 };
+        int[] cItemsList = new[] { 7, 8, 9 };
+        int[] dItemsList = new[] { 10, 11, 12 };
+        List<IGrouping<string, int>> groups = new()
         {
             new IntGroup("A", aItemsList),
             new IntGroup("B", bItemsList),
+            new IntGroup("C", cItemsList),
+            new IntGroup("D", dItemsList),
         };
-        ObservableGroupedCollection<string, int>? source = new(groups);
-        ReadOnlyObservableGroupedCollection<string, int>? readOnlyGroup = new(source);
+        ObservableGroupedCollection<string, int> source = new(groups);
+        ReadOnlyObservableGroupedCollection<string, int> readOnlyGroup = new(source);
         ((INotifyCollectionChanged)readOnlyGroup).CollectionChanged += (s, e) =>
         {
             collectionChangedEventArgs = e;
@@ -332,13 +312,22 @@ public class ReadOnlyObservableGroupedCollectionTests
 
         source.Move(oldIndex, newIndex);
 
-        Assert.AreEqual(readOnlyGroup.Count, 2);
+        Assert.AreEqual(groups.Count, readOnlyGroup.Count);
 
-        Assert.AreEqual(readOnlyGroup.ElementAt(0).Key, "B");
-        CollectionAssert.AreEquivalent(readOnlyGroup.ElementAt(0), bItemsList);
+        Assert.AreEqual(readOnlyGroup[0].Key, "B");
+        CollectionAssert.AreEquivalent(readOnlyGroup[0], bItemsList);
 
-        Assert.AreEqual(readOnlyGroup.ElementAt(1).Key, "A");
-        CollectionAssert.AreEquivalent(readOnlyGroup.ElementAt(1), aItemsList);
+        List<IGrouping<string, int>> tempList = new(groups);
+        IGrouping<string, int> tempItem = tempList[oldIndex];
+
+        tempList.RemoveAt(oldIndex);
+        tempList.Insert(newIndex, tempItem);
+
+        for (int i = 0; i < tempList.Count; i++)
+        {
+            Assert.AreEqual(tempList[i].Key, readOnlyGroup[i].Key);
+            CollectionAssert.AreEqual(tempList[i].ToArray(), readOnlyGroup[i].ToArray());
+        }
 
         Assert.IsFalse(isCountPropertyChangedEventRaised);
         Assert.IsNotNull(collectionChangedEventArgs);
@@ -350,20 +339,20 @@ public class ReadOnlyObservableGroupedCollectionTests
     }
 
     [TestMethod]
-    public void ClearSource_ShoudClear()
+    public void Test_ReadOnlyObservableGroupedCollection_ClearSource_ShoudClear()
     {
         NotifyCollectionChangedEventArgs? collectionChangedEventArgs = null;
         int collectionChangedEventsCount = 0;
         bool isCountPropertyChangedEventRaised = false;
-        int[]? aItemsList = new[] { 1, 2, 3 };
-        int[]? bItemsList = new[] { 2, 4, 6 };
-        List<IGrouping<string, int>>? groups = new()
+        int[] aItemsList = new[] { 1, 2, 3 };
+        int[] bItemsList = new[] { 2, 4, 6 };
+        List<IGrouping<string, int>> groups = new()
         {
             new IntGroup("A", aItemsList),
             new IntGroup("B", bItemsList),
         };
-        ObservableGroupedCollection<string, int>? source = new(groups);
-        ReadOnlyObservableGroupedCollection<string, int>? readOnlyGroup = new(source);
+        ObservableGroupedCollection<string, int> source = new(groups);
+        ReadOnlyObservableGroupedCollection<string, int> readOnlyGroup = new(source);
         ((INotifyCollectionChanged)readOnlyGroup).CollectionChanged += (s, e) =>
         {
             collectionChangedEventArgs = e;
@@ -385,21 +374,21 @@ public class ReadOnlyObservableGroupedCollectionTests
     }
 
     [TestMethod]
-    public void ReplaceGroupInSource_ShoudReplaceGroup()
+    public void Test_ReadOnlyObservableGroupedCollection_ReplaceGroupInSource_ShoudReplaceGroup()
     {
         NotifyCollectionChangedEventArgs? collectionChangedEventArgs = null;
         int collectionChangedEventsCount = 0;
         bool isCountPropertyChangedEventRaised = false;
-        int[]? aItemsList = new[] { 1, 2, 3 };
-        int[]? bItemsList = new[] { 2, 4, 6 };
-        int[]? cItemsList = new[] { 7, 8, 9 };
-        List<IGrouping<string, int>>? groups = new()
+        int[] aItemsList = new[] { 1, 2, 3 };
+        int[] bItemsList = new[] { 2, 4, 6 };
+        int[] cItemsList = new[] { 7, 8, 9 };
+        List<IGrouping<string, int>> groups = new()
         {
             new IntGroup("A", aItemsList),
             new IntGroup("B", bItemsList),
         };
-        ObservableGroupedCollection<string, int>? source = new(groups);
-        ReadOnlyObservableGroupedCollection<string, int>? readOnlyGroup = new(source);
+        ObservableGroupedCollection<string, int> source = new(groups);
+        ReadOnlyObservableGroupedCollection<string, int> readOnlyGroup = new(source);
         ((INotifyCollectionChanged)readOnlyGroup).CollectionChanged += (s, e) =>
         {
             collectionChangedEventArgs = e;
@@ -411,11 +400,11 @@ public class ReadOnlyObservableGroupedCollectionTests
 
         Assert.AreEqual(readOnlyGroup.Count, 2);
 
-        Assert.AreEqual(readOnlyGroup.ElementAt(0).Key, "C");
-        CollectionAssert.AreEquivalent(readOnlyGroup.ElementAt(0), cItemsList);
+        Assert.AreEqual(readOnlyGroup[0].Key, "C");
+        CollectionAssert.AreEquivalent(readOnlyGroup[0], cItemsList);
 
-        Assert.AreEqual(readOnlyGroup.ElementAt(1).Key, "B");
-        CollectionAssert.AreEquivalent(readOnlyGroup.ElementAt(1), bItemsList);
+        Assert.AreEqual(readOnlyGroup[1].Key, "B");
+        CollectionAssert.AreEquivalent(readOnlyGroup[1], bItemsList);
 
         Assert.IsFalse(isCountPropertyChangedEventRaised);
         Assert.IsNotNull(collectionChangedEventArgs);
@@ -479,4 +468,18 @@ public class ReadOnlyObservableGroupedCollectionTests
     }
 
     private static bool IsResetEventValid(NotifyCollectionChangedEventArgs args) => args.Action == NotifyCollectionChangedAction.Reset && args.NewItems == null && args.OldItems == null;
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentNullException))]
+    public void Test_ReadOnlyObservableGroupedCollection_Ctor_NullCollectionWithObservableGroups()
+    {
+        _ = new ReadOnlyObservableGroupedCollection<string, int>((ObservableCollection<ObservableGroup<string, int>>)null!);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentNullException))]
+    public void Test_ReadOnlyObservableGroupedCollection_Ctor_NullCollectionWithReadOnlyObservableGroups()
+    {
+        _ = new ReadOnlyObservableGroupedCollection<string, int>((ObservableCollection<ReadOnlyObservableGroup<string, int>>)null!);
+    }
 }
