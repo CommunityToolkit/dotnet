@@ -187,21 +187,19 @@ partial class ObservablePropertyGenerator
             // Validates a property name using existing properties
             bool IsPropertyNameValid(string propertyName)
             {
-                return fieldSymbol.ContainingType.GetMembers(propertyName).OfType<IPropertySymbol>().Any();
+                return fieldSymbol.ContainingType.GetAllMembers(propertyName).OfType<IPropertySymbol>().Any();
             }
 
             // Validate a property name including generated properties too
             bool IsPropertyNameValidWithGeneratedMembers(string propertyName)
             {
-                foreach (ISymbol member in fieldSymbol.ContainingType.GetMembers())
+                foreach (ISymbol member in fieldSymbol.ContainingType.GetAllMembers())
                 {
                     if (member is IFieldSymbol otherFieldSymbol &&
                         !SymbolEqualityComparer.Default.Equals(fieldSymbol, otherFieldSymbol) &&
                         otherFieldSymbol.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute") &&
                         propertyName == GetGeneratedPropertyName(otherFieldSymbol))
                     {
-                        propertyChangedNames.Add(propertyName);
-
                         return true;
                     }
                 }
@@ -256,7 +254,7 @@ partial class ObservablePropertyGenerator
             {
                 // Each target must be a string matching the name of a property from the containing type of the annotated field, and the
                 // property must be of type IRelayCommand, or any type that implements that interface (to avoid generating invalid code).
-                if (fieldSymbol.ContainingType.GetMembers(commandName).OfType<IPropertySymbol>().FirstOrDefault() is IPropertySymbol propertySymbol)
+                if (fieldSymbol.ContainingType.GetAllMembers(commandName).OfType<IPropertySymbol>().FirstOrDefault() is IPropertySymbol propertySymbol)
                 {
                     // If there is a property member with the specified name, check that it's valid. If it isn't, the
                     // target is definitely not valid, and the additional checks below can just be skipped. The property
@@ -285,7 +283,7 @@ partial class ObservablePropertyGenerator
             // Validate a command name including generated command too
             bool IsCommandNameValidWithGeneratedMembers(string commandName)
             {
-                foreach (ISymbol member in fieldSymbol.ContainingType.GetMembers())
+                foreach (ISymbol member in fieldSymbol.ContainingType.GetAllMembers())
                 {
                     if (member is IMethodSymbol methodSymbol &&
                         methodSymbol.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.ICommandAttribute") &&
