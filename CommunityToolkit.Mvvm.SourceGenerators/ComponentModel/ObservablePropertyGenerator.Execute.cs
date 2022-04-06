@@ -200,8 +200,6 @@ partial class ObservablePropertyGenerator
                         otherFieldSymbol.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute") &&
                         propertyName == GetGeneratedPropertyName(otherFieldSymbol))
                     {
-                        propertyChangedNames.Add(propertyName);
-
                         return true;
                     }
                 }
