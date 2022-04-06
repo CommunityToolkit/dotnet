@@ -197,11 +197,7 @@ public class Test_ReadOnlyObservableGroupedCollection
         int expectedReadOnlyGroupCount = sourceInitialItemsCount + 1;
 
         Assert.AreEqual(readOnlyGroup.Count, expectedReadOnlyGroupCount);
-
-        // TODO
-        //Assert.AreEqual(readOnlyGroup.Last().Key, "Add");
-        //CollectionAssert.AreEquivalent(readOnlyGroup.Last(), itemsList);
-
+        Assert.AreEqual("Add", readOnlyGroup[readOnlyGroup.Count - 1].Key);
         Assert.IsTrue(isCountPropertyChangedEventRaised);
         Assert.IsNotNull(collectionChangedEventArgs);
         Assert.AreEqual(collectionChangedEventsCount, 1);
@@ -237,11 +233,7 @@ public class Test_ReadOnlyObservableGroupedCollection
         source.Insert(insertionIndex, new ObservableGroup<string, int>("Add", itemsList));
 
         Assert.AreEqual(readOnlyGroup.Count, 3);
-
-        // TODO
-        //Assert.AreEqual(readOnlyGroup.ElementAt(insertionIndex).Key, "Add");
-        //CollectionAssert.AreEquivalent(readOnlyGroup.ElementAt(insertionIndex), itemsList);
-
+        Assert.AreEqual("Add", readOnlyGroup[insertionIndex].Key);
         Assert.IsTrue(isCountPropertyChangedEventRaised);
         Assert.IsNotNull(collectionChangedEventArgs);
         Assert.AreEqual(collectionChangedEventsCount, 1);
