@@ -212,7 +212,7 @@ internal static class DiagnosticDescriptors
     /// </summary>
     public static readonly DiagnosticDescriptor InvalidIncludeCancelCommandParameterError = new DiagnosticDescriptor(
         id: "MVVMTK0013",
-        title: "Invalid concurrency control setting usage",
+        title: "Invalid include cancel command setting usage",
         messageFormat: "The method {0}.{1} cannot be annotated with the [ICommand] attribute specifying to include a cancel command, as it does not map to an asynchronous command type taking a cancellation token",
         category: typeof(ICommandGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
