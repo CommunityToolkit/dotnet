@@ -515,6 +515,75 @@ public partial class Test_ObservablePropertyAttribute
     }
 #endif
 
+    // See https://github.com/CommunityToolkit/dotnet/issues/201
+    [TestMethod]
+    public void Test_ObservableProperty_InheritedMembersAsAttributeTargets()
+    {
+        ConcreteViewModel model = new();
+
+        List<string?> propertyNames = new();
+        List<object?> canExecuteChangedArgs = new();
+
+        model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
+        model.DoSomethingCommand.CanExecuteChanged += (s, _) => canExecuteChangedArgs.Add(s);
+        model.ManualCommand.CanExecuteChanged += (s, _) => canExecuteChangedArgs.Add(s);
+
+        model.A = nameof(model.A);
+        model.B = nameof(model.B);
+        model.C = nameof(model.C);
+        model.D = nameof(model.D);
+
+        CollectionAssert.AreEqual(new[]
+        {
+            nameof(model.A),
+            nameof(model.Content),
+            nameof(model.B),
+            nameof(model.SomeGeneratedProperty),
+            nameof(model.C),
+            nameof(model.D)
+        }, propertyNames);
+
+        CollectionAssert.AreEqual(new[] { model.DoSomethingCommand, model.ManualCommand }, canExecuteChangedArgs);
+    }
+
+    public abstract partial class BaseViewModel : ObservableObject
+    {
+        public string? Content { get; set; }
+
+        [ObservableProperty]
+        private string? someGeneratedProperty;
+
+        [ICommand]
+        private void DoSomething()
+        {
+        }
+
+        public IRelayCommand ManualCommand { get; } = new RelayCommand(() => { });
+    }
+
+    public partial class ConcreteViewModel : BaseViewModel
+    {
+        // Inherited property
+        [ObservableProperty]
+        [AlsoNotifyChangeFor(nameof(Content))]
+        private string? _a;
+
+        // Inherited generated property
+        [ObservableProperty]
+        [AlsoNotifyChangeFor(nameof(SomeGeneratedProperty))]
+        private string? _b;
+
+        // Inherited generated command
+        [ObservableProperty]
+        [AlsoNotifyCanExecuteFor(nameof(DoSomethingCommand))]
+        private string? _c;
+
+        // Inherited manual command
+        [ObservableProperty]
+        [AlsoNotifyCanExecuteFor(nameof(ManualCommand))]
+        private string? _d;
+    }
+
     public partial class SampleModel : ObservableObject
     {
         /// <summary>
