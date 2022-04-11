@@ -20,7 +20,7 @@ public partial class Test_SourceGenerators
     public void Test_SourceGenerators_NestedTypesThatAreNotJustClasses()
     {
         // This test just needs to compile, mostly
-        NestedStructType.NestedInterfaceType.MyViewModel model = new();
+        NestedStructType.NestedInterfaceType.NestedRecord.MyViewModel model = new();
 
         Assert.IsNull(model.Name);
         Assert.IsTrue(model.TestCommand is IRelayCommand);
@@ -30,16 +30,19 @@ public partial class Test_SourceGenerators
     {
         public partial interface NestedInterfaceType
         {
-            [ObservableRecipient]
-            public partial class MyViewModel : ObservableValidator
+            public partial record NestedRecord
             {
-                [ObservableProperty]
-                [Required]
-                private string? name;
-
-                [ICommand]
-                private void Test()
+                [ObservableRecipient]
+                public partial class MyViewModel : ObservableValidator
                 {
+                    [ObservableProperty]
+                    [Required]
+                    private string? name;
+
+                    [ICommand]
+                    private void Test()
+                    {
+                    }
                 }
             }
         }
@@ -49,7 +52,7 @@ public partial class Test_SourceGenerators
     public void Test_SourceGenerators_NestedTypesThatAreNotJustClassesAndWithGenerics()
     {
         // This test just needs to compile, mostly
-        NestedStructTypeWithGenerics<int, float>.NestedInterfaceType<string>.MyViewModel model = new();
+        NestedStructTypeWithGenerics<int, float>.NestedInterfaceType<string>.NestedRecord<string>.MyViewModel model = new();
 
         Assert.IsNull(model.Name);
         Assert.IsTrue(model.TestCommand is IRelayCommand);
@@ -60,15 +63,18 @@ public partial class Test_SourceGenerators
     {
         public partial interface NestedInterfaceType<TFoo>
         {
-            [INotifyPropertyChanged]
-            public partial class MyViewModel
+            public partial record NestedRecord<TBar>
             {
-                [ObservableProperty]
-                private string? name;
-
-                [ICommand]
-                private void Test()
+                [INotifyPropertyChanged]
+                public partial class MyViewModel
                 {
+                    [ObservableProperty]
+                    private string? name;
+
+                    [ICommand]
+                    private void Test()
+                    {
+                    }
                 }
             }
         }

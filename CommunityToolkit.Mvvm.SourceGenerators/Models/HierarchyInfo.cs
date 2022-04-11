@@ -40,7 +40,8 @@ internal sealed partial record HierarchyInfo(string FilenameHint, string Metadat
         {
             hierarchy.Add(new TypeInfo(
                 parent.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat),
-                parent.TypeKind));
+                parent.TypeKind,
+                parent.IsRecord));
         }
 
         return new(
