@@ -53,4 +53,45 @@ public static class ArrayPoolExtensions
 
         array = newArray;
     }
+
+    /// <summary>
+    /// Ensures that when the method returns <paramref name="array"/> is not null and is at least <paramref name="capacity"/> in length.
+    /// Contents of <paramref name="array"/> are not copied if a new array is rented.
+    /// </summary>
+    /// <typeparam name="T">The type of items into the target array given as input.</typeparam>
+    /// <param name="pool">The target <see cref="ArrayPool{T}"/> instance used to rent and/or return the array.</param>
+    /// <param name="array">The rented <typeparamref name="T"/> array to ensure capacity for, or <see langword="null"/> to rent a new array.</param>
+    /// <param name="capacity">The minimum length of <paramref name="array"/> when the method returns.</param>
+    /// <param name="clearArray">Indicates whether the contents of the array should be cleared if returned to the pool.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="capacity"/> is less than 0.</exception>
+    /// <remarks>When this method returns, the caller must not use any references to the old array anymore.</remarks>
+    public static void EnsureCapacity<T>(this ArrayPool<T> pool, [NotNull] ref T[]? array, int capacity, bool clearArray = false)
+    {
+        if (capacity < 0)
+        {
+            ThrowArgumentOutOfRangeExceptionForNegativeArrayCapacity();
+        }
+
+        if (array is null)
+        {
+            array = pool.Rent(capacity);
+        }
+        else if (array.Length < capacity)
+        {
+            // Ensure rent succeeds before returning the original array to the pool
+            T[] newArray = pool.Rent(capacity);
+
+            pool.Return(array, clearArray);
+
+            array = newArray;
+        }
+    }
+
+    /// <summary>
+    /// Throws an <see cref="ArgumentOutOfRangeException"/> when the "capacity" parameter is negative.
+    /// </summary>
+    private static void ThrowArgumentOutOfRangeExceptionForNegativeArrayCapacity()
+    {
+        throw new ArgumentOutOfRangeException("capacity", "The array capacity must be a positive number.");
+    }
 }
