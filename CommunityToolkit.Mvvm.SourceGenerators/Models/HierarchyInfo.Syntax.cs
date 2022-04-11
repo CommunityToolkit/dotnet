@@ -30,28 +30,26 @@ partial record HierarchyInfo
         // Create the partial type declaration with the given member declarations.
         // This code produces a class declaration as follows:
         //
-        // partial class <TYPE_NAME>
+        // partial <TYPE_KIND> TYPE_NAME>
         // {
         //     <MEMBERS>
         // }
-        ClassDeclarationSyntax classDeclarationSyntax =
-            ClassDeclaration(Names[0])
+        TypeDeclarationSyntax typeDeclarationSyntax =
+            Hierarchy[0].GetSyntax()
             .AddModifiers(Token(SyntaxKind.PartialKeyword))
             .AddMembers(memberDeclarations.ToArray());
 
         // Add the base list, if present
         if (baseList is not null)
         {
-            classDeclarationSyntax = classDeclarationSyntax.WithBaseList(baseList);
+            typeDeclarationSyntax = typeDeclarationSyntax.WithBaseList(baseList);
         }
 
-        TypeDeclarationSyntax typeDeclarationSyntax = classDeclarationSyntax;
-
         // Add all parent types in ascending order, if any
-        foreach (string parentType in Names.AsSpan().Slice(1))
+        foreach (TypeInfo parentType in Hierarchy.AsSpan().Slice(1))
         {
             typeDeclarationSyntax =
-                ClassDeclaration(parentType)
+                parentType.GetSyntax()
                 .AddModifiers(Token(SyntaxKind.PartialKeyword))
                 .AddMembers(typeDeclarationSyntax);
         }
