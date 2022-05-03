@@ -7,7 +7,6 @@ using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
 
