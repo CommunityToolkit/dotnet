@@ -4,13 +4,11 @@
 
 using System.Collections.Immutable;
 using System.Linq;
-using System.Text;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators;
 
@@ -32,11 +30,7 @@ public sealed partial class IMessengerRegisterAllGenerator : IIncrementalGenerat
             .CreateSyntaxProvider(
                 static (node, _) => node is ClassDeclarationSyntax,
                 static (context, _) => (context.Node, Symbol: (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!))
-            .Where(static item =>
-                item.Symbol.DeclaringSyntaxReferences.Length > 0 &&
-                item.Symbol.DeclaringSyntaxReferences[0] is SyntaxReference syntaxReference &&
-                syntaxReference.SyntaxTree == item.Node.SyntaxTree &&
-                syntaxReference.Span == item.Node.Span)
+            .Where(static item => item.Node.IsFirstSyntaxDeclarationForSymbol(item.Symbol))
             .Select(static (item, _) => item.Symbol);
 
         // Get the target IRecipient<TMessage> interfaces and filter out other types
