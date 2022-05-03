@@ -3,13 +3,11 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Linq;
-using System.Text;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators;
 
@@ -27,7 +25,9 @@ public sealed partial class ObservableValidatorValidateAllPropertiesGenerator : 
             context.SyntaxProvider
             .CreateSyntaxProvider(
                 static (node, _) => node is ClassDeclarationSyntax,
-                static (context, _) => (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!);
+                static (context, _) => (context.Node, Symbol: (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!))
+            .Where(static item => item.Node.IsFirstSyntaxDeclarationForSymbol(item.Symbol))
+            .Select(static (item, _) => item.Symbol);
 
         // Get the types that inherit from ObservableValidator and gather their info
         IncrementalValuesProvider<ValidationInfo> validationInfo =
