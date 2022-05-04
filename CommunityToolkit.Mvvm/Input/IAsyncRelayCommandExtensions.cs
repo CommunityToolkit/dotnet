@@ -18,7 +18,7 @@ public static class IAsyncRelayCommandExtensions
     /// </summary>
     /// <param name="command">The input <see cref="IAsyncRelayCommand"/> instance to create a cancellation command for.</param>
     /// <returns>An <see cref="ICommand"/> instance that can be used to monitor and signal cancellation for <paramref name="command"/>.</returns>
-    /// <remarks>The reeturned instance is not guaranteed to be unique across multiple invocations with the same arguments.</remarks>
+    /// <remarks>The returned instance is not guaranteed to be unique across multiple invocations with the same arguments.</remarks>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="command"/> is <see langword="null"/>.</exception>
     public static ICommand CreateCancelCommand(this IAsyncRelayCommand command)
     {

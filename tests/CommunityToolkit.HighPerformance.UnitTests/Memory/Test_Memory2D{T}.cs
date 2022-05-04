@@ -171,7 +171,7 @@ public class Test_Memory2DT
 
         // Same as above, but we also slice the target layer in the 3D array. In this case we're creating
         // a Memory<int> instance from a slice in the layer at depth 1 in our 3D array, and with an area
-        // starting at coorsinates (0, 1), with a height of 2 and width of 2. So we want to wrap the
+        // starting at coordinates (0, 1), with a height of 2 and width of 2. So we want to wrap the
         // square with items [20, 30, 50, 60] in the second layer of the 3D array above.
         Memory2D<int> memory2d = new(array, 1, 0, 1, 2, 2);
 
@@ -475,7 +475,7 @@ public class Test_Memory2DT
     [TestMethod]
     public void Test_Memory2DT_GetHashCode()
     {
-        // An emoty Memory2D<T> has just 0 as the hashcode
+        // An empty Memory2D<T> has just 0 as the hashcode
         Assert.AreEqual(Memory2D<int>.Empty.GetHashCode(), 0);
 
         int[,] array =

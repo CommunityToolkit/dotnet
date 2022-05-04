@@ -111,7 +111,7 @@ public static class IMessengerExtensions
         }
 #pragma warning restore IL2026
 
-        // Try to get the cached delegate, if the generatos has run correctly
+        // Try to get the cached delegate, if the generator has run correctly
         Action<IMessenger, object>? registrationAction = DiscoveredRecipients.RegistrationMethods.GetValue(
             recipient.GetType(),
             static t => LoadRegistrationMethodsForType(t));
@@ -200,7 +200,7 @@ public static class IMessengerExtensions
 
             // We want a single compiled LINQ expression that executes the registration for all
             // the declared message types in the input type. To do so, we create a block with the
-            // unrolled invocations for the indivudual message registration (for each IRecipient<T>).
+            // unrolled invocations for the individual message registration (for each IRecipient<T>).
             // The code below will generate the following block expression:
             // ===============================================================================
             // {

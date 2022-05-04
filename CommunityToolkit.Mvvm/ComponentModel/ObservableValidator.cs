@@ -31,7 +31,7 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// </summary>
     /// <remarks>
     /// This is necessary because we want to reuse the same <see cref="ValidationContext"/> instance for all validations, but
-    /// with the same behavior with repsect to formatted names that new instances would have provided. The issue is that the
+    /// with the same behavior with respect to formatted names that new instances would have provided. The issue is that the
     /// <see cref="ValidationContext.DisplayName"/> property is not refreshed when we set <see cref="ValidationContext.MemberName"/>,
     /// so we need to replicate the same logic to retrieve the right display name for properties to validate and update that
     /// property manually right before passing the context to <see cref="Validator"/> and proceed with the normal functionality.
@@ -44,7 +44,7 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     private static readonly PropertyChangedEventArgs HasErrorsChangedEventArgs = new(nameof(HasErrors));
 
     /// <summary>
-    /// The <see cref="ValidationContext"/> instance currenty in use.
+    /// The <see cref="ValidationContext"/> instance currently in use.
     /// </summary>
     private readonly ValidationContext validationContext;
 

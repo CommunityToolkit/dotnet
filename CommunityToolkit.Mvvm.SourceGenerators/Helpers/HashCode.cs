@@ -278,7 +278,7 @@ internal struct HashCode
     /// <typeparam name="T5">The type of the fifth value to combine into the hash code.</typeparam>
     /// <typeparam name="T6">The type of the sixth value to combine into the hash code.</typeparam>
     /// <typeparam name="T7">The type of the seventh value to combine into the hash code.</typeparam>
-    /// <typeparam name="T8">The type of the eigth value to combine into the hash code.</typeparam>
+    /// <typeparam name="T8">The type of the eighth value to combine into the hash code.</typeparam>
     /// <param name="value1">The first value to combine into the hash code.</param>
     /// <param name="value2">The second value to combine into the hash code.</param>
     /// <param name="value3">The third value to combine into the hash code.</param>
@@ -286,7 +286,7 @@ internal struct HashCode
     /// <param name="value5">The fifth value to combine into the hash code.</param>
     /// <param name="value6">The sixth value to combine into the hash code.</param>
     /// <param name="value7">The seventh value to combine into the hash code.</param>
-    /// <param name="value8">The eigth value to combine into the hash code.</param>
+    /// <param name="value8">The eighth value to combine into the hash code.</param>
     /// <returns>The hash code that represents the values.</returns>
     public static int Combine<T1, T2, T3, T4, T5, T6, T7, T8>(T1 value1, T2 value2, T3 value3, T4 value4, T5 value5, T6 value6, T7 value7, T8 value8)
     {
