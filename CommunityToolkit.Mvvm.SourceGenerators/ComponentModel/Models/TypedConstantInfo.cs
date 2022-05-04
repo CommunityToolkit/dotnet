@@ -15,7 +15,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 /// <summary>
 /// A model representing a typed constant item.
 /// </summary>
-/// <remarks>This model is fully serializeable and comparable.</remarks>
+/// <remarks>This model is fully serializable and comparable.</remarks>
 internal abstract partial record TypedConstantInfo
 {
     /// <summary>
