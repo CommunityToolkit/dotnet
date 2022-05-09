@@ -382,6 +382,36 @@ public class Test_ObservableValidator
         Assert.IsTrue(events.Any(e => e.PropertyName == nameof(Person.Age)));
     }
 
+    // See https://github.com/CommunityToolkit/dotnet/issues/235
+    [TestMethod]
+    public void Test_ObservableValidator_ValidateAllProperties_WithinPartialClassDeclaration()
+    {
+        PersonWithPartialDeclaration model = new();
+        List<DataErrorsChangedEventArgs> events = new();
+
+        model.ErrorsChanged += (s, e) => events.Add(e);
+
+        model.ValidateAllProperties();
+
+        Assert.IsTrue(model.HasErrors);
+        Assert.IsTrue(events.Count == 2);
+
+        Assert.IsTrue(events.Any(e => e.PropertyName == nameof(PersonWithPartialDeclaration.Name)));
+        Assert.IsTrue(events.Any(e => e.PropertyName == nameof(PersonWithPartialDeclaration.Number)));
+
+        events.Clear();
+
+        model.Name = "Bob";
+        model.Number = 42;
+
+        model.ValidateAllProperties();
+
+        Assert.IsFalse(model.HasErrors);
+        Assert.IsTrue(events.Count == 2);
+        Assert.IsTrue(events.Any(e => e.PropertyName == nameof(PersonWithPartialDeclaration.Name)));
+        Assert.IsTrue(events.Any(e => e.PropertyName == nameof(PersonWithPartialDeclaration.Number)));
+    }
+
     [TestMethod]
     public void Test_ObservableValidator_CustomValidation()
     {
@@ -728,5 +758,23 @@ public class Test_ObservableValidator
         public string? Name { get; set; }
 
         public int SomeRandomproperty { get; set; }
+    }
+
+    public partial class PersonWithPartialDeclaration : ObservableValidator
+    {
+        [Required]
+        [MinLength(1)]
+        public string? Name { get; set; }
+
+        public new void ValidateAllProperties()
+        {
+            base.ValidateAllProperties();
+        }
+    }
+
+    public partial class PersonWithPartialDeclaration
+    {
+        [Range(10, 1000)]
+        public int Number { get; set; }
     }
 }
