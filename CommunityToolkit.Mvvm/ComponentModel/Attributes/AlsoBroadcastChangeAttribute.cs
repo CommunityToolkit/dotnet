@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics;
 
 namespace CommunityToolkit.Mvvm.ComponentModel;
 
@@ -36,7 +35,6 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// </code>
 /// </summary>
 [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
-[Conditional("MVVMTOOLKIT_KEEP_SOURCE_GENERATOR_ATTRIBUTES")]
 public sealed class AlsoBroadcastChangeAttribute : Attribute
 {
 }

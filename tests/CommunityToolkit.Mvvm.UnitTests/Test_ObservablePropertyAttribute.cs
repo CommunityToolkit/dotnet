@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ExternalAssembly;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
@@ -569,6 +570,27 @@ public partial class Test_ObservablePropertyAttribute
         CollectionAssert.AreEqual(new[] { nameof(model.Value), nameof(model.TValue), nameof(model.UValue), nameof(model.List) }, propertyNames);
     }
 
+    // See https://github.com/CommunityToolkit/dotnet/issues/222
+    [TestMethod]
+    public void Test_ObservableProperty_WithBaseViewModelWithObservableObjectAttributeInAnotherAssembly()
+    {
+        ModelWithObservablePropertyAndBaseClassInAnotherAssembly model = new();
+
+        List<string?> propertyNames = new();
+
+        model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
+
+        Assert.AreEqual(model.OtherProperty, "Ok");
+
+        model.MyProperty = "A";
+        model.OtherProperty = "B";
+
+        Assert.AreEqual(model.MyProperty, "A");
+        Assert.AreEqual(model.OtherProperty, "B");
+
+        CollectionAssert.AreEqual(new[] { nameof(model.MyProperty), nameof(model.OtherProperty) }, propertyNames);
+    }
+
     public abstract partial class BaseViewModel : ObservableObject
     {
         public string? Content { get; set; }
@@ -912,6 +934,17 @@ public partial class Test_ObservablePropertyAttribute
         }
     }
 #endif
+
+    partial class ModelWithObservablePropertyAndBaseClassInAnotherAssembly : ModelWithObservableObjectAttribute
+    {
+        [ObservableProperty]
+        private string? _otherProperty;
+
+        public ModelWithObservablePropertyAndBaseClassInAnotherAssembly()
+        {
+            OtherProperty = "Ok";
+        }
+    }
 
     interface IValueHolder
     {
