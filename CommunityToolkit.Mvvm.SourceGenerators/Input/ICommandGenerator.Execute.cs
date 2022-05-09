@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
@@ -358,7 +359,7 @@ partial class ICommandGenerator
 
             propertyName += "Command";
 
-            string fieldName = $"{char.ToLower(propertyName[0])}{propertyName.Substring(1)}";
+            string fieldName = $"{char.ToLower(propertyName[0], CultureInfo.InvariantCulture)}{propertyName.Substring(1)}";
 
             return (fieldName, propertyName);
         }
