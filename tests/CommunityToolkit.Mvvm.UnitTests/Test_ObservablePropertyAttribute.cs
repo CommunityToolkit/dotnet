@@ -924,12 +924,12 @@ public partial class Test_ObservablePropertyAttribute
         private bool value;
 
         [ObservableProperty]
-        private T tValue;
+        private T? tValue;
 
         [ObservableProperty]
-        private U uValue;
+        private U? uValue;
 
         [ObservableProperty]
-        private List<T> list;
+        private List<T>? list;
     }
 }

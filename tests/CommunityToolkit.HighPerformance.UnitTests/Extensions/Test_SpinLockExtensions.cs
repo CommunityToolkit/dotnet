@@ -41,7 +41,7 @@ public class Test_SpinLockExtensions
 
         int sum = 0;
 
-        Parallel.For(0, 1000, i =>
+        _ = Parallel.For(0, 1000, i =>
         {
             for (int j = 0; j < 10; j++)
             {
@@ -54,7 +54,6 @@ public class Test_SpinLockExtensions
 
         Assert.AreEqual(sum, 1000 * 10);
     }
-#endif
 
     /// <summary>
     /// A dummy model that owns a <see cref="SpinLock"/> object.
@@ -63,4 +62,5 @@ public class Test_SpinLockExtensions
     {
         public SpinLock Lock;
     }
+#endif
 }
