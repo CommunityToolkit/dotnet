@@ -546,6 +546,29 @@ public partial class Test_ObservablePropertyAttribute
         CollectionAssert.AreEqual(new[] { model.DoSomethingCommand, model.ManualCommand }, canExecuteChangedArgs);
     }
 
+    // See https://github.com/CommunityToolkit/dotnet/issues/224
+    [TestMethod]
+    public void Test_ObservableProperty_WithinGenericTypeWithMultipleTypeParameters()
+    {
+        ModelWithMultipleGenericParameters<int, string> model = new();
+
+        List<string?> propertyNames = new();
+
+        model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
+
+        model.Value = true;
+        model.TValue = 42;
+        model.UValue = "Hello";
+        model.List = new List<int>() { 420 };
+
+        Assert.AreEqual(model.Value, true);
+        Assert.AreEqual(model.TValue, 42);
+        Assert.AreEqual(model.UValue, "Hello");
+        CollectionAssert.AreEqual(new[] { 420 }, model.List);
+
+        CollectionAssert.AreEqual(new[] { nameof(model.Value), nameof(model.TValue), nameof(model.UValue), nameof(model.List) }, propertyNames);
+    }
+
     public abstract partial class BaseViewModel : ObservableObject
     {
         public string? Content { get; set; }
@@ -889,4 +912,24 @@ public partial class Test_ObservablePropertyAttribute
         }
     }
 #endif
+
+    interface IValueHolder
+    {
+        public bool Value { get; }
+    }
+
+    partial class ModelWithMultipleGenericParameters<T, U> : ObservableObject, IValueHolder
+    {
+        [ObservableProperty]
+        private bool value;
+
+        [ObservableProperty]
+        private T tValue;
+
+        [ObservableProperty]
+        private U uValue;
+
+        [ObservableProperty]
+        private List<T> list;
+    }
 }
