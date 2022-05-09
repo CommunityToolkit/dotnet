@@ -71,6 +71,20 @@ partial class ObservablePropertyGenerator
                 return null;
             }
 
+            // Check for special cases that are explicitly not allowed
+            if (IsGeneratedPropertyInvalid(propertyName, fieldSymbol.Type))
+            {
+                builder.Add(
+                    InvalidObservablePropertyError,
+                    fieldSymbol,
+                    fieldSymbol.ContainingType,
+                    fieldSymbol.Name);
+
+                diagnostics = builder.ToImmutable();
+
+                return null;
+            }
+
             ImmutableArray<string>.Builder propertyChangedNames = ImmutableArray.CreateBuilder<string>();
             ImmutableArray<string>.Builder propertyChangingNames = ImmutableArray.CreateBuilder<string>();
             ImmutableArray<string>.Builder notifiedCommandNames = ImmutableArray.CreateBuilder<string>();
@@ -176,6 +190,29 @@ partial class ObservablePropertyGenerator
             shouldInvokeOnPropertyChanging = isObservableObject || hasObservableObjectAttribute;
 
             return isObservableObject || hasObservableObjectAttribute || hasINotifyPropertyChangedAttribute;
+        }
+
+        /// <summary>
+        /// Checks whether the generated property would be a special case that is marked as invalid.
+        /// </summary>
+        /// <param name="propertyName">The property name.</param>
+        /// <param name="propertyType">The property type.</param>
+        /// <returns>Whether the generated property is invalid.</returns>
+        private static bool IsGeneratedPropertyInvalid(string propertyName, ITypeSymbol propertyType)
+        {
+            // If the generated property name is called "Property" and the type is either object or it is PropertyChangedEventArgs or
+            // PropertyChangingEventArgs (or a type derived from either of those two types), consider it invalid. This is needed because
+            // if such a property was generated, the partial On<PROPERTY_NAME>Changing and OnPropertyChanging(PropertyChangingEventArgs)
+            // methods, as well as the partial On<PROPERTY_NAME>Changed and OnPropertyChanged(PropertyChangedEventArgs) methods.
+            if (propertyName == "Property")
+            {
+                return
+                    propertyType.SpecialType == SpecialType.System_Object ||
+                    propertyType.HasOrInheritsFromFullyQualifiedName("global::System.ComponentModel.PropertyChangedEventArgs") ||
+                    propertyType.HasOrInheritsFromFullyQualifiedName("global::System.ComponentModel.PropertyChangingEventArgs");
+            }
+
+            return false;
         }
 
         /// <summary>

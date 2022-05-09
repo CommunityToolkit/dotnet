@@ -379,4 +379,20 @@ internal static class DiagnosticDescriptors
         isEnabledByDefault: true,
         description: "Methods with multiple overloads cannot be annotated with [ICommand], as command methods must be unique within their containing type.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a generated property created with <c>[ObservableProperty]</c> would cause conflicts with other generated members.
+    /// <para>
+    /// Format: <c>"The field {0}.{1} cannot be used to generate an observable property, as its name or type would cause conflicts with other generated members"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor InvalidObservablePropertyError = new DiagnosticDescriptor(
+        id: "MVVMTK0024",
+        title: "Invalid generated property declaration",
+        messageFormat: "The field {0}.{1} cannot be used to generate an observable property, as its name or type would cause conflicts with other generated members",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "The fields annotated with [ObservableProperty] cannot result in a property name or have a type that would cause conflicts with other generated members.",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit");
 }
