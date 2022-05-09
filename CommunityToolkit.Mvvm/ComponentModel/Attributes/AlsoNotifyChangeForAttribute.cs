@@ -4,7 +4,6 @@
 
 using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 
 namespace CommunityToolkit.Mvvm.ComponentModel;
@@ -69,7 +68,6 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// </code>
 /// </summary>
 [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = false)]
-[Conditional("MVVMTOOLKIT_KEEP_SOURCE_GENERATOR_ATTRIBUTES")]
 public sealed class AlsoNotifyChangeForAttribute : Attribute
 {
     /// <summary>

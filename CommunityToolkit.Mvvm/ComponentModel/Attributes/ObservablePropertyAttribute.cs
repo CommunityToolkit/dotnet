@@ -4,7 +4,6 @@
 
 using System;
 using System.ComponentModel;
-using System.Diagnostics;
 
 namespace CommunityToolkit.Mvvm.ComponentModel;
 
@@ -53,7 +52,6 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// source field name will be converted to uppercase (eg. <c>isEnabled</c> to <c>IsEnabled</c>).
 /// </remarks>
 [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
-[Conditional("MVVMTOOLKIT_KEEP_SOURCE_GENERATOR_ATTRIBUTES")]
 public sealed class ObservablePropertyAttribute : Attribute
 {
 }

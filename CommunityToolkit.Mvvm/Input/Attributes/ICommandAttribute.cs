@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Diagnostics;
 using System.Windows.Input;
 
 namespace CommunityToolkit.Mvvm.Input;
@@ -65,7 +64,6 @@ namespace CommunityToolkit.Mvvm.Input;
 /// </para>
 /// </summary>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
-[Conditional("MVVMTOOLKIT_KEEP_SOURCE_GENERATOR_ATTRIBUTES")]
 public sealed class ICommandAttribute : Attribute
 {
     /// <summary>
