@@ -91,9 +91,16 @@ partial class ObservablePropertyGenerator
             {
                 // Gather dependent property and command names
                 if (TryGatherDependentPropertyChangedNames(fieldSymbol, attributeData, propertyChangedNames, builder) ||
-                    TryGatherDependentCommandNames(fieldSymbol, attributeData, notifiedCommandNames, builder) ||
-                    TryGetIsBroadcastingChanges(fieldSymbol, attributeData, builder, out alsoBroadcastChange))
+                    TryGatherDependentCommandNames(fieldSymbol, attributeData, notifiedCommandNames, builder))
                 {
+                    continue;
+                }
+
+                // Check whether the property should also broadcast changes
+                if (TryGetIsBroadcastingChanges(fieldSymbol, attributeData, builder, out bool isBroadcastTargetValid))
+                {
+                    alsoBroadcastChange = isBroadcastTargetValid;
+
                     continue;
                 }
 
@@ -332,13 +339,13 @@ partial class ObservablePropertyGenerator
         /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
         /// <param name="attributeData">The <see cref="AttributeData"/> instance for <paramref name="fieldSymbol"/>.</param>
         /// <param name="diagnostics">The current collection of gathered diagnostics.</param>
-        /// <param name="alsoBroadcastChange">Whether or not the resulting property should also broadcast changes.</param>
+        /// <param name="isBroadcastTargetValid">Whether or not the the property is in a valid target that can broadcast changes.</param>
         /// <returns>Whether or not the generated property for <paramref name="fieldSymbol"/> used <c>[AlsoBroadcastChange]</c>.</returns>
         private static bool TryGetIsBroadcastingChanges(
             IFieldSymbol fieldSymbol,
             AttributeData attributeData,
             ImmutableArray<Diagnostic>.Builder diagnostics,
-            out bool alsoBroadcastChange)
+            out bool isBroadcastTargetValid)
         {
             if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoBroadcastChangeAttribute") == true)
             {
@@ -346,7 +353,7 @@ partial class ObservablePropertyGenerator
                 if (fieldSymbol.ContainingType.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableRecipient") ||
                     fieldSymbol.ContainingType.HasOrInheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableRecipientAttribute"))
                 {
-                    alsoBroadcastChange = true;
+                    isBroadcastTargetValid = true;
 
                     return true;
                 }
@@ -358,12 +365,12 @@ partial class ObservablePropertyGenerator
                     fieldSymbol.ContainingType,
                     fieldSymbol.Name);
 
-                alsoBroadcastChange = false;
+                isBroadcastTargetValid = false;
 
                 return true;
             }
 
-            alsoBroadcastChange = false;
+            isBroadcastTargetValid = false;
 
             return false;
         }
