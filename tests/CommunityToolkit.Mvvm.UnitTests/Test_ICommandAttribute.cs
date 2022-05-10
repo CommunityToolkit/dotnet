@@ -462,6 +462,16 @@ public partial class Test_ICommandAttribute
         Assert.AreEqual("Hello world", await (Task<string>)greetWithParamAndCommandTask);
     }
 
+    // See https://github.com/CommunityToolkit/dotnet/issues/230
+    [TestMethod]
+    public void Test_ICommandAttribute_CultureAwareCommandName()
+    {
+        ModelWithCultureAwareCommandName model = new();
+
+        // This just needs to ensure it compiles, really
+        model.InitializeCommand.Execute(null);
+    }
+
     #region Region
     public class Region
     {
@@ -785,6 +795,15 @@ public partial class Test_ICommandAttribute
             await Task.Yield();
 
             return "Hello world";
+        }
+    }
+
+    partial class ModelWithCultureAwareCommandName
+    {
+        // This starts with "I" to ensure it's converted to lowercase using invariant culture
+        [ICommand]
+        private void Initialize()
+        {
         }
     }
 }

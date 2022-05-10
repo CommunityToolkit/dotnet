@@ -4,6 +4,7 @@
 
 using System.Collections.Immutable;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 using CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
@@ -756,7 +757,7 @@ partial class ObservablePropertyGenerator
                 propertyName = propertyName.TrimStart('_');
             }
 
-            return $"{char.ToUpper(propertyName[0])}{propertyName.Substring(1)}";
+            return $"{char.ToUpper(propertyName[0], CultureInfo.InvariantCulture)}{propertyName.Substring(1)}";
         }
     }
 }
