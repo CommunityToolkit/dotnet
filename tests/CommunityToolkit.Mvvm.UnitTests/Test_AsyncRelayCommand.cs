@@ -10,6 +10,7 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.UnitTests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Nito.AsyncEx;
 
 namespace CommunityToolkit.Mvvm.UnitTests;
 
@@ -509,21 +510,31 @@ public class Test_AsyncRelayCommand
         const int delay = 500;
         const string exceptionMessage = "This Exception Is Thrown Inside of the Task";
 
+        Exception? executeException = null;
+
         AsyncRelayCommand command = new(async () =>
         {
             await Task.Delay(delay);
             throw new Exception(exceptionMessage);
         });
 
-        Exception? executeException = await Assert.ThrowsExceptionAsync<Exception>(async () =>
+        try
         {
-            command.Execute(null);
-            await Task.Delay(delay * 2); // Ensure we don't escape `Assert.ThrowsExceptionAsync` before command throws Exception
-        });
+            // Use AsyncContext to test `async void` methods https://stackoverflow.com/a/14207615/5953643
+            AsyncContext.Run(async () =>
+            {
+                command.Execute(null);
+                await Task.Delay(delay * 2); // Ensure we don't escape `AsyncContext` before command throws Exception
+            });
+        }
+        catch (Exception e)
+        {
+            executeException = e;
+        }
 
         Exception? executeAsyncException = await Assert.ThrowsExceptionAsync<Exception>(() => command.ExecuteAsync(null));
 
-        Assert.AreEqual(exceptionMessage, executeException.Message);
-        Assert.AreEqual(exceptionMessage, executeAsyncException.Message);
+        Assert.AreEqual(exceptionMessage, executeException?.Message);
+        Assert.AreEqual(exceptionMessage, executeAsyncException?.Message);
     }
 }

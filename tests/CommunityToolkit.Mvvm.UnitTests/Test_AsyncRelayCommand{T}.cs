@@ -10,6 +10,7 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.UnitTests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Nito.AsyncEx;
 
 namespace CommunityToolkit.Mvvm.UnitTests;
 
@@ -444,28 +445,46 @@ public class Test_AsyncRelayCommandOfT
         const int delay = 500;
         const string exceptionMessage = "This Exception Is Thrown Inside of the Task";
 
+        Exception? executeException = null, executeTException = null;
+
         AsyncRelayCommand<int> command = new(async delay =>
         {
             await Task.Delay(delay);
             throw new Exception(exceptionMessage);
         });
 
-        Exception? executeException = await Assert.ThrowsExceptionAsync<Exception>(async () =>
+        try
         {
-            command.Execute((object)delay);
-            await Task.Delay(delay * 2); // Ensure we don't escape `Assert.ThrowsExceptionAsync` before command throws Exception
-        });
+            // Use AsyncContext to test `async void` methods https://stackoverflow.com/a/14207615/5953643
+            AsyncContext.Run(async () =>
+            {
+                command.Execute((object)delay);
+                await Task.Delay(delay * 2); // Ensure we don't escape `AsyncContext` before command throws Exception
+            });
+        }
+        catch (Exception e)
+        {
+            executeException = e;
+        }
 
-        Exception? executeTException = await Assert.ThrowsExceptionAsync<Exception>(async () =>
+        try
         {
-            command.Execute(delay);
-            await Task.Delay(delay * 2); // Ensure we don't escape `Assert.ThrowsExceptionAsync` before command throws Exception
-        });
+            // Use AsyncContext to test `async void` methods https://stackoverflow.com/a/14207615/5953643
+            AsyncContext.Run(async () =>
+            {
+                command.Execute(delay);
+                await Task.Delay(delay * 2); // Ensure we don't escape `AsyncContext` before command throws Exception
+            });
+        }
+        catch (Exception e)
+        {
+            executeTException = e;
+        }
 
         Exception? executeAsyncException = await Assert.ThrowsExceptionAsync<Exception>(() => command.ExecuteAsync(delay));
 
-        Assert.AreEqual(exceptionMessage, executeException.Message);
-        Assert.AreEqual(exceptionMessage, executeTException.Message);
-        Assert.AreEqual(exceptionMessage, executeAsyncException.Message);
+        Assert.AreEqual(exceptionMessage, executeException?.Message);
+        Assert.AreEqual(exceptionMessage, executeTException?.Message);
+        Assert.AreEqual(exceptionMessage, executeAsyncException?.Message);
     }
 }
