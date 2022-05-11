@@ -439,22 +439,33 @@ public class Test_AsyncRelayCommandOfT
     }
 
     [TestMethod]
-    public void Test_AsyncRelayCommand_EnsureExceptionThrown()
+    public async Task Test_AsyncRelayCommand_EnsureExceptionThrown()
     {
         const int delay = 500;
+        const string exceptionMessage = "This Exception Is Thrown Inside of the Task";
 
         AsyncRelayCommand<int> command = new(async delay =>
         {
             await Task.Delay(delay);
-            throw new Exception("This Exception Is Thrown Inside of the Task");
+            throw new Exception(exceptionMessage);
         });
 
-        Assert.ThrowsExceptionAsync<Exception>(async () =>
+        Exception? executeException = await Assert.ThrowsExceptionAsync<Exception>(async () =>
+        {
+            command.Execute((object)delay);
+            await Task.Delay(delay * 2); // Ensure we don't escape `Assert.ThrowsExceptionAsync` before command throws Exception
+        });
+
+        Exception? executeTException = await Assert.ThrowsExceptionAsync<Exception>(async () =>
         {
             command.Execute(delay);
             await Task.Delay(delay * 2); // Ensure we don't escape `Assert.ThrowsExceptionAsync` before command throws Exception
         });
 
-        Assert.ThrowsExceptionAsync<Exception>(() => command.ExecuteAsync(delay));
+        Exception? executeAsyncException = await Assert.ThrowsExceptionAsync<Exception>(() => command.ExecuteAsync(delay));
+
+        Assert.AreEqual(exceptionMessage, executeException.Message);
+        Assert.AreEqual(exceptionMessage, executeTException.Message);
+        Assert.AreEqual(exceptionMessage, executeAsyncException.Message);
     }
 }
