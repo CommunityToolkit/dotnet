@@ -515,8 +515,15 @@ public class Test_AsyncRelayCommand
             throw new Exception(exceptionMessage);
         });
 
+        Exception? executeException = await Assert.ThrowsExceptionAsync<Exception>(async () =>
+        {
+            command.Execute(null);
+            await Task.Delay(delay * 2); // Ensure we don't escape `Assert.ThrowsExceptionAsync` before command throws Exception
+        });
+
         Exception? executeAsyncException = await Assert.ThrowsExceptionAsync<Exception>(() => command.ExecuteAsync(null));
 
+        Assert.AreEqual(exceptionMessage, executeException.Message);
         Assert.AreEqual(exceptionMessage, executeAsyncException.Message);
     }
 }
