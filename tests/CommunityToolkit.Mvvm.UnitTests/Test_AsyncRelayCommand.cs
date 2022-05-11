@@ -502,4 +502,17 @@ public class Test_AsyncRelayCommand
         Assert.IsFalse(command.CanBeCanceled);
         Assert.IsTrue(command.IsCancellationRequested);
     }
+
+    [TestMethod]
+    public void Test_AsyncRelayCommand_EnsureExceptionThrown()
+    {
+        AsyncRelayCommand command = new(async () =>
+        {
+            await Task.Delay(500);
+            throw new Exception("This Exception Is Thrown Inside of the Task");
+        });
+
+        Assert.ThrowsException<Exception>(() => command.Execute(null));
+        Assert.ThrowsExceptionAsync<Exception>(() => command.ExecuteAsync(null));
+    }
 }

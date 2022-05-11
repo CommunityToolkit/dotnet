@@ -232,3 +232,6 @@ msbuild.binlog
 # TAEF Log output
 WexLogFileOutput
 *.wtl
+
+#macOS Temporary Files
+*.DS_Store

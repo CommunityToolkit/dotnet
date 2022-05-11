@@ -214,7 +214,7 @@ public sealed class AsyncRelayCommand<T> : IAsyncRelayCommand<T>, ICancellationA
                 {
                     @this.PropertyChanged?.Invoke(@this, AsyncRelayCommand.ExecutionTaskChangedEventArgs);
                     @this.PropertyChanged?.Invoke(@this, AsyncRelayCommand.IsRunningChangedEventArgs);
-                    
+
                     if (@this.cancellationTokenSource is not null)
                     {
                         @this.PropertyChanged?.Invoke(@this, AsyncRelayCommand.CanBeCanceledChangedEventArgs);
@@ -273,15 +273,15 @@ public sealed class AsyncRelayCommand<T> : IAsyncRelayCommand<T>, ICancellationA
 
     /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Execute(T? parameter)
+    public async void Execute(T? parameter)
     {
-        _ = ExecuteAsync(parameter);
+        await ExecuteAsync(parameter).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
-    public void Execute(object? parameter)
+    public async void Execute(object? parameter)
     {
-        _ = ExecuteAsync((T?)parameter);
+        await ExecuteAsync((T?)parameter).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>

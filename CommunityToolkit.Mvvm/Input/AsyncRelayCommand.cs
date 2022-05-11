@@ -277,9 +277,9 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand, ICancellationAwareCo
     }
 
     /// <inheritdoc/>
-    public void Execute(object? parameter)
+    public async void Execute(object? parameter)
     {
-        _ = ExecuteAsync(parameter);
+        await ExecuteAsync(parameter).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
