@@ -506,13 +506,20 @@ public class Test_AsyncRelayCommand
     [TestMethod]
     public void Test_AsyncRelayCommand_EnsureExceptionThrown()
     {
+        const int delay = 500;
+
         AsyncRelayCommand command = new(async () =>
         {
-            await Task.Delay(500);
+            await Task.Delay(delay);
             throw new Exception("This Exception Is Thrown Inside of the Task");
         });
 
-        Assert.ThrowsException<Exception>(() => command.Execute(null));
+        Assert.ThrowsExceptionAsync<Exception>(async () =>
+        {
+            command.Execute(null);
+            await Task.Delay(delay * 2); // Ensure we don't escape `Assert.ThrowsExceptionAsync` before command throws Exception
+        });
+
         Assert.ThrowsExceptionAsync<Exception>(() => command.ExecuteAsync(null));
     }
 }
