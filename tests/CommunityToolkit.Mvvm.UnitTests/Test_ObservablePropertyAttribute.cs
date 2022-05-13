@@ -608,6 +608,43 @@ public partial class Test_ObservablePropertyAttribute
         CollectionAssert.AreEqual(new[] { nameof(model.InputFolder) }, propertyNames);
     }
 
+    // See https://github.com/CommunityToolkit/dotnet/issues/242
+    [TestMethod]
+    public void Test_ObservableProperty_ModelWithAlsoBroadcastChangeAndDisplayAttributeLast()
+    {
+        IMessenger messenger = new StrongReferenceMessenger();
+        ModelWithAlsoBroadcastChangeAndDisplayAttributeLast model = new(messenger);
+
+        List<string?> propertyNames = new();
+
+        model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
+
+        object newValue = new();
+        bool isMessageReceived = false;
+
+        messenger.Register<Test_ObservablePropertyAttribute, PropertyChangedMessage<object>>(this, (r, m) =>
+        {
+            if (m.Sender != model)
+            {
+                Assert.Fail();
+            }
+
+            if (m.NewValue != newValue)
+            {
+                Assert.Fail();
+            }
+
+            isMessageReceived = true;
+        });
+
+        model.SomeProperty = newValue;
+
+        Assert.AreEqual(model.SomeProperty, newValue);
+        Assert.IsTrue(isMessageReceived);
+
+        CollectionAssert.AreEqual(new[] { nameof(model.SomeProperty) }, propertyNames);
+    }
+
     public abstract partial class BaseViewModel : ObservableObject
     {
         public string? Content { get; set; }
@@ -990,5 +1027,14 @@ public partial class Test_ObservablePropertyAttribute
         // For instance, when using the Turkish language pack, this would become "İnputFolder" if done wrong.
         [ObservableProperty]
         private int _inputFolder;
+    }
+
+    [ObservableRecipient]
+    public sealed partial class ModelWithAlsoBroadcastChangeAndDisplayAttributeLast : ObservableValidator
+    {
+        [ObservableProperty]
+        [AlsoBroadcastChange]
+        [Display(Name = "Foo bar baz")]
+        private object? _someProperty;
     }
 }
