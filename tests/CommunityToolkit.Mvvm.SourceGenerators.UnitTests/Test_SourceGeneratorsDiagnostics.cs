@@ -1105,6 +1105,89 @@ public class Test_SourceGeneratorsDiagnostics
         VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0023");
     }
 
+    [TestMethod]
+    public void InvalidObservablePropertyError_Object()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class MyViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    public object property;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0024");
+    }
+
+    [TestMethod]
+    public void InvalidObservablePropertyError_PropertyChangingEventArgs()
+    {
+        string source = @"
+            using System.ComponentModel;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class MyViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    public PropertyChangingEventArgs property;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0024");
+    }
+
+    [TestMethod]
+    public void InvalidObservablePropertyError_PropertyChangedEventArgs()
+    {
+        string source = @"
+            using System.ComponentModel;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class MyViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    public PropertyChangedEventArgs property;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0024");
+    }
+
+    [TestMethod]
+    public void InvalidObservablePropertyError_CustomTypeDerivedFromPropertyChangedEventArgs()
+    {
+        string source = @"
+            using System.ComponentModel;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public class MyPropertyChangedEventArgs : PropertyChangedEventArgs
+                {
+                    public MyPropertyChangedEventArgs(string propertyName)
+                        : base(propertyName)
+                    {
+                    }
+                }
+
+                public partial class MyViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    public MyPropertyChangedEventArgs property;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0024");
+    }
+
     /// <summary>
     /// Verifies the output of a source generator.
     /// </summary>

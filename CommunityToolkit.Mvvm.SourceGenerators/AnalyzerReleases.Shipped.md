@@ -30,3 +30,4 @@ MVVMTK0020 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator 
 MVVMTK0021 | CommunityToolkit.Mvvm.SourceGenerators.ObservableRecipientGenerator | Error | See https://aka.ms/mvvmtoolkit/error
 MVVMTK0022 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Error | See https://aka.ms/mvvmtoolkit/error
 MVVMTK0023 | CommunityToolkit.Mvvm.SourceGenerators.ICommandGenerator | Error | See https://aka.ms/mvvmtoolkit/error
+MVVMTK0024 | CommunityToolkit.Mvvm.SourceGenerators.ICommandGenerator | Error | See https://aka.ms/mvvmtoolkit/error
