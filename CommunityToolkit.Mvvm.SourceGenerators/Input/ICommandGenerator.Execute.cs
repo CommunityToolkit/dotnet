@@ -723,11 +723,10 @@ partial class ICommandGenerator
             ImmutableArray<string> commandTypeArguments,
             [NotNullWhen(true)] out CanExecuteExpressionType? canExecuteExpressionType)
         {
-            foreach (ISymbol memberSymbol in containingType.GetMembers())
+            foreach (ISymbol memberSymbol in containingType.GetAllMembers())
             {
                 // Only look for instance fields of bool type
-                if (memberSymbol is not IFieldSymbol fieldSymbol ||
-                    fieldSymbol is { IsStatic: true } ||
+                if (memberSymbol is not IFieldSymbol { IsStatic: false } fieldSymbol ||
                     !fieldSymbol.Type.HasFullyQualifiedName("bool"))
                 {
                     continue;
