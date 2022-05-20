@@ -645,6 +645,19 @@ public partial class Test_ObservablePropertyAttribute
         CollectionAssert.AreEqual(new[] { nameof(model.SomeProperty) }, propertyNames);
     }
 
+    // See https://github.com/CommunityToolkit/dotnet/issues/257
+    [TestMethod]
+    public void Test_ObservableProperty_InheritedModelWithCommandUsingInheritedObservablePropertyForCanExecute()
+    {
+        InheritedModelWithCommandUsingInheritedObservablePropertyForCanExecute model = new();
+
+        Assert.IsFalse(model.SaveCommand.CanExecute(null));
+
+        model.CanSave = true;
+
+        Assert.IsTrue(model.SaveCommand.CanExecute(null));
+    }
+
     public abstract partial class BaseViewModel : ObservableObject
     {
         public string? Content { get; set; }
@@ -1036,5 +1049,21 @@ public partial class Test_ObservablePropertyAttribute
         [AlsoBroadcastChange]
         [Display(Name = "Foo bar baz")]
         private object? _someProperty;
+    }
+
+    public abstract partial class BaseModelWithObservablePropertyAttribute : ObservableObject
+    {
+        [ObservableProperty]
+        private bool canSave;
+
+        public abstract void Save();
+    }
+
+    public partial class InheritedModelWithCommandUsingInheritedObservablePropertyForCanExecute : BaseModelWithObservablePropertyAttribute
+    {
+        [ICommand(CanExecute = nameof(CanSave))]
+        public override void Save()
+        {
+        }
     }
 }
