@@ -25,12 +25,13 @@ public sealed partial class IMessengerRegisterAllGenerator : IIncrementalGenerat
         // definitions (it might happen if a recipient has partial declarations). To do this, all pairs
         // of class declarations and associated symbols are gathered, and then only the pair where the
         // class declaration is the first syntax reference for the associated symbol is kept.
+        // Just like with the ObservableValidator generator, we also intentionally skip abstract types.
         IncrementalValuesProvider<INamedTypeSymbol> typeSymbols =
             context.SyntaxProvider
             .CreateSyntaxProvider(
                 static (node, _) => node is ClassDeclarationSyntax,
                 static (context, _) => (context.Node, Symbol: (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!))
-            .Where(static item => item.Node.IsFirstSyntaxDeclarationForSymbol(item.Symbol))
+            .Where(static item => !item.Symbol.IsAbstract && item.Node.IsFirstSyntaxDeclarationForSymbol(item.Symbol))
             .Select(static (item, _) => item.Symbol);
 
         // Get the target IRecipient<TMessage> interfaces and filter out other types
