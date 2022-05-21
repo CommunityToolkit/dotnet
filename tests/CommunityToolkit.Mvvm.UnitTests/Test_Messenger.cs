@@ -3,11 +3,13 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommunityToolkit.Mvvm.UnitTests;
@@ -370,6 +372,40 @@ public partial class Test_Messenger
 
         Assert.IsFalse(messenger.IsRegistered<MessageA>(recipient));
         Assert.IsFalse(messenger.IsRegistered<MessageB>(recipient));
+    }
+
+    // See https://github.com/CommunityToolkit/dotnet/issues/198
+    [TestMethod]
+    [DataRow(typeof(StrongReferenceMessenger))]
+    [DataRow(typeof(WeakReferenceMessenger))]
+    public void Test_Messenger_IRecipient_SomeMessages_WithGenericTypeParameters(Type type)
+    {
+        IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
+        GenericRecipient<string> recipient = new();
+
+        messenger.RegisterAll(recipient);
+
+        Assert.IsTrue(messenger.IsRegistered<GenericRecipient<string>.Message>(recipient));
+        Assert.IsTrue(messenger.IsRegistered<ValueChangedMessage<string>>(recipient));
+        Assert.IsTrue(messenger.IsRegistered<MessageA>(recipient));
+
+        Assert.IsNull(recipient.ReceivedMessage1);
+        Assert.IsNull(recipient.ReceivedMessage2);
+        Assert.IsNull(recipient.ReceivedMessage3);
+
+        GenericRecipient<string>.Message message1 = messenger.Send(new GenericRecipient<string>.Message(new List<string> { "Hello world!" }));
+        ValueChangedMessage<string> message2 = messenger.Send(new ValueChangedMessage<string>("Hello"));
+        MessageA message3 = messenger.Send<MessageA>();
+
+        Assert.AreSame(recipient.ReceivedMessage1, message1);
+        Assert.AreSame(recipient.ReceivedMessage2, message2);
+        Assert.AreSame(recipient.ReceivedMessage3, message3);
+
+        messenger.UnregisterAll(recipient);
+
+        Assert.IsFalse(messenger.IsRegistered<GenericRecipient<string>.Message>(recipient));
+        Assert.IsFalse(messenger.IsRegistered<ValueChangedMessage<string>>(recipient));
+        Assert.IsFalse(messenger.IsRegistered<MessageA>(recipient));
     }
 
     [TestMethod]
@@ -1058,5 +1094,37 @@ public partial class Test_Messenger
 
     public sealed class MessageB
     {
+    }
+
+    public partial class GenericRecipient<T> : IRecipient<GenericRecipient<T>.Message>, IRecipient<ValueChangedMessage<T>>, IRecipient<MessageA>
+    {
+        public Message? ReceivedMessage1 { get; private set; }
+
+        public ValueChangedMessage<T>? ReceivedMessage2 { get; private set; }
+
+        public MessageA? ReceivedMessage3 { get; private set; }
+
+        public void Receive(Message message)
+        {
+            ReceivedMessage1 = message;
+        }
+
+        public void Receive(ValueChangedMessage<T> message)
+        {
+            ReceivedMessage2 = message;
+        }
+
+        public void Receive(MessageA message)
+        {
+            ReceivedMessage3 = message;
+        }
+
+        public sealed class Message : ValueChangedMessage<List<T>>
+        {
+            public Message(List<T> list)
+                : base(list)
+            {
+            }
+        }
     }
 }
