@@ -539,6 +539,32 @@ public class Test_ObservableValidator
         Assert.IsNull(createAllPropertiesValidatorMethod);
     }
 
+    // See https://github.com/CommunityToolkit/dotnet/issues/246
+    [TestMethod]
+    public void Test_ObservableValidator_WithGenericTypeParameters()
+    {
+        GenericPerson<string> model = new();
+
+        model.Name = "Bob";
+
+        model.ValidateAllProperties();
+
+        Assert.IsTrue(model.HasErrors);
+
+        ValidationResult[] errors = model.GetErrors(nameof(model.Value)).ToArray();
+
+        Assert.IsNotNull(errors);
+        Assert.AreEqual(errors.Length, 1);
+
+        CollectionAssert.AreEqual(errors[0].MemberNames.ToArray(), new[] { nameof(model.Value) });
+
+        model.Value = "Ross";
+
+        model.ValidateAllProperties();
+
+        Assert.IsFalse(model.HasErrors);
+    }
+
     public class Person : ObservableValidator
     {
         private string? name;
@@ -796,5 +822,20 @@ public class Test_ObservableValidator
         [Required]
         [MinLength(2)]
         public string? Name { get; set; }
+    }
+
+    public class GenericPerson<T> : ObservableValidator
+    {
+        [Required]
+        [MinLength(1)]
+        public string? Name { get; set; }
+
+        [Required]
+        public T? Value { get; set; }
+
+        public new void ValidateAllProperties()
+        {
+            base.ValidateAllProperties();
+        }
     }
 }
