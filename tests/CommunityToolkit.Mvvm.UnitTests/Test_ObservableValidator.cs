@@ -526,6 +526,19 @@ public class Test_ObservableValidator
 #endif
     }
 
+    [TestMethod]
+    public void Test_ObservableRecipient_AbstractTypesDoNotTriggerCodeGeneration()
+    {
+        MethodInfo? createAllPropertiesValidatorMethod = typeof(ComponentModel.__Internals.__ObservableValidatorExtensions)
+            .GetMethods(BindingFlags.Static | BindingFlags.Public)
+            .Where(static m => m.Name == "CreateAllPropertiesValidator")
+            .Where(static m => m.GetParameters() is { Length: 1 } parameters && parameters[0].ParameterType == typeof(AbstractModelWithValidatableProperty))
+            .FirstOrDefault();
+
+        // We need to validate that no methods are generated for abstract types, so we just check this method doesn't exist
+        Assert.IsNull(createAllPropertiesValidatorMethod);
+    }
+
     public class Person : ObservableValidator
     {
         private string? name;
@@ -776,5 +789,12 @@ public class Test_ObservableValidator
     {
         [Range(10, 1000)]
         public int Number { get; set; }
+    }
+
+    public abstract class AbstractModelWithValidatableProperty : ObservableValidator
+    {
+        [Required]
+        [MinLength(2)]
+        public string? Name { get; set; }
     }
 }

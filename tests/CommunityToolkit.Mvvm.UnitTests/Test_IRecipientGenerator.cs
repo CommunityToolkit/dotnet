@@ -3,6 +3,8 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Linq;
+using System.Reflection;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -52,9 +54,20 @@ public partial class Test_IRecipientGenerator
         _ = Messaging.__Internals.__IMessengerExtensions.CreateAllMessagesRegistratorWithToken<int>(recipient);
     }
 
-    public sealed class RecipientWithSomeMessages :
-        IRecipient<MessageA>,
-        IRecipient<MessageB>
+    [TestMethod]
+    public void Test_IRecipientGenerator_AbstractTypesDoNotTriggerCodeGeneration()
+    {
+        MethodInfo? createAllPropertiesValidatorMethod = typeof(Messaging.__Internals.__IMessengerExtensions)
+            .GetMethods(BindingFlags.Static | BindingFlags.Public)
+            .Where(static m => m.Name == "CreateAllMessagesRegistratorWithToken")
+            .Where(static m => m.GetParameters() is { Length: 1 } parameters && parameters[0].ParameterType == typeof(AbstractModelWithValidatablePropertyIRecipientInterfaces))
+            .FirstOrDefault();
+
+        // We need to validate that no methods are generated for abstract types, so we just check this method doesn't exist
+        Assert.IsNull(createAllPropertiesValidatorMethod);
+    }
+
+    public sealed class RecipientWithSomeMessages : IRecipient<MessageA>, IRecipient<MessageB>
     {
         public MessageA? A { get; private set; }
 
@@ -90,5 +103,15 @@ public partial class Test_IRecipientGenerator
     // correctly handles cases where the source type has multiple class declarations.
     partial class RecipientWithMultipleClassDeclarations
     {
+    }
+
+    public abstract class AbstractModelWithValidatablePropertyIRecipientInterfaces : IRecipient<MessageA>, IRecipient<MessageB>
+    {
+        public abstract void Receive(MessageA message);
+
+        public void Receive(MessageB message)
+        {
+
+        }
     }
 }
