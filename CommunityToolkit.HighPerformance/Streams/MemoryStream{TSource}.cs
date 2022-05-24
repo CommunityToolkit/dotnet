@@ -119,9 +119,13 @@ internal partial class MemoryStream<TSource> : Stream
 
         try
         {
-            CopyTo(destination, bufferSize);
+            MemoryStream.ValidateDisposed(this.disposed);
 
-            return Task.CompletedTask;
+            Memory<byte> source = this.source.Memory.Slice(this.position);
+
+            this.position += source.Length;
+
+            return destination.WriteAsync(source, cancellationToken).AsTask();
         }
         catch (OperationCanceledException e)
         {
