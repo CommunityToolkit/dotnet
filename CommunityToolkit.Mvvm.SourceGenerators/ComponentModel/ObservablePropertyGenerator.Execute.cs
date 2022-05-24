@@ -152,7 +152,7 @@ partial class ObservablePropertyGenerator
                 }
             }
 
-            // Log the diagnostics if needed
+            // Log the diagnostic for missing ObservableValidator, if needed
             if (hasAnyValidationAttributes &&
                 !fieldSymbol.ContainingType.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator"))
             {
@@ -162,6 +162,16 @@ partial class ObservablePropertyGenerator
                     fieldSymbol.ContainingType,
                     fieldSymbol.Name,
                     forwardedAttributes.Count);
+            }
+
+            // Log the diagnostic for missing validation attributes, if any
+            if (alsoValidateProperty && !hasAnyValidationAttributes)
+            {
+                builder.Add(
+                    MissingValidationAttributesForAlsoValidatePropertyError,
+                    fieldSymbol,
+                    fieldSymbol.ContainingType,
+                    fieldSymbol.Name);
             }
 
             diagnostics = builder.ToImmutable();
