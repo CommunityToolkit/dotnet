@@ -118,8 +118,19 @@ partial class ObservablePropertyGenerator
                     continue;
                 }
 
-                // Track the current validation attribute, if applicable
-                if (attributeData.AttributeClass?.InheritsFromFullyQualifiedName("global::System.ComponentModel.DataAnnotations.ValidationAttribute") == true)
+                // Track the current attribute for forwarding if applicable. The following attributes are special cased:
+                //   - Validation attributes (System.ComponentModel.DataAnnotations.ValidationAttribute)
+                //   - Display attributes (System.ComponentModel.DataAnnotations.DisplayAttribute)
+                //   - UI hint attributes(System.ComponentModel.DataAnnotations.UIHintAttribute)
+                //   - Scaffold column attributes (System.ComponentModel.DataAnnotations.ScaffoldColumnAttribute)
+                //   - Editable attributes (System.ComponentModel.DataAnnotations.EditableAttribute)
+                //   - Key attributes (System.ComponentModel.DataAnnotations.KeyAttribute)
+                if (attributeData.AttributeClass?.InheritsFromFullyQualifiedName("global::System.ComponentModel.DataAnnotations.ValidationAttribute") == true ||
+                    attributeData.AttributeClass?.HasOrInheritsFromFullyQualifiedName("global::System.ComponentModel.DataAnnotations.UIHintAttribute") == true ||
+                    attributeData.AttributeClass?.HasOrInheritsFromFullyQualifiedName("global::System.ComponentModel.DataAnnotations.ScaffoldColumnAttribute") == true ||
+                    attributeData.AttributeClass?.HasFullyQualifiedName("global::System.ComponentModel.DataAnnotations.DisplayAttribute") == true ||
+                    attributeData.AttributeClass?.HasFullyQualifiedName("global::System.ComponentModel.DataAnnotations.EditableAttribute") == true ||
+                    attributeData.AttributeClass?.HasFullyQualifiedName("global::System.ComponentModel.DataAnnotations.KeyAttribute") == true)
                 {
                     validationAttributes.Add(AttributeInfo.From(attributeData));
                 }
