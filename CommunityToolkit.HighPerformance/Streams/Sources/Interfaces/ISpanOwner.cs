@@ -20,4 +20,9 @@ internal interface ISpanOwner
     /// Gets a <see cref="Span{T}"/> instance wrapping the underlying memory area.
     /// </summary>
     Span<byte> Span { get; }
+
+    /// <summary>
+    /// Gets a <see cref="Memory{T}"/> instance wrapping the underlying memory area.
+    /// </summary>
+    Memory<byte> Memory { get; }
 }

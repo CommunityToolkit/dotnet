@@ -74,4 +74,14 @@ internal readonly struct ArrayOwner : ISpanOwner
 #endif
         }
     }
+
+    /// <inheritdoc/>
+    public Memory<byte> Memory
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get
+        {
+            return this.array.AsMemory(this.offset, this.length);
+        }
+    }
 }
