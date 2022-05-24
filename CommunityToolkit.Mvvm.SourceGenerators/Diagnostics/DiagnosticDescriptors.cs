@@ -101,14 +101,14 @@ internal static class DiagnosticDescriptors
     /// Format: <c>"The field {0}.{1} cannot be used to generate an observable property, as it has {2} validation attribute(s) but is declared in a type that doesn't inherit from ObservableValidator"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor MissingObservableValidatorInheritanceError = new DiagnosticDescriptor(
+    public static readonly DiagnosticDescriptor MissingObservableValidatorInheritanceForValidationAttributeError = new DiagnosticDescriptor(
         id: "MVVMTK0006",
         title: "Missing ObservableValidator inheritance",
         messageFormat: "The field {0}.{1} cannot be used to generate an observable property, as it has {2} validation attribute(s) but is declared in a type that doesn't inherit from ObservableValidator",
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: $"Cannot apply [ObservableProperty] to fields with validation attributes if they are declared in a type that doesn't inherit from ObservableValidator.",
+        description: "Cannot apply [ObservableProperty] to fields with validation attributes if they are declared in a type that doesn't inherit from ObservableValidator.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>
@@ -319,17 +319,17 @@ internal static class DiagnosticDescriptors
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[ObservableProperty]</c> is applied to a field in an invalid type.
     /// <para>
-    /// Format: <c>"The field {0}.{1} needs to be annotated with [ObservableProperty] in order to enable using [AlsoNotifyChangeFor], [AlsoNotifyCanExecuteFor] and [AlsoBroadcastChange]"</c>.
+    /// Format: <c>"The field {0}.{1} needs to be annotated with [ObservableProperty] in order to enable using [AlsoNotifyChangeFor], [AlsoNotifyCanExecuteFor], [AlsoBroadcastChange] and [AlsoValidateProperty]"</c>.
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor FieldWithOrphanedDependentObservablePropertyAttributesError = new DiagnosticDescriptor(
         id: "MVVMTK0020",
         title: "Invalid use of attributes dependent on [ObservableProperty]",
-        messageFormat: "The field {0}.{1} needs to be annotated with [ObservableProperty] in order to enable using [AlsoNotifyChangeFor], [AlsoNotifyCanExecuteFor] and [AlsoBroadcastChange]",
+        messageFormat: "The field {0}.{1} needs to be annotated with [ObservableProperty] in order to enable using [AlsoNotifyChangeFor], [AlsoNotifyCanExecuteFor], [AlsoBroadcastChange] and [AlsoValidateProperty]",
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Fields not annotated with [ObservableProperty] cannot use [AlsoNotifyChangeFor], [AlsoNotifyCanExecuteFor] and [AlsoBroadcastChange].",
+        description: "Fields not annotated with [ObservableProperty] cannot use [AlsoNotifyChangeFor], [AlsoNotifyCanExecuteFor], [AlsoBroadcastChange] and [AlsoValidateProperty].",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>
@@ -394,5 +394,21 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "The fields annotated with [ObservableProperty] cannot result in a property name or have a type that would cause conflicts with other generated members.",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when the target type doesn't inherit from the <c>ObservableValidator</c> class.
+    /// <para>
+    /// Format: <c>"The field {0}.{1} cannot be annotated with [AlsoValidateProperty], as it is declared in a type that doesn't inherit from ObservableValidator"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor MissingObservableValidatorInheritanceForAlsoValidatePropertyError = new DiagnosticDescriptor(
+        id: "MVVMTK0025",
+        title: "Missing ObservableValidator inheritance",
+        messageFormat: "The field {0}.{1} cannot be annotated with [AlsoValidateProperty], as it is declared in a type that doesn't inherit from ObservableValidator",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "Cannot apply [AlsoValidateProperty] to field that are declared in a type that doesn't inherit from ObservableValidator.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 }

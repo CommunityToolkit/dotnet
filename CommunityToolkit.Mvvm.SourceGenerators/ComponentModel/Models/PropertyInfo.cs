@@ -21,7 +21,8 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 /// <param name="PropertyChangedNames">The sequence of property changed properties to notify.</param>
 /// <param name="NotifiedCommandNames">The sequence of commands to notify.</param>
 /// <param name="AlsoBroadcastChange">Whether or not the generated property also broadcasts changes.</param>
-/// <param name="ValidationAttributes">The sequence of validation attributes for the generated property.</param>
+/// <param name="AlsoValidateProperty">Whether or not the generated property also validates its value.</param>
+/// <param name="ForwardedAttributes">The sequence of forwarded attributes for the generated property.</param>
 internal sealed record PropertyInfo(
     string TypeNameWithNullabilityAnnotations,
     string FieldName,
@@ -30,7 +31,8 @@ internal sealed record PropertyInfo(
     ImmutableArray<string> PropertyChangedNames,
     ImmutableArray<string> NotifiedCommandNames,
     bool AlsoBroadcastChange,
-    ImmutableArray<AttributeInfo> ValidationAttributes)
+    bool AlsoValidateProperty,
+    ImmutableArray<AttributeInfo> ForwardedAttributes)
 {
     /// <summary>
     /// An <see cref="IEqualityComparer{T}"/> implementation for <see cref="PropertyInfo"/>.
@@ -47,7 +49,8 @@ internal sealed record PropertyInfo(
             hashCode.AddRange(obj.PropertyChangedNames);
             hashCode.AddRange(obj.NotifiedCommandNames);
             hashCode.Add(obj.AlsoBroadcastChange);
-            hashCode.AddRange(obj.ValidationAttributes, AttributeInfo.Comparer.Default);
+            hashCode.Add(obj.AlsoValidateProperty);
+            hashCode.AddRange(obj.ForwardedAttributes, AttributeInfo.Comparer.Default);
         }
 
         /// <inheritdoc/>
@@ -61,7 +64,8 @@ internal sealed record PropertyInfo(
                 x.PropertyChangedNames.SequenceEqual(y.PropertyChangedNames) &&
                 x.NotifiedCommandNames.SequenceEqual(y.NotifiedCommandNames) &&
                 x.AlsoBroadcastChange == y.AlsoBroadcastChange &&
-                x.ValidationAttributes.SequenceEqual(y.ValidationAttributes, AttributeInfo.Comparer.Default);
+                x.AlsoValidateProperty == y.AlsoValidateProperty &&
+                x.ForwardedAttributes.SequenceEqual(y.ForwardedAttributes, AttributeInfo.Comparer.Default);
         }
     }
 }

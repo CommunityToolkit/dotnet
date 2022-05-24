@@ -88,8 +88,10 @@ partial class ObservablePropertyGenerator
             ImmutableArray<string>.Builder propertyChangedNames = ImmutableArray.CreateBuilder<string>();
             ImmutableArray<string>.Builder propertyChangingNames = ImmutableArray.CreateBuilder<string>();
             ImmutableArray<string>.Builder notifiedCommandNames = ImmutableArray.CreateBuilder<string>();
-            ImmutableArray<AttributeInfo>.Builder validationAttributes = ImmutableArray.CreateBuilder<AttributeInfo>();
+            ImmutableArray<AttributeInfo>.Builder forwardedAttributes = ImmutableArray.CreateBuilder<AttributeInfo>();
             bool alsoBroadcastChange = false;
+            bool alsoValidateProperty = false;
+            bool hasAnyValidationAttributes = false;
 
             // Track the property changing event for the property, if the type supports it
             if (shouldInvokeOnPropertyChanging)
@@ -118,39 +120,48 @@ partial class ObservablePropertyGenerator
                     continue;
                 }
 
-                // Track the current attribute for forwarding if applicable. The following attributes are special cased:
-                //   - Validation attributes (System.ComponentModel.DataAnnotations.ValidationAttribute)
+                // Check whether the property should also be validated
+                if (TryGetIsValidatingProperty(fieldSymbol, attributeData, builder, out bool isValidationTargetValid))
+                {
+                    alsoValidateProperty = isValidationTargetValid;
+
+                    continue;
+                }
+
+                // Track the current attribute for forwarding if it is a validation attribute
+                if (attributeData.AttributeClass?.InheritsFromFullyQualifiedName("global::System.ComponentModel.DataAnnotations.ValidationAttribute") == true)
+                {
+                    hasAnyValidationAttributes = true;
+
+                    forwardedAttributes.Add(AttributeInfo.From(attributeData));
+                }
+
+                // Also track the current attribute for forwarding if it is of any of the following types:
                 //   - Display attributes (System.ComponentModel.DataAnnotations.DisplayAttribute)
                 //   - UI hint attributes(System.ComponentModel.DataAnnotations.UIHintAttribute)
                 //   - Scaffold column attributes (System.ComponentModel.DataAnnotations.ScaffoldColumnAttribute)
                 //   - Editable attributes (System.ComponentModel.DataAnnotations.EditableAttribute)
                 //   - Key attributes (System.ComponentModel.DataAnnotations.KeyAttribute)
-                if (attributeData.AttributeClass?.InheritsFromFullyQualifiedName("global::System.ComponentModel.DataAnnotations.ValidationAttribute") == true ||
-                    attributeData.AttributeClass?.HasOrInheritsFromFullyQualifiedName("global::System.ComponentModel.DataAnnotations.UIHintAttribute") == true ||
+                if (attributeData.AttributeClass?.HasOrInheritsFromFullyQualifiedName("global::System.ComponentModel.DataAnnotations.UIHintAttribute") == true ||
                     attributeData.AttributeClass?.HasOrInheritsFromFullyQualifiedName("global::System.ComponentModel.DataAnnotations.ScaffoldColumnAttribute") == true ||
                     attributeData.AttributeClass?.HasFullyQualifiedName("global::System.ComponentModel.DataAnnotations.DisplayAttribute") == true ||
                     attributeData.AttributeClass?.HasFullyQualifiedName("global::System.ComponentModel.DataAnnotations.EditableAttribute") == true ||
                     attributeData.AttributeClass?.HasFullyQualifiedName("global::System.ComponentModel.DataAnnotations.KeyAttribute") == true)
                 {
-                    validationAttributes.Add(AttributeInfo.From(attributeData));
+                    forwardedAttributes.Add(AttributeInfo.From(attributeData));
                 }
             }
 
             // Log the diagnostics if needed
-            if (validationAttributes.Count > 0 &&
+            if (hasAnyValidationAttributes &&
                 !fieldSymbol.ContainingType.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator"))
             {
                 builder.Add(
-                    MissingObservableValidatorInheritanceError,
+                    MissingObservableValidatorInheritanceForValidationAttributeError,
                     fieldSymbol,
                     fieldSymbol.ContainingType,
                     fieldSymbol.Name,
-                    validationAttributes.Count);
-
-                // Remove all validation attributes so that the generated code doesn't cause a build error about the
-                // "ValidateProperty" method not existing (as the type doesn't inherit from ObservableValidator). The
-                // compilation will still fail due to this diagnostics, but with just this easier to understand error.
-                validationAttributes.Clear();
+                    forwardedAttributes.Count);
             }
 
             diagnostics = builder.ToImmutable();
@@ -163,7 +174,8 @@ partial class ObservablePropertyGenerator
                 propertyChangedNames.ToImmutable(),
                 notifiedCommandNames.ToImmutable(),
                 alsoBroadcastChange,
-                validationAttributes.ToImmutable());
+                alsoValidateProperty,
+                forwardedAttributes.ToImmutable());
         }
 
         /// <summary>
@@ -424,6 +436,47 @@ partial class ObservablePropertyGenerator
         }
 
         /// <summary>
+        /// Checks whether a given generated property should also validate its value.
+        /// </summary>
+        /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
+        /// <param name="attributeData">The <see cref="AttributeData"/> instance for <paramref name="fieldSymbol"/>.</param>
+        /// <param name="diagnostics">The current collection of gathered diagnostics.</param>
+        /// <param name="isValidationTargetValid">Whether or not the the property is in a valid target that can validate values.</param>
+        /// <returns>Whether or not the generated property for <paramref name="fieldSymbol"/> used <c>[AlsoValidateProperty]</c>.</returns>
+        private static bool TryGetIsValidatingProperty(
+            IFieldSymbol fieldSymbol,
+            AttributeData attributeData,
+            ImmutableArray<Diagnostic>.Builder diagnostics,
+            out bool isValidationTargetValid)
+        {
+            if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoValidatePropertyAttribute") == true)
+            {
+                // If the containing type is valid, track it
+                if (fieldSymbol.ContainingType.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator"))
+                {
+                    isValidationTargetValid = true;
+
+                    return true;
+                }
+
+                // Otherwise just emit the diagnostic and then ignore the attribute
+                diagnostics.Add(
+                    MissingObservableValidatorInheritanceForAlsoValidatePropertyError,
+                    fieldSymbol,
+                    fieldSymbol.ContainingType,
+                    fieldSymbol.Name);
+
+                isValidationTargetValid = false;
+
+                return true;
+            }
+
+            isValidationTargetValid = false;
+
+            return false;
+        }
+
+        /// <summary>
         /// Gets a <see cref="CompilationUnitSyntax"/> instance with the cached args for property changing notifications.
         /// </summary>
         /// <param name="names">The sequence of property names to cache args for.</param>
@@ -516,10 +569,10 @@ partial class ObservablePropertyGenerator
                         fieldExpression,
                         IdentifierName("value"))));
 
-            // If there are validation attributes, add a call to ValidateProperty:
+            // If validation is requested, add a call to ValidateProperty:
             //
             // ValidateProperty(value, <PROPERTY_NAME>);
-            if (propertyInfo.ValidationAttributes.Length > 0)
+            if (propertyInfo.AlsoValidateProperty)
             {
                 setterStatements.Add(
                     ExpressionStatement(
@@ -605,9 +658,9 @@ partial class ObservablePropertyGenerator
                             Argument(IdentifierName("value")))),
                     Block(setterStatements));
 
-            // Prepare the validation attributes, if any
-            ImmutableArray<AttributeListSyntax> validationAttributes =
-                propertyInfo.ValidationAttributes
+            // Prepare the forwarded attributes, if any
+            ImmutableArray<AttributeListSyntax> forwardedAttributes =
+                propertyInfo.ForwardedAttributes
                 .Select(static a => AttributeList(SingletonSeparatedList(a.GetSyntax())))
                 .ToImmutableArray();
 
@@ -616,7 +669,7 @@ partial class ObservablePropertyGenerator
             // /// <inheritdoc cref="<FIELD_NAME>"/>
             // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
             // [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-            // <VALIDATION_ATTRIBUTES>
+            // <FORWARDED_ATTRIBUTES>
             // public <FIELD_TYPE><NULLABLE_ANNOTATION?> <PROPERTY_NAME>
             // {
             //     get => <FIELD_NAME>;
@@ -635,7 +688,7 @@ partial class ObservablePropertyGenerator
                             AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservablePropertyGenerator).Assembly.GetName().Version.ToString()))))))
                     .WithOpenBracketToken(Token(TriviaList(Comment($"/// <inheritdoc cref=\"{propertyInfo.FieldName}\"/>")), SyntaxKind.OpenBracketToken, TriviaList())),
                     AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage")))))
-                .AddAttributeLists(validationAttributes.ToArray())
+                .AddAttributeLists(forwardedAttributes.ToArray())
                 .AddModifiers(Token(SyntaxKind.PublicKeyword))
                 .AddAccessorListAccessors(
                     AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
