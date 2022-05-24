@@ -409,6 +409,22 @@ internal static class DiagnosticDescriptors
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Cannot apply [AlsoValidateProperty] to field that are declared in a type that doesn't inherit from ObservableValidator.",
+        description: "Cannot apply [AlsoValidateProperty] to fields that are declared in a type that doesn't inherit from ObservableValidator.",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when the target field uses [AlsoValidateProperty] but has no validation attributes.
+    /// <para>
+    /// Format: <c>"The field {0}.{1} cannot be annotated with [AlsoValidateProperty], as it doesn't have any validation attributes to use during validation"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor MissingValidationAttributesForAlsoValidatePropertyError = new DiagnosticDescriptor(
+        id: "MVVMTK0026",
+        title: "Missing validation attributes",
+        messageFormat: "The field {0}.{1} cannot be annotated with [AlsoValidateProperty], as it doesn't have any validation attributes to use during validation",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "Cannot apply [AlsoValidateProperty] to fields that don't have any validation attributes to use during validation.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 }

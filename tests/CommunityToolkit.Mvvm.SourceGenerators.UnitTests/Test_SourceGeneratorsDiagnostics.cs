@@ -192,7 +192,7 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void MissingObservableValidatorInheritanceError()
+    public void MissingObservableValidatorInheritanceForValidationAttributeError()
     {
         string source = @"
             using System.ComponentModel.DataAnnotations;
@@ -1188,6 +1188,48 @@ public class Test_SourceGeneratorsDiagnostics
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0024");
     }
 
+    [TestMethod]
+    public void MissingObservableValidatorInheritanceForAlsoValidatePropertyError()
+    {
+        string source = @"
+            using System.ComponentModel.DataAnnotations;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                [INotifyPropertyChanged]
+                public partial class SampleViewModel
+                {
+                    [ObservableProperty]
+                    [Required]
+                    [AlsoValidateProperty]
+                    private string name;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0006", "MVVMTK0025");
+    }
+
+    [TestMethod]
+    public void MissingValidationAttributesForAlsoValidatePropertyError()
+    {
+        string source = @"
+            using System.ComponentModel.DataAnnotations;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableValidator
+                {
+                    [ObservableProperty]
+                    [AlsoValidateProperty]
+                    private string name;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0026");
+    }
+
     /// <summary>
     /// Verifies the output of a source generator.
     /// </summary>
@@ -1232,7 +1274,7 @@ public class Test_SourceGeneratorsDiagnostics
 
         HashSet<string> resultingIds = diagnostics.Select(diagnostic => diagnostic.Id).ToHashSet();
 
-        Assert.IsTrue(resultingIds.SetEquals(diagnosticsIds));
+        CollectionAssert.AreEquivalent(diagnosticsIds, resultingIds.ToArray());
 
         GC.KeepAlive(observableObjectType);
         GC.KeepAlive(validationAttributeType);

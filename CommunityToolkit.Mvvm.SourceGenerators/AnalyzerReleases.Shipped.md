@@ -32,3 +32,4 @@ MVVMTK0022 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator 
 MVVMTK0023 | CommunityToolkit.Mvvm.SourceGenerators.ICommandGenerator | Error | See https://aka.ms/mvvmtoolkit/error
 MVVMTK0024 | CommunityToolkit.Mvvm.SourceGenerators.ICommandGenerator | Error | See https://aka.ms/mvvmtoolkit/error
 MVVMTK0025 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Error | See https://aka.ms/mvvmtoolkit/error
+MVVMTK0026 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Error | See https://aka.ms/mvvmtoolkit/error
