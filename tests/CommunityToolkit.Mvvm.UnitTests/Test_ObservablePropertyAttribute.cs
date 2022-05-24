@@ -224,11 +224,44 @@ public partial class Test_ObservablePropertyAttribute
 
         model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
 
+        bool errorsChanged = false;
+
+        model.ErrorsChanged += (s, e) => errorsChanged = true;
+
         model.Value = "Hello world";
 
         Assert.AreEqual(model.Value, "Hello world");
 
+        // The [AlsoValidateProperty] attribute wasn't used, so the property shouldn't be validated
+        Assert.IsFalse(errorsChanged);
+
         CollectionAssert.AreEqual(new[] { nameof(model.Value) }, propertyNames);
+    }
+
+    [TestMethod]
+    public void Test_ObservablePropertyWithValueNamedField_WithValidationAttributesAndValidation()
+    {
+        ModelWithValuePropertyWithAutomaticValidation model = new();
+
+        List<string?> propertyNames = new();
+
+        model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
+
+        List<DataErrorsChangedEventArgs> errors = new();
+
+        model.ErrorsChanged += (s, e) => errors.Add(e);
+
+        model.Value = "Bo";
+
+        Assert.IsTrue(model.HasErrors);
+        Assert.AreEqual(errors.Count, 1);
+        Assert.AreEqual(errors[0].PropertyName, nameof(ModelWithValuePropertyWithAutomaticValidation.Value));
+
+        model.Value = "Hello world";
+
+        Assert.IsFalse(model.HasErrors);
+        Assert.AreEqual(errors.Count, 2);
+        Assert.AreEqual(errors[1].PropertyName, nameof(ModelWithValuePropertyWithAutomaticValidation.Value));
     }
 
     // See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4184
@@ -890,6 +923,15 @@ public partial class Test_ObservablePropertyAttribute
         [ObservableProperty]
         [Required]
         [MinLength(5)]
+        private string? value;
+    }
+
+    public partial class ModelWithValuePropertyWithAutomaticValidation : ObservableValidator
+    {
+        [ObservableProperty]
+        [Required]
+        [MinLength(5)]
+        [AlsoValidateProperty]
         private string? value;
     }
 
