@@ -606,8 +606,8 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
                 from property in validatableProperties
                 select Expression.Call(inst0, validateMethod, new Expression[]
                 {
-                        Expression.Convert(Expression.Call(inst0, property.GetMethod), typeof(object)),
-                        Expression.Constant(property.Name)
+                    Expression.Convert(Expression.Call(inst0, property.GetMethod), typeof(object)),
+                    Expression.Constant(property.Name)
                 }));
 
             return Expression.Lambda<Action<object>>(body, arg0).Compile();
