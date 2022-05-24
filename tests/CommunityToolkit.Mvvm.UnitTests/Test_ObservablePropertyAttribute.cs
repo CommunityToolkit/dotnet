@@ -658,6 +658,46 @@ public partial class Test_ObservablePropertyAttribute
         Assert.IsTrue(model.SaveCommand.CanExecute(null));
     }
 
+    [TestMethod]
+    public void Test_ObservableProperty_ForwardsSpecialCasesDataAnnotationAttributes()
+    {
+        PropertyInfo propertyInfo = typeof(ModelWithAdditionalDataAnnotationAttributes).GetProperty(nameof(ModelWithAdditionalDataAnnotationAttributes.Name))!;
+
+        DisplayAttribute? displayAttribute = (DisplayAttribute?)propertyInfo.GetCustomAttribute(typeof(DisplayAttribute));
+
+        Assert.IsNotNull(displayAttribute);
+        Assert.AreEqual(displayAttribute!.Name, "MyProperty");
+        Assert.AreEqual(displayAttribute.ResourceType, typeof(List<double>));
+        Assert.AreEqual(displayAttribute.Prompt, "Foo bar baz");
+
+        KeyAttribute? keyAttribute = (KeyAttribute?)propertyInfo.GetCustomAttribute(typeof(KeyAttribute));
+
+        Assert.IsNotNull(keyAttribute);
+
+        EditableAttribute? editableAttribute = (EditableAttribute?)propertyInfo.GetCustomAttribute(typeof(EditableAttribute));
+
+        Assert.IsNotNull(keyAttribute);
+        Assert.IsTrue(editableAttribute!.AllowEdit);
+
+        UIHintAttribute? uiHintAttribute = (UIHintAttribute?)propertyInfo.GetCustomAttribute(typeof(UIHintAttribute));
+
+        Assert.IsNotNull(uiHintAttribute);
+        Assert.AreEqual(uiHintAttribute!.UIHint, "MyControl");
+        Assert.AreEqual(uiHintAttribute.PresentationLayer, "WPF");
+        Assert.AreEqual(uiHintAttribute.ControlParameters.Count, 3);
+        Assert.IsTrue(uiHintAttribute.ControlParameters.ContainsKey("Foo"));
+        Assert.IsTrue(uiHintAttribute.ControlParameters.ContainsKey("Bar"));
+        Assert.IsTrue(uiHintAttribute.ControlParameters.ContainsKey("Baz"));
+        Assert.AreEqual(uiHintAttribute.ControlParameters["Foo"], 42);
+        Assert.AreEqual(uiHintAttribute.ControlParameters["Bar"], 3.14);
+        Assert.AreEqual(uiHintAttribute.ControlParameters["Baz"], "Hello");
+
+        ScaffoldColumnAttribute? scaffoldColumnAttribute = (ScaffoldColumnAttribute?)propertyInfo.GetCustomAttribute(typeof(ScaffoldColumnAttribute));
+
+        Assert.IsNotNull(scaffoldColumnAttribute);
+        Assert.IsTrue(scaffoldColumnAttribute!.Scaffold);
+    }
+
     public abstract partial class BaseViewModel : ObservableObject
     {
         public string? Content { get; set; }
@@ -1065,5 +1105,16 @@ public partial class Test_ObservablePropertyAttribute
         public override void Save()
         {
         }
+    }
+
+    public partial class ModelWithAdditionalDataAnnotationAttributes : ObservableValidator
+    {
+        [ObservableProperty]
+        [Display(Name = "MyProperty", ResourceType = typeof(List<double>), Prompt = "Foo bar baz")]
+        [Key]
+        [Editable(true)]
+        [UIHint("MyControl", "WPF", new object[] { "Foo", 42, "Bar", 3.14, "Baz", "Hello" })]
+        [ScaffoldColumn(true)]
+        private string? name;
     }
 }
