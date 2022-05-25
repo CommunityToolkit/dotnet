@@ -68,7 +68,7 @@ public static class TypeExtensions
             }
 
             // By checking generic types here we are only interested in specific cases,
-            // ie. nullable value types or value typles. We have a separate path for custom
+            // ie. nullable value types or value tuples. We have a separate path for custom
             // generic types, as we can't rely on this API in that case, as it doesn't show
             // a difference between nested types that are themselves generic, or nested simple
             // types from a generic declaring type. To deal with that, we need to manually track

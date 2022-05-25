@@ -41,7 +41,7 @@ public partial class Test_ParallelHelper
         Assert.AreEqual(memory.Height, height);
         Assert.AreEqual(memory.Width, width);
 
-        // Do the same computation in paralellel, then compare the two arrays
+        // Do the same computation in parallel, then compare the two arrays
         ParallelHelper.ForEach(memory, new Multiplier(397));
 
         CollectionAssert.AreEqual(data, copy);

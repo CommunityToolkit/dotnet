@@ -19,7 +19,7 @@ public class Test_IBufferWriterStream
     {
         ArrayPoolBufferWriter<byte> writer = new();
 
-        // Get a stream from a buffer writer aand validate that it can only be written to.
+        // Get a stream from a buffer writer and validate that it can only be written to.
         // This is to mirror the same functionality as the IBufferWriter<T> interface.
         Stream stream = ((IBufferWriter<byte>)writer).AsStream();
 
