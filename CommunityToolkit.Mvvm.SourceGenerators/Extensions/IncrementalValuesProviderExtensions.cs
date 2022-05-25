@@ -58,7 +58,7 @@ internal static class IncrementalValuesProviderExtensions
     }
 
     /// <summary>
-    /// Creates a new <see cref="IncrementalValuesProvider{TValues}"/> instance with a gven pair of comparers.
+    /// Creates a new <see cref="IncrementalValuesProvider{TValues}"/> instance with a given pair of comparers.
     /// </summary>
     /// <typeparam name="TLeft">The type of left items in each tuple.</typeparam>
     /// <typeparam name="TRight">The type of right items in each tuple.</typeparam>
@@ -75,7 +75,7 @@ internal static class IncrementalValuesProviderExtensions
     }
 
     /// <summary>
-    /// Creates a new <see cref="IncrementalValuesProvider{TValues}"/> instance with a gven pair of comparers.
+    /// Creates a new <see cref="IncrementalValuesProvider{TValues}"/> instance with a given pair of comparers.
     /// </summary>
     /// <typeparam name="T1">The type of first items in each tuple.</typeparam>
     /// <typeparam name="T2">The type of second items in each tuple.</typeparam>

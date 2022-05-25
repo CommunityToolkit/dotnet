@@ -286,7 +286,7 @@ partial class ThrowHelper
     /// </summary>
     /// <typeparam name="T">The type of expected result.</typeparam>
     /// <param name="message">The argument name.</param>
-    /// <param name="error">The HRESULT of the errror to include.</param>
+    /// <param name="error">The HRESULT of the error to include.</param>
     /// <exception cref="COMException">Thrown with the specified parameters.</exception>
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
@@ -339,7 +339,7 @@ partial class ThrowHelper
     /// </summary>
     /// <typeparam name="T">The type of expected result.</typeparam>
     /// <param name="message">The argument name.</param>
-    /// <param name="error">The HRESULT of the errror to include.</param>
+    /// <param name="error">The HRESULT of the error to include.</param>
     /// <exception cref="ExternalException">Thrown with the specified parameters.</exception>
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]

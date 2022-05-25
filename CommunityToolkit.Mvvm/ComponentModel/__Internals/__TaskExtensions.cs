@@ -67,7 +67,7 @@ public static class __TaskExtensions
         public readonly struct Awaiter : ICriticalNotifyCompletion
         {
             /// <summary>
-            /// The underlying <see cref="TaskAwaiter"/> inistance.
+            /// The underlying <see cref="TaskAwaiter"/> instance.
             /// </summary>
             private readonly TaskAwaiter taskAwaiter;
 
