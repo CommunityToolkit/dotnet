@@ -56,7 +56,7 @@ internal static class ITypeSymbolExtensions
     }
 
     /// <summary>
-    /// Checks whether or not a given <see cref="ITypeSymbol"/> implements an interface with a specied name.
+    /// Checks whether or not a given <see cref="ITypeSymbol"/> implements an interface with a specified name.
     /// </summary>
     /// <param name="typeSymbol">The target <see cref="ITypeSymbol"/> instance to check.</param>
     /// <param name="name">The full name of the type to check for interface implementation.</param>

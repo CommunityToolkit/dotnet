@@ -740,7 +740,7 @@ public readonly struct ReadOnlyMemory2D<T> : IEquatable<ReadOnlyMemory2D<T>>
     /// is disposed, enabling taking and using the memory's address.
     /// </summary>
     /// <exception cref="ArgumentException">
-    /// An instance with nonprimitive (non-blittable) members cannot be pinned.
+    /// An instance with non-primitive (non-blittable) members cannot be pinned.
     /// </exception>
     /// <returns>A <see cref="MemoryHandle"/> instance wrapping the pinned handle.</returns>
     public unsafe MemoryHandle Pin()

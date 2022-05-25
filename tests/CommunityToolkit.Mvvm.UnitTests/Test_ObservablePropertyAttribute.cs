@@ -355,10 +355,10 @@ public partial class Test_ObservablePropertyAttribute
         // The actual validation is performed inside the model itself.
         // This test validates that the order with which methods/events are generated is:
         //   - On<PROPERTY_NAME>Changing(value);
-        //   - OnProperyChanging();
+        //   - OnPropertyChanging();
         //   - field = value;
         //   - On<PROPERTY_NAME>Changed(value);
-        //   - OnProperyChanged();
+        //   - OnPropertyChanged();
         model.Name = "B";
 
         Assert.AreEqual("B", model.Name);

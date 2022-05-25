@@ -355,7 +355,7 @@ public class Test_Span2DT
 
         int[] target = new int[0];
 
-        // Copying an emoty Span2D<T> to an empty array is just a no-op
+        // Copying an empty Span2D<T> to an empty array is just a no-op
         span2d.CopyTo(target);
     }
 

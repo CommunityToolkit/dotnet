@@ -213,7 +213,7 @@ public static partial class ThrowHelper
     /// <summary>
     /// Throws a new <see cref="COMException"/>.
     /// </summary>
-    /// <exception cref="COMException">Thrown with no paarameters.</exception>
+    /// <exception cref="COMException">Thrown with no parameters.</exception>
     [DoesNotReturn]
     public static void ThrowCOMException()
     {
@@ -247,7 +247,7 @@ public static partial class ThrowHelper
     /// Throws a new <see cref="COMException"/>.
     /// </summary>
     /// <param name="message">The argument name.</param>
-    /// <param name="error">The HRESULT of the errror to include.</param>
+    /// <param name="error">The HRESULT of the error to include.</param>
     /// <exception cref="COMException">Thrown with the specified parameters.</exception>
     [DoesNotReturn]
     public static void ThrowCOMException(string? message, int error)
@@ -292,7 +292,7 @@ public static partial class ThrowHelper
     /// Throws a new <see cref="ExternalException"/>.
     /// </summary>
     /// <param name="message">The argument name.</param>
-    /// <param name="error">The HRESULT of the errror to include.</param>
+    /// <param name="error">The HRESULT of the error to include.</param>
     /// <exception cref="ExternalException">Thrown with the specified parameters.</exception>
     [DoesNotReturn]
     public static void ThrowExternalException(string? message, int error)

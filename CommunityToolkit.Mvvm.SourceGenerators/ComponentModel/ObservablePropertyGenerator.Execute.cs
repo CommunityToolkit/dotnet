@@ -66,7 +66,7 @@ partial class ObservablePropertyGenerator
                 diagnostics = builder.ToImmutable();
 
                 // If the generated property would collide, skip generating it entirely. This makes sure that
-                // users only get the helpful diagnostic about the collsiion, and not the normal compiler error
+                // users only get the helpful diagnostic about the collision, and not the normal compiler error
                 // about a definition for "Property" already existing on the target type, which might be confusing.
                 return null;
             }

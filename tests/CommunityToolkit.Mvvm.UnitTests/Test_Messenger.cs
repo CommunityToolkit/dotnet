@@ -1060,7 +1060,7 @@ public partial class Test_Messenger
         }
 
         // We also add the ICloneable interface to test that the message
-        // interfaces are all handled correctly even when inteleaved
+        // interfaces are all handled correctly even when interleaved
         // by other unrelated interfaces in the type declaration.
         public object Clone() => throw new NotImplementedException();
     }

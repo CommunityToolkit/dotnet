@@ -191,7 +191,7 @@ partial class ICommandGenerator
                         Parameter(Identifier(TriviaList(), SyntaxKind.UnderscoreToken, "_", "_", TriviaList())))
                     .WithExpressionBody(IdentifierName(commandInfo.CanExecuteMemberName!)),
 
-                    // Create a method groupd expression, which will become:
+                    // Create a method group expression, which will become:
                     //
                     // new <RELAY_COMMAND_TYPE>(<METHOD_EXPRESSION>, <CAN_EXECUTE_METHOD>);
                     CanExecuteExpressionType.MethodGroup => IdentifierName(commandInfo.CanExecuteMemberName!),

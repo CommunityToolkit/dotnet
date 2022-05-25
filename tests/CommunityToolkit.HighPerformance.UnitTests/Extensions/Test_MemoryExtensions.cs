@@ -82,7 +82,7 @@ public class Test_MemoryExtensions
         Span<byte> spanOfBytes = memoryOfBytes.Span;
         Span<float> spanOfFloats = memoryOfFloats.Span;
 
-        // We also need to check that the Span<T> returned from the caast memory
+        // We also need to check that the Span<T> returned from the cast memory
         // actually has the initial reference pointing to the same location as
         // the one to the same item in the span from the original memory.
         Assert.AreEqual(memoryOfFloats.Length, spanOfFloats.Length);
