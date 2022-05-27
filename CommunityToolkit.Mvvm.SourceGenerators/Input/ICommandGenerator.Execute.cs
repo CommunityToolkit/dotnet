@@ -315,6 +315,25 @@ partial class ICommandGenerator
         /// <returns>Whether or not <paramref name="methodSymbol"/> was unique within its containing type.</returns>
         private static bool IsCommandDefinitionUnique(IMethodSymbol methodSymbol, ImmutableArray<Diagnostic>.Builder diagnostics)
         {
+            // If a duplicate is present in any of the base types, always emit a diagnostic for the current method.
+            // That is, there is no need to check the order: we assume the priority is top-down in the type hierarchy.
+            // This check has to be done first, as otherwise there would always be a false positive for the current type.
+            foreach (ISymbol symbol in methodSymbol.ContainingType.BaseType?.GetAllMembers(methodSymbol.Name) ?? Enumerable.Empty<ISymbol>())
+            {
+                if (symbol is IMethodSymbol otherSymbol &&
+                    otherSymbol.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.ICommandAttribute"))
+                {
+                    diagnostics.Add(
+                        MultipleICommandMethodOverloadsError,
+                        methodSymbol,
+                        methodSymbol.ContainingType,
+                        methodSymbol);
+
+                    return false;
+                }
+            }
+
+            // Check for duplicates in the containing type for the annotated method
             foreach (ISymbol symbol in methodSymbol.ContainingType.GetMembers(methodSymbol.Name))
             {
                 if (symbol is IMethodSymbol otherSymbol &&
