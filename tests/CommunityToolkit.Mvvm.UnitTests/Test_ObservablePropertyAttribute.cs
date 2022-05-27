@@ -731,6 +731,22 @@ public partial class Test_ObservablePropertyAttribute
         Assert.IsTrue(scaffoldColumnAttribute!.Scaffold);
     }
 
+    // See https://github.com/CommunityToolkit/dotnet/issues/271
+    [TestMethod]
+    public void Test_ObservableProperty_ModelWithObservablePropertyInRootNamespace()
+    {
+        ModelWithObservablePropertyInRootNamespace model = new();
+
+        List<string?> propertyNames = new();
+
+        model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
+
+        model.Number = 3.14f;
+
+        // We mostly just need to verify this class compiles fine with the right generated code
+        CollectionAssert.AreEqual(propertyNames, new[] { nameof(model.Number) });
+    }
+
     public abstract partial class BaseViewModel : ObservableObject
     {
         public string? Content { get; set; }
