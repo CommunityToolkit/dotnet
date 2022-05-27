@@ -747,6 +747,24 @@ public partial class Test_ObservablePropertyAttribute
         CollectionAssert.AreEqual(propertyNames, new[] { nameof(model.Number) });
     }
 
+    // See https://github.com/CommunityToolkit/dotnet/issues/272
+    [TestMethod]
+    public void Test_ObservableProperty_WithCommandReferencingGeneratedPropertyFromOtherAssembly()
+    {
+        ModelWithOverriddenCommandMethodFromExternalBaseModel model = new();
+
+        Assert.IsFalse(model.HasSaved);
+        Assert.IsFalse(model.SaveCommand.CanExecute(null));
+
+        model.CanSave = true;
+
+        Assert.IsTrue(model.SaveCommand.CanExecute(null));
+
+        model.SaveCommand.Execute(null);
+
+        Assert.IsTrue(model.HasSaved);
+    }
+
     public abstract partial class BaseViewModel : ObservableObject
     {
         public string? Content { get; set; }
@@ -1174,5 +1192,16 @@ public partial class Test_ObservablePropertyAttribute
         [UIHint("MyControl", "WPF", new object[] { "Foo", 42, "Bar", 3.14, "Baz", "Hello" })]
         [ScaffoldColumn(true)]
         private string? name;
+    }
+
+    public partial class ModelWithOverriddenCommandMethodFromExternalBaseModel : ModelWithObservablePropertyAndMethod
+    {
+        public bool HasSaved { get; private set; }
+
+        [ICommand(CanExecute = nameof(CanSave))]
+        public override void Save()
+        {
+            HasSaved = true;
+        }
     }
 }
