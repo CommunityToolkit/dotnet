@@ -1106,6 +1106,34 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
+    public void MultipleICommandMethodOverloads_WithOverloadInBaseType()
+    {
+        string source = @"
+        using CommunityToolkit.Mvvm.Input;
+
+        namespace MyApp
+        {
+            public partial class BaseViewModel
+            {
+                [ICommand]
+                private void GreetUser()
+                {
+                }
+            }
+
+            public partial class SampleViewModel : BaseViewModel
+            {
+                [ICommand]
+                private void GreetUser(object value)
+                {
+                }
+            }
+        }";
+
+        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0023");
+    }
+
+    [TestMethod]
     public void InvalidObservablePropertyError_Object()
     {
         string source = @"
