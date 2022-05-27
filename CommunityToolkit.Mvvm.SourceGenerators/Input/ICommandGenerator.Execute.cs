@@ -630,7 +630,7 @@ partial class ICommandGenerator
                 goto Failure;
             }
 
-            ImmutableArray<ISymbol> canExecuteSymbols = methodSymbol.ContainingType!.GetMembers(memberName);
+            ImmutableArray<ISymbol> canExecuteSymbols = methodSymbol.ContainingType!.GetAllMembers(memberName).ToImmutableArray();
 
             if (canExecuteSymbols.IsEmpty)
             {
