@@ -27,8 +27,10 @@ internal static class INamedTypeSymbolExtensions
                 INamespaceSymbol ns when ns.IsGlobalNamespace => builder,
                 INamespaceSymbol ns when ns.ContainingNamespace is { IsGlobalNamespace: false }
                     => BuildFrom(ns.ContainingNamespace, builder.Insert(0, $".{ns.MetadataName}")),
-                ITypeSymbol ts when ts.ContainingType is ISymbol pt => BuildFrom(pt, builder.Insert(0, $"+{ts.MetadataName}")),
-                ITypeSymbol ts when ts.ContainingNamespace is ISymbol pn => BuildFrom(pn, builder.Insert(0, $".{ts.MetadataName}")),
+                ITypeSymbol ts when ts.ContainingType is ISymbol pt
+                    => BuildFrom(pt, builder.Insert(0, $"+{ts.MetadataName}")),
+                ITypeSymbol ts when ts.ContainingNamespace is ISymbol pn and not INamespaceSymbol { IsGlobalNamespace: true }
+                    => BuildFrom(pn, builder.Insert(0, $".{ts.MetadataName}")),
                 ISymbol => BuildFrom(symbol.ContainingSymbol, builder.Insert(0, symbol.MetadataName)),
                 _ => builder
             };
