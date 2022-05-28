@@ -117,19 +117,18 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
         // If the target type has no constructors, generate constructors as well
         if (!info.HasExplicitConstructors)
         {
-            foreach (ConstructorDeclarationSyntax ctor in memberDeclarations.OfType<ConstructorDeclarationSyntax>())
+            foreach (ConstructorDeclarationSyntax originalConstructor in memberDeclarations.OfType<ConstructorDeclarationSyntax>())
             {
-                string text = ctor.NormalizeWhitespace().ToFullString();
-                string replaced = text.Replace("ObservableRecipient", info.TypeName);
+                ConstructorDeclarationSyntax modifiedConstructor = originalConstructor.WithIdentifier(Identifier(info.TypeName));
 
                 // Adjust the visibility of the constructors based on whether the target type is abstract.
                 // If that is not the case, the constructors have to be declared as public and not protected.
                 if (!info.IsAbstract)
                 {
-                    replaced = replaced.Replace("protected", "public");
+                    modifiedConstructor = modifiedConstructor.WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)));
                 }
 
-                builder.Add((ConstructorDeclarationSyntax)ParseMemberDeclaration(replaced)!);
+                builder.Add(modifiedConstructor);
             }
         }
 
