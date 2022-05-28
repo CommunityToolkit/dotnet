@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Linq;
+using System.Text;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
 using Microsoft.CodeAnalysis;
@@ -58,7 +59,7 @@ public sealed partial class ObservableValidatorValidateAllPropertiesGenerator : 
         {
             CompilationUnitSyntax compilationUnit = Execute.GetSyntax(item);
 
-            context.AddSource("__ObservableValidatorExtensions", compilationUnit.ToFullString());
+            context.AddSource("__ObservableValidatorExtensions", compilationUnit.GetText(Encoding.UTF8));
         });
 
         // Generate the class with all validation methods
@@ -66,7 +67,7 @@ public sealed partial class ObservableValidatorValidateAllPropertiesGenerator : 
         {
             CompilationUnitSyntax compilationUnit = Execute.GetSyntax(item);
 
-            context.AddSource(item.FilenameHint, compilationUnit.ToFullString());
+            context.AddSource(item.FilenameHint, compilationUnit.GetText(Encoding.UTF8));
         });
     }
 }
