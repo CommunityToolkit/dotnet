@@ -4,6 +4,7 @@
 
 using System.Collections.Immutable;
 using System.Linq;
+using System.Text;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
 using Microsoft.CodeAnalysis;
@@ -66,7 +67,7 @@ public sealed partial class IMessengerRegisterAllGenerator : IIncrementalGenerat
         {
             CompilationUnitSyntax compilationUnit = Execute.GetSyntax(item);
 
-            context.AddSource("__IMessengerExtensions", compilationUnit.ToFullString());
+            context.AddSource("__IMessengerExtensions", compilationUnit.GetText(Encoding.UTF8));
         });
 
         // Generate the class with all registration methods
@@ -74,7 +75,7 @@ public sealed partial class IMessengerRegisterAllGenerator : IIncrementalGenerat
         {
             CompilationUnitSyntax compilationUnit = Execute.GetSyntax(item);
 
-            context.AddSource(item.FilenameHint, compilationUnit.ToFullString());
+            context.AddSource(item.FilenameHint, compilationUnit.GetText(Encoding.UTF8));
         });
     }
 }

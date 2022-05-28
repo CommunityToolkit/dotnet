@@ -4,6 +4,7 @@
 
 using System.Collections.Immutable;
 using System.Linq;
+using System.Text;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
 using CommunityToolkit.Mvvm.SourceGenerators.Models;
@@ -68,7 +69,7 @@ public sealed partial class ICommandGenerator : IIncrementalGenerator
             ImmutableArray<MemberDeclarationSyntax> memberDeclarations = Execute.GetSyntax(item.Info);
             CompilationUnitSyntax compilationUnit = item.Hierarchy.GetCompilationUnit(memberDeclarations);
 
-            context.AddSource($"{item.Hierarchy.FilenameHint}.{item.Info.MethodName}", compilationUnit.ToFullString());
+            context.AddSource($"{item.Hierarchy.FilenameHint}.{item.Info.MethodName}", compilationUnit.GetText(Encoding.UTF8));
         });
     }
 }

@@ -5,6 +5,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Text;
 using CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using CommunityToolkit.Mvvm.SourceGenerators.Models;
@@ -93,7 +94,7 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
             // Insert all members into the same partial type declaration
             CompilationUnitSyntax compilationUnit = item.Hierarchy.GetCompilationUnit(memberDeclarations);
 
-            context.AddSource(item.Hierarchy.FilenameHint, compilationUnit.ToFullString());
+            context.AddSource(item.Hierarchy.FilenameHint, compilationUnit.GetText(Encoding.UTF8));
         });
 
         // Gather all property changing names
@@ -111,7 +112,7 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
 
             if (compilationUnit is not null)
             {
-                context.AddSource("__KnownINotifyPropertyChangingArgs", compilationUnit.ToFullString());
+                context.AddSource("__KnownINotifyPropertyChangingArgs", compilationUnit.GetText(Encoding.UTF8));
             }
         });
 
@@ -130,7 +131,7 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
 
             if (compilationUnit is not null)
             {
-                context.AddSource("__KnownINotifyPropertyChangedArgs", compilationUnit.ToFullString());
+                context.AddSource("__KnownINotifyPropertyChangedArgs", compilationUnit.GetText(Encoding.UTF8));
             }
         });
     }
