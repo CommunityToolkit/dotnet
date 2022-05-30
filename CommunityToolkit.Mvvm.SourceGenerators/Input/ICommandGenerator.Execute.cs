@@ -438,8 +438,8 @@ partial class ICommandGenerator
                 commandClassType = "global::CommunityToolkit.Mvvm.Input.RelayCommand";
                 delegateType = "global::System.Action";
                 supportsCancellation = false;
-                commandTypeArguments = ImmutableArray.Create(parameter.Type.GetFullyQualifiedName());
-                delegateTypeArguments = ImmutableArray.Create(parameter.Type.GetFullyQualifiedName());
+                commandTypeArguments = ImmutableArray.Create(parameter.Type.GetFullyQualifiedNameWithNullabilityAnnotations());
+                delegateTypeArguments = ImmutableArray.Create(parameter.Type.GetFullyQualifiedNameWithNullabilityAnnotations());
 
                 return true;
             }
@@ -472,7 +472,7 @@ partial class ICommandGenerator
                         delegateType = "global::System.Func";
                         supportsCancellation = true;
                         commandTypeArguments = ImmutableArray<string>.Empty;
-                        delegateTypeArguments = ImmutableArray.Create(singleParameter.Type.GetFullyQualifiedName(), "global::System.Threading.Tasks.Task");
+                        delegateTypeArguments = ImmutableArray.Create("global::System.Threading.CancellationToken", "global::System.Threading.Tasks.Task");
 
                         return true;
                     }
@@ -482,8 +482,8 @@ partial class ICommandGenerator
                     commandClassType = "global::CommunityToolkit.Mvvm.Input.AsyncRelayCommand";
                     delegateType = "global::System.Func";
                     supportsCancellation = false;
-                    commandTypeArguments = ImmutableArray.Create(singleParameter.Type.GetFullyQualifiedName());
-                    delegateTypeArguments = ImmutableArray.Create(singleParameter.Type.GetFullyQualifiedName(), "global::System.Threading.Tasks.Task");
+                    commandTypeArguments = ImmutableArray.Create(singleParameter.Type.GetFullyQualifiedNameWithNullabilityAnnotations());
+                    delegateTypeArguments = ImmutableArray.Create(singleParameter.Type.GetFullyQualifiedNameWithNullabilityAnnotations(), "global::System.Threading.Tasks.Task");
 
                     return true;
                 }
@@ -498,8 +498,8 @@ partial class ICommandGenerator
                     commandClassType = "global::CommunityToolkit.Mvvm.Input.AsyncRelayCommand";
                     delegateType = "global::System.Func";
                     supportsCancellation = true;
-                    commandTypeArguments = ImmutableArray.Create(firstParameter.Type.GetFullyQualifiedName());
-                    delegateTypeArguments = ImmutableArray.Create(firstParameter.Type.GetFullyQualifiedName(), secondParameter.Type.GetFullyQualifiedName(), "global::System.Threading.Tasks.Task");
+                    commandTypeArguments = ImmutableArray.Create(firstParameter.Type.GetFullyQualifiedNameWithNullabilityAnnotations());
+                    delegateTypeArguments = ImmutableArray.Create(firstParameter.Type.GetFullyQualifiedNameWithNullabilityAnnotations(), "global::System.Threading.CancellationToken", "global::System.Threading.Tasks.Task");
 
                     return true;
                 }
