@@ -67,7 +67,7 @@ public sealed partial class IMessengerRegisterAllGenerator : IIncrementalGenerat
         {
             CompilationUnitSyntax compilationUnit = Execute.GetSyntax(item);
 
-            context.AddSource("__IMessengerExtensions", compilationUnit.GetText(Encoding.UTF8));
+            context.AddSource("__IMessengerExtensions.g.cs", compilationUnit.GetText(Encoding.UTF8));
         });
 
         // Generate the class with all registration methods
@@ -75,7 +75,7 @@ public sealed partial class IMessengerRegisterAllGenerator : IIncrementalGenerat
         {
             CompilationUnitSyntax compilationUnit = Execute.GetSyntax(item);
 
-            context.AddSource(item.FilenameHint, compilationUnit.GetText(Encoding.UTF8));
+            context.AddSource($"{item.FilenameHint}.g.cs", compilationUnit.GetText(Encoding.UTF8));
         });
     }
 }

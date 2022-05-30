@@ -69,7 +69,7 @@ public sealed partial class ICommandGenerator : IIncrementalGenerator
             ImmutableArray<MemberDeclarationSyntax> memberDeclarations = Execute.GetSyntax(item.Info);
             CompilationUnitSyntax compilationUnit = item.Hierarchy.GetCompilationUnit(memberDeclarations);
 
-            context.AddSource($"{item.Hierarchy.FilenameHint}.{item.Info.MethodName}", compilationUnit.GetText(Encoding.UTF8));
+            context.AddSource($"{item.Hierarchy.FilenameHint}.{item.Info.MethodName}.g.cs", compilationUnit.GetText(Encoding.UTF8));
         });
     }
 }
