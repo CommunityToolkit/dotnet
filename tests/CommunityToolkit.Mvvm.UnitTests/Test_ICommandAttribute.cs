@@ -500,6 +500,23 @@ public partial class Test_ICommandAttribute
         Assert.IsTrue(model.HasDownloadCommandRun);
     }
 
+    // See https://github.com/CommunityToolkit/dotnet/issues/283
+    [TestMethod]
+    public void Test_ICommandAttribute_VerifyNoWarningsForNullableValues()
+    {
+        ModelWithCommandsWithNullabilityAnnotations model = new();
+
+        // Here we just need to verify we don't get any warnings.
+        // That is, that means the generated code has the right nullability annotations.
+        model.NullableObjectCommand.Execute(null);
+        model.ListWithNullableTypeCommand.Execute(null);
+        model.ListWithNullableTypeCommand.Execute(new List<object?>());
+        model.TupleWithNullableElementsCommand.Execute((DateTime.Now, null, null, null));
+        model.TupleWithNullableElementsCommand.Execute((DateTime.Now, null, true, new List<string>()));
+        model.TupleWithNullableElementsCommand.Execute((null, "Hello", null, null));
+        model.TupleWithNullableElementsCommand.Execute((null, null, null, null));
+    }
+
     #region Region
     public class Region
     {
@@ -869,6 +886,24 @@ public partial class Test_ICommandAttribute
             await Task.Delay(100);
 
             HasDownloadCommandRun = true;
+        }
+    }
+
+    partial class ModelWithCommandsWithNullabilityAnnotations
+    {
+        [ICommand]
+        private void NullableObject(object? parameter)
+        {
+        }
+
+        [ICommand]
+        private void ListWithNullableType(List<object?> parameter)
+        {
+        }
+
+        [ICommand]
+        private void TupleWithNullableElements((DateTime? date, string? message, bool? shouldPrint, List<string>? stringList) parameter)
+        {
         }
     }
 }
