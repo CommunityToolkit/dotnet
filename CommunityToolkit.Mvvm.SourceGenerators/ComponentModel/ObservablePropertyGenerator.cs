@@ -38,14 +38,14 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
             fieldSymbols
             .Where(static item => item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute"));
 
-        // Get diagnostics for fields using [NotifyPropertyChangedFor], [NotifyCanExecuteChangedFor], [AlsoBroadcastChange] and [AlsoValidateProperty], but not [ObservableProperty]
+        // Get diagnostics for fields using [NotifyPropertyChangedFor], [NotifyCanExecuteChangedFor], [AlsoBroadcastChange] and [NotifyDataErrorInfo], but not [ObservableProperty]
         IncrementalValuesProvider<Diagnostic> fieldSymbolsWithOrphanedDependentAttributeWithErrors =
             fieldSymbols
             .Where(static item =>
                 (item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyPropertyChangedForAttribute") ||
                  item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyCanExecuteChangedForAttribute") ||
                  item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoBroadcastChangeAttribute") ||
-                 item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoValidatePropertyAttribute")) &&
+                 item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyDataErrorInfoAttribute")) &&
                  !item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute"))
             .Select(static (item, _) => Execute.GetDiagnosticForFieldWithOrphanedDependentAttributes(item));
 

@@ -168,7 +168,7 @@ partial class ObservablePropertyGenerator
             if (alsoValidateProperty && !hasAnyValidationAttributes)
             {
                 builder.Add(
-                    MissingValidationAttributesForAlsoValidatePropertyError,
+                    MissingValidationAttributesForNotifyDataErrorInfoError,
                     fieldSymbol,
                     fieldSymbol.ContainingType,
                     fieldSymbol.Name);
@@ -452,14 +452,14 @@ partial class ObservablePropertyGenerator
         /// <param name="attributeData">The <see cref="AttributeData"/> instance for <paramref name="fieldSymbol"/>.</param>
         /// <param name="diagnostics">The current collection of gathered diagnostics.</param>
         /// <param name="isValidationTargetValid">Whether or not the the property is in a valid target that can validate values.</param>
-        /// <returns>Whether or not the generated property for <paramref name="fieldSymbol"/> used <c>[AlsoValidateProperty]</c>.</returns>
+        /// <returns>Whether or not the generated property for <paramref name="fieldSymbol"/> used <c>[NotifyDataErrorInfo]</c>.</returns>
         private static bool TryGetIsValidatingProperty(
             IFieldSymbol fieldSymbol,
             AttributeData attributeData,
             ImmutableArray<Diagnostic>.Builder diagnostics,
             out bool isValidationTargetValid)
         {
-            if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoValidatePropertyAttribute") == true)
+            if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyDataErrorInfoAttribute") == true)
             {
                 // If the containing type is valid, track it
                 if (fieldSymbol.ContainingType.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator"))
@@ -471,7 +471,7 @@ partial class ObservablePropertyGenerator
 
                 // Otherwise just emit the diagnostic and then ignore the attribute
                 diagnostics.Add(
-                    MissingObservableValidatorInheritanceForAlsoValidatePropertyError,
+                    MissingObservableValidatorInheritanceForNotifyDataErrorInfoError,
                     fieldSymbol,
                     fieldSymbol.ContainingType,
                     fieldSymbol.Name);
@@ -582,7 +582,7 @@ partial class ObservablePropertyGenerator
             // If validation is requested, add a call to ValidateProperty:
             //
             // ValidateProperty(value, <PROPERTY_NAME>);
-            if (propertyInfo.AlsoValidateProperty)
+            if (propertyInfo.NotifyDataErrorInfo)
             {
                 setterStatements.Add(
                     ExpressionStatement(

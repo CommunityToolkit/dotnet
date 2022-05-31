@@ -1217,7 +1217,7 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void MissingObservableValidatorInheritanceForAlsoValidatePropertyError()
+    public void MissingObservableValidatorInheritanceForNotifyDataErrorInfoError()
     {
         string source = @"
             using System.ComponentModel.DataAnnotations;
@@ -1230,7 +1230,7 @@ public class Test_SourceGeneratorsDiagnostics
                 {
                     [ObservableProperty]
                     [Required]
-                    [AlsoValidateProperty]
+                    [NotifyDataErrorInfo]
                     private string name;
                 }
             }";
@@ -1239,7 +1239,7 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void MissingValidationAttributesForAlsoValidatePropertyError()
+    public void MissingValidationAttributesForNotifyDataErrorInfoError()
     {
         string source = @"
             using System.ComponentModel.DataAnnotations;
@@ -1250,7 +1250,7 @@ public class Test_SourceGeneratorsDiagnostics
                 public partial class SampleViewModel : ObservableValidator
                 {
                     [ObservableProperty]
-                    [AlsoValidateProperty]
+                    [NotifyDataErrorInfo]
                     private string name;
                 }
             }";

@@ -232,7 +232,7 @@ public partial class Test_ObservablePropertyAttribute
 
         Assert.AreEqual(model.Value, "Hello world");
 
-        // The [AlsoValidateProperty] attribute wasn't used, so the property shouldn't be validated
+        // The [NotifyDataErrorInfo] attribute wasn't used, so the property shouldn't be validated
         Assert.IsFalse(errorsChanged);
 
         CollectionAssert.AreEqual(new[] { nameof(model.Value) }, propertyNames);
@@ -965,7 +965,7 @@ public partial class Test_ObservablePropertyAttribute
         [ObservableProperty]
         [Required]
         [MinLength(5)]
-        [AlsoValidateProperty]
+        [NotifyDataErrorInfo]
         private string? value;
     }
 
