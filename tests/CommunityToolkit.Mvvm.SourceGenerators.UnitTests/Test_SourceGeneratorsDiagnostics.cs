@@ -715,7 +715,7 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void AlsoNotifyCanExecuteForInvalidTargetError_Null()
+    public void NotifyCanExecuteChangedForInvalidTargetError_Null()
     {
         string source = @"
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -725,7 +725,7 @@ public class Test_SourceGeneratorsDiagnostics
                 public partial class SampleViewModel : ObservableObject
                 {
                     [ObservableProperty]
-                    [AlsoNotifyCanExecuteFor(null)]
+                    [NotifyCanExecuteChangedFor(null)]
                     private string name;
                 }
             }";
@@ -734,7 +734,7 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void AlsoNotifyCanExecuteForInvalidTargetError_Missing()
+    public void NotifyCanExecuteChangedForInvalidTargetError_Missing()
     {
         string source = @"
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -744,7 +744,7 @@ public class Test_SourceGeneratorsDiagnostics
                 public partial class SampleViewModel : ObservableObject
                 {
                     [ObservableProperty]
-                    [AlsoNotifyCanExecuteFor(""FooBar"")]
+                    [NotifyCanExecuteChangedFor(""FooBar"")]
                     private string name;
                 }
             }";
@@ -753,7 +753,7 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void AlsoNotifyCanExecuteForInvalidTargetError_InvalidMemberType()
+    public void NotifyCanExecuteChangedForInvalidTargetError_InvalidMemberType()
     {
         string source = @"
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -763,7 +763,7 @@ public class Test_SourceGeneratorsDiagnostics
                 public partial class SampleViewModel : ObservableObject
                 {
                     [ObservableProperty]
-                    [AlsoNotifyCanExecuteFor(nameof(Foo))]
+                    [NotifyCanExecuteChangedFor(nameof(Foo))]
                     private string name;
 
                     public void Foo()
@@ -776,7 +776,7 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void AlsoNotifyCanExecuteForInvalidTargetError_InvalidPropertyType()
+    public void NotifyCanExecuteChangedForInvalidTargetError_InvalidPropertyType()
     {
         string source = @"
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -786,7 +786,7 @@ public class Test_SourceGeneratorsDiagnostics
                 public partial class SampleViewModel : ObservableObject
                 {
                     [ObservableProperty]
-                    [AlsoNotifyCanExecuteFor(nameof(Foo))]
+                    [NotifyCanExecuteChangedFor(nameof(Foo))]
                     private string name;
 
                     public string Foo { get; }
@@ -797,7 +797,7 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void AlsoNotifyCanExecuteForInvalidTargetError_InvalidCommandType()
+    public void NotifyCanExecuteChangedForInvalidTargetError_InvalidCommandType()
     {
         string source = @"
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -808,7 +808,7 @@ public class Test_SourceGeneratorsDiagnostics
                 public partial class SampleViewModel : ObservableObject
                 {
                     [ObservableProperty]
-                    [AlsoNotifyCanExecuteFor(nameof(FooCommand))]
+                    [NotifyCanExecuteChangedFor(nameof(FooCommand))]
                     private string name;
 
                     public ICommand FooCommand { get; }
@@ -981,7 +981,7 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void FieldWithOrphanedDependentObservablePropertyAttributesError_AlsoNotifyCanExecuteFor()
+    public void FieldWithOrphanedDependentObservablePropertyAttributesError_NotifyCanExecuteChangedFor()
     {
         string source = @"
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -990,7 +990,7 @@ public class Test_SourceGeneratorsDiagnostics
             {
                 public partial class MyViewModel
                 {
-                    [AlsoNotifyCanExecuteFor("")]
+                    [NotifyCanExecuteChangedFor("")]
                     public int number;
                 }
             }";
@@ -1029,8 +1029,8 @@ public class Test_SourceGeneratorsDiagnostics
                     [NotifyPropertyChangedFor("")]
                     [NotifyPropertyChangedFor("")]
                     [NotifyPropertyChangedFor("")]
-                    [AlsoNotifyCanExecuteFor("")]
-                    [AlsoNotifyCanExecuteFor("")]
+                    [NotifyCanExecuteChangedFor("")]
+                    [NotifyCanExecuteChangedFor("")]
                     [AlsoBroadcastChange]
                     public int number;
                 }
