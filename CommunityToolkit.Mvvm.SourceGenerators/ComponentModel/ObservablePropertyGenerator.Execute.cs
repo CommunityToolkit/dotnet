@@ -90,7 +90,7 @@ partial class ObservablePropertyGenerator
             ImmutableArray<string>.Builder notifiedCommandNames = ImmutableArray.CreateBuilder<string>();
             ImmutableArray<AttributeInfo>.Builder forwardedAttributes = ImmutableArray.CreateBuilder<AttributeInfo>();
             bool notifyRecipients = false;
-            bool alsoValidateProperty = false;
+            bool notifyDataErrorInfo = false;
             bool hasAnyValidationAttributes = false;
 
             // Track the property changing event for the property, if the type supports it
@@ -106,6 +106,12 @@ partial class ObservablePropertyGenerator
             if (TryGetIsNotifyingRecipients(fieldSymbol, out bool isBroadcastTargetValid))
             {
                 notifyRecipients = isBroadcastTargetValid;
+            }
+
+            // Get the class-level [NotifyDataErrorInfo] setting, if any
+            if (TryGetNotifyDataErrorInfo(fieldSymbol, out bool isValidationTargetValid))
+            {
+                notifyDataErrorInfo = isValidationTargetValid;
             }
 
             // Gather attributes info
@@ -127,9 +133,9 @@ partial class ObservablePropertyGenerator
                 }
 
                 // Check whether the property should also be validated
-                if (TryGetIsValidatingProperty(fieldSymbol, attributeData, builder, out bool isValidationTargetValid))
+                if (TryGetNotifyDataErrorInfo(fieldSymbol, attributeData, builder, out isValidationTargetValid))
                 {
-                    alsoValidateProperty = isValidationTargetValid;
+                    notifyDataErrorInfo = isValidationTargetValid;
 
                     continue;
                 }
@@ -171,7 +177,7 @@ partial class ObservablePropertyGenerator
             }
 
             // Log the diagnostic for missing validation attributes, if any
-            if (alsoValidateProperty && !hasAnyValidationAttributes)
+            if (notifyDataErrorInfo && !hasAnyValidationAttributes)
             {
                 builder.Add(
                     MissingValidationAttributesForNotifyDataErrorInfoError,
@@ -190,7 +196,7 @@ partial class ObservablePropertyGenerator
                 propertyChangedNames.ToImmutable(),
                 notifiedCommandNames.ToImmutable(),
                 notifyRecipients,
-                alsoValidateProperty,
+                notifyDataErrorInfo,
                 forwardedAttributes.ToImmutable());
         }
 
@@ -486,11 +492,40 @@ partial class ObservablePropertyGenerator
         /// Checks whether a given generated property should also validate its value.
         /// </summary>
         /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
+        /// <param name="isValidationTargetValid">Whether or not the the property is in a valid target that can validate values.</param>
+        /// <returns>Whether or not the generated property for <paramref name="fieldSymbol"/> used <c>[NotifyDataErrorInfo]</c>.</returns>
+        private static bool TryGetNotifyDataErrorInfo(IFieldSymbol fieldSymbol, out bool isValidationTargetValid)
+        {
+            if (fieldSymbol.ContainingType?.HasOrInheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyDataErrorInfoAttribute") == true)
+            {
+                // If the containing type is valid, track it
+                if (fieldSymbol.ContainingType.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator"))
+                {
+                    isValidationTargetValid = true;
+
+                    return true;
+                }
+
+                // Otherwise, ignore the attribute but don't emit a diagnostic (same as above)
+                isValidationTargetValid = false;
+
+                return true;
+            }
+
+            isValidationTargetValid = false;
+
+            return false;
+        }
+
+        /// <summary>
+        /// Checks whether a given generated property should also validate its value.
+        /// </summary>
+        /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
         /// <param name="attributeData">The <see cref="AttributeData"/> instance for <paramref name="fieldSymbol"/>.</param>
         /// <param name="diagnostics">The current collection of gathered diagnostics.</param>
         /// <param name="isValidationTargetValid">Whether or not the the property is in a valid target that can validate values.</param>
         /// <returns>Whether or not the generated property for <paramref name="fieldSymbol"/> used <c>[NotifyDataErrorInfo]</c>.</returns>
-        private static bool TryGetIsValidatingProperty(
+        private static bool TryGetNotifyDataErrorInfo(
             IFieldSymbol fieldSymbol,
             AttributeData attributeData,
             ImmutableArray<Diagnostic>.Builder diagnostics,
