@@ -23,7 +23,7 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// partial class MyViewModel : ObservableObject
 /// {
 ///     [ObservableProperty]
-///     [AlsoNotifyCanExecuteFor(nameof(GreetUserCommand))]
+///     [NotifyCanExecuteChangedFor(nameof(GreetUserCommand))]
 ///     private string name;
 ///
 ///     public IRelayCommand GreetUserCommand { get; }
@@ -49,26 +49,26 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// </code>
 /// </summary>
 [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = false)]
-public sealed class AlsoNotifyCanExecuteForAttribute : Attribute
+public sealed class NotifyCanExecuteChangedForAttribute : Attribute
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="AlsoNotifyCanExecuteForAttribute"/> class.
+    /// Initializes a new instance of the <see cref="NotifyCanExecuteChangedForAttribute"/> class.
     /// </summary>
     /// <param name="commandName">The name of the command to also notify when the annotated property changes.</param>
-    public AlsoNotifyCanExecuteForAttribute(string commandName)
+    public NotifyCanExecuteChangedForAttribute(string commandName)
     {
         CommandNames = new[] { commandName };
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AlsoNotifyCanExecuteForAttribute"/> class.
+    /// Initializes a new instance of the <see cref="NotifyCanExecuteChangedForAttribute"/> class.
     /// </summary>
     /// <param name="commandName">The name of the property to also notify when the annotated property changes.</param>
     /// <param name="otherCommandNames">
     /// The other command names to also notify when the annotated property changes. This parameter can optionally
     /// be used to indicate a series of dependent commands from the same attribute, to keep the code more compact.
     /// </param>
-    public AlsoNotifyCanExecuteForAttribute(string commandName, params string[] otherCommandNames)
+    public NotifyCanExecuteChangedForAttribute(string commandName, params string[] otherCommandNames)
     {
         CommandNames = new[] { commandName }.Concat(otherCommandNames).ToArray();
     }

@@ -374,7 +374,7 @@ partial class ObservablePropertyGenerator
                 return false;
             }
 
-            if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoNotifyCanExecuteForAttribute") == true)
+            if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyCanExecuteChangedForAttribute") == true)
             {
                 foreach (string? commandName in attributeData.GetConstructorArguments<string>())
                 {
@@ -390,7 +390,7 @@ partial class ObservablePropertyGenerator
                     else
                     {
                         diagnostics.Add(
-                           AlsoNotifyCanExecuteForInvalidTargetError,
+                           NotifyCanExecuteChangedForInvalidTargetError,
                            fieldSymbol,
                            commandName ?? "",
                            fieldSymbol.ContainingType);

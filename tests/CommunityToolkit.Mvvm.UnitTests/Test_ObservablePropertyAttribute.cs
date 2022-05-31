@@ -794,12 +794,12 @@ public partial class Test_ObservablePropertyAttribute
 
         // Inherited generated command
         [ObservableProperty]
-        [AlsoNotifyCanExecuteFor(nameof(DoSomethingCommand))]
+        [NotifyCanExecuteChangedFor(nameof(DoSomethingCommand))]
         private string? _c;
 
         // Inherited manual command
         [ObservableProperty]
-        [AlsoNotifyCanExecuteFor(nameof(ManualCommand))]
+        [NotifyCanExecuteChangedFor(nameof(ManualCommand))]
         private string? _d;
     }
 
@@ -832,7 +832,7 @@ public partial class Test_ObservablePropertyAttribute
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(FullName), nameof(Alias))]
-        [AlsoNotifyCanExecuteFor(nameof(MyCommand))]
+        [NotifyCanExecuteChangedFor(nameof(MyCommand))]
         private string? surname;
 
         public string FullName => $"{Name} {Surname}";
@@ -847,7 +847,7 @@ public partial class Test_ObservablePropertyAttribute
     {
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(FullName), nameof(Alias))]
-        [AlsoNotifyCanExecuteFor(nameof(TestFromMethodCommand))]
+        [NotifyCanExecuteChangedFor(nameof(TestFromMethodCommand))]
         private string? text;
 
         public string FullName => "";
@@ -867,7 +867,7 @@ public partial class Test_ObservablePropertyAttribute
     {
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(FullName), nameof(Alias))]
-        [AlsoNotifyCanExecuteFor(nameof(MyCommand))]
+        [NotifyCanExecuteChangedFor(nameof(MyCommand))]
         private string? text;
 
         public string FullName => "";
@@ -882,7 +882,7 @@ public partial class Test_ObservablePropertyAttribute
     {
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(FullName), nameof(Alias))]
-        [AlsoNotifyCanExecuteFor(nameof(MyCommand))]
+        [NotifyCanExecuteChangedFor(nameof(MyCommand))]
         private string? text;
 
         public string FullName => "";
