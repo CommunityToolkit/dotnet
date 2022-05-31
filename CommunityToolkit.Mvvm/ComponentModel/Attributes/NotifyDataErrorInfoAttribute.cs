@@ -38,7 +38,7 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// }
 /// </code>
 /// </summary>
-[AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
 public sealed class NotifyDataErrorInfoAttribute : Attribute
 {
 }
