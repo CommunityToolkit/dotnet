@@ -21,7 +21,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 /// <param name="PropertyChangedNames">The sequence of property changed properties to notify.</param>
 /// <param name="NotifiedCommandNames">The sequence of commands to notify.</param>
 /// <param name="AlsoBroadcastChange">Whether or not the generated property also broadcasts changes.</param>
-/// <param name="AlsoValidateProperty">Whether or not the generated property also validates its value.</param>
+/// <param name="NotifyDataErrorInfo">Whether or not the generated property also validates its value.</param>
 /// <param name="ForwardedAttributes">The sequence of forwarded attributes for the generated property.</param>
 internal sealed record PropertyInfo(
     string TypeNameWithNullabilityAnnotations,
@@ -31,7 +31,7 @@ internal sealed record PropertyInfo(
     ImmutableArray<string> PropertyChangedNames,
     ImmutableArray<string> NotifiedCommandNames,
     bool AlsoBroadcastChange,
-    bool AlsoValidateProperty,
+    bool NotifyDataErrorInfo,
     ImmutableArray<AttributeInfo> ForwardedAttributes)
 {
     /// <summary>
@@ -49,7 +49,7 @@ internal sealed record PropertyInfo(
             hashCode.AddRange(obj.PropertyChangedNames);
             hashCode.AddRange(obj.NotifiedCommandNames);
             hashCode.Add(obj.AlsoBroadcastChange);
-            hashCode.Add(obj.AlsoValidateProperty);
+            hashCode.Add(obj.NotifyDataErrorInfo);
             hashCode.AddRange(obj.ForwardedAttributes, AttributeInfo.Comparer.Default);
         }
 
@@ -64,7 +64,7 @@ internal sealed record PropertyInfo(
                 x.PropertyChangedNames.SequenceEqual(y.PropertyChangedNames) &&
                 x.NotifiedCommandNames.SequenceEqual(y.NotifiedCommandNames) &&
                 x.AlsoBroadcastChange == y.AlsoBroadcastChange &&
-                x.AlsoValidateProperty == y.AlsoValidateProperty &&
+                x.NotifyDataErrorInfo == y.NotifyDataErrorInfo &&
                 x.ForwardedAttributes.SequenceEqual(y.ForwardedAttributes, AttributeInfo.Comparer.Default);
         }
     }
