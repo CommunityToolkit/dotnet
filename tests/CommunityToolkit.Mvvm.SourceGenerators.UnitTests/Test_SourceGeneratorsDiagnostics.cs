@@ -999,7 +999,7 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void FieldWithOrphanedDependentObservablePropertyAttributesError_AlsoBroadcastChange()
+    public void FieldWithOrphanedDependentObservablePropertyAttributesError_NotifyRecipients()
     {
         string source = @"
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -1008,7 +1008,7 @@ public class Test_SourceGeneratorsDiagnostics
             {
                 public partial class MyViewModel
                 {
-                    [AlsoBroadcastChange]
+                    [NotifyRecipients]
                     public int number;
                 }
             }";
@@ -1031,7 +1031,7 @@ public class Test_SourceGeneratorsDiagnostics
                     [NotifyPropertyChangedFor("")]
                     [NotifyCanExecuteChangedFor("")]
                     [NotifyCanExecuteChangedFor("")]
-                    [AlsoBroadcastChange]
+                    [NotifyRecipients]
                     public int number;
                 }
             }";
@@ -1062,7 +1062,7 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void InvalidContainingTypeForAlsoBroadcastChangeFieldError_ObservableObject()
+    public void InvalidContainingTypeForNotifyRecipientsFieldError_ObservableObject()
     {
         string source = @"
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -1072,7 +1072,7 @@ public class Test_SourceGeneratorsDiagnostics
                 public partial class MyViewModel : ObservableObject
                 {
                     [ObservableProperty]
-                    [AlsoBroadcastChange]
+                    [NotifyRecipients]
                     public int number;
                 }
             }";

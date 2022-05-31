@@ -398,33 +398,33 @@ public partial class Test_ObservablePropertyAttribute
     }
 
     [TestMethod]
-    public void Test_AlsoBroadcastChange_WithObservableObject()
+    public void Test_NotifyRecipients_WithObservableObject()
     {
-        Test_AlsoBroadcastChange_Test(
+        Test_NotifyRecipients_Test(
            factory: static messenger => new BroadcastingViewModel(messenger),
            setter: static (model, value) => model.Name = value,
            propertyName: nameof(BroadcastingViewModel.Name));
     }
 
     [TestMethod]
-    public void Test_AlsoBroadcastChange_WithObservableRecipientAttribute()
+    public void Test_NotifyRecipients_WithObservableRecipientAttribute()
     {
-        Test_AlsoBroadcastChange_Test(
+        Test_NotifyRecipients_Test(
             factory: static messenger => new BroadcastingViewModelWithAttribute(messenger),
             setter: static (model, value) => model.Name = value,
             propertyName: nameof(BroadcastingViewModelWithAttribute.Name));
     }
 
     [TestMethod]
-    public void Test_AlsoBroadcastChange_WithInheritedObservableRecipientAttribute()
+    public void Test_NotifyRecipients_WithInheritedObservableRecipientAttribute()
     {
-        Test_AlsoBroadcastChange_Test(
+        Test_NotifyRecipients_Test(
             factory: static messenger => new BroadcastingViewModelWithInheritedAttribute(messenger),
             setter: static (model, value) => model.Name2 = value,
             propertyName: nameof(BroadcastingViewModelWithInheritedAttribute.Name2));
     }
 
-    private void Test_AlsoBroadcastChange_Test<T>(Func<IMessenger, T> factory, Action<T, string?> setter, string propertyName)
+    private void Test_NotifyRecipients_Test<T>(Func<IMessenger, T> factory, Action<T, string?> setter, string propertyName)
         where T : notnull
     {
         IMessenger messenger = new StrongReferenceMessenger();
@@ -643,10 +643,10 @@ public partial class Test_ObservablePropertyAttribute
 
     // See https://github.com/CommunityToolkit/dotnet/issues/242
     [TestMethod]
-    public void Test_ObservableProperty_ModelWithAlsoBroadcastChangeAndDisplayAttributeLast()
+    public void Test_ObservableProperty_ModelWithNotifyRecipientsAndDisplayAttributeLast()
     {
         IMessenger messenger = new StrongReferenceMessenger();
-        ModelWithAlsoBroadcastChangeAndDisplayAttributeLast model = new(messenger);
+        ModelWithNotifyRecipientsAndDisplayAttributeLast model = new(messenger);
 
         List<string?> propertyNames = new();
 
@@ -1076,7 +1076,7 @@ public partial class Test_ObservablePropertyAttribute
         }
 
         [ObservableProperty]
-        [AlsoBroadcastChange]
+        [NotifyRecipients]
         private string? name;
     }
 
@@ -1084,7 +1084,7 @@ public partial class Test_ObservablePropertyAttribute
     partial class BroadcastingViewModelWithAttribute : ObservableObject
     {
         [ObservableProperty]
-        [AlsoBroadcastChange]
+        [NotifyRecipients]
         private string? name;
     }
 
@@ -1096,7 +1096,7 @@ public partial class Test_ObservablePropertyAttribute
         }
 
         [ObservableProperty]
-        [AlsoBroadcastChange]
+        [NotifyRecipients]
         private string? name2;
     }
 
@@ -1159,10 +1159,10 @@ public partial class Test_ObservablePropertyAttribute
     }
 
     [ObservableRecipient]
-    public sealed partial class ModelWithAlsoBroadcastChangeAndDisplayAttributeLast : ObservableValidator
+    public sealed partial class ModelWithNotifyRecipientsAndDisplayAttributeLast : ObservableValidator
     {
         [ObservableProperty]
-        [AlsoBroadcastChange]
+        [NotifyRecipients]
         [Display(Name = "Foo bar baz")]
         private object? _someProperty;
     }

@@ -17,7 +17,7 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// partial class MyViewModel : ObservableRecipient
 /// {
 ///     [ObservableProperty]
-///     [AlsoBroadcastChange]
+///     [NotifyRecipients]
 ///     private string username;
 /// }
 /// </code>
@@ -35,6 +35,6 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// </code>
 /// </summary>
 [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
-public sealed class AlsoBroadcastChangeAttribute : Attribute
+public sealed class NotifyRecipientsAttribute : Attribute
 {
 }
