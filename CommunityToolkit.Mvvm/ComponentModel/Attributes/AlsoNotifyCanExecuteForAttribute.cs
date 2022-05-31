@@ -13,7 +13,7 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// used, the generated property setter will also call <see cref="IRelayCommand.NotifyCanExecuteChanged"/> for the properties specified
 /// in the attribute data, causing the validation logic for the command to be executed again. This can be useful to keep the code compact
 /// when there are one or more dependent commands that should also be notified when a property is updated. If this attribute is used in
-/// a field without <see cref="ObservablePropertyAttribute"/>, it is ignored (just like <see cref="AlsoNotifyChangeForAttribute"/>).
+/// a field without <see cref="ObservablePropertyAttribute"/>, it is ignored (just like <see cref="NotifyPropertyChangedForAttribute"/>).
 /// <para>
 /// In order to use this attribute, the target property has to implement the <see cref="IRelayCommand"/> interface.
 /// </para>

@@ -38,11 +38,11 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
             fieldSymbols
             .Where(static item => item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute"));
 
-        // Get diagnostics for fields using [AlsoNotifyChangeFor], [AlsoNotifyCanExecuteFor], [AlsoBroadcastChange] and [AlsoValidateProperty], but not [ObservableProperty]
+        // Get diagnostics for fields using [NotifyPropertyChangedFor], [AlsoNotifyCanExecuteFor], [AlsoBroadcastChange] and [AlsoValidateProperty], but not [ObservableProperty]
         IncrementalValuesProvider<Diagnostic> fieldSymbolsWithOrphanedDependentAttributeWithErrors =
             fieldSymbols
             .Where(static item =>
-                (item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoNotifyChangeForAttribute") ||
+                (item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyPropertyChangedForAttribute") ||
                  item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoNotifyCanExecuteForAttribute") ||
                  item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoBroadcastChangeAttribute") ||
                  item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoValidatePropertyAttribute")) &&
