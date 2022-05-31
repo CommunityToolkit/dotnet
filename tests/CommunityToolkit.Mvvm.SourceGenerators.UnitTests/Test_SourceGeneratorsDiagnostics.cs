@@ -635,7 +635,7 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void AlsoNotifyChangeForInvalidTargetError_Null()
+    public void NotifyPropertyChangedForInvalidTargetError_Null()
     {
         string source = @"
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -645,7 +645,7 @@ public class Test_SourceGeneratorsDiagnostics
                 public partial class SampleViewModel : ObservableObject
                 {
                     [ObservableProperty]
-                    [AlsoNotifyChangeFor(null)]
+                    [NotifyPropertyChangedFor(null)]
                     private string name;
                 }
             }";
@@ -654,7 +654,7 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void AlsoNotifyChangeForInvalidTargetError_SamePropertyAsGeneratedOneFromSelf()
+    public void NotifyPropertyChangedForInvalidTargetError_SamePropertyAsGeneratedOneFromSelf()
     {
         string source = @"
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -664,7 +664,7 @@ public class Test_SourceGeneratorsDiagnostics
                 public partial class SampleViewModel : ObservableObject
                 {
                     [ObservableProperty]
-                    [AlsoNotifyChangeFor(nameof(Name))]
+                    [NotifyPropertyChangedFor(nameof(Name))]
                     private string name;
                 }
             }";
@@ -673,7 +673,7 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void AlsoNotifyChangeForInvalidTargetError_Missing()
+    public void NotifyPropertyChangedForInvalidTargetError_Missing()
     {
         string source = @"
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -683,7 +683,7 @@ public class Test_SourceGeneratorsDiagnostics
                 public partial class SampleViewModel : ObservableObject
                 {
                     [ObservableProperty]
-                    [AlsoNotifyChangeFor(""FooBar"")]
+                    [NotifyPropertyChangedFor(""FooBar"")]
                     private string name;
                 }
             }";
@@ -692,7 +692,7 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void AlsoNotifyChangeForInvalidTargetError_InvalidType()
+    public void NotifyPropertyChangedForInvalidTargetError_InvalidType()
     {
         string source = @"
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -702,7 +702,7 @@ public class Test_SourceGeneratorsDiagnostics
                 public partial class SampleViewModel : ObservableObject
                 {
                     [ObservableProperty]
-                    [AlsoNotifyChangeFor(nameof(Foo))]
+                    [NotifyPropertyChangedFor(nameof(Foo))]
                     private string name;
 
                     public void Foo()
@@ -963,7 +963,7 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void FieldWithOrphanedDependentObservablePropertyAttributesError_AlsoNotifyChangeFor()
+    public void FieldWithOrphanedDependentObservablePropertyAttributesError_NotifyPropertyChangedFor()
     {
         string source = @"
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -972,7 +972,7 @@ public class Test_SourceGeneratorsDiagnostics
             {
                 public partial class MyViewModel
                 {
-                    [AlsoNotifyChangeFor("")]
+                    [NotifyPropertyChangedFor("")]
                     public int number;
                 }
             }";
@@ -1026,9 +1026,9 @@ public class Test_SourceGeneratorsDiagnostics
             {
                 public partial class MyViewModel
                 {
-                    [AlsoNotifyChangeFor("")]
-                    [AlsoNotifyChangeFor("")]
-                    [AlsoNotifyChangeFor("")]
+                    [NotifyPropertyChangedFor("")]
+                    [NotifyPropertyChangedFor("")]
+                    [NotifyPropertyChangedFor("")]
                     [AlsoNotifyCanExecuteFor("")]
                     [AlsoNotifyCanExecuteFor("")]
                     [AlsoBroadcastChange]

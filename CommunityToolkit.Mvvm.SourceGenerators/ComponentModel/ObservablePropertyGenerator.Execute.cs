@@ -285,7 +285,7 @@ partial class ObservablePropertyGenerator
                 return false;
             }
 
-            if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoNotifyChangeForAttribute") == true)
+            if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyPropertyChangedForAttribute") == true)
             {
                 foreach (string? dependentPropertyName in attributeData.GetConstructorArguments<string>())
                 {
@@ -300,7 +300,7 @@ partial class ObservablePropertyGenerator
                     else
                     {
                         diagnostics.Add(
-                            AlsoNotifyChangeForInvalidTargetError,
+                            NotifyPropertyChangedForInvalidTargetError,
                             fieldSymbol,
                             dependentPropertyName ?? "",
                             fieldSymbol.ContainingType);

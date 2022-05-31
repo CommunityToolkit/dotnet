@@ -139,7 +139,7 @@ public partial class Test_ObservablePropertyAttribute
     }
 
     [TestMethod]
-    public void Test_AlsoNotifyChangeForAttribute_Events()
+    public void Test_NotifyPropertyChangedForAttribute_Events()
     {
         DependentPropertyModel model = new();
 
@@ -294,7 +294,7 @@ public partial class Test_ObservablePropertyAttribute
     }
 
     [TestMethod]
-    public void Test_AlsoNotifyChangeFor()
+    public void Test_NotifyPropertyChangedFor()
     {
         DependentPropertyModel model = new();
 
@@ -312,7 +312,7 @@ public partial class Test_ObservablePropertyAttribute
     }
 
     [TestMethod]
-    public void Test_AlsoNotifyChangeFor_GeneratedCommand()
+    public void Test_NotifyPropertyChangedFor_GeneratedCommand()
     {
         DependentPropertyModel2 model = new();
 
@@ -330,7 +330,7 @@ public partial class Test_ObservablePropertyAttribute
     }
 
     [TestMethod]
-    public void Test_AlsoNotifyChangeFor_IRelayCommandProperty()
+    public void Test_NotifyPropertyChangedFor_IRelayCommandProperty()
     {
         DependentPropertyModel3 model = new();
 
@@ -348,7 +348,7 @@ public partial class Test_ObservablePropertyAttribute
     }
 
     [TestMethod]
-    public void Test_AlsoNotifyChangeFor_IAsyncRelayCommandOfTProperty()
+    public void Test_NotifyPropertyChangedFor_IAsyncRelayCommandOfTProperty()
     {
         DependentPropertyModel4 model = new();
 
@@ -784,12 +784,12 @@ public partial class Test_ObservablePropertyAttribute
     {
         // Inherited property
         [ObservableProperty]
-        [AlsoNotifyChangeFor(nameof(Content))]
+        [NotifyPropertyChangedFor(nameof(Content))]
         private string? _a;
 
         // Inherited generated property
         [ObservableProperty]
-        [AlsoNotifyChangeFor(nameof(SomeGeneratedProperty))]
+        [NotifyPropertyChangedFor(nameof(SomeGeneratedProperty))]
         private string? _b;
 
         // Inherited generated command
@@ -826,12 +826,12 @@ public partial class Test_ObservablePropertyAttribute
     public sealed partial class DependentPropertyModel
     {
         [ObservableProperty]
-        [AlsoNotifyChangeFor(nameof(FullName))]
-        [AlsoNotifyChangeFor(nameof(Alias))]
+        [NotifyPropertyChangedFor(nameof(FullName))]
+        [NotifyPropertyChangedFor(nameof(Alias))]
         private string? name;
 
         [ObservableProperty]
-        [AlsoNotifyChangeFor(nameof(FullName), nameof(Alias))]
+        [NotifyPropertyChangedFor(nameof(FullName), nameof(Alias))]
         [AlsoNotifyCanExecuteFor(nameof(MyCommand))]
         private string? surname;
 
@@ -846,7 +846,7 @@ public partial class Test_ObservablePropertyAttribute
     public sealed partial class DependentPropertyModel2
     {
         [ObservableProperty]
-        [AlsoNotifyChangeFor(nameof(FullName), nameof(Alias))]
+        [NotifyPropertyChangedFor(nameof(FullName), nameof(Alias))]
         [AlsoNotifyCanExecuteFor(nameof(TestFromMethodCommand))]
         private string? text;
 
@@ -866,7 +866,7 @@ public partial class Test_ObservablePropertyAttribute
     public sealed partial class DependentPropertyModel3
     {
         [ObservableProperty]
-        [AlsoNotifyChangeFor(nameof(FullName), nameof(Alias))]
+        [NotifyPropertyChangedFor(nameof(FullName), nameof(Alias))]
         [AlsoNotifyCanExecuteFor(nameof(MyCommand))]
         private string? text;
 
@@ -881,7 +881,7 @@ public partial class Test_ObservablePropertyAttribute
     public sealed partial class DependentPropertyModel4
     {
         [ObservableProperty]
-        [AlsoNotifyChangeFor(nameof(FullName), nameof(Alias))]
+        [NotifyPropertyChangedFor(nameof(FullName), nameof(Alias))]
         [AlsoNotifyCanExecuteFor(nameof(MyCommand))]
         private string? text;
 
