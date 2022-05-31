@@ -89,7 +89,7 @@ partial class ObservablePropertyGenerator
             ImmutableArray<string>.Builder propertyChangingNames = ImmutableArray.CreateBuilder<string>();
             ImmutableArray<string>.Builder notifiedCommandNames = ImmutableArray.CreateBuilder<string>();
             ImmutableArray<AttributeInfo>.Builder forwardedAttributes = ImmutableArray.CreateBuilder<AttributeInfo>();
-            bool alsoBroadcastChange = false;
+            bool notifyRecipients = false;
             bool alsoValidateProperty = false;
             bool hasAnyValidationAttributes = false;
 
@@ -102,6 +102,12 @@ partial class ObservablePropertyGenerator
             // The current property is always notified
             propertyChangedNames.Add(propertyName);
 
+            // Get the class-level [NotifyRecipients] setting, if any
+            if (TryGetIsNotifyingRecipients(fieldSymbol, out bool isBroadcastTargetValid))
+            {
+                notifyRecipients = isBroadcastTargetValid;
+            }
+
             // Gather attributes info
             foreach (AttributeData attributeData in fieldSymbol.GetAttributes())
             {
@@ -112,10 +118,10 @@ partial class ObservablePropertyGenerator
                     continue;
                 }
 
-                // Check whether the property should also broadcast changes
-                if (TryGetIsBroadcastingChanges(fieldSymbol, attributeData, builder, out bool isBroadcastTargetValid))
+                // Check whether the property should also notify recipients
+                if (TryGetIsNotifyingRecipients(fieldSymbol, attributeData, builder, out isBroadcastTargetValid))
                 {
-                    alsoBroadcastChange = isBroadcastTargetValid;
+                    notifyRecipients = isBroadcastTargetValid;
 
                     continue;
                 }
@@ -183,7 +189,7 @@ partial class ObservablePropertyGenerator
                 propertyChangingNames.ToImmutable(),
                 propertyChangedNames.ToImmutable(),
                 notifiedCommandNames.ToImmutable(),
-                alsoBroadcastChange,
+                notifyRecipients,
                 alsoValidateProperty,
                 forwardedAttributes.ToImmutable());
         }
@@ -404,14 +410,45 @@ partial class ObservablePropertyGenerator
         }
 
         /// <summary>
-        /// Checks whether a given generated property should also broadcast changes.
+        /// Checks whether a given generated property should also notify recipients.
+        /// </summary>
+        /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
+        /// <param name="isBroadcastTargetValid">Whether or not the the property is in a valid target that can notify recipients.</param>
+        /// <returns>Whether or not the generated property for <paramref name="fieldSymbol"/> is in a type annotated with <c>[NotifyRecipients]</c>.</returns>
+        private static bool TryGetIsNotifyingRecipients(IFieldSymbol fieldSymbol, out bool isBroadcastTargetValid)
+        {
+            if (fieldSymbol.ContainingType?.HasOrInheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyRecipientsAttribute") == true)
+            {
+                // If the containing type is valid, track it
+                if (fieldSymbol.ContainingType.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableRecipient") ||
+                    fieldSymbol.ContainingType.HasOrInheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableRecipientAttribute"))
+                {
+                    isBroadcastTargetValid = true;
+
+                    return true;
+                }
+
+                // Otherwise, ignore the attribute but don't emit a diagnostic.
+                // The diagnostic for class-level attributes is handled separately.
+                isBroadcastTargetValid = false;
+
+                return true;
+            }
+
+            isBroadcastTargetValid = false;
+
+            return false;
+        }
+
+        /// <summary>
+        /// Checks whether a given generated property should also notify recipients.
         /// </summary>
         /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
         /// <param name="attributeData">The <see cref="AttributeData"/> instance for <paramref name="fieldSymbol"/>.</param>
         /// <param name="diagnostics">The current collection of gathered diagnostics.</param>
-        /// <param name="isBroadcastTargetValid">Whether or not the the property is in a valid target that can broadcast changes.</param>
+        /// <param name="isBroadcastTargetValid">Whether or not the the property is in a valid target that can notify recipients.</param>
         /// <returns>Whether or not the generated property for <paramref name="fieldSymbol"/> used <c>[NotifyRecipients]</c>.</returns>
-        private static bool TryGetIsBroadcastingChanges(
+        private static bool TryGetIsNotifyingRecipients(
             IFieldSymbol fieldSymbol,
             AttributeData attributeData,
             ImmutableArray<Diagnostic>.Builder diagnostics,
