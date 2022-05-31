@@ -264,6 +264,32 @@ public partial class Test_ObservablePropertyAttribute
         Assert.AreEqual(errors[1].PropertyName, nameof(ModelWithValuePropertyWithAutomaticValidation.Value));
     }
 
+    [TestMethod]
+    public void Test_ObservablePropertyWithValueNamedField_WithValidationAttributesAndValidation_WithClassLevelAttribute()
+    {
+        ModelWithValuePropertyWithAutomaticValidationWithClassLevelAttribute model = new();
+
+        List<string?> propertyNames = new();
+
+        model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
+
+        List<DataErrorsChangedEventArgs> errors = new();
+
+        model.ErrorsChanged += (s, e) => errors.Add(e);
+
+        model.Value = "Bo";
+
+        Assert.IsTrue(model.HasErrors);
+        Assert.AreEqual(errors.Count, 1);
+        Assert.AreEqual(errors[0].PropertyName, nameof(ModelWithValuePropertyWithAutomaticValidationWithClassLevelAttribute.Value));
+
+        model.Value = "Hello world";
+
+        Assert.IsFalse(model.HasErrors);
+        Assert.AreEqual(errors.Count, 2);
+        Assert.AreEqual(errors[1].PropertyName, nameof(ModelWithValuePropertyWithAutomaticValidationWithClassLevelAttribute.Value));
+    }
+
     // See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4184
     [TestMethod]
     public void Test_GeneratedPropertiesWithValidationAttributesOverFields()
@@ -424,6 +450,33 @@ public partial class Test_ObservablePropertyAttribute
             propertyName: nameof(BroadcastingViewModelWithInheritedAttribute.Name2));
     }
 
+    [TestMethod]
+    public void Test_NotifyRecipients_WithObservableObject_WithClassLevelAttribute()
+    {
+        Test_NotifyRecipients_Test(
+           factory: static messenger => new BroadcastingViewModelWithClassLevelAttribute(messenger),
+           setter: static (model, value) => model.Name = value,
+           propertyName: nameof(BroadcastingViewModelWithClassLevelAttribute.Name));
+    }
+
+    [TestMethod]
+    public void Test_NotifyRecipients_WithObservableRecipientAttribute_WithClassLevelAttribute()
+    {
+        Test_NotifyRecipients_Test(
+            factory: static messenger => new BroadcastingViewModelWithAttributeAndClassLevelAttribute(messenger),
+            setter: static (model, value) => model.Name = value,
+            propertyName: nameof(BroadcastingViewModelWithAttributeAndClassLevelAttribute.Name));
+    }
+
+    [TestMethod]
+    public void Test_NotifyRecipients_WithInheritedObservableRecipientAttribute_WithClassLevelAttribute()
+    {
+        Test_NotifyRecipients_Test(
+            factory: static messenger => new BroadcastingViewModelWithInheritedAttributeAndClassLevelAttribute(messenger),
+            setter: static (model, value) => model.Name2 = value,
+            propertyName: nameof(BroadcastingViewModelWithInheritedAttributeAndClassLevelAttribute.Name2));
+    }
+
     private void Test_NotifyRecipients_Test<T>(Func<IMessenger, T> factory, Action<T, string?> setter, string propertyName)
         where T : notnull
     {
@@ -450,6 +503,24 @@ public partial class Test_ObservablePropertyAttribute
         Assert.AreEqual("Bob", messages[1].Message.OldValue);
         Assert.AreEqual("Ross", messages[1].Message.NewValue);
         Assert.AreEqual(propertyName, messages[0].Message.PropertyName);
+    }
+
+    [TestMethod]
+    public void Test_ObservableProperty_ObservableRecipientDoesNotBroadcastByDefault()
+    {
+        IMessenger messenger = new StrongReferenceMessenger();
+        RecipientWithNonBroadcastingProperty model = new(messenger);
+
+        List<(object Sender, PropertyChangedMessage<string?> Message)> messages = new();
+
+        messenger.Register<PropertyChangedMessage<string?>>(model, (r, m) => messages.Add((r, m)));
+
+        model.Name = "Bob";
+        model.Name = "Alice";
+        model.Name = null;
+
+        // The [NotifyRecipients] attribute wasn't used, so no messages should have been sent
+        Assert.AreEqual(messages.Count, 0);
     }
 
 #if NET6_0_OR_GREATER
@@ -969,6 +1040,15 @@ public partial class Test_ObservablePropertyAttribute
         private string? value;
     }
 
+    [NotifyDataErrorInfo]
+    public partial class ModelWithValuePropertyWithAutomaticValidationWithClassLevelAttribute : ObservableValidator
+    {
+        [ObservableProperty]
+        [Required]
+        [MinLength(5)]
+        private string? value;
+    }
+
     public partial class ViewModelWithValidatableGeneratedProperties : ObservableValidator
     {
         [Required]
@@ -1080,6 +1160,17 @@ public partial class Test_ObservablePropertyAttribute
         private string? name;
     }
 
+    partial class RecipientWithNonBroadcastingProperty : ObservableRecipient
+    {
+        public RecipientWithNonBroadcastingProperty(IMessenger messenger)
+            : base(messenger)
+        {
+        }
+
+        [ObservableProperty]
+        private string? name;
+    }
+
     [ObservableRecipient]
     partial class BroadcastingViewModelWithAttribute : ObservableObject
     {
@@ -1097,6 +1188,37 @@ public partial class Test_ObservablePropertyAttribute
 
         [ObservableProperty]
         [NotifyRecipients]
+        private string? name2;
+    }
+
+    [NotifyRecipients]
+    partial class BroadcastingViewModelWithClassLevelAttribute : ObservableRecipient
+    {
+        public BroadcastingViewModelWithClassLevelAttribute(IMessenger messenger)
+            : base(messenger)
+        {
+        }
+
+        [ObservableProperty]
+        private string? name;
+    }
+
+    [ObservableRecipient]
+    [NotifyRecipients]
+    partial class BroadcastingViewModelWithAttributeAndClassLevelAttribute : ObservableObject
+    {
+        [ObservableProperty]
+        private string? name;
+    }
+
+    partial class BroadcastingViewModelWithInheritedAttributeAndClassLevelAttribute : BroadcastingViewModelWithClassLevelAttribute
+    {
+        public BroadcastingViewModelWithInheritedAttributeAndClassLevelAttribute(IMessenger messenger)
+            : base(messenger)
+        {
+        }
+
+        [ObservableProperty]
         private string? name2;
     }
 

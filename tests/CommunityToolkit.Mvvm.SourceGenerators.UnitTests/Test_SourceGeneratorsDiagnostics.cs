@@ -1258,6 +1258,46 @@ public class Test_SourceGeneratorsDiagnostics
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0026");
     }
 
+    [TestMethod]
+    public void InvalidTypeForNotifyRecipientsError()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                [NotifyRecipients]
+                public partial class MyViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    public int number;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0027");
+    }
+
+    [TestMethod]
+    public void InvalidTypeForNotifyDataErrorInfoError()
+    {
+        string source = @"
+            using System.ComponentModel.DataAnnotations;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                [NotifyDataErrorInfo]
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    [Required]
+                    private string name;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0006", "MVVMTK0028");
+    }
+
     /// <summary>
     /// Verifies the output of a source generator.
     /// </summary>
