@@ -410,14 +410,14 @@ partial class ObservablePropertyGenerator
         /// <param name="attributeData">The <see cref="AttributeData"/> instance for <paramref name="fieldSymbol"/>.</param>
         /// <param name="diagnostics">The current collection of gathered diagnostics.</param>
         /// <param name="isBroadcastTargetValid">Whether or not the the property is in a valid target that can broadcast changes.</param>
-        /// <returns>Whether or not the generated property for <paramref name="fieldSymbol"/> used <c>[AlsoBroadcastChange]</c>.</returns>
+        /// <returns>Whether or not the generated property for <paramref name="fieldSymbol"/> used <c>[NotifyRecipients]</c>.</returns>
         private static bool TryGetIsBroadcastingChanges(
             IFieldSymbol fieldSymbol,
             AttributeData attributeData,
             ImmutableArray<Diagnostic>.Builder diagnostics,
             out bool isBroadcastTargetValid)
         {
-            if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoBroadcastChangeAttribute") == true)
+            if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyRecipientsAttribute") == true)
             {
                 // If the containing type is valid, track it
                 if (fieldSymbol.ContainingType.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableRecipient") ||
@@ -430,7 +430,7 @@ partial class ObservablePropertyGenerator
 
                 // Otherwise just emit the diagnostic and then ignore the attribute
                 diagnostics.Add(
-                    InvalidContainingTypeForAlsoBroadcastChangeFieldError,
+                    InvalidContainingTypeForNotifyRecipientsFieldError,
                     fieldSymbol,
                     fieldSymbol.ContainingType,
                     fieldSymbol.Name);
@@ -532,7 +532,7 @@ partial class ObservablePropertyGenerator
                 string name => IdentifierName(name)
             };
 
-            if (propertyInfo.AlsoBroadcastChange)
+            if (propertyInfo.NotifyRecipients)
             {
                 // If broadcasting changes are required, also store the old value.
                 // This code generates a statement as follows:
@@ -630,7 +630,7 @@ partial class ObservablePropertyGenerator
             }
 
             // Also broadcast the change, if requested
-            if (propertyInfo.AlsoBroadcastChange)
+            if (propertyInfo.NotifyRecipients)
             {
                 // This code generates a statement as follows:
                 //

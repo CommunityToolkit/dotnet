@@ -319,17 +319,17 @@ internal static class DiagnosticDescriptors
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[ObservableProperty]</c> is applied to a field in an invalid type.
     /// <para>
-    /// Format: <c>"The field {0}.{1} needs to be annotated with [ObservableProperty] in order to enable using [NotifyPropertyChangedFor], [NotifyCanExecuteChangedFor], [AlsoBroadcastChange] and [NotifyDataErrorInfo]"</c>.
+    /// Format: <c>"The field {0}.{1} needs to be annotated with [ObservableProperty] in order to enable using [NotifyPropertyChangedFor], [NotifyCanExecuteChangedFor], [NotifyRecipients] and [NotifyDataErrorInfo]"</c>.
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor FieldWithOrphanedDependentObservablePropertyAttributesError = new DiagnosticDescriptor(
         id: "MVVMTK0020",
         title: "Invalid use of attributes dependent on [ObservableProperty]",
-        messageFormat: "The field {0}.{1} needs to be annotated with [ObservableProperty] in order to enable using [NotifyPropertyChangedFor], [NotifyCanExecuteChangedFor], [AlsoBroadcastChange] and [NotifyDataErrorInfo]",
+        messageFormat: "The field {0}.{1} needs to be annotated with [ObservableProperty] in order to enable using [NotifyPropertyChangedFor], [NotifyCanExecuteChangedFor], [NotifyRecipients] and [NotifyDataErrorInfo]",
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Fields not annotated with [ObservableProperty] cannot use [NotifyPropertyChangedFor], [NotifyCanExecuteChangedFor], [AlsoBroadcastChange] and [NotifyDataErrorInfo].",
+        description: "Fields not annotated with [ObservableProperty] cannot use [NotifyPropertyChangedFor], [NotifyCanExecuteChangedFor], [NotifyRecipients] and [NotifyDataErrorInfo].",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>
@@ -349,19 +349,19 @@ internal static class DiagnosticDescriptors
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>
-    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[AlsoBroadcastChange]</c> is applied to a field in an invalid type.
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[NotifyRecipients]</c> is applied to a field in an invalid type.
     /// <para>
-    /// Format: <c>"The field {0}.{1} cannot be annotated with [AlsoBroadcastChange], as its containing type doesn't inherit from ObservableRecipient, nor does it use [ObservableRecipient]"</c>.
+    /// Format: <c>"The field {0}.{1} cannot be annotated with [NotifyRecipients], as its containing type doesn't inherit from ObservableRecipient, nor does it use [ObservableRecipient]"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor InvalidContainingTypeForAlsoBroadcastChangeFieldError = new DiagnosticDescriptor(
+    public static readonly DiagnosticDescriptor InvalidContainingTypeForNotifyRecipientsFieldError = new DiagnosticDescriptor(
         id: "MVVMTK0022",
         title: "Invalid containing type for [ObservableProperty] field",
-        messageFormat: "The field {0}.{1} cannot be annotated with [AlsoBroadcastChange], as its containing type doesn't inherit from ObservableRecipient, nor does it use [ObservableRecipient]",
+        messageFormat: "The field {0}.{1} cannot be annotated with [NotifyRecipients], as its containing type doesn't inherit from ObservableRecipient, nor does it use [ObservableRecipient]",
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Fields annotated with [AlsoBroadcastChange] must be contained in a type that inherits from ObservableRecipient or that is annotated with [ObservableRecipient] (including base types).",
+        description: "Fields annotated with [NotifyRecipients] must be contained in a type that inherits from ObservableRecipient or that is annotated with [ObservableRecipient] (including base types).",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>
