@@ -427,4 +427,36 @@ internal static class DiagnosticDescriptors
         isEnabledByDefault: true,
         description: "Cannot apply [NotifyDataErrorInfo] to fields that don't have any validation attributes to use during validation.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[NotifyRecipients]</c> is applied to an invalid type.
+    /// <para>
+    /// Format: <c>"The type {0} cannot be annotated with [NotifyRecipients], as it doesn't inherit from ObservableRecipient, nor does it use [ObservableRecipient]"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor InvalidTypeForNotifyRecipientsError = new DiagnosticDescriptor(
+        id: "MVVMTK0027",
+        title: "Invalid type for [NotifyRecipients] attribute",
+        messageFormat: "The type {0} cannot be annotated with [NotifyRecipients], as it doesn't inherit from ObservableRecipient, nor does it use [ObservableRecipient]",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "Types annotated with [NotifyRecipients] must inherit from ObservableRecipient or be annotated with [ObservableRecipient] (including base types).",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[NotifyDataErrorInfo]</c> is applied to an invalid type.
+    /// <para>
+    /// Format: <c>"The type {0} cannot be annotated with [NotifyDataErrorInfo], as it doesn't inherit from ObservableValidator"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor InvalidTypeForNotifyDataErrorInfoError = new DiagnosticDescriptor(
+        id: "MVVMTK0028",
+        title: "Invalid type for [NotifyDataErrorInfo] attribute",
+        messageFormat: "The type {0} cannot be annotated with [NotifyDataErrorInfo], as it doesn't inherit from ObservableValidator",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "Types annotated with [NotifyDataErrorInfo] must inherit from ObservableRecipient.",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit");
 }
