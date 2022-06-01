@@ -999,7 +999,7 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void FieldWithOrphanedDependentObservablePropertyAttributesError_NotifyRecipients()
+    public void FieldWithOrphanedDependentObservablePropertyAttributesError_NotifyPropertyChangedRecipients()
     {
         string source = @"
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -1008,7 +1008,7 @@ public class Test_SourceGeneratorsDiagnostics
             {
                 public partial class MyViewModel
                 {
-                    [NotifyRecipients]
+                    [NotifyPropertyChangedRecipients]
                     public int number;
                 }
             }";
@@ -1031,7 +1031,7 @@ public class Test_SourceGeneratorsDiagnostics
                     [NotifyPropertyChangedFor("")]
                     [NotifyCanExecuteChangedFor("")]
                     [NotifyCanExecuteChangedFor("")]
-                    [NotifyRecipients]
+                    [NotifyPropertyChangedRecipients]
                     public int number;
                 }
             }";
@@ -1062,7 +1062,7 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void InvalidContainingTypeForNotifyRecipientsFieldError_ObservableObject()
+    public void InvalidContainingTypeForNotifyPropertyChangedRecipientsFieldError_ObservableObject()
     {
         string source = @"
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -1072,7 +1072,7 @@ public class Test_SourceGeneratorsDiagnostics
                 public partial class MyViewModel : ObservableObject
                 {
                     [ObservableProperty]
-                    [NotifyRecipients]
+                    [NotifyPropertyChangedRecipients]
                     public int number;
                 }
             }";
@@ -1259,14 +1259,14 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void InvalidTypeForNotifyRecipientsError()
+    public void InvalidTypeForNotifyPropertyChangedRecipientsError()
     {
         string source = @"
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
             {
-                [NotifyRecipients]
+                [NotifyPropertyChangedRecipients]
                 public partial class MyViewModel : ObservableObject
                 {
                     [ObservableProperty]
@@ -1299,18 +1299,18 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void UnnecessaryNotifyRecipientsWarning_SameType()
+    public void UnnecessaryNotifyPropertyChangedRecipientsWarning_SameType()
     {
         string source = @"
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
             {
-                [NotifyRecipients]
+                [NotifyPropertyChangedRecipients]
                 public partial class MyViewModel : ObservableRecipient
                 {
                     [ObservableProperty]
-                    [NotifyRecipients]
+                    [NotifyPropertyChangedRecipients]
                     public int number;
                 }
             }";
@@ -1319,14 +1319,14 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void UnnecessaryNotifyRecipientsWarning_BaseType()
+    public void UnnecessaryNotifyPropertyChangedRecipientsWarning_BaseType()
     {
         string source = @"
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
             {
-                [NotifyRecipients]
+                [NotifyPropertyChangedRecipients]
                 public class MyBaseViewModel : ObservableRecipient
                 {
                 }
@@ -1334,7 +1334,7 @@ public class Test_SourceGeneratorsDiagnostics
                 public partial class MyViewModel : MyBaseViewModel
                 {
                     [ObservableProperty]
-                    [NotifyRecipients]
+                    [NotifyPropertyChangedRecipients]
                     public int number;
                 }
             }";

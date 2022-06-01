@@ -450,69 +450,69 @@ public partial class Test_ObservablePropertyAttribute
     }
 
     [TestMethod]
-    public void Test_NotifyRecipients_WithObservableObject()
+    public void Test_NotifyPropertyChangedRecipients_WithObservableObject()
     {
-        Test_NotifyRecipients_Test(
+        Test_NotifyPropertyChangedRecipients_Test(
            factory: static messenger => new BroadcastingViewModel(messenger),
            setter: static (model, value) => model.Name = value,
            propertyName: nameof(BroadcastingViewModel.Name));
     }
 
     [TestMethod]
-    public void Test_NotifyRecipients_WithObservableRecipientAttribute()
+    public void Test_NotifyPropertyChangedRecipients_WithObservableRecipientAttribute()
     {
-        Test_NotifyRecipients_Test(
+        Test_NotifyPropertyChangedRecipients_Test(
             factory: static messenger => new BroadcastingViewModelWithAttribute(messenger),
             setter: static (model, value) => model.Name = value,
             propertyName: nameof(BroadcastingViewModelWithAttribute.Name));
     }
 
     [TestMethod]
-    public void Test_NotifyRecipients_WithInheritedObservableRecipientAttribute()
+    public void Test_NotifyPropertyChangedRecipients_WithInheritedObservableRecipientAttribute()
     {
-        Test_NotifyRecipients_Test(
+        Test_NotifyPropertyChangedRecipients_Test(
             factory: static messenger => new BroadcastingViewModelWithInheritedAttribute(messenger),
             setter: static (model, value) => model.Name2 = value,
             propertyName: nameof(BroadcastingViewModelWithInheritedAttribute.Name2));
     }
 
     [TestMethod]
-    public void Test_NotifyRecipients_WithObservableObject_WithClassLevelAttribute()
+    public void Test_NotifyPropertyChangedRecipients_WithObservableObject_WithClassLevelAttribute()
     {
-        Test_NotifyRecipients_Test(
+        Test_NotifyPropertyChangedRecipients_Test(
            factory: static messenger => new BroadcastingViewModelWithClassLevelAttribute(messenger),
            setter: static (model, value) => model.Name = value,
            propertyName: nameof(BroadcastingViewModelWithClassLevelAttribute.Name));
     }
 
     [TestMethod]
-    public void Test_NotifyRecipients_WithObservableRecipientAttribute_WithClassLevelAttribute()
+    public void Test_NotifyPropertyChangedRecipients_WithObservableRecipientAttribute_WithClassLevelAttribute()
     {
-        Test_NotifyRecipients_Test(
+        Test_NotifyPropertyChangedRecipients_Test(
             factory: static messenger => new BroadcastingViewModelWithAttributeAndClassLevelAttribute(messenger),
             setter: static (model, value) => model.Name = value,
             propertyName: nameof(BroadcastingViewModelWithAttributeAndClassLevelAttribute.Name));
     }
 
     [TestMethod]
-    public void Test_NotifyRecipients_WithInheritedObservableRecipientAttribute_WithClassLevelAttribute()
+    public void Test_NotifyPropertyChangedRecipients_WithInheritedObservableRecipientAttribute_WithClassLevelAttribute()
     {
-        Test_NotifyRecipients_Test(
+        Test_NotifyPropertyChangedRecipients_Test(
             factory: static messenger => new BroadcastingViewModelWithInheritedClassLevelAttribute(messenger),
             setter: static (model, value) => model.Name2 = value,
             propertyName: nameof(BroadcastingViewModelWithInheritedClassLevelAttribute.Name2));
     }
 
     [TestMethod]
-    public void Test_NotifyRecipients_WithInheritedObservableRecipientAttributeAndClassLevelAttribute()
+    public void Test_NotifyPropertyChangedRecipients_WithInheritedObservableRecipientAttributeAndClassLevelAttribute()
     {
-        Test_NotifyRecipients_Test(
+        Test_NotifyPropertyChangedRecipients_Test(
             factory: static messenger => new BroadcastingViewModelWithInheritedAttributeAndClassLevelAttribute(messenger),
             setter: static (model, value) => model.Name2 = value,
             propertyName: nameof(BroadcastingViewModelWithInheritedAttributeAndClassLevelAttribute.Name2));
     }
 
-    private void Test_NotifyRecipients_Test<T>(Func<IMessenger, T> factory, Action<T, string?> setter, string propertyName)
+    private void Test_NotifyPropertyChangedRecipients_Test<T>(Func<IMessenger, T> factory, Action<T, string?> setter, string propertyName)
         where T : notnull
     {
         IMessenger messenger = new StrongReferenceMessenger();
@@ -554,7 +554,7 @@ public partial class Test_ObservablePropertyAttribute
         model.Name = "Alice";
         model.Name = null;
 
-        // The [NotifyRecipients] attribute wasn't used, so no messages should have been sent
+        // The [NotifyPropertyChangedRecipients] attribute wasn't used, so no messages should have been sent
         Assert.AreEqual(messages.Count, 0);
     }
 
@@ -749,10 +749,10 @@ public partial class Test_ObservablePropertyAttribute
 
     // See https://github.com/CommunityToolkit/dotnet/issues/242
     [TestMethod]
-    public void Test_ObservableProperty_ModelWithNotifyRecipientsAndDisplayAttributeLast()
+    public void Test_ObservableProperty_ModelWithNotifyPropertyChangedRecipientsAndDisplayAttributeLast()
     {
         IMessenger messenger = new StrongReferenceMessenger();
-        ModelWithNotifyRecipientsAndDisplayAttributeLast model = new(messenger);
+        ModelWithNotifyPropertyChangedRecipientsAndDisplayAttributeLast model = new(messenger);
 
         List<string?> propertyNames = new();
 
@@ -1199,7 +1199,7 @@ public partial class Test_ObservablePropertyAttribute
         }
 
         [ObservableProperty]
-        [NotifyRecipients]
+        [NotifyPropertyChangedRecipients]
         private string? name;
     }
 
@@ -1218,7 +1218,7 @@ public partial class Test_ObservablePropertyAttribute
     partial class BroadcastingViewModelWithAttribute : ObservableObject
     {
         [ObservableProperty]
-        [NotifyRecipients]
+        [NotifyPropertyChangedRecipients]
         private string? name;
     }
 
@@ -1230,11 +1230,11 @@ public partial class Test_ObservablePropertyAttribute
         }
 
         [ObservableProperty]
-        [NotifyRecipients]
+        [NotifyPropertyChangedRecipients]
         private string? name2;
     }
 
-    [NotifyRecipients]
+    [NotifyPropertyChangedRecipients]
     partial class BroadcastingViewModelWithClassLevelAttribute : ObservableRecipient
     {
         public BroadcastingViewModelWithClassLevelAttribute(IMessenger messenger)
@@ -1258,7 +1258,7 @@ public partial class Test_ObservablePropertyAttribute
     }
 
     [ObservableRecipient]
-    [NotifyRecipients]
+    [NotifyPropertyChangedRecipients]
     partial class BroadcastingViewModelWithAttributeAndClassLevelAttribute : ObservableObject
     {
         [ObservableProperty]
@@ -1335,10 +1335,10 @@ public partial class Test_ObservablePropertyAttribute
     }
 
     [ObservableRecipient]
-    public sealed partial class ModelWithNotifyRecipientsAndDisplayAttributeLast : ObservableValidator
+    public sealed partial class ModelWithNotifyPropertyChangedRecipientsAndDisplayAttributeLast : ObservableValidator
     {
         [ObservableProperty]
-        [NotifyRecipients]
+        [NotifyPropertyChangedRecipients]
         [Display(Name = "Foo bar baz")]
         private object? _someProperty;
     }
