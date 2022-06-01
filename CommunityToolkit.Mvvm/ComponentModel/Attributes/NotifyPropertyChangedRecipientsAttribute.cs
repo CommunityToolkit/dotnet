@@ -17,7 +17,7 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// partial class MyViewModel : ObservableRecipient
 /// {
 ///     [ObservableProperty]
-///     [NotifyRecipients]
+///     [NotifyPropertyChangedRecipients]
 ///     private string username;
 /// }
 /// </code>
@@ -40,6 +40,6 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// </para>
 /// </summary>
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-public sealed class NotifyRecipientsAttribute : Attribute
+public sealed class NotifyPropertyChangedRecipientsAttribute : Attribute
 {
 }

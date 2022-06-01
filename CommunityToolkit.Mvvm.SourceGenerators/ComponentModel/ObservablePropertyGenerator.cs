@@ -38,13 +38,13 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
             fieldSymbols
             .Where(static item => item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute"));
 
-        // Get diagnostics for fields using [NotifyPropertyChangedFor], [NotifyCanExecuteChangedFor], [NotifyRecipients] and [NotifyDataErrorInfo], but not [ObservableProperty]
+        // Get diagnostics for fields using [NotifyPropertyChangedFor], [NotifyCanExecuteChangedFor], [NotifyPropertyChangedRecipients] and [NotifyDataErrorInfo], but not [ObservableProperty]
         IncrementalValuesProvider<Diagnostic> fieldSymbolsWithOrphanedDependentAttributeWithErrors =
             fieldSymbols
             .Where(static item =>
                 (item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyPropertyChangedForAttribute") ||
                  item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyCanExecuteChangedForAttribute") ||
-                 item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyRecipientsAttribute") ||
+                 item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyPropertyChangedRecipientsAttribute") ||
                  item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyDataErrorInfoAttribute")) &&
                  !item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute"))
             .Select(static (item, _) => Execute.GetDiagnosticForFieldWithOrphanedDependentAttributes(item));
@@ -143,14 +143,14 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
                 static (node, _) => node is ClassDeclarationSyntax { AttributeLists.Count: > 0 },
                 static (context, _) => (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!);
 
-        // Filter only the type symbols with [NotifyRecipients] and create diagnostics for them
+        // Filter only the type symbols with [NotifyPropertyChangedRecipients] and create diagnostics for them
         IncrementalValuesProvider<Diagnostic> notifyRecipientsErrors =
             classSymbols
-            .Where(static item => item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyRecipientsAttribute"))
+            .Where(static item => item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyPropertyChangedRecipientsAttribute"))
             .Select(static (item, _) => Execute.GetIsNotifyingRecipientsDiagnosticForType(item))
             .Where(static item => item is not null)!;
 
-        // Output the diagnostics for [NotifyRecipients]
+        // Output the diagnostics for [NotifyPropertyChangedRecipients]
         context.ReportDiagnostics(notifyRecipientsErrors);
 
         // Filter only the type symbols with [NotifyDataErrorInfo] and create diagnostics for them
