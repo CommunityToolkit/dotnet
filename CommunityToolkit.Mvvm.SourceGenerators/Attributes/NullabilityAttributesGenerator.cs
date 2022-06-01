@@ -44,7 +44,7 @@ public sealed class NullabilityAttributesGenerator : IIncrementalGenerator
         {
             string source = LoadAttributeSourceWithMetadataName(NotNullAttributeMetadataName);
 
-            context.AddSource(NotNullAttributeMetadataName, source);
+            context.AddSource($"{NotNullAttributeMetadataName}.g.cs", source);
         });
 
         // Check whether [NotNullIfNotNull] is not available
@@ -57,7 +57,7 @@ public sealed class NullabilityAttributesGenerator : IIncrementalGenerator
         {
             string source = LoadAttributeSourceWithMetadataName(NotNullIfNotNullAttributeMetadataName);
 
-            context.AddSource(NotNullIfNotNullAttributeMetadataName, source);
+            context.AddSource($"{NotNullIfNotNullAttributeMetadataName}.g.cs", source);
         });
     }
 

@@ -95,7 +95,7 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
             // Insert all members into the same partial type declaration
             CompilationUnitSyntax compilationUnit = item.Hierarchy.GetCompilationUnit(memberDeclarations);
 
-            context.AddSource(item.Hierarchy.FilenameHint, compilationUnit.GetText(Encoding.UTF8));
+            context.AddSource($"{item.Hierarchy.FilenameHint}.g.cs", compilationUnit.GetText(Encoding.UTF8));
         });
 
         // Gather all property changing names
@@ -113,7 +113,7 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
 
             if (compilationUnit is not null)
             {
-                context.AddSource("__KnownINotifyPropertyChangingArgs", compilationUnit.GetText(Encoding.UTF8));
+                context.AddSource("__KnownINotifyPropertyChangingArgs.g.cs", compilationUnit.GetText(Encoding.UTF8));
             }
         });
 
@@ -132,7 +132,7 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
 
             if (compilationUnit is not null)
             {
-                context.AddSource("__KnownINotifyPropertyChangedArgs", compilationUnit.GetText(Encoding.UTF8));
+                context.AddSource("__KnownINotifyPropertyChangedArgs.g.cs", compilationUnit.GetText(Encoding.UTF8));
             }
         });
     }
