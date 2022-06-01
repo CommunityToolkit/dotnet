@@ -1342,6 +1342,54 @@ public class Test_SourceGeneratorsDiagnostics
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0029");
     }
 
+    [TestMethod]
+    public void UnnecessaryNotifyDataErrorInfoWarning_SameType()
+    {
+        string source = @"
+            using System.ComponentModel.DataAnnotations;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                [NotifyDataErrorInfo]
+                public partial class MyViewModel : ObservableValidator
+                {
+                    [ObservableProperty]
+                    [Required]
+                    [NotifyDataErrorInfo]
+                    public int number;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0030");
+    }
+
+    [TestMethod]
+    public void UnnecessaryNotifyDataErrorInfoWarning_BaseType()
+    {
+        string source = @"
+            using System.ComponentModel.DataAnnotations;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                [NotifyDataErrorInfo]
+                public class MyBaseViewModel : ObservableValidator
+                {
+                }
+
+                public partial class MyViewModel : MyBaseViewModel
+                {
+                    [ObservableProperty]
+                    [Required]
+                    [NotifyDataErrorInfo]
+                    public int number;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0030");
+    }
+
     /// <summary>
     /// Verifies the output of a source generator.
     /// </summary>
