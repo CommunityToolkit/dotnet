@@ -472,6 +472,34 @@ public partial class Test_ICommandAttribute
         model.InitializeCommand.Execute(null);
     }
 
+    // See https://github.com/CommunityToolkit/dotnet/issues/162
+    [TestMethod]
+    public async Task Test_ICommandAttribute_WithOnPrefixes()
+    {
+        ModelWithCommandMethodsWithOnPrefixes model = new();
+
+        Assert.IsFalse(model.HasOnCommandRun);
+        Assert.IsFalse(model.HasOnboardCommandRun);
+        Assert.IsFalse(model.HasSubmitCommandRun);
+        Assert.IsFalse(model.HasDownloadCommandRun);
+
+        model.OnCommand.Execute(null);
+
+        Assert.IsTrue(model.HasOnCommandRun);
+
+        model.OnboardCommand.Execute(null);
+
+        Assert.IsTrue(model.HasOnboardCommandRun);
+
+        model.SubmitCommand.Execute(null);
+
+        Assert.IsTrue(model.HasSubmitCommandRun);
+
+        await model.DownloadCommand.ExecuteAsync(null);
+
+        Assert.IsTrue(model.HasDownloadCommandRun);
+    }
+
     #region Region
     public class Region
     {
@@ -804,6 +832,43 @@ public partial class Test_ICommandAttribute
         [ICommand]
         private void Initialize()
         {
+        }
+    }
+
+    partial class ModelWithCommandMethodsWithOnPrefixes
+    {
+        public bool HasOnCommandRun { get; private set; }
+
+        public bool HasOnboardCommandRun { get; private set; }
+
+        public bool HasSubmitCommandRun { get; private set; }
+
+        public bool HasDownloadCommandRun { get; private set; }
+
+        [ICommand]
+        private void On()
+        {
+            HasOnCommandRun = true;
+        }
+
+        [ICommand]
+        private void Onboard()
+        {
+            HasOnboardCommandRun = true;
+        }
+
+        [ICommand]
+        private void OnSubmit()
+        {
+            HasSubmitCommandRun = true;
+        }
+
+        [ICommand]
+        private async Task OnDownloadAsync()
+        {
+            await Task.Delay(100);
+
+            HasDownloadCommandRun = true;
         }
     }
 }

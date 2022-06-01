@@ -350,6 +350,17 @@ partial class ICommandGenerator
         {
             string propertyName = methodSymbol.Name;
 
+            // Strip the "On" prefix, if present. Only do this if the name is longer than 2 characters,
+            // and if the 3rd character is not a lowercase letter. This is needed to avoid accidentally
+            // stripping fales positives for "On" prefixes in names such as "Onboard".
+            if (propertyName.Length > 2 &&
+                propertyName.StartsWith("On") &&
+                !char.IsLower(propertyName[2]))
+            {
+                propertyName = propertyName.Substring(2);
+            }
+
+            // Strip the "Async" suffix for methods returning a Task type
             if (methodSymbol.Name.EndsWith("Async") &&
                 (methodSymbol.ReturnType.HasFullyQualifiedName("global::System.Threading.Tasks.Task") ||
                  methodSymbol.ReturnType.InheritsFromFullyQualifiedName("global::System.Threading.Tasks.Task")))
