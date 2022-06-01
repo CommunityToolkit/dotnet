@@ -67,7 +67,7 @@ internal static class INamedTypeSymbolExtensions
     /// <returns>A sequence of all member symbols for <paramref name="symbol"/>.</returns>
     public static IEnumerable<ISymbol> GetAllMembers(this INamedTypeSymbol symbol, string name)
     {
-        for (INamedTypeSymbol? currentSymbol = symbol; currentSymbol is not null; currentSymbol = currentSymbol.BaseType)
+        for (INamedTypeSymbol? currentSymbol = symbol; currentSymbol is { SpecialType: not SpecialType.System_Object }; currentSymbol = currentSymbol.BaseType)
         {
             foreach (ISymbol memberSymbol in currentSymbol.GetMembers(name))
             {
