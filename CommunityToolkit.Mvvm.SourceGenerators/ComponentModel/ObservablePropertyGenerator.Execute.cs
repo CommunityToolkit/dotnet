@@ -92,6 +92,7 @@ partial class ObservablePropertyGenerator
             bool notifyRecipients = false;
             bool notifyDataErrorInfo = false;
             bool hasOrInheritsClassLevelNotifyRecipients = false;
+            bool hasOrInheritsClassLevelNotifyDataErrorInfo = false;
             bool hasAnyValidationAttributes = false;
 
             // Track the property changing event for the property, if the type supports it
@@ -114,6 +115,7 @@ partial class ObservablePropertyGenerator
             if (TryGetNotifyDataErrorInfo(fieldSymbol, out bool isValidationTargetValid))
             {
                 notifyDataErrorInfo = isValidationTargetValid;
+                hasOrInheritsClassLevelNotifyDataErrorInfo = true;
             }
 
             // Gather attributes info
@@ -135,7 +137,7 @@ partial class ObservablePropertyGenerator
                 }
 
                 // Check whether the property should also be validated
-                if (TryGetNotifyDataErrorInfo(fieldSymbol, attributeData, builder, out isValidationTargetValid))
+                if (TryGetNotifyDataErrorInfo(fieldSymbol, attributeData, builder, hasOrInheritsClassLevelNotifyDataErrorInfo, out isValidationTargetValid))
                 {
                     notifyDataErrorInfo = isValidationTargetValid;
 
@@ -557,16 +559,28 @@ partial class ObservablePropertyGenerator
         /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
         /// <param name="attributeData">The <see cref="AttributeData"/> instance for <paramref name="fieldSymbol"/>.</param>
         /// <param name="diagnostics">The current collection of gathered diagnostics.</param>
+        /// <param name="hasOrInheritsClassLevelNotifyDataErrorInfo">Indicates wether the containing type of <paramref name="fieldSymbol"/> has or inherits <c>[NotifyDataErrorInfo]</c>.</param>
         /// <param name="isValidationTargetValid">Whether or not the the property is in a valid target that can validate values.</param>
         /// <returns>Whether or not the generated property for <paramref name="fieldSymbol"/> used <c>[NotifyDataErrorInfo]</c>.</returns>
         private static bool TryGetNotifyDataErrorInfo(
             IFieldSymbol fieldSymbol,
             AttributeData attributeData,
             ImmutableArray<Diagnostic>.Builder diagnostics,
+            bool hasOrInheritsClassLevelNotifyDataErrorInfo,
             out bool isValidationTargetValid)
         {
             if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyDataErrorInfoAttribute") == true)
             {
+                // Emit a diagnostic if the attribute is unnecessary
+                if (hasOrInheritsClassLevelNotifyDataErrorInfo)
+                {
+                    diagnostics.Add(
+                        UnnecessaryNotifyDataErrorInfoAttributeOnFieldWarning,
+                        fieldSymbol,
+                        fieldSymbol.ContainingType,
+                        fieldSymbol.Name);
+                }
+
                 // If the containing type is valid, track it
                 if (fieldSymbol.ContainingType.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator"))
                 {

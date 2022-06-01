@@ -475,4 +475,20 @@ internal static class DiagnosticDescriptors
         isEnabledByDefault: true,
         description: "Annotating a field with [NotifyRecipients] is not necessary if the containing type has or inherits [NotifyRecipients] at the class-level.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[NotifyDataErrorInfo]</c> is applied to a field in a class with <c>[NotifyDataErrorInfo]</c> used at the class-level.
+    /// <para>
+    /// Format: <c>"The field {0}.{1} is annotated with [NotifyDataErrorInfo], but that is not needed since its containing type already uses or inherits [NotifyDataErrorInfo] at the class-level"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor UnnecessaryNotifyDataErrorInfoAttributeOnFieldWarning = new DiagnosticDescriptor(
+        id: "MVVMTK0030",
+        title: "Unnecessary [NotifyDataErrorInfo] field annotation",
+        messageFormat: "The field {0}.{1} is annotated with [NotifyDataErrorInfo], but that is not needed since its containing type already uses or inherits [NotifyDataErrorInfo] at the class-level",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description: "Annotating a field with [NotifyDataErrorInfo] is not necessary if the containing type has or inherits [NotifyDataErrorInfo] at the class-level.",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit");
 }
