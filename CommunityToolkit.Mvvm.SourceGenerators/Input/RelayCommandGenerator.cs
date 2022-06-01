@@ -19,7 +19,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators;
 /// A source generator for generating command properties from annotated methods.
 /// </summary>
 [Generator(LanguageNames.CSharp)]
-public sealed partial class ICommandGenerator : IIncrementalGenerator
+public sealed partial class RelayCommandGenerator : IIncrementalGenerator
 {
     /// <inheritdoc/>
     public void Initialize(IncrementalGeneratorInitializationContext context)
@@ -31,12 +31,12 @@ public sealed partial class ICommandGenerator : IIncrementalGenerator
                 static (node, _) => node is MethodDeclarationSyntax { Parent: ClassDeclarationSyntax, AttributeLists.Count: > 0 },
                 static (context, _) => (IMethodSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!);
 
-        // Filter the methods using [ICommand]
+        // Filter the methods using [RelayCommand]
         IncrementalValuesProvider<(IMethodSymbol Symbol, AttributeData Attribute)> methodSymbolsWithAttributeData =
             methodSymbols
             .Select(static (item, _) => (
                 item,
-                Attribute: item.GetAttributes().FirstOrDefault(a => a.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.ICommandAttribute") == true)))
+                Attribute: item.GetAttributes().FirstOrDefault(a => a.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.RelayCommandAttribute") == true)))
             .Where(static item => item.Attribute is not null)!;
 
         // Filter by language version

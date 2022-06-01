@@ -39,7 +39,7 @@ public partial class Test_SourceGenerators
                     [Required]
                     private string? name;
 
-                    [ICommand]
+                    [RelayCommand]
                     private void Test()
                     {
                     }
@@ -71,7 +71,7 @@ public partial class Test_SourceGenerators
                     [ObservableProperty]
                     private string? name;
 
-                    [ICommand]
+                    [RelayCommand]
                     private void Test()
                     {
                     }

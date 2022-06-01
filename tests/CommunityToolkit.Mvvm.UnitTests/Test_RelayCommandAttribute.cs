@@ -14,10 +14,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CommunityToolkit.Mvvm.UnitTests;
 
 [TestClass]
-public partial class Test_ICommandAttribute
+public partial class Test_RelayCommandAttribute
 {
     [TestMethod]
-    public async Task Test_ICommandAttribute_RelayCommand()
+    public async Task Test_RelayCommandAttribute_RelayCommand()
     {
         MyViewModel model = new();
 
@@ -131,7 +131,7 @@ public partial class Test_ICommandAttribute
     }
 
     [TestMethod]
-    public void Test_ICommandAttribute_CanExecute_NoParameters_Property()
+    public void Test_RelayCommandAttribute_CanExecute_NoParameters_Property()
     {
         CanExecuteViewModel model = new();
 
@@ -152,7 +152,7 @@ public partial class Test_ICommandAttribute
     }
 
     [TestMethod]
-    public void Test_ICommandAttribute_CanExecute_NoParameters_GeneratedProperty()
+    public void Test_RelayCommandAttribute_CanExecute_NoParameters_GeneratedProperty()
     {
         CanExecuteViewModel model = new();
 
@@ -172,7 +172,7 @@ public partial class Test_ICommandAttribute
     }
 
     [TestMethod]
-    public void Test_ICommandAttribute_CanExecute_WithParameter_Property()
+    public void Test_RelayCommandAttribute_CanExecute_WithParameter_Property()
     {
         CanExecuteViewModel model = new();
 
@@ -192,7 +192,7 @@ public partial class Test_ICommandAttribute
     }
 
     [TestMethod]
-    public void Test_ICommandAttribute_CanExecute_WithParameter_GeneratedProperty()
+    public void Test_RelayCommandAttribute_CanExecute_WithParameter_GeneratedProperty()
     {
         CanExecuteViewModel model = new();
 
@@ -212,7 +212,7 @@ public partial class Test_ICommandAttribute
     }
 
     [TestMethod]
-    public void Test_ICommandAttribute_CanExecute_NoParameters_MethodWithNoParameters()
+    public void Test_RelayCommandAttribute_CanExecute_NoParameters_MethodWithNoParameters()
     {
         CanExecuteViewModel model = new();
 
@@ -232,7 +232,7 @@ public partial class Test_ICommandAttribute
     }
 
     [TestMethod]
-    public void Test_ICommandAttribute_CanExecute_WithParameters_MethodWithNoParameters()
+    public void Test_RelayCommandAttribute_CanExecute_WithParameters_MethodWithNoParameters()
     {
         CanExecuteViewModel model = new();
 
@@ -252,7 +252,7 @@ public partial class Test_ICommandAttribute
     }
 
     [TestMethod]
-    public void Test_ICommandAttribute_CanExecute_WithParameters_MethodWithMatchingParameter()
+    public void Test_RelayCommandAttribute_CanExecute_WithParameters_MethodWithMatchingParameter()
     {
         CanExecuteViewModel model = new();
 
@@ -268,7 +268,7 @@ public partial class Test_ICommandAttribute
     }
 
     [TestMethod]
-    public async Task Test_ICommandAttribute_CanExecute_Async_NoParameters_Property()
+    public async Task Test_RelayCommandAttribute_CanExecute_Async_NoParameters_Property()
     {
         CanExecuteViewModel model = new();
 
@@ -288,7 +288,7 @@ public partial class Test_ICommandAttribute
     }
 
     [TestMethod]
-    public async Task Test_ICommandAttribute_CanExecute_Async_WithParameter_Property()
+    public async Task Test_RelayCommandAttribute_CanExecute_Async_WithParameter_Property()
     {
         CanExecuteViewModel model = new();
 
@@ -308,7 +308,7 @@ public partial class Test_ICommandAttribute
     }
 
     [TestMethod]
-    public async Task Test_ICommandAttribute_CanExecute_Async_NoParameters_MethodWithNoParameters()
+    public async Task Test_RelayCommandAttribute_CanExecute_Async_NoParameters_MethodWithNoParameters()
     {
         CanExecuteViewModel model = new();
 
@@ -328,7 +328,7 @@ public partial class Test_ICommandAttribute
     }
 
     [TestMethod]
-    public async Task Test_ICommandAttribute_CanExecute_Async_WithParameters_MethodWithNoParameters()
+    public async Task Test_RelayCommandAttribute_CanExecute_Async_WithParameters_MethodWithNoParameters()
     {
         CanExecuteViewModel model = new();
 
@@ -348,7 +348,7 @@ public partial class Test_ICommandAttribute
     }
 
     [TestMethod]
-    public async Task Test_ICommandAttribute_CanExecute_Async_WithParameters_MethodWithMatchingParameter()
+    public async Task Test_RelayCommandAttribute_CanExecute_Async_WithParameters_MethodWithMatchingParameter()
     {
         CanExecuteViewModel model = new();
 
@@ -364,7 +364,7 @@ public partial class Test_ICommandAttribute
     }
 
     [TestMethod]
-    public async Task Test_ICommandAttribute_ConcurrencyControl_AsyncRelayCommand()
+    public async Task Test_RelayCommandAttribute_ConcurrencyControl_AsyncRelayCommand()
     {
         TaskCompletionSource<object?> tcs = new();
 
@@ -384,7 +384,7 @@ public partial class Test_ICommandAttribute
     }
 
     [TestMethod]
-    public async Task Test_ICommandAttribute_ConcurrencyControl_AsyncRelayCommandOfT()
+    public async Task Test_RelayCommandAttribute_ConcurrencyControl_AsyncRelayCommandOfT()
     {
         MyViewModel model = new();
 
@@ -405,16 +405,16 @@ public partial class Test_ICommandAttribute
 
     // See https://github.com/CommunityToolkit/dotnet/issues/13
     [TestMethod]
-    public void Test_ICommandAttribute_ViewModelRightAfterRegion()
+    public void Test_RelayCommandAttribute_ViewModelRightAfterRegion()
     {
         ViewModelForIssue13 model = new();
 
         Assert.IsNotNull(model.GreetCommand);
-        Assert.IsInstanceOfType(model.GreetCommand, typeof(RelayCommand));
+        Assert.IsInstanceOfType((object)model.GreetCommand, typeof(RelayCommand));
     }
 
     [TestMethod]
-    public async Task Test_ICommandAttribute_CancelCommands()
+    public async Task Test_RelayCommandAttribute_CancelCommands()
     {
         CancelCommandViewModel model = new();
 
@@ -442,7 +442,7 @@ public partial class Test_ICommandAttribute
     }
 
     [TestMethod]
-    public async Task Test_ICommandAttribute_TaskOfTReturns()
+    public async Task Test_RelayCommandAttribute_TaskOfTReturns()
     {
         GenericTaskCommands model = new();
 
@@ -464,7 +464,7 @@ public partial class Test_ICommandAttribute
 
     // See https://github.com/CommunityToolkit/dotnet/issues/230
     [TestMethod]
-    public void Test_ICommandAttribute_CultureAwareCommandName()
+    public void Test_RelayCommandAttribute_CultureAwareCommandName()
     {
         ModelWithCultureAwareCommandName model = new();
 
@@ -474,7 +474,7 @@ public partial class Test_ICommandAttribute
 
     // See https://github.com/CommunityToolkit/dotnet/issues/162
     [TestMethod]
-    public async Task Test_ICommandAttribute_WithOnPrefixes()
+    public async Task Test_RelayCommandAttribute_WithOnPrefixes()
     {
         ModelWithCommandMethodsWithOnPrefixes model = new();
 
@@ -502,7 +502,7 @@ public partial class Test_ICommandAttribute
 
     // See https://github.com/CommunityToolkit/dotnet/issues/283
     [TestMethod]
-    public void Test_ICommandAttribute_VerifyNoWarningsForNullableValues()
+    public void Test_RelayCommandAttribute_VerifyNoWarningsForNullableValues()
     {
         ModelWithCommandsWithNullabilityAnnotations model = new();
 
@@ -525,7 +525,7 @@ public partial class Test_ICommandAttribute
 
     public partial class ViewModelForIssue13
     {
-        [ICommand]
+        [RelayCommand]
         private void Greet()
         {
         }
@@ -544,7 +544,7 @@ public partial class Test_ICommandAttribute
         public void ResetTcs() => Tcs = new TaskCompletionSource<object?>();
 
         /// <summary>This is a single line summary.</summary>
-        [ICommand]
+        [RelayCommand]
         private void IncrementCounter()
         {
             Counter++;
@@ -553,7 +553,7 @@ public partial class Test_ICommandAttribute
         /// <summary>
         /// This is a multiline summary
         /// </summary>
-        [ICommand]
+        [RelayCommand]
         private void IncrementCounterWithValue(int count)
         {
             Counter += count;
@@ -562,7 +562,7 @@ public partial class Test_ICommandAttribute
         /// <summary>This is single line with also other stuff below</summary>
         /// <returns>Foo bar baz</returns>
         /// <returns>A task</returns>
-        [ICommand]
+        [RelayCommand]
         private async Task DelayAndIncrementCounterAsync()
         {
             await Task.Delay(50);
@@ -570,7 +570,7 @@ public partial class Test_ICommandAttribute
             Counter += 1;
         }
 
-        [ICommand(AllowConcurrentExecutions = true)]
+        [RelayCommand(AllowConcurrentExecutions = true)]
         private async Task AddValueToListAndDelayAsync(int value)
         {
             Values.Add(value);
@@ -578,7 +578,7 @@ public partial class Test_ICommandAttribute
             await Task.Delay(100);
         }
 
-        [ICommand]
+        [RelayCommand]
         private async Task AddValueToListAndDelayWithDefaultConcurrencyAsync(int value)
         {
             Values.Add(value);
@@ -586,7 +586,7 @@ public partial class Test_ICommandAttribute
             _ = await Tcs.Task;
         }
 
-        [ICommand(IncludeCancelCommand = true)]
+        [RelayCommand(IncludeCancelCommand = true)]
         private async Task AddValueToListAndDelayWithDefaultConcurrencyAsync_WithCancelCommand(int value, CancellationToken token)
         {
             Values.Add(value);
@@ -601,7 +601,7 @@ public partial class Test_ICommandAttribute
         /// </summary>
         /// <returns>Foo bar baz</returns>
         /// <returns>A task</returns>
-        [ICommand]
+        [RelayCommand]
         private async Task DelayAndIncrementCounterWithTokenAsync(CancellationToken token)
         {
             await Task.Delay(50);
@@ -610,7 +610,7 @@ public partial class Test_ICommandAttribute
         }
 
         // This should not be ported over
-        [ICommand]
+        [RelayCommand]
         private async Task DelayAndIncrementCounterWithValueAsync(int count)
         {
             await Task.Delay(50);
@@ -620,7 +620,7 @@ public partial class Test_ICommandAttribute
 
         #endregion
 
-        [ICommand]
+        [RelayCommand]
         private async Task DelayAndIncrementCounterWithValueAndTokenAsync(int count, CancellationToken token)
         {
             await Task.Delay(50);
@@ -628,13 +628,13 @@ public partial class Test_ICommandAttribute
             Counter += count;
         }
 
-        [ICommand(AllowConcurrentExecutions = false)]
+        [RelayCommand(AllowConcurrentExecutions = false)]
         private async Task AwaitForExternalTaskAsync()
         {
             await ExternalTask!;
         }
 
-        [ICommand(AllowConcurrentExecutions = false)]
+        [RelayCommand(AllowConcurrentExecutions = false)]
         private async Task AwaitForInputTaskAsync(Task task)
         {
             await task;
@@ -659,49 +659,49 @@ public partial class Test_ICommandAttribute
 
         private bool GetFlag2(User user) => user.Name == nameof(CanExecuteViewModel);
 
-        [ICommand(CanExecute = nameof(Flag))]
+        [RelayCommand(CanExecute = nameof(Flag))]
         private void IncrementCounter_NoParameters_Property()
         {
             Counter++;
         }
 
-        [ICommand(CanExecute = nameof(Flag))]
+        [RelayCommand(CanExecute = nameof(Flag))]
         private void IncrementCounter_WithParameter_Property(User user)
         {
             Counter++;
         }
 
-        [ICommand(CanExecute = nameof(GeneratedFlag))]
+        [RelayCommand(CanExecute = nameof(GeneratedFlag))]
         private void IncrementCounter_NoParameters_GeneratedProperty()
         {
             Counter++;
         }
 
-        [ICommand(CanExecute = nameof(GeneratedFlag))]
+        [RelayCommand(CanExecute = nameof(GeneratedFlag))]
         private void IncrementCounter_WithParameter_GeneratedProperty(User user)
         {
             Counter++;
         }
 
-        [ICommand(CanExecute = nameof(GetFlag1))]
+        [RelayCommand(CanExecute = nameof(GetFlag1))]
         private void IncrementCounter_NoParameters_MethodWithNoParameters()
         {
             Counter++;
         }
 
-        [ICommand(CanExecute = nameof(GetFlag1))]
+        [RelayCommand(CanExecute = nameof(GetFlag1))]
         private void IncrementCounter_WithParameters_MethodWithNoParameters(User user)
         {
             Counter++;
         }
 
-        [ICommand(CanExecute = nameof(GetFlag2))]
+        [RelayCommand(CanExecute = nameof(GetFlag2))]
         private void IncrementCounter_WithParameters_MethodWithMatchingParameter(User user)
         {
             Counter++;
         }
 
-        [ICommand(CanExecute = nameof(Flag))]
+        [RelayCommand(CanExecute = nameof(Flag))]
         private async Task IncrementCounter_Async_NoParameters_Property()
         {
             Counter++;
@@ -709,7 +709,7 @@ public partial class Test_ICommandAttribute
             await Task.Delay(100);
         }
 
-        [ICommand(CanExecute = nameof(Flag))]
+        [RelayCommand(CanExecute = nameof(Flag))]
         private async Task IncrementCounter_Async_WithParameter_Property(User user)
         {
             Counter++;
@@ -717,7 +717,7 @@ public partial class Test_ICommandAttribute
             await Task.Delay(100);
         }
 
-        [ICommand(CanExecute = nameof(GeneratedFlag))]
+        [RelayCommand(CanExecute = nameof(GeneratedFlag))]
         private async Task IncrementCounter_Async_NoParameters_GeneratedProperty()
         {
             Counter++;
@@ -725,7 +725,7 @@ public partial class Test_ICommandAttribute
             await Task.Delay(100);
         }
 
-        [ICommand(CanExecute = nameof(GeneratedFlag))]
+        [RelayCommand(CanExecute = nameof(GeneratedFlag))]
         private async Task IncrementCounter_Async_WithParameter_GeneratedProperty(User user)
         {
             Counter++;
@@ -733,7 +733,7 @@ public partial class Test_ICommandAttribute
             await Task.Delay(100);
         }
 
-        [ICommand(CanExecute = nameof(GetFlag1))]
+        [RelayCommand(CanExecute = nameof(GetFlag1))]
         private async Task IncrementCounter_Async_NoParameters_MethodWithNoParameters()
         {
             Counter++;
@@ -741,7 +741,7 @@ public partial class Test_ICommandAttribute
             await Task.Delay(100);
         }
 
-        [ICommand(CanExecute = nameof(GetFlag1))]
+        [RelayCommand(CanExecute = nameof(GetFlag1))]
         private async Task IncrementCounter_Async_WithParameters_MethodWithNoParameters(User user)
         {
             Counter++;
@@ -749,7 +749,7 @@ public partial class Test_ICommandAttribute
             await Task.Delay(100);
         }
 
-        [ICommand(CanExecute = nameof(GetFlag2))]
+        [RelayCommand(CanExecute = nameof(GetFlag2))]
         private async Task IncrementCounter_Async_WithParameters_MethodWithMatchingParameter(User user)
         {
             Counter++;
@@ -773,7 +773,7 @@ public partial class Test_ICommandAttribute
 
         public object? Result2 { get; private set; }
 
-        [ICommand(IncludeCancelCommand = true)]
+        [RelayCommand(IncludeCancelCommand = true)]
         private async Task DoWorkAsync(CancellationToken token)
         {
             using CancellationTokenRegistration registration = token.Register(static state => ((TaskCompletionSource<object?>)state!).TrySetCanceled(), Tcs1);
@@ -790,7 +790,7 @@ public partial class Test_ICommandAttribute
             }
         }
 
-        [ICommand(IncludeCancelCommand = true)]
+        [RelayCommand(IncludeCancelCommand = true)]
         private async Task DoWorkWithParameterAsync(int number, CancellationToken token)
         {
             using CancellationTokenRegistration registration = token.Register(static state => ((TaskCompletionSource<object?>)state!).TrySetCanceled(), Tcs2);
@@ -810,7 +810,7 @@ public partial class Test_ICommandAttribute
 
     public partial class GenericTaskCommands
     {
-        [ICommand]
+        [RelayCommand]
         private async Task<string> GreetAsync()
         {
             await Task.Yield();
@@ -818,7 +818,7 @@ public partial class Test_ICommandAttribute
             return "Hello world";
         }
 
-        [ICommand]
+        [RelayCommand]
         private async Task<string> GreetWithTokenAsync(CancellationToken token)
         {
             await Task.Yield();
@@ -826,7 +826,7 @@ public partial class Test_ICommandAttribute
             return "Hello world";
         }
 
-        [ICommand]
+        [RelayCommand]
         private async Task<string> GreetWithParamAsync(object _)
         {
             await Task.Yield();
@@ -834,7 +834,7 @@ public partial class Test_ICommandAttribute
             return "Hello world";
         }
 
-        [ICommand]
+        [RelayCommand]
         private async Task<string> GreetWithParamAndTokenAsync(object _, CancellationToken token)
         {
             await Task.Yield();
@@ -846,7 +846,7 @@ public partial class Test_ICommandAttribute
     partial class ModelWithCultureAwareCommandName
     {
         // This starts with "I" to ensure it's converted to lowercase using invariant culture
-        [ICommand]
+        [RelayCommand]
         private void Initialize()
         {
         }
@@ -862,25 +862,25 @@ public partial class Test_ICommandAttribute
 
         public bool HasDownloadCommandRun { get; private set; }
 
-        [ICommand]
+        [RelayCommand]
         private void On()
         {
             HasOnCommandRun = true;
         }
 
-        [ICommand]
+        [RelayCommand]
         private void Onboard()
         {
             HasOnboardCommandRun = true;
         }
 
-        [ICommand]
+        [RelayCommand]
         private void OnSubmit()
         {
             HasSubmitCommandRun = true;
         }
 
-        [ICommand]
+        [RelayCommand]
         private async Task OnDownloadAsync()
         {
             await Task.Delay(100);
@@ -891,17 +891,17 @@ public partial class Test_ICommandAttribute
 
     partial class ModelWithCommandsWithNullabilityAnnotations
     {
-        [ICommand]
+        [RelayCommand]
         private void NullableObject(object? parameter)
         {
         }
 
-        [ICommand]
+        [RelayCommand]
         private void ListWithNullableType(List<object?> parameter)
         {
         }
 
-        [ICommand]
+        [RelayCommand]
         private void TupleWithNullableElements((DateTime? date, string? message, bool? shouldPrint, List<string>? stringList) parameter)
         {
         }

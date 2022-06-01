@@ -19,10 +19,10 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace CommunityToolkit.Mvvm.SourceGenerators;
 
 /// <inheritdoc/>
-partial class ICommandGenerator
+partial class RelayCommandGenerator
 {
     /// <summary>
-    /// A container for all the logic for <see cref="ICommandGenerator"/>.
+    /// A container for all the logic for <see cref="RelayCommandGenerator"/>.
     /// </summary>
     internal static class Execute
     {
@@ -152,8 +152,8 @@ partial class ICommandGenerator
                     AttributeList(SingletonSeparatedList(
                         Attribute(IdentifierName("global::System.CodeDom.Compiler.GeneratedCode"))
                         .AddArgumentListArguments(
-                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ICommandGenerator).FullName))),
-                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ICommandGenerator).Assembly.GetName().Version.ToString()))))))
+                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(RelayCommandGenerator).FullName))),
+                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(RelayCommandGenerator).Assembly.GetName().Version.ToString()))))))
                     .WithOpenBracketToken(Token(TriviaList(Comment($"/// <summary>The backing field for <see cref=\"{commandInfo.PropertyName}\"/>.</summary>")), SyntaxKind.OpenBracketToken, TriviaList())));
 
             // Prepares the argument to pass the underlying method to invoke
@@ -225,8 +225,8 @@ partial class ICommandGenerator
                     AttributeList(SingletonSeparatedList(
                         Attribute(IdentifierName("global::System.CodeDom.Compiler.GeneratedCode"))
                         .AddArgumentListArguments(
-                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ICommandGenerator).FullName))),
-                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ICommandGenerator).Assembly.GetName().Version.ToString()))))))
+                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(RelayCommandGenerator).FullName))),
+                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(RelayCommandGenerator).Assembly.GetName().Version.ToString()))))))
                     .WithOpenBracketToken(Token(TriviaList(Comment(
                         $"/// <summary>Gets an <see cref=\"{commandInterfaceTypeXmlName}\"/> instance wrapping <see cref=\"{commandInfo.MethodName}\"/>.</summary>")),
                         SyntaxKind.OpenBracketToken,
@@ -262,8 +262,8 @@ partial class ICommandGenerator
                         AttributeList(SingletonSeparatedList(
                             Attribute(IdentifierName("global::System.CodeDom.Compiler.GeneratedCode"))
                             .AddArgumentListArguments(
-                                AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ICommandGenerator).FullName))),
-                                AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ICommandGenerator).Assembly.GetName().Version.ToString()))))))
+                                AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(RelayCommandGenerator).FullName))),
+                                AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(RelayCommandGenerator).Assembly.GetName().Version.ToString()))))))
                         .WithOpenBracketToken(Token(TriviaList(Comment($"/// <summary>The backing field for <see cref=\"{cancelCommandPropertyName}\"/>.</summary>")), SyntaxKind.OpenBracketToken, TriviaList())));
 
                 // Construct the generated property as follows (the explicit delegate cast is needed to avoid overload resolution conflicts):
@@ -281,8 +281,8 @@ partial class ICommandGenerator
                         AttributeList(SingletonSeparatedList(
                             Attribute(IdentifierName("global::System.CodeDom.Compiler.GeneratedCode"))
                             .AddArgumentListArguments(
-                                AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ICommandGenerator).FullName))),
-                                AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ICommandGenerator).Assembly.GetName().Version.ToString()))))))
+                                AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(RelayCommandGenerator).FullName))),
+                                AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(RelayCommandGenerator).Assembly.GetName().Version.ToString()))))))
                         .WithOpenBracketToken(Token(TriviaList(Comment(
                             $"/// <summary>Gets an <see cref=\"global::System.Windows.Input.ICommand\"/> instance that can be used to cancel <see cref=\"{commandInfo.PropertyName}\"/>.</summary>")),
                             SyntaxKind.OpenBracketToken,
@@ -321,10 +321,10 @@ partial class ICommandGenerator
             foreach (ISymbol symbol in methodSymbol.ContainingType.BaseType?.GetAllMembers(methodSymbol.Name) ?? Enumerable.Empty<ISymbol>())
             {
                 if (symbol is IMethodSymbol otherSymbol &&
-                    otherSymbol.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.ICommandAttribute"))
+                    otherSymbol.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.RelayCommandAttribute"))
                 {
                     diagnostics.Add(
-                        MultipleICommandMethodOverloadsError,
+                        MultipleRelayCommandMethodOverloadsError,
                         methodSymbol,
                         methodSymbol.ContainingType,
                         methodSymbol);
@@ -337,9 +337,9 @@ partial class ICommandGenerator
             foreach (ISymbol symbol in methodSymbol.ContainingType.GetMembers(methodSymbol.Name))
             {
                 if (symbol is IMethodSymbol otherSymbol &&
-                    otherSymbol.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.ICommandAttribute"))
+                    otherSymbol.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.RelayCommandAttribute"))
                 {
-                    // If the first [ICommand] overload is the current symbol, return immediately. This makes it so
+                    // If the first [RelayCommand] overload is the current symbol, return immediately. This makes it so
                     // that if multiple overloads are present, only the ones after the first declared one will have
                     // diagnostics generated for them, while the first one will remain valid and will keep working.
                     if (SymbolEqualityComparer.Default.Equals(methodSymbol, otherSymbol))
@@ -348,7 +348,7 @@ partial class ICommandGenerator
                     }
 
                     diagnostics.Add(
-                        MultipleICommandMethodOverloadsError,
+                        MultipleRelayCommandMethodOverloadsError,
                         methodSymbol,
                         methodSymbol.ContainingType,
                         methodSymbol);
@@ -505,7 +505,7 @@ partial class ICommandGenerator
                 }
             }
 
-            diagnostics.Add(InvalidICommandMethodSignatureError, methodSymbol, methodSymbol.ContainingType, methodSymbol);
+            diagnostics.Add(InvalidRelayCommandMethodSignatureError, methodSymbol, methodSymbol.ContainingType, methodSymbol);
 
             commandInterfaceType = null;
             commandClassType = null;
@@ -742,8 +742,8 @@ partial class ICommandGenerator
         /// <summary>
         /// Gets the expression type for the can execute logic, if possible.
         /// </summary>
-        /// <param name="memberName">The member name passed to <c>[ICommand(CanExecute = ...)]</c>.</param>
-        /// <param name="containingType">The containing type for the method annotated with <c>[ICommand]</c>.</param>
+        /// <param name="memberName">The member name passed to <c>[RelayCommand(CanExecute = ...)]</c>.</param>
+        /// <param name="containingType">The containing type for the method annotated with <c>[RelayCommand]</c>.</param>
         /// <param name="commandTypeArguments">The type arguments for the command interface, if any.</param>
         /// <param name="canExecuteExpressionType">The resulting can execute expression type, if available.</param>
         /// <returns>Whether or not <paramref name="canExecuteExpressionType"/> was set and the input symbol was valid.</returns>
