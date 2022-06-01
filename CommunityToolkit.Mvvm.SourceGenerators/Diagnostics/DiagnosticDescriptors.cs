@@ -117,14 +117,14 @@ internal static class DiagnosticDescriptors
     /// Format: <c>"The method {0}.{1} cannot be used to generate a command property, as its signature isn't compatible with any of the existing relay command types"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor InvalidICommandMethodSignatureError = new DiagnosticDescriptor(
+    public static readonly DiagnosticDescriptor InvalidRelayCommandMethodSignatureError = new DiagnosticDescriptor(
         id: "MVVMTK0007",
-        title: "Invalid ICommand method signature",
+        title: "Invalid RelayCommand method signature",
         messageFormat: "The method {0}.{1} cannot be used to generate a command property, as its signature isn't compatible with any of the existing relay command types",
-        category: typeof(ICommandGenerator).FullName,
+        category: typeof(RelayCommandGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Cannot apply [ICommand] to methods with a signature that doesn't match any of the existing relay command types.",
+        description: "Cannot apply [RelayCommand] to methods with a signature that doesn't match any of the existing relay command types.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>
@@ -148,12 +148,12 @@ internal static class DiagnosticDescriptors
     /// </summary>
     public static readonly DiagnosticDescriptor InvalidCanExecuteMemberNameError = new DiagnosticDescriptor(
         id: "MVVMTK0009",
-        title: "Invalid ICommand.CanExecute member name",
+        title: "Invalid RelayCommand.CanExecute member name",
         messageFormat: "The CanExecute name must refer to a valid member, but \"{0}\" has no matches in type {1}",
-        category: typeof(ICommandGenerator).FullName,
+        category: typeof(RelayCommandGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "The CanExecute name in [ICommand] must refer to a valid member in its parent type.",
+        description: "The CanExecute name in [RelayCommand] must refer to a valid member in its parent type.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>
@@ -164,12 +164,12 @@ internal static class DiagnosticDescriptors
     /// </summary>
     public static readonly DiagnosticDescriptor MultipleCanExecuteMemberNameMatchesError = new DiagnosticDescriptor(
         id: "MVVMTK0010",
-        title: "Multiple ICommand.CanExecute member name matches",
+        title: "Multiple RelayCommand.CanExecute member name matches",
         messageFormat: "The CanExecute name must refer to a single member, but \"{0}\" has multiple matches in type {1}",
-        category: typeof(ICommandGenerator).FullName,
+        category: typeof(RelayCommandGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Cannot set the CanExecute name in [ICommand] to one that has multiple matches in its parent type (it must refer to a single compatible member).",
+        description: "Cannot set the CanExecute name in [RelayCommand] to one that has multiple matches in its parent type (it must refer to a single compatible member).",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>
@@ -180,44 +180,44 @@ internal static class DiagnosticDescriptors
     /// </summary>
     public static readonly DiagnosticDescriptor InvalidCanExecuteMemberError = new DiagnosticDescriptor(
         id: "MVVMTK0011",
-        title: "No valid ICommand.CanExecute member match",
+        title: "No valid RelayCommand.CanExecute member match",
         messageFormat: "The CanExecute name must refer to a compatible member, but no valid members were found for \"{0}\" in type {1}",
-        category: typeof(ICommandGenerator).FullName,
+        category: typeof(RelayCommandGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "The CanExecute name in [ICommand] must refer to a compatible member (either a property or a method) to be used in a generated command.",
+        description: "The CanExecute name in [RelayCommand] must refer to a compatible member (either a property or a method) to be used in a generated command.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>
-    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>ICommandAttribute.AllowConcurrentExecutions</c> is being set for a non-asynchronous method.
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>RelayCommandAttribute.AllowConcurrentExecutions</c> is being set for a non-asynchronous method.
     /// <para>
-    /// Format: <c>"The method {0}.{1} cannot be annotated with the [ICommand] attribute specifying a concurrency control setting, as it maps to a non-asynchronous command type"</c>.
+    /// Format: <c>"The method {0}.{1} cannot be annotated with the [RelayCommand] attribute specifying a concurrency control setting, as it maps to a non-asynchronous command type"</c>.
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor InvalidConcurrentExecutionsParameterError = new DiagnosticDescriptor(
         id: "MVVMTK0012",
         title: "Invalid concurrency control setting usage",
-        messageFormat: "The method {0}.{1} cannot be annotated with the [ICommand] attribute specifying a concurrency control setting, as it maps to a non-asynchronous command type",
-        category: typeof(ICommandGenerator).FullName,
+        messageFormat: "The method {0}.{1} cannot be annotated with the [RelayCommand] attribute specifying a concurrency control setting, as it maps to a non-asynchronous command type",
+        category: typeof(RelayCommandGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Cannot apply the [ICommand] attribute specifying a concurrency control setting to methods mapping to non-asynchronous command types.",
+        description: "Cannot apply the [RelayCommand] attribute specifying a concurrency control setting to methods mapping to non-asynchronous command types.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>
-    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>ICommandAttribute.IncludeCancelCommandParameter</c> is being set for an invalid method.
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>RelayCommandAttribute.IncludeCancelCommandParameter</c> is being set for an invalid method.
     /// <para>
-    /// Format: <c>"The method {0}.{1} cannot be annotated with the [ICommand] attribute specifying to include a cancel command, as it does not map to an asynchronous command type taking a cancellation token"</c>.
+    /// Format: <c>"The method {0}.{1} cannot be annotated with the [RelayCommand] attribute specifying to include a cancel command, as it does not map to an asynchronous command type taking a cancellation token"</c>.
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor InvalidIncludeCancelCommandParameterError = new DiagnosticDescriptor(
         id: "MVVMTK0013",
         title: "Invalid include cancel command setting usage",
-        messageFormat: "The method {0}.{1} cannot be annotated with the [ICommand] attribute specifying to include a cancel command, as it does not map to an asynchronous command type taking a cancellation token",
-        category: typeof(ICommandGenerator).FullName,
+        messageFormat: "The method {0}.{1} cannot be annotated with the [RelayCommand] attribute specifying to include a cancel command, as it does not map to an asynchronous command type taking a cancellation token",
+        category: typeof(RelayCommandGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Cannot apply the [ICommand] attribute specifying to include a cancel command to methods not mapping to an asynchronous command type accepting a cancellation token.",
+        description: "Cannot apply the [RelayCommand] attribute specifying to include a cancel command to methods not mapping to an asynchronous command type accepting a cancellation token.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>
@@ -365,19 +365,19 @@ internal static class DiagnosticDescriptors
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>
-    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a specified <c>[ICommand]</c> method has any overloads.
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a specified <c>[RelayCommand]</c> method has any overloads.
     /// <para>
     /// Format: <c>"The CanExecute name must refer to a single member, but "{0}" has multiple matches in type {1}"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor MultipleICommandMethodOverloadsError = new DiagnosticDescriptor(
+    public static readonly DiagnosticDescriptor MultipleRelayCommandMethodOverloadsError = new DiagnosticDescriptor(
         id: "MVVMTK0023",
-        title: "Multiple overloads for method annotated with ICommand",
-        messageFormat: "The method {0}.{1} cannot be annotated with [ICommand], has it has multiple overloads (command methods must be unique within their containing type)",
-        category: typeof(ICommandGenerator).FullName,
+        title: "Multiple overloads for method annotated with RelayCommand",
+        messageFormat: "The method {0}.{1} cannot be annotated with [RelayCommand], has it has multiple overloads (command methods must be unique within their containing type)",
+        category: typeof(RelayCommandGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Methods with multiple overloads cannot be annotated with [ICommand], as command methods must be unique within their containing type.",
+        description: "Methods with multiple overloads cannot be annotated with [RelayCommand], as command methods must be unique within their containing type.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>

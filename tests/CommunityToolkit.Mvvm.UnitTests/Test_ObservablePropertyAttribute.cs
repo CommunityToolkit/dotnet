@@ -878,7 +878,7 @@ public partial class Test_ObservablePropertyAttribute
         [ObservableProperty]
         private string? someGeneratedProperty;
 
-        [ICommand]
+        [RelayCommand]
         private void DoSomething()
         {
         }
@@ -962,7 +962,7 @@ public partial class Test_ObservablePropertyAttribute
 
         public RelayCommand MyCommand { get; } = new(() => { });
 
-        [ICommand]
+        [RelayCommand]
         private void TestFromMethod()
         {
         }
@@ -1353,7 +1353,7 @@ public partial class Test_ObservablePropertyAttribute
 
     public partial class InheritedModelWithCommandUsingInheritedObservablePropertyForCanExecute : BaseModelWithObservablePropertyAttribute
     {
-        [ICommand(CanExecute = nameof(CanSave))]
+        [RelayCommand(CanExecute = nameof(CanSave))]
         public override void Save()
         {
         }
@@ -1374,7 +1374,7 @@ public partial class Test_ObservablePropertyAttribute
     {
         public bool HasSaved { get; private set; }
 
-        [ICommand(CanExecute = nameof(CanSave))]
+        [RelayCommand(CanExecute = nameof(CanSave))]
         public override void Save()
         {
             HasSaved = true;

@@ -222,12 +222,12 @@ public class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel
                 {
-                    [ICommand]
+                    [RelayCommand]
                     private string GreetUser() => ""Hello world!"";
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0007");
+        VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0007");
     }
 
     [TestMethod]
@@ -319,14 +319,14 @@ public class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel
                 {
-                    [ICommand]
+                    [RelayCommand]
                     private void GreetUser(object value)
                     {
                     }
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ICommandGenerator>(
+        VerifyGeneratedDiagnostics<RelayCommandGenerator>(
             CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)),
             "MVVMTK0008");
     }
@@ -368,14 +368,14 @@ public class Test_SourceGeneratorsDiagnostics
                 {
                     private bool Foo => true;
 
-                    [ICommand(CanExecute = ""Bar"")]
+                    [RelayCommand(CanExecute = ""Bar"")]
                     private void GreetUser()
                     {
                     }
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0009");
+        VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0009");
     }
 
     [TestMethod]
@@ -392,14 +392,14 @@ public class Test_SourceGeneratorsDiagnostics
 
                     private bool Foo() => true;
 
-                    [ICommand(CanExecute = nameof(Foo))]
+                    [RelayCommand(CanExecute = nameof(Foo))]
                     private void GreetUser()
                     {
                     }
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0010");
+        VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0010");
     }
 
     [TestMethod]
@@ -414,14 +414,14 @@ public class Test_SourceGeneratorsDiagnostics
                 {
                     private bool Foo { set { } }
 
-                    [ICommand(CanExecute = nameof(Foo))]
+                    [RelayCommand(CanExecute = nameof(Foo))]
                     private void GreetUser()
                     {
                     }
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0011");
+        VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0011");
     }
 
     [TestMethod]
@@ -436,14 +436,14 @@ public class Test_SourceGeneratorsDiagnostics
                 {
                     private string Foo => ""Hi!"";
 
-                    [ICommand(CanExecute = nameof(Foo))]
+                    [RelayCommand(CanExecute = nameof(Foo))]
                     private void GreetUser()
                     {
                     }
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0011");
+        VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0011");
     }
 
     [TestMethod]
@@ -458,14 +458,14 @@ public class Test_SourceGeneratorsDiagnostics
                 {
                     private string Foo() => ""Hi!"";
 
-                    [ICommand(CanExecute = nameof(Foo))]
+                    [RelayCommand(CanExecute = nameof(Foo))]
                     private void GreetUser()
                     {
                     }
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0011");
+        VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0011");
     }
 
     [TestMethod]
@@ -480,14 +480,14 @@ public class Test_SourceGeneratorsDiagnostics
                 {
                     private bool Foo(string name) => true;
 
-                    [ICommand(CanExecute = nameof(Foo))]
+                    [RelayCommand(CanExecute = nameof(Foo))]
                     private void GreetUser()
                     {
                     }
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0011");
+        VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0011");
     }
 
     [TestMethod]
@@ -502,14 +502,14 @@ public class Test_SourceGeneratorsDiagnostics
                 {
                     private bool Foo(int age) => true;
 
-                    [ICommand(CanExecute = nameof(Foo))]
+                    [RelayCommand(CanExecute = nameof(Foo))]
                     private void GreetUser(string name)
                     {
                     }
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0011");
+        VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0011");
     }
 
     [TestMethod]
@@ -524,14 +524,14 @@ public class Test_SourceGeneratorsDiagnostics
                 {
                     private bool Foo(string name, int age) => true;
 
-                    [ICommand(CanExecute = nameof(Foo))]
+                    [RelayCommand(CanExecute = nameof(Foo))]
                     private void GreetUser(string name)
                     {
                     }
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0011");
+        VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0011");
     }
 
     [TestMethod]
@@ -544,14 +544,14 @@ public class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel
                 {
-                    [ICommand(AllowConcurrentExecutions = false)]
+                    [RelayCommand(AllowConcurrentExecutions = false)]
                     private void GreetUser(User user)
                     {
                     }
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0012");
+        VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0012");
     }
 
     [TestMethod]
@@ -564,14 +564,14 @@ public class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel
                 {
-                    [ICommand(IncludeCancelCommand = true)]
+                    [RelayCommand(IncludeCancelCommand = true)]
                     private void GreetUser(User user)
                     {
                     }
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0013");
+        VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0013");
     }
 
     [TestMethod]
@@ -585,14 +585,14 @@ public class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel
                 {
-                    [ICommand(IncludeCancelCommand = true)]
+                    [RelayCommand(IncludeCancelCommand = true)]
                     private async Task DoWorkAsync()
                     {
                     }
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0013");
+        VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0013");
     }
 
     [TestMethod]
@@ -606,14 +606,14 @@ public class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel
                 {
-                    [ICommand(IncludeCancelCommand = true)]
+                    [RelayCommand(IncludeCancelCommand = true)]
                     private async Task GreetUserAsync(User user)
                     {
                     }
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0013");
+        VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0013");
     }
 
     [TestMethod]
@@ -1090,19 +1090,19 @@ public class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel
                 {
-                    [ICommand]
+                    [RelayCommand]
                     private void GreetUser()
                     {
                     }
 
-                    [ICommand]
+                    [RelayCommand]
                     private void GreetUser(object value)
                     {
                     }
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0023");
+        VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0023");
     }
 
     [TestMethod]
@@ -1115,7 +1115,7 @@ public class Test_SourceGeneratorsDiagnostics
         {
             public partial class BaseViewModel
             {
-                [ICommand]
+                [RelayCommand]
                 private void GreetUser()
                 {
                 }
@@ -1123,14 +1123,14 @@ public class Test_SourceGeneratorsDiagnostics
 
             public partial class SampleViewModel : BaseViewModel
             {
-                [ICommand]
+                [RelayCommand]
                 private void GreetUser(object value)
                 {
                 }
             }
         }";
 
-        VerifyGeneratedDiagnostics<ICommandGenerator>(source, "MVVMTK0023");
+        VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0023");
     }
 
     [TestMethod]
