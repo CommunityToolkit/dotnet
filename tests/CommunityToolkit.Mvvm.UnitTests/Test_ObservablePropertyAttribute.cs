@@ -472,6 +472,15 @@ public partial class Test_ObservablePropertyAttribute
     public void Test_NotifyRecipients_WithInheritedObservableRecipientAttribute_WithClassLevelAttribute()
     {
         Test_NotifyRecipients_Test(
+            factory: static messenger => new BroadcastingViewModelWithInheritedClassLevelAttribute(messenger),
+            setter: static (model, value) => model.Name2 = value,
+            propertyName: nameof(BroadcastingViewModelWithInheritedClassLevelAttribute.Name2));
+    }
+
+    [TestMethod]
+    public void Test_NotifyRecipients_WithInheritedObservableRecipientAttributeAndClassLevelAttribute()
+    {
+        Test_NotifyRecipients_Test(
             factory: static messenger => new BroadcastingViewModelWithInheritedAttributeAndClassLevelAttribute(messenger),
             setter: static (model, value) => model.Name2 = value,
             propertyName: nameof(BroadcastingViewModelWithInheritedAttributeAndClassLevelAttribute.Name2));
@@ -1203,6 +1212,17 @@ public partial class Test_ObservablePropertyAttribute
         private string? name;
     }
 
+    partial class BroadcastingViewModelWithInheritedClassLevelAttribute : BroadcastingViewModelWithClassLevelAttribute
+    {
+        public BroadcastingViewModelWithInheritedClassLevelAttribute(IMessenger messenger)
+            : base(messenger)
+        {
+        }
+
+        [ObservableProperty]
+        private string? name2;
+    }
+
     [ObservableRecipient]
     [NotifyRecipients]
     partial class BroadcastingViewModelWithAttributeAndClassLevelAttribute : ObservableObject
@@ -1211,7 +1231,7 @@ public partial class Test_ObservablePropertyAttribute
         private string? name;
     }
 
-    partial class BroadcastingViewModelWithInheritedAttributeAndClassLevelAttribute : BroadcastingViewModelWithClassLevelAttribute
+    partial class BroadcastingViewModelWithInheritedAttributeAndClassLevelAttribute : BroadcastingViewModelWithAttributeAndClassLevelAttribute
     {
         public BroadcastingViewModelWithInheritedAttributeAndClassLevelAttribute(IMessenger messenger)
             : base(messenger)
