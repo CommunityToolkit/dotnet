@@ -290,6 +290,32 @@ public partial class Test_ObservablePropertyAttribute
         Assert.AreEqual(errors[1].PropertyName, nameof(ModelWithValuePropertyWithAutomaticValidationWithClassLevelAttribute.Value));
     }
 
+    [TestMethod]
+    public void Test_ObservablePropertyWithValueNamedField_WithValidationAttributesAndValidation_InheritingClassLevelAttribute()
+    {
+        ModelWithValuePropertyWithAutomaticValidationInheritingClassLevelAttribute model = new();
+
+        List<string?> propertyNames = new();
+
+        model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
+
+        List<DataErrorsChangedEventArgs> errors = new();
+
+        model.ErrorsChanged += (s, e) => errors.Add(e);
+
+        model.Value2 = "Bo";
+
+        Assert.IsTrue(model.HasErrors);
+        Assert.AreEqual(errors.Count, 1);
+        Assert.AreEqual(errors[0].PropertyName, nameof(ModelWithValuePropertyWithAutomaticValidationInheritingClassLevelAttribute.Value2));
+
+        model.Value2 = "Hello world";
+
+        Assert.IsFalse(model.HasErrors);
+        Assert.AreEqual(errors.Count, 2);
+        Assert.AreEqual(errors[1].PropertyName, nameof(ModelWithValuePropertyWithAutomaticValidationInheritingClassLevelAttribute.Value2));
+    }
+
     // See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4184
     [TestMethod]
     public void Test_GeneratedPropertiesWithValidationAttributesOverFields()
@@ -1056,6 +1082,14 @@ public partial class Test_ObservablePropertyAttribute
         [Required]
         [MinLength(5)]
         private string? value;
+    }
+
+    public partial class ModelWithValuePropertyWithAutomaticValidationInheritingClassLevelAttribute : ModelWithValuePropertyWithAutomaticValidationWithClassLevelAttribute
+    {
+        [ObservableProperty]
+        [Required]
+        [MinLength(5)]
+        private string? value2;
     }
 
     public partial class ViewModelWithValidatableGeneratedProperties : ObservableValidator
