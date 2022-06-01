@@ -1298,6 +1298,50 @@ public class Test_SourceGeneratorsDiagnostics
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0006", "MVVMTK0028");
     }
 
+    [TestMethod]
+    public void UnnecessaryNotifyRecipientsWarning_SameType()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                [NotifyRecipients]
+                public partial class MyViewModel : ObservableRecipient
+                {
+                    [ObservableProperty]
+                    [NotifyRecipients]
+                    public int number;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0029");
+    }
+
+    [TestMethod]
+    public void UnnecessaryNotifyRecipientsWarning_BaseType()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                [NotifyRecipients]
+                public class MyBaseViewModel : ObservableRecipient
+                {
+                }
+
+                public partial class MyViewModel : MyBaseViewModel
+                {
+                    [ObservableProperty]
+                    [NotifyRecipients]
+                    public int number;
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0029");
+    }
+
     /// <summary>
     /// Verifies the output of a source generator.
     /// </summary>
