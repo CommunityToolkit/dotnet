@@ -1,8 +1,8 @@
 <Project>
 
   <PropertyGroup>
-    <Company>.NET Foundation</Company>
-    <Authors>Microsoft.Toolkit</Authors>
+    <Company>Microsoft</Company>
+    <Authors>Microsoft</Authors>
     <Product>.NET Community Toolkit</Product>
     <CommonTags>dotnet;Community;Toolkit</CommonTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
