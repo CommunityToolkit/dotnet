@@ -19,15 +19,19 @@ This repository contains several .NET libraries (originally developed as part of
 
 ## 🙌 Getting Started
 
-Please read the [Getting Started with the .NET Community Toolkit](https://docs.microsoft.com/windows/communitytoolkit/getting-started) page for more detailed information about using the toolkit.
+Please read the [Getting Started with the .NET Community Toolkit](https://docs.microsoft.com/windows/communitytoolkit/getting-started) page for more detailed information.
 
 ## 📃 Documentation
 
-All documentation for the toolkit is hosted on [Microsoft Docs](https://docs.microsoft.com/windows/communitytoolkit/). All API documentation can be found at the [.NET API Browser](https://docs.microsoft.com/dotnet/api/?view=win-comm-toolkit-dotnet-stable).
+All documentation for the toolkit is hosted on [Microsoft Docs](https://docs.microsoft.com/windows/communitytoolkit/).
+
+All API documentation can be found at the [.NET API Browser](https://docs.microsoft.com/dotnet/api/?view=win-comm-toolkit-dotnet-stable).
 
 ## 🚀 Contribution
 
-Do you want to contribute? Check out our [.NET Community Toolkit Wiki](https://aka.ms/wct/wiki) page to learn more about contribution and guidelines.
+Do you want to contribute?
+
+Check out our [.NET Community Toolkit Wiki](https://aka.ms/wct/wiki) page to learn more about contribution and guidelines!
 
 ## 📦 NuGet Packages
 
