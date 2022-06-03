@@ -279,7 +279,14 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand, ICancellationAwareCo
     /// <inheritdoc/>
     public void Execute(object? parameter)
     {
-        _ = ExecuteAsync(parameter);
+        Task executionTask = ExecuteAsync(parameter);
+
+        // If exceptions shouldn't flow to the task scheduler, await the resulting task. This is
+        // delegated to a separate method to keep this one more compact in case the option is set.
+        if ((this.options & AsyncRelayCommandOptions.FlowExceptionsToTaskScheduler) == 0)
+        {
+            AwaitAndThrowIfFailed(executionTask);
+        }
     }
 
     /// <inheritdoc/>
@@ -322,5 +329,14 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand, ICancellationAwareCo
             PropertyChanged?.Invoke(this, CanBeCanceledChangedEventArgs);
             PropertyChanged?.Invoke(this, IsCancellationRequestedChangedEventArgs);
         }
+    }
+
+    /// <summary>
+    /// Awaits an input <see cref="Task"/> and throws an exception on the calling context, if the task fails.
+    /// </summary>
+    /// <param name="executionTask">The input <see cref="Task"/> instance to await.</param>
+    internal static async void AwaitAndThrowIfFailed(Task executionTask)
+    {
+        await executionTask;
     }
 }

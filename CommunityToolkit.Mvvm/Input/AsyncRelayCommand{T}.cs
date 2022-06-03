@@ -275,13 +275,18 @@ public sealed class AsyncRelayCommand<T> : IAsyncRelayCommand<T>, ICancellationA
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Execute(T? parameter)
     {
-        _ = ExecuteAsync(parameter);
+        Task executionTask = ExecuteAsync(parameter);
+
+        if ((this.options & AsyncRelayCommandOptions.FlowExceptionsToTaskScheduler) == 0)
+        {
+            AsyncRelayCommand.AwaitAndThrowIfFailed(executionTask);
+        }
     }
 
     /// <inheritdoc/>
     public void Execute(object? parameter)
     {
-        _ = ExecuteAsync((T?)parameter);
+        Execute((T?)parameter);
     }
 
     /// <inheritdoc/>
