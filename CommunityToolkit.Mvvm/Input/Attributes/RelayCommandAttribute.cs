@@ -78,7 +78,8 @@ public sealed class RelayCommandAttribute : Attribute
     /// When set for an attribute used on a method that would result in an <see cref="AsyncRelayCommand"/> or an
     /// <see cref="AsyncRelayCommand{T}"/> property to be generated, this will modify the behavior of these commands
     /// when an execution is invoked while a previous one is still running. It is the same as creating an instance of
-    /// these command types with a constructor such as <see cref="AsyncRelayCommand(Func{System.Threading.Tasks.Task}, bool)"/>.
+    /// these command types with a constructor such as <see cref="AsyncRelayCommand(Func{System.Threading.Tasks.Task}, AsyncRelayCommandOptions)"/>
+    /// and using the <see cref="AsyncRelayCommandOptions.AllowConcurrentExecutions"/> value.
     /// </summary>
     /// <remarks>Using this property is not valid if the target command doesn't map to an asynchronous command.</remarks>
     public bool AllowConcurrentExecutions { get; init; }
