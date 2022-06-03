@@ -21,6 +21,11 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(RepositoryDirectory)toolkit.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <IsTestProject>$(MSBuildProjectName.Contains('Test'))</IsTestProject>
     <IsCoreProject Condition="$(IsTestProject)">False</IsCoreProject>
     <IsCoreProject Condition="'$(IsCoreProject)' == ''">True</IsCoreProject>
