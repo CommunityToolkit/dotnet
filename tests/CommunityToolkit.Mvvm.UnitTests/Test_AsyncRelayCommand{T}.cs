@@ -186,7 +186,7 @@ public class Test_AsyncRelayCommandOfT
     [TestMethod]
     public async Task Test_AsyncRelayCommandOfT_AllowConcurrentExecutions_Disabled()
     {
-        await Test_AsyncRelayCommandOfT_AllowConcurrentExecutions_TestLogic(static task => new(async _ => await task, allowConcurrentExecutions: false));
+        await Test_AsyncRelayCommandOfT_AllowConcurrentExecutions_TestLogic(static task => new(async _ => await task, AsyncRelayCommandOptions.None));
     }
 
     [TestMethod]
@@ -272,7 +272,7 @@ public class Test_AsyncRelayCommandOfT
     {
         TaskCompletionSource<object?> tcs = new();
 
-        AsyncRelayCommand<string> command = new(s => tcs.Task, allowConcurrentExecutions: true);
+        AsyncRelayCommand<string> command = new(s => tcs.Task, AsyncRelayCommandOptions.AllowConcurrentExecutions);
 
         (object? Sender, EventArgs? Args) args = default;
 
@@ -303,7 +303,7 @@ public class Test_AsyncRelayCommandOfT
     {
         TaskCompletionSource<object?> tcs = new();
 
-        AsyncRelayCommand<string> command = new(s => tcs.Task, allowConcurrentExecutions: false);
+        AsyncRelayCommand<string> command = new(s => tcs.Task, AsyncRelayCommandOptions.None);
 
         (object? Sender, EventArgs? Args) args = default;
 
@@ -334,7 +334,7 @@ public class Test_AsyncRelayCommandOfT
     {
         TaskCompletionSource<object?> tcs = new();
 
-        AsyncRelayCommand<string> command = new((s, token) => tcs.Task, allowConcurrentExecutions: true);
+        AsyncRelayCommand<string> command = new((s, token) => tcs.Task, AsyncRelayCommandOptions.AllowConcurrentExecutions);
 
         (object? Sender, EventArgs? Args) args = default;
 
@@ -357,7 +357,7 @@ public class Test_AsyncRelayCommandOfT
     {
         TaskCompletionSource<object?> tcs = new();
 
-        AsyncRelayCommand<string> command = new((s, token) => tcs.Task, allowConcurrentExecutions: false);
+        AsyncRelayCommand<string> command = new((s, token) => tcs.Task, AsyncRelayCommandOptions.None);
 
         (object? Sender, EventArgs? Args) args = default;
 

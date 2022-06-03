@@ -191,7 +191,7 @@ public class Test_AsyncRelayCommand
             new TaskCompletionSource<object?>()
         };
 
-        AsyncRelayCommand? command = new(() => cancellationTokenSources[index++].Task, allowConcurrentExecutions: true);
+        AsyncRelayCommand? command = new(() => cancellationTokenSources[index++].Task, AsyncRelayCommandOptions.AllowConcurrentExecutions);
 
         Assert.IsTrue(command.CanExecute(null));
         Assert.IsTrue(command.CanExecute(new object()));
@@ -248,7 +248,7 @@ public class Test_AsyncRelayCommand
     [TestMethod]
     public async Task Test_AsyncRelayCommand_AllowConcurrentExecutions_Disabled()
     {
-        await Test_AsyncRelayCommand_AllowConcurrentExecutions_TestLogic(static task => new(async () => await task, allowConcurrentExecutions: false));
+        await Test_AsyncRelayCommand_AllowConcurrentExecutions_TestLogic(static task => new(async () => await task, AsyncRelayCommandOptions.None));
     }
 
     [TestMethod]
@@ -353,7 +353,7 @@ public class Test_AsyncRelayCommand
     {
         TaskCompletionSource<object?> tcs = new();
 
-        AsyncRelayCommand command = new(() => tcs.Task, allowConcurrentExecutions: true);
+        AsyncRelayCommand command = new(() => tcs.Task, AsyncRelayCommandOptions.AllowConcurrentExecutions);
 
         (object? Sender, EventArgs? Args) args = default;
 
@@ -376,7 +376,7 @@ public class Test_AsyncRelayCommand
     {
         TaskCompletionSource<object?> tcs = new();
 
-        AsyncRelayCommand command = new(() => tcs.Task, allowConcurrentExecutions: false);
+        AsyncRelayCommand command = new(() => tcs.Task, AsyncRelayCommandOptions.None);
 
         (object? Sender, EventArgs? Args) args = default;
 
@@ -399,7 +399,7 @@ public class Test_AsyncRelayCommand
     {
         TaskCompletionSource<object?> tcs = new();
 
-        AsyncRelayCommand command = new(token => tcs.Task, allowConcurrentExecutions: true);
+        AsyncRelayCommand command = new(token => tcs.Task, AsyncRelayCommandOptions.AllowConcurrentExecutions);
 
         (object? Sender, EventArgs? Args) args = default;
 
@@ -422,7 +422,7 @@ public class Test_AsyncRelayCommand
     {
         TaskCompletionSource<object?> tcs = new();
 
-        AsyncRelayCommand command = new(token => tcs.Task, allowConcurrentExecutions: false);
+        AsyncRelayCommand command = new(token => tcs.Task, AsyncRelayCommandOptions.None);
 
         (object? Sender, EventArgs? Args) args = default;
 
