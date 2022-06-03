@@ -207,7 +207,11 @@ partial class RelayCommandGenerator
             // Enable concurrent executions, if requested
             if (commandInfo.AllowConcurrentExecutions)
             {
-                commandCreationArguments.Add(Argument(LiteralExpression(SyntaxKind.TrueLiteralExpression)));
+                commandCreationArguments.Add(
+                    Argument(MemberAccessExpression(
+                        SyntaxKind.SimpleMemberAccessExpression,
+                        IdentifierName("global::CommunityToolkit.Mvvm.Input.AsyncRelayCommandOptions"),
+                        IdentifierName("AllowConcurrentExecutions"))));
             }
 
             // Construct the generated property as follows (the explicit delegate cast is needed to avoid overload resolution conflicts):
