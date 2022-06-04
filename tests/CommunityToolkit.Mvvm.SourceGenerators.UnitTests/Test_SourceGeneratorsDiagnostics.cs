@@ -213,7 +213,7 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void InvalidICommandMethodSignatureError()
+    public void InvalidRelayCommandMethodSignatureError()
     {
         string source = @"
             using CommunityToolkit.Mvvm.Input;
@@ -310,7 +310,7 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void UnsupportedCSharpLanguageVersion_FromICommandGenerator()
+    public void UnsupportedCSharpLanguageVersion_FromRelayCommandGenerator()
     {
         string source = @"
             using CommunityToolkit.Mvvm.Input;
@@ -535,7 +535,7 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void InvalidICommandAllowConcurrentExecutionsSettings()
+    public void InvalidRelayCommandAllowConcurrentExecutionsOption()
     {
         string source = @"
             using CommunityToolkit.Mvvm.Input;
@@ -555,7 +555,7 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void InvalidICommandIncludeCancelCommandSettings_SynchronousMethod()
+    public void InvalidRelayCommandIncludeCancelCommandSettings_SynchronousMethod()
     {
         string source = @"
             using CommunityToolkit.Mvvm.Input;
@@ -575,7 +575,7 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void InvalidICommandIncludeCancelCommandSettings_AsynchronousMethodWithNoCancellationToken()
+    public void InvalidRelayCommandIncludeCancelCommandSettings_AsynchronousMethodWithNoCancellationToken()
     {
         string source = @"
             using System.Threading.Tasks;
@@ -596,7 +596,7 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void InvalidICommandIncludeCancelCommandSettings_AsynchronousMethodWithParameterAndNoCancellationToken()
+    public void InvalidRelayCommandIncludeCancelCommandSettings_AsynchronousMethodWithParameterAndNoCancellationToken()
     {
         string source = @"
             using System.Threading.Tasks;
@@ -1081,7 +1081,7 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void MultipleICommandMethodOverloads_WithOverloads()
+    public void MultipleRelayCommandMethodOverloads_WithOverloads()
     {
         string source = @"
             using CommunityToolkit.Mvvm.Input;
@@ -1106,7 +1106,7 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void MultipleICommandMethodOverloads_WithOverloadInBaseType()
+    public void MultipleRelayCommandMethodOverloads_WithOverloadInBaseType()
     {
         string source = @"
         using CommunityToolkit.Mvvm.Input;
@@ -1388,6 +1388,26 @@ public class Test_SourceGeneratorsDiagnostics
             }";
 
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0030");
+    }
+
+    [TestMethod]
+    public void InvalidRelayCommandFlowExceptionsToTaskSchedulerOption()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.Input;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel
+                {
+                    [RelayCommand(FlowExceptionsToTaskScheduler = false)]
+                    private void GreetUser(User user)
+                    {
+                    }
+                }
+            }";
+
+        VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0031");
     }
 
     /// <summary>
