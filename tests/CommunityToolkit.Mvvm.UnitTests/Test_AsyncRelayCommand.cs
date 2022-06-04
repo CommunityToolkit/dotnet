@@ -10,6 +10,7 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.UnitTests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Nito.AsyncEx;
 
 namespace CommunityToolkit.Mvvm.UnitTests;
 
@@ -320,6 +321,43 @@ public class Test_AsyncRelayCommand
         Assert.AreSame(args.Item2, EventArgs.Empty);
     }
 
+    // See https://github.com/CommunityToolkit/dotnet/pull/251
+    [TestMethod]
+    public async Task Test_AsyncRelayCommand_EnsureExceptionThrown()
+    {
+        const int delay = 500;
+
+        Exception? executeException = null;
+        Exception? executeAsyncException = null;
+
+        AsyncRelayCommand command = new(async () =>
+        {
+            await Task.Delay(delay);
+
+            throw new Exception(nameof(Test_AsyncRelayCommand_EnsureExceptionThrown));
+        });
+
+        try
+        {
+            // Use AsyncContext to test async void methods https://stackoverflow.com/a/14207615/5953643
+            AsyncContext.Run(async () =>
+            {
+                command.Execute(null);
+
+                await Task.Delay(delay * 2); // Ensure we don't escape `AsyncContext` before command throws Exception
+            });
+        }
+        catch (Exception e)
+        {
+            executeException = e;
+        }
+
+        executeAsyncException = await Assert.ThrowsExceptionAsync<Exception>(() => command.ExecuteAsync(null));
+
+        Assert.AreEqual(nameof(Test_AsyncRelayCommand_EnsureExceptionThrown), executeException?.Message);
+        Assert.AreEqual(nameof(Test_AsyncRelayCommand_EnsureExceptionThrown), executeAsyncException?.Message);
+    }
+
     [TestMethod]
     public async Task Test_AsyncRelayCommand_ThrowingTaskBubblesToUnobservedTaskException()
     {
@@ -332,7 +370,7 @@ public class Test_AsyncRelayCommand
 
         async void TestCallback(Action throwAction, Action completeAction)
         {
-            AsyncRelayCommand command = new(() => TestMethodAsync(throwAction));
+            AsyncRelayCommand command = new(() => TestMethodAsync(throwAction), AsyncRelayCommandOptions.FlowExceptionsToTaskScheduler);
 
             command.Execute(null);
 

@@ -10,6 +10,7 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.UnitTests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Nito.AsyncEx;
 
 namespace CommunityToolkit.Mvvm.UnitTests;
 
@@ -241,6 +242,58 @@ public class Test_AsyncRelayCommandOfT
         _ = Assert.ThrowsException<InvalidCastException>(() => command.Execute(new object()));
     }
 
+    // See https://github.com/CommunityToolkit/dotnet/pull/251
+    [TestMethod]
+    public async Task Test_AsyncRelayCommandOfT_EnsureExceptionThrown()
+    {
+        const int delay = 500;
+
+        Exception? executeException = null;
+        Exception? executeTException = null;
+        Exception? executeAsyncException = null;
+
+        AsyncRelayCommand<int> command = new(async delay =>
+        {
+            await Task.Delay(delay);
+
+            throw new Exception(nameof(Test_AsyncRelayCommandOfT_EnsureExceptionThrown));
+        });
+
+        try
+        {
+            AsyncContext.Run(async () =>
+            {
+                command.Execute((object)delay);
+
+                await Task.Delay(delay * 2);
+            });
+        }
+        catch (Exception e)
+        {
+            executeException = e;
+        }
+
+        try
+        {
+            AsyncContext.Run(async () =>
+            {
+                command.Execute(delay);
+
+                await Task.Delay(delay * 2);
+            });
+        }
+        catch (Exception e)
+        {
+            executeTException = e;
+        }
+
+        executeAsyncException = await Assert.ThrowsExceptionAsync<Exception>(() => command.ExecuteAsync(delay));
+
+        Assert.AreEqual(nameof(Test_AsyncRelayCommandOfT_EnsureExceptionThrown), executeException?.Message);
+        Assert.AreEqual(nameof(Test_AsyncRelayCommandOfT_EnsureExceptionThrown), executeTException?.Message);
+        Assert.AreEqual(nameof(Test_AsyncRelayCommandOfT_EnsureExceptionThrown), executeAsyncException?.Message);
+    }
+
     [TestMethod]
     public async Task Test_AsyncRelayCommandOfT_ThrowingTaskBubblesToUnobservedTaskException()
     {
@@ -253,7 +306,7 @@ public class Test_AsyncRelayCommandOfT
 
         async void TestCallback(Action throwAction, Action completeAction)
         {
-            AsyncRelayCommand<string> command = new(s => TestMethodAsync(throwAction));
+            AsyncRelayCommand<string> command = new(s => TestMethodAsync(throwAction), AsyncRelayCommandOptions.FlowExceptionsToTaskScheduler);
 
             command.Execute(null);
 
