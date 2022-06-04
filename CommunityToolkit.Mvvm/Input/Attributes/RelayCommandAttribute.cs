@@ -75,14 +75,29 @@ public sealed class RelayCommandAttribute : Attribute
 
     /// <summary>
     /// Gets or sets a value indicating whether or not to allow concurrent executions for an asynchronous command.
+    /// <para>
     /// When set for an attribute used on a method that would result in an <see cref="AsyncRelayCommand"/> or an
     /// <see cref="AsyncRelayCommand{T}"/> property to be generated, this will modify the behavior of these commands
     /// when an execution is invoked while a previous one is still running. It is the same as creating an instance of
     /// these command types with a constructor such as <see cref="AsyncRelayCommand(Func{System.Threading.Tasks.Task}, AsyncRelayCommandOptions)"/>
     /// and using the <see cref="AsyncRelayCommandOptions.AllowConcurrentExecutions"/> value.
+    /// </para>
     /// </summary>
     /// <remarks>Using this property is not valid if the target command doesn't map to an asynchronous command.</remarks>
     public bool AllowConcurrentExecutions { get; init; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether or not to exceptions should be propagated to <see cref="System.Threading.Tasks.TaskScheduler.UnobservedTaskException"/>.
+    /// <para>
+    /// When set for an attribute used on a method that would result in an <see cref="AsyncRelayCommand"/> or an
+    /// <see cref="AsyncRelayCommand{T}"/> property to be generated, this will modify the behavior of these commands
+    /// in case an exception is thrown by the underlying operation. It is the same as creating an instance of
+    /// these command types with a constructor such as <see cref="AsyncRelayCommand(Func{System.Threading.Tasks.Task}, AsyncRelayCommandOptions)"/>
+    /// and using the <see cref="AsyncRelayCommandOptions.FlowExceptionsToTaskScheduler"/> value.
+    /// </para>
+    /// </summary>
+    /// <remarks>Using this property is not valid if the target command doesn't map to an asynchronous command.</remarks>
+    public bool FlowExceptionsToTaskScheduler { get; init; }
 
     /// <summary>
     /// Gets or sets a value indicating whether a cancel command should also be generated for an asynchronous command.

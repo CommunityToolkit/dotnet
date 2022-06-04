@@ -71,6 +71,17 @@ partial class RelayCommandGenerator
                 goto Failure;   
             }
 
+            // Check the switch to control exception flow
+            if (!TryGetFlowExceptionsToTaskSchedulerSwitch(
+                methodSymbol,
+                attributeData,
+                commandClassType,
+                builder,
+                out bool flowExceptionsToTaskScheduler))
+            {
+                goto Failure;
+            }
+
             // Get the CanExecute expression type, if any
             if (!TryGetCanExecuteExpressionType(
                 methodSymbol,
@@ -109,6 +120,7 @@ partial class RelayCommandGenerator
                 canExecuteMemberName,
                 canExecuteExpressionType,
                 allowConcurrentExecutions,
+                flowExceptionsToTaskScheduler,
                 generateCancelCommand);
 
             Failure:
@@ -205,13 +217,37 @@ partial class RelayCommandGenerator
             }
 
             // Enable concurrent executions, if requested
-            if (commandInfo.AllowConcurrentExecutions)
+            if (commandInfo.AllowConcurrentExecutions && !commandInfo.FlowExceptionsToTaskScheduler)
             {
                 commandCreationArguments.Add(
                     Argument(MemberAccessExpression(
                         SyntaxKind.SimpleMemberAccessExpression,
                         IdentifierName("global::CommunityToolkit.Mvvm.Input.AsyncRelayCommandOptions"),
                         IdentifierName("AllowConcurrentExecutions"))));
+            }
+            else if (commandInfo.FlowExceptionsToTaskScheduler && !commandInfo.AllowConcurrentExecutions)
+            {
+                // Enable exception flow, if requested
+                commandCreationArguments.Add(
+                    Argument(MemberAccessExpression(
+                        SyntaxKind.SimpleMemberAccessExpression,
+                        IdentifierName("global::CommunityToolkit.Mvvm.Input.AsyncRelayCommandOptions"),
+                        IdentifierName("FlowExceptionsToTaskScheduler"))));
+            }
+            else if (commandInfo.AllowConcurrentExecutions && commandInfo.FlowExceptionsToTaskScheduler)
+            {
+                // Enable both concurrency control and exception flow
+                commandCreationArguments.Add(
+                    Argument(BinaryExpression(
+                        SyntaxKind.BitwiseOrExpression,
+                        MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            IdentifierName("global::CommunityToolkit.Mvvm.Input.AsyncRelayCommandOptions"),
+                            IdentifierName("AllowConcurrentExecutions")),
+                        MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            IdentifierName("global::CommunityToolkit.Mvvm.Input.AsyncRelayCommandOptions"),
+                            IdentifierName("FlowExceptionsToTaskScheduler")))));
             }
 
             // Construct the generated property as follows (the explicit delegate cast is needed to avoid overload resolution conflicts):
@@ -554,6 +590,43 @@ partial class RelayCommandGenerator
             else
             {
                 diagnostics.Add(InvalidConcurrentExecutionsParameterError, methodSymbol, methodSymbol.ContainingType, methodSymbol);
+
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Checks whether or not the user has requested to configure the task scheduler exception flow option.
+        /// </summary>
+        /// <param name="methodSymbol">The input <see cref="IMethodSymbol"/> instance to process.</param>
+        /// <param name="attributeData">The <see cref="AttributeData"/> instance the method was annotated with.</param>
+        /// <param name="commandClassType">The command class type name.</param>
+        /// <param name="diagnostics">The current collection of gathered diagnostics.</param>
+        /// <param name="flowExceptionsToTaskScheduler">Whether or not task scheduler exception flow have been enabled.</param>
+        /// <returns>Whether or not a value for <paramref name="flowExceptionsToTaskScheduler"/> could be retrieved successfully.</returns>
+        private static bool TryGetFlowExceptionsToTaskSchedulerSwitch(
+            IMethodSymbol methodSymbol,
+            AttributeData attributeData,
+            string commandClassType,
+            ImmutableArray<Diagnostic>.Builder diagnostics,
+            out bool flowExceptionsToTaskScheduler)
+        {
+            // Try to get the custom switch for task scheduler exception flow (the default is false)
+            if (!attributeData.TryGetNamedArgument("FlowExceptionsToTaskScheduler", out flowExceptionsToTaskScheduler))
+            {
+                flowExceptionsToTaskScheduler = false;
+
+                return true;
+            }
+
+            // Just like with the concurrency control option, check that the target command type is asynchronous
+            if (commandClassType is "global::CommunityToolkit.Mvvm.Input.AsyncRelayCommand")
+            {
+                return true;
+            }
+            else
+            {
+                diagnostics.Add(InvalidFlowExceptionsToTaskSchedulerParameterError, methodSymbol, methodSymbol.ContainingType, methodSymbol);
 
                 return false;
             }
