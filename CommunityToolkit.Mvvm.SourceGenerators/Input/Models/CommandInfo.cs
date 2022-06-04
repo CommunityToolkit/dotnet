@@ -25,6 +25,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
 /// <param name="CanExecuteMemberName">The member name for the can execute check, if available.</param>
 /// <param name="CanExecuteExpressionType">The can execute expression type, if available.</param>
 /// <param name="AllowConcurrentExecutions">Whether or not concurrent executions have been enabled.</param>
+/// <param name="FlowExceptionsToTaskScheduler">Whether or not exceptions should flow to the task scheduler.</param>
 /// <param name="IncludeCancelCommand">Whether or not to also generate a cancel command.</param>
 internal sealed record CommandInfo(
     string MethodName,
@@ -38,6 +39,7 @@ internal sealed record CommandInfo(
     string? CanExecuteMemberName,
     CanExecuteExpressionType? CanExecuteExpressionType,
     bool AllowConcurrentExecutions,
+    bool FlowExceptionsToTaskScheduler,
     bool IncludeCancelCommand)
 {
     /// <summary>
@@ -59,6 +61,7 @@ internal sealed record CommandInfo(
             hashCode.Add(obj.CanExecuteMemberName);
             hashCode.Add(obj.CanExecuteExpressionType);
             hashCode.Add(obj.AllowConcurrentExecutions);
+            hashCode.Add(obj.FlowExceptionsToTaskScheduler);
             hashCode.Add(obj.IncludeCancelCommand);
         }
 
@@ -77,6 +80,7 @@ internal sealed record CommandInfo(
                 x.CanExecuteMemberName == y.CanExecuteMemberName &&
                 x.CanExecuteExpressionType == y.CanExecuteExpressionType &&
                 x.AllowConcurrentExecutions == y.AllowConcurrentExecutions &&
+                x.FlowExceptionsToTaskScheduler == y.FlowExceptionsToTaskScheduler &&
                 x.IncludeCancelCommand == y.IncludeCancelCommand;
         }
     }

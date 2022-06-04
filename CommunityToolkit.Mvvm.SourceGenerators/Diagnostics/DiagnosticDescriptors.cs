@@ -191,17 +191,17 @@ internal static class DiagnosticDescriptors
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>RelayCommandAttribute.AllowConcurrentExecutions</c> is being set for a non-asynchronous method.
     /// <para>
-    /// Format: <c>"The method {0}.{1} cannot be annotated with the [RelayCommand] attribute specifying a concurrency control setting, as it maps to a non-asynchronous command type"</c>.
+    /// Format: <c>"The method {0}.{1} cannot be annotated with the [RelayCommand] attribute specifying a concurrency control option, as it maps to a non-asynchronous command type"</c>.
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor InvalidConcurrentExecutionsParameterError = new DiagnosticDescriptor(
         id: "MVVMTK0012",
-        title: "Invalid concurrency control setting usage",
-        messageFormat: "The method {0}.{1} cannot be annotated with the [RelayCommand] attribute specifying a concurrency control setting, as it maps to a non-asynchronous command type",
+        title: "Invalid concurrency control option usage",
+        messageFormat: "The method {0}.{1} cannot be annotated with the [RelayCommand] attribute specifying a concurrency control option, as it maps to a non-asynchronous command type",
         category: typeof(RelayCommandGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Cannot apply the [RelayCommand] attribute specifying a concurrency control setting to methods mapping to non-asynchronous command types.",
+        description: "Cannot apply the [RelayCommand] attribute specifying a concurrency control option to methods mapping to non-asynchronous command types.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>
@@ -490,5 +490,21 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
         description: "Annotating a field with [NotifyDataErrorInfo] is not necessary if the containing type has or inherits [NotifyDataErrorInfo] at the class-level.",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>RelayCommandAttribute.FlowExceptionsToTaskScheduler</c> is being set for a non-asynchronous method.
+    /// <para>
+    /// Format: <c>"The method {0}.{1} cannot be annotated with the [RelayCommand] attribute specifying an exception flow option, as it maps to a non-asynchronous command type"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor InvalidFlowExceptionsToTaskSchedulerParameterError = new DiagnosticDescriptor(
+        id: "MVVMTK0031",
+        title: "Invalid task scheduler exception flow option usage",
+        messageFormat: "The method {0}.{1} cannot be annotated with the [RelayCommand] attribute specifying a task scheduler exception flow option, as it maps to a non-asynchronous command type",
+        category: typeof(RelayCommandGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "Cannot apply the [RelayCommand] attribute specifying a task scheduler exception flow option to methods mapping to non-asynchronous command types.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 }
