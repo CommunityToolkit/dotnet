@@ -17,11 +17,12 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// partial class MyViewModel : ObservableRecipient
 /// {
 ///     [ObservableProperty]
-///     [AlsoBroadcastChange]
+///     [NotifyPropertyChangedRecipients]
 ///     private string username;
 /// }
 /// </code>
 /// </para>
+/// <para>
 /// And with this, code analogous to this will be generated:
 /// <code>
 /// partial class MyViewModel
@@ -33,8 +34,12 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 ///     }
 /// }
 /// </code>
+/// </para>
+/// <para>
+/// This attribute can also be added to a class, and if so it will affect all generated properties in that type and inherited types.
+/// </para>
 /// </summary>
-[AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
-public sealed class AlsoBroadcastChangeAttribute : Attribute
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+public sealed class NotifyPropertyChangedRecipientsAttribute : Attribute
 {
 }

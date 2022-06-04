@@ -89,8 +89,10 @@ partial class ObservablePropertyGenerator
             ImmutableArray<string>.Builder propertyChangingNames = ImmutableArray.CreateBuilder<string>();
             ImmutableArray<string>.Builder notifiedCommandNames = ImmutableArray.CreateBuilder<string>();
             ImmutableArray<AttributeInfo>.Builder forwardedAttributes = ImmutableArray.CreateBuilder<AttributeInfo>();
-            bool alsoBroadcastChange = false;
-            bool alsoValidateProperty = false;
+            bool notifyRecipients = false;
+            bool notifyDataErrorInfo = false;
+            bool hasOrInheritsClassLevelNotifyPropertyChangedRecipients = false;
+            bool hasOrInheritsClassLevelNotifyDataErrorInfo = false;
             bool hasAnyValidationAttributes = false;
 
             // Track the property changing event for the property, if the type supports it
@@ -102,6 +104,20 @@ partial class ObservablePropertyGenerator
             // The current property is always notified
             propertyChangedNames.Add(propertyName);
 
+            // Get the class-level [NotifyPropertyChangedRecipients] setting, if any
+            if (TryGetIsNotifyingRecipients(fieldSymbol, out bool isBroadcastTargetValid))
+            {
+                notifyRecipients = isBroadcastTargetValid;
+                hasOrInheritsClassLevelNotifyPropertyChangedRecipients = true;
+            }
+
+            // Get the class-level [NotifyDataErrorInfo] setting, if any
+            if (TryGetNotifyDataErrorInfo(fieldSymbol, out bool isValidationTargetValid))
+            {
+                notifyDataErrorInfo = isValidationTargetValid;
+                hasOrInheritsClassLevelNotifyDataErrorInfo = true;
+            }
+
             // Gather attributes info
             foreach (AttributeData attributeData in fieldSymbol.GetAttributes())
             {
@@ -112,18 +128,18 @@ partial class ObservablePropertyGenerator
                     continue;
                 }
 
-                // Check whether the property should also broadcast changes
-                if (TryGetIsBroadcastingChanges(fieldSymbol, attributeData, builder, out bool isBroadcastTargetValid))
+                // Check whether the property should also notify recipients
+                if (TryGetIsNotifyingRecipients(fieldSymbol, attributeData, builder, hasOrInheritsClassLevelNotifyPropertyChangedRecipients, out isBroadcastTargetValid))
                 {
-                    alsoBroadcastChange = isBroadcastTargetValid;
+                    notifyRecipients = isBroadcastTargetValid;
 
                     continue;
                 }
 
                 // Check whether the property should also be validated
-                if (TryGetIsValidatingProperty(fieldSymbol, attributeData, builder, out bool isValidationTargetValid))
+                if (TryGetNotifyDataErrorInfo(fieldSymbol, attributeData, builder, hasOrInheritsClassLevelNotifyDataErrorInfo, out isValidationTargetValid))
                 {
-                    alsoValidateProperty = isValidationTargetValid;
+                    notifyDataErrorInfo = isValidationTargetValid;
 
                     continue;
                 }
@@ -165,10 +181,10 @@ partial class ObservablePropertyGenerator
             }
 
             // Log the diagnostic for missing validation attributes, if any
-            if (alsoValidateProperty && !hasAnyValidationAttributes)
+            if (notifyDataErrorInfo && !hasAnyValidationAttributes)
             {
                 builder.Add(
-                    MissingValidationAttributesForAlsoValidatePropertyError,
+                    MissingValidationAttributesForNotifyDataErrorInfoError,
                     fieldSymbol,
                     fieldSymbol.ContainingType,
                     fieldSymbol.Name);
@@ -183,8 +199,8 @@ partial class ObservablePropertyGenerator
                 propertyChangingNames.ToImmutable(),
                 propertyChangedNames.ToImmutable(),
                 notifiedCommandNames.ToImmutable(),
-                alsoBroadcastChange,
-                alsoValidateProperty,
+                notifyRecipients,
+                notifyDataErrorInfo,
                 forwardedAttributes.ToImmutable());
         }
 
@@ -285,7 +301,7 @@ partial class ObservablePropertyGenerator
                 return false;
             }
 
-            if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoNotifyChangeForAttribute") == true)
+            if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyPropertyChangedForAttribute") == true)
             {
                 foreach (string? dependentPropertyName in attributeData.GetConstructorArguments<string>())
                 {
@@ -300,7 +316,7 @@ partial class ObservablePropertyGenerator
                     else
                     {
                         diagnostics.Add(
-                            AlsoNotifyChangeForInvalidTargetError,
+                            NotifyPropertyChangedForInvalidTargetError,
                             fieldSymbol,
                             dependentPropertyName ?? "",
                             fieldSymbol.ContainingType);
@@ -364,8 +380,8 @@ partial class ObservablePropertyGenerator
                 foreach (ISymbol member in fieldSymbol.ContainingType.GetAllMembers())
                 {
                     if (member is IMethodSymbol methodSymbol &&
-                        methodSymbol.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.ICommandAttribute") &&
-                        commandName == ICommandGenerator.Execute.GetGeneratedFieldAndPropertyNames(methodSymbol).PropertyName)
+                        methodSymbol.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.RelayCommandAttribute") &&
+                        commandName == RelayCommandGenerator.Execute.GetGeneratedFieldAndPropertyNames(methodSymbol).PropertyName)
                     {
                         return true;
                     }
@@ -374,7 +390,7 @@ partial class ObservablePropertyGenerator
                 return false;
             }
 
-            if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoNotifyCanExecuteForAttribute") == true)
+            if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyCanExecuteChangedForAttribute") == true)
             {
                 foreach (string? commandName in attributeData.GetConstructorArguments<string>())
                 {
@@ -390,7 +406,7 @@ partial class ObservablePropertyGenerator
                     else
                     {
                         diagnostics.Add(
-                           AlsoNotifyCanExecuteForInvalidTargetError,
+                           NotifyCanExecuteChangedForInvalidTargetError,
                            fieldSymbol,
                            commandName ?? "",
                            fieldSymbol.ContainingType);
@@ -404,21 +420,64 @@ partial class ObservablePropertyGenerator
         }
 
         /// <summary>
-        /// Checks whether a given generated property should also broadcast changes.
+        /// Checks whether a given generated property should also notify recipients.
+        /// </summary>
+        /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
+        /// <param name="isBroadcastTargetValid">Whether or not the the property is in a valid target that can notify recipients.</param>
+        /// <returns>Whether or not the generated property for <paramref name="fieldSymbol"/> is in a type annotated with <c>[NotifyPropertyChangedRecipients]</c>.</returns>
+        private static bool TryGetIsNotifyingRecipients(IFieldSymbol fieldSymbol, out bool isBroadcastTargetValid)
+        {
+            if (fieldSymbol.ContainingType?.HasOrInheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyPropertyChangedRecipientsAttribute") == true)
+            {
+                // If the containing type is valid, track it
+                if (fieldSymbol.ContainingType.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableRecipient") ||
+                    fieldSymbol.ContainingType.HasOrInheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableRecipientAttribute"))
+                {
+                    isBroadcastTargetValid = true;
+
+                    return true;
+                }
+
+                // Otherwise, ignore the attribute but don't emit a diagnostic.
+                // The diagnostic for class-level attributes is handled separately.
+                isBroadcastTargetValid = false;
+
+                return true;
+            }
+
+            isBroadcastTargetValid = false;
+
+            return false;
+        }
+
+        /// <summary>
+        /// Checks whether a given generated property should also notify recipients.
         /// </summary>
         /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
         /// <param name="attributeData">The <see cref="AttributeData"/> instance for <paramref name="fieldSymbol"/>.</param>
         /// <param name="diagnostics">The current collection of gathered diagnostics.</param>
-        /// <param name="isBroadcastTargetValid">Whether or not the the property is in a valid target that can broadcast changes.</param>
-        /// <returns>Whether or not the generated property for <paramref name="fieldSymbol"/> used <c>[AlsoBroadcastChange]</c>.</returns>
-        private static bool TryGetIsBroadcastingChanges(
+        /// <param name="hasOrInheritsClassLevelNotifyPropertyChangedRecipients">Indicates wether the containing type of <paramref name="fieldSymbol"/> has or inherits <c>[NotifyPropertyChangedRecipients]</c>.</param>
+        /// <param name="isBroadcastTargetValid">Whether or not the the property is in a valid target that can notify recipients.</param>
+        /// <returns>Whether or not the generated property for <paramref name="fieldSymbol"/> used <c>[NotifyPropertyChangedRecipients]</c>.</returns>
+        private static bool TryGetIsNotifyingRecipients(
             IFieldSymbol fieldSymbol,
             AttributeData attributeData,
             ImmutableArray<Diagnostic>.Builder diagnostics,
+            bool hasOrInheritsClassLevelNotifyPropertyChangedRecipients,
             out bool isBroadcastTargetValid)
         {
-            if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoBroadcastChangeAttribute") == true)
+            if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyPropertyChangedRecipientsAttribute") == true)
             {
+                // Emit a diagnostic if the attribute is unnecessary
+                if (hasOrInheritsClassLevelNotifyPropertyChangedRecipients)
+                {
+                    diagnostics.Add(
+                        UnnecessaryNotifyPropertyChangedRecipientsAttributeOnFieldWarning,
+                        fieldSymbol,
+                        fieldSymbol.ContainingType,
+                        fieldSymbol.Name);
+                }
+
                 // If the containing type is valid, track it
                 if (fieldSymbol.ContainingType.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableRecipient") ||
                     fieldSymbol.ContainingType.HasOrInheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableRecipientAttribute"))
@@ -430,7 +489,7 @@ partial class ObservablePropertyGenerator
 
                 // Otherwise just emit the diagnostic and then ignore the attribute
                 diagnostics.Add(
-                    InvalidContainingTypeForAlsoBroadcastChangeFieldError,
+                    InvalidContainingTypeForNotifyPropertyChangedRecipientsFieldError,
                     fieldSymbol,
                     fieldSymbol.ContainingType,
                     fieldSymbol.Name);
@@ -446,21 +505,82 @@ partial class ObservablePropertyGenerator
         }
 
         /// <summary>
+        /// Checks whether a given type using <c>[NotifyPropertyChangedRecipients]</c> is valid and creates a <see cref="Diagnostic"/> if not.
+        /// </summary>
+        /// <param name="typeSymbol">The input <see cref="INamedTypeSymbol"/> instance to process.</param>
+        /// <returns>The <see cref="Diagnostic"/> for <paramref name="typeSymbol"/>, if not a valid type.</returns>
+        public static Diagnostic? GetIsNotifyingRecipientsDiagnosticForType(INamedTypeSymbol typeSymbol)
+        {
+            // If the containing type is valid, track it
+            if (!typeSymbol.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableRecipient") &&
+                !typeSymbol.HasOrInheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableRecipientAttribute"))
+            {
+                return Diagnostic.Create(
+                    InvalidTypeForNotifyPropertyChangedRecipientsError,
+                    typeSymbol.Locations.FirstOrDefault(),
+                    typeSymbol);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Checks whether a given generated property should also validate its value.
+        /// </summary>
+        /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
+        /// <param name="isValidationTargetValid">Whether or not the the property is in a valid target that can validate values.</param>
+        /// <returns>Whether or not the generated property for <paramref name="fieldSymbol"/> used <c>[NotifyDataErrorInfo]</c>.</returns>
+        private static bool TryGetNotifyDataErrorInfo(IFieldSymbol fieldSymbol, out bool isValidationTargetValid)
+        {
+            if (fieldSymbol.ContainingType?.HasOrInheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyDataErrorInfoAttribute") == true)
+            {
+                // If the containing type is valid, track it
+                if (fieldSymbol.ContainingType.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator"))
+                {
+                    isValidationTargetValid = true;
+
+                    return true;
+                }
+
+                // Otherwise, ignore the attribute but don't emit a diagnostic (same as above)
+                isValidationTargetValid = false;
+
+                return true;
+            }
+
+            isValidationTargetValid = false;
+
+            return false;
+        }
+
+        /// <summary>
         /// Checks whether a given generated property should also validate its value.
         /// </summary>
         /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
         /// <param name="attributeData">The <see cref="AttributeData"/> instance for <paramref name="fieldSymbol"/>.</param>
         /// <param name="diagnostics">The current collection of gathered diagnostics.</param>
+        /// <param name="hasOrInheritsClassLevelNotifyDataErrorInfo">Indicates wether the containing type of <paramref name="fieldSymbol"/> has or inherits <c>[NotifyDataErrorInfo]</c>.</param>
         /// <param name="isValidationTargetValid">Whether or not the the property is in a valid target that can validate values.</param>
-        /// <returns>Whether or not the generated property for <paramref name="fieldSymbol"/> used <c>[AlsoValidateProperty]</c>.</returns>
-        private static bool TryGetIsValidatingProperty(
+        /// <returns>Whether or not the generated property for <paramref name="fieldSymbol"/> used <c>[NotifyDataErrorInfo]</c>.</returns>
+        private static bool TryGetNotifyDataErrorInfo(
             IFieldSymbol fieldSymbol,
             AttributeData attributeData,
             ImmutableArray<Diagnostic>.Builder diagnostics,
+            bool hasOrInheritsClassLevelNotifyDataErrorInfo,
             out bool isValidationTargetValid)
         {
-            if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoValidatePropertyAttribute") == true)
+            if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyDataErrorInfoAttribute") == true)
             {
+                // Emit a diagnostic if the attribute is unnecessary
+                if (hasOrInheritsClassLevelNotifyDataErrorInfo)
+                {
+                    diagnostics.Add(
+                        UnnecessaryNotifyDataErrorInfoAttributeOnFieldWarning,
+                        fieldSymbol,
+                        fieldSymbol.ContainingType,
+                        fieldSymbol.Name);
+                }
+
                 // If the containing type is valid, track it
                 if (fieldSymbol.ContainingType.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator"))
                 {
@@ -471,7 +591,7 @@ partial class ObservablePropertyGenerator
 
                 // Otherwise just emit the diagnostic and then ignore the attribute
                 diagnostics.Add(
-                    MissingObservableValidatorInheritanceForAlsoValidatePropertyError,
+                    MissingObservableValidatorInheritanceForNotifyDataErrorInfoError,
                     fieldSymbol,
                     fieldSymbol.ContainingType,
                     fieldSymbol.Name);
@@ -484,6 +604,25 @@ partial class ObservablePropertyGenerator
             isValidationTargetValid = false;
 
             return false;
+        }
+
+        /// <summary>
+        /// Checks whether a given type using <c>[NotifyDataErrorInfo]</c> is valid and creates a <see cref="Diagnostic"/> if not.
+        /// </summary>
+        /// <param name="typeSymbol">The input <see cref="INamedTypeSymbol"/> instance to process.</param>
+        /// <returns>The <see cref="Diagnostic"/> for <paramref name="typeSymbol"/>, if not a valid type.</returns>
+        public static Diagnostic? GetIsNotifyDataErrorInfoDiagnosticForType(INamedTypeSymbol typeSymbol)
+        {
+            // If the containing type is valid, track it
+            if (!typeSymbol.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator"))
+            {
+                return Diagnostic.Create(
+                    InvalidTypeForNotifyDataErrorInfoError,
+                    typeSymbol.Locations.FirstOrDefault(),
+                    typeSymbol);
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -532,7 +671,7 @@ partial class ObservablePropertyGenerator
                 string name => IdentifierName(name)
             };
 
-            if (propertyInfo.AlsoBroadcastChange)
+            if (propertyInfo.NotifyPropertyChangedRecipients)
             {
                 // If broadcasting changes are required, also store the old value.
                 // This code generates a statement as follows:
@@ -582,7 +721,7 @@ partial class ObservablePropertyGenerator
             // If validation is requested, add a call to ValidateProperty:
             //
             // ValidateProperty(value, <PROPERTY_NAME>);
-            if (propertyInfo.AlsoValidateProperty)
+            if (propertyInfo.NotifyDataErrorInfo)
             {
                 setterStatements.Add(
                     ExpressionStatement(
@@ -630,7 +769,7 @@ partial class ObservablePropertyGenerator
             }
 
             // Also broadcast the change, if requested
-            if (propertyInfo.AlsoBroadcastChange)
+            if (propertyInfo.NotifyPropertyChangedRecipients)
             {
                 // This code generates a statement as follows:
                 //

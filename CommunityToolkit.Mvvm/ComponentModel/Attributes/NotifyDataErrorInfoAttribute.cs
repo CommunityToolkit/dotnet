@@ -17,7 +17,7 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// partial class MyViewModel : ObservableValidator
 /// {
 ///     [ObservableProperty]
-///     [AlsoValidateProperty]
+///     [NotifyDataErrorInfo]
 ///     [Required]
 ///     [MinLength(2)]
 ///     private string username;
@@ -38,7 +38,7 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// }
 /// </code>
 /// </summary>
-[AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
-public sealed class AlsoValidatePropertyAttribute : Attribute
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+public sealed class NotifyDataErrorInfoAttribute : Attribute
 {
 }

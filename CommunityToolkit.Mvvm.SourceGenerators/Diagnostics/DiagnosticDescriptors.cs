@@ -117,14 +117,14 @@ internal static class DiagnosticDescriptors
     /// Format: <c>"The method {0}.{1} cannot be used to generate a command property, as its signature isn't compatible with any of the existing relay command types"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor InvalidICommandMethodSignatureError = new DiagnosticDescriptor(
+    public static readonly DiagnosticDescriptor InvalidRelayCommandMethodSignatureError = new DiagnosticDescriptor(
         id: "MVVMTK0007",
-        title: "Invalid ICommand method signature",
+        title: "Invalid RelayCommand method signature",
         messageFormat: "The method {0}.{1} cannot be used to generate a command property, as its signature isn't compatible with any of the existing relay command types",
-        category: typeof(ICommandGenerator).FullName,
+        category: typeof(RelayCommandGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Cannot apply [ICommand] to methods with a signature that doesn't match any of the existing relay command types.",
+        description: "Cannot apply [RelayCommand] to methods with a signature that doesn't match any of the existing relay command types.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>
@@ -148,12 +148,12 @@ internal static class DiagnosticDescriptors
     /// </summary>
     public static readonly DiagnosticDescriptor InvalidCanExecuteMemberNameError = new DiagnosticDescriptor(
         id: "MVVMTK0009",
-        title: "Invalid ICommand.CanExecute member name",
+        title: "Invalid RelayCommand.CanExecute member name",
         messageFormat: "The CanExecute name must refer to a valid member, but \"{0}\" has no matches in type {1}",
-        category: typeof(ICommandGenerator).FullName,
+        category: typeof(RelayCommandGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "The CanExecute name in [ICommand] must refer to a valid member in its parent type.",
+        description: "The CanExecute name in [RelayCommand] must refer to a valid member in its parent type.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>
@@ -164,12 +164,12 @@ internal static class DiagnosticDescriptors
     /// </summary>
     public static readonly DiagnosticDescriptor MultipleCanExecuteMemberNameMatchesError = new DiagnosticDescriptor(
         id: "MVVMTK0010",
-        title: "Multiple ICommand.CanExecute member name matches",
+        title: "Multiple RelayCommand.CanExecute member name matches",
         messageFormat: "The CanExecute name must refer to a single member, but \"{0}\" has multiple matches in type {1}",
-        category: typeof(ICommandGenerator).FullName,
+        category: typeof(RelayCommandGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Cannot set the CanExecute name in [ICommand] to one that has multiple matches in its parent type (it must refer to a single compatible member).",
+        description: "Cannot set the CanExecute name in [RelayCommand] to one that has multiple matches in its parent type (it must refer to a single compatible member).",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>
@@ -180,44 +180,44 @@ internal static class DiagnosticDescriptors
     /// </summary>
     public static readonly DiagnosticDescriptor InvalidCanExecuteMemberError = new DiagnosticDescriptor(
         id: "MVVMTK0011",
-        title: "No valid ICommand.CanExecute member match",
+        title: "No valid RelayCommand.CanExecute member match",
         messageFormat: "The CanExecute name must refer to a compatible member, but no valid members were found for \"{0}\" in type {1}",
-        category: typeof(ICommandGenerator).FullName,
+        category: typeof(RelayCommandGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "The CanExecute name in [ICommand] must refer to a compatible member (either a property or a method) to be used in a generated command.",
+        description: "The CanExecute name in [RelayCommand] must refer to a compatible member (either a property or a method) to be used in a generated command.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>
-    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>ICommandAttribute.AllowConcurrentExecutions</c> is being set for a non-asynchronous method.
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>RelayCommandAttribute.AllowConcurrentExecutions</c> is being set for a non-asynchronous method.
     /// <para>
-    /// Format: <c>"The method {0}.{1} cannot be annotated with the [ICommand] attribute specifying a concurrency control setting, as it maps to a non-asynchronous command type"</c>.
+    /// Format: <c>"The method {0}.{1} cannot be annotated with the [RelayCommand] attribute specifying a concurrency control setting, as it maps to a non-asynchronous command type"</c>.
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor InvalidConcurrentExecutionsParameterError = new DiagnosticDescriptor(
         id: "MVVMTK0012",
         title: "Invalid concurrency control setting usage",
-        messageFormat: "The method {0}.{1} cannot be annotated with the [ICommand] attribute specifying a concurrency control setting, as it maps to a non-asynchronous command type",
-        category: typeof(ICommandGenerator).FullName,
+        messageFormat: "The method {0}.{1} cannot be annotated with the [RelayCommand] attribute specifying a concurrency control setting, as it maps to a non-asynchronous command type",
+        category: typeof(RelayCommandGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Cannot apply the [ICommand] attribute specifying a concurrency control setting to methods mapping to non-asynchronous command types.",
+        description: "Cannot apply the [RelayCommand] attribute specifying a concurrency control setting to methods mapping to non-asynchronous command types.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>
-    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>ICommandAttribute.IncludeCancelCommandParameter</c> is being set for an invalid method.
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>RelayCommandAttribute.IncludeCancelCommandParameter</c> is being set for an invalid method.
     /// <para>
-    /// Format: <c>"The method {0}.{1} cannot be annotated with the [ICommand] attribute specifying to include a cancel command, as it does not map to an asynchronous command type taking a cancellation token"</c>.
+    /// Format: <c>"The method {0}.{1} cannot be annotated with the [RelayCommand] attribute specifying to include a cancel command, as it does not map to an asynchronous command type taking a cancellation token"</c>.
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor InvalidIncludeCancelCommandParameterError = new DiagnosticDescriptor(
         id: "MVVMTK0013",
         title: "Invalid include cancel command setting usage",
-        messageFormat: "The method {0}.{1} cannot be annotated with the [ICommand] attribute specifying to include a cancel command, as it does not map to an asynchronous command type taking a cancellation token",
-        category: typeof(ICommandGenerator).FullName,
+        messageFormat: "The method {0}.{1} cannot be annotated with the [RelayCommand] attribute specifying to include a cancel command, as it does not map to an asynchronous command type taking a cancellation token",
+        category: typeof(RelayCommandGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Cannot apply the [ICommand] attribute specifying to include a cancel command to methods not mapping to an asynchronous command type accepting a cancellation token.",
+        description: "Cannot apply the [RelayCommand] attribute specifying to include a cancel command to methods not mapping to an asynchronous command type accepting a cancellation token.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>
@@ -237,35 +237,35 @@ internal static class DiagnosticDescriptors
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>
-    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when the specified target for <c>[AlsoNotifyChangeFor]</c> is not valid.
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when the specified target for <c>[NotifyPropertyChangedFor]</c> is not valid.
     /// <para>
-    /// Format: <c>"The target(s) of [AlsoNotifyChangeFor] must be a (different) accessible property, but "{0}" has no (other) matches in type {1}</c>.
+    /// Format: <c>"The target(s) of [NotifyPropertyChangedFor] must be a (different) accessible property, but "{0}" has no (other) matches in type {1}</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor AlsoNotifyChangeForInvalidTargetError = new DiagnosticDescriptor(
+    public static readonly DiagnosticDescriptor NotifyPropertyChangedForInvalidTargetError = new DiagnosticDescriptor(
         id: "MVVMTK0015",
-        title: "Invalid target name for [AlsoNotifyChangeFor]",
-        messageFormat: "The target(s) of [AlsoNotifyChangeFor] must be a (different) accessible property, but \"{0}\" has no (other) matches in type {1}",
+        title: "Invalid target name for [NotifyPropertyChangedFor]",
+        messageFormat: "The target(s) of [NotifyPropertyChangedFor] must be a (different) accessible property, but \"{0}\" has no (other) matches in type {1}",
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "The target(s) of [AlsoNotifyChangeFor] must be a (different) accessible property in its parent type.",
+        description: "The target(s) of [NotifyPropertyChangedFor] must be a (different) accessible property in its parent type.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>
-    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when the specified target for <c>[AlsoNotifyCanExecuteFor]</c> is not valid.
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when the specified target for <c>[NotifyCanExecuteChangedFor]</c> is not valid.
     /// <para>
-    /// Format: <c>"The target(s) of [AlsoNotifyCanExecuteFor] must be an accessible <c>IRelayCommand</c> property, but "{0}" has no matches in type {1}</c>.
+    /// Format: <c>"The target(s) of [NotifyCanExecuteChangedFor] must be an accessible <c>IRelayCommand</c> property, but "{0}" has no matches in type {1}</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor AlsoNotifyCanExecuteForInvalidTargetError = new DiagnosticDescriptor(
+    public static readonly DiagnosticDescriptor NotifyCanExecuteChangedForInvalidTargetError = new DiagnosticDescriptor(
         id: "MVVMTK0016",
-        title: "Invalid target name for [AlsoNotifyCanExecuteFor]",
-        messageFormat: "The target(s) of [AlsoNotifyCanExecuteFor] must be an accessible IRelayCommand property, but \"{0}\" has no matches in type {1}",
+        title: "Invalid target name for [NotifyCanExecuteChangedFor]",
+        messageFormat: "The target(s) of [NotifyCanExecuteChangedFor] must be an accessible IRelayCommand property, but \"{0}\" has no matches in type {1}",
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "The target(s) of [AlsoNotifyCanExecuteFor] must be an accessible IRelayCommand property in its parent type.",
+        description: "The target(s) of [NotifyCanExecuteChangedFor] must be an accessible IRelayCommand property in its parent type.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>
@@ -319,17 +319,17 @@ internal static class DiagnosticDescriptors
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[ObservableProperty]</c> is applied to a field in an invalid type.
     /// <para>
-    /// Format: <c>"The field {0}.{1} needs to be annotated with [ObservableProperty] in order to enable using [AlsoNotifyChangeFor], [AlsoNotifyCanExecuteFor], [AlsoBroadcastChange] and [AlsoValidateProperty]"</c>.
+    /// Format: <c>"The field {0}.{1} needs to be annotated with [ObservableProperty] in order to enable using [NotifyPropertyChangedFor], [NotifyCanExecuteChangedFor], [NotifyPropertyChangedRecipients] and [NotifyDataErrorInfo]"</c>.
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor FieldWithOrphanedDependentObservablePropertyAttributesError = new DiagnosticDescriptor(
         id: "MVVMTK0020",
         title: "Invalid use of attributes dependent on [ObservableProperty]",
-        messageFormat: "The field {0}.{1} needs to be annotated with [ObservableProperty] in order to enable using [AlsoNotifyChangeFor], [AlsoNotifyCanExecuteFor], [AlsoBroadcastChange] and [AlsoValidateProperty]",
+        messageFormat: "The field {0}.{1} needs to be annotated with [ObservableProperty] in order to enable using [NotifyPropertyChangedFor], [NotifyCanExecuteChangedFor], [NotifyPropertyChangedRecipients] and [NotifyDataErrorInfo]",
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Fields not annotated with [ObservableProperty] cannot use [AlsoNotifyChangeFor], [AlsoNotifyCanExecuteFor], [AlsoBroadcastChange] and [AlsoValidateProperty].",
+        description: "Fields not annotated with [ObservableProperty] cannot use [NotifyPropertyChangedFor], [NotifyCanExecuteChangedFor], [NotifyPropertyChangedRecipients] and [NotifyDataErrorInfo].",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>
@@ -349,35 +349,35 @@ internal static class DiagnosticDescriptors
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>
-    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[AlsoBroadcastChange]</c> is applied to a field in an invalid type.
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[NotifyPropertyChangedRecipients]</c> is applied to a field in an invalid type.
     /// <para>
-    /// Format: <c>"The field {0}.{1} cannot be annotated with [AlsoBroadcastChange], as its containing type doesn't inherit from ObservableRecipient, nor does it use [ObservableRecipient]"</c>.
+    /// Format: <c>"The field {0}.{1} cannot be annotated with [NotifyPropertyChangedRecipients], as its containing type doesn't inherit from ObservableRecipient, nor does it use [ObservableRecipient]"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor InvalidContainingTypeForAlsoBroadcastChangeFieldError = new DiagnosticDescriptor(
+    public static readonly DiagnosticDescriptor InvalidContainingTypeForNotifyPropertyChangedRecipientsFieldError = new DiagnosticDescriptor(
         id: "MVVMTK0022",
         title: "Invalid containing type for [ObservableProperty] field",
-        messageFormat: "The field {0}.{1} cannot be annotated with [AlsoBroadcastChange], as its containing type doesn't inherit from ObservableRecipient, nor does it use [ObservableRecipient]",
+        messageFormat: "The field {0}.{1} cannot be annotated with [NotifyPropertyChangedRecipients], as its containing type doesn't inherit from ObservableRecipient, nor does it use [ObservableRecipient]",
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Fields annotated with [AlsoBroadcastChange] must be contained in a type that inherits from ObservableRecipient or that is annotated with [ObservableRecipient] (including base types).",
+        description: "Fields annotated with [NotifyPropertyChangedRecipients] must be contained in a type that inherits from ObservableRecipient or that is annotated with [ObservableRecipient] (including base types).",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>
-    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a specified <c>[ICommand]</c> method has any overloads.
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a specified <c>[RelayCommand]</c> method has any overloads.
     /// <para>
     /// Format: <c>"The CanExecute name must refer to a single member, but "{0}" has multiple matches in type {1}"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor MultipleICommandMethodOverloadsError = new DiagnosticDescriptor(
+    public static readonly DiagnosticDescriptor MultipleRelayCommandMethodOverloadsError = new DiagnosticDescriptor(
         id: "MVVMTK0023",
-        title: "Multiple overloads for method annotated with ICommand",
-        messageFormat: "The method {0}.{1} cannot be annotated with [ICommand], has it has multiple overloads (command methods must be unique within their containing type)",
-        category: typeof(ICommandGenerator).FullName,
+        title: "Multiple overloads for method annotated with RelayCommand",
+        messageFormat: "The method {0}.{1} cannot be annotated with [RelayCommand], has it has multiple overloads (command methods must be unique within their containing type)",
+        category: typeof(RelayCommandGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Methods with multiple overloads cannot be annotated with [ICommand], as command methods must be unique within their containing type.",
+        description: "Methods with multiple overloads cannot be annotated with [RelayCommand], as command methods must be unique within their containing type.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>
@@ -399,32 +399,96 @@ internal static class DiagnosticDescriptors
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when the target type doesn't inherit from the <c>ObservableValidator</c> class.
     /// <para>
-    /// Format: <c>"The field {0}.{1} cannot be annotated with [AlsoValidateProperty], as it is declared in a type that doesn't inherit from ObservableValidator"</c>.
+    /// Format: <c>"The field {0}.{1} cannot be annotated with [NotifyDataErrorInfo], as it is declared in a type that doesn't inherit from ObservableValidator"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor MissingObservableValidatorInheritanceForAlsoValidatePropertyError = new DiagnosticDescriptor(
+    public static readonly DiagnosticDescriptor MissingObservableValidatorInheritanceForNotifyDataErrorInfoError = new DiagnosticDescriptor(
         id: "MVVMTK0025",
         title: "Missing ObservableValidator inheritance",
-        messageFormat: "The field {0}.{1} cannot be annotated with [AlsoValidateProperty], as it is declared in a type that doesn't inherit from ObservableValidator",
+        messageFormat: "The field {0}.{1} cannot be annotated with [NotifyDataErrorInfo], as it is declared in a type that doesn't inherit from ObservableValidator",
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Cannot apply [AlsoValidateProperty] to fields that are declared in a type that doesn't inherit from ObservableValidator.",
+        description: "Cannot apply [NotifyDataErrorInfo] to fields that are declared in a type that doesn't inherit from ObservableValidator.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>
-    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when the target field uses [AlsoValidateProperty] but has no validation attributes.
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when the target field uses [NotifyDataErrorInfo] but has no validation attributes.
     /// <para>
-    /// Format: <c>"The field {0}.{1} cannot be annotated with [AlsoValidateProperty], as it doesn't have any validation attributes to use during validation"</c>.
+    /// Format: <c>"The field {0}.{1} cannot be annotated with [NotifyDataErrorInfo], as it doesn't have any validation attributes to use during validation"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor MissingValidationAttributesForAlsoValidatePropertyError = new DiagnosticDescriptor(
+    public static readonly DiagnosticDescriptor MissingValidationAttributesForNotifyDataErrorInfoError = new DiagnosticDescriptor(
         id: "MVVMTK0026",
         title: "Missing validation attributes",
-        messageFormat: "The field {0}.{1} cannot be annotated with [AlsoValidateProperty], as it doesn't have any validation attributes to use during validation",
+        messageFormat: "The field {0}.{1} cannot be annotated with [NotifyDataErrorInfo], as it doesn't have any validation attributes to use during validation",
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Cannot apply [AlsoValidateProperty] to fields that don't have any validation attributes to use during validation.",
+        description: "Cannot apply [NotifyDataErrorInfo] to fields that don't have any validation attributes to use during validation.",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[NotifyPropertyChangedRecipients]</c> is applied to an invalid type.
+    /// <para>
+    /// Format: <c>"The type {0} cannot be annotated with [NotifyPropertyChangedRecipients], as it doesn't inherit from ObservableRecipient, nor does it use [ObservableRecipient]"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor InvalidTypeForNotifyPropertyChangedRecipientsError = new DiagnosticDescriptor(
+        id: "MVVMTK0027",
+        title: "Invalid type for [NotifyPropertyChangedRecipients] attribute",
+        messageFormat: "The type {0} cannot be annotated with [NotifyPropertyChangedRecipients], as it doesn't inherit from ObservableRecipient, nor does it use [ObservableRecipient]",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "Types annotated with [NotifyPropertyChangedRecipients] must inherit from ObservableRecipient or be annotated with [ObservableRecipient] (including base types).",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[NotifyDataErrorInfo]</c> is applied to an invalid type.
+    /// <para>
+    /// Format: <c>"The type {0} cannot be annotated with [NotifyDataErrorInfo], as it doesn't inherit from ObservableValidator"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor InvalidTypeForNotifyDataErrorInfoError = new DiagnosticDescriptor(
+        id: "MVVMTK0028",
+        title: "Invalid type for [NotifyDataErrorInfo] attribute",
+        messageFormat: "The type {0} cannot be annotated with [NotifyDataErrorInfo], as it doesn't inherit from ObservableValidator",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "Types annotated with [NotifyDataErrorInfo] must inherit from ObservableRecipient.",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[NotifyPropertyChangedRecipients]</c> is applied to a field in a class with <c>[NotifyPropertyChangedRecipients]</c> used at the class-level.
+    /// <para>
+    /// Format: <c>"The field {0}.{1} is annotated with [NotifyPropertyChangedRecipients], but that is not needed since its containing type already uses or inherits [NotifyPropertyChangedRecipients] at the class-level"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor UnnecessaryNotifyPropertyChangedRecipientsAttributeOnFieldWarning = new DiagnosticDescriptor(
+        id: "MVVMTK0029",
+        title: "Unnecessary [NotifyPropertyChangedRecipients] field annotation",
+        messageFormat: "The field {0}.{1} is annotated with [NotifyPropertyChangedRecipients], but that is not needed since its containing type already uses or inherits [NotifyPropertyChangedRecipients] at the class-level",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description: "Annotating a field with [NotifyPropertyChangedRecipients] is not necessary if the containing type has or inherits [NotifyPropertyChangedRecipients] at the class-level.",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[NotifyDataErrorInfo]</c> is applied to a field in a class with <c>[NotifyDataErrorInfo]</c> used at the class-level.
+    /// <para>
+    /// Format: <c>"The field {0}.{1} is annotated with [NotifyDataErrorInfo], but that is not needed since its containing type already uses or inherits [NotifyDataErrorInfo] at the class-level"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor UnnecessaryNotifyDataErrorInfoAttributeOnFieldWarning = new DiagnosticDescriptor(
+        id: "MVVMTK0030",
+        title: "Unnecessary [NotifyDataErrorInfo] field annotation",
+        messageFormat: "The field {0}.{1} is annotated with [NotifyDataErrorInfo], but that is not needed since its containing type already uses or inherits [NotifyDataErrorInfo] at the class-level",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description: "Annotating a field with [NotifyDataErrorInfo] is not necessary if the containing type has or inherits [NotifyDataErrorInfo] at the class-level.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 }

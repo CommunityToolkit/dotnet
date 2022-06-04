@@ -139,7 +139,7 @@ public partial class Test_ObservablePropertyAttribute
     }
 
     [TestMethod]
-    public void Test_AlsoNotifyChangeForAttribute_Events()
+    public void Test_NotifyPropertyChangedForAttribute_Events()
     {
         DependentPropertyModel model = new();
 
@@ -232,7 +232,7 @@ public partial class Test_ObservablePropertyAttribute
 
         Assert.AreEqual(model.Value, "Hello world");
 
-        // The [AlsoValidateProperty] attribute wasn't used, so the property shouldn't be validated
+        // The [NotifyDataErrorInfo] attribute wasn't used, so the property shouldn't be validated
         Assert.IsFalse(errorsChanged);
 
         CollectionAssert.AreEqual(new[] { nameof(model.Value) }, propertyNames);
@@ -262,6 +262,58 @@ public partial class Test_ObservablePropertyAttribute
         Assert.IsFalse(model.HasErrors);
         Assert.AreEqual(errors.Count, 2);
         Assert.AreEqual(errors[1].PropertyName, nameof(ModelWithValuePropertyWithAutomaticValidation.Value));
+    }
+
+    [TestMethod]
+    public void Test_ObservablePropertyWithValueNamedField_WithValidationAttributesAndValidation_WithClassLevelAttribute()
+    {
+        ModelWithValuePropertyWithAutomaticValidationWithClassLevelAttribute model = new();
+
+        List<string?> propertyNames = new();
+
+        model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
+
+        List<DataErrorsChangedEventArgs> errors = new();
+
+        model.ErrorsChanged += (s, e) => errors.Add(e);
+
+        model.Value = "Bo";
+
+        Assert.IsTrue(model.HasErrors);
+        Assert.AreEqual(errors.Count, 1);
+        Assert.AreEqual(errors[0].PropertyName, nameof(ModelWithValuePropertyWithAutomaticValidationWithClassLevelAttribute.Value));
+
+        model.Value = "Hello world";
+
+        Assert.IsFalse(model.HasErrors);
+        Assert.AreEqual(errors.Count, 2);
+        Assert.AreEqual(errors[1].PropertyName, nameof(ModelWithValuePropertyWithAutomaticValidationWithClassLevelAttribute.Value));
+    }
+
+    [TestMethod]
+    public void Test_ObservablePropertyWithValueNamedField_WithValidationAttributesAndValidation_InheritingClassLevelAttribute()
+    {
+        ModelWithValuePropertyWithAutomaticValidationInheritingClassLevelAttribute model = new();
+
+        List<string?> propertyNames = new();
+
+        model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
+
+        List<DataErrorsChangedEventArgs> errors = new();
+
+        model.ErrorsChanged += (s, e) => errors.Add(e);
+
+        model.Value2 = "Bo";
+
+        Assert.IsTrue(model.HasErrors);
+        Assert.AreEqual(errors.Count, 1);
+        Assert.AreEqual(errors[0].PropertyName, nameof(ModelWithValuePropertyWithAutomaticValidationInheritingClassLevelAttribute.Value2));
+
+        model.Value2 = "Hello world";
+
+        Assert.IsFalse(model.HasErrors);
+        Assert.AreEqual(errors.Count, 2);
+        Assert.AreEqual(errors[1].PropertyName, nameof(ModelWithValuePropertyWithAutomaticValidationInheritingClassLevelAttribute.Value2));
     }
 
     // See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4184
@@ -294,7 +346,7 @@ public partial class Test_ObservablePropertyAttribute
     }
 
     [TestMethod]
-    public void Test_AlsoNotifyChangeFor()
+    public void Test_NotifyPropertyChangedFor()
     {
         DependentPropertyModel model = new();
 
@@ -312,7 +364,7 @@ public partial class Test_ObservablePropertyAttribute
     }
 
     [TestMethod]
-    public void Test_AlsoNotifyChangeFor_GeneratedCommand()
+    public void Test_NotifyPropertyChangedFor_GeneratedCommand()
     {
         DependentPropertyModel2 model = new();
 
@@ -330,7 +382,7 @@ public partial class Test_ObservablePropertyAttribute
     }
 
     [TestMethod]
-    public void Test_AlsoNotifyChangeFor_IRelayCommandProperty()
+    public void Test_NotifyPropertyChangedFor_IRelayCommandProperty()
     {
         DependentPropertyModel3 model = new();
 
@@ -348,7 +400,7 @@ public partial class Test_ObservablePropertyAttribute
     }
 
     [TestMethod]
-    public void Test_AlsoNotifyChangeFor_IAsyncRelayCommandOfTProperty()
+    public void Test_NotifyPropertyChangedFor_IAsyncRelayCommandOfTProperty()
     {
         DependentPropertyModel4 model = new();
 
@@ -398,33 +450,69 @@ public partial class Test_ObservablePropertyAttribute
     }
 
     [TestMethod]
-    public void Test_AlsoBroadcastChange_WithObservableObject()
+    public void Test_NotifyPropertyChangedRecipients_WithObservableObject()
     {
-        Test_AlsoBroadcastChange_Test(
+        Test_NotifyPropertyChangedRecipients_Test(
            factory: static messenger => new BroadcastingViewModel(messenger),
            setter: static (model, value) => model.Name = value,
            propertyName: nameof(BroadcastingViewModel.Name));
     }
 
     [TestMethod]
-    public void Test_AlsoBroadcastChange_WithObservableRecipientAttribute()
+    public void Test_NotifyPropertyChangedRecipients_WithObservableRecipientAttribute()
     {
-        Test_AlsoBroadcastChange_Test(
+        Test_NotifyPropertyChangedRecipients_Test(
             factory: static messenger => new BroadcastingViewModelWithAttribute(messenger),
             setter: static (model, value) => model.Name = value,
             propertyName: nameof(BroadcastingViewModelWithAttribute.Name));
     }
 
     [TestMethod]
-    public void Test_AlsoBroadcastChange_WithInheritedObservableRecipientAttribute()
+    public void Test_NotifyPropertyChangedRecipients_WithInheritedObservableRecipientAttribute()
     {
-        Test_AlsoBroadcastChange_Test(
+        Test_NotifyPropertyChangedRecipients_Test(
             factory: static messenger => new BroadcastingViewModelWithInheritedAttribute(messenger),
             setter: static (model, value) => model.Name2 = value,
             propertyName: nameof(BroadcastingViewModelWithInheritedAttribute.Name2));
     }
 
-    private void Test_AlsoBroadcastChange_Test<T>(Func<IMessenger, T> factory, Action<T, string?> setter, string propertyName)
+    [TestMethod]
+    public void Test_NotifyPropertyChangedRecipients_WithObservableObject_WithClassLevelAttribute()
+    {
+        Test_NotifyPropertyChangedRecipients_Test(
+           factory: static messenger => new BroadcastingViewModelWithClassLevelAttribute(messenger),
+           setter: static (model, value) => model.Name = value,
+           propertyName: nameof(BroadcastingViewModelWithClassLevelAttribute.Name));
+    }
+
+    [TestMethod]
+    public void Test_NotifyPropertyChangedRecipients_WithObservableRecipientAttribute_WithClassLevelAttribute()
+    {
+        Test_NotifyPropertyChangedRecipients_Test(
+            factory: static messenger => new BroadcastingViewModelWithAttributeAndClassLevelAttribute(messenger),
+            setter: static (model, value) => model.Name = value,
+            propertyName: nameof(BroadcastingViewModelWithAttributeAndClassLevelAttribute.Name));
+    }
+
+    [TestMethod]
+    public void Test_NotifyPropertyChangedRecipients_WithInheritedObservableRecipientAttribute_WithClassLevelAttribute()
+    {
+        Test_NotifyPropertyChangedRecipients_Test(
+            factory: static messenger => new BroadcastingViewModelWithInheritedClassLevelAttribute(messenger),
+            setter: static (model, value) => model.Name2 = value,
+            propertyName: nameof(BroadcastingViewModelWithInheritedClassLevelAttribute.Name2));
+    }
+
+    [TestMethod]
+    public void Test_NotifyPropertyChangedRecipients_WithInheritedObservableRecipientAttributeAndClassLevelAttribute()
+    {
+        Test_NotifyPropertyChangedRecipients_Test(
+            factory: static messenger => new BroadcastingViewModelWithInheritedAttributeAndClassLevelAttribute(messenger),
+            setter: static (model, value) => model.Name2 = value,
+            propertyName: nameof(BroadcastingViewModelWithInheritedAttributeAndClassLevelAttribute.Name2));
+    }
+
+    private void Test_NotifyPropertyChangedRecipients_Test<T>(Func<IMessenger, T> factory, Action<T, string?> setter, string propertyName)
         where T : notnull
     {
         IMessenger messenger = new StrongReferenceMessenger();
@@ -450,6 +538,24 @@ public partial class Test_ObservablePropertyAttribute
         Assert.AreEqual("Bob", messages[1].Message.OldValue);
         Assert.AreEqual("Ross", messages[1].Message.NewValue);
         Assert.AreEqual(propertyName, messages[0].Message.PropertyName);
+    }
+
+    [TestMethod]
+    public void Test_ObservableProperty_ObservableRecipientDoesNotBroadcastByDefault()
+    {
+        IMessenger messenger = new StrongReferenceMessenger();
+        RecipientWithNonBroadcastingProperty model = new(messenger);
+
+        List<(object Sender, PropertyChangedMessage<string?> Message)> messages = new();
+
+        messenger.Register<PropertyChangedMessage<string?>>(model, (r, m) => messages.Add((r, m)));
+
+        model.Name = "Bob";
+        model.Name = "Alice";
+        model.Name = null;
+
+        // The [NotifyPropertyChangedRecipients] attribute wasn't used, so no messages should have been sent
+        Assert.AreEqual(messages.Count, 0);
     }
 
 #if NET6_0_OR_GREATER
@@ -643,10 +749,10 @@ public partial class Test_ObservablePropertyAttribute
 
     // See https://github.com/CommunityToolkit/dotnet/issues/242
     [TestMethod]
-    public void Test_ObservableProperty_ModelWithAlsoBroadcastChangeAndDisplayAttributeLast()
+    public void Test_ObservableProperty_ModelWithNotifyPropertyChangedRecipientsAndDisplayAttributeLast()
     {
         IMessenger messenger = new StrongReferenceMessenger();
-        ModelWithAlsoBroadcastChangeAndDisplayAttributeLast model = new(messenger);
+        ModelWithNotifyPropertyChangedRecipientsAndDisplayAttributeLast model = new(messenger);
 
         List<string?> propertyNames = new();
 
@@ -772,7 +878,7 @@ public partial class Test_ObservablePropertyAttribute
         [ObservableProperty]
         private string? someGeneratedProperty;
 
-        [ICommand]
+        [RelayCommand]
         private void DoSomething()
         {
         }
@@ -784,22 +890,22 @@ public partial class Test_ObservablePropertyAttribute
     {
         // Inherited property
         [ObservableProperty]
-        [AlsoNotifyChangeFor(nameof(Content))]
+        [NotifyPropertyChangedFor(nameof(Content))]
         private string? _a;
 
         // Inherited generated property
         [ObservableProperty]
-        [AlsoNotifyChangeFor(nameof(SomeGeneratedProperty))]
+        [NotifyPropertyChangedFor(nameof(SomeGeneratedProperty))]
         private string? _b;
 
         // Inherited generated command
         [ObservableProperty]
-        [AlsoNotifyCanExecuteFor(nameof(DoSomethingCommand))]
+        [NotifyCanExecuteChangedFor(nameof(DoSomethingCommand))]
         private string? _c;
 
         // Inherited manual command
         [ObservableProperty]
-        [AlsoNotifyCanExecuteFor(nameof(ManualCommand))]
+        [NotifyCanExecuteChangedFor(nameof(ManualCommand))]
         private string? _d;
     }
 
@@ -826,13 +932,13 @@ public partial class Test_ObservablePropertyAttribute
     public sealed partial class DependentPropertyModel
     {
         [ObservableProperty]
-        [AlsoNotifyChangeFor(nameof(FullName))]
-        [AlsoNotifyChangeFor(nameof(Alias))]
+        [NotifyPropertyChangedFor(nameof(FullName))]
+        [NotifyPropertyChangedFor(nameof(Alias))]
         private string? name;
 
         [ObservableProperty]
-        [AlsoNotifyChangeFor(nameof(FullName), nameof(Alias))]
-        [AlsoNotifyCanExecuteFor(nameof(MyCommand))]
+        [NotifyPropertyChangedFor(nameof(FullName), nameof(Alias))]
+        [NotifyCanExecuteChangedFor(nameof(MyCommand))]
         private string? surname;
 
         public string FullName => $"{Name} {Surname}";
@@ -846,8 +952,8 @@ public partial class Test_ObservablePropertyAttribute
     public sealed partial class DependentPropertyModel2
     {
         [ObservableProperty]
-        [AlsoNotifyChangeFor(nameof(FullName), nameof(Alias))]
-        [AlsoNotifyCanExecuteFor(nameof(TestFromMethodCommand))]
+        [NotifyPropertyChangedFor(nameof(FullName), nameof(Alias))]
+        [NotifyCanExecuteChangedFor(nameof(TestFromMethodCommand))]
         private string? text;
 
         public string FullName => "";
@@ -856,7 +962,7 @@ public partial class Test_ObservablePropertyAttribute
 
         public RelayCommand MyCommand { get; } = new(() => { });
 
-        [ICommand]
+        [RelayCommand]
         private void TestFromMethod()
         {
         }
@@ -866,8 +972,8 @@ public partial class Test_ObservablePropertyAttribute
     public sealed partial class DependentPropertyModel3
     {
         [ObservableProperty]
-        [AlsoNotifyChangeFor(nameof(FullName), nameof(Alias))]
-        [AlsoNotifyCanExecuteFor(nameof(MyCommand))]
+        [NotifyPropertyChangedFor(nameof(FullName), nameof(Alias))]
+        [NotifyCanExecuteChangedFor(nameof(MyCommand))]
         private string? text;
 
         public string FullName => "";
@@ -881,8 +987,8 @@ public partial class Test_ObservablePropertyAttribute
     public sealed partial class DependentPropertyModel4
     {
         [ObservableProperty]
-        [AlsoNotifyChangeFor(nameof(FullName), nameof(Alias))]
-        [AlsoNotifyCanExecuteFor(nameof(MyCommand))]
+        [NotifyPropertyChangedFor(nameof(FullName), nameof(Alias))]
+        [NotifyCanExecuteChangedFor(nameof(MyCommand))]
         private string? text;
 
         public string FullName => "";
@@ -965,8 +1071,25 @@ public partial class Test_ObservablePropertyAttribute
         [ObservableProperty]
         [Required]
         [MinLength(5)]
-        [AlsoValidateProperty]
+        [NotifyDataErrorInfo]
         private string? value;
+    }
+
+    [NotifyDataErrorInfo]
+    public partial class ModelWithValuePropertyWithAutomaticValidationWithClassLevelAttribute : ObservableValidator
+    {
+        [ObservableProperty]
+        [Required]
+        [MinLength(5)]
+        private string? value;
+    }
+
+    public partial class ModelWithValuePropertyWithAutomaticValidationInheritingClassLevelAttribute : ModelWithValuePropertyWithAutomaticValidationWithClassLevelAttribute
+    {
+        [ObservableProperty]
+        [Required]
+        [MinLength(5)]
+        private string? value2;
     }
 
     public partial class ViewModelWithValidatableGeneratedProperties : ObservableValidator
@@ -1076,7 +1199,18 @@ public partial class Test_ObservablePropertyAttribute
         }
 
         [ObservableProperty]
-        [AlsoBroadcastChange]
+        [NotifyPropertyChangedRecipients]
+        private string? name;
+    }
+
+    partial class RecipientWithNonBroadcastingProperty : ObservableRecipient
+    {
+        public RecipientWithNonBroadcastingProperty(IMessenger messenger)
+            : base(messenger)
+        {
+        }
+
+        [ObservableProperty]
         private string? name;
     }
 
@@ -1084,7 +1218,7 @@ public partial class Test_ObservablePropertyAttribute
     partial class BroadcastingViewModelWithAttribute : ObservableObject
     {
         [ObservableProperty]
-        [AlsoBroadcastChange]
+        [NotifyPropertyChangedRecipients]
         private string? name;
     }
 
@@ -1096,7 +1230,49 @@ public partial class Test_ObservablePropertyAttribute
         }
 
         [ObservableProperty]
-        [AlsoBroadcastChange]
+        [NotifyPropertyChangedRecipients]
+        private string? name2;
+    }
+
+    [NotifyPropertyChangedRecipients]
+    partial class BroadcastingViewModelWithClassLevelAttribute : ObservableRecipient
+    {
+        public BroadcastingViewModelWithClassLevelAttribute(IMessenger messenger)
+            : base(messenger)
+        {
+        }
+
+        [ObservableProperty]
+        private string? name;
+    }
+
+    partial class BroadcastingViewModelWithInheritedClassLevelAttribute : BroadcastingViewModelWithClassLevelAttribute
+    {
+        public BroadcastingViewModelWithInheritedClassLevelAttribute(IMessenger messenger)
+            : base(messenger)
+        {
+        }
+
+        [ObservableProperty]
+        private string? name2;
+    }
+
+    [ObservableRecipient]
+    [NotifyPropertyChangedRecipients]
+    partial class BroadcastingViewModelWithAttributeAndClassLevelAttribute : ObservableObject
+    {
+        [ObservableProperty]
+        private string? name;
+    }
+
+    partial class BroadcastingViewModelWithInheritedAttributeAndClassLevelAttribute : BroadcastingViewModelWithAttributeAndClassLevelAttribute
+    {
+        public BroadcastingViewModelWithInheritedAttributeAndClassLevelAttribute(IMessenger messenger)
+            : base(messenger)
+        {
+        }
+
+        [ObservableProperty]
         private string? name2;
     }
 
@@ -1159,10 +1335,10 @@ public partial class Test_ObservablePropertyAttribute
     }
 
     [ObservableRecipient]
-    public sealed partial class ModelWithAlsoBroadcastChangeAndDisplayAttributeLast : ObservableValidator
+    public sealed partial class ModelWithNotifyPropertyChangedRecipientsAndDisplayAttributeLast : ObservableValidator
     {
         [ObservableProperty]
-        [AlsoBroadcastChange]
+        [NotifyPropertyChangedRecipients]
         [Display(Name = "Foo bar baz")]
         private object? _someProperty;
     }
@@ -1177,7 +1353,7 @@ public partial class Test_ObservablePropertyAttribute
 
     public partial class InheritedModelWithCommandUsingInheritedObservablePropertyForCanExecute : BaseModelWithObservablePropertyAttribute
     {
-        [ICommand(CanExecute = nameof(CanSave))]
+        [RelayCommand(CanExecute = nameof(CanSave))]
         public override void Save()
         {
         }
@@ -1198,7 +1374,7 @@ public partial class Test_ObservablePropertyAttribute
     {
         public bool HasSaved { get; private set; }
 
-        [ICommand(CanExecute = nameof(CanSave))]
+        [RelayCommand(CanExecute = nameof(CanSave))]
         public override void Save()
         {
             HasSaved = true;

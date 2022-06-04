@@ -38,14 +38,14 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
             fieldSymbols
             .Where(static item => item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute"));
 
-        // Get diagnostics for fields using [AlsoNotifyChangeFor], [AlsoNotifyCanExecuteFor], [AlsoBroadcastChange] and [AlsoValidateProperty], but not [ObservableProperty]
+        // Get diagnostics for fields using [NotifyPropertyChangedFor], [NotifyCanExecuteChangedFor], [NotifyPropertyChangedRecipients] and [NotifyDataErrorInfo], but not [ObservableProperty]
         IncrementalValuesProvider<Diagnostic> fieldSymbolsWithOrphanedDependentAttributeWithErrors =
             fieldSymbols
             .Where(static item =>
-                (item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoNotifyChangeForAttribute") ||
-                 item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoNotifyCanExecuteForAttribute") ||
-                 item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoBroadcastChangeAttribute") ||
-                 item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.AlsoValidatePropertyAttribute")) &&
+                (item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyPropertyChangedForAttribute") ||
+                 item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyCanExecuteChangedForAttribute") ||
+                 item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyPropertyChangedRecipientsAttribute") ||
+                 item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyDataErrorInfoAttribute")) &&
                  !item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute"))
             .Select(static (item, _) => Execute.GetDiagnosticForFieldWithOrphanedDependentAttributes(item));
 
@@ -135,5 +135,32 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
                 context.AddSource("__KnownINotifyPropertyChangedArgs.g.cs", compilationUnit.GetText(Encoding.UTF8));
             }
         });
+
+        // Get all class declarations with at least one attribute
+        IncrementalValuesProvider<INamedTypeSymbol> classSymbols =
+            context.SyntaxProvider
+            .CreateSyntaxProvider(
+                static (node, _) => node is ClassDeclarationSyntax { AttributeLists.Count: > 0 },
+                static (context, _) => (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!);
+
+        // Filter only the type symbols with [NotifyPropertyChangedRecipients] and create diagnostics for them
+        IncrementalValuesProvider<Diagnostic> notifyRecipientsErrors =
+            classSymbols
+            .Where(static item => item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyPropertyChangedRecipientsAttribute"))
+            .Select(static (item, _) => Execute.GetIsNotifyingRecipientsDiagnosticForType(item))
+            .Where(static item => item is not null)!;
+
+        // Output the diagnostics for [NotifyPropertyChangedRecipients]
+        context.ReportDiagnostics(notifyRecipientsErrors);
+
+        // Filter only the type symbols with [NotifyDataErrorInfo] and create diagnostics for them
+        IncrementalValuesProvider<Diagnostic> notifyDataErrorInfoErrors =
+            classSymbols
+            .Where(static item => item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyDataErrorInfoAttribute"))
+            .Select(static (item, _) => Execute.GetIsNotifyDataErrorInfoDiagnosticForType(item))
+            .Where(static item => item is not null)!;
+
+        // Output the diagnostics for [NotifyDataErrorInfo]
+        context.ReportDiagnostics(notifyDataErrorInfoErrors);
     }
 }
