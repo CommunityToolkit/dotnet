@@ -321,6 +321,35 @@ public class Test_AsyncRelayCommand
         Assert.AreSame(args.Item2, EventArgs.Empty);
     }
 
+    [TestMethod]
+    public void Test_AsyncRelayCommand_EnsureExceptionThrown_Synchronously()
+    {
+        Exception? executeException = null;
+
+        AsyncRelayCommand command = new(async () =>
+        {
+            await Task.CompletedTask;
+
+            throw new Exception(nameof(Test_AsyncRelayCommand_EnsureExceptionThrown_Synchronously));
+        });
+
+        try
+        {
+            AsyncContext.Run(async () =>
+            {
+                command.Execute(null);
+
+                await Task.Delay(500);
+            });
+        }
+        catch (Exception e)
+        {
+            executeException = e;
+        }
+
+        Assert.AreEqual(nameof(Test_AsyncRelayCommand_EnsureExceptionThrown_Synchronously), executeException?.Message);
+    }
+
     // See https://github.com/CommunityToolkit/dotnet/pull/251
     [TestMethod]
     public async Task Test_AsyncRelayCommand_EnsureExceptionThrown()
@@ -364,6 +393,32 @@ public class Test_AsyncRelayCommand
         static async Task TestMethodAsync(Action action)
         {
             await Task.Delay(100);
+
+            action();
+        }
+
+        async void TestCallback(Action throwAction, Action completeAction)
+        {
+            AsyncRelayCommand command = new(() => TestMethodAsync(throwAction), AsyncRelayCommandOptions.FlowExceptionsToTaskScheduler);
+
+            command.Execute(null);
+
+            await Task.Delay(200);
+
+            completeAction();
+        }
+
+        bool success = await TaskSchedulerTestHelper.IsExceptionBubbledUpToUnobservedTaskExceptionAsync(TestCallback);
+
+        Assert.IsTrue(success);
+    }
+
+    [TestMethod]
+    public async Task Test_AsyncRelayCommand_ThrowingTaskBubblesToUnobservedTaskException_Synchronously()
+    {
+        static async Task TestMethodAsync(Action action)
+        {
+            await Task.CompletedTask;
 
             action();
         }

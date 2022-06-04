@@ -242,6 +242,35 @@ public class Test_AsyncRelayCommandOfT
         _ = Assert.ThrowsException<InvalidCastException>(() => command.Execute(new object()));
     }
 
+    [TestMethod]
+    public void Test_AsyncRelayCommandOfT_EnsureExceptionThrown_Synchronously()
+    {
+        Exception? executeException = null;
+
+        AsyncRelayCommand<int> command = new(async delay =>
+        {
+            await Task.CompletedTask;
+
+            throw new Exception(nameof(Test_AsyncRelayCommandOfT_EnsureExceptionThrown_Synchronously));
+        });
+
+        try
+        {
+            AsyncContext.Run(async () =>
+            {
+                command.Execute((object)42);
+
+                await Task.Delay(500);
+            });
+        }
+        catch (Exception e)
+        {
+            executeException = e;
+        }
+
+        Assert.AreEqual(nameof(Test_AsyncRelayCommandOfT_EnsureExceptionThrown_Synchronously), executeException?.Message);
+    }
+
     // See https://github.com/CommunityToolkit/dotnet/pull/251
     [TestMethod]
     public async Task Test_AsyncRelayCommandOfT_EnsureExceptionThrown()
@@ -249,7 +278,6 @@ public class Test_AsyncRelayCommandOfT
         const int delay = 500;
 
         Exception? executeException = null;
-        Exception? executeTException = null;
         Exception? executeAsyncException = null;
 
         AsyncRelayCommand<int> command = new(async delay =>
@@ -273,6 +301,27 @@ public class Test_AsyncRelayCommandOfT
             executeException = e;
         }
 
+        executeAsyncException = await Assert.ThrowsExceptionAsync<Exception>(() => command.ExecuteAsync((object)delay));
+
+        Assert.AreEqual(nameof(Test_AsyncRelayCommandOfT_EnsureExceptionThrown), executeException?.Message);
+        Assert.AreEqual(nameof(Test_AsyncRelayCommandOfT_EnsureExceptionThrown), executeAsyncException?.Message);
+    }
+
+    [TestMethod]
+    public async Task Test_AsyncRelayCommandOfT_EnsureExceptionThrown_GenericExecute()
+    {
+        const int delay = 500;
+
+        Exception? executeTException = null;
+        Exception? executeAsyncException = null;
+
+        AsyncRelayCommand<int> command = new(async delay =>
+        {
+            await Task.Delay(delay);
+
+            throw new Exception(nameof(Test_AsyncRelayCommandOfT_EnsureExceptionThrown_GenericExecute));
+        });
+
         try
         {
             AsyncContext.Run(async () =>
@@ -289,9 +338,8 @@ public class Test_AsyncRelayCommandOfT
 
         executeAsyncException = await Assert.ThrowsExceptionAsync<Exception>(() => command.ExecuteAsync(delay));
 
-        Assert.AreEqual(nameof(Test_AsyncRelayCommandOfT_EnsureExceptionThrown), executeException?.Message);
-        Assert.AreEqual(nameof(Test_AsyncRelayCommandOfT_EnsureExceptionThrown), executeTException?.Message);
-        Assert.AreEqual(nameof(Test_AsyncRelayCommandOfT_EnsureExceptionThrown), executeAsyncException?.Message);
+        Assert.AreEqual(nameof(Test_AsyncRelayCommandOfT_EnsureExceptionThrown_GenericExecute), executeTException?.Message);
+        Assert.AreEqual(nameof(Test_AsyncRelayCommandOfT_EnsureExceptionThrown_GenericExecute), executeAsyncException?.Message);
     }
 
     [TestMethod]
@@ -300,6 +348,32 @@ public class Test_AsyncRelayCommandOfT
         static async Task TestMethodAsync(Action action)
         {
             await Task.Delay(100);
+
+            action();
+        }
+
+        async void TestCallback(Action throwAction, Action completeAction)
+        {
+            AsyncRelayCommand<string> command = new(s => TestMethodAsync(throwAction), AsyncRelayCommandOptions.FlowExceptionsToTaskScheduler);
+
+            command.Execute(null);
+
+            await Task.Delay(200);
+
+            completeAction();
+        }
+
+        bool success = await TaskSchedulerTestHelper.IsExceptionBubbledUpToUnobservedTaskExceptionAsync(TestCallback);
+
+        Assert.IsTrue(success);
+    }
+
+    [TestMethod]
+    public async Task Test_AsyncRelayCommandOfT_ThrowingTaskBubblesToUnobservedTaskException_Synchronously()
+    {
+        static async Task TestMethodAsync(Action action)
+        {
+            await Task.CompletedTask;
 
             action();
         }
