@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -517,6 +518,42 @@ public partial class Test_RelayCommandAttribute
         model.TupleWithNullableElementsCommand.Execute((null, null, null, null));
     }
 
+    [TestMethod]
+    public void Test_RelayCommandAttribute_VerifyOptions()
+    {
+        ModelWithCommandsWithCustomOptions model = new();
+
+        static void AssertOptions(IAsyncRelayCommand command, AsyncRelayCommandOptions options)
+        {
+            AsyncRelayCommandOptions commandOptions =
+                (AsyncRelayCommandOptions)typeof(AsyncRelayCommand)
+                .GetField("options", BindingFlags.Instance | BindingFlags.NonPublic)!
+                .GetValue(command)!;
+
+            Assert.AreEqual(commandOptions, options);
+        }
+
+        static void AssertOptionsOfT<T>(IAsyncRelayCommand<T> command, AsyncRelayCommandOptions options)
+        {
+            AsyncRelayCommandOptions commandOptions =
+                (AsyncRelayCommandOptions)typeof(AsyncRelayCommand<T>)
+                .GetField("options", BindingFlags.Instance | BindingFlags.NonPublic)!
+                .GetValue(command)!;
+
+            Assert.AreEqual(commandOptions, options);
+        }
+
+        AssertOptions(model.DefaultCommand, AsyncRelayCommandOptions.None);
+        AssertOptions(model.AllowConcurrentExecutionsCommand, AsyncRelayCommandOptions.AllowConcurrentExecutions);
+        AssertOptions(model.FlowExceptionsToTaskSchedulerCommand, AsyncRelayCommandOptions.FlowExceptionsToTaskScheduler);
+        AssertOptions(model.AllowConcurrentExecutionsAndFlowExceptionsToTaskSchedulerCommand, AsyncRelayCommandOptions.AllowConcurrentExecutions | AsyncRelayCommandOptions.FlowExceptionsToTaskScheduler);
+
+        AssertOptionsOfT(model.OfTDefaultCommand, AsyncRelayCommandOptions.None);
+        AssertOptionsOfT(model.OfTAndAllowConcurrentExecutionsCommand, AsyncRelayCommandOptions.AllowConcurrentExecutions);
+        AssertOptionsOfT(model.OfTAndFlowExceptionsToTaskSchedulerCommand, AsyncRelayCommandOptions.FlowExceptionsToTaskScheduler);
+        AssertOptionsOfT(model.OfTAndAllowConcurrentExecutionsAndFlowExceptionsToTaskSchedulerCommand, AsyncRelayCommandOptions.AllowConcurrentExecutions | AsyncRelayCommandOptions.FlowExceptionsToTaskScheduler);
+    }
+
     #region Region
     public class Region
     {
@@ -904,6 +941,57 @@ public partial class Test_RelayCommandAttribute
         [RelayCommand]
         private void TupleWithNullableElements((DateTime? date, string? message, bool? shouldPrint, List<string>? stringList) parameter)
         {
+        }
+    }
+
+    partial class ModelWithCommandsWithCustomOptions
+    {
+        [RelayCommand]
+        private Task Default()
+        {
+            return Task.CompletedTask;
+        }
+
+        [RelayCommand]
+        private Task OfTDefault(string obj)
+        {
+            return Task.CompletedTask;
+        }
+
+        [RelayCommand(AllowConcurrentExecutions = true)]
+        private Task AllowConcurrentExecutions()
+        {
+            return Task.CompletedTask;
+        }
+
+        [RelayCommand(AllowConcurrentExecutions = true)]
+        private Task OfTAndAllowConcurrentExecutions(string obj)
+        {
+            return Task.CompletedTask;
+        }
+
+        [RelayCommand(FlowExceptionsToTaskScheduler = true)]
+        private Task FlowExceptionsToTaskScheduler()
+        {
+            return Task.CompletedTask;
+        }
+
+        [RelayCommand(FlowExceptionsToTaskScheduler = true)]
+        private Task OfTAndFlowExceptionsToTaskScheduler(string obj)
+        {
+            return Task.CompletedTask;
+        }
+
+        [RelayCommand(AllowConcurrentExecutions = true, FlowExceptionsToTaskScheduler = true)]
+        private Task AllowConcurrentExecutionsAndFlowExceptionsToTaskScheduler()
+        {
+            return Task.CompletedTask;
+        }
+
+        [RelayCommand(AllowConcurrentExecutions = true, FlowExceptionsToTaskScheduler = true)]
+        private Task OfTAndAllowConcurrentExecutionsAndFlowExceptionsToTaskScheduler(string obj)
+        {
+            return Task.CompletedTask;
         }
     }
 }
