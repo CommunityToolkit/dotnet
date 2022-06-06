@@ -62,7 +62,7 @@ public static class StreamExtensions
 
             try
             {
-                int bytesRead = await stream.ReadAsync(rent, 0, buffer.Length, cancellationToken);
+                int bytesRead = await stream.ReadAsync(rent, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
 
                 if (bytesRead > 0)
                 {
@@ -116,7 +116,7 @@ public static class StreamExtensions
             {
                 buffer.Span.CopyTo(rent);
 
-                await stream.WriteAsync(rent, 0, buffer.Length, cancellationToken);
+                await stream.WriteAsync(rent, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
             }
             finally
             {
