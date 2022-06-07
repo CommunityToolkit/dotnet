@@ -59,9 +59,9 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand, ICancellationAwareCo
     private readonly Func<bool>? canExecute;
 
     /// <summary>
-    /// Indicates whether or not concurrent executions of the command are allowed.
+    /// The options being set for the current command.
     /// </summary>
-    private readonly bool allowConcurrentExecutions;
+    private readonly AsyncRelayCommandOptions options;
 
     /// <summary>
     /// The <see cref="CancellationTokenSource"/> instance to use to cancel <see cref="cancelableExecute"/>.
@@ -91,14 +91,14 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand, ICancellationAwareCo
     /// Initializes a new instance of the <see cref="AsyncRelayCommand"/> class.
     /// </summary>
     /// <param name="execute">The execution logic.</param>
-    /// <param name="allowConcurrentExecutions">Whether or not to allow concurrent executions of the command.</param>
+    /// <param name="options">The options to use to configure the async command.</param>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="execute"/> is <see langword="null"/>.</exception>
-    public AsyncRelayCommand(Func<Task> execute, bool allowConcurrentExecutions)
+    public AsyncRelayCommand(Func<Task> execute, AsyncRelayCommandOptions options)
     {
         ArgumentNullException.ThrowIfNull(execute);
 
         this.execute = execute;
-        this.allowConcurrentExecutions = allowConcurrentExecutions;
+        this.options = options;
     }
 
     /// <summary>
@@ -117,14 +117,14 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand, ICancellationAwareCo
     /// Initializes a new instance of the <see cref="AsyncRelayCommand"/> class.
     /// </summary>
     /// <param name="cancelableExecute">The cancelable execution logic.</param>
-    /// <param name="allowConcurrentExecutions">Whether or not to allow concurrent executions of the command.</param>
+    /// <param name="options">The options to use to configure the async command.</param>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="cancelableExecute"/> is <see langword="null"/>.</exception>
-    public AsyncRelayCommand(Func<CancellationToken, Task> cancelableExecute, bool allowConcurrentExecutions)
+    public AsyncRelayCommand(Func<CancellationToken, Task> cancelableExecute, AsyncRelayCommandOptions options)
     {
         ArgumentNullException.ThrowIfNull(cancelableExecute);
 
         this.cancelableExecute = cancelableExecute;
-        this.allowConcurrentExecutions = allowConcurrentExecutions;
+        this.options = options;
     }
 
     /// <summary>
@@ -147,16 +147,16 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand, ICancellationAwareCo
     /// </summary>
     /// <param name="execute">The execution logic.</param>
     /// <param name="canExecute">The execution status logic.</param>
-    /// <param name="allowConcurrentExecutions">Whether or not to allow concurrent executions of the command.</param>
+    /// <param name="options">The options to use to configure the async command.</param>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="execute"/> or <paramref name="canExecute"/> are <see langword="null"/>.</exception>
-    public AsyncRelayCommand(Func<Task> execute, Func<bool> canExecute, bool allowConcurrentExecutions)
+    public AsyncRelayCommand(Func<Task> execute, Func<bool> canExecute, AsyncRelayCommandOptions options)
     {
         ArgumentNullException.ThrowIfNull(execute);
         ArgumentNullException.ThrowIfNull(canExecute);
 
         this.execute = execute;
         this.canExecute = canExecute;
-        this.allowConcurrentExecutions = allowConcurrentExecutions;
+        this.options = options;
     }
 
     /// <summary>
@@ -179,16 +179,16 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand, ICancellationAwareCo
     /// </summary>
     /// <param name="cancelableExecute">The cancelable execution logic.</param>
     /// <param name="canExecute">The execution status logic.</param>
-    /// <param name="allowConcurrentExecutions">Whether or not to allow concurrent executions of the command.</param>
+    /// <param name="options">The options to use to configure the async command.</param>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="cancelableExecute"/> or <paramref name="canExecute"/> are <see langword="null"/>.</exception>
-    public AsyncRelayCommand(Func<CancellationToken, Task> cancelableExecute, Func<bool> canExecute, bool allowConcurrentExecutions)
+    public AsyncRelayCommand(Func<CancellationToken, Task> cancelableExecute, Func<bool> canExecute, AsyncRelayCommandOptions options)
     {
         ArgumentNullException.ThrowIfNull(cancelableExecute);
         ArgumentNullException.ThrowIfNull(canExecute);
 
         this.cancelableExecute = cancelableExecute;
         this.canExecute = canExecute;
-        this.allowConcurrentExecutions = allowConcurrentExecutions;
+        this.options = options;
     }
 
     private Task? executionTask;
@@ -238,7 +238,7 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand, ICancellationAwareCo
                         @this.PropertyChanged?.Invoke(@this, CanBeCanceledChangedEventArgs);
                     }
 
-                    if (!@this.allowConcurrentExecutions)
+                    if ((@this.options & AsyncRelayCommandOptions.AllowConcurrentExecutions) == 0)
                     {
                         @this.CanExecuteChanged?.Invoke(@this, EventArgs.Empty);
                     }
@@ -273,13 +273,20 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand, ICancellationAwareCo
     {
         bool canExecute = this.canExecute?.Invoke() != false;
 
-        return canExecute && (this.allowConcurrentExecutions || ExecutionTask is not { IsCompleted: false });
+        return canExecute && ((this.options & AsyncRelayCommandOptions.AllowConcurrentExecutions) != 0 || ExecutionTask is not { IsCompleted: false });
     }
 
     /// <inheritdoc/>
     public void Execute(object? parameter)
     {
-        _ = ExecuteAsync(parameter);
+        Task executionTask = ExecuteAsync(parameter);
+
+        // If exceptions shouldn't flow to the task scheduler, await the resulting task. This is
+        // delegated to a separate method to keep this one more compact in case the option is set.
+        if ((this.options & AsyncRelayCommandOptions.FlowExceptionsToTaskScheduler) == 0)
+        {
+            AwaitAndThrowIfFailed(executionTask);
+        }
     }
 
     /// <inheritdoc/>
@@ -304,7 +311,7 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand, ICancellationAwareCo
         }
 
         // If concurrent executions are disabled, notify the can execute change as well
-        if (!this.allowConcurrentExecutions)
+        if ((this.options & AsyncRelayCommandOptions.AllowConcurrentExecutions) == 0)
         {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
@@ -322,5 +329,25 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand, ICancellationAwareCo
             PropertyChanged?.Invoke(this, CanBeCanceledChangedEventArgs);
             PropertyChanged?.Invoke(this, IsCancellationRequestedChangedEventArgs);
         }
+    }
+
+    /// <summary>
+    /// Awaits an input <see cref="Task"/> and throws an exception on the calling context, if the task fails.
+    /// </summary>
+    /// <param name="executionTask">The input <see cref="Task"/> instance to await.</param>
+    internal static async void AwaitAndThrowIfFailed(Task executionTask)
+    {
+        // Note: this method is purposefully an async void method awaiting the input task. This is done so that
+        // if an async relay command is invoked synchronously (ie. when Execute is called, eg. from a binding),
+        // exceptions in the wrapped delegate will not be ignored or just become visible through the ExecutionTask
+        // property, but will be rethrown in the original synchronization context by default. This makes the behavior
+        // more consistent with how normal commands work (where exceptions are also just normally propagated to the
+        // caller context), and avoids getting an app into an inconsistent state in case a method faults without
+        // other components being notified. It is also possible to not await this task and to instead ignore exceptions
+        // and then inspect them manually from the ExecutionTask property, by constructing an async command instance
+        // using the AsyncRelayCommandOptions.FlowExceptionsToTaskScheduler option. That will cause this call to
+        // be skipped, and exceptions will just either normally be available through that property, or will otherwise
+        // flow to the static TaskScheduler.UnobservedTaskException event if otherwise unobserved (eg. for logging).
+        await executionTask;
     }
 }

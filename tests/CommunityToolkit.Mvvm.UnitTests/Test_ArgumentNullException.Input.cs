@@ -30,33 +30,33 @@ public partial class Test_ArgumentNullException
     public void Test_ArgumentNullException_AsyncRelayCommand()
     {
         Assert(() => new AsyncRelayCommand(execute: null!), "execute");
-        Assert(() => new AsyncRelayCommand(execute: null!, true), "execute");
+        Assert(() => new AsyncRelayCommand(execute: null!, AsyncRelayCommandOptions.AllowConcurrentExecutions), "execute");
         Assert(() => new AsyncRelayCommand(cancelableExecute: null!), "cancelableExecute");
-        Assert(() => new AsyncRelayCommand(cancelableExecute: null!, true), "cancelableExecute");
+        Assert(() => new AsyncRelayCommand(cancelableExecute: null!, AsyncRelayCommandOptions.AllowConcurrentExecutions), "cancelableExecute");
         Assert(() => new AsyncRelayCommand(execute: null!, () => true), "execute");
         Assert(() => new AsyncRelayCommand(() => Task.CompletedTask, canExecute: null!), "canExecute");
-        Assert(() => new AsyncRelayCommand(execute: null!, () => true, true), "execute");
-        Assert(() => new AsyncRelayCommand(() => Task.CompletedTask, canExecute: null!, true), "canExecute");
+        Assert(() => new AsyncRelayCommand(execute: null!, () => true, AsyncRelayCommandOptions.AllowConcurrentExecutions), "execute");
+        Assert(() => new AsyncRelayCommand(() => Task.CompletedTask, canExecute: null!, AsyncRelayCommandOptions.AllowConcurrentExecutions), "canExecute");
         Assert(() => new AsyncRelayCommand(cancelableExecute: null!, () => true), "cancelableExecute");
         Assert(() => new AsyncRelayCommand(t => Task.CompletedTask, canExecute: null!), "canExecute");
-        Assert(() => new AsyncRelayCommand(cancelableExecute: null!, () => true, true), "cancelableExecute");
-        Assert(() => new AsyncRelayCommand(t => Task.CompletedTask, canExecute: null!, true), "canExecute");
+        Assert(() => new AsyncRelayCommand(cancelableExecute: null!, () => true, AsyncRelayCommandOptions.AllowConcurrentExecutions), "cancelableExecute");
+        Assert(() => new AsyncRelayCommand(t => Task.CompletedTask, canExecute: null!, AsyncRelayCommandOptions.AllowConcurrentExecutions), "canExecute");
     }
 
     [TestMethod]
     public void Test_ArgumentNullException_AsyncRelayCommandOfT()
     {
         Assert(() => new AsyncRelayCommand<string>(execute: null!), "execute");
-        Assert(() => new AsyncRelayCommand<string>(execute: null!, true), "execute");
+        Assert(() => new AsyncRelayCommand<string>(execute: null!, AsyncRelayCommandOptions.AllowConcurrentExecutions), "execute");
         Assert(() => new AsyncRelayCommand<string>(cancelableExecute: null!), "cancelableExecute");
-        Assert(() => new AsyncRelayCommand<string>(cancelableExecute: null!, true), "cancelableExecute");
+        Assert(() => new AsyncRelayCommand<string>(cancelableExecute: null!, AsyncRelayCommandOptions.AllowConcurrentExecutions), "cancelableExecute");
         Assert(() => new AsyncRelayCommand<string>(execute: null!, s => true), "execute");
         Assert(() => new AsyncRelayCommand<string>(s => Task.CompletedTask, canExecute: null!), "canExecute");
-        Assert(() => new AsyncRelayCommand<string>(execute: null!, s => true, true), "execute");
-        Assert(() => new AsyncRelayCommand<string>(s => Task.CompletedTask, canExecute: null!, true), "canExecute");
+        Assert(() => new AsyncRelayCommand<string>(execute: null!, s => true, AsyncRelayCommandOptions.AllowConcurrentExecutions), "execute");
+        Assert(() => new AsyncRelayCommand<string>(s => Task.CompletedTask, canExecute: null!, AsyncRelayCommandOptions.AllowConcurrentExecutions), "canExecute");
         Assert(() => new AsyncRelayCommand<string>(cancelableExecute: null!, s => true), "cancelableExecute");
         Assert(() => new AsyncRelayCommand<string>(t => Task.CompletedTask, canExecute: null!), "canExecute");
-        Assert(() => new AsyncRelayCommand<string>(cancelableExecute: null!, s => true, true), "cancelableExecute");
-        Assert(() => new AsyncRelayCommand<string>(t => Task.CompletedTask, canExecute: null!, true), "canExecute");
+        Assert(() => new AsyncRelayCommand<string>(cancelableExecute: null!, s => true, AsyncRelayCommandOptions.AllowConcurrentExecutions), "cancelableExecute");
+        Assert(() => new AsyncRelayCommand<string>(t => Task.CompletedTask, canExecute: null!, AsyncRelayCommandOptions.AllowConcurrentExecutions), "canExecute");
     }
 }

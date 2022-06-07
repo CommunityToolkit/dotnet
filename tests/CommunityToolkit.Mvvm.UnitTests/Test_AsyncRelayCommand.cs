@@ -10,6 +10,7 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.UnitTests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Nito.AsyncEx;
 
 namespace CommunityToolkit.Mvvm.UnitTests;
 
@@ -190,7 +191,7 @@ public class Test_AsyncRelayCommand
             new TaskCompletionSource<object?>()
         };
 
-        AsyncRelayCommand? command = new(() => cancellationTokenSources[index++].Task, allowConcurrentExecutions: true);
+        AsyncRelayCommand? command = new(() => cancellationTokenSources[index++].Task, AsyncRelayCommandOptions.AllowConcurrentExecutions);
 
         Assert.IsTrue(command.CanExecute(null));
         Assert.IsTrue(command.CanExecute(new object()));
@@ -247,7 +248,7 @@ public class Test_AsyncRelayCommand
     [TestMethod]
     public async Task Test_AsyncRelayCommand_AllowConcurrentExecutions_Disabled()
     {
-        await Test_AsyncRelayCommand_AllowConcurrentExecutions_TestLogic(static task => new(async () => await task, allowConcurrentExecutions: false));
+        await Test_AsyncRelayCommand_AllowConcurrentExecutions_TestLogic(static task => new(async () => await task, AsyncRelayCommandOptions.None));
     }
 
     [TestMethod]
@@ -321,6 +322,72 @@ public class Test_AsyncRelayCommand
     }
 
     [TestMethod]
+    public void Test_AsyncRelayCommand_EnsureExceptionThrown_Synchronously()
+    {
+        Exception? executeException = null;
+
+        AsyncRelayCommand command = new(async () =>
+        {
+            await Task.CompletedTask;
+
+            throw new Exception(nameof(Test_AsyncRelayCommand_EnsureExceptionThrown_Synchronously));
+        });
+
+        try
+        {
+            AsyncContext.Run(async () =>
+            {
+                command.Execute(null);
+
+                await Task.Delay(500);
+            });
+        }
+        catch (Exception e)
+        {
+            executeException = e;
+        }
+
+        Assert.AreEqual(nameof(Test_AsyncRelayCommand_EnsureExceptionThrown_Synchronously), executeException?.Message);
+    }
+
+    // See https://github.com/CommunityToolkit/dotnet/pull/251
+    [TestMethod]
+    public async Task Test_AsyncRelayCommand_EnsureExceptionThrown()
+    {
+        const int delay = 500;
+
+        Exception? executeException = null;
+        Exception? executeAsyncException = null;
+
+        AsyncRelayCommand command = new(async () =>
+        {
+            await Task.Delay(delay);
+
+            throw new Exception(nameof(Test_AsyncRelayCommand_EnsureExceptionThrown));
+        });
+
+        try
+        {
+            // Use AsyncContext to test async void methods https://stackoverflow.com/a/14207615/5953643
+            AsyncContext.Run(async () =>
+            {
+                command.Execute(null);
+
+                await Task.Delay(delay * 2); // Ensure we don't escape `AsyncContext` before command throws Exception
+            });
+        }
+        catch (Exception e)
+        {
+            executeException = e;
+        }
+
+        executeAsyncException = await Assert.ThrowsExceptionAsync<Exception>(() => command.ExecuteAsync(null));
+
+        Assert.AreEqual(nameof(Test_AsyncRelayCommand_EnsureExceptionThrown), executeException?.Message);
+        Assert.AreEqual(nameof(Test_AsyncRelayCommand_EnsureExceptionThrown), executeAsyncException?.Message);
+    }
+
+    [TestMethod]
     public async Task Test_AsyncRelayCommand_ThrowingTaskBubblesToUnobservedTaskException()
     {
         static async Task TestMethodAsync(Action action)
@@ -332,7 +399,33 @@ public class Test_AsyncRelayCommand
 
         async void TestCallback(Action throwAction, Action completeAction)
         {
-            AsyncRelayCommand command = new(() => TestMethodAsync(throwAction));
+            AsyncRelayCommand command = new(() => TestMethodAsync(throwAction), AsyncRelayCommandOptions.FlowExceptionsToTaskScheduler);
+
+            command.Execute(null);
+
+            await Task.Delay(200);
+
+            completeAction();
+        }
+
+        bool success = await TaskSchedulerTestHelper.IsExceptionBubbledUpToUnobservedTaskExceptionAsync(TestCallback);
+
+        Assert.IsTrue(success);
+    }
+
+    [TestMethod]
+    public async Task Test_AsyncRelayCommand_ThrowingTaskBubblesToUnobservedTaskException_Synchronously()
+    {
+        static async Task TestMethodAsync(Action action)
+        {
+            await Task.CompletedTask;
+
+            action();
+        }
+
+        async void TestCallback(Action throwAction, Action completeAction)
+        {
+            AsyncRelayCommand command = new(() => TestMethodAsync(throwAction), AsyncRelayCommandOptions.FlowExceptionsToTaskScheduler);
 
             command.Execute(null);
 
@@ -352,7 +445,7 @@ public class Test_AsyncRelayCommand
     {
         TaskCompletionSource<object?> tcs = new();
 
-        AsyncRelayCommand command = new(() => tcs.Task, allowConcurrentExecutions: true);
+        AsyncRelayCommand command = new(() => tcs.Task, AsyncRelayCommandOptions.AllowConcurrentExecutions);
 
         (object? Sender, EventArgs? Args) args = default;
 
@@ -375,7 +468,7 @@ public class Test_AsyncRelayCommand
     {
         TaskCompletionSource<object?> tcs = new();
 
-        AsyncRelayCommand command = new(() => tcs.Task, allowConcurrentExecutions: false);
+        AsyncRelayCommand command = new(() => tcs.Task, AsyncRelayCommandOptions.None);
 
         (object? Sender, EventArgs? Args) args = default;
 
@@ -398,7 +491,7 @@ public class Test_AsyncRelayCommand
     {
         TaskCompletionSource<object?> tcs = new();
 
-        AsyncRelayCommand command = new(token => tcs.Task, allowConcurrentExecutions: true);
+        AsyncRelayCommand command = new(token => tcs.Task, AsyncRelayCommandOptions.AllowConcurrentExecutions);
 
         (object? Sender, EventArgs? Args) args = default;
 
@@ -421,7 +514,7 @@ public class Test_AsyncRelayCommand
     {
         TaskCompletionSource<object?> tcs = new();
 
-        AsyncRelayCommand command = new(token => tcs.Task, allowConcurrentExecutions: false);
+        AsyncRelayCommand command = new(token => tcs.Task, AsyncRelayCommandOptions.None);
 
         (object? Sender, EventArgs? Args) args = default;
 
