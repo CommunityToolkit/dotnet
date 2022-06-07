@@ -337,6 +337,17 @@ public sealed class AsyncRelayCommand : IAsyncRelayCommand, ICancellationAwareCo
     /// <param name="executionTask">The input <see cref="Task"/> instance to await.</param>
     internal static async void AwaitAndThrowIfFailed(Task executionTask)
     {
+        // Note: this method is purposefully an async void method awaiting the input task. This is done so that
+        // if an async relay command is invoked synchronously (ie. when Execute is called, eg. from a binding),
+        // exceptions in the wrapped delegate will not be ignored or just become visible through the ExecutionTask
+        // property, but will be rethrown in the original synchronization context by default. This makes the behavior
+        // more consistent with how normal commands work (where exceptions are also just normally propagated to the
+        // caller context), and avoids getting an app into an inconsistent state in case a method faults without
+        // other components being notified. It is also possible to not await this task and to instead ignore exceptions
+        // and then inspect them manually from the ExecutionTask property, by constructing an async command instance
+        // using the AsyncRelayCommandOptions.FlowExceptionsToTaskScheduler option. That will cause this call to
+        // be skipped, and exceptions will just either normally be available through that property, or will otherwise
+        // flow to the static TaskScheduler.UnobservedTaskException event if otherwise unobserved (eg. for logging).
         await executionTask;
     }
 }
