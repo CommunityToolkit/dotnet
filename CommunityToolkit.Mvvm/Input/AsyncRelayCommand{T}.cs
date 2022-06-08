@@ -262,13 +262,18 @@ public sealed class AsyncRelayCommand<T> : IAsyncRelayCommand<T>, ICancellationA
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool CanExecute(object? parameter)
     {
-        if (default(T) is not null &&
-            parameter is null)
+        // Special case, see RelayCommand<T>.CanExecute(object?) for more info
+        if (parameter is null && default(T) is not null)
         {
             return false;
         }
 
-        return CanExecute((T?)parameter);
+        if (!RelayCommand<T>.TryGetCommandArgument(parameter, out T? result))
+        {
+            RelayCommand<T>.ThrowArgumentExceptionForInvalidCommandArgument(parameter);
+        }
+
+        return CanExecute(result);
     }
 
     /// <inheritdoc/>
@@ -286,7 +291,12 @@ public sealed class AsyncRelayCommand<T> : IAsyncRelayCommand<T>, ICancellationA
     /// <inheritdoc/>
     public void Execute(object? parameter)
     {
-        Execute((T?)parameter);
+        if (!RelayCommand<T>.TryGetCommandArgument(parameter, out T? result))
+        {
+            RelayCommand<T>.ThrowArgumentExceptionForInvalidCommandArgument(parameter);
+        }
+
+        Execute(result);
     }
 
     /// <inheritdoc/>
@@ -322,7 +332,12 @@ public sealed class AsyncRelayCommand<T> : IAsyncRelayCommand<T>, ICancellationA
     /// <inheritdoc/>
     public Task ExecuteAsync(object? parameter)
     {
-        return ExecuteAsync((T?)parameter);
+        if (!RelayCommand<T>.TryGetCommandArgument(parameter, out T? result))
+        {
+            RelayCommand<T>.ThrowArgumentExceptionForInvalidCommandArgument(parameter);
+        }
+
+        return ExecuteAsync(result);
     }
 
     /// <inheritdoc/>
