@@ -62,7 +62,11 @@ public class Test_AsyncRelayCommandOfT
 
         Assert.AreEqual(ticks, 2);
 
-        _ = Assert.ThrowsException<InvalidCastException>(() => command.Execute(new object()));
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(new object()), "parameter");
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(42), "parameter");
+        
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.Execute(new object()), "parameter");
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.Execute(42), "parameter");
     }
 
     [TestMethod]
@@ -87,6 +91,12 @@ public class Test_AsyncRelayCommandOfT
         command.Execute("2");
 
         Assert.AreEqual(ticks, 2);
+
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(new object()), "parameter");
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(42), "parameter");
+        
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.Execute(new object()), "parameter");
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.Execute(42), "parameter");
     }
 
     [TestMethod]
@@ -112,10 +122,16 @@ public class Test_AsyncRelayCommandOfT
         command.Execute("42");
 
         Assert.AreEqual(ticks, 42);
+
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(new object()), "parameter");
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(42), "parameter");
+        
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.Execute(new object()), "parameter");
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.Execute(42), "parameter");
     }
 
     [TestMethod]
-    public void Test_AsyncRelayCommandOfT_NullWithValueType()
+    public void Test_AsyncRelayCommandOfT_InvalidArgumentWithValueType()
     {
         int n = 0;
 
@@ -125,18 +141,38 @@ public class Test_AsyncRelayCommandOfT
             return Task.CompletedTask;
         });
 
+        // Special case
         Assert.IsFalse(command.CanExecute(null));
-        _ = Assert.ThrowsException<NullReferenceException>(() => command.Execute(null));
 
-        command = new AsyncRelayCommand<int>(
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute("Hello"), "parameter");
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(3.14f), "parameter");
+
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.Execute(null), "parameter");
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.Execute("Hello"), "parameter");
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.Execute(3.14f), "parameter");
+    }
+
+    [TestMethod]
+    public void Test_AsyncRelayCommandOfT_InvalidArgumentWithValueType_WithCanExecute()
+    {
+        int n = 0;
+
+        AsyncRelayCommand<int>? command = new(
             i =>
             {
                 n = i;
                 return Task.CompletedTask;
             }, i => i > 0);
 
+        // Special case
         Assert.IsFalse(command.CanExecute(null));
-        _ = Assert.ThrowsException<NullReferenceException>(() => command.Execute(null));
+
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute("Hello"), "parameter");
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(3.14f), "parameter");
+
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.Execute(null), "parameter");
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.Execute("Hello"), "parameter");
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.Execute(3.14f), "parameter");
     }
 
     [TestMethod]
@@ -239,7 +275,11 @@ public class Test_AsyncRelayCommandOfT
 
         Assert.IsFalse(command.IsRunning);
 
-        _ = Assert.ThrowsException<InvalidCastException>(() => command.Execute(new object()));
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(new object()), "parameter");
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(3.14f), "parameter");
+
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.Execute(new object()), "parameter");
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.Execute(3.14f), "parameter");
     }
 
     [TestMethod]
