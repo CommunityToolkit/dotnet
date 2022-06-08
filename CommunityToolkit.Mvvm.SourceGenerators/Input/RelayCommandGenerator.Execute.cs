@@ -55,7 +55,8 @@ partial class RelayCommandGenerator
                 out string? delegateType,
                 out bool supportsCancellation,
                 out ImmutableArray<string> commandTypeArguments,
-                out ImmutableArray<string> delegateTypeArguments))
+                out ImmutableArray<string> commandTypeArgumentsWithNullabilityAnnotations,
+                out ImmutableArray<string> delegateTypeArgumentsWithNullabilityAnnotations))
             {
                 goto Failure;
             }
@@ -115,8 +116,8 @@ partial class RelayCommandGenerator
                 commandInterfaceType,
                 commandClassType,
                 delegateType,
-                commandTypeArguments,
-                delegateTypeArguments,
+                commandTypeArgumentsWithNullabilityAnnotations,
+                delegateTypeArgumentsWithNullabilityAnnotations,
                 canExecuteMemberName,
                 canExecuteExpressionType,
                 allowConcurrentExecutions,
@@ -444,7 +445,8 @@ partial class RelayCommandGenerator
         /// <param name="delegateType">The delegate type name for the wrapped method.</param>
         /// <param name="supportsCancellation">Indicates whether or not the resulting command supports cancellation.</param>
         /// <param name="commandTypeArguments">The type arguments for <paramref name="commandInterfaceType"/> and <paramref name="commandClassType"/>, if any.</param>
-        /// <param name="delegateTypeArguments">The type arguments for <paramref name="delegateType"/>, if any.</param>
+        /// <param name="commandTypeArgumentsWithNullabilityAnnotations">Same as <paramref name="commandTypeArguments"/>, but with nullability annotations.</param>
+        /// <param name="delegateTypeArgumentsWithNullabilityAnnotations">The type arguments for <paramref name="delegateType"/>, if any, with nullability annotations.</param>
         /// <returns>Whether or not <paramref name="methodSymbol"/> was valid and the requested types have been set.</returns>
         private static bool TryMapCommandTypesFromMethod(
             IMethodSymbol methodSymbol,
@@ -454,7 +456,8 @@ partial class RelayCommandGenerator
             [NotNullWhen(true)] out string? delegateType,
             out bool supportsCancellation,
             out ImmutableArray<string> commandTypeArguments,
-            out ImmutableArray<string> delegateTypeArguments)
+            out ImmutableArray<string> commandTypeArgumentsWithNullabilityAnnotations,
+            out ImmutableArray<string> delegateTypeArgumentsWithNullabilityAnnotations)
         {
             // Map <void, void> to IRelayCommand, RelayCommand, Action
             if (methodSymbol.ReturnsVoid && methodSymbol.Parameters.Length == 0)
@@ -463,8 +466,9 @@ partial class RelayCommandGenerator
                 commandClassType = "global::CommunityToolkit.Mvvm.Input.RelayCommand";
                 delegateType = "global::System.Action";
                 supportsCancellation = false;
-                commandTypeArguments = ImmutableArray<string>.Empty;
-                delegateTypeArguments = ImmutableArray<string>.Empty;
+                commandTypeArguments = ImmutableArray<string>.Empty; 
+                commandTypeArgumentsWithNullabilityAnnotations = ImmutableArray<string>.Empty;
+                delegateTypeArgumentsWithNullabilityAnnotations = ImmutableArray<string>.Empty;
 
                 return true;
             }
@@ -478,8 +482,9 @@ partial class RelayCommandGenerator
                 commandClassType = "global::CommunityToolkit.Mvvm.Input.RelayCommand";
                 delegateType = "global::System.Action";
                 supportsCancellation = false;
-                commandTypeArguments = ImmutableArray.Create(parameter.Type.GetFullyQualifiedNameWithNullabilityAnnotations());
-                delegateTypeArguments = ImmutableArray.Create(parameter.Type.GetFullyQualifiedNameWithNullabilityAnnotations());
+                commandTypeArguments = ImmutableArray.Create(parameter.Type.GetFullyQualifiedName());
+                commandTypeArgumentsWithNullabilityAnnotations = ImmutableArray.Create(parameter.Type.GetFullyQualifiedNameWithNullabilityAnnotations());
+                delegateTypeArgumentsWithNullabilityAnnotations = ImmutableArray.Create(parameter.Type.GetFullyQualifiedNameWithNullabilityAnnotations());
 
                 return true;
             }
@@ -496,7 +501,8 @@ partial class RelayCommandGenerator
                     delegateType = "global::System.Func";
                     supportsCancellation = false;
                     commandTypeArguments = ImmutableArray<string>.Empty;
-                    delegateTypeArguments = ImmutableArray.Create("global::System.Threading.Tasks.Task");
+                    commandTypeArgumentsWithNullabilityAnnotations = ImmutableArray<string>.Empty;
+                    delegateTypeArgumentsWithNullabilityAnnotations = ImmutableArray.Create("global::System.Threading.Tasks.Task");
 
                     return true;
                 }
@@ -512,7 +518,8 @@ partial class RelayCommandGenerator
                         delegateType = "global::System.Func";
                         supportsCancellation = true;
                         commandTypeArguments = ImmutableArray<string>.Empty;
-                        delegateTypeArguments = ImmutableArray.Create("global::System.Threading.CancellationToken", "global::System.Threading.Tasks.Task");
+                        commandTypeArgumentsWithNullabilityAnnotations = ImmutableArray<string>.Empty;
+                        delegateTypeArgumentsWithNullabilityAnnotations = ImmutableArray.Create("global::System.Threading.CancellationToken", "global::System.Threading.Tasks.Task");
 
                         return true;
                     }
@@ -522,8 +529,9 @@ partial class RelayCommandGenerator
                     commandClassType = "global::CommunityToolkit.Mvvm.Input.AsyncRelayCommand";
                     delegateType = "global::System.Func";
                     supportsCancellation = false;
-                    commandTypeArguments = ImmutableArray.Create(singleParameter.Type.GetFullyQualifiedNameWithNullabilityAnnotations());
-                    delegateTypeArguments = ImmutableArray.Create(singleParameter.Type.GetFullyQualifiedNameWithNullabilityAnnotations(), "global::System.Threading.Tasks.Task");
+                    commandTypeArguments = ImmutableArray.Create(singleParameter.Type.GetFullyQualifiedName());
+                    commandTypeArgumentsWithNullabilityAnnotations = ImmutableArray.Create(singleParameter.Type.GetFullyQualifiedNameWithNullabilityAnnotations());
+                    delegateTypeArgumentsWithNullabilityAnnotations = ImmutableArray.Create(singleParameter.Type.GetFullyQualifiedNameWithNullabilityAnnotations(), "global::System.Threading.Tasks.Task");
 
                     return true;
                 }
@@ -538,8 +546,9 @@ partial class RelayCommandGenerator
                     commandClassType = "global::CommunityToolkit.Mvvm.Input.AsyncRelayCommand";
                     delegateType = "global::System.Func";
                     supportsCancellation = true;
-                    commandTypeArguments = ImmutableArray.Create(firstParameter.Type.GetFullyQualifiedNameWithNullabilityAnnotations());
-                    delegateTypeArguments = ImmutableArray.Create(firstParameter.Type.GetFullyQualifiedNameWithNullabilityAnnotations(), "global::System.Threading.CancellationToken", "global::System.Threading.Tasks.Task");
+                    commandTypeArguments = ImmutableArray.Create(firstParameter.Type.GetFullyQualifiedName());
+                    commandTypeArgumentsWithNullabilityAnnotations = ImmutableArray.Create(firstParameter.Type.GetFullyQualifiedNameWithNullabilityAnnotations());
+                    delegateTypeArgumentsWithNullabilityAnnotations = ImmutableArray.Create(firstParameter.Type.GetFullyQualifiedNameWithNullabilityAnnotations(), "global::System.Threading.CancellationToken", "global::System.Threading.Tasks.Task");
 
                     return true;
                 }
@@ -552,7 +561,8 @@ partial class RelayCommandGenerator
             delegateType = null;
             supportsCancellation = false;
             commandTypeArguments = ImmutableArray<string>.Empty;
-            delegateTypeArguments = ImmutableArray<string>.Empty;
+            commandTypeArgumentsWithNullabilityAnnotations = ImmutableArray<string>.Empty; 
+            delegateTypeArgumentsWithNullabilityAnnotations = ImmutableArray<string>.Empty;
 
             return false;
         }
