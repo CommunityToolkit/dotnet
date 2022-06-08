@@ -4,6 +4,7 @@
 
 using System;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.UnitTests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommunityToolkit.Mvvm.UnitTests;
@@ -21,7 +22,11 @@ public class Test_RelayCommandOfT
         Assert.IsTrue(command.CanExecute("Text"));
         Assert.IsTrue(command.CanExecute(null));
 
-        _ = Assert.ThrowsException<InvalidCastException>(() => command.CanExecute(new object()));
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(new object()), "parameter");
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(42), "parameter");
+        
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.Execute(new object()), "parameter");
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.Execute(42), "parameter");
 
         (object?, EventArgs?) args = default;
 
@@ -51,7 +56,11 @@ public class Test_RelayCommandOfT
         Assert.IsTrue(command.CanExecute("Text"));
         Assert.IsFalse(command.CanExecute(null));
 
-        _ = Assert.ThrowsException<InvalidCastException>(() => command.CanExecute(new object()));
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(new object()), "parameter");
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(42), "parameter");
+        
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.Execute(new object()), "parameter");
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.Execute(42), "parameter");
 
         command.Execute((object)"Hello");
 
@@ -64,18 +73,38 @@ public class Test_RelayCommandOfT
     }
 
     [TestMethod]
-    public void Test_RelayCommand_NullWithValueType()
+    public void Test_RelayCommand_InvalidArgumentWithValueType()
     {
         int n = 0;
 
         RelayCommand<int>? command = new(i => n = i);
 
+        // Special case
         Assert.IsFalse(command.CanExecute(null));
-        _ = Assert.ThrowsException<NullReferenceException>(() => command.Execute(null));
 
-        command = new RelayCommand<int>(i => n = i, i => i > 0);
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute("Hello"), "parameter");
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(3.14f), "parameter");
 
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.Execute(null), "parameter");
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.Execute("Hello"), "parameter");
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.Execute(3.14f), "parameter");
+    }
+
+    [TestMethod]
+    public void Test_RelayCommand_InvalidArgumentWithValueType_WithCanExecute()
+    {
+        int n = 0;
+
+        RelayCommand<int>? command = new(i => n = i, i => i > 0);
+
+        // Special case
         Assert.IsFalse(command.CanExecute(null));
-        _ = Assert.ThrowsException<NullReferenceException>(() => command.Execute(null));
+
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute("Hello"), "parameter");
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(3.14f), "parameter");
+
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.Execute(null), "parameter");
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.Execute("Hello"), "parameter");
+        ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.Execute(3.14f), "parameter");
     }
 }
