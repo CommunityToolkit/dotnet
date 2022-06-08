@@ -63,6 +63,7 @@ public interface IAsyncRelayCommand : IRelayCommand, INotifyPropertyChanged
     /// </summary>
     /// <param name="parameter">The input parameter.</param>
     /// <returns>The <see cref="Task"/> representing the async operation being executed.</returns>
+    /// <exception cref="System.ArgumentException">Thrown if <paramref name="parameter"/> is incompatible with the underlying command implementation.</exception>
     Task ExecuteAsync(object? parameter);
 
     /// <summary>
