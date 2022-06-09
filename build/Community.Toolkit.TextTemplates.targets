@@ -1,0 +1,25 @@
+<Project>
+
+  <!-- T4 text template service used by the Visual Studio project system -->
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <!-- Using T4 text templates to generate sources -->
+  <ItemGroup>
+    <None Update="**\*.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>%(Filename).g.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <!-- Sources generated based on the above text templates -->
+  <ItemGroup>
+    <Compile Update="**\*.g.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>$([System.IO.Path]::ChangeExtension(%(Filename), '.tt'))</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+</Project>

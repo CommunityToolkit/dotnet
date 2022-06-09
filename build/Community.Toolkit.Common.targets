@@ -1,20 +1,71 @@
 <Project>
 
-  <PropertyGroup>
-    <!-- TODO: Dynamically generate Title if one wasn't set -->
-    <Title Condition="'$(Title)' == ''">$(Product) Asset</Title>
+  <PropertyGroup Condition="$(IsPackable)">
+    <Company>Microsoft</Company>
+    <Authors>Microsoft</Authors>
+    <Product>.NET Community Toolkit</Product>
+    <CommonTags>.NET;Community;Toolkit;dotnet</CommonTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Copyright>(c) .NET Foundation and Contributors. All rights reserved.</Copyright>
+    <PackageProjectUrl>https://github.com/CommunityToolkit/dotnet</PackageProjectUrl>
+    <PackageReleaseNotes>https://github.com/CommunityToolkit/dotnet/releases</PackageReleaseNotes>
+    <PackageIcon>Icon.png</PackageIcon>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <CommonTags Condition="$(IsCoreProject)">$(CommonTags);.NET</CommonTags>
+  <PropertyGroup Condition="$(IsPackable)">
+    <Title Condition="'$(Title)' == ''">$(Product) Asset</Title>
     <PackageTags Condition="'$(PackageTags)' != ''">$(CommonTags);$(PackageTags)</PackageTags>
     <PackageTags Condition="'$(PackageTags)' == ''">$(CommonTags)</PackageTags>
   </PropertyGroup>
 
   <ItemGroup Condition="$(IsPackable)">
-    <None Include="$(BuildToolsDirectory)nuget.png" Pack="true" PackagePath="\Icon.png" Visible="False" />
-    <None Include="$(RepositoryDirectory)License.md" Pack="true" PackagePath="\" Visible="False" />
-    <None Include="$(RepositoryDirectory)ThirdPartyNotices.txt" Pack="true" PackagePath="\" Visible="False" />
+    <PackageFile Include="$(BuildToolsDirectory)Icon.png" />
+    <PackageFile Include="$(RepositoryDirectory)License.md" />
+    <PackageFile Include="$(RepositoryDirectory)ThirdPartyNotices.txt" />
   </ItemGroup>
+
+  <!--
+      Use 'GenerateNuSpecDependsOn' extensibility point to include custom global assets in the package.
+      Use 'TargetsForTfmSpecificContentInPackage' extensibility point to include custom TFM-specific assets in the package.
+  -->
+  <PropertyGroup>
+    <GenerateNuSpecDependsOn>_AddGlobalPackageFilesToNuGetPack;$(GenerateNuSpecDependsOn)</GenerateNuSpecDependsOn>
+    <TargetsForTfmSpecificContentInPackage>_AddPackageFilesPerTargetFrameworkToNuGetPack</TargetsForTfmSpecificContentInPackage>
+  </PropertyGroup>
+
+  <!--
+      When the '$(IncludeContentInPack)' property is false, files specified via '@(None)', '@(Content)' items
+      are excluded from the NuGet package. Adding '@(PackageFile)' items directly to '%(_PackageFiles)' item
+      via the following target ensures that they will always be included in the package.
+
+      So, Use '%(PackageFile)' item to always include files in the package. By default, they are included in
+      the root of the package but can be overridden via '%(PackageFile.TargetPath)' metadata. Since, 'TargetPath'
+      is just an alias of the 'PackagePath' metadata, multiple paths and different file names can also be specified.
+  -->
+  <Target Name="_AddGlobalPackageFilesToNuGetPack"
+          AfterTargets="_CalculateInputsOutputsForPack">
+    <ItemGroup>
+      <_PackageFiles Include="@(PackageFile)" Exclude="@(PackageFile->WithMetadataValue('IsSpecific', 'true'))" Condition="'%(PackageFile.Pack)' != 'false'">
+        <PackagePath Condition="'%(PackageFile.TargetPath)' != ''">%(PackageFile.TargetPath)</PackagePath>
+      </_PackageFiles>
+    </ItemGroup>
+  </Target>
+
+  <!--
+      Same 'PackageFile' as above but processed per target framework when 'IsSpecific: True' metadata is specified.
+      Since it is target specific, it also validates whether the package path contains the current framework alias.
+  -->
+  <Target Name="_AddPackageFilesPerTargetFrameworkToNuGetPack">
+    <ItemGroup>
+      <TFMSpecificPackageFile Include="@(PackageFile->WithMetadataValue('IsSpecific', 'true'))" Condition="'%(PackageFile.Pack)' != 'false'">
+        <PackagePath Condition="'%(PackageFile.TargetPath)' != ''">%(PackageFile.TargetPath)</PackagePath>
+      </TFMSpecificPackageFile>
+    </ItemGroup>
+
+    <!-- Error out when the target path of the package file doesn't contain target framework to differentiate itself within the package -->
+    <Error Code="NCTDEV02" Condition="!$([System.String]::new('%(PackagePath)').Contains('$(TargetFramework)')) AND '@(TFMSpecificPackageFile)' != ''"
+             Text="The package file ('%(Identity)') is 'TargetFramework' specific and should include the value ('$(TargetFramework)') somewhere in the target path ('%(PackagePath)')." />
+  </Target>
 
 </Project>

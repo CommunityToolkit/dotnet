@@ -20,6 +20,21 @@
     <PackageTags>MVVM;Toolkit;MVVMToolkit;INotifyPropertyChanged;Observable;IOC;DI;Dependency Injection;Object Messaging;Extensions;Helpers</PackageTags>
   </PropertyGroup>
 
+  <!-- Enable assembly trimming on .NET 6+ -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+    <IsTrimmable>true</IsTrimmable>
+  </PropertyGroup>
+
+  <!--
+      Include a custom targets file to check the included source generator.
+      Including it in .NET 6+ targets is not needed as it guarantees Roslyn 4.x.
+  -->
+  <ItemGroup Condition="'$(TargetFramework)' != '' AND '$(TargetFramework)' != 'net6.0'">
+    <PackageFile Include="CommunityToolkit.Mvvm.targets" IsSpecific="True" TargetPath="build\$(TargetFramework)" />
+    <PackageFile Include="CommunityToolkit.Mvvm.targets" IsSpecific="True" TargetPath="buildTransitive\$(TargetFramework)" />
+  </ItemGroup>
+
   <!-- .NET Standard 2.0 doesn't have the Span<T> and IAsyncEnumerable<T> types -->
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0" />
@@ -34,30 +49,39 @@
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
   </ItemGroup>
 
-  <!-- Enable trimming support on .NET 6 -->
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
-    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
-    <IsTrimmable>true</IsTrimmable>
-  </PropertyGroup>
-    
   <!-- Source generator project reference for packing -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.csproj" ReferenceOutputAssembly="false" />
+  <ItemGroup>
+    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.csproj"
+                      ReferenceOutputAssembly="false" />
   </ItemGroup>
 
-  <ItemGroup Label="Package">
-    
-    <!-- Include the custom .targets file to check the source generator (.NET 6 is not needed as it guarantees Roslyn 4.x) -->
-    <None Include="CommunityToolkit.Mvvm.targets" PackagePath="buildTransitive\netstandard2.0" Pack="true" />
-    <None Include="CommunityToolkit.Mvvm.targets" PackagePath="buildTransitive\netstandard2.1" Pack="true" />
-    <None Include="CommunityToolkit.Mvvm.targets" PackagePath="build\netstandard2.0" Pack="true" />
-    <None Include="CommunityToolkit.Mvvm.targets" PackagePath="build\netstandard2.1" Pack="true" />
+  <!-- Use 'GenerateNuSpecDependsOn' extensibility point to include source generator assets in the package -->
+  <PropertyGroup>
+    <GenerateNuSpecDependsOn>GetSourceGenBuildOutputs</GenerateNuSpecDependsOn>
+  </PropertyGroup>
 
-    <!-- Pack the source generator to the right package folder -->
-    <None Include="..\CommunityToolkit.Mvvm.SourceGenerators\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.SourceGenerators.dll"
-          PackagePath="analyzers\dotnet\roslyn4.0\cs"
-          Pack="true"
-          Visible="false" />
-  </ItemGroup>
+  <!--
+      Pack the source generator build outputs to the correct package folder for it to be used as an analyzer.
+      The following target uses 'GenerateNuSpecDependsOn' extensibility point to pack the build assets
+      by using the custom 'GetBuildOutputs' target imported within the target project.
+  -->
+  <Target Name="GetSourceGenBuildOutputs"
+          BeforeTargets="_AddGlobalPackageFilesToNuGetPack"
+          AfterTargets="_CalculateInputsOutputsForPack">
+
+    <!-- Get the build outputs of the source generator project -->
+    <MSBuild
+      Projects="@(ProjectReference->WithMetadataValue('ReferenceOutputAssembly', 'false'))"
+      Targets="GetBuildOutputs">
+      <Output TaskParameter="TargetOutputs" ItemName="SourceGenBuildOutput" />
+    </MSBuild>
+
+    <ItemGroup>
+      <!-- Include the Build Outputs in the package via 'PackageFile' item -->
+      <PackageFile Include="@(SourceGenBuildOutput)" TargetPath="analyzers\dotnet\roslyn4.0\cs" />
+      <!-- Use the 'FinalOutputPath' metadata to mark the inputs thus enabling incremental builds -->
+      <NuGetPackInput Include="@(SourceGenBuildOutput->'%(FinalOutputPath)')" />
+    </ItemGroup>
+  </Target>
 
 </Project>
