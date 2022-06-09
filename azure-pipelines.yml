@@ -9,26 +9,16 @@ pr:
 - rel/*
 
 pool:
-  vmImage: windows-2022
+  vmImage: windows-latest
+
+variables:
+  BuildConfiguration: Release
 
 jobs:
 - job: BuildBits
+  displayName: Build and Test solution
   timeoutInMinutes: 60
   steps:
-
-  # Install NuGet
-  - task: NuGetToolInstaller@0
-    displayName: Install NuGet 6.0
-    inputs:
-      versionSpec: 6.0.0
-
-  # Install NerdBank GitVersioning
-  - task: DotNetCoreCLI@2
-    displayName: Install NBGV tool
-    inputs:
-      command: custom
-      custom: tool
-      arguments: update -g nbgv
 
   # Set Build Version
   - script: nbgv cloud
@@ -38,44 +28,50 @@ jobs:
   - pwsh: build/Update-Headers.ps1 -Verify
     displayName: Verify headers
 
+  # Restore solution
+  - script: dotnet restore -p:Configuration=$(BuildConfiguration)
+    displayName: Restore solution
+
   # Build solution
-  - script: dotnet build -c Release
+  - script: dotnet build --no-restore -c $(BuildConfiguration)
     displayName: Build solution
 
-  # Run .NET 6 tests
-  - script: dotnet test -c Release -f net6.0 -l "trx;LogFileName=VSTestResults_net6.0.trx"
+  # Test solution #
+
+  # Run .NET 6 unit tests
+  - script: dotnet test --no-build -c $(BuildConfiguration) -f net6.0 -l "trx;LogFileName=VSTestResults_net6.0.trx"
     displayName: Run .NET 6 unit tests
 
-  # Run .NET Core 3.1 tests
-  - script: dotnet test -c Release -f netcoreapp3.1 -l "trx;LogFileName=VSTestResults_netcoreapp3.1.trx"
+  # Run .NET Core 3.1 unit tests
+  - script: dotnet test --no-build -c $(BuildConfiguration) -f netcoreapp3.1 -l "trx;LogFileName=VSTestResults_netcoreapp3.1.trx"
     displayName: Run .NET Core 3.1 unit tests
 
-  # Run .NET Framework 4.7.2 tests
-  - script: dotnet test -c Release -f net472 -l "trx;LogFileName=VSTestResults_net472.trx"
+  # Run .NET Framework 4.7.2 unit tests
+  - script: dotnet test --no-build -c $(BuildConfiguration) -f net472 -l "trx;LogFileName=VSTestResults_net472.trx"
     displayName: Run .NET Framework 4.7.2 unit tests
 
   # Publish test results
   - task: PublishTestResults@2
     displayName: Publish test results
     inputs:
-      testResultsFormat: 'VSTest'
-      testResultsFiles: '**/VSTestResults*.trx'
+      testResultsFormat: VSTest
+      testResultsFiles: ~build/*/TestResults/VSTestResults*.trx
     condition: always()
 
-  # Create the NuGet package(s)
-  - script: dotnet pack -c Release
-    displayName: Create NuGet package(s)
+  # Pack solution
+  - script: dotnet pack --no-build -c $(BuildConfiguration)
+    displayName: Pack solution
 
-  # Sign package(s)
+  # Sign packages
   - pwsh: build/Sign-Package.ps1
     displayName: Authenticode sign packages
     env:
       SignClientUser: $(SignClientUser)
       SignClientSecret: $(SignClientSecret)
-      ArtifactDirectory: bin/nupkg
+      ArtifactDirectory: ~packages/bin
     condition: and(succeeded(), not(eq(variables['Build.Reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
 
   # Publish build artifacts
-  - publish: bin/nupkg
+  - publish: ~packages/bin
     artifact: Packages
     displayName: Publish package artifacts

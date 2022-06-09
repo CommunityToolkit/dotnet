@@ -1,40 +1,53 @@
 <Project>
 
-  <PropertyGroup>
-    <Company>Microsoft</Company>
-    <Authors>Microsoft</Authors>
-    <Product>.NET Community Toolkit</Product>
-    <CommonTags>dotnet;Community;Toolkit</CommonTags>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Copyright>(c) .NET Foundation and Contributors. All rights reserved.</Copyright>
-    <PackageProjectUrl>https://github.com/CommunityToolkit/dotnet</PackageProjectUrl>
-    <PackageReleaseNotes>https://github.com/CommunityToolkit/dotnet/releases</PackageReleaseNotes>
-    <PackageIcon>Icon.png</PackageIcon>
-    <PackageIconUrl>https://raw.githubusercontent.com/CommunityToolkit/dotnet/main/build/nuget.png</PackageIconUrl>
-  </PropertyGroup>
-
-  <PropertyGroup>
+  <PropertyGroup Label="Compile">
+    <Features>Strict</Features>
+    <Nullable>Enable</Nullable>
+    <LangVersion>Latest</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>10.0</LangVersion>
-    <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <PropertyGroup>
+  <PropertyGroup Label="Assembly">
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(RepositoryDirectory)toolkit.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <IsTestProject>$(MSBuildProjectName.Contains('Test'))</IsTestProject>
+  <PropertyGroup Label="Project">
+    <IsTestProject>$(MSBuildProjectName.EndsWith('Tests'))</IsTestProject>
     <IsCoreProject Condition="$(IsTestProject)">False</IsCoreProject>
     <IsCoreProject Condition="'$(IsCoreProject)' == ''">True</IsCoreProject>
   </PropertyGroup>
 
-  <PropertyGroup>
+  <PropertyGroup Label="Build">
+    <NoWarn>NU1507</NoWarn>
     <IsPackable>true</IsPackable>
     <IsPublishable>true</IsPublishable>
     <ContinuousIntegrationBuild>$(TF_BUILD)</ContinuousIntegrationBuild>
+    <ProjectName>$(MSBuildProjectName.Replace('CommunityToolkit.', ''))</ProjectName>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup>
+    <PackageFile>
+      <Visible>False</Visible>
+      <TargetPath>\</TargetPath>
+    </PackageFile>
+  </ItemDefinitionGroup>
+
+  <PropertyGroup Label="Outputs">
+    <!-- Common Outputs -->
+    <BuildDir>$(RepositoryDirectory)~build\$(ProjectName)\</BuildDir>
+    <PublishDir>$(RepositoryDirectory)~publish\$(ProjectName)\</PublishDir>
+    <!-- Build Outputs -->
+    <BaseOutputPath>$(BuildDir)bin\</BaseOutputPath>
+    <BaseIntermediateOutputPath>$(BuildDir)obj\</BaseIntermediateOutputPath>
+    <!-- Restore Outputs-->
+    <MSBuildProjectExtensionsPath>$(BuildDir)ext\</MSBuildProjectExtensionsPath>
+    <RestoreOutputPath>$(MSBuildProjectExtensionsPath)</RestoreOutputPath>
+    <!-- Pack Outputs -->
+    <PackageOutputPath>$(RepositoryDirectory)~packages\bin\</PackageOutputPath>
+    <NuSpecOutputPath>$(RepositoryDirectory)~packages\obj\</NuSpecOutputPath>
+    <!-- Test Outputs -->
+    <VSTestResultsDirectory>$(BuildDir)TestResults\</VSTestResultsDirectory>
   </PropertyGroup>
 
 </Project>

@@ -2,6 +2,10 @@
 
   <Import Project="$(BuildToolsDirectory)Community.Toolkit.Common.targets" />
 
+  <!--
+      Nerdbank.GitVersioning overwrites the 'InformationalVersion' that was supposed to hold the 'SourceRevisionId'.
+      Hence, Add the 'SourceRevisionId' into the Assembly Metadata with the key 'CommitHash'.
+  -->
   <Target Name="AddCommitHashToAssemblyAttributes" BeforeTargets="GetAssemblyAttributes">
     <ItemGroup>
       <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute" Condition="'$(SourceRevisionId)' != ''">
