@@ -802,6 +802,7 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// </summary>
     /// <param name="propertyName">The target property name being validated.</param>
     /// <returns>The display name for the property.</returns>
+    [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")]
     private string GetDisplayNameForProperty(string propertyName)
     {
         static Dictionary<string, string> GetDisplayNames(Type type)
