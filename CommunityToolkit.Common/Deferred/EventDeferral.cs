@@ -16,8 +16,8 @@ namespace CommunityToolkit.Common.Deferred;
 /// </summary>
 public class EventDeferral : IDisposable
 {
-    //// TODO: If/when .NET 6 is base, we can upgrade to non-generic version
-    private readonly TaskCompletionSource<object?> _taskCompletionSource = new();
+    // TODO: If/when .NET 6 is base, we can upgrade to non-generic version
+    private readonly TaskCompletionSource<object?> taskCompletionSource = new();
 
     internal EventDeferral()
     {
@@ -26,7 +26,7 @@ public class EventDeferral : IDisposable
     /// <summary>
     /// Call when finished with the Deferral.
     /// </summary>
-    public void Complete() => this._taskCompletionSource.TrySetResult(null);
+    public void Complete() => this.taskCompletionSource.TrySetResult(null);
 
     /// <summary>
     /// Waits for the <see cref="EventDeferral"/> to be completed by the event handler.
@@ -38,9 +38,9 @@ public class EventDeferral : IDisposable
     [Obsolete("This is an internal only method to be used by EventHandler extension classes, public callers should call GetDeferral() instead on the DeferredEventArgs.")]
     public async Task WaitForCompletion(CancellationToken cancellationToken)
     {
-        using (cancellationToken.Register(() => this._taskCompletionSource.TrySetCanceled()))
+        using (cancellationToken.Register(() => this.taskCompletionSource.TrySetCanceled()))
         {
-            _ = await this._taskCompletionSource.Task;
+            _ = await this.taskCompletionSource.Task;
         }
     }
 

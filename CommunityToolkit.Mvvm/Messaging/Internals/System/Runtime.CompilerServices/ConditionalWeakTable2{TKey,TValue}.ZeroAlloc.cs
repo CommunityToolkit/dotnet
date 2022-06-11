@@ -307,7 +307,7 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
         private readonly ConditionalWeakTable2<TKey, TValue> parent;
 
         /// <summary>
-        /// <c>_buckets[hashcode &amp; (_buckets.Length - 1)]</c> contains index of the first entry in bucket (-1 if empty).
+        /// <c>buckets[hashcode &amp; (buckets.Length - 1)]</c> contains index of the first entry in bucket (-1 if empty).
         /// </summary>
         private int[] buckets;
 
@@ -317,7 +317,7 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
         private Entry[] entries;
 
         /// <summary>
-        /// <c>_firstFreeEntry &lt; _entries.Length => table</c> has capacity, entries grow from the bottom of the table.
+        /// <c>firstFreeEntry &lt; entries.Length => table</c> has capacity, entries grow from the bottom of the table.
         /// </summary>
         private int firstFreeEntry;
 
@@ -410,7 +410,7 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
         }
 
         /// <summary>
-        /// Worker for finding a key/value pair. Must hold _lock.
+        /// Worker for finding a key/value pair. Must hold lock.
         /// </summary>
         internal bool TryGetValueWorker(TKey key, [MaybeNullWhen(false)] out TValue value)
         {
@@ -423,7 +423,7 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
 
         /// <summary>
         /// Returns -1 if not found (if key expires during FindEntry, this can be treated as "not found.").
-        /// Must hold _lock, or be prepared to retry the search while holding _lock.
+        /// Must hold lock, or be prepared to retry the search while holding lock.
         /// </summary>
         /// <remarks>This method requires <paramref name="value"/> to be on the stack to be properly tracked.</remarks>
         internal int FindEntry(TKey key, out object? value)
@@ -463,7 +463,7 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
         {
             if (index < this.entries.Length)
             {
-                // object? oKey = _entries[index].depHnd.UnsafeGetTargetAndDependent(out object? oValue);
+                // object? oKey = entries[index].depHnd.UnsafeGetTargetAndDependent(out object? oValue);
                 (object? oKey, object? oValue) = this.entries[index].depHnd.TargetAndDependent;
 
                 // Ensure we don't get finalized while accessing DependentHandle
@@ -522,10 +522,10 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
         }
 
         /// <summary>
-        /// Resize, and scrub expired keys off bucket lists. Must hold _lock.
+        /// Resize, and scrub expired keys off bucket lists. Must hold <see cref="lockObject"/>.
         /// </summary>
         /// <remarks>
-        /// _firstEntry is less than _entries.Length on exit, that is, the table has at least one free entry.
+        /// <see cref="firstFreeEntry"/> is less than <c>entries.Length</c> on exit, that is, the table has at least one free entry.
         /// </remarks>
         internal Container Resize()
         {
