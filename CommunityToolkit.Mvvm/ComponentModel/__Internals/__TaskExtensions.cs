@@ -87,7 +87,7 @@ public static class __TaskExtensions
             public bool IsCompleted
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                get => taskAwaiter.IsCompleted;
+                get => this.taskAwaiter.IsCompleted;
             }
 
             /// <summary>

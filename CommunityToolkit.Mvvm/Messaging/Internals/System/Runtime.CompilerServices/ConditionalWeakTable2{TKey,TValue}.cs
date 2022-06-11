@@ -148,7 +148,7 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
         {
             LinkedListNode<WeakReference<TKey>>? node;
 
-            if (!isFirstMoveNextPending)
+            if (!this.isFirstMoveNextPending)
             {
                 node = this.node!.Next;
             }

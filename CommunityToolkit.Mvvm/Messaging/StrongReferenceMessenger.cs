@@ -824,14 +824,14 @@ public sealed class StrongReferenceMessenger : IMessenger
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Recipient(object target)
         {
-            Target = target;
+            this.Target = target;
         }
 
         /// <inheritdoc/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(Recipient other)
         {
-            return ReferenceEquals(Target, other.Target);
+            return ReferenceEquals(this.Target, other.Target);
         }
 
         /// <inheritdoc/>

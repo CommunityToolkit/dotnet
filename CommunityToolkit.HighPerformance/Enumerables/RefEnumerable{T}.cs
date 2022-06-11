@@ -55,8 +55,8 @@ public readonly ref struct RefEnumerable<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal RefEnumerable(ref T reference, int length, int step)
     {
-        Span = MemoryMarshal.CreateSpan(ref reference, length);
-        Step = step;
+        this.Span = MemoryMarshal.CreateSpan(ref reference, length);
+        this.Step = step;
     }
 
     /// <summary>
@@ -94,10 +94,11 @@ public readonly ref struct RefEnumerable<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal RefEnumerable(object? instance, IntPtr offset, int length, int step)
     {
-        Instance = instance;
-        Offset = offset;
+        this.Instance = instance;
+        this.Offset = offset;
+        this.Step = step;
+
         Length = length;
-        Step = step;
     }
 #endif
 
