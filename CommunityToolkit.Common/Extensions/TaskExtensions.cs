@@ -2,6 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#if NET6_0_OR_GREATER
+using System.Diagnostics.CodeAnalysis;
+#endif
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -24,7 +27,11 @@ public static class TaskExtensions
     /// a value type, which adds overhead. It should only be used when using generics is not possible.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static object? GetResultOrDefault(this Task task)
+    public static object? GetResultOrDefault(
+#if NET6_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
+#endif
+        this Task task)
     {
         // Check if the instance is a completed Task
         if (
