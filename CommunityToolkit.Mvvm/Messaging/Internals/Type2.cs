@@ -37,8 +37,8 @@ internal readonly struct Type2 : IEquatable<Type2>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Type2(Type tMessage, Type tToken)
     {
-        TMessage = tMessage;
-        TToken = tToken;
+        this.TMessage = tMessage;
+        this.TToken = tToken;
     }
 
     /// <inheritdoc/>
@@ -51,8 +51,8 @@ internal readonly struct Type2 : IEquatable<Type2>
         // equality, which still avoids the callvirt overhead of calling Type.Equals,
         // and is also implemented as a JIT intrinsic on runtimes such as .NET Core.
         return
-            TMessage == other.TMessage &&
-            TToken == other.TToken;
+            this.TMessage == other.TMessage &&
+            this.TToken == other.TToken;
     }
 
     /// <inheritdoc/>
@@ -71,11 +71,11 @@ internal readonly struct Type2 : IEquatable<Type2>
         // However since this method is not generally used in a hot path (eg. the message broadcasting
         // only invokes this a handful of times when initially retrieving the target mapping), this
         // doesn't actually make a noticeable difference despite the minor overhead of the virtual call.
-        int hash = TMessage.GetHashCode();
+        int hash = this.TMessage.GetHashCode();
 
         hash = (hash << 5) + hash;
 
-        hash += TToken.GetHashCode();
+        hash += this.TToken.GetHashCode();
 
         return hash;
     }

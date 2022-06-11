@@ -35,7 +35,7 @@ public readonly ref struct Ref<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Ref(ref T value)
     {
-        Span = MemoryMarshal.CreateSpan(ref value, 1);
+        this.Span = MemoryMarshal.CreateSpan(ref value, 1);
     }
 
     /// <summary>
@@ -54,7 +54,7 @@ public readonly ref struct Ref<T>
     public ref T Value
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref MemoryMarshal.GetReference(Span);
+        get => ref MemoryMarshal.GetReference(this.Span);
     }
 #else
     /// <summary>
@@ -80,8 +80,8 @@ public readonly ref struct Ref<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Ref(object owner, ref T value)
     {
-        Owner = owner;
-        Offset = ObjectMarshal.DangerousGetObjectDataByteOffset(owner, ref value);
+        this.Owner = owner;
+        this.Offset = ObjectMarshal.DangerousGetObjectDataByteOffset(owner, ref value);
     }
 
     /// <summary>
@@ -90,7 +90,7 @@ public readonly ref struct Ref<T>
     public ref T Value
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref ObjectMarshal.DangerousGetObjectDataReferenceAt<T>(Owner, Offset);
+        get => ref ObjectMarshal.DangerousGetObjectDataReferenceAt<T>(this.Owner, this.Offset);
     }
 #endif
 

@@ -29,9 +29,9 @@ public class DeferredEventArgs : EventArgs
     /// <returns><see cref="EventDeferral"/> instance.</returns>
     public EventDeferral GetDeferral()
     {
-        lock (_eventDeferralLock)
+        lock (this._eventDeferralLock)
         {
-            return _eventDeferral ??= new EventDeferral();
+            return this._eventDeferral ??= new EventDeferral();
         }
     }
 
@@ -45,11 +45,11 @@ public class DeferredEventArgs : EventArgs
     [Obsolete("This is an internal only method to be used by EventHandler extension classes, public callers should call GetDeferral() instead.")]
     public EventDeferral? GetCurrentDeferralAndReset()
     {
-        lock (_eventDeferralLock)
+        lock (this._eventDeferralLock)
         {
-            EventDeferral? eventDeferral = _eventDeferral;
+            EventDeferral? eventDeferral = this._eventDeferral;
 
-            _eventDeferral = null;
+            this._eventDeferral = null;
 
             return eventDeferral;
         }

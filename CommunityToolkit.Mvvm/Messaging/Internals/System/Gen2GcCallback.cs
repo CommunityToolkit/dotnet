@@ -77,7 +77,7 @@ internal sealed class Gen2GcCallback : CriticalFinalizerObject
         }
         else
         {
-            handle.Free();
+            this.handle.Free();
         }
     }
 }
