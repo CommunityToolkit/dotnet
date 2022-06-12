@@ -252,6 +252,66 @@ public partial class Test_MemoryStream
         Assert.IsTrue(data.Span.SequenceEqual(result.Span));
     }
 
+    [TestMethod]
+    public void Test_MemoryStream_CopyTo()
+    {
+        Stream source = new byte[100].AsMemory().AsStream();
+
+        Memory<byte> data = CreateRandomData(64);
+
+        source.Write(data.Span);
+
+        Assert.AreEqual(source.Position, data.Length);
+
+        source.Position = 0;
+
+        Stream destination = new byte[100].AsMemory().AsStream();
+
+        source.CopyTo(destination);
+
+        Assert.AreEqual(source.Position, destination.Position);
+
+        destination.Position = 0;
+
+        Memory<byte> result = new byte[data.Length];
+
+        int bytesRead = destination.Read(result.Span);
+
+        Assert.AreEqual(bytesRead, result.Length);
+        Assert.AreEqual(destination.Position, data.Length);
+        Assert.IsTrue(data.Span.SequenceEqual(result.Span));
+    }
+
+    [TestMethod]
+    public async Task Test_MemoryStream_CopyToAsync()
+    {
+        Stream source = new byte[100].AsMemory().AsStream();
+
+        Memory<byte> data = CreateRandomData(64);
+
+        await source.WriteAsync(data);
+
+        Assert.AreEqual(source.Position, data.Length);
+
+        source.Position = 0;
+
+        Stream destination = new byte[100].AsMemory().AsStream();
+
+        await source.CopyToAsync(destination);
+
+        Assert.AreEqual(source.Position, destination.Position);
+
+        destination.Position = 0;
+
+        Memory<byte> result = new byte[data.Length];
+
+        int bytesRead = await destination.ReadAsync(result);
+
+        Assert.AreEqual(bytesRead, result.Length);
+        Assert.AreEqual(destination.Position, data.Length);
+        Assert.IsTrue(data.Span.SequenceEqual(result.Span));
+    }
+
     /// <summary>
     /// Creates a random <see cref="byte"/> array filled with random data.
     /// </summary>
