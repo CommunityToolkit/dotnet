@@ -79,9 +79,8 @@ partial class MemoryStream<TSource>
     {
         MemoryStream.ValidateDisposed(this.disposed);
 
-        int
-            bytesAvailable = this.source.Length - this.position,
-            bytesCopied = Math.Min(bytesAvailable, buffer.Length);
+        int bytesAvailable = this.source.Length - this.position;
+        int bytesCopied = Math.Min(bytesAvailable, buffer.Length);
 
         Span<byte> source = this.source.Span.Slice(this.position, bytesCopied);
 
