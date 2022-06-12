@@ -394,7 +394,7 @@ public readonly struct Memory2D<T> : IEquatable<Memory2D<T>>
     /// Thrown when either <paramref name="height"/> or <paramref name="width"/> are invalid.
     /// </exception>
     /// <remarks>The total area must match the length of <paramref name="memory"/>.</remarks>
-    internal Memory2D(Memory<T> memory, int height, int width)
+    public Memory2D(Memory<T> memory, int height, int width)
         : this(memory, 0, height, width, 0)
     {
     }
@@ -413,7 +413,7 @@ public readonly struct Memory2D<T> : IEquatable<Memory2D<T>>
     /// <exception cref="ArgumentException">
     /// Thrown when the requested area is outside of bounds for <paramref name="memory"/>.
     /// </exception>
-    internal Memory2D(Memory<T> memory, int offset, int height, int width, int pitch)
+    public Memory2D(Memory<T> memory, int offset, int height, int width, int pitch)
     {
         if ((uint)offset > (uint)memory.Length)
         {

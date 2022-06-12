@@ -456,7 +456,7 @@ public readonly ref partial struct Span2D<T>
     /// Thrown when either <paramref name="height"/> or <paramref name="width"/> are invalid.
     /// </exception>
     /// <remarks>The total area must match the length of <paramref name="span"/>.</remarks>
-    internal Span2D(Span<T> span, int height, int width)
+    public Span2D(Span<T> span, int height, int width)
         : this(span, 0, height, width, 0)
     {
     }
@@ -475,7 +475,7 @@ public readonly ref partial struct Span2D<T>
     /// <exception cref="ArgumentException">
     /// Thrown when the requested area is outside of bounds for <paramref name="span"/>.
     /// </exception>
-    internal Span2D(Span<T> span, int offset, int height, int width, int pitch)
+    public Span2D(Span<T> span, int offset, int height, int width, int pitch)
     {
         if ((uint)offset > (uint)span.Length)
         {
