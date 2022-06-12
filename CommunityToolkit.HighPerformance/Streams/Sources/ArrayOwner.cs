@@ -79,9 +79,6 @@ internal readonly struct ArrayOwner : ISpanOwner
     public Memory<byte> Memory
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
-        {
-            return this.array.AsMemory(this.offset, this.length);
-        }
+        get => this.array.AsMemory(this.offset, this.length);
     }
 }
