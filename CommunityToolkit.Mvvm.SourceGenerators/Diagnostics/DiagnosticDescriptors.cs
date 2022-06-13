@@ -457,7 +457,7 @@ internal static class DiagnosticDescriptors
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Types annotated with [NotifyDataErrorInfo] must inherit from ObservableRecipient.",
+        description: "Types annotated with [NotifyDataErrorInfo] must inherit from ObservableValidator.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit");
 
     /// <summary>
