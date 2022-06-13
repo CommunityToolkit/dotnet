@@ -32,7 +32,7 @@ public readonly ref struct NullableRef<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public NullableRef(ref T value)
     {
-        Span = MemoryMarshal.CreateSpan(ref value, 1);
+        this.Span = MemoryMarshal.CreateSpan(ref value, 1);
     }
 
     /// <summary>
@@ -42,7 +42,7 @@ public readonly ref struct NullableRef<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private NullableRef(Span<T> span)
     {
-        Span = span;
+        this.Span = span;
     }
 
     /// <summary>
@@ -69,7 +69,7 @@ public readonly ref struct NullableRef<T>
             // also account for the byte endianness of the current system),
             // and then reinterpret that value to a bool flag.
             // This results in a single movzx instruction on x86-64.
-            byte length = unchecked((byte)Span.Length);
+            byte length = unchecked((byte)this.Span.Length);
 
             return *(bool*)&length;
         }
@@ -89,7 +89,7 @@ public readonly ref struct NullableRef<T>
                 ThrowInvalidOperationException();
             }
 
-            return ref MemoryMarshal.GetReference(Span);
+            return ref MemoryMarshal.GetReference(this.Span);
         }
     }
 

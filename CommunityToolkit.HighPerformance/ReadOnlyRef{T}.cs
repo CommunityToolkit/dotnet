@@ -37,7 +37,7 @@ public readonly ref struct ReadOnlyRef<T>
     {
         ref T r0 = ref Unsafe.AsRef(value);
 
-        Span = MemoryMarshal.CreateReadOnlySpan(ref r0, 1);
+        this.Span = MemoryMarshal.CreateReadOnlySpan(ref r0, 1);
     }
 
     /// <summary>
@@ -56,7 +56,7 @@ public readonly ref struct ReadOnlyRef<T>
     public ref readonly T Value
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref MemoryMarshal.GetReference(Span);
+        get => ref MemoryMarshal.GetReference(this.Span);
     }
 
     /// <summary>

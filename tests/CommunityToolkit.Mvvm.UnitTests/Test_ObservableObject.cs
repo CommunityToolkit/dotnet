@@ -58,8 +58,8 @@ public class Test_ObservableObject
 
         public T? Data
         {
-            get => data;
-            set => SetProperty(ref data, value);
+            get => this.data;
+            set => SetProperty(ref this.data, value);
         }
     }
 
@@ -222,8 +222,8 @@ public class Test_ObservableObject
 
         public Task<T>? Data
         {
-            get => data;
-            set => SetPropertyAndNotifyOnCompletion(ref data, value);
+            get => this.data;
+            set => SetPropertyAndNotifyOnCompletion(ref this.data, value);
         }
     }
 
@@ -289,8 +289,8 @@ public class Test_ObservableObject
 
         public Task? Data
         {
-            get => taskNotifier;
-            set => SetPropertyAndNotifyOnCompletion(ref taskNotifier, value);
+            get => this.taskNotifier;
+            set => SetPropertyAndNotifyOnCompletion(ref this.taskNotifier, value);
         }
     }
 }

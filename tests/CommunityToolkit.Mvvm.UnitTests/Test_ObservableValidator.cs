@@ -580,7 +580,7 @@ public class Test_ObservableValidator
 
         public bool TrySetName(string? value, out IReadOnlyCollection<ValidationResult> errors)
         {
-            return TrySetProperty(ref name, value, out errors, nameof(Name));
+            return TrySetProperty(ref this.name, value, out errors, nameof(Name));
         }
 
         private int age;

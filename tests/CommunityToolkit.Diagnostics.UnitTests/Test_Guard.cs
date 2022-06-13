@@ -287,10 +287,10 @@ public partial class Test_Guard
     {
         public BiggerThanLimit(ulong a, ulong b, ulong c, ulong d)
         {
-            A = a;
-            B = b;
-            C = c;
-            D = d;
+            this.A = a;
+            this.B = b;
+            this.C = c;
+            this.D = d;
         }
 
         public ulong A;

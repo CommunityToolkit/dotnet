@@ -126,8 +126,8 @@ public class Test_ObservableRecipient
 
         public T? Data
         {
-            get => data;
-            set => SetProperty(ref data, value, true);
+            get => this.data;
+            set => SetProperty(ref this.data, value, true);
         }
 
         public bool IsActivatedCheck { get; private set; }

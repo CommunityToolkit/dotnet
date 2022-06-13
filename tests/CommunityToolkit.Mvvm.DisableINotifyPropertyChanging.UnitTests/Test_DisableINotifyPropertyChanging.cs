@@ -48,8 +48,8 @@ public class Test_DisableINotifyPropertyChanging
 
         public T? Data
         {
-            get => data;
-            set => SetProperty(ref data, value);
+            get => this.data;
+            set => SetProperty(ref this.data, value);
         }
 
         protected override void OnPropertyChanging(PropertyChangingEventArgs e)

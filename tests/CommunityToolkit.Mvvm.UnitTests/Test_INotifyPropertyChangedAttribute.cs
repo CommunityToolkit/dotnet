@@ -43,8 +43,8 @@ public partial class Test_INotifyPropertyChangedAttribute
 
         public int Data
         {
-            get => data;
-            set => SetProperty(ref data, value);
+            get => this.data;
+            set => SetProperty(ref this.data, value);
         }
     }
 
