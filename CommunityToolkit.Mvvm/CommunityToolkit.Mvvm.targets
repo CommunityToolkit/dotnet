@@ -1,17 +1,17 @@
 <Project>
 
   <!-- Get the analyzer from the CommunityToolkit.Mvvm NuGet package -->
-  <Target Name="_MVVMToolkitGatherAnalyzers">
+  <Target Name="MVVMToolkitGatherAnalyzers">
     <ItemGroup>
-      <_MVVMToolkitAnalyzer Include="@(Analyzer)" Condition="'%(Analyzer.NuGetPackageId)' == 'CommunityToolkit.Mvvm'" />
+      <MVVMToolkitAnalyzer Include="@(Analyzer)" Condition="'%(Analyzer.NuGetPackageId)' == 'CommunityToolkit.Mvvm'" />
     </ItemGroup>
   </Target>
 
   <!-- Remove the analyzer if using Roslyn 3.x (incremental generators require Roslyn 4.x) -->
-  <Target Name="_MVVMToolkitRemoveAnalyzersForRoslyn3"
+  <Target Name="MVVMToolkitRemoveAnalyzersForRoslyn3"
           Condition="'$(CSharpCoreTargetsPath)' != ''"
           AfterTargets="ResolvePackageDependenciesForBuild;ResolveNuGetPackageAssets"
-          DependsOnTargets="_MVVMToolkitGatherAnalyzers">
+          DependsOnTargets="MVVMToolkitGatherAnalyzers">
 
     <!-- Use the CSharpCoreTargetsPath property to find the version of the compiler we are using. This is the same mechanism
          MSBuild uses to find the compiler. We could check the assembly version for any compiler assembly (since they all have
@@ -32,7 +32,7 @@
 
     <!-- If the Roslyn version is < 4.0, disable the source generators -->
     <ItemGroup Condition ="'$(MVVMToolkitCurrentCompilerVersionIsNotNewEnough)' == 'true'">
-      <Analyzer Remove="@(_MVVMToolkitAnalyzer)"/>
+      <Analyzer Remove="@(MVVMToolkitAnalyzer)"/>
     </ItemGroup>
 
     <!-- If the source generators are disabled, also emit a warning. This would've been produced by MSBuild itself as well, but
@@ -42,14 +42,14 @@
   </Target>
 
   <!-- Remove the analyzer if Roslyn is missing -->
-  <Target Name="_MVVMToolkitRemoveAnalyzersForRosynNotFound"
+  <Target Name="MVVMToolkitRemoveAnalyzersForRosynNotFound"
           Condition="'$(CSharpCoreTargetsPath)' == ''"
           AfterTargets="ResolvePackageDependenciesForBuild;ResolveNuGetPackageAssets"
-          DependsOnTargets="_MVVMToolkitGatherAnalyzers">
+          DependsOnTargets="MVVMToolkitGatherAnalyzers">
 
     <!-- If no Roslyn assembly could be found, just remove the analyzer without emitting a warning -->
     <ItemGroup>
-      <Analyzer Remove="@(_MVVMToolkitAnalyzer)"/>
+      <Analyzer Remove="@(MVVMToolkitAnalyzer)"/>
     </ItemGroup>
   </Target>
 
