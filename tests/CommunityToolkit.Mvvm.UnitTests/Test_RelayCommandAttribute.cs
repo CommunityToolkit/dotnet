@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -554,6 +555,17 @@ public partial class Test_RelayCommandAttribute
         AssertOptionsOfT(model.OfTAndAllowConcurrentExecutionsAndFlowExceptionsToTaskSchedulerCommand, AsyncRelayCommandOptions.AllowConcurrentExecutions | AsyncRelayCommandOptions.FlowExceptionsToTaskScheduler);
     }
 
+    // See https://github.com/CommunityToolkit/dotnet/issues/294
+    [TestMethod]
+    public void Test_RelayCommandAttribute_CanExecuteWithNullabilityAnnotations()
+    {
+        ModelWithCommandWithNullableCanExecute model = new();
+
+        Assert.IsTrue(model.DoSomething1Command.CanExecute("Hello"));
+        Assert.IsTrue(model.DoSomething2Command.CanExecute("Hello"));
+        Assert.IsTrue(model.DoSomething3Command.CanExecute((0, "Hello")));
+    }
+
     #region Region
     public class Region
     {
@@ -992,6 +1004,39 @@ public partial class Test_RelayCommandAttribute
         private Task OfTAndAllowConcurrentExecutionsAndFlowExceptionsToTaskScheduler(string obj)
         {
             return Task.CompletedTask;
+        }
+    }
+
+    partial class ModelWithCommandWithNullableCanExecute
+    {
+        bool CanDoSomething1(string? parameter)
+        {
+            return !string.IsNullOrEmpty(parameter);
+        }
+
+        [RelayCommand(CanExecute = (nameof(CanDoSomething1)))]
+        private void DoSomething1(string? parameter)
+        {
+        }
+
+        bool CanDoSomething2(string parameter)
+        {
+            return !string.IsNullOrEmpty(parameter);
+        }
+
+        [RelayCommand(CanExecute = (nameof(CanDoSomething2)))]
+        private void DoSomething2(string? parameter)
+        {
+        }
+
+        bool CanDoSomething3((int A, string? B) parameter)
+        {
+            return !string.IsNullOrEmpty(parameter.B); 
+        }
+
+        [RelayCommand(CanExecute = (nameof(CanDoSomething3)))]
+        private void DoSomething3((int A, string? B) parameter)
+        {
         }
     }
 }
