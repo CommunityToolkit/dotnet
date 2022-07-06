@@ -29,7 +29,7 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: $"Cannot apply [INotifyPropertyChanged] to a type that already declares the {nameof(INotifyPropertyChanged)} interface.",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0001");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a duplicate declaration of <see cref="INotifyPropertyChanged"/> would happen.
@@ -45,7 +45,7 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: $"Cannot apply [ObservableObject] to a type that already declares the {nameof(INotifyPropertyChanged)} interface.",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0002");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a duplicate declaration of <see cref="INotifyPropertyChanging"/> would happen.
@@ -61,7 +61,7 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: $"Cannot apply [ObservableObject] to a type that already declares the {nameof(INotifyPropertyChanging)} interface.",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0003");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a duplicate declaration of <see cref="INotifyPropertyChanging"/> would happen.
@@ -77,7 +77,7 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: $"Cannot apply [ObservableRecipient] to a type that already inherits from the ObservableRecipient class.",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0004");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when there is a missing base functionality to enable <c>ObservableRecipientAttribute</c>.
@@ -93,7 +93,7 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: $"Cannot apply [ObservableRecipient] to a type that lacks necessary base functionality (it should either inherit from ObservableObject, or be annotated with [ObservableObject] or [INotifyPropertyChanged]).",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0005");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when the target type doesn't inherit from the <c>ObservableValidator</c> class.
@@ -109,7 +109,7 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Cannot apply [ObservableProperty] to fields with validation attributes if they are declared in a type that doesn't inherit from ObservableValidator.",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0006");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when an annotated method to generate a command for has an invalid signature.
@@ -125,7 +125,7 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Cannot apply [RelayCommand] to methods with a signature that doesn't match any of the existing relay command types.",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0007");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when an unsupported C# language version is being used.
@@ -138,7 +138,7 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "The source generator features from the MVVM Toolkit require consuming projects to set the C# language version to at least C# 8.0. Make sure to add <LangVersion>8.0</LangVersion> (or above) to your .csproj file.",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0008");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a specified <c>CanExecute</c> name has no matching member.
@@ -154,7 +154,7 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "The CanExecute name in [RelayCommand] must refer to a valid member in its parent type.",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0009");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a specified <c>CanExecute</c> name maps to multiple members.
@@ -170,7 +170,7 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Cannot set the CanExecute name in [RelayCommand] to one that has multiple matches in its parent type (it must refer to a single compatible member).",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0010");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a a specified <c>CanExecute</c> name maps to an invalid member.
@@ -186,7 +186,7 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "The CanExecute name in [RelayCommand] must refer to a compatible member (either a property or a method) to be used in a generated command.",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0011");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>RelayCommandAttribute.AllowConcurrentExecutions</c> is being set for a non-asynchronous method.
@@ -202,7 +202,7 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Cannot apply the [RelayCommand] attribute specifying a concurrency control option to methods mapping to non-asynchronous command types.",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0012");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>RelayCommandAttribute.IncludeCancelCommandParameter</c> is being set for an invalid method.
@@ -218,7 +218,7 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Cannot apply the [RelayCommand] attribute specifying to include a cancel command to methods not mapping to an asynchronous command type accepting a cancellation token.",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0013");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a generated property created with <c>[ObservableProperty]</c> would collide with the source field.
@@ -234,7 +234,7 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "The name of fields annotated with [ObservableProperty] should use \"lowerCamel\", \"_lowerCamel\" or \"m_lowerCamel\" pattern to avoid collisions with the generated properties.",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0014");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when the specified target for <c>[NotifyPropertyChangedFor]</c> is not valid.
@@ -250,7 +250,7 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "The target(s) of [NotifyPropertyChangedFor] must be a (different) accessible property in its parent type.",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0015");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when the specified target for <c>[NotifyCanExecuteChangedFor]</c> is not valid.
@@ -266,7 +266,7 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "The target(s) of [NotifyCanExecuteChangedFor] must be an accessible IRelayCommand property in its parent type.",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0016");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[INotifyPropertyChanged]</c> is applied to a type with an attribute already.
@@ -282,7 +282,7 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Cannot apply [INotifyPropertyChanged] to a type that already has this attribute or [ObservableObject] applied to it (including base types).",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0017");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[ObservableObject]</c> is applied to a type with an attribute already.
@@ -298,7 +298,7 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Cannot apply [ObservableObject] to a type that already has this attribute or [INotifyPropertyChanged] applied to it (including base types).",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0018");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[ObservableProperty]</c> is applied to a field in an invalid type.
@@ -314,7 +314,7 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Fields annotated with [ObservableProperty] must be contained in a type that inherits from ObservableObject or that is annotated with [ObservableObject] or [INotifyPropertyChanged] (including base types).",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0019");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[ObservableProperty]</c> is applied to a field in an invalid type.
@@ -330,7 +330,7 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Fields not annotated with [ObservableProperty] cannot use [NotifyPropertyChangedFor], [NotifyCanExecuteChangedFor], [NotifyPropertyChangedRecipients] and [NotifyDataErrorInfo].",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0020");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[ObservableRecipient]</c> is applied to a type with an attribute already.
@@ -346,7 +346,7 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Cannot apply [ObservableRecipient] to a type that already inherits this attribute from a base type.",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0021");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[NotifyPropertyChangedRecipients]</c> is applied to a field in an invalid type.
@@ -362,7 +362,7 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Fields annotated with [NotifyPropertyChangedRecipients] must be contained in a type that inherits from ObservableRecipient or that is annotated with [ObservableRecipient] (including base types).",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0022");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a specified <c>[RelayCommand]</c> method has any overloads.
@@ -378,7 +378,7 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Methods with multiple overloads cannot be annotated with [RelayCommand], as command methods must be unique within their containing type.",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0023");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a generated property created with <c>[ObservableProperty]</c> would cause conflicts with other generated members.
@@ -394,7 +394,7 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "The fields annotated with [ObservableProperty] cannot result in a property name or have a type that would cause conflicts with other generated members.",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0024");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when the target type doesn't inherit from the <c>ObservableValidator</c> class.
@@ -410,7 +410,7 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Cannot apply [NotifyDataErrorInfo] to fields that are declared in a type that doesn't inherit from ObservableValidator.",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0025");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when the target field uses [NotifyDataErrorInfo] but has no validation attributes.
@@ -426,7 +426,7 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Cannot apply [NotifyDataErrorInfo] to fields that don't have any validation attributes to use during validation.",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0026");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[NotifyPropertyChangedRecipients]</c> is applied to an invalid type.
@@ -442,7 +442,7 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Types annotated with [NotifyPropertyChangedRecipients] must inherit from ObservableRecipient or be annotated with [ObservableRecipient] (including base types).",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0027");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[NotifyDataErrorInfo]</c> is applied to an invalid type.
@@ -458,7 +458,7 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Types annotated with [NotifyDataErrorInfo] must inherit from ObservableValidator.",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0028");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[NotifyPropertyChangedRecipients]</c> is applied to a field in a class with <c>[NotifyPropertyChangedRecipients]</c> used at the class-level.
@@ -474,7 +474,7 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
         description: "Annotating a field with [NotifyPropertyChangedRecipients] is not necessary if the containing type has or inherits [NotifyPropertyChangedRecipients] at the class-level.",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0029");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[NotifyDataErrorInfo]</c> is applied to a field in a class with <c>[NotifyDataErrorInfo]</c> used at the class-level.
@@ -490,7 +490,7 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
         description: "Annotating a field with [NotifyDataErrorInfo] is not necessary if the containing type has or inherits [NotifyDataErrorInfo] at the class-level.",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0030");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>RelayCommandAttribute.FlowExceptionsToTaskScheduler</c> is being set for a non-asynchronous method.
@@ -506,5 +506,5 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "Cannot apply the [RelayCommand] attribute specifying a task scheduler exception flow option to methods mapping to non-asynchronous command types.",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit");
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0031");
 }
