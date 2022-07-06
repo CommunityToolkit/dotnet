@@ -61,4 +61,11 @@ internal readonly struct MemoryManagerOwner : ISpanOwner
             return this.memoryManager.GetSpan().Slice(this.offset, this.length);
         }
     }
+
+    /// <inheritdoc/>
+    public Memory<byte> Memory
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => this.memoryManager.Memory.Slice(this.offset, this.length);
+    }
 }
