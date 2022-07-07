@@ -68,6 +68,17 @@ public static class StringExtensions
     }
 
     /// <summary>
+    /// Determines whether a string is valid as a currency.
+    /// </summary>
+    /// <param name="str">The string to test.</param>
+    /// <param name="culture">The culture to check against. If left null, <see cref="CultureInfo.CurrentCulture"/> is used.</param>
+    /// <returns><c>true</c> for a valid currency; otherwise, <c>false</c>.</returns>
+    public static bool IsCurrency([NotNullWhen(true)] this string? str, CultureInfo? culture = null)
+    {
+        return decimal.TryParse(str, NumberStyles.Currency, culture ?? CultureInfo.CurrentCulture, out _);
+    }
+
+    /// <summary>
     /// Determines whether a string is a valid integer.
     /// </summary>
     /// <param name="str">The string to test.</param>
