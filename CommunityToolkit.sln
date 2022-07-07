@@ -30,7 +30,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{88C6FFBE-3
 		CODE_OF_CONDUCT.md = CODE_OF_CONDUCT.md
 		Contributing.md = Contributing.md
 		License.md = License.md
-		README.md = README.md
+		ReadMe.md = ReadMe.md
 		ThirdPartyNotices.txt = ThirdPartyNotices.txt
 	EndProjectSection
 EndProject
