@@ -545,9 +545,9 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
         "Additionally, due to the usage of validation APIs, the type of the current instance cannot be statically discovered.")]
     protected void ValidateAllProperties()
     {
-#pragma warning disable IL2026
         // Fast path that tries to create a delegate from a generated type-specific method. This
         // is used to make this method more AOT-friendly and faster, as there is no dynamic code.
+        [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")]
         static Action<object> GetValidationAction(Type type)
         {
             if (type.Assembly.GetType("CommunityToolkit.Mvvm.ComponentModel.__Internals.__ObservableValidatorExtensions") is Type extensionsType &&
@@ -558,7 +558,6 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
 
             return GetValidationActionFallback(type);
         }
-#pragma warning restore IL2026
 
         // Fallback method to create the delegate with a compiled LINQ expression
         static Action<object> GetValidationActionFallback(Type type)
@@ -615,7 +614,9 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
 
         // Get or compute the cached list of properties to validate. Here we're using a static lambda to ensure the
         // delegate is cached by the C# compiler, see the related issue at https://github.com/dotnet/roslyn/issues/5835.
-        EntityValidatorMap.GetValue(GetType(), static t => GetValidationAction(t))(this);
+        EntityValidatorMap.GetValue(
+            GetType(),
+            [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")] static (t) => GetValidationAction(t))(this);
     }
 
     /// <summary>

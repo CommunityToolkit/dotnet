@@ -4,6 +4,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CommunityToolkit.Mvvm.ComponentModel.__Internals;
 
@@ -23,10 +24,9 @@ public static class __ObservableValidatorHelper
     /// <param name="propertyName">The name of the property to validate.</param>
     [EditorBrowsable(EditorBrowsableState.Never)]
     [Obsolete("This method is not intended to be called directly by user code")]
+    [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")]
     public static void ValidateProperty(ObservableValidator instance, object? value, string propertyName)
     {
-#pragma warning disable IL2026
         instance.ValidateProperty(value, propertyName);
-#pragma warning restore IL2026
     }
 }
