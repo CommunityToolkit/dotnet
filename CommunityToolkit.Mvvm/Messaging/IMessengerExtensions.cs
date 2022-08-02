@@ -95,10 +95,10 @@ public static class IMessengerExtensions
         ArgumentNullException.ThrowIfNull(messenger);
         ArgumentNullException.ThrowIfNull(recipient);
 
-#pragma warning disable IL2026
         // We use this method as a callback for the conditional weak table, which will handle
         // thread-safety for us. This first callback will try to find a generated method for the
         // target recipient type, and just invoke it to get the delegate to cache and use later.
+        [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")]
         static Action<IMessenger, object>? LoadRegistrationMethodsForType(Type recipientType)
         {
             if (recipientType.Assembly.GetType("CommunityToolkit.Mvvm.Messaging.__Internals.__IMessengerExtensions") is Type extensionsType &&
@@ -109,12 +109,11 @@ public static class IMessengerExtensions
 
             return null;
         }
-#pragma warning restore IL2026
 
         // Try to get the cached delegate, if the generator has run correctly
         Action<IMessenger, object>? registrationAction = DiscoveredRecipients.RegistrationMethods.GetValue(
             recipient.GetType(),
-            static t => LoadRegistrationMethodsForType(t));
+            [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")] static (t) => LoadRegistrationMethodsForType(t));
 
         if (registrationAction is not null)
         {
@@ -152,11 +151,11 @@ public static class IMessengerExtensions
         ArgumentNullException.ThrowIfNull(recipient);
         ArgumentNullException.For<TToken>.ThrowIfNull(token);
 
-#pragma warning disable IL2026
         // We use this method as a callback for the conditional weak table, which will handle
         // thread-safety for us. This first callback will try to find a generated method for the
         // target recipient type, and just invoke it to get the delegate to cache and use later.
         // In this case we also need to create a generic instantiation of the target method first.
+        [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")]
         static Action<IMessenger, object, TToken> LoadRegistrationMethodsForType(Type recipientType)
         {
             if (recipientType.Assembly.GetType("CommunityToolkit.Mvvm.Messaging.__Internals.__IMessengerExtensions") is Type extensionsType &&
@@ -224,7 +223,6 @@ public static class IMessengerExtensions
 
             return Expression.Lambda<Action<IMessenger, object, TToken>>(body, arg0, arg1, arg2).Compile();
         }
-#pragma warning restore IL2026
 
         // Get or compute the registration method for the current recipient type.
         // As in CommunityToolkit.Diagnostics.TypeExtensions.ToTypeString, we use a lambda
@@ -233,7 +231,7 @@ public static class IMessengerExtensions
         // For more info on this, see the related issue at https://github.com/dotnet/roslyn/issues/5835.
         Action<IMessenger, object, TToken> registrationAction = DiscoveredRecipients<TToken>.RegistrationMethods.GetValue(
             recipient.GetType(),
-            static t => LoadRegistrationMethodsForType(t));
+            [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")] static (t) => LoadRegistrationMethodsForType(t));
 
         // Invoke the cached delegate to actually execute the message registration
         registrationAction(messenger, recipient, token);
