@@ -24,7 +24,10 @@ public static class __ObservableValidatorHelper
     /// <param name="propertyName">The name of the property to validate.</param>
     [EditorBrowsable(EditorBrowsableState.Never)]
     [Obsolete("This method is not intended to be called directly by user code")]
-    [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")]
+    [UnconditionalSuppressMessage(
+        "ReflectionAnalysis",
+        "IL2026:RequiresUnreferencedCode",
+        Justification = "This helper is called by generated code from public APIs that have the proper annotations already (and we don't want generated code to produce warnings that developers cannot fix).")]
     public static void ValidateProperty(ObservableValidator instance, object? value, string propertyName)
     {
         instance.ValidateProperty(value, propertyName);
