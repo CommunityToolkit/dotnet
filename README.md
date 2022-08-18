@@ -4,14 +4,14 @@
 
 | Target | Branch | Status | Recommended package version |
 | ------ | ------ | ------ | ------ |
-| Production | rel/7.1.2 | [![Build Status](https://dev.azure.com/dotnet/CommunityToolkit/_apis/build/status/Toolkit-CI?branchName=rel/7.1.1)](https://dev.azure.com/dotnet/CommunityToolkit/_build/latest?definitionId=10&branchName=rel/7.1.1) | [![NuGet](https://img.shields.io/nuget/v/Microsoft.Toolkit.svg)](https://www.nuget.org/profiles/Microsoft.Toolkit) |
+| Production | rel/8.0.0 | [![Build Status](https://dev.azure.com/dotnet/CommunityToolkit/_apis/build/status/Toolkit-CI?branchName=rel/8.0.0)](https://dev.azure.com/dotnet/CommunityToolkit/_build/latest?definitionId=10&branchName=rel/8.0.0) | [![NuGet](https://img.shields.io/nuget/v/Microsoft.Toolkit.svg)](https://www.nuget.org/profiles/Microsoft.Toolkit) |
 | Previews | main | [![Build Status](https://dev.azure.com/dotnet/CommunityToolkit/_apis/build/status/Toolkit-CI?branchName=main)](https://dev.azure.com/dotnet/CommunityToolkit/_build/latest?definitionId=10) | [![DevOps](https://vsrm.dev.azure.com/dotnet/_apis/public/Release/badge/696bc9fd-f160-4e97-a1bd-7cbbb3b58f66/1/1)](https://dev.azure.com/dotnet/CommunityToolkit/_packaging?_a=feed&feed=CommunityToolkit-MainLatest) |
 
 ## 👀 What does this repo contain?
 
 This repository contains several .NET libraries (originally developed as part of the [Windows Community Toolkit](https://github.com/CommunityToolkit/WindowsCommunityToolkit)) that can be used both by application developers (regardless on the specific UI framework in use, they work everywhere!) and library authors. These libraries are also being used internally at Microsoft to power many of our first party apps (such as the new Microsoft Store) and constantly improved by listening to feedbacks from other teams, external partners and other developers from the community. Here's a quick breakdown of the various components you'll find in this repository:
 
-- [`CommunityToolkit.Mvvm` (aka MVVM Toolkit)](https://docs.microsoft.com/windows/communitytoolkit/mvvm/introduction): a fast, modular, platform-agnostic MVVM library, which is the official successor of `MvvmLight`. It's used extensively in the Microsoft Store and other first party apps.
+- [`CommunityToolkit.Mvvm` (aka MVVM Toolkit)](https://aka.ms/mvvmtoolkit/docs): a fast, modular, platform-agnostic MVVM library, which is the official successor of `MvvmLight`. It's used extensively in the Microsoft Store and other first party apps. [The sample app repository is here](https://aka.ms/mvvmtoolkit/samples).
 - `CommunityToolkit.Mvvm.SourceGenerators`: the source generators to augment the MVVM Toolkit.
 - [`CommunityToolkit.Diagnostics`](https://docs.microsoft.com/windows/communitytoolkit/diagnostics/introduction): a set of helper APIs (specifically, [`Guard`](https://docs.microsoft.com/windows/communitytoolkit/developer-tools/guard) and [`ThrowHelper`](https://docs.microsoft.com/windows/communitytoolkit/developer-tools/throwhelper)) that can be used for cleaner, more efficient and less error-prone argument validation and error checking.
 - [`CommunityToolkit.HighPerformance`](https://docs.microsoft.com/windows/communitytoolkit/high-performance/introduction) a collection of helpers for working in high-performance scenarios. It includes APIs such as [pooled buffer helpers](https://docs.microsoft.com/windows/communitytoolkit/high-performance/memoryowner), a fast [string pool](https://docs.microsoft.com/windows/communitytoolkit/high-performance/stringpool) type, a 2D variant of `Memory<T>` and `Span<T>` ([`Memory2D<T>`](https://docs.microsoft.com/windows/communitytoolkit/high-performance/memory2d) and [`Span2D<T>`](https://docs.microsoft.com/windows/communitytoolkit/high-performance/span2d)) also supporting discontiguous regions, helpers for bit shift operations (such as [`BitHelper`](https://docs.microsoft.com/windows/communitytoolkit/high-performance/span2d), also used in [Paint.NET](https://www.getpaint.net/)), and more.
@@ -23,7 +23,7 @@ Please read the [Getting Started with the .NET Community Toolkit](https://docs.m
 
 ## 📃 Documentation
 
-All documentation for the toolkit is hosted on [Microsoft Docs](https://docs.microsoft.com/windows/communitytoolkit/).
+All documentation for the toolkit is hosted on [Microsoft Docs](https://docs.microsoft.com/dotnet/communitytoolkit/).
 
 All API documentation can be found at the [.NET API Browser](https://docs.microsoft.com/dotnet/api/?view=win-comm-toolkit-dotnet-stable).
 
