@@ -42,7 +42,7 @@ public static class Converters
         }
         else
         {
-            return ((size >> 50) / 1024F).ToString("F0") + " EB";
+            return ((size >> 50) / 1024F).ToString("F1") + " EB";
         }
     }
 }
