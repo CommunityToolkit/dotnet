@@ -29,5 +29,5 @@ public interface IIncrementalSource<TSource>
     /// <returns>
     /// Returns a collection of <typeparamref name="TSource"/>.
     /// </returns>
-    Task<IEnumerable<TSource>> GetPagedItemsAsync(int pageIndex, int pageSize, CancellationToken cancellationToken = default(CancellationToken));
+    Task<IEnumerable<TSource>> GetPagedItemsAsync(int pageIndex, int pageSize, CancellationToken cancellationToken = default);
 }
