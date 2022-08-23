@@ -978,7 +978,7 @@ partial class ObservablePropertyGenerator
                 .AddVariables(
                     VariableDeclarator(Identifier(propertyName))
                     .WithInitializer(EqualsValueClause(
-                        ImplicitObjectCreationExpression()
+                        ObjectCreationExpression(IdentifierName(typeName))
                         .AddArgumentListArguments(Argument(
                             LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(propertyName))))))))
                 .AddModifiers(
