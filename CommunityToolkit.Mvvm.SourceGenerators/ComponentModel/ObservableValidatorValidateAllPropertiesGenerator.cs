@@ -9,6 +9,7 @@ using CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators;
 
@@ -38,6 +39,8 @@ public sealed partial class ObservableValidatorValidateAllPropertiesGenerator : 
             .Where(Execute.IsObservableValidator)
             .Select(static (item, _) => Execute.GetInfo(item))
             .WithComparer(ValidationInfo.Comparer.Default);
+
+        context.FilterWithLanguageVersion(ref validationInfo, LanguageVersion.CSharp8, UnsupportedCSharpLanguageVersionError);
 
         // Check whether the header file is needed
         IncrementalValueProvider<bool> isHeaderFileNeeded =
