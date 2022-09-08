@@ -22,37 +22,46 @@ public sealed partial class IMessengerRegisterAllGenerator : IIncrementalGenerat
     /// <inheritdoc/>
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        // Get all class declarations. This pipeline step also needs to filter out duplicate recipient
-        // definitions (it might happen if a recipient has partial declarations). To do this, all pairs
-        // of class declarations and associated symbols are gathered, and then only the pair where the
-        // class declaration is the first syntax reference for the associated symbol is kept.
-        // Just like with the ObservableValidator generator, we also intentionally skip abstract types.
-        IncrementalValuesProvider<INamedTypeSymbol> typeSymbols =
+        // Get the recipient info for all target types
+        IncrementalValuesProvider<RecipientInfo> recipientInfo =
             context.SyntaxProvider
             .CreateSyntaxProvider(
                 static (node, _) => node is ClassDeclarationSyntax,
-                static (context, _) =>
+                static (context, token) =>
                 {
                     if (!context.SemanticModel.Compilation.HasLanguageVersionAtLeastEqualTo(LanguageVersion.CSharp8))
                     {
                         return default;
                     }
 
-                    return (context.Node, Symbol: (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!);
+                    INamedTypeSymbol typeSymbol = (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node, token)!;
+
+                    // The type must be a non-abstract, non-generic type (just like with the ObservableValidator generator)
+                    if (typeSymbol is not { IsAbstract: false, IsGenericType: false })
+                    {
+                        return default;
+                    }
+
+                    // This pipeline step also needs to filter out duplicate recipient definitions (it might happen if a
+                    // recipient has partial declarations). To do this, all pairs of class declarations and associated
+                    // symbols are gathered, and then only the pair where the class declaration is the first syntax
+                    // reference for the associated symbol is kept.
+                    if (!context.Node.IsFirstSyntaxDeclarationForSymbol(typeSymbol))
+                    {
+                        return default;
+                    }
+
+                    ImmutableArray<INamedTypeSymbol> interfaceSymbols = Execute.GetInterfaces(typeSymbol);
+
+                    // Check that the type implements at least one IRecipient<TMessage> interface
+                    if (interfaceSymbols.IsEmpty)
+                    {
+                        return default;
+                    }
+
+                    return Execute.GetInfo(typeSymbol, interfaceSymbols);
                 })
-            .Where(static item => item.Symbol is { IsAbstract: false, IsGenericType: false } && item.Node.IsFirstSyntaxDeclarationForSymbol(item.Symbol))
-            .Select(static (item, _) => item.Symbol);
-
-        // Get the target IRecipient<TMessage> interfaces and filter out other types
-        IncrementalValuesProvider<(INamedTypeSymbol Type, ImmutableArray<INamedTypeSymbol> Interfaces)> typeAndInterfaceSymbols =
-            typeSymbols
-            .Select(static (item, _) => (item, Interfaces: Execute.GetInterfaces(item)))
-            .Where(static item => !item.Interfaces.IsEmpty);
-
-        // Get the recipient info for all target types
-        IncrementalValuesProvider<RecipientInfo> recipientInfo =
-            typeAndInterfaceSymbols
-            .Select(static (item, _) => Execute.GetInfo(item.Type, item.Interfaces))
+            .Where(static item => item is not null)!
             .WithComparer(RecipientInfo.Comparer.Default);
 
         // Check whether the header file is needed
@@ -68,7 +77,8 @@ public sealed partial class IMessengerRegisterAllGenerator : IIncrementalGenerat
 
         // Gather the conditional flag and attribute availability
         IncrementalValueProvider<(bool IsHeaderFileNeeded, bool IsDynamicallyAccessedMembersAttributeAvailable)> headerFileInfo =
-            isHeaderFileNeeded.Combine(isDynamicallyAccessedMembersAttributeAvailable);
+            isHeaderFileNeeded
+            .Combine(isDynamicallyAccessedMembersAttributeAvailable);
 
         // Generate the header file with the attributes
         context.RegisterConditionalImplementationSourceOutput(headerFileInfo, static (context, item) =>
