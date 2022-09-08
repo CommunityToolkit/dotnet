@@ -43,10 +43,10 @@
   <!-- Reference the various multi-targeted versions of the source generator project (one per Roslyn version) -->
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.csproj" ReferenceOutputAssembly="false">
-      <Properties>MvvmToolkitSourceGeneratorRoslynVersion=4.0.1</Properties>
+      <Properties>MvvmToolkitSourceGeneratorRoslynVersion=4.0.1;MvvmToolkitIsGeneratingNuGetPackage=true</Properties>
     </ProjectReference>
     <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.csproj" ReferenceOutputAssembly="false">
-      <Properties>MvvmToolkitSourceGeneratorRoslynVersion=4.3.0</Properties>
+      <Properties>MvvmToolkitSourceGeneratorRoslynVersion=4.3.0;MvvmToolkitIsGeneratingNuGetPackage=true</Properties>
     </ProjectReference>
   </ItemGroup>
 
