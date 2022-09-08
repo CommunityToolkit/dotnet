@@ -11,7 +11,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Reflection.Emit;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators.UnitTests;
 
@@ -249,7 +248,6 @@ public class Test_SourceGeneratorsDiagnostics
             CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)),
             "MVVMTK0008");
 
-        // Ensure that it succeeds with the minimum supported language version
         VerifySuccessfulGeneration(source);
     }
 
@@ -271,7 +269,6 @@ public class Test_SourceGeneratorsDiagnostics
             CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)),
             "MVVMTK0008");
 
-        // Ensure that it succeeds with the minimum supported language version
         VerifySuccessfulGeneration(source);
     }
 
@@ -295,7 +292,6 @@ public class Test_SourceGeneratorsDiagnostics
             CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)),
             "MVVMTK0008");
 
-        // Ensure that it succeeds with the minimum supported language version
         VerifySuccessfulGeneration(source);
     }
 
@@ -319,7 +315,6 @@ public class Test_SourceGeneratorsDiagnostics
             CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)),
             "MVVMTK0008");
 
-        // Ensure that it succeeds with the minimum supported language version
         VerifySuccessfulGeneration(source);
     }
 
@@ -344,7 +339,6 @@ public class Test_SourceGeneratorsDiagnostics
             CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)),
             "MVVMTK0008");
 
-        // Ensure that it succeeds with the minimum supported language version
         VerifySuccessfulGeneration(source);
     }
 
@@ -372,7 +366,6 @@ public class Test_SourceGeneratorsDiagnostics
             CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)),
             "MVVMTK0008");
 
-        // Ensure that it succeeds with the minimum supported language version
         VerifySuccessfulGeneration(source);
     }
 
@@ -1454,22 +1447,9 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     /// <summary>
-    /// Verifies the output of a source generator.
+    /// Verifies that all available source generators can run successfully with the input source (including subsequent compilation).
     /// </summary>
-    /// <typeparam name="TGenerator">The generator type to use.</typeparam>
     /// <param name="source">The input source to process.</param>
-    /// <param name="diagnosticsIds">The diagnostic ids to expect for the input source code.</param>
-    private static void VerifyGeneratedDiagnostics<TGenerator>(string source, params string[] diagnosticsIds)
-        where TGenerator : class, IIncrementalGenerator, new()
-    {
-        IIncrementalGenerator generator = new TGenerator();
-        VerifyGeneratedDiagnostics(CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp8)), new[] { generator }, diagnosticsIds);
-    }
-
-    /// <summary>
-    /// Verifies the output of all source generators for input source (including subsequent compilation).
-    /// </summary>
-    /// <param name="source"></param>
     private static void VerifySuccessfulGeneration(string source)
     {
         IIncrementalGenerator[] generators =
@@ -1483,7 +1463,22 @@ public class Test_SourceGeneratorsDiagnostics
             new ObservableValidatorValidateAllPropertiesGenerator(),
             new RelayCommandGenerator()
         };
-        VerifyGeneratedDiagnostics(CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp8)), generators, new string[] { });
+
+        VerifyGeneratedDiagnostics(CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp8)), generators, Array.Empty<string>());
+    }
+
+    /// <summary>
+    /// Verifies the output of a source generator.
+    /// </summary>
+    /// <typeparam name="TGenerator">The generator type to use.</typeparam>
+    /// <param name="source">The input source to process.</param>
+    /// <param name="diagnosticsIds">The diagnostic ids to expect for the input source code.</param>
+    private static void VerifyGeneratedDiagnostics<TGenerator>(string source, params string[] diagnosticsIds)
+        where TGenerator : class, IIncrementalGenerator, new()
+    {
+        IIncrementalGenerator generator = new TGenerator();
+
+        VerifyGeneratedDiagnostics(CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp8)), new[] { generator }, diagnosticsIds);
     }
 
     /// <summary>
@@ -1496,6 +1491,7 @@ public class Test_SourceGeneratorsDiagnostics
         where TGenerator : class, IIncrementalGenerator, new()
     {
         IIncrementalGenerator generator = new TGenerator();
+
         VerifyGeneratedDiagnostics(syntaxTree, new[] { generator }, diagnosticsIds);
     }
 
