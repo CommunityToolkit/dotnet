@@ -18,8 +18,11 @@
     <!-- When the property is not set (which will not happen when creating a NuGet package anyway), just default to 4.0.1 -->
     <MvvmToolkitSourceGeneratorRoslynVersion Condition="'$(MvvmToolkitSourceGeneratorRoslynVersion)' == ''">4.0.1</MvvmToolkitSourceGeneratorRoslynVersion>
     
-    <!-- The output path will end up being eg. "bin\Debug\roslyn4.0\netstandard2.0" (the trailing "netstandard2.0" is added automatically) -->
-    <OutputPath>bin\$(Configuration)\roslyn$(MvvmToolkitSourceGeneratorRoslynVersion.Substring(0, 3))\</OutputPath>
+    <!--
+      The output path will end up being eg. "bin\Debug\roslyn4.0\netstandard2.0" (the trailing "netstandard2.0" is added automatically).
+      This is only set when $(MvvmToolkitIsGeneratingNuGetPackage) is set (when packing CommunityToolkit.Mvvm). This avoids unit test issues.
+    -->
+    <OutputPath Condition="'$(MvvmToolkitIsGeneratingNuGetPackage)' == 'true'">bin\$(Configuration)\roslyn$(MvvmToolkitSourceGeneratorRoslynVersion.Substring(0, 3))\</OutputPath>
     
     <!-- Also define a "ROSLYN_<MAJOR>_<MINOR>" build constant, so the generator code can multi-target whenever needed and add any required polyfills -->
     <DefineConstants>$(DefineConstants);ROSLYN_$(MvvmToolkitSourceGeneratorRoslynVersion.Substring(0, 3).Replace('.', '_'))</DefineConstants>
