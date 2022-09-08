@@ -247,6 +247,8 @@ public class Test_SourceGeneratorsDiagnostics
         VerifyGeneratedDiagnostics<INotifyPropertyChangedGenerator>(
             CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)),
             "MVVMTK0008");
+
+        VerifySuccessfulGeneration(source);
     }
 
     [TestMethod]
@@ -266,6 +268,8 @@ public class Test_SourceGeneratorsDiagnostics
         VerifyGeneratedDiagnostics<ObservableObjectGenerator>(
             CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)),
             "MVVMTK0008");
+
+        VerifySuccessfulGeneration(source);
     }
 
     [TestMethod]
@@ -287,12 +291,16 @@ public class Test_SourceGeneratorsDiagnostics
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(
             CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)),
             "MVVMTK0008");
+
+        VerifySuccessfulGeneration(source);
     }
 
     [TestMethod]
+    [Ignore("The generator should just not trigger at all in this scenario, update this after migrating diagnostics")]
     public void UnsupportedCSharpLanguageVersion_FromObservableValidatorValidateAllPropertiesGenerator()
     {
         string source = @"
+            using System.ComponentModel.DataAnnotations;
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -304,9 +312,11 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        // This is explicitly allowed in C# < 8.0, as it doesn't use any new features
+        // Compilation should be fine on C# 7.3 as well (the generator just doesn't trigger)
         VerifyGeneratedDiagnostics<ObservableValidatorValidateAllPropertiesGenerator>(
             CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)));
+
+        VerifySuccessfulGeneration(source);
     }
 
     [TestMethod]
@@ -329,6 +339,8 @@ public class Test_SourceGeneratorsDiagnostics
         VerifyGeneratedDiagnostics<RelayCommandGenerator>(
             CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)),
             "MVVMTK0008");
+
+        VerifySuccessfulGeneration(source);
     }
 
     [TestMethod]
@@ -351,9 +363,12 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        // This is explicitly allowed in C# < 8.0, as it doesn't use any new features
+        // This should run fine on C# 8.0 too, as it doesn't use any newer features. Additionally, when not supported this
+        // generator should just not run, not cause issues. The MVVM Toolkit has a reflection-based fallback path for this.
         VerifyGeneratedDiagnostics<IMessengerRegisterAllGenerator>(
-            CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)));
+            CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp8)));
+
+        VerifySuccessfulGeneration(source);
     }
 
     [TestMethod]
@@ -1410,6 +1425,50 @@ public class Test_SourceGeneratorsDiagnostics
         VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0031");
     }
 
+    [TestMethod]
+    public void ValidObservablePropertyGeneratorScenarios()
+    {
+        string source = @"
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                [ObservableObject]
+                public partial class SampleViewModel
+                {
+                    [ObservableProperty]
+                    string name;
+
+                    [ObservableProperty]
+                    [NotifyPropertyChangedFor(nameof(Name))]
+                    int number;
+                }
+            }";
+
+        VerifySuccessfulGeneration(source);
+    }
+
+    /// <summary>
+    /// Verifies that all available source generators can run successfully with the input source (including subsequent compilation).
+    /// </summary>
+    /// <param name="source">The input source to process.</param>
+    private static void VerifySuccessfulGeneration(string source)
+    {
+        IIncrementalGenerator[] generators =
+        {
+            new IMessengerRegisterAllGenerator(),
+            new NullabilityAttributesGenerator(),
+            new ObservableObjectGenerator(),
+            new INotifyPropertyChangedGenerator(),
+            new ObservablePropertyGenerator(),
+            new ObservableRecipientGenerator(),
+            new ObservableValidatorValidateAllPropertiesGenerator(),
+            new RelayCommandGenerator()
+        };
+
+        VerifyGeneratedDiagnostics(CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp8)), generators, Array.Empty<string>());
+    }
+
     /// <summary>
     /// Verifies the output of a source generator.
     /// </summary>
@@ -1419,17 +1478,32 @@ public class Test_SourceGeneratorsDiagnostics
     private static void VerifyGeneratedDiagnostics<TGenerator>(string source, params string[] diagnosticsIds)
         where TGenerator : class, IIncrementalGenerator, new()
     {
-        VerifyGeneratedDiagnostics<TGenerator>(CSharpSyntaxTree.ParseText(source), diagnosticsIds);
+        IIncrementalGenerator generator = new TGenerator();
+
+        VerifyGeneratedDiagnostics(CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp8)), new[] { generator }, diagnosticsIds);
     }
 
     /// <summary>
     /// Verifies the output of a source generator.
     /// </summary>
     /// <typeparam name="TGenerator">The generator type to use.</typeparam>
-    /// <param name="syntaxTree">The input source tree to process.</param>
+    /// <param name="syntaxTree">The input source to process.</param>
     /// <param name="diagnosticsIds">The diagnostic ids to expect for the input source code.</param>
     private static void VerifyGeneratedDiagnostics<TGenerator>(SyntaxTree syntaxTree, params string[] diagnosticsIds)
         where TGenerator : class, IIncrementalGenerator, new()
+    {
+        IIncrementalGenerator generator = new TGenerator();
+
+        VerifyGeneratedDiagnostics(syntaxTree, new[] { generator }, diagnosticsIds);
+    }
+
+    /// <summary>
+    /// Verifies the output of one or more source generators.
+    /// </summary>
+    /// <param name="syntaxTree">The input source tree to process.</param>
+    /// <param name="generators">The generators to apply to the input syntax tree.</param>
+    /// <param name="generatorDiagnosticsIds">The diagnostic ids to expect for the input source code.</param>
+    private static void VerifyGeneratedDiagnostics(SyntaxTree syntaxTree, IIncrementalGenerator[] generators, string[] generatorDiagnosticsIds)
     {
         Type observableObjectType = typeof(ObservableObject);
         Type validationAttributeType = typeof(ValidationAttribute);
@@ -1446,15 +1520,22 @@ public class Test_SourceGeneratorsDiagnostics
             references,
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
-        IIncrementalGenerator generator = new TGenerator();
-
-        GeneratorDriver driver = CSharpGeneratorDriver.Create(generator).WithUpdatedParseOptions((CSharpParseOptions)syntaxTree.Options);
+        GeneratorDriver driver = CSharpGeneratorDriver.Create(generators).WithUpdatedParseOptions((CSharpParseOptions)syntaxTree.Options);
 
         _ = driver.RunGeneratorsAndUpdateCompilation(compilation, out Compilation outputCompilation, out ImmutableArray<Diagnostic> diagnostics);
 
         HashSet<string> resultingIds = diagnostics.Select(diagnostic => diagnostic.Id).ToHashSet();
 
-        CollectionAssert.AreEquivalent(diagnosticsIds, resultingIds.ToArray());
+        CollectionAssert.AreEquivalent(generatorDiagnosticsIds, resultingIds.ToArray(), $"resultingIds: {string.Join(", ", resultingIds)}");
+
+        // If the compilation was supposed to succeed, ensure that no further errors were generated
+        if (resultingIds.Count == 0)
+        {
+            // Compute diagnostics for the final compiled output (just include errors)
+            List<Diagnostic> outputCompilationDiagnostics = outputCompilation.GetDiagnostics().Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error).ToList();
+
+            Assert.IsTrue(outputCompilationDiagnostics.Count == 0, $"resultingIds:{Environment.NewLine} {string.Join(Environment.NewLine, outputCompilationDiagnostics)}");
+        }
 
         GC.KeepAlive(observableObjectType);
         GC.KeepAlive(validationAttributeType);
