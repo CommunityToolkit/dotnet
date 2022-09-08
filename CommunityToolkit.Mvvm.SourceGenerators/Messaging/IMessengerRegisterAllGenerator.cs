@@ -10,7 +10,6 @@ using CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators;
 
@@ -47,8 +46,6 @@ public sealed partial class IMessengerRegisterAllGenerator : IIncrementalGenerat
             typeAndInterfaceSymbols
             .Select(static (item, _) => Execute.GetInfo(item.Type, item.Interfaces))
             .WithComparer(RecipientInfo.Comparer.Default);
-
-        context.FilterWithLanguageVersion(ref recipientInfo, LanguageVersion.CSharp8, UnsupportedCSharpLanguageVersionError);
 
         // Check whether the header file is needed
         IncrementalValueProvider<bool> isHeaderFileNeeded =
