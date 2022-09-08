@@ -12,9 +12,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\CommunityToolkit.Mvvm\CommunityToolkit.Mvvm.csproj" />
-    <ProjectReference Include="..\..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="contentfiles;build" />
     <ProjectReference Include="..\CommunityToolkit.Mvvm.ExternalAssembly\CommunityToolkit.Mvvm.ExternalAssembly.csproj" />
+  </ItemGroup>
+
+  <!-- Since the MVVM Toolkit generator uses multi-targeting for Roslyn versions, we also want to test all of them here -->
+  <PropertyGroup>
+    <MvvmToolkitSourceGeneratorRoslynVersion Condition="'$(MvvmToolkitSourceGeneratorRoslynVersion)' == ''">4.3.0</MvvmToolkitSourceGeneratorRoslynVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\CommunityToolkit.Mvvm\CommunityToolkit.Mvvm.csproj" />
+    <ProjectReference Include="..\..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="contentfiles;build">
+      <Properties>MvvmToolkitSourceGeneratorRoslynVersion=$(MvvmToolkitSourceGeneratorRoslynVersion)</Properties>
+    </ProjectReference>
   </ItemGroup>
 
 </Project>

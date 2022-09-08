@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net472;netcoreapp3.1;net6.0</TargetFrameworks>
@@ -11,9 +11,15 @@
     <PackageReference Include="MSTest.TestFramework" Version="2.2.8" />
   </ItemGroup>
 
+  <!-- See comments in CommunityToolkit.MvvmUnitTests -->
+  <PropertyGroup>
+    <MvvmToolkitSourceGeneratorRoslynVersion Condition="'$(MvvmToolkitSourceGeneratorRoslynVersion)' == ''">4.3.0</MvvmToolkitSourceGeneratorRoslynVersion>
+  </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.csproj" />
     <ProjectReference Include="..\..\CommunityToolkit.Mvvm\CommunityToolkit.Mvvm.csproj" />
+    <ProjectReference Include="..\..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.csproj">
+      <Properties>MvvmToolkitSourceGeneratorRoslynVersion=$(MvvmToolkitSourceGeneratorRoslynVersion)</Properties>
+    </ProjectReference>
   </ItemGroup>
 
 </Project>
