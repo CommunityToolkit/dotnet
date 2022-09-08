@@ -296,6 +296,7 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
+    [Ignore("The generator should just not trigger at all in this scenario, update this after migrating diagnostics")]
     public void UnsupportedCSharpLanguageVersion_FromObservableValidatorValidateAllPropertiesGenerator()
     {
         string source = @"
@@ -311,9 +312,9 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
+        // Compilation should be fine on C# 7.3 as well (the generator just doesn't trigger)
         VerifyGeneratedDiagnostics<ObservableValidatorValidateAllPropertiesGenerator>(
-            CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)),
-            "MVVMTK0008");
+            CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)));
 
         VerifySuccessfulGeneration(source);
     }
@@ -362,9 +363,10 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
+        // This should run fine on C# 8.0 too, as it doesn't use any newer features. Additionally, when not supported this
+        // generator should just not run, not cause issues. The MVVM Toolkit has a reflection-based fallback path for this.
         VerifyGeneratedDiagnostics<IMessengerRegisterAllGenerator>(
-            CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)),
-            "MVVMTK0008");
+            CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp8)));
 
         VerifySuccessfulGeneration(source);
     }
@@ -1496,11 +1498,11 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     /// <summary>
-    /// Verifies the output of a source generator.
+    /// Verifies the output of one or more source generators.
     /// </summary>
-    /// <typeparam name="TGenerator">The generator type to use.</typeparam>
     /// <param name="syntaxTree">The input source tree to process.</param>
-    /// <param name="diagnosticsIds">The diagnostic ids to expect for the input source code.</param>
+    /// <param name="generators">The generators to apply to the input syntax tree.</param>
+    /// <param name="generatorDiagnosticsIds">The diagnostic ids to expect for the input source code.</param>
     private static void VerifyGeneratedDiagnostics(SyntaxTree syntaxTree, IIncrementalGenerator[] generators, string[] generatorDiagnosticsIds)
     {
         Type observableObjectType = typeof(ObservableObject);
