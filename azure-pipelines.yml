@@ -46,6 +46,14 @@ jobs:
   - script: dotnet test -c Release -f net6.0 -l "trx;LogFileName=VSTestResults_net6.0.trx"
     displayName: Run .NET 6 unit tests
 
+  # Run the .NET 6 MVVM Toolkit tests targeting Roslyn 4.0.1
+  - script: dotnet test tests\CommunityToolkit.Mvvm.UnitTests\CommunityToolkit.Mvvm.UnitTests.csproj -c Release -f net6.0 -l "trx;LogFileName=VSTestResults_net6.0_mvvmtoolkit_roslyn401.trx"
+    displayName: Run CommunityToolkit.Mvvm.UnitTests unit tests with Roslyn 4.0.1
+
+  # Run the .NET 6 MVVM Toolkit source generator tests targeting Roslyn 4.0.1
+  - script: dotnet test tests\CommunityToolkit.Mvvm.SourceGenerators.UnitTests\CommunityToolkit.Mvvm.SourceGenerators.UnitTests.csproj -c Release -f net6.0 -l "trx;LogFileName=VSTestResults_net6.0_mvvmtoolkit_generators_roslyn401.trx"
+    displayName: Run CommunityToolkit.Mvvm.UnitTests unit tests with Roslyn 4.0.1
+
   # Run .NET Core 3.1 tests
   - script: dotnet test -c Release -f netcoreapp3.1 -l "trx;LogFileName=VSTestResults_netcoreapp3.1.trx"
     displayName: Run .NET Core 3.1 unit tests
