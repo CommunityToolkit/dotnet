@@ -40,9 +40,14 @@
     <IsTrimmable>true</IsTrimmable>
   </PropertyGroup>
 
-  <!-- Source generator project reference for packing -->
+  <!-- Reference the various multi-targeted versions of the source generator project (one per Roslyn version) -->
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.csproj" ReferenceOutputAssembly="false">
+      <Properties>MvvmToolkitSourceGeneratorRoslynVersion=4.0.1</Properties>
+    </ProjectReference>
+    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.csproj" ReferenceOutputAssembly="false">
+      <Properties>MvvmToolkitSourceGeneratorRoslynVersion=4.3.0</Properties>
+    </ProjectReference>
   </ItemGroup>
 
   <ItemGroup Label="Package">
@@ -53,11 +58,12 @@
     <None Include="CommunityToolkit.Mvvm.targets" PackagePath="build\netstandard2.0" Pack="true" />
     <None Include="CommunityToolkit.Mvvm.targets" PackagePath="build\netstandard2.1" Pack="true" />
 
-    <!-- Pack the source generator to the right package folder -->
-    <None Include="..\CommunityToolkit.Mvvm.SourceGenerators\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.SourceGenerators.dll"
-          PackagePath="analyzers\dotnet\roslyn4.0\cs"
-          Pack="true"
-          Visible="false" />
+    <!--
+      Pack the source generator to the right package folders (each matching the target Roslyn version).
+      Roslyn will automatically load the highest version compatible with Roslyn's version in the SDK.
+    -->
+    <None Include="..\CommunityToolkit.Mvvm.SourceGenerators\bin\$(Configuration)\roslyn4.0\netstandard2.0\CommunityToolkit.Mvvm.SourceGenerators.dll" PackagePath="analyzers\dotnet\roslyn4.0\cs" Pack="true" Visible="false" />
+    <None Include="..\CommunityToolkit.Mvvm.SourceGenerators\bin\$(Configuration)\roslyn4.3\netstandard2.0\CommunityToolkit.Mvvm.SourceGenerators.dll" PackagePath="analyzers\dotnet\roslyn4.3\cs" Pack="true" Visible="false" />
   </ItemGroup>
 
 </Project>
