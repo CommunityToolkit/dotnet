@@ -47,7 +47,7 @@ public sealed class UnsupportedCSharpLanguageVersionAnalyzer : DiagnosticAnalyze
         context.RegisterSymbolAction(static context =>
         {
             // The possible attribute targets are only fields, classes and methods
-            if (context.Symbol is not IFieldSymbol or INamedTypeSymbol { TypeKind: TypeKind.Class, IsImplicitlyDeclared: false } or IMethodSymbol)
+            if (context.Symbol is not (IFieldSymbol or INamedTypeSymbol { TypeKind: TypeKind.Class, IsImplicitlyDeclared: false } or IMethodSymbol))
             {
                 return;
             }
