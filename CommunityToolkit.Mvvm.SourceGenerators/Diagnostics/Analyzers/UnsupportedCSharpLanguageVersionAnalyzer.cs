@@ -82,6 +82,9 @@ public sealed class UnsupportedCSharpLanguageVersionAnalyzer : DiagnosticAnalyze
                         SymbolEqualityComparer.Default.Equals(attributeClass, attributeSymbol))
                     {
                         context.ReportDiagnostic(Diagnostic.Create(UnsupportedCSharpLanguageVersionError, context.Symbol.Locations.FirstOrDefault()));
+
+                        // If we created a diagnostic for this symbol, we can stop. Even if there's multiple attributes, no need for repeated errors
+                        return;
                     }
                 }
             }, SymbolKind.Field, SymbolKind.NamedType, SymbolKind.Method);
