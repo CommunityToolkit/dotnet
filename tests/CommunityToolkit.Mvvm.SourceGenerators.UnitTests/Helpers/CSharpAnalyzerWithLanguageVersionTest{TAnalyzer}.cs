@@ -11,6 +11,9 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Testing.Verifiers;
 using Microsoft.CodeAnalysis.Testing;
 using Microsoft.CodeAnalysis;
+#if NET472
+using System.ComponentModel.DataAnnotations;
+#endif
 
 namespace CommunityToolkit.Mvvm.SourceGenerators.UnitTests.Helpers;
 
@@ -47,7 +50,14 @@ internal sealed class CSharpAnalyzerWithLanguageVersionTest<TAnalyzer> : CSharpA
     {
         CSharpAnalyzerWithLanguageVersionTest<TAnalyzer> test = new(languageVersion) { TestCode = source };
 
+#if NET6_0
         test.TestState.ReferenceAssemblies = ReferenceAssemblies.Net.Net60;
+#elif NETCOREAPP3_1
+        test.TestState.ReferenceAssemblies = ReferenceAssemblies.NetCore.NetCoreApp31;
+#else
+        test.TestState.ReferenceAssemblies = ReferenceAssemblies.NetFramework.Net472.Default;
+        test.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(typeof(RequiredAttribute).Assembly.Location));
+#endif
         test.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(typeof(ObservableObject).Assembly.Location));
 
         test.ExpectedDiagnostics.AddRange(expected);
