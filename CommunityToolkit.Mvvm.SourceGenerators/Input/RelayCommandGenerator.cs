@@ -11,7 +11,6 @@ using CommunityToolkit.Mvvm.SourceGenerators.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators;
 
@@ -29,7 +28,16 @@ public sealed partial class RelayCommandGenerator : IIncrementalGenerator
             context.SyntaxProvider
             .CreateSyntaxProvider(
                 static (node, _) => node is MethodDeclarationSyntax { Parent: ClassDeclarationSyntax, AttributeLists.Count: > 0 },
-                static (context, _) => (IMethodSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!);
+                static (context, _) =>
+                {
+                    if (!context.SemanticModel.Compilation.HasLanguageVersionAtLeastEqualTo(LanguageVersion.CSharp8))
+                    {
+                        return default;
+                    }
+
+                    return (IMethodSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!;
+                })
+            .Where(static item => item is not null)!;
 
         // Filter the methods using [RelayCommand]
         IncrementalValuesProvider<(IMethodSymbol Symbol, AttributeData Attribute)> methodSymbolsWithAttributeData =
@@ -38,9 +46,6 @@ public sealed partial class RelayCommandGenerator : IIncrementalGenerator
                 item,
                 Attribute: item.GetAttributes().FirstOrDefault(a => a.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.RelayCommandAttribute") == true)))
             .Where(static item => item.Attribute is not null)!;
-
-        // Filter by language version
-        context.FilterWithLanguageVersion(ref methodSymbolsWithAttributeData, LanguageVersion.CSharp8, UnsupportedCSharpLanguageVersionError);
 
         // Gather info for all annotated command methods
         IncrementalValuesProvider<(HierarchyInfo Hierarchy, Result<CommandInfo?> Info)> commandInfoWithErrors =

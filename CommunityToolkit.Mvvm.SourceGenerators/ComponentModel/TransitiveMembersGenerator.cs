@@ -75,7 +75,16 @@ public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGe
             context.SyntaxProvider
             .CreateSyntaxProvider(
                 static (node, _) => node is ClassDeclarationSyntax { AttributeLists.Count: > 0 },
-                static (context, _) => (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!);
+                static (context, _) =>
+                {
+                    if (!context.SemanticModel.Compilation.HasLanguageVersionAtLeastEqualTo(LanguageVersion.CSharp8))
+                    {
+                        return default;
+                    }
+
+                    return (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!;
+                })
+            .Where(static item => item is not null)!;
 
         // Filter the types with the target attribute
         IncrementalValuesProvider<(INamedTypeSymbol Symbol, AttributeData AttributeData)> typeSymbolsWithAttributeData =
@@ -87,9 +96,6 @@ public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGe
 
         // Transform the input data
         IncrementalValuesProvider<(INamedTypeSymbol Symbol, TInfo Info)> typeSymbolsWithInfo = GetInfo(context, typeSymbolsWithAttributeData);
-
-        // Filter by language version
-        context.FilterWithLanguageVersion(ref typeSymbolsWithInfo, LanguageVersion.CSharp8, UnsupportedCSharpLanguageVersionError);
 
         // Gather all generation info, and any diagnostics
         IncrementalValuesProvider<Result<(HierarchyInfo Hierarchy, bool IsSealed, TInfo Info)>> generationInfoWithErrors =

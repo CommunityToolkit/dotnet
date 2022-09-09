@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 
@@ -11,6 +12,17 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 /// </summary>
 internal static class CompilationExtensions
 {
+    /// <summary>
+    /// Checks whether a given compilation (assumed to be for C#) is using at least a given language version.
+    /// </summary>
+    /// <param name="compilation">The <see cref="Compilation"/> to consider for analysis.</param>
+    /// <param name="languageVersion">The minimum language version to check.</param>
+    /// <returns>Whether <paramref name="compilation"/> is using at least the specified language version.</returns>
+    public static bool HasLanguageVersionAtLeastEqualTo(this Compilation compilation, LanguageVersion languageVersion)
+    {
+        return ((CSharpCompilation)compilation).LanguageVersion >= languageVersion;
+    }
+
     /// <summary>
     /// <para>
     /// Checks whether or not a type with a specified metadata name is accessible from a given <see cref="Compilation"/> instance.
