@@ -44,42 +44,47 @@ public sealed class UnsupportedCSharpLanguageVersionAnalyzer : DiagnosticAnalyze
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
         context.EnableConcurrentExecution();
 
-        context.RegisterSymbolAction(static context =>
+        // Defer the callback registration to when the compilation starts, so we can execute more
+        // preliminary checks and skip registering any kind of symbol analysis at all if not needed.
+        context.RegisterCompilationStartAction(static context =>
         {
-            // The possible attribute targets are only fields, classes and methods
-            if (context.Symbol is not (IFieldSymbol or INamedTypeSymbol { TypeKind: TypeKind.Class, IsImplicitlyDeclared: false } or IMethodSymbol))
-            {
-                return;
-            }
-
-            // Check that the language version is not high enough, otherwise no diagnostic should be produced
+            // Check that the language version is not high enough, otherwise no diagnostic should ever be produced
             if (context.Compilation.HasLanguageVersionAtLeastEqualTo(LanguageVersion.CSharp8))
             {
                 return;
             }
 
-            ImmutableArray<AttributeData> attributes = context.Symbol.GetAttributes();
-
-            // If the symbol has no attributes, there's nothing left to do
-            if (attributes.IsEmpty)
+            context.RegisterSymbolAction(static context =>
             {
-                return;
-            }
-
-            foreach (AttributeData attribute in attributes)
-            {
-                // Go over each attribute on the target symbol, and check if the attribute type name is a candidate.
-                // If it is, double check by actually resolving the symbol from the compilation and comparing against it.
-                // This minimizes the calls to CompilationGetTypeByMetadataName(string) to only cases where it's almost
-                // guaranteed we'll actually get a match. If we do have one, then we can emit the diagnostic for the symbol.
-                if (attribute.AttributeClass is { Name: string attributeName } attributeClass &&
-                    GeneratorAttributeNamesToFullyQualifiedNamesMap.TryGetValue(attributeName, out string? fullyQualifiedAttributeName) &&
-                    context.Compilation.GetTypeByMetadataName(fullyQualifiedAttributeName) is INamedTypeSymbol attributeSymbol &&
-                    SymbolEqualityComparer.Default.Equals(attributeClass, attributeSymbol))
+                // The possible attribute targets are only fields, classes and methods
+                if (context.Symbol is not (IFieldSymbol or INamedTypeSymbol { TypeKind: TypeKind.Class, IsImplicitlyDeclared: false } or IMethodSymbol))
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(UnsupportedCSharpLanguageVersionError, context.Symbol.Locations.FirstOrDefault()));
+                    return;
                 }
-            }
-        }, SymbolKind.Field, SymbolKind.NamedType, SymbolKind.Method);
+
+                ImmutableArray<AttributeData> attributes = context.Symbol.GetAttributes();
+
+                // If the symbol has no attributes, there's nothing left to do
+                if (attributes.IsEmpty)
+                {
+                    return;
+                }
+
+                foreach (AttributeData attribute in attributes)
+                {
+                    // Go over each attribute on the target symbol, and check if the attribute type name is a candidate.
+                    // If it is, double check by actually resolving the symbol from the compilation and comparing against it.
+                    // This minimizes the calls to CompilationGetTypeByMetadataName(string) to only cases where it's almost
+                    // guaranteed we'll actually get a match. If we do have one, then we can emit the diagnostic for the symbol.
+                    if (attribute.AttributeClass is { Name: string attributeName } attributeClass &&
+                        GeneratorAttributeNamesToFullyQualifiedNamesMap.TryGetValue(attributeName, out string? fullyQualifiedAttributeName) &&
+                        context.Compilation.GetTypeByMetadataName(fullyQualifiedAttributeName) is INamedTypeSymbol attributeSymbol &&
+                        SymbolEqualityComparer.Default.Equals(attributeClass, attributeSymbol))
+                    {
+                        context.ReportDiagnostic(Diagnostic.Create(UnsupportedCSharpLanguageVersionError, context.Symbol.Locations.FirstOrDefault()));
+                    }
+                }
+            }, SymbolKind.Field, SymbolKind.NamedType, SymbolKind.Method);
+        });
     }
 }
