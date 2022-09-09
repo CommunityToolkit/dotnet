@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
 
@@ -46,6 +47,12 @@ public sealed class UnsupportedCSharpLanguageVersionAnalyzer : DiagnosticAnalyze
         {
             // The possible attribute targets are only fields, classes and methods
             if (context.Symbol is not IFieldSymbol or INamedTypeSymbol { TypeKind: TypeKind.Class, IsImplicitlyDeclared: false } or IMethodSymbol)
+            {
+                return;
+            }
+
+            // Check that the language version is not high enough, otherwise no diagnostic should be produced
+            if (context.Symbol.DeclaringSyntaxReferences.FirstOrDefault() is not { SyntaxTree.Options: CSharpParseOptions { LanguageVersion: < LanguageVersion.CSharp8 } })
             {
                 return;
             }
