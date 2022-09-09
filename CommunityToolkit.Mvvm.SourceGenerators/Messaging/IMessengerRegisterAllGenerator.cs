@@ -31,7 +31,15 @@ public sealed partial class IMessengerRegisterAllGenerator : IIncrementalGenerat
             context.SyntaxProvider
             .CreateSyntaxProvider(
                 static (node, _) => node is ClassDeclarationSyntax,
-                static (context, _) => (context.Node, Symbol: (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!))
+                static (context, _) =>
+                {
+                    if (!context.SemanticModel.Compilation.HasLanguageVersionAtLeastEqualTo(LanguageVersion.CSharp8))
+                    {
+                        return default;
+                    }
+
+                    return (context.Node, Symbol: (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!);
+                })
             .Where(static item => item.Symbol is { IsAbstract: false, IsGenericType: false } && item.Node.IsFirstSyntaxDeclarationForSymbol(item.Symbol))
             .Select(static (item, _) => item.Symbol);
 
