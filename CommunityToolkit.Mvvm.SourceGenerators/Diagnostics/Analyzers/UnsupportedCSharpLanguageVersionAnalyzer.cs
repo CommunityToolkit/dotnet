@@ -5,6 +5,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -52,7 +53,7 @@ public sealed class UnsupportedCSharpLanguageVersionAnalyzer : DiagnosticAnalyze
             }
 
             // Check that the language version is not high enough, otherwise no diagnostic should be produced
-            if (context.Symbol.DeclaringSyntaxReferences.FirstOrDefault() is not { SyntaxTree.Options: CSharpParseOptions { LanguageVersion: < LanguageVersion.CSharp8 } })
+            if (context.Compilation.HasLanguageVersionAtLeastEqualTo(LanguageVersion.CSharp8))
             {
                 return;
             }

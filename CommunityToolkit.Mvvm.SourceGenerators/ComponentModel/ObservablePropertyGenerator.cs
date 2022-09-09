@@ -12,7 +12,6 @@ using CommunityToolkit.Mvvm.SourceGenerators.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators;
 
@@ -30,8 +29,17 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
             context.SyntaxProvider
             .CreateSyntaxProvider(
                 static (node, _) => node is FieldDeclarationSyntax { Parent: ClassDeclarationSyntax or RecordDeclarationSyntax, AttributeLists.Count: > 0 },
-                static (context, _) => ((FieldDeclarationSyntax)context.Node).Declaration.Variables.Select(v => (IFieldSymbol)context.SemanticModel.GetDeclaredSymbol(v)!))
-            .SelectMany(static (item, _) => item);
+                static (context, _) =>
+                {
+                    if (!context.SemanticModel.Compilation.HasLanguageVersionAtLeastEqualTo(LanguageVersion.CSharp8))
+                    {
+                        return default;
+                    }
+
+                    return ((FieldDeclarationSyntax)context.Node).Declaration.Variables.Select(v => (IFieldSymbol)context.SemanticModel.GetDeclaredSymbol(v)!);
+                })
+            .Where(static items => items is not null)
+            .SelectMany(static (item, _) => item!)!;
 
         // Filter the fields using [ObservableProperty]
         IncrementalValuesProvider<IFieldSymbol> fieldSymbolsWithAttribute =
@@ -51,9 +59,6 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
 
         // Output the diagnostics
         context.ReportDiagnostics(fieldSymbolsWithOrphanedDependentAttributeWithErrors);
-
-        // Filter by language version
-        context.FilterWithLanguageVersion(ref fieldSymbolsWithAttribute, LanguageVersion.CSharp8, UnsupportedCSharpLanguageVersionError);
 
         // Gather info for all annotated fields
         IncrementalValuesProvider<(HierarchyInfo Hierarchy, Result<PropertyInfo?> Info)> propertyInfoWithErrors =
