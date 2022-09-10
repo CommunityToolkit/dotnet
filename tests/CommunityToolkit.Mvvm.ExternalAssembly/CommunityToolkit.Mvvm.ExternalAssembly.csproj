@@ -12,15 +12,9 @@
     <NoWarn>$(NoWarn);CS8002;SA0001</NoWarn>
   </PropertyGroup>
 
-  <!-- See comments in CommunityToolkit.MvvmUnitTests -->
-  <PropertyGroup>
-    <MvvmToolkitSourceGeneratorRoslynVersion Condition="'$(MvvmToolkitSourceGeneratorRoslynVersion)' == ''">4.3.0</MvvmToolkitSourceGeneratorRoslynVersion>
-  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\CommunityToolkit.Mvvm\CommunityToolkit.Mvvm.csproj" />
-    <ProjectReference Include="..\..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="contentfiles;build">
-      <Properties>MvvmToolkitSourceGeneratorRoslynVersion=$(MvvmToolkitSourceGeneratorRoslynVersion)</Properties>
-    </ProjectReference>
+    <ProjectReference Include="..\..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="contentfiles;build" />
   </ItemGroup>
 
 </Project>
