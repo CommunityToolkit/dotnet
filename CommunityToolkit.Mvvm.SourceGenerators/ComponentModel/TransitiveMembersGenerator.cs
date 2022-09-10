@@ -21,9 +21,9 @@ namespace CommunityToolkit.Mvvm.SourceGenerators;
 public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGenerator
 {
     /// <summary>
-    /// The fully qualified name of the attribute type to look for.
+    /// The fully qualified metadata name of the attribute type to look for.
     /// </summary>
-    private readonly string attributeType;
+    private readonly string fullyQualifiedAttributeMetadataName;
 
     /// <summary>
     /// An <see cref="IEqualityComparer{T}"/> instance to compare intermediate models.
@@ -51,13 +51,13 @@ public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGe
     /// <summary>
     /// Initializes a new instance of the <see cref="TransitiveMembersGenerator{TInfo}"/> class.
     /// </summary>
-    /// <param name="attributeType">The fully qualified name of the attribute type to look for.</param>
+    /// <param name="fullyQualifiedAttributeMetadataName">The fully qualified metadata name of the attribute type to look for.</param>
     /// <param name="comparer">An <see cref="IEqualityComparer{T}"/> instance to compare intermediate models.</param>
-    private protected TransitiveMembersGenerator(string attributeType, IEqualityComparer<TInfo>? comparer = null)
+    private protected TransitiveMembersGenerator(string fullyQualifiedAttributeMetadataName, IEqualityComparer<TInfo>? comparer = null)
     {
-        this.attributeType = attributeType;
+        this.fullyQualifiedAttributeMetadataName = fullyQualifiedAttributeMetadataName;
         this.comparer = comparer ?? EqualityComparer<TInfo>.Default;
-        this.classDeclaration = Execute.LoadClassDeclaration(attributeType);
+        this.classDeclaration = Execute.LoadClassDeclaration(fullyQualifiedAttributeMetadataName);
 
         Execute.ProcessMemberDeclarations(
             GetType(),
@@ -72,8 +72,9 @@ public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGe
         // Gather all generation info, and any diagnostics
         IncrementalValuesProvider<Result<(HierarchyInfo Hierarchy, bool IsSealed, TInfo? Info)>> generationInfoWithErrors =
             context.SyntaxProvider
-            .CreateSyntaxProvider(
-                static (node, _) => node is ClassDeclarationSyntax { AttributeLists.Count: > 0 },
+            .ForAttributeWithMetadataName(
+                this.fullyQualifiedAttributeMetadataName,
+                static (node, _) => node is ClassDeclarationSyntax classDeclaration && classDeclaration.HasOrPotentiallyHasAttributes(),
                 (context, token) =>
                 {
                     if (!context.SemanticModel.Compilation.HasLanguageVersionAtLeastEqualTo(LanguageVersion.CSharp8))
@@ -81,16 +82,10 @@ public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGe
                         return default;
                     }
 
-                    INamedTypeSymbol typeSymbol = (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node, token)!;
-
-                    // Filter the types with the target attribute
-                    if (!typeSymbol.TryGetAttributeWithFullyQualifiedName(this.attributeType, out AttributeData? attributeData))
-                    {
-                        return default;
-                    }
+                    INamedTypeSymbol typeSymbol = (INamedTypeSymbol)context.TargetSymbol;
 
                     // Gather all generation info, and any diagnostics
-                    TInfo? info = ValidateTargetTypeAndGetInfo(typeSymbol, attributeData, context.SemanticModel.Compilation, out ImmutableArray<Diagnostic> diagnostics);
+                    TInfo? info = ValidateTargetTypeAndGetInfo(typeSymbol, context.Attributes[0], context.SemanticModel.Compilation, out ImmutableArray<Diagnostic> diagnostics);
 
                     // If there are any diagnostics, there's no need to compute the hierarchy info at all, just return them
                     if (diagnostics.Length > 0)
