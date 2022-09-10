@@ -28,33 +28,18 @@ public sealed class INotifyPropertyChangedGenerator : TransitiveMembersGenerator
     }
 
     /// <inheritdoc/>
-    protected override IncrementalValuesProvider<(INamedTypeSymbol Symbol, INotifyPropertyChangedInfo Info)> GetInfo(
-        IncrementalGeneratorInitializationContext context,
-        IncrementalValuesProvider<(INamedTypeSymbol Symbol, AttributeData AttributeData)> source)
-    {
-        static INotifyPropertyChangedInfo GetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData)
-        {
-            bool includeAdditionalHelperMethods = attributeData.GetNamedArgument("IncludeAdditionalHelperMethods", true);
-
-            return new(includeAdditionalHelperMethods);
-        }
-
-        return source.Select(static (item, _) => (item.Symbol, GetInfo(item.Symbol, item.AttributeData)));
-    }
-
-    /// <inheritdoc/>
-    protected override bool ValidateTargetType(INamedTypeSymbol typeSymbol, INotifyPropertyChangedInfo info, out ImmutableArray<Diagnostic> diagnostics)
+    protected override INotifyPropertyChangedInfo? ValidateTargetTypeAndGetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData, Compilation compilation, out ImmutableArray<Diagnostic> diagnostics)
     {
         ImmutableArray<Diagnostic>.Builder builder = ImmutableArray.CreateBuilder<Diagnostic>();
+
+        INotifyPropertyChangedInfo? info = null;
 
         // Check if the type already implements INotifyPropertyChanged
         if (typeSymbol.AllInterfaces.Any(i => i.HasFullyQualifiedName("global::System.ComponentModel.INotifyPropertyChanged")))
         {
             builder.Add(DuplicateINotifyPropertyChangedInterfaceForINotifyPropertyChangedAttributeError, typeSymbol, typeSymbol);
 
-            diagnostics = builder.ToImmutable();
-
-            return false;
+            goto End;
         }
 
         // Check if the type uses [INotifyPropertyChanged] or [ObservableObject] already (in the type hierarchy too)
@@ -63,14 +48,17 @@ public sealed class INotifyPropertyChangedGenerator : TransitiveMembersGenerator
         {
             builder.Add(InvalidAttributeCombinationForINotifyPropertyChangedAttributeError, typeSymbol, typeSymbol);
 
-            diagnostics = builder.ToImmutable();
-
-            return false;
+            goto End;
         }
 
+        bool includeAdditionalHelperMethods = attributeData.GetNamedArgument("IncludeAdditionalHelperMethods", true);
+
+        info = new INotifyPropertyChangedInfo(includeAdditionalHelperMethods);
+
+        End:
         diagnostics = builder.ToImmutable();
 
-        return true;
+        return info;
     }
 
     /// <inheritdoc/>
