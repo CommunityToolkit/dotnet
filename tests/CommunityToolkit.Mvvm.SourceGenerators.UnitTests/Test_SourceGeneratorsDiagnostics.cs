@@ -14,6 +14,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.SourceGenerators.UnitTests.Helpers;
 using System.Text.RegularExpressions;
+using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators.UnitTests;
 
@@ -247,7 +248,7 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        await VerifyUnsupportedCSharpVersionAndSuccessfulGeneration(source);
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<UnsupportedCSharpLanguageVersionAnalyzer>(source, LanguageVersion.CSharp7_3);
     }
 
     [TestMethod]
@@ -264,7 +265,7 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        await VerifyUnsupportedCSharpVersionAndSuccessfulGeneration(source);
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<UnsupportedCSharpLanguageVersionAnalyzer>(source, LanguageVersion.CSharp7_3);
     }
 
     [TestMethod]
@@ -283,7 +284,7 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        await VerifyUnsupportedCSharpVersionAndSuccessfulGeneration(source);
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<UnsupportedCSharpLanguageVersionAnalyzer>(source, LanguageVersion.CSharp7_3);
     }
 
     [TestMethod]
@@ -308,7 +309,7 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        await VerifyUnsupportedCSharpVersionAndSuccessfulGeneration(source);
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<UnsupportedCSharpLanguageVersionAnalyzer>(source, LanguageVersion.CSharp7_3);
     }
 
     [TestMethod]
@@ -327,7 +328,7 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        await VerifyUnsupportedCSharpVersionAndSuccessfulGeneration(source);
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<UnsupportedCSharpLanguageVersionAnalyzer>(source, LanguageVersion.CSharp7_3);
     }
 
     [TestMethod]
@@ -347,7 +348,7 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        await VerifyUnsupportedCSharpVersionAndSuccessfulGeneration(source);
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<UnsupportedCSharpLanguageVersionAnalyzer>(source, LanguageVersion.CSharp7_3);
     }
 
     [TestMethod]
@@ -370,7 +371,7 @@ public class Test_SourceGeneratorsDiagnostics
                 }
             }";
 
-        await VerifyUnsupportedCSharpVersionAndSuccessfulGeneration(source);
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<UnsupportedCSharpLanguageVersionAnalyzer>(source, LanguageVersion.CSharp7_3);
     }
 
     [TestMethod]
@@ -980,7 +981,7 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void FieldWithOrphanedDependentObservablePropertyAttributesError_NotifyPropertyChangedFor()
+    public async Task FieldWithOrphanedDependentObservablePropertyAttributesError_NotifyPropertyChangedFor()
     {
         string source = @"
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -989,16 +990,16 @@ public class Test_SourceGeneratorsDiagnostics
             {
                 public partial class MyViewModel
                 {
-                    [NotifyPropertyChangedFor("")]
-                    public int number;
+                    [NotifyPropertyChangedFor("""")]
+                    public int {|MVVMTK0020:number|};
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0020");
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<FieldWithOrphanedDependentObservablePropertyAttributesAnalyzer>(source, LanguageVersion.CSharp8);
     }
 
     [TestMethod]
-    public void FieldWithOrphanedDependentObservablePropertyAttributesError_NotifyCanExecuteChangedFor()
+    public async Task FieldWithOrphanedDependentObservablePropertyAttributesError_NotifyCanExecuteChangedFor()
     {
         string source = @"
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -1007,16 +1008,16 @@ public class Test_SourceGeneratorsDiagnostics
             {
                 public partial class MyViewModel
                 {
-                    [NotifyCanExecuteChangedFor("")]
-                    public int number;
+                    [NotifyCanExecuteChangedFor("""")]
+                    public int {|MVVMTK0020:number|};
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0020");
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<FieldWithOrphanedDependentObservablePropertyAttributesAnalyzer>(source, LanguageVersion.CSharp8);
     }
 
     [TestMethod]
-    public void FieldWithOrphanedDependentObservablePropertyAttributesError_NotifyPropertyChangedRecipients()
+    public async Task FieldWithOrphanedDependentObservablePropertyAttributesError_NotifyPropertyChangedRecipients()
     {
         string source = @"
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -1026,15 +1027,15 @@ public class Test_SourceGeneratorsDiagnostics
                 public partial class MyViewModel
                 {
                     [NotifyPropertyChangedRecipients]
-                    public int number;
+                    public int {|MVVMTK0020:number|};
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0020");
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<FieldWithOrphanedDependentObservablePropertyAttributesAnalyzer>(source, LanguageVersion.CSharp8);
     }
 
     [TestMethod]
-    public void FieldWithOrphanedDependentObservablePropertyAttributesError_MultipleUsesStillGenerateOnlyASingleDiagnostic()
+    public async Task FieldWithOrphanedDependentObservablePropertyAttributesError_MultipleUsesStillGenerateOnlyASingleDiagnostic()
     {
         string source = @"
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -1043,17 +1044,17 @@ public class Test_SourceGeneratorsDiagnostics
             {
                 public partial class MyViewModel
                 {
-                    [NotifyPropertyChangedFor("")]
-                    [NotifyPropertyChangedFor("")]
-                    [NotifyPropertyChangedFor("")]
-                    [NotifyCanExecuteChangedFor("")]
-                    [NotifyCanExecuteChangedFor("")]
+                    [NotifyPropertyChangedFor("""")]
+                    [NotifyPropertyChangedFor("""")]
+                    [NotifyPropertyChangedFor("""")]
+                    [NotifyCanExecuteChangedFor("""")]
+                    [NotifyCanExecuteChangedFor("""")]
                     [NotifyPropertyChangedRecipients]
-                    public int number;
+                    public int {|MVVMTK0020:number|};
                 }
             }";
 
-        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0020");
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<FieldWithOrphanedDependentObservablePropertyAttributesAnalyzer>(source, LanguageVersion.CSharp8);
     }
 
     [TestMethod]
@@ -1428,12 +1429,15 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     /// <summary>
-    /// Verifies the diagnostic error for unsupported C# version, and that all available source generators can run successfully with the input source (including subsequent compilation).
+    /// Verifies the diagnostic errors for a given analyzer, and that all available source generators can run successfully with the input source (including subsequent compilation).
     /// </summary>
+    /// <typeparam name="TAnalyzer">The type of the analyzer to test.</typeparam>
     /// <param name="markdownSource">The input source to process with diagnostic annotations.</param>
-    private static async Task VerifyUnsupportedCSharpVersionAndSuccessfulGeneration(string markdownSource)
+    /// <param name="languageVersion">The language version to use to parse code and run tests.</param>
+    private static async Task VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<TAnalyzer>(string markdownSource, LanguageVersion languageVersion)
+        where TAnalyzer : DiagnosticAnalyzer, new()
     {
-        await CSharpAnalyzerWithLanguageVersionTest<UnsupportedCSharpLanguageVersionAnalyzer>.VerifyAnalyzerAsync(markdownSource, LanguageVersion.CSharp7_3);
+        await CSharpAnalyzerWithLanguageVersionTest<TAnalyzer>.VerifyAnalyzerAsync(markdownSource, languageVersion);
 
         IIncrementalGenerator[] generators =
         {
@@ -1450,7 +1454,7 @@ public class Test_SourceGeneratorsDiagnostics
         // Transform diagnostic annotations back to normal C# (eg. "{|MVVMTK0008:Foo()|}" ---> "Foo()")
         string source = Regex.Replace(markdownSource, @"{\|((?:,?\w+)+):(.+)\|}", m => m.Groups[2].Value);
 
-        VerifyGeneratedDiagnostics(CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp7_3)), generators, Array.Empty<string>());
+        VerifyGeneratedDiagnostics(CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(languageVersion)), generators, Array.Empty<string>());
     }
 
     /// <summary>
