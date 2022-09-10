@@ -25,7 +25,7 @@ public sealed partial class ObservableValidatorValidateAllPropertiesGenerator : 
         IncrementalValuesProvider<ValidationInfo> validationInfo =
             context.SyntaxProvider
             .CreateSyntaxProvider(
-                static (node, _) => node is ClassDeclarationSyntax,
+                static (node, _) => node is ClassDeclarationSyntax classDeclaration && classDeclaration.HasOrPotentiallyHasBaseTypes(),
                 static (context, token) =>
                 {
                     if (!context.SemanticModel.Compilation.HasLanguageVersionAtLeastEqualTo(LanguageVersion.CSharp8))
