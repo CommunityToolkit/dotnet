@@ -26,7 +26,7 @@ public sealed partial class IMessengerRegisterAllGenerator : IIncrementalGenerat
         IncrementalValuesProvider<RecipientInfo> recipientInfo =
             context.SyntaxProvider
             .CreateSyntaxProvider(
-                static (node, _) => node is ClassDeclarationSyntax,
+                static (node, _) => node is ClassDeclarationSyntax classDeclaration && classDeclaration.HasOrPotentiallyHasBaseTypes(),
                 static (context, token) =>
                 {
                     if (!context.SemanticModel.Compilation.HasLanguageVersionAtLeastEqualTo(LanguageVersion.CSharp8))
