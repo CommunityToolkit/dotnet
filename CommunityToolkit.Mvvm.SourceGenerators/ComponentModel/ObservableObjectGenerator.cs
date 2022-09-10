@@ -27,15 +27,7 @@ public sealed class ObservableObjectGenerator : TransitiveMembersGenerator<objec
     }
 
     /// <inheritdoc/>
-    protected override IncrementalValuesProvider<(INamedTypeSymbol Symbol, object? Info)> GetInfo(
-        IncrementalGeneratorInitializationContext context,
-        IncrementalValuesProvider<(INamedTypeSymbol Symbol, AttributeData AttributeData)> source)
-    {
-        return source.Select(static (item, _) => (item.Symbol, (object?)null));
-    }
-
-    /// <inheritdoc/>
-    protected override bool ValidateTargetType(INamedTypeSymbol typeSymbol, object? info, out ImmutableArray<Diagnostic> diagnostics)
+    protected override object? ValidateTargetTypeAndGetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData, Compilation compilation, out ImmutableArray<Diagnostic> diagnostics)
     {
         ImmutableArray<Diagnostic>.Builder builder = ImmutableArray.CreateBuilder<Diagnostic>();
 
@@ -44,9 +36,7 @@ public sealed class ObservableObjectGenerator : TransitiveMembersGenerator<objec
         {
             builder.Add(DuplicateINotifyPropertyChangedInterfaceForObservableObjectAttributeError, typeSymbol, typeSymbol);
 
-            diagnostics = builder.ToImmutable();
-
-            return false;
+            goto End;
         }
 
         // ...or INotifyPropertyChanging
@@ -54,9 +44,7 @@ public sealed class ObservableObjectGenerator : TransitiveMembersGenerator<objec
         {
             builder.Add(DuplicateINotifyPropertyChangingInterfaceForObservableObjectAttributeError, typeSymbol, typeSymbol);
 
-            diagnostics = builder.ToImmutable();
-
-            return false;
+            goto End;
         }
 
         // Check if the type uses [INotifyPropertyChanged] or [ObservableObject] already (in the type hierarchy too)
@@ -65,14 +53,13 @@ public sealed class ObservableObjectGenerator : TransitiveMembersGenerator<objec
         {
             builder.Add(InvalidAttributeCombinationForObservableObjectAttributeError, typeSymbol, typeSymbol);
 
-            diagnostics = builder.ToImmutable();
-
-            return false;
+            goto End;
         }
 
+        End:
         diagnostics = builder.ToImmutable();
 
-        return true;
+        return null;
     }
 
     /// <inheritdoc/>

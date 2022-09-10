@@ -23,40 +23,33 @@ public sealed partial class RelayCommandGenerator : IIncrementalGenerator
     /// <inheritdoc/>
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        // Get all method declarations with at least one attribute
-        IncrementalValuesProvider<IMethodSymbol> methodSymbols =
+        // Gather info for all annotated command methods (starting from method declarations with at least one attribute)
+        IncrementalValuesProvider<(HierarchyInfo Hierarchy, Result<CommandInfo?> Info)> commandInfoWithErrors =
             context.SyntaxProvider
             .CreateSyntaxProvider(
                 static (node, _) => node is MethodDeclarationSyntax { Parent: ClassDeclarationSyntax, AttributeLists.Count: > 0 },
-                static (context, _) =>
+                static (context, token) =>
                 {
                     if (!context.SemanticModel.Compilation.HasLanguageVersionAtLeastEqualTo(LanguageVersion.CSharp8))
                     {
                         return default;
                     }
 
-                    return (IMethodSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!;
+                    IMethodSymbol methodSymbol = (IMethodSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node, token)!;
+
+                    // Filter the methods using [RelayCommand]
+                    if (!methodSymbol.TryGetAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.RelayCommandAttribute", out AttributeData? attribute))
+                    {
+                        return default;
+                    }
+
+                    // Produce the incremental models
+                    HierarchyInfo hierarchy = HierarchyInfo.From(methodSymbol.ContainingType);
+                    CommandInfo? commandInfo = Execute.GetInfo(methodSymbol, attribute, out ImmutableArray<Diagnostic> diagnostics);
+
+                    return (Hierarchy: hierarchy, new Result<CommandInfo?>(commandInfo, diagnostics));
                 })
-            .Where(static item => item is not null)!;
-
-        // Filter the methods using [RelayCommand]
-        IncrementalValuesProvider<(IMethodSymbol Symbol, AttributeData Attribute)> methodSymbolsWithAttributeData =
-            methodSymbols
-            .Select(static (item, _) => (
-                item,
-                Attribute: item.GetAttributes().FirstOrDefault(a => a.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.RelayCommandAttribute") == true)))
-            .Where(static item => item.Attribute is not null)!;
-
-        // Gather info for all annotated command methods
-        IncrementalValuesProvider<(HierarchyInfo Hierarchy, Result<CommandInfo?> Info)> commandInfoWithErrors =
-            methodSymbolsWithAttributeData
-            .Select(static (item, _) =>
-            {
-                HierarchyInfo hierarchy = HierarchyInfo.From(item.Symbol.ContainingType);
-                CommandInfo? commandInfo = Execute.GetInfo(item.Symbol, item.Attribute, out ImmutableArray<Diagnostic> diagnostics);
-
-                return (hierarchy, new Result<CommandInfo?>(commandInfo, diagnostics));
-            });
+            .Where(static item => item.Hierarchy is not null);
 
         // Output the diagnostics
         context.ReportDiagnostics(commandInfoWithErrors.Select(static (item, _) => item.Info.Errors));
@@ -66,7 +59,7 @@ public sealed partial class RelayCommandGenerator : IIncrementalGenerator
             commandInfoWithErrors
             .Where(static item => item.Info.Value is not null)
             .Select(static (item, _) => (item.Hierarchy, item.Info.Value!))
-            .WithComparers(HierarchyInfo.Comparer.Default, CommandInfo.Comparer.Default);
+            .WithComparers(HierarchyInfo.Comparer.Default, CommandInfo.Comparer.Default);      
 
         // Generate the commands
         context.RegisterSourceOutput(commandInfo, static (context, item) =>

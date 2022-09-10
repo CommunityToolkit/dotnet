@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators.Extensions;
@@ -60,6 +61,32 @@ internal static class ISymbolExtensions
                 return true;
             }
         }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Tries to get an attribute with the specified full name.
+    /// </summary>
+    /// <param name="symbol">The input <see cref="ISymbol"/> instance to check.</param>
+    /// <param name="name">The attribute name to look for.</param>
+    /// <param name="attributeData">The resulting attribute, if it was found.</param>
+    /// <returns>Whether or not <paramref name="symbol"/> has an attribute with the specified name.</returns>
+    public static bool TryGetAttributeWithFullyQualifiedName(this ISymbol symbol, string name, [NotNullWhen(true)] out AttributeData? attributeData)
+    {
+        ImmutableArray<AttributeData> attributes = symbol.GetAttributes();
+
+        foreach (AttributeData attribute in attributes)
+        {
+            if (attribute.AttributeClass?.HasFullyQualifiedName(name) == true)
+            {
+                attributeData = attribute;
+
+                return true;
+            }
+        }
+
+        attributeData = null;
 
         return false;
     }

@@ -30,53 +30,18 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
     }
 
     /// <inheritdoc/>
-    protected override IncrementalValuesProvider<(INamedTypeSymbol Symbol, ObservableRecipientInfo Info)> GetInfo(
-        IncrementalGeneratorInitializationContext context,
-        IncrementalValuesProvider<(INamedTypeSymbol Symbol, AttributeData AttributeData)> source)
-    {
-        static ObservableRecipientInfo GetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData, bool isRequiresUnreferencedCodeAttributeAvailable)
-        {
-            string typeName = typeSymbol.Name;
-            bool hasExplicitConstructors = !(typeSymbol.InstanceConstructors.Length == 1 && typeSymbol.InstanceConstructors[0] is { Parameters.IsEmpty: true, IsImplicitlyDeclared: true });
-            bool isAbstract = typeSymbol.IsAbstract;
-            bool isObservableValidator = typeSymbol.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator");
-            bool hasOnActivatedMethod = typeSymbol.GetMembers().Any(m => m is IMethodSymbol { Parameters.IsEmpty: true, Name: "OnActivated" });
-            bool hasOnDeactivatedMethod = typeSymbol.GetMembers().Any(m => m is IMethodSymbol { Parameters.IsEmpty: true, Name: "OnDeactivated" });
-
-            return new(
-                typeName,
-                hasExplicitConstructors,
-                isAbstract,
-                isObservableValidator,
-                isRequiresUnreferencedCodeAttributeAvailable,
-                hasOnActivatedMethod,
-                hasOnDeactivatedMethod);
-        }
-
-        // Check whether [RequiresUnreferencedCode] is available
-        IncrementalValueProvider<bool> isRequiresUnreferencedCodeAttributeAvailable =
-            context.CompilationProvider
-            .Select(static (item, _) => item.GetTypeByMetadataName("System.Diagnostics.CodeAnalysis.RequiresUnreferencedCodeAttribute") is { DeclaredAccessibility: Accessibility.Public });
-
-        return
-            source
-            .Combine(isRequiresUnreferencedCodeAttributeAvailable)
-            .Select(static (item, _) => (item.Left.Symbol, GetInfo(item.Left.Symbol, item.Left.AttributeData, item.Right)));
-    }
-
-    /// <inheritdoc/>
-    protected override bool ValidateTargetType(INamedTypeSymbol typeSymbol, ObservableRecipientInfo info, out ImmutableArray<Diagnostic> diagnostics)
+    protected override ObservableRecipientInfo? ValidateTargetTypeAndGetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData, Compilation compilation, out ImmutableArray<Diagnostic> diagnostics)
     {
         ImmutableArray<Diagnostic>.Builder builder = ImmutableArray.CreateBuilder<Diagnostic>();
+
+        ObservableRecipientInfo? info = null;
 
         // Check if the type already inherits from ObservableRecipient
         if (typeSymbol.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableRecipient"))
         {
             builder.Add(DuplicateObservableRecipientError, typeSymbol, typeSymbol);
 
-            diagnostics = builder.ToImmutable();
-
-            return false;
+            goto End;
         }
 
         // Check if the type already inherits [ObservableRecipient]
@@ -84,9 +49,7 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
         {
             builder.Add(InvalidAttributeCombinationForObservableRecipientAttributeError, typeSymbol, typeSymbol);
 
-            diagnostics = builder.ToImmutable();
-
-            return false;
+            goto End;
         }
 
         // In order to use [ObservableRecipient], the target type needs to inherit from ObservableObject,
@@ -99,14 +62,31 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
         {
             builder.Add(MissingBaseObservableObjectFunctionalityError, typeSymbol, typeSymbol);
 
-            diagnostics = builder.ToImmutable();
-
-            return false;
+            goto End;
         }
 
+        // Gather all necessary info to propagate down the pipeline
+        string typeName = typeSymbol.Name;
+        bool hasExplicitConstructors = !(typeSymbol.InstanceConstructors.Length == 1 && typeSymbol.InstanceConstructors[0] is { Parameters.IsEmpty: true, IsImplicitlyDeclared: true });
+        bool isAbstract = typeSymbol.IsAbstract;
+        bool isObservableValidator = typeSymbol.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator");
+        bool isRequiresUnreferencedCodeAttributeAvailable = compilation.HasAccessibleTypeWithMetadataName("System.Diagnostics.CodeAnalysis.RequiresUnreferencedCodeAttribute");
+        bool hasOnActivatedMethod = typeSymbol.GetMembers().Any(m => m is IMethodSymbol { Parameters.IsEmpty: true, Name: "OnActivated" });
+        bool hasOnDeactivatedMethod = typeSymbol.GetMembers().Any(m => m is IMethodSymbol { Parameters.IsEmpty: true, Name: "OnDeactivated" });
+
+        info = new ObservableRecipientInfo(
+            typeName,
+            hasExplicitConstructors,
+            isAbstract,
+            isObservableValidator,
+            isRequiresUnreferencedCodeAttributeAvailable,
+            hasOnActivatedMethod,
+            hasOnDeactivatedMethod);
+
+        End:
         diagnostics = builder.ToImmutable();
 
-        return true;
+        return info;
     }
 
     /// <inheritdoc/>
