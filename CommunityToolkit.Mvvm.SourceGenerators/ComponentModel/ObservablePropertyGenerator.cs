@@ -46,20 +46,6 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
             fieldSymbols
             .Where(static item => item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute"));
 
-        // Get diagnostics for fields using [NotifyPropertyChangedFor], [NotifyCanExecuteChangedFor], [NotifyPropertyChangedRecipients] and [NotifyDataErrorInfo], but not [ObservableProperty]
-        IncrementalValuesProvider<Diagnostic> fieldSymbolsWithOrphanedDependentAttributeWithErrors =
-            fieldSymbols
-            .Where(static item =>
-                (item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyPropertyChangedForAttribute") ||
-                 item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyCanExecuteChangedForAttribute") ||
-                 item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyPropertyChangedRecipientsAttribute") ||
-                 item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyDataErrorInfoAttribute")) &&
-                 !item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute"))
-            .Select(static (item, _) => Execute.GetDiagnosticForFieldWithOrphanedDependentAttributes(item));
-
-        // Output the diagnostics
-        context.ReportDiagnostics(fieldSymbolsWithOrphanedDependentAttributeWithErrors);
-
         // Gather info for all annotated fields
         IncrementalValuesProvider<(HierarchyInfo Hierarchy, Result<PropertyInfo?> Info)> propertyInfoWithErrors =
             fieldSymbolsWithAttribute
