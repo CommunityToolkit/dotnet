@@ -23,7 +23,7 @@ public sealed class INotifyPropertyChangedGenerator : TransitiveMembersGenerator
     /// Initializes a new instance of the <see cref="INotifyPropertyChangedGenerator"/> class.
     /// </summary>
     public INotifyPropertyChangedGenerator()
-        : base("global::CommunityToolkit.Mvvm.ComponentModel.INotifyPropertyChangedAttribute")
+        : base("CommunityToolkit.Mvvm.ComponentModel.INotifyPropertyChangedAttribute")
     {
     }
 
