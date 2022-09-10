@@ -3,7 +3,9 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections.Immutable;
+#if !ROSLYN_4_3
 using System.Diagnostics.CodeAnalysis;
+#endif
 using Microsoft.CodeAnalysis;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators.Extensions;
@@ -65,6 +67,7 @@ internal static class ISymbolExtensions
         return false;
     }
 
+#if !ROSLYN_4_3
     /// <summary>
     /// Tries to get an attribute with the specified full name.
     /// </summary>
@@ -90,6 +93,7 @@ internal static class ISymbolExtensions
 
         return false;
     }
+#endif
 
     /// <summary>
     /// Calculates the effective accessibility for a given symbol.

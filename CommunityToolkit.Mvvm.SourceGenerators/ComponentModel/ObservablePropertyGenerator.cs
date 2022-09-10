@@ -27,7 +27,8 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
         // Gather info for all annotated fields
         IncrementalValuesProvider<(HierarchyInfo Hierarchy, Result<PropertyInfo?> Info)> propertyInfoWithErrors =
             context.SyntaxProvider
-            .CreateSyntaxProvider(
+            .ForAttributeWithMetadataName(
+                "CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute",
                 static (node, _) => node is VariableDeclaratorSyntax { Parent: VariableDeclarationSyntax { Parent: FieldDeclarationSyntax { Parent: ClassDeclarationSyntax or RecordDeclarationSyntax, AttributeLists.Count: > 0 } } },
                 static (context, token) =>
                 {
@@ -36,13 +37,7 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
                         return default;
                     }
 
-                    IFieldSymbol fieldSymbol = (IFieldSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node, token)!;
-
-                    // Filter the fields using [ObservableProperty]
-                    if (!fieldSymbol.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute"))
-                    {
-                        return default;
-                    }
+                    IFieldSymbol fieldSymbol = (IFieldSymbol)context.TargetSymbol;
 
                     // Produce the incremental models
                     HierarchyInfo hierarchy = HierarchyInfo.From(fieldSymbol.ContainingType);
