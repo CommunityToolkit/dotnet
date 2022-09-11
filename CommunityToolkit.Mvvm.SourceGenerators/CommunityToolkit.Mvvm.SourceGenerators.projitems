@@ -55,6 +55,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Suppressors\ObservablePropertyAttributeWithPropertyTargetDiagnosticSuppressor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\DiagnosticDescriptors.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\DiagnosticExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\SuppressionDescriptors.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\AttributeDataExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\CompilationExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\HashCodeExtensions.cs" />
