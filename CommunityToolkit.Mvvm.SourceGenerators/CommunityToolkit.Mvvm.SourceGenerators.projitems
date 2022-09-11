@@ -52,6 +52,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\TransitiveMembersGenerator.Execute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\FieldWithOrphanedDependentObservablePropertyAttributesAnalyzer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\UnsupportedCSharpLanguageVersionAnalyzer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Suppressors\ObservablePropertyAttributeWithPropertyTargetDiagnosticSuppressor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\DiagnosticDescriptors.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\DiagnosticExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\AttributeDataExtensions.cs" />
