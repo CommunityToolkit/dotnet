@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Threading;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 using Microsoft.CodeAnalysis;
@@ -48,6 +49,49 @@ internal sealed record AttributeInfo(
         return new(
             typeName,
             constructorArguments,
+            namedArguments.ToImmutable());
+    }
+
+    /// <summary>
+    /// Creates a new <see cref="AttributeInfo"/> instance from a given syntax node.
+    /// </summary>
+    /// <param name="typeSymbol">The symbol for the attribute type.</param>
+    /// <param name="semanticModel">The <see cref="SemanticModel"/> instance for the current run.</param>
+    /// <param name="arguments">The sequence of <see cref="AttributeArgumentSyntax"/> instances to process.</param>
+    /// <param name="token">The cancellation token for the current operation.</param>
+    /// <returns>A <see cref="AttributeInfo"/> instance representing the input attribute data.</returns>
+    public static AttributeInfo From(INamedTypeSymbol typeSymbol, SemanticModel semanticModel, IEnumerable<AttributeArgumentSyntax> arguments, CancellationToken token)
+    {
+        string typeName = typeSymbol.GetFullyQualifiedName();
+
+        ImmutableArray<TypedConstantInfo>.Builder constructorArguments = ImmutableArray.CreateBuilder<TypedConstantInfo>();
+        ImmutableArray<(string, TypedConstantInfo)>.Builder namedArguments = ImmutableArray.CreateBuilder<(string, TypedConstantInfo)>();
+
+        foreach (AttributeArgumentSyntax argument in arguments)
+        {
+            // The attribute expression has to have an available operation to extract information from
+            if (semanticModel.GetOperation(argument.Expression, token) is not IOperation operation)
+            {
+                continue;
+            }
+
+            TypedConstantInfo argumentInfo = TypedConstantInfo.From(operation);
+
+            // Try to get the identifier name if the current expression is a named argument expression. If it
+            // isn't, then the expression is a normal attribute constructor argument, so no extra work is needed.
+            if (argument.NameEquals is { Name.Identifier.ValueText: string argumentName })
+            {
+                namedArguments.Add((argumentName, argumentInfo));
+            }
+            else
+            {
+                constructorArguments.Add(argumentInfo);
+            }
+        }
+
+        return new(
+            typeName,
+            constructorArguments.ToImmutable(),
             namedArguments.ToImmutable());
     }
 
