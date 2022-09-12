@@ -42,12 +42,8 @@
 
   <!-- Reference the various multi-targeted versions of the source generator project (one per Roslyn version) -->
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.csproj" ReferenceOutputAssembly="false">
-      <AdditionalProperties>MvvmToolkitSourceGeneratorRoslynVersion=4.0.1;MvvmToolkitIsGeneratingNuGetPackage=true</AdditionalProperties>
-    </ProjectReference>
-    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.csproj" ReferenceOutputAssembly="false">
-      <AdditionalProperties>MvvmToolkitSourceGeneratorRoslynVersion=4.3.0;MvvmToolkitIsGeneratingNuGetPackage=true</AdditionalProperties>
-    </ProjectReference>
+    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn430\CommunityToolkit.Mvvm.SourceGenerators.Roslyn430.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <ItemGroup Label="Package">
