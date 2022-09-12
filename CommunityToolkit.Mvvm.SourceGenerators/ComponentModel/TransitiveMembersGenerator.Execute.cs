@@ -31,7 +31,7 @@ partial class TransitiveMembersGenerator<TInfo>
         public static ClassDeclarationSyntax LoadClassDeclaration(string attributeType)
         {
             string attributeTypeName = attributeType.Split('.').Last();
-            string filename = $"CommunityToolkit.Mvvm.SourceGenerators.EmbeddedResources.{attributeTypeName.Replace("Attribute", string.Empty)}.cs";
+            string filename = $"{attributeTypeName.Replace("Attribute", string.Empty)}.cs";
 
             using Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(filename);
             using StreamReader reader = new(stream);

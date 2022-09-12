@@ -11,18 +11,23 @@
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)EmbeddedResources\INotifyPropertyChanged.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <LogicalName>INotifyPropertyChanged.cs</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)EmbeddedResources\NotNullAttribute.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <LogicalName>NotNullAttribute.cs</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)EmbeddedResources\NotNullIfNotNullAttribute.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <LogicalName>NotNullIfNotNullAttribute.cs</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)EmbeddedResources\ObservableObject.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <LogicalName>ObservableObject.cs</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)EmbeddedResources\ObservableRecipient.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <LogicalName>ObservableRecipient.cs</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
