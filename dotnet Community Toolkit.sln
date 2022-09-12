@@ -36,7 +36,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{88C6FFBE-3
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Diagnostics", "CommunityToolkit.Diagnostics\CommunityToolkit.Diagnostics.csproj", "{76F89522-CA28-458D-801D-947AB033A758}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.SourceGenerators", "CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.csproj", "{E24D1146-5AD8-498F-A518-4890D8BF4937}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.SourceGenerators.Roslyn401", "CommunityToolkit.Mvvm.SourceGenerators.Roslyn401\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401.csproj", "{E24D1146-5AD8-498F-A518-4890D8BF4937}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.SourceGenerators.UnitTests", "tests\CommunityToolkit.Mvvm.SourceGenerators.UnitTests\CommunityToolkit.Mvvm.SourceGenerators.UnitTests.csproj", "{338C3BE4-2E71-4F21-AD30-03FDBB47A272}"
 EndProject
@@ -64,6 +64,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.DisableINotifyPropertyChanging.UnitTests", "tests\CommunityToolkit.Mvvm.DisableINotifyPropertyChanging.UnitTests\CommunityToolkit.Mvvm.DisableINotifyPropertyChanging.UnitTests.csproj", "{9E09DA49-4389-4ECE-8B68-EBDB1221DA90}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.Internals.UnitTests", "tests\CommunityToolkit.Mvvm.Internals.UnitTests\CommunityToolkit.Mvvm.Internals.UnitTests.csproj", "{743D74BA-12AE-4639-AD77-B9DDA9C03255}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CommunityToolkit.Mvvm.SourceGenerators", "CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.shproj", "{5E7F1212-A54B-40CA-98C5-1FF5CD1A1638}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunityToolkit.Mvvm.SourceGenerators.Roslyn430", "CommunityToolkit.Mvvm.SourceGenerators.Roslyn430\CommunityToolkit.Mvvm.SourceGenerators.Roslyn430.csproj", "{DF455C40-B18E-4890-8758-7CCCB5CA7052}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -339,6 +343,26 @@ Global
 		{743D74BA-12AE-4639-AD77-B9DDA9C03255}.Release|x64.Build.0 = Release|Any CPU
 		{743D74BA-12AE-4639-AD77-B9DDA9C03255}.Release|x86.ActiveCfg = Release|Any CPU
 		{743D74BA-12AE-4639-AD77-B9DDA9C03255}.Release|x86.Build.0 = Release|Any CPU
+		{DF455C40-B18E-4890-8758-7CCCB5CA7052}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF455C40-B18E-4890-8758-7CCCB5CA7052}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF455C40-B18E-4890-8758-7CCCB5CA7052}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{DF455C40-B18E-4890-8758-7CCCB5CA7052}.Debug|ARM.Build.0 = Debug|Any CPU
+		{DF455C40-B18E-4890-8758-7CCCB5CA7052}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{DF455C40-B18E-4890-8758-7CCCB5CA7052}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{DF455C40-B18E-4890-8758-7CCCB5CA7052}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DF455C40-B18E-4890-8758-7CCCB5CA7052}.Debug|x64.Build.0 = Debug|Any CPU
+		{DF455C40-B18E-4890-8758-7CCCB5CA7052}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DF455C40-B18E-4890-8758-7CCCB5CA7052}.Debug|x86.Build.0 = Debug|Any CPU
+		{DF455C40-B18E-4890-8758-7CCCB5CA7052}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF455C40-B18E-4890-8758-7CCCB5CA7052}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF455C40-B18E-4890-8758-7CCCB5CA7052}.Release|ARM.ActiveCfg = Release|Any CPU
+		{DF455C40-B18E-4890-8758-7CCCB5CA7052}.Release|ARM.Build.0 = Release|Any CPU
+		{DF455C40-B18E-4890-8758-7CCCB5CA7052}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{DF455C40-B18E-4890-8758-7CCCB5CA7052}.Release|ARM64.Build.0 = Release|Any CPU
+		{DF455C40-B18E-4890-8758-7CCCB5CA7052}.Release|x64.ActiveCfg = Release|Any CPU
+		{DF455C40-B18E-4890-8758-7CCCB5CA7052}.Release|x64.Build.0 = Release|Any CPU
+		{DF455C40-B18E-4890-8758-7CCCB5CA7052}.Release|x86.ActiveCfg = Release|Any CPU
+		{DF455C40-B18E-4890-8758-7CCCB5CA7052}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -358,5 +382,10 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5403B0C4-F244-4F73-A35C-FE664D0F4345}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.projitems*{5e7f1212-a54b-40ca-98c5-1ff5cd1a1638}*SharedItemsImports = 13
+		CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.projitems*{df455c40-b18e-4890-8758-7cccb5ca7052}*SharedItemsImports = 5
+		CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.projitems*{e24d1146-5ad8-498f-a518-4890d8bf4937}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

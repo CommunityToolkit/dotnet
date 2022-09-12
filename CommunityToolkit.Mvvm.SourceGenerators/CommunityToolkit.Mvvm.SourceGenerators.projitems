@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>5e7f1212-a54b-40ca-98c5-1ff5cd1a1638</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>CommunityToolkit.Mvvm.SourceGenerators</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)EmbeddedResources\INotifyPropertyChanged.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)EmbeddedResources\NotNullAttribute.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)EmbeddedResources\NotNullIfNotNullAttribute.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)EmbeddedResources\ObservableObject.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)EmbeddedResources\ObservableRecipient.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Attributes\NotNullWhenAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Attributes\NullabilityAttributesGenerator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\INotifyPropertyChangedGenerator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\AttributeInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\INotifyPropertyChangedInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\ObservableRecipientInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\PropertyInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\TypedConstantInfo.Comparer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\TypedConstantInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\TypedConstantInfo.Factory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\ValidationInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\ObservableObjectGenerator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\ObservablePropertyGenerator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\ObservablePropertyGenerator.Execute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\ObservableRecipientGenerator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\ObservableValidatorValidateAllPropertiesGenerator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\ObservableValidatorValidateAllPropertiesGenerator.Execute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\TransitiveMembersGenerator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\TransitiveMembersGenerator.Execute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\FieldWithOrphanedDependentObservablePropertyAttributesAnalyzer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\UnsupportedCSharpLanguageVersionAnalyzer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\DiagnosticDescriptors.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\DiagnosticExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\AttributeDataExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\CompilationExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\HashCodeExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\IEqualityComparerExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\INamedTypeSymbolExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\IncrementalGeneratorInitializationContextExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\IncrementalValuesProviderExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\ISymbolExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\ITypeSymbolExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\MemberDeclarationSyntaxExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\SyntaxNodeExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\TypeDeclarationSyntaxExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\Comparer{T,TSelf}.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\HashCode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\Models\CanExecuteExpressionType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\Models\CommandInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\RelayCommandGenerator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\RelayCommandGenerator.Execute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Messaging\IMessengerRegisterAllGenerator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Messaging\IMessengerRegisterAllGenerator.Execute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Messaging\Models\RecipientInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\HierarchyInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\HierarchyInfo.Syntax.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Result.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\TypeInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Polyfills\GeneratorAttributeSyntaxContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Polyfills\SyntaxValueProviderExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)System.Runtime.CompilerServices\IsExternalInit.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)AnalyzerReleases.Shipped.md" />
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)AnalyzerReleases.Unshipped.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)CommunityToolkit.Mvvm.SourceGenerators.props" />
+  </ItemGroup>
+</Project>
