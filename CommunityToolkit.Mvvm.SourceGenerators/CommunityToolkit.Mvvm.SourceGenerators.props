@@ -19,9 +19,9 @@
       Get the Roslyn version to use from the name of the project importing this .props file.
       All projects will use the "<PROJECT_NAME>.Roslyn<MAJOR><MINOR><PATCH>.csproj" naming scheme.
     -->
-    <MvvmToolkitSourceGeneratorRoslynMajorVersion>$(MSBuildProjectName.Substring(45, 1))</MvvmToolkitSourceGeneratorRoslynMajorVersion>
-    <MvvmToolkitSourceGeneratorRoslynMinorVersion>$(MSBuildProjectName.Substring(46, 1))</MvvmToolkitSourceGeneratorRoslynMinorVersion>
-    <MvvmToolkitSourceGeneratorRoslynPatchVersion>$(MSBuildProjectName.Substring(47, 1))</MvvmToolkitSourceGeneratorRoslynPatchVersion>
+    <MvvmToolkitSourceGeneratorRoslynMajorVersion>$(MSBuildProjectName.Substring($([MSBuild]::Subtract($(MSBuildProjectName.Length), 3)), 1))</MvvmToolkitSourceGeneratorRoslynMajorVersion>
+    <MvvmToolkitSourceGeneratorRoslynMinorVersion>$(MSBuildProjectName.Substring($([MSBuild]::Subtract($(MSBuildProjectName.Length), 2)), 1))</MvvmToolkitSourceGeneratorRoslynMinorVersion>
+    <MvvmToolkitSourceGeneratorRoslynPatchVersion>$(MSBuildProjectName.Substring($([MSBuild]::Subtract($(MSBuildProjectName.Length), 1)), 1))</MvvmToolkitSourceGeneratorRoslynPatchVersion>
     <MvvmToolkitSourceGeneratorRoslynVersion>$(MvvmToolkitSourceGeneratorRoslynMajorVersion).$(MvvmToolkitSourceGeneratorRoslynMinorVersion).$(MvvmToolkitSourceGeneratorRoslynPatchVersion)</MvvmToolkitSourceGeneratorRoslynVersion>
 
     <!--  The output path will end up being eg. "bin\Debug\roslyn4.0\netstandard2.0" (the trailing "netstandard2.0" is added automatically)  -->
