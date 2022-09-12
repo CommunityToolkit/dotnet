@@ -15,6 +15,9 @@
   -->
   <PropertyGroup>
 
+    <!-- Set the assembly name to always be the same, regardless of the Roslyn version being targeted (cut the trailing ".RoslynXYZ" suffix) -->
+    <AssemblyName>$(MSBuildProjectName.Substring(0, $([MSBuild]::Subtract($(MSBuildProjectName.Length), 10))))</AssemblyName>
+
     <!--
       Get the Roslyn version to use from the name of the project importing this .props file.
       All projects will use the "<PROJECT_NAME>.Roslyn<MAJOR><MINOR><PATCH>.csproj" naming scheme.
@@ -23,9 +26,6 @@
     <MvvmToolkitSourceGeneratorRoslynMinorVersion>$(MSBuildProjectName.Substring($([MSBuild]::Subtract($(MSBuildProjectName.Length), 2)), 1))</MvvmToolkitSourceGeneratorRoslynMinorVersion>
     <MvvmToolkitSourceGeneratorRoslynPatchVersion>$(MSBuildProjectName.Substring($([MSBuild]::Subtract($(MSBuildProjectName.Length), 1)), 1))</MvvmToolkitSourceGeneratorRoslynPatchVersion>
     <MvvmToolkitSourceGeneratorRoslynVersion>$(MvvmToolkitSourceGeneratorRoslynMajorVersion).$(MvvmToolkitSourceGeneratorRoslynMinorVersion).$(MvvmToolkitSourceGeneratorRoslynPatchVersion)</MvvmToolkitSourceGeneratorRoslynVersion>
-
-    <!--  The output path will end up being eg. "bin\Debug\roslyn4.0\netstandard2.0" (the trailing "netstandard2.0" is added automatically)  -->
-    <OutputPath>bin\$(Configuration)\roslyn$(MvvmToolkitSourceGeneratorRoslynVersion.Substring(0, 3))\</OutputPath>
 
     <!-- Also define a "ROSLYN_<MAJOR>_<MINOR>" build constant, so the generator code can multi-target whenever needed and add any required polyfills -->
     <DefineConstants>$(DefineConstants);ROSLYN_$(MvvmToolkitSourceGeneratorRoslynVersion.Substring(0, 3).Replace('.', '_'))</DefineConstants>
