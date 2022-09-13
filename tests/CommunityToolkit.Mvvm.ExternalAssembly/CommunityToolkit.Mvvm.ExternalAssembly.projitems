@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>e827a9cd-405f-43e4-84c7-68cc7e845cdc</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>CommunityToolkit.Mvvm.ExternalAssembly</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)ModelWithObservableObjectAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ModelWithObservablePropertyAndMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SampleModelWithINPCAndObservableProperties.cs" />
+  </ItemGroup>
+</Project>
