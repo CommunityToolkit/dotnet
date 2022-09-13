@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>fb59ce88-7732-4a63-b5bd-ac5681b7da1a</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>CommunityToolkit.Mvvm.SourceGenerators.UnitTests</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\CSharpAnalyzerWithLanguageVersionTest{TAnalyzer}.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Test_SourceGeneratorsDiagnostics.cs" />
+  </ItemGroup>
+</Project>

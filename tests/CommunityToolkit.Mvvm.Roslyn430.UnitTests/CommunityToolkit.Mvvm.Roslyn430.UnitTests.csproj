@@ -12,9 +12,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CommunityToolkit.Mvvm.ExternalAssembly\CommunityToolkit.Mvvm.ExternalAssembly.csproj" />
+    <ProjectReference Include="..\CommunityToolkit.Mvvm.ExternalAssembly.Roslyn430\CommunityToolkit.Mvvm.ExternalAssembly.Roslyn430.csproj" />
     <ProjectReference Include="..\..\CommunityToolkit.Mvvm\CommunityToolkit.Mvvm.csproj" />
-    <ProjectReference Include="..\..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="contentfiles;build" />
+    <ProjectReference Include="..\..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn430\CommunityToolkit.Mvvm.SourceGenerators.Roslyn430.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="contentfiles;build" />
   </ItemGroup>
+
+  <Import Project="..\CommunityToolkit.Mvvm.UnitTests\CommunityToolkit.Mvvm.UnitTests.projitems" Label="Shared" />
 
 </Project>
