@@ -4,8 +4,8 @@
 
 | Target | Branch | Status | Recommended package version |
 | ------ | ------ | ------ | ------ |
-| Production | rel/8.0.0 | [![Build Status](https://dev.azure.com/dotnet/CommunityToolkit/_apis/build/status/Toolkit-CI?branchName=rel/8.0.0)](https://dev.azure.com/dotnet/CommunityToolkit/_build/latest?definitionId=10&branchName=rel/8.0.0) | [![NuGet](https://img.shields.io/nuget/v/Microsoft.Toolkit.svg)](https://www.nuget.org/profiles/Microsoft.Toolkit) |
-| Previews | main | [![Build Status](https://dev.azure.com/dotnet/CommunityToolkit/_apis/build/status/Toolkit-CI?branchName=main)](https://dev.azure.com/dotnet/CommunityToolkit/_build/latest?definitionId=10) | [![DevOps](https://vsrm.dev.azure.com/dotnet/_apis/public/Release/badge/696bc9fd-f160-4e97-a1bd-7cbbb3b58f66/1/1)](https://dev.azure.com/dotnet/CommunityToolkit/_packaging?_a=feed&feed=CommunityToolkit-MainLatest) |
+| Production | rel/8.0.0 | [![Build Status](https://dev.azure.com/dotnet/CommunityToolkit/_apis/build/status/CommunityToolkit.dotnet?branchName=rel/8.0.0)](https://dev.azure.com/dotnet/CommunityToolkit/_build/latest?definitionId=180&branchName=rel/8.0.0) | [![NuGet](https://img.shields.io/nuget/v/CommunityToolkit.Common.svg)](https://www.nuget.org/profiles/Microsoft.Toolkit) |
+| Previews | main | [![Build Status](https://dev.azure.com/dotnet/CommunityToolkit/_apis/build/status/CommunityToolkit.dotnet?branchName=main)](https://dev.azure.com/dotnet/CommunityToolkit/_build/latest?definitionId=180) | [![DevOps](https://vsrm.dev.azure.com/dotnet/_apis/public/Release/badge/696bc9fd-f160-4e97-a1bd-7cbbb3b58f66/9/26)](https://dev.azure.com/dotnet/CommunityToolkit/_packaging?_a=feed&feed=CommunityToolkit-MainLatest) |
 
 ## 👀 What does this repo contain?
 
