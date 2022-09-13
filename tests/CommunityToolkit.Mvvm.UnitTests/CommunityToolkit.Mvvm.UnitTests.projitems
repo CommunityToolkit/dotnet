@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>b8dcd82e-b53b-4249-ad4e-f9b99acb9334</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>CommunityToolkit.Mvvm.UnitTests</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\IntGroup.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Test_ObservableGroup.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Test_ObservableGroupedCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Test_ObservableGroupedCollectionExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Test_ReadOnlyObservableGroup.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Collections\Test_ReadOnlyObservableGroupedCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\ExceptionHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\TaskSchedulerTestHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Test_ArgumentNullException.ComponentModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Test_ArgumentNullException.DependencyInjection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Test_ArgumentNullException.Input.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Test_ArgumentNullException.Messaging.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Test_AsyncRelayCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Test_AsyncRelayCommand{T}.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Test_INotifyPropertyChangedAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Test_IRecipientGenerator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Test_Messenger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Test_Messenger.Request.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Test_ObservableObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Test_ObservableObjectAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Test_ObservablePropertyAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Test_ObservablePropertyAttribute.RootNamespace.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Test_ObservableRecipient.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Test_ObservableRecipientAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Test_ObservableValidator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Test_RelayCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Test_RelayCommandAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Test_RelayCommand{T}.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Test_SourceGenerators.cs" />
+  </ItemGroup>
+</Project>
