@@ -83,6 +83,10 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
     }
 
     /// <inheritdoc cref="ConditionalWeakTable{TKey, TValue}.GetValue(TKey, ConditionalWeakTable{TKey, TValue}.CreateValueCallback)"/>
+    [UnconditionalSuppressMessage(
+        "ReflectionAnalysis",
+        "IL2091",
+        Justification = "ConditionalWeakTable<TKey, TValue> is only referenced to reuse the callback delegate type, but no value is ever created through reflection.")]
     public TValue GetValue(TKey key, ConditionalWeakTable<TKey, TValue>.CreateValueCallback createValueCallback)
     {
         return TryGetValue(key, out TValue? existingValue) ?
@@ -96,6 +100,10 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
     /// <param name="key">The input key.</param>
     /// <param name="createValueCallback">The callback to use to create a new item.</param>
     /// <returns>The new <typeparamref name="TValue"/> item to store.</returns>
+    [UnconditionalSuppressMessage(
+        "ReflectionAnalysis",
+        "IL2091",
+        Justification = "ConditionalWeakTable<TKey, TValue> is only referenced to reuse the callback delegate type, but no value is ever created through reflection.")]
     private TValue GetValueLocked(TKey key, ConditionalWeakTable<TKey, TValue>.CreateValueCallback createValueCallback)
     {
         // If we got here, the key was not in the table. Invoke the callback
