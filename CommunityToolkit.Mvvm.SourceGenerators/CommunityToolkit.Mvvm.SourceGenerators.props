@@ -27,8 +27,11 @@
     <MvvmToolkitSourceGeneratorRoslynPatchVersion>$(MSBuildProjectName.Substring($([MSBuild]::Subtract($(MSBuildProjectName.Length), 1)), 1))</MvvmToolkitSourceGeneratorRoslynPatchVersion>
     <MvvmToolkitSourceGeneratorRoslynVersion>$(MvvmToolkitSourceGeneratorRoslynMajorVersion).$(MvvmToolkitSourceGeneratorRoslynMinorVersion).$(MvvmToolkitSourceGeneratorRoslynPatchVersion)</MvvmToolkitSourceGeneratorRoslynVersion>
 
-    <!-- Also define a "ROSLYN_<MAJOR>_<MINOR>" build constant, so the generator code can multi-target whenever needed and add any required polyfills -->
-    <DefineConstants>$(DefineConstants);ROSLYN_$(MvvmToolkitSourceGeneratorRoslynVersion.Substring(0, 3).Replace('.', '_'))</DefineConstants>
+    <!-- Workaround for https://github.com/dotnet/roslyn/issues/63919 -->
+    <MvvmToolkitSourceGeneratorRoslynVersion Condition="'$(MvvmToolkitSourceGeneratorRoslynVersion)' == '4.3.0'">4.4.0-1.final</MvvmToolkitSourceGeneratorRoslynVersion>
+
+    <!-- Also define "ROSLYN_<MAJOR>_<MINOR>_OR_GREATER" build constants, so the generator code can multi-target whenever needed and add any required polyfills -->
+    <DefineConstants Condition="$([MSBuild]::VersionGreaterThanOrEquals($(MvvmToolkitSourceGeneratorRoslynVersion), 4.3))">$(DefineConstants);ROSLYN_4_3_0_OR_GREATER</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
