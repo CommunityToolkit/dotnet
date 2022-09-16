@@ -16,6 +16,12 @@ jobs:
   timeoutInMinutes: 60
   steps:
 
+  # Install the .NET Core 3.1 SDK
+  - task: UseDotNet@2
+    displayName: Install the .NET Core 3.1 SDK
+    inputs:
+      version: 3.1.x
+
   # Install the .NET 6 SDK
   - task: UseDotNet@2
     displayName: Install the .NET 6 SDK
