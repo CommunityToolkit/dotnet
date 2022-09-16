@@ -26,12 +26,10 @@ public static class TaskExtensions
     /// and uses reflection to access the <see cref="Task{TResult}.Result"/> property and boxes the result if it's
     /// a value type, which adds overhead. It should only be used when using generics is not possible.
     /// </remarks>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static object? GetResultOrDefault(
 #if NET6_0_OR_GREATER
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
+    [RequiresUnreferencedCode("This method uses reflection to try to access the Task<T>.Result property of the input Task instance.")]
 #endif
-        this Task task)
+    public static object? GetResultOrDefault(this Task task)
     {
         // Check if the instance is a completed Task
         if (
