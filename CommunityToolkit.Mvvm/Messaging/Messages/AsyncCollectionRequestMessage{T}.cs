@@ -8,6 +8,8 @@ using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 
+#pragma warning disable CA1001
+
 namespace CommunityToolkit.Mvvm.Messaging.Messages;
 
 /// <summary>

@@ -25,7 +25,7 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
     /// Initializes a new instance of the <see cref="ObservableRecipientGenerator"/> class.
     /// </summary>
     public ObservableRecipientGenerator()
-        : base("global::CommunityToolkit.Mvvm.ComponentModel.ObservableRecipientAttribute")
+        : base("CommunityToolkit.Mvvm.ComponentModel.ObservableRecipientAttribute")
     {
     }
 

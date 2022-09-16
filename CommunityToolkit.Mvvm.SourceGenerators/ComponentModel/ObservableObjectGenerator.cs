@@ -22,7 +22,7 @@ public sealed class ObservableObjectGenerator : TransitiveMembersGenerator<objec
     /// Initializes a new instance of the <see cref="ObservableObjectGenerator"/> class.
     /// </summary>
     public ObservableObjectGenerator()
-        : base("global::CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute")
+        : base("CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute")
     {
     }
 

@@ -67,7 +67,7 @@ public sealed class NullabilityAttributesGenerator : IIncrementalGenerator
     private static string LoadAttributeSourceWithMetadataName(string typeFullName)
     {
         string typeName = typeFullName.Split('.').Last();
-        string filename = $"CommunityToolkit.Mvvm.SourceGenerators.EmbeddedResources.{typeName}.cs";
+        string filename = $"{typeName}.cs";
 
         Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(filename);
         StreamReader reader = new(stream);
