@@ -16,6 +16,12 @@ jobs:
   timeoutInMinutes: 60
   steps:
 
+  # Install the .NET 6 SDK
+  - task: UseDotNet@2
+    displayName: Install the .NET 6 SDK
+    inputs:
+      version: 6.0.x
+
   # Install the .NET 7 SDK
   - task: UseDotNet@2
     displayName: Install the .NET 7 SDK
