@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel.__Internals;
 using CommunityToolkit.Mvvm.Input.Internals;
 
-#pragma warning disable CS0618
+#pragma warning disable CS0618, CA1001
 
 namespace CommunityToolkit.Mvvm.Input;
 
