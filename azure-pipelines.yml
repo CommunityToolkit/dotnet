@@ -16,6 +16,13 @@ jobs:
   timeoutInMinutes: 60
   steps:
 
+  # Install the .NET 7 SDK
+  - task: UseDotNet@2
+    displayName: Install the .NET 7 SDK
+    inputs:
+      version: 7.0.x
+      includePreviewVersions: true
+
   # Install NuGet
   - task: NuGetToolInstaller@0
     displayName: Install NuGet 6.0
