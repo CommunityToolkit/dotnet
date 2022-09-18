@@ -13,6 +13,8 @@ pool:
 
 variables:
   Build.Configuration: Release
+  DotNet.Tools: $(Agent.ToolsDirectory)/dotnet
+  DotNet.Version: 7.0.x
 
 jobs:
 - job: BuildBits
@@ -20,11 +22,21 @@ jobs:
   timeoutInMinutes: 60
   steps:
 
+  # Cache .NET SDKs and Tools across pipeline runs
+  - task: Cache@2
+    displayName: Cache .NET SDKs
+    inputs:
+      key: 'dotnet | "$(Agent.OS)" | "$(DotNet.Version)"'
+      restoreKeys: |
+        dotnet | "$(Agent.OS)"
+        dotnet
+      path: $(DotNet.Tools)
+
   # Install the .NET 7 SDK
   - task: UseDotNet@2
     displayName: Install the .NET 7 SDK
     inputs:
-      version: 7.0.x
+      version: $(DotNet.Version)
       includePreviewVersions: true
       performMultiLevelLookup: true
 
