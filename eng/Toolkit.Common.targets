@@ -17,4 +17,20 @@
     <None Include="$(RepositoryDirectory)ThirdPartyNotices.txt" Pack="true" PackagePath="\" Visible="False" />
   </ItemGroup>
 
+  <!--
+      Add additional Pre-Processor symbols to $(DefineConstants) and $(FinalDefineConstants) in VB.
+      This overrides the same target in the .NET SDK. Since, that version has issues in DesignTime.
+  -->
+  <Target Name="AddImplicitDefineConstants"
+          Condition="'$(DisableImplicitDefineConstants)' != 'true'"
+          DependsOnTargets="GenerateTargetPlatformDefineConstants;GenerateNETCompatibleDefineConstants;GeneratePlatformCompatibleDefineConstants"
+          BeforeTargets="CompileDesignTime;CoreCompile">
+
+    <!-- Add the Custom defines before entering compilation process. Make sure it also works in Design Time -->
+    <PropertyGroup Condition="@(_ImplicitDefineConstant->Count()) > 0">
+      <DefineConstants Condition="'$(Language)' != 'VB'">$(DefineConstants);@(_ImplicitDefineConstant)</DefineConstants>
+      <FinalDefineConstants Condition="'$(Language)' == 'VB'">$(FinalDefineConstants),@(_ImplicitDefineConstant->'%(Identity)=-1', ',')</FinalDefineConstants>
+    </PropertyGroup>
+  </Target>
+
 </Project>

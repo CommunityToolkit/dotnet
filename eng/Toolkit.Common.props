@@ -48,4 +48,15 @@
     <ContinuousIntegrationBuild>$(TF_BUILD)</ContinuousIntegrationBuild>
   </PropertyGroup>
 
+  <!-- Identify projects targeting multiple Roslyn versions and add defaults -->
+  <PropertyGroup Condition="$(MSBuildProjectName.Contains('.Roslyn'))">
+    <IsCompilerTargeting>True</IsCompilerTargeting>
+    <TargetCompilerIdentifier>Roslyn</TargetCompilerIdentifier>
+    <!-- TODO: Update the supported Compiler versions here as new ones get released -->
+    <SupportedCompilerVersions>4.0;4.1;4.2;4.3;4.4;4.5</SupportedCompilerVersions>
+  </PropertyGroup>
+
+  <!-- Use custom build logic for projects targeting multiple version of the Roslyn Compiler -->
+  <Import Project="Toolkit.CompilerTargeting.props" Condition="'$(IsCompilerTargeting)' == 'true'" />
+
 </Project>

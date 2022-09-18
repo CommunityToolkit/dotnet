@@ -36,8 +36,8 @@
 
   <!-- Reference the various multi-targeted versions of the source generator project (one per Roslyn version) -->
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401.csproj" ReferenceOutputAssembly="false" />
-    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn431\CommunityToolkit.Mvvm.SourceGenerators.Roslyn431.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.Roslyn40.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.Roslyn43.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <!-- Add the [InternalsVisibleTo] attribute for the test project -->
@@ -74,8 +74,8 @@
       Pack the source generator to the right package folders (each matching the target Roslyn version).
       Roslyn will automatically load the highest version compatible with Roslyn's version in the SDK.
     -->
-    <None Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.SourceGenerators.dll" PackagePath="analyzers\dotnet\roslyn4.0\cs" Pack="true" Visible="false" />
-    <None Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn431\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.SourceGenerators.dll" PackagePath="analyzers\dotnet\roslyn4.3\cs" Pack="true" Visible="false" />
+    <None Include="..\CommunityToolkit.Mvvm.SourceGenerators\bin\$(Configuration)\netstandard2.0-roslyn4.0\CommunityToolkit.Mvvm.SourceGenerators.dll" PackagePath="analyzers\dotnet\roslyn4.0\cs" Pack="true" Visible="false" />
+    <None Include="..\CommunityToolkit.Mvvm.SourceGenerators\bin\$(Configuration)\netstandard2.0-roslyn4.3\CommunityToolkit.Mvvm.SourceGenerators.dll" PackagePath="analyzers\dotnet\roslyn4.3\cs" Pack="true" Visible="false" />
   </ItemGroup>
 
 </Project>

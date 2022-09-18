@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing.MSTest" Version="1.1.1" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.4.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.0.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.0.1" />
     <PackageReference Include="MSTest.TestFramework" Version="3.0.1" />
@@ -14,9 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\CommunityToolkit.Mvvm\CommunityToolkit.Mvvm.csproj" />
-    <ProjectReference Include="..\..\src\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401.csproj" />
+    <ProjectReference Include="..\..\src\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.Roslyn40.csproj" />
   </ItemGroup>
-
-  <Import Project="..\CommunityToolkit.Mvvm.SourceGenerators.UnitTests\CommunityToolkit.Mvvm.SourceGenerators.UnitTests.projitems" Label="Shared" />
 
 </Project>

@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
 <Project>
+
   <Import Project="..\Directory.Build.targets" />
 
   <!-- Define NETSTANDARD2_1_OR_GREATER for .NET Standard 2.1 targets and above -->
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0' OR '$(TargetFramework)' == 'net6.0' OR '$(TargetFramework)' == 'net7.0'">
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0' OR '$(TargetFramework)' == 'net7.0'">
     <DefineConstants>NETSTANDARD2_1_OR_GREATER</DefineConstants>
   </PropertyGroup>
 
@@ -52,4 +52,5 @@
       <Compile Include="$(GeneratedSkipLocalsInitFile)" />
     </ItemGroup>
   </Target>
+
 </Project>

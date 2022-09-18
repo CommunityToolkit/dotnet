@@ -1,4 +1,5 @@
 <Project>
+
   <Import Project="..\Directory.Build.props" />
 
   <!-- Include PolySharp to generate polyfills for all projects (on their .NET Standard 2.x targets) -->
@@ -8,4 +9,5 @@
       <IncludeAssets>build; analyzers</IncludeAssets>
     </PackageReference>
   </ItemGroup>
+
 </Project>
