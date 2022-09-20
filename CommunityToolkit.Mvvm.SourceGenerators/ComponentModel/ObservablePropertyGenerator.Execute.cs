@@ -4,6 +4,7 @@
 
 using System.Collections.Immutable;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
@@ -33,13 +34,15 @@ partial class ObservablePropertyGenerator
         /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
         /// <param name="semanticModel">The <see cref="SemanticModel"/> instance for the current run.</param>
         /// <param name="token">The cancellation token for the current operation.</param>
+        /// <param name="propertyInfo">The resulting <see cref="PropertyInfo"/> value, if successfully retrieved.</param>
         /// <param name="diagnostics">The resulting diagnostics from the processing operation.</param>
         /// <returns>The resulting <see cref="PropertyInfo"/> instance for <paramref name="fieldSymbol"/>, if successful.</returns>
-        public static PropertyInfo? TryGetInfo(
+        public static bool TryGetInfo(
             FieldDeclarationSyntax fieldSyntax,
             IFieldSymbol fieldSymbol,
             SemanticModel semanticModel,
             CancellationToken token,
+            [NotNullWhen(true)] out PropertyInfo? propertyInfo,
             out ImmutableArray<Diagnostic> diagnostics)
         {
             ImmutableArray<Diagnostic>.Builder builder = ImmutableArray.CreateBuilder<Diagnostic>();
@@ -53,9 +56,10 @@ partial class ObservablePropertyGenerator
                     fieldSymbol.ContainingType,
                     fieldSymbol.Name);
 
+                propertyInfo = null;
                 diagnostics = builder.ToImmutable();
 
-                return null;
+                return false;
             }
 
             // Get the property type and name
@@ -72,12 +76,13 @@ partial class ObservablePropertyGenerator
                     fieldSymbol.ContainingType,
                     fieldSymbol.Name);
 
+                propertyInfo = null;
                 diagnostics = builder.ToImmutable();
 
                 // If the generated property would collide, skip generating it entirely. This makes sure that
                 // users only get the helpful diagnostic about the collision, and not the normal compiler error
                 // about a definition for "Property" already existing on the target type, which might be confusing.
-                return null;
+                return false;
             }
 
             // Check for special cases that are explicitly not allowed
@@ -89,9 +94,10 @@ partial class ObservablePropertyGenerator
                     fieldSymbol.ContainingType,
                     fieldSymbol.Name);
 
+                propertyInfo = null;
                 diagnostics = builder.ToImmutable();
 
-                return null;
+                return false;
             }
 
             ImmutableArray<string>.Builder propertyChangedNames = ImmutableArray.CreateBuilder<string>();
@@ -238,9 +244,7 @@ partial class ObservablePropertyGenerator
                     fieldSymbol.Name);
             }
 
-            diagnostics = builder.ToImmutable();
-
-            return new(
+            propertyInfo = new PropertyInfo(
                 typeNameWithNullabilityAnnotations,
                 fieldName,
                 propertyName,
@@ -250,6 +254,10 @@ partial class ObservablePropertyGenerator
                 notifyRecipients,
                 notifyDataErrorInfo,
                 forwardedAttributes.ToImmutable());
+
+            diagnostics = builder.ToImmutable();
+
+            return true;
         }
 
         /// <summary>
