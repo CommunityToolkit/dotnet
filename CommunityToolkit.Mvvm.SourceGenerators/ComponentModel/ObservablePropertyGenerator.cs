@@ -40,9 +40,10 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
                     FieldDeclarationSyntax fieldDeclaration = (FieldDeclarationSyntax)context.TargetNode.Parent!.Parent!;
                     IFieldSymbol fieldSymbol = (IFieldSymbol)context.TargetSymbol;
 
-                    // Produce the incremental models
+                    // Get the hierarchy info for the target symbol, and try to gather the property info
                     HierarchyInfo hierarchy = HierarchyInfo.From(fieldSymbol.ContainingType);
-                    PropertyInfo? propertyInfo = Execute.TryGetInfo(fieldDeclaration, fieldSymbol, context.SemanticModel, token, out ImmutableArray<Diagnostic> diagnostics);
+
+                    _ = Execute.TryGetInfo(fieldDeclaration, fieldSymbol, context.SemanticModel, token, out PropertyInfo? propertyInfo, out ImmutableArray<Diagnostic> diagnostics);
 
                     return (Hierarchy: hierarchy, new Result<PropertyInfo?>(propertyInfo, diagnostics));
                 })
