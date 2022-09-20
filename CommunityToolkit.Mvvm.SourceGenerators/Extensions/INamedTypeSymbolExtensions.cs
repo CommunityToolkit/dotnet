@@ -40,7 +40,7 @@ internal static class INamedTypeSymbolExtensions
         // one to the outermost namespace, if any. Additionally, the ` and + symbols need to be replaced
         // to avoid errors when generating code. This is a known issue with source generators not accepting
         // those characters at the moment, see: https://github.com/dotnet/roslyn/issues/58476.
-        return BuildFrom(symbol, new StringBuilder(256)).ToString().Replace('`', '-').Replace('+', '.');
+        return BuildFrom(symbol, new StringBuilder(256)).Replace('`', '-').Replace('+', '.').ToString();
     }
 
     /// <summary>
