@@ -5,7 +5,9 @@
 using System;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Threading;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Operations;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
@@ -62,21 +64,28 @@ partial record TypedConstantInfo
     /// <summary>
     /// Creates a new <see cref="TypedConstantInfo"/> instance from a given <see cref="IOperation"/> value.
     /// </summary>
-    /// <param name="arg">The input <see cref="IOperation"/> value.</param>
-    /// <returns>A <see cref="TypedConstantInfo"/> instance representing <paramref name="arg"/>.</returns>
+    /// <param name="operation">The input <see cref="IOperation"/> value.</param>
+    /// <param name="semanticModel">The <see cref="SemanticModel"/> that was used to retrieve <paramref name="operation"/>.</param>
+    /// <param name="expression">The <see cref="ExpressionSyntax"/> that <paramref name="operation"/> was retrieved from.</param>
+    /// <param name="token">The cancellation token for the current operation.</param>
+    /// <returns>A <see cref="TypedConstantInfo"/> instance representing <paramref name="operation"/>.</returns>
     /// <exception cref="ArgumentException">Thrown if the input argument is not valid.</exception>
-    public static TypedConstantInfo From(IOperation arg)
+    public static TypedConstantInfo From(
+        IOperation operation,
+        SemanticModel semanticModel,
+        ExpressionSyntax expression,
+        CancellationToken token)
     {
-        if (arg.ConstantValue.HasValue)
+        if (operation.ConstantValue.HasValue)
         {
             // Enum values are constant but need to be checked explicitly in this case
-            if (arg.Type?.TypeKind is TypeKind.Enum)
+            if (operation.Type?.TypeKind is TypeKind.Enum)
             {
-                return new Enum(arg.Type!.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), arg.ConstantValue.Value!);
+                return new Enum(operation.Type!.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), operation.ConstantValue.Value!);
             }
 
             // Handle all other constant literals normally
-            return arg.ConstantValue.Value switch
+            return operation.ConstantValue.Value switch
             {
                 null => new Null(),
                 string text => new Primitive.String(text),
@@ -96,21 +105,42 @@ partial record TypedConstantInfo
             };
         }
 
-        if (arg is ITypeOfOperation typeOfOperation)
+        if (operation is ITypeOfOperation typeOfOperation)
         {
             return new Type(typeOfOperation.TypeOperand.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
         }
 
-        if (arg is IArrayCreationOperation arrayCreationOperation)
+        if (operation is IArrayCreationOperation)
         {
-            string? elementTypeName = ((IArrayTypeSymbol?)arg.Type)?.ElementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+            string? elementTypeName = ((IArrayTypeSymbol?)operation.Type)?.ElementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
             // If the element type is not available (since the attribute wasn't checked), just default to object
             elementTypeName ??= "object";
 
-            ImmutableArray<TypedConstantInfo> items = ImmutableArray<TypedConstantInfo>.Empty; // TODO
+            InitializerExpressionSyntax? initializerExpression =
+                (expression as ImplicitArrayCreationExpressionSyntax)?.Initializer
+                ?? (expression as ArrayCreationExpressionSyntax)?.Initializer;
 
-            return new Array(elementTypeName, items);
+            // No initializer found, just return an empty array
+            if (initializerExpression is null)
+            {
+                return new Array(elementTypeName, ImmutableArray<TypedConstantInfo>.Empty);
+            }
+
+            ImmutableArray<TypedConstantInfo>.Builder items = ImmutableArray.CreateBuilder<TypedConstantInfo>(initializerExpression.Expressions.Count);
+
+            // Enumerate all array elements and extract serialized info for them
+            foreach (ExpressionSyntax initializationExpression in initializerExpression.Expressions)
+            {
+                if (semanticModel.GetOperation(initializationExpression, token) is not IOperation initializationOperation)
+                {
+                    throw new ArgumentException("Failed to retrieve an operation for the current array element");
+                }
+
+                items.Add(From(initializationOperation, semanticModel, initializationExpression, token));
+            }
+
+            return new Array(elementTypeName, items.MoveToImmutable());
         }
 
         throw new ArgumentException("Invalid attribute argument value");

@@ -75,7 +75,7 @@ internal sealed record AttributeInfo(
                 continue;
             }
 
-            TypedConstantInfo argumentInfo = TypedConstantInfo.From(operation);
+            TypedConstantInfo argumentInfo = TypedConstantInfo.From(operation, semanticModel, argument.Expression, token);
 
             // Try to get the identifier name if the current expression is a named argument expression. If it
             // isn't, then the expression is a normal attribute constructor argument, so no extra work is needed.
