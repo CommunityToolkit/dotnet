@@ -6,6 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+#pragma warning disable CS0618
+
 namespace CommunityToolkit.HighPerformance.UnitTests.Extensions;
 
 [TestClass]
@@ -33,7 +35,7 @@ public class Test_SpinLockExtensions
         Assert.AreEqual(sum, 1000 * 10);
     }
 
-#if !NETFRAMEWORK
+#if NET7_0_OR_GREATER
     [TestMethod]
     public void Test_ArrayExtensions_Ref()
     {
