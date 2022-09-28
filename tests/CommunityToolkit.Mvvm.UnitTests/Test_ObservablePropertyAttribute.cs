@@ -9,7 +9,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.ExternalAssembly;
 using CommunityToolkit.Mvvm.Input;
@@ -871,6 +873,79 @@ public partial class Test_ObservablePropertyAttribute
         Assert.IsTrue(model.HasSaved);
     }
 
+    // See https://github.com/CommunityToolkit/dotnet/issues/413
+    [TestMethod]
+    public void Test_ObservableProperty_WithExplicitAttributeForProperty()
+    {
+        PropertyInfo nameProperty = typeof(MyViewModelWithExplicitPropertyAttributes).GetProperty(nameof(MyViewModelWithExplicitPropertyAttributes.Name))!;
+
+        Assert.IsNotNull(nameProperty.GetCustomAttribute<RequiredAttribute>());
+        Assert.IsNotNull(nameProperty.GetCustomAttribute<MinLengthAttribute>());
+        Assert.AreEqual(nameProperty.GetCustomAttribute<MinLengthAttribute>()!.Length, 1);
+        Assert.IsNotNull(nameProperty.GetCustomAttribute<MaxLengthAttribute>());
+        Assert.AreEqual(nameProperty.GetCustomAttribute<MaxLengthAttribute>()!.Length, 100);
+
+        PropertyInfo lastNameProperty = typeof(MyViewModelWithExplicitPropertyAttributes).GetProperty(nameof(MyViewModelWithExplicitPropertyAttributes.LastName))!;
+
+        Assert.IsNotNull(lastNameProperty.GetCustomAttribute<JsonPropertyNameAttribute>());
+        Assert.AreEqual(lastNameProperty.GetCustomAttribute<JsonPropertyNameAttribute>()!.Name, "lastName");
+        Assert.IsNotNull(lastNameProperty.GetCustomAttribute<XmlIgnoreAttribute>());
+
+        PropertyInfo justOneSimpleAttributeProperty = typeof(MyViewModelWithExplicitPropertyAttributes).GetProperty(nameof(MyViewModelWithExplicitPropertyAttributes.JustOneSimpleAttribute))!;
+
+        Assert.IsNotNull(justOneSimpleAttributeProperty.GetCustomAttribute<TestAttribute>());
+
+        PropertyInfo someComplexValidationAttributeProperty = typeof(MyViewModelWithExplicitPropertyAttributes).GetProperty(nameof(MyViewModelWithExplicitPropertyAttributes.SomeComplexValidationAttribute))!;
+
+        TestValidationAttribute testAttribute = someComplexValidationAttributeProperty.GetCustomAttribute<TestValidationAttribute>()!;
+
+        Assert.IsNotNull(testAttribute);
+        Assert.IsNull(testAttribute.O);
+        Assert.AreEqual(testAttribute.T, typeof(MyViewModelWithExplicitPropertyAttributes));
+        Assert.AreEqual(testAttribute.Flag, true);
+        Assert.AreEqual(testAttribute.D, 6.28);
+        CollectionAssert.AreEqual(testAttribute.Names, new[] { "Bob", "Ross" });
+
+        object[]? nestedArray = (object[]?)testAttribute.NestedArray;
+
+        Assert.IsNotNull(nestedArray);
+        Assert.AreEqual(nestedArray!.Length, 3);
+        Assert.AreEqual(nestedArray[0], 1);
+        Assert.AreEqual(nestedArray[1], "Hello");
+        Assert.IsTrue(nestedArray[2] is int[]);
+        CollectionAssert.AreEqual((int[])nestedArray[2], new[] { 2, 3, 4 });
+
+        Assert.AreEqual(testAttribute.Animal, Animal.Llama);
+
+        PropertyInfo someComplexRandomAttribute = typeof(MyViewModelWithExplicitPropertyAttributes).GetProperty(nameof(MyViewModelWithExplicitPropertyAttributes.SomeComplexRandomAttribute))!;
+
+        Assert.IsNotNull(someComplexRandomAttribute.GetCustomAttribute<TestAttribute>());
+
+        PropertyInfoAttribute testAttribute2 = someComplexRandomAttribute.GetCustomAttribute<PropertyInfoAttribute>()!;
+
+        Assert.IsNotNull(testAttribute2);
+        Assert.IsNull(testAttribute2.O);
+        Assert.AreEqual(testAttribute2.T, typeof(MyViewModelWithExplicitPropertyAttributes));
+        Assert.AreEqual(testAttribute2.Flag, true);
+        Assert.AreEqual(testAttribute2.D, 6.28);
+        Assert.IsNotNull(testAttribute2.Objects);
+        Assert.IsTrue(testAttribute2.Objects is object[]);
+        Assert.AreEqual(((object[])testAttribute2.Objects).Length, 1);
+        Assert.AreEqual(((object[])testAttribute2.Objects)[0], "Test");
+        CollectionAssert.AreEqual(testAttribute2.Names, new[] { "Bob", "Ross" });
+
+        object[]? nestedArray2 = (object[]?)testAttribute2.NestedArray;
+
+        Assert.IsNotNull(nestedArray2);
+        Assert.AreEqual(nestedArray2!.Length, 4);
+        Assert.AreEqual(nestedArray2[0], 1);
+        Assert.AreEqual(nestedArray2[1], "Hello");
+        Assert.AreEqual(nestedArray2[2], 42);
+        Assert.IsNull(nestedArray2[3]);
+
+        Assert.AreEqual(testAttribute2.Animal, (Animal)67);
+    }
+
     public abstract partial class BaseViewModel : ObservableObject
     {
         public string? Content { get; set; }
@@ -1379,5 +1454,67 @@ public partial class Test_ObservablePropertyAttribute
         {
             HasSaved = true;
         }
+    }
+
+    public partial class MyViewModelWithExplicitPropertyAttributes : ObservableValidator
+    {
+        [ObservableProperty]
+        [property: Required]
+        [property: MinLength(1)]
+        [property: MaxLength(100)]
+        private string? name;
+
+        [ObservableProperty]
+        [property: JsonPropertyName("lastName")]
+        [property: XmlIgnore]
+        private string? lastName;
+
+        [ObservableProperty]
+        [property: Test]
+        private string? justOneSimpleAttribute;
+
+        [ObservableProperty]
+        [property: TestValidation(null, typeof(MyViewModelWithExplicitPropertyAttributes), true, 6.28, new[] { "Bob", "Ross" }, NestedArray = new object[] { 1, "Hello", new int[] { 2, 3, 4 } }, Animal = Animal.Llama)]
+        private int someComplexValidationAttribute;
+
+        [ObservableProperty]
+        [property: Test]
+        [property: PropertyInfo(null, typeof(MyViewModelWithExplicitPropertyAttributes), true, 6.28, new[] { "Bob", "Ross" }, new object[] { "Test" }, NestedArray = new object[] { 1, "Hello", 42, null }, Animal = (Animal)67)]
+        private int someComplexRandomAttribute;
+    }
+
+    [AttributeUsage(AttributeTargets.Property)]
+    private sealed class TestAttribute : Attribute
+    {
+    }
+
+    [AttributeUsage(AttributeTargets.Property)]
+    private sealed class PropertyInfoAttribute : Attribute
+    {
+        public PropertyInfoAttribute(object? o, Type t, bool flag, double d, string[] names, object[] objects)
+        {
+            O = o;
+            T = t;
+            Flag = flag;
+            D = d;
+            Names = names;
+            Objects = objects;
+        }
+
+        public object? O { get; }
+
+        public Type T { get; }
+
+        public bool Flag { get; }
+
+        public double D { get; }
+
+        public string[] Names { get; }
+
+        public object? Objects { get; set; }
+
+        public object? NestedArray { get; set; }
+
+        public Animal Animal { get; set; }
     }
 }

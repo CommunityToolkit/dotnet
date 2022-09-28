@@ -4,8 +4,10 @@
 
 using System.Collections.Immutable;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 using CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
@@ -28,10 +30,20 @@ partial class ObservablePropertyGenerator
         /// <summary>
         /// Processes a given field.
         /// </summary>
+        /// <param name="fieldSyntax">The <see cref="FieldDeclarationSyntax"/> instance to process.</param>
         /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
+        /// <param name="semanticModel">The <see cref="SemanticModel"/> instance for the current run.</param>
+        /// <param name="token">The cancellation token for the current operation.</param>
+        /// <param name="propertyInfo">The resulting <see cref="PropertyInfo"/> value, if successfully retrieved.</param>
         /// <param name="diagnostics">The resulting diagnostics from the processing operation.</param>
         /// <returns>The resulting <see cref="PropertyInfo"/> instance for <paramref name="fieldSymbol"/>, if successful.</returns>
-        public static PropertyInfo? TryGetInfo(IFieldSymbol fieldSymbol, out ImmutableArray<Diagnostic> diagnostics)
+        public static bool TryGetInfo(
+            FieldDeclarationSyntax fieldSyntax,
+            IFieldSymbol fieldSymbol,
+            SemanticModel semanticModel,
+            CancellationToken token,
+            [NotNullWhen(true)] out PropertyInfo? propertyInfo,
+            out ImmutableArray<Diagnostic> diagnostics)
         {
             ImmutableArray<Diagnostic>.Builder builder = ImmutableArray.CreateBuilder<Diagnostic>();
 
@@ -44,9 +56,10 @@ partial class ObservablePropertyGenerator
                     fieldSymbol.ContainingType,
                     fieldSymbol.Name);
 
+                propertyInfo = null;
                 diagnostics = builder.ToImmutable();
 
-                return null;
+                return false;
             }
 
             // Get the property type and name
@@ -63,12 +76,13 @@ partial class ObservablePropertyGenerator
                     fieldSymbol.ContainingType,
                     fieldSymbol.Name);
 
+                propertyInfo = null;
                 diagnostics = builder.ToImmutable();
 
                 // If the generated property would collide, skip generating it entirely. This makes sure that
                 // users only get the helpful diagnostic about the collision, and not the normal compiler error
                 // about a definition for "Property" already existing on the target type, which might be confusing.
-                return null;
+                return false;
             }
 
             // Check for special cases that are explicitly not allowed
@@ -80,9 +94,10 @@ partial class ObservablePropertyGenerator
                     fieldSymbol.ContainingType,
                     fieldSymbol.Name);
 
+                propertyInfo = null;
                 diagnostics = builder.ToImmutable();
 
-                return null;
+                return false;
             }
 
             ImmutableArray<string>.Builder propertyChangedNames = ImmutableArray.CreateBuilder<string>();
@@ -168,6 +183,45 @@ partial class ObservablePropertyGenerator
                 }
             }
 
+            // Gather explicit forwarded attributes info
+            foreach (AttributeListSyntax attributeList in fieldSyntax.AttributeLists)
+            {
+                // Only look for attribute lists explicitly targeting the (generated) property. Roslyn will normally emit a
+                // CS0657 warning (invalid target), but that is automatically suppressed by a dedicated diagnostic suppressor
+                // that recognizes uses of this target specifically to support [ObservableProperty].
+                if (attributeList.Target?.Identifier.Kind() is not SyntaxKind.PropertyKeyword)
+                {
+                    continue;
+                }
+
+                foreach (AttributeSyntax attribute in attributeList.Attributes)
+                {
+                    // Roslyn ignores attributes in an attribute list with an invalid target, so we can't get the AttributeData as usual.
+                    // To reconstruct all necessary attribute info to generate the serialized model, we use the following steps:
+                    //   - We try to get the attribute symbol from the semantic model, for the current attribute syntax. In case this is not
+                    //     available (in theory it shouldn't, but it can be), we try to get it from the candidate symbols list for the node.
+                    //     If there are no candidates or more than one, we just issue a diagnostic and stop processing the current attribute.
+                    //     The returned symbols might be method symbols (constructor attribute) so in that case we can get the declaring type.
+                    //   - We then go over each attribute argument expression and get the operation for it. This will still be available even
+                    //     though the rest of the attribute is not validated nor bound at all. From the operation we can still retrieve all
+                    //     constant values to build the AttributeInfo model. After all, attributes only support constant values, typeof(T)
+                    //     expressions, or arrays of either these two types, or of other arrays with the same rules, recursively.
+                    //   - From the syntax, we can also determine the identifier names for named attribute arguments, if any.
+                    // There is no need to validate anything here: the attribute will be forwarded as is, and then Roslyn will validate on the
+                    // generated property. Users will get the same validation they'd have had directly over the field. The only drawback is the
+                    // lack of IntelliSense when constructing attributes over the field, but this is the best we can do from this end anyway.
+                    SymbolInfo attributeSymbolInfo = semanticModel.GetSymbolInfo(attribute, token);
+
+                    if ((attributeSymbolInfo.Symbol ?? attributeSymbolInfo.CandidateSymbols.SingleOrDefault()) is not ISymbol attributeSymbol ||
+                        (attributeSymbol as INamedTypeSymbol ?? attributeSymbol.ContainingType) is not INamedTypeSymbol attributeTypeSymbol)
+                    {
+                        continue;
+                    }
+
+                    forwardedAttributes.Add(AttributeInfo.From(attributeTypeSymbol, semanticModel, attribute.ArgumentList?.Arguments ?? Enumerable.Empty<AttributeArgumentSyntax>(), token));
+                }
+            }
+
             // Log the diagnostic for missing ObservableValidator, if needed
             if (hasAnyValidationAttributes &&
                 !fieldSymbol.ContainingType.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator"))
@@ -190,9 +244,7 @@ partial class ObservablePropertyGenerator
                     fieldSymbol.Name);
             }
 
-            diagnostics = builder.ToImmutable();
-
-            return new(
+            propertyInfo = new PropertyInfo(
                 typeNameWithNullabilityAnnotations,
                 fieldName,
                 propertyName,
@@ -202,6 +254,10 @@ partial class ObservablePropertyGenerator
                 notifyRecipients,
                 notifyDataErrorInfo,
                 forwardedAttributes.ToImmutable());
+
+            diagnostics = builder.ToImmutable();
+
+            return true;
         }
 
         /// <summary>
