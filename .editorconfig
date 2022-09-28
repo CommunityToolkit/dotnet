@@ -44,6 +44,9 @@ insert_final_newline = true
 # C# files
 [*.cs]
 
+#### File Header Template ####
+file_header_template = Licensed to the .NET Foundation under one or more agreements.\nThe .NET Foundation licenses this file to you under the MIT license.\nSee the LICENSE file in the project root for more information.
+
 #### .NET Coding Conventions ####
 
 # this. and Me. preferences
@@ -341,6 +344,9 @@ dotnet_diagnostic.CA2238.severity = warning
 dotnet_diagnostic.CA2240.severity = warning
 dotnet_diagnostic.CA2241.severity = warning
 dotnet_diagnostic.CA2242.severity = warning
+
+# Require file header OR A source file contains a header that does not match the required text
+dotnet_diagnostic.IDE0073.severity = error
 
 # StyleCop Code Analysis
 
