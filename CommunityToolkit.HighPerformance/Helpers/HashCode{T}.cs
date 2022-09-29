@@ -24,7 +24,7 @@ namespace CommunityToolkit.HighPerformance.Helpers;
 /// hashing the same <see cref="ReadOnlySpan{T}"/> collection multiple times in the same process will always
 /// result in the same hash code, while the same collection being hashed again from another process
 /// (or another instance of the same process) is not guaranteed to result in the same final value.
-/// For more info, see <see href="https://docs.microsoft.com/en-us/dotnet/api/system.object.gethashcode#remarks"/>.
+/// For more info, see <see href="https://learn.microsoft.com/en-us/dotnet/api/system.object.gethashcode#remarks"/>.
 /// </remarks>
 public struct HashCode<T>
     where T : notnull
