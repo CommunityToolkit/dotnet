@@ -53,16 +53,14 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
         context.ReportDiagnostics(propertyInfoWithErrors.Select(static (item, _) => item.Info.Errors));
 
         // Get the filtered sequence to enable caching
-        IncrementalValuesProvider<(HierarchyInfo Hierarchy, PropertyInfo Info)> propertyInfo =
+        IncrementalValuesProvider<(HierarchyInfo Hierarchy, Result<PropertyInfo> Info)> propertyInfo =
             propertyInfoWithErrors
-            .Select(static (item, _) => (item.Hierarchy, Info: item.Info.Value))
-            .Where(static item => item.Info is not null)!
-            .WithComparers(HierarchyInfo.Comparer.Default, PropertyInfo.Comparer.Default);
+            .Where(static item => item.Info.Value is not null)!;
 
         // Split and group by containing type
         IncrementalValuesProvider<(HierarchyInfo Hierarchy, ImmutableArray<PropertyInfo> Properties)> groupedPropertyInfo =
             propertyInfo
-            .GroupBy(HierarchyInfo.Comparer.Default)
+            .GroupBy(HierarchyInfo.Comparer.Default, static item => item.Value)
             .WithComparers(HierarchyInfo.Comparer.Default, PropertyInfo.Comparer.Default.ForImmutableArray());
 
         // Generate the requested properties and methods
@@ -84,7 +82,7 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
         // Gather all property changing names
         IncrementalValueProvider<ImmutableArray<string>> propertyChangingNames =
             propertyInfo
-            .SelectMany(static (item, _) => item.Info.PropertyChangingNames)
+            .SelectMany(static (item, _) => item.Info.Value.PropertyChangingNames)
             .Collect()
             .Select(static (item, _) => item.Distinct().ToImmutableArray())
             .WithComparer(EqualityComparer<string>.Default.ForImmutableArray());
@@ -103,7 +101,7 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
         // Gather all property changed names
         IncrementalValueProvider<ImmutableArray<string>> propertyChangedNames =
             propertyInfo
-            .SelectMany(static (item, _) => item.Info.PropertyChangedNames)
+            .SelectMany(static (item, _) => item.Info.Value.PropertyChangedNames)
             .Collect()
             .Select(static (item, _) => item.Distinct().ToImmutableArray())
             .WithComparer(EqualityComparer<string>.Default.ForImmutableArray());

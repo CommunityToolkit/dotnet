@@ -22,33 +22,36 @@ internal static class IncrementalValuesProviderExtensions
     /// </summary>
     /// <typeparam name="TLeft">The type of left items in each tuple.</typeparam>
     /// <typeparam name="TRight">The type of right items in each tuple.</typeparam>
+    /// <typeparam name="TElement">The type of resulting projected elements.</typeparam>
     /// <param name="source">The input <see cref="IncrementalValuesProvider{TValues}"/> instance.</param>
     /// <param name="comparer">A <typeparamref name="TLeft"/> comparer.</param>
+    /// <param name="projection">A projection function to convert gathered elements.</param>
     /// <returns>An <see cref="IncrementalValuesProvider{TValues}"/> with the grouped results.</returns>
-    public static IncrementalValuesProvider<(TLeft Left, ImmutableArray<TRight> Right)> GroupBy<TLeft, TRight>(
+    public static IncrementalValuesProvider<(TLeft Left, ImmutableArray<TElement> Right)> GroupBy<TLeft, TRight, TElement>(
         this IncrementalValuesProvider<(TLeft Left, TRight Right)> source,
-        IEqualityComparer<TLeft> comparer)
+        IEqualityComparer<TLeft> comparer,
+        Func<TRight, TElement> projection)
     {
         return source.Collect().SelectMany((item, _) =>
         {
-            Dictionary<TLeft, ImmutableArray<TRight>.Builder> map = new(comparer);
+            Dictionary<TLeft, ImmutableArray<TElement>.Builder> map = new(comparer);
 
             foreach ((TLeft hierarchy, TRight info) in item)
             {
-                if (!map.TryGetValue(hierarchy, out ImmutableArray<TRight>.Builder builder))
+                if (!map.TryGetValue(hierarchy, out ImmutableArray<TElement>.Builder builder))
                 {
-                    builder = ImmutableArray.CreateBuilder<TRight>();
+                    builder = ImmutableArray.CreateBuilder<TElement>();
 
                     map.Add(hierarchy, builder);
                 }
 
-                builder.Add(info);
+                builder.Add(projection(info));
             }
 
-            ImmutableArray<(TLeft Hierarchy, ImmutableArray<TRight> Properties)>.Builder result =
-                ImmutableArray.CreateBuilder<(TLeft, ImmutableArray<TRight>)>();
+            ImmutableArray<(TLeft Hierarchy, ImmutableArray<TElement> Elements)>.Builder result =
+                ImmutableArray.CreateBuilder<(TLeft, ImmutableArray<TElement>)>();
 
-            foreach (KeyValuePair<TLeft, ImmutableArray<TRight>.Builder> entry in map)
+            foreach (KeyValuePair<TLeft, ImmutableArray<TElement>.Builder> entry in map)
             {
                 result.Add((entry.Key, entry.Value.ToImmutable()));
             }
