@@ -38,31 +38,30 @@ public sealed partial class RelayCommandGenerator : IIncrementalGenerator
 
                     IMethodSymbol methodSymbol = (IMethodSymbol)context.TargetSymbol;
 
-                    // Produce the incremental models
-                    HierarchyInfo hierarchy = HierarchyInfo.From(methodSymbol.ContainingType);
-                    CommandInfo? commandInfo = Execute.GetInfo(methodSymbol, context.Attributes[0], out ImmutableArray<DiagnosticInfo> diagnostics);
+                    // Get the hierarchy info for the target symbol, and try to gather the command info
+                    HierarchyInfo? hierarchy = HierarchyInfo.From(methodSymbol.ContainingType);
+
+                    _ = Execute.TryGetInfo(methodSymbol, context.Attributes[0], out CommandInfo? commandInfo, out ImmutableArray<DiagnosticInfo> diagnostics);
 
                     return (Hierarchy: hierarchy, new Result<CommandInfo?>(commandInfo, diagnostics));
                 })
-            .Where(static item => item.Hierarchy is not null);
+            .Where(static item => item.Hierarchy is not null)!;
 
         // Output the diagnostics
         context.ReportDiagnostics(commandInfoWithErrors.Select(static (item, _) => item.Info.Errors));
 
         // Get the filtered sequence to enable caching
-        IncrementalValuesProvider<(HierarchyInfo Hierarchy, CommandInfo Info)> commandInfo =
+        IncrementalValuesProvider<(HierarchyInfo Hierarchy, Result<CommandInfo> Info)> commandInfo =
             commandInfoWithErrors
-            .Where(static item => item.Info.Value is not null)
-            .Select(static (item, _) => (item.Hierarchy, item.Info.Value!))
-            .WithComparers(HierarchyInfo.Comparer.Default, CommandInfo.Comparer.Default);      
+            .Where(static item => item.Info.Value is not null)!;
 
         // Generate the commands
         context.RegisterSourceOutput(commandInfo, static (context, item) =>
         {
-            ImmutableArray<MemberDeclarationSyntax> memberDeclarations = Execute.GetSyntax(item.Info);
+            ImmutableArray<MemberDeclarationSyntax> memberDeclarations = Execute.GetSyntax(item.Info.Value);
             CompilationUnitSyntax compilationUnit = item.Hierarchy.GetCompilationUnit(memberDeclarations);
 
-            context.AddSource($"{item.Hierarchy.FilenameHint}.{item.Info.MethodName}.g.cs", compilationUnit.GetText(Encoding.UTF8));
+            context.AddSource($"{item.Hierarchy.FilenameHint}.{item.Info.Value.MethodName}.g.cs", compilationUnit.GetText(Encoding.UTF8));
         });
     }
 }

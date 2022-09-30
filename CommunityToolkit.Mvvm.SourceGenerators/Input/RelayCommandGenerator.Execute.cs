@@ -27,13 +27,18 @@ partial class RelayCommandGenerator
     internal static class Execute
     {
         /// <summary>
-        /// Processes a given target method.
+        /// Processes a given annotated methods and produces command info, if possible.
         /// </summary>
         /// <param name="methodSymbol">The input <see cref="IMethodSymbol"/> instance to process.</param>
         /// <param name="attributeData">The <see cref="AttributeData"/> instance the method was annotated with.</param>
+        /// <param name="commandInfo">The resulting <see cref="CommandInfo"/> instance, if successfully generated.</param>
         /// <param name="diagnostics">The resulting diagnostics from the processing operation.</param>
-        /// <returns>The resulting <see cref="CommandInfo"/> instance for <paramref name="methodSymbol"/>, if available.</returns>
-        public static CommandInfo? GetInfo(IMethodSymbol methodSymbol, AttributeData attributeData, out ImmutableArray<DiagnosticInfo> diagnostics)
+        /// <returns>Whether a <see cref="CommandInfo"/> instance could be generated successfully.</returns>
+        public static bool TryGetInfo(
+            IMethodSymbol methodSymbol,
+            AttributeData attributeData,
+            [NotNullWhen(true)] out CommandInfo? commandInfo,
+            out ImmutableArray<DiagnosticInfo> diagnostics)
         {
             ImmutableArray<DiagnosticInfo>.Builder builder = ImmutableArray.CreateBuilder<DiagnosticInfo>();
 
@@ -107,9 +112,7 @@ partial class RelayCommandGenerator
                 goto Failure;
             }
 
-            diagnostics = builder.ToImmutable();
-
-            return new(
+            commandInfo = new CommandInfo(
                 methodSymbol.Name,
                 fieldName,
                 propertyName,
@@ -124,10 +127,15 @@ partial class RelayCommandGenerator
                 flowExceptionsToTaskScheduler,
                 generateCancelCommand);
 
-            Failure:
             diagnostics = builder.ToImmutable();
 
-            return null;
+            return true;
+
+            Failure:
+            commandInfo = null;
+            diagnostics = builder.ToImmutable();
+
+            return false;
         }
 
         /// <summary>
