@@ -22,10 +22,16 @@ internal sealed record ValidationInfo(
     string TypeName,
     ImmutableArray<string> PropertyNames)
 {
+    /// <inheritdoc/>
+    public bool Equals(ValidationInfo? obj) => Comparer.Default.Equals(this, obj);
+
+    /// <inheritdoc/>
+    public override int GetHashCode() => Comparer.Default.GetHashCode(this);
+
     /// <summary>
     /// An <see cref="IEqualityComparer{T}"/> implementation for <see cref="ValidationInfo"/>.
     /// </summary>
-    public sealed class Comparer : Comparer<ValidationInfo, Comparer>
+    private sealed class Comparer : Comparer<ValidationInfo, Comparer>
     {
         /// <inheritdoc/>
         protected override void AddToHashCode(ref HashCode hashCode, ValidationInfo obj)
