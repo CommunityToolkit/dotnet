@@ -5,8 +5,8 @@
 using System.Collections.Immutable;
 using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
-using CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
+using CommunityToolkit.Mvvm.SourceGenerators.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -30,9 +30,9 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
     }
 
     /// <inheritdoc/>
-    protected override ObservableRecipientInfo? ValidateTargetTypeAndGetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData, Compilation compilation, out ImmutableArray<Diagnostic> diagnostics)
+    private protected override ObservableRecipientInfo? ValidateTargetTypeAndGetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData, Compilation compilation, out ImmutableArray<DiagnosticInfo> diagnostics)
     {
-        ImmutableArray<Diagnostic>.Builder builder = ImmutableArray.CreateBuilder<Diagnostic>();
+        ImmutableArray<DiagnosticInfo>.Builder builder = ImmutableArray.CreateBuilder<DiagnosticInfo>();
 
         ObservableRecipientInfo? info = null;
 

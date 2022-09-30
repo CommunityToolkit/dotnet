@@ -9,8 +9,8 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
-using CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
+using CommunityToolkit.Mvvm.SourceGenerators.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -43,9 +43,9 @@ partial class ObservablePropertyGenerator
             SemanticModel semanticModel,
             CancellationToken token,
             [NotNullWhen(true)] out PropertyInfo? propertyInfo,
-            out ImmutableArray<Diagnostic> diagnostics)
+            out ImmutableArray<DiagnosticInfo> diagnostics)
         {
-            ImmutableArray<Diagnostic>.Builder builder = ImmutableArray.CreateBuilder<Diagnostic>();
+            ImmutableArray<DiagnosticInfo>.Builder builder = ImmutableArray.CreateBuilder<DiagnosticInfo>();
 
             // Validate the target type
             if (!IsTargetTypeValid(fieldSymbol, out bool shouldInvokeOnPropertyChanging))
@@ -319,7 +319,7 @@ partial class ObservablePropertyGenerator
             IFieldSymbol fieldSymbol,
             AttributeData attributeData,
             ImmutableArray<string>.Builder propertyChangedNames,
-            ImmutableArray<Diagnostic>.Builder diagnostics)
+            ImmutableArray<DiagnosticInfo>.Builder diagnostics)
         {
             // Validates a property name using existing properties
             bool IsPropertyNameValid(string propertyName)
@@ -384,7 +384,7 @@ partial class ObservablePropertyGenerator
             IFieldSymbol fieldSymbol,
             AttributeData attributeData,
             ImmutableArray<string>.Builder notifiedCommandNames,
-            ImmutableArray<Diagnostic>.Builder diagnostics)
+            ImmutableArray<DiagnosticInfo>.Builder diagnostics)
         {
             // Validates a command name using existing properties
             bool IsCommandNameValid(string commandName, out bool shouldLookForGeneratedMembersToo)
@@ -505,7 +505,7 @@ partial class ObservablePropertyGenerator
         private static bool TryGetIsNotifyingRecipients(
             IFieldSymbol fieldSymbol,
             AttributeData attributeData,
-            ImmutableArray<Diagnostic>.Builder diagnostics,
+            ImmutableArray<DiagnosticInfo>.Builder diagnostics,
             bool hasOrInheritsClassLevelNotifyPropertyChangedRecipients,
             out bool isBroadcastTargetValid)
         {
@@ -608,7 +608,7 @@ partial class ObservablePropertyGenerator
         private static bool TryGetNotifyDataErrorInfo(
             IFieldSymbol fieldSymbol,
             AttributeData attributeData,
-            ImmutableArray<Diagnostic>.Builder diagnostics,
+            ImmutableArray<DiagnosticInfo>.Builder diagnostics,
             bool hasOrInheritsClassLevelNotifyDataErrorInfo,
             out bool isValidationTargetValid)
         {

@@ -40,7 +40,7 @@ public sealed partial class RelayCommandGenerator : IIncrementalGenerator
 
                     // Produce the incremental models
                     HierarchyInfo hierarchy = HierarchyInfo.From(methodSymbol.ContainingType);
-                    CommandInfo? commandInfo = Execute.GetInfo(methodSymbol, context.Attributes[0], out ImmutableArray<Diagnostic> diagnostics);
+                    CommandInfo? commandInfo = Execute.GetInfo(methodSymbol, context.Attributes[0], out ImmutableArray<DiagnosticInfo> diagnostics);
 
                     return (Hierarchy: hierarchy, new Result<CommandInfo?>(commandInfo, diagnostics));
                 })
