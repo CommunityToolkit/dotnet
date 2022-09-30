@@ -77,6 +77,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Messaging\IMessengerRegisterAllGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Messaging\IMessengerRegisterAllGenerator.Execute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Messaging\Models\RecipientInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\DiagnosticInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\HierarchyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\HierarchyInfo.Syntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Result.cs" />
