@@ -4,9 +4,9 @@
 
 using System.Collections.Immutable;
 using System.Linq;
-using CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
+using CommunityToolkit.Mvvm.SourceGenerators.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
@@ -28,9 +28,9 @@ public sealed class INotifyPropertyChangedGenerator : TransitiveMembersGenerator
     }
 
     /// <inheritdoc/>
-    protected override INotifyPropertyChangedInfo? ValidateTargetTypeAndGetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData, Compilation compilation, out ImmutableArray<Diagnostic> diagnostics)
+    private protected override INotifyPropertyChangedInfo? ValidateTargetTypeAndGetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData, Compilation compilation, out ImmutableArray<DiagnosticInfo> diagnostics)
     {
-        ImmutableArray<Diagnostic>.Builder builder = ImmutableArray.CreateBuilder<Diagnostic>();
+        ImmutableArray<DiagnosticInfo>.Builder builder = ImmutableArray.CreateBuilder<DiagnosticInfo>();
 
         INotifyPropertyChangedInfo? info = null;
 

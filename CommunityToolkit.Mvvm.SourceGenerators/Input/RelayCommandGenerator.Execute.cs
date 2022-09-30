@@ -7,9 +7,9 @@ using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
-using CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
+using CommunityToolkit.Mvvm.SourceGenerators.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -33,9 +33,9 @@ partial class RelayCommandGenerator
         /// <param name="attributeData">The <see cref="AttributeData"/> instance the method was annotated with.</param>
         /// <param name="diagnostics">The resulting diagnostics from the processing operation.</param>
         /// <returns>The resulting <see cref="CommandInfo"/> instance for <paramref name="methodSymbol"/>, if available.</returns>
-        public static CommandInfo? GetInfo(IMethodSymbol methodSymbol, AttributeData attributeData, out ImmutableArray<Diagnostic> diagnostics)
+        public static CommandInfo? GetInfo(IMethodSymbol methodSymbol, AttributeData attributeData, out ImmutableArray<DiagnosticInfo> diagnostics)
         {
-            ImmutableArray<Diagnostic>.Builder builder = ImmutableArray.CreateBuilder<Diagnostic>();
+            ImmutableArray<DiagnosticInfo>.Builder builder = ImmutableArray.CreateBuilder<DiagnosticInfo>();
 
             // Validate the method definition is unique
             if (!IsCommandDefinitionUnique(methodSymbol, builder))
@@ -354,7 +354,7 @@ partial class RelayCommandGenerator
         /// <param name="methodSymbol">The input <see cref="IMethodSymbol"/> instance to process.</param>
         /// <param name="diagnostics">The current collection of gathered diagnostics.</param>
         /// <returns>Whether or not <paramref name="methodSymbol"/> was unique within its containing type.</returns>
-        private static bool IsCommandDefinitionUnique(IMethodSymbol methodSymbol, ImmutableArray<Diagnostic>.Builder diagnostics)
+        private static bool IsCommandDefinitionUnique(IMethodSymbol methodSymbol, ImmutableArray<DiagnosticInfo>.Builder diagnostics)
         {
             // If a duplicate is present in any of the base types, always emit a diagnostic for the current method.
             // That is, there is no need to check the order: we assume the priority is top-down in the type hierarchy.
@@ -450,7 +450,7 @@ partial class RelayCommandGenerator
         /// <returns>Whether or not <paramref name="methodSymbol"/> was valid and the requested types have been set.</returns>
         private static bool TryMapCommandTypesFromMethod(
             IMethodSymbol methodSymbol,
-            ImmutableArray<Diagnostic>.Builder diagnostics,
+            ImmutableArray<DiagnosticInfo>.Builder diagnostics,
             [NotNullWhen(true)] out string? commandInterfaceType,
             [NotNullWhen(true)] out string? commandClassType,
             [NotNullWhen(true)] out string? delegateType,
@@ -580,7 +580,7 @@ partial class RelayCommandGenerator
             IMethodSymbol methodSymbol,
             AttributeData attributeData,
             string commandClassType,
-            ImmutableArray<Diagnostic>.Builder diagnostics,
+            ImmutableArray<DiagnosticInfo>.Builder diagnostics,
             out bool allowConcurrentExecutions)
         {
             // Try to get the custom switch for concurrent executions (the default is false)
@@ -618,7 +618,7 @@ partial class RelayCommandGenerator
             IMethodSymbol methodSymbol,
             AttributeData attributeData,
             string commandClassType,
-            ImmutableArray<Diagnostic>.Builder diagnostics,
+            ImmutableArray<DiagnosticInfo>.Builder diagnostics,
             out bool flowExceptionsToTaskScheduler)
         {
             // Try to get the custom switch for task scheduler exception flow (the default is false)
@@ -657,7 +657,7 @@ partial class RelayCommandGenerator
             AttributeData attributeData,
             string commandClassType,
             bool supportsCancellation,
-            ImmutableArray<Diagnostic>.Builder diagnostics,
+            ImmutableArray<DiagnosticInfo>.Builder diagnostics,
             out bool generateCancelCommand)
         {
             // Try to get the custom switch for cancel command generation (the default is false)
@@ -697,7 +697,7 @@ partial class RelayCommandGenerator
             IMethodSymbol methodSymbol,
             AttributeData attributeData,
             ImmutableArray<string> commandTypeArguments,
-            ImmutableArray<Diagnostic>.Builder diagnostics,
+            ImmutableArray<DiagnosticInfo>.Builder diagnostics,
             out string? canExecuteMemberName,
             out CanExecuteExpressionType? canExecuteExpressionType)
         {
