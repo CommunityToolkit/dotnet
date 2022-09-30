@@ -61,8 +61,7 @@ public sealed partial class IMessengerRegisterAllGenerator : IIncrementalGenerat
 
                     return Execute.GetInfo(typeSymbol, interfaceSymbols);
                 })
-            .Where(static item => item is not null)!
-            .WithComparer(RecipientInfo.Comparer.Default);
+            .Where(static item => item is not null)!;
 
         // Check whether the header file is needed
         IncrementalValueProvider<bool> isHeaderFileNeeded =

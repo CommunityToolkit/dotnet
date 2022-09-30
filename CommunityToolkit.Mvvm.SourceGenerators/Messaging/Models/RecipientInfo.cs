@@ -22,10 +22,16 @@ internal sealed record RecipientInfo(
     string TypeName,
     ImmutableArray<string> MessageTypes)
 {
+    /// <inheritdoc/>
+    public bool Equals(RecipientInfo? obj) => Comparer.Default.Equals(this, obj);
+
+    /// <inheritdoc/>
+    public override int GetHashCode() => Comparer.Default.GetHashCode(this);
+
     /// <summary>
     /// An <see cref="IEqualityComparer{T}"/> implementation for <see cref="RecipientInfo"/>.
     /// </summary>
-    public sealed class Comparer : Comparer<RecipientInfo, Comparer>
+    private sealed class Comparer : Comparer<RecipientInfo, Comparer>
     {
         /// <inheritdoc/>
         protected override void AddToHashCode(ref HashCode hashCode, RecipientInfo obj)
