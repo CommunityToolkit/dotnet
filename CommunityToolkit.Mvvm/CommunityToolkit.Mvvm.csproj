@@ -45,7 +45,7 @@
   <!-- Reference the various multi-targeted versions of the source generator project (one per Roslyn version) -->
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401.csproj" ReferenceOutputAssembly="false" />
-    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn430\CommunityToolkit.Mvvm.SourceGenerators.Roslyn430.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn431\CommunityToolkit.Mvvm.SourceGenerators.Roslyn431.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <ItemGroup Label="Package">
@@ -59,10 +59,9 @@
     <!--
       Pack the source generator to the right package folders (each matching the target Roslyn version).
       Roslyn will automatically load the highest version compatible with Roslyn's version in the SDK.
-      The Roslyn 4.3 target is copied to the 4.4 folder as a workaround for https://github.com/dotnet/roslyn/issues/63919.
     -->
     <None Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.SourceGenerators.dll" PackagePath="analyzers\dotnet\roslyn4.0\cs" Pack="true" Visible="false" />
-    <None Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn430\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.SourceGenerators.dll" PackagePath="analyzers\dotnet\roslyn4.4\cs" Pack="true" Visible="false" />
+    <None Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn431\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.SourceGenerators.dll" PackagePath="analyzers\dotnet\roslyn4.3\cs" Pack="true" Visible="false" />
   </ItemGroup>
 
 </Project>

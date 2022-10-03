@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections.Immutable;
-#if !ROSLYN_4_3_0_OR_GREATER
+#if !ROSLYN_4_3_1_OR_GREATER
 using System.Diagnostics.CodeAnalysis;
 #endif
 using Microsoft.CodeAnalysis;
@@ -67,7 +67,7 @@ internal static class ISymbolExtensions
         return false;
     }
 
-#if !ROSLYN_4_3_0_OR_GREATER
+#if !ROSLYN_4_3_1_OR_GREATER
     /// <summary>
     /// Tries to get an attribute with the specified full name.
     /// </summary>
