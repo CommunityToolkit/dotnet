@@ -30,14 +30,14 @@ public sealed class INotifyPropertyChangedGenerator : TransitiveMembersGenerator
     /// <inheritdoc/>
     private protected override INotifyPropertyChangedInfo? ValidateTargetTypeAndGetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData, Compilation compilation, out ImmutableArray<DiagnosticInfo> diagnostics)
     {
-        ImmutableArray<DiagnosticInfo>.Builder builder = ImmutableArray.CreateBuilder<DiagnosticInfo>();
+        diagnostics = ImmutableArray<DiagnosticInfo>.Empty;
 
         INotifyPropertyChangedInfo? info = null;
 
         // Check if the type already implements INotifyPropertyChanged
         if (typeSymbol.AllInterfaces.Any(i => i.HasFullyQualifiedName("global::System.ComponentModel.INotifyPropertyChanged")))
         {
-            builder.Add(DuplicateINotifyPropertyChangedInterfaceForINotifyPropertyChangedAttributeError, typeSymbol, typeSymbol);
+            diagnostics = ImmutableArray.Create(DiagnosticInfo.Create(DuplicateINotifyPropertyChangedInterfaceForINotifyPropertyChangedAttributeError, typeSymbol, typeSymbol));
 
             goto End;
         }
@@ -46,7 +46,7 @@ public sealed class INotifyPropertyChangedGenerator : TransitiveMembersGenerator
         if (typeSymbol.HasOrInheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute") ||
             typeSymbol.InheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.INotifyPropertyChangedAttribute"))
         {
-            builder.Add(InvalidAttributeCombinationForINotifyPropertyChangedAttributeError, typeSymbol, typeSymbol);
+            diagnostics = ImmutableArray.Create(DiagnosticInfo.Create(InvalidAttributeCombinationForINotifyPropertyChangedAttributeError, typeSymbol, typeSymbol));
 
             goto End;
         }
@@ -56,8 +56,6 @@ public sealed class INotifyPropertyChangedGenerator : TransitiveMembersGenerator
         info = new INotifyPropertyChangedInfo(includeAdditionalHelperMethods);
 
         End:
-        diagnostics = builder.ToImmutable();
-
         return info;
     }
 

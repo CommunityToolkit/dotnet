@@ -6,6 +6,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
+using CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
 using CommunityToolkit.Mvvm.SourceGenerators.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -32,14 +33,14 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
     /// <inheritdoc/>
     private protected override ObservableRecipientInfo? ValidateTargetTypeAndGetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData, Compilation compilation, out ImmutableArray<DiagnosticInfo> diagnostics)
     {
-        ImmutableArray<DiagnosticInfo>.Builder builder = ImmutableArray.CreateBuilder<DiagnosticInfo>();
+        diagnostics = ImmutableArray<DiagnosticInfo>.Empty;
 
         ObservableRecipientInfo? info = null;
 
         // Check if the type already inherits from ObservableRecipient
         if (typeSymbol.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableRecipient"))
         {
-            builder.Add(DuplicateObservableRecipientError, typeSymbol, typeSymbol);
+            diagnostics = ImmutableArray.Create(DiagnosticInfo.Create(DuplicateObservableRecipientError, typeSymbol, typeSymbol));
 
             goto End;
         }
@@ -47,7 +48,7 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
         // Check if the type already inherits [ObservableRecipient]
         if (typeSymbol.InheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableRecipientAttribute"))
         {
-            builder.Add(InvalidAttributeCombinationForObservableRecipientAttributeError, typeSymbol, typeSymbol);
+            diagnostics = ImmutableArray.Create(DiagnosticInfo.Create(InvalidAttributeCombinationForObservableRecipientAttributeError, typeSymbol, typeSymbol));
 
             goto End;
         }
@@ -60,7 +61,7 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
                 a.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.INotifyPropertyChangedAttribute") == true &&
                 !a.HasNamedArgument("IncludeAdditionalHelperMethods", false)))
         {
-            builder.Add(MissingBaseObservableObjectFunctionalityError, typeSymbol, typeSymbol);
+            diagnostics = ImmutableArray.Create(DiagnosticInfo.Create(MissingBaseObservableObjectFunctionalityError, typeSymbol, typeSymbol));
 
             goto End;
         }
@@ -84,8 +85,6 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
             hasOnDeactivatedMethod);
 
         End:
-        diagnostics = builder.ToImmutable();
-
         return info;
     }
 
