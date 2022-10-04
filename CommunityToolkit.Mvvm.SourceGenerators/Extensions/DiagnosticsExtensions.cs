@@ -6,6 +6,7 @@
 // more info in ThirdPartyNotices.txt in the root of the project.
 
 using System.Collections.Immutable;
+using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 using CommunityToolkit.Mvvm.SourceGenerators.Models;
 using Microsoft.CodeAnalysis;
 
@@ -37,10 +38,42 @@ internal static class DiagnosticsExtensions
     /// </summary>
     /// <param name="diagnostics">The collection of produced <see cref="DiagnosticInfo"/> instances.</param>
     /// <param name="descriptor">The input <see cref="DiagnosticDescriptor"/> for the diagnostics to create.</param>
+    /// <param name="symbol">The source <see cref="ISymbol"/> to attach the diagnostics to.</param>
+    /// <param name="args">The optional arguments for the formatted message to include.</param>
+    public static void Add(
+        this in ImmutableArrayBuilder<DiagnosticInfo>.Lease diagnostics,
+        DiagnosticDescriptor descriptor,
+        ISymbol symbol,
+        params object[] args)
+    {
+        diagnostics.Add(DiagnosticInfo.Create(descriptor, symbol, args));
+    }
+
+    /// <summary>
+    /// Adds a new diagnostics to the target builder.
+    /// </summary>
+    /// <param name="diagnostics">The collection of produced <see cref="DiagnosticInfo"/> instances.</param>
+    /// <param name="descriptor">The input <see cref="DiagnosticDescriptor"/> for the diagnostics to create.</param>
     /// <param name="node">The source <see cref="SyntaxNode"/> to attach the diagnostics to.</param>
     /// <param name="args">The optional arguments for the formatted message to include.</param>
     public static void Add(
         this ImmutableArray<DiagnosticInfo>.Builder diagnostics,
+        DiagnosticDescriptor descriptor,
+        SyntaxNode node,
+        params object[] args)
+    {
+        diagnostics.Add(DiagnosticInfo.Create(descriptor, node, args));
+    }
+
+    /// <summary>
+    /// Adds a new diagnostics to the target builder.
+    /// </summary>
+    /// <param name="diagnostics">The collection of produced <see cref="DiagnosticInfo"/> instances.</param>
+    /// <param name="descriptor">The input <see cref="DiagnosticDescriptor"/> for the diagnostics to create.</param>
+    /// <param name="node">The source <see cref="SyntaxNode"/> to attach the diagnostics to.</param>
+    /// <param name="args">The optional arguments for the formatted message to include.</param>
+    public static void Add(
+        this in ImmutableArrayBuilder<DiagnosticInfo>.Lease diagnostics,
         DiagnosticDescriptor descriptor,
         SyntaxNode node,
         params object[] args)

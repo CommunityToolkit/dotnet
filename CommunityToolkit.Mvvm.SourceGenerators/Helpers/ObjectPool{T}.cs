@@ -8,7 +8,7 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
-namespace Microsoft.CodeAnalysis.PooledObjects;
+namespace CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 
 /// <summary>
 /// <para>
