@@ -39,17 +39,15 @@ internal sealed record AttributeInfo(
             .ToImmutableArray();
 
         // Get the named arguments
-        ImmutableArray<(string, TypedConstantInfo)>.Builder namedArguments = ImmutableArray.CreateBuilder<(string, TypedConstantInfo)>();
-
-        foreach (KeyValuePair<string, TypedConstant> arg in attributeData.NamedArguments)
-        {
-            namedArguments.Add((arg.Key, TypedConstantInfo.From(arg.Value)));
-        }
+        ImmutableArray<(string, TypedConstantInfo)> namedArguments =
+            attributeData.NamedArguments
+            .Select(static arg => (arg.Key, TypedConstantInfo.From(arg.Value)))
+            .ToImmutableArray();
 
         return new(
             typeName,
             constructorArguments,
-            namedArguments.ToImmutable());
+            namedArguments);
     }
 
     /// <summary>
