@@ -6,6 +6,7 @@ using System;
 using System.Collections.Immutable;
 using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
+using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 using CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -39,7 +40,7 @@ partial class ObservableValidatorValidateAllPropertiesGenerator
         /// <returns>The resulting <see cref="ValidationInfo"/> instance for <paramref name="typeSymbol"/>.</returns>
         public static ValidationInfo GetInfo(INamedTypeSymbol typeSymbol)
         {
-            ImmutableArray<string>.Builder propertyNames = ImmutableArray.CreateBuilder<string>();
+            using ImmutableArrayBuilder<string>.Lease propertyNames = ImmutableArrayBuilder<string>.Rent();
 
             foreach (ISymbol memberSymbol in typeSymbol.GetMembers())
             {
@@ -92,7 +93,7 @@ partial class ObservableValidatorValidateAllPropertiesGenerator
         /// <returns>A <see cref="RecipientInfo"/> instance for the current type being inspected.</returns>
         public static RecipientInfo GetInfo(INamedTypeSymbol typeSymbol, ImmutableArray<INamedTypeSymbol> interfaceSymbols)
         {
-            ImmutableArray<string>.Builder names = ImmutableArray.CreateBuilder<string>(interfaceSymbols.Length);
+            using ImmutableArrayBuilder<string>.Lease names = ImmutableArrayBuilder<string>.Rent();
 
             foreach (INamedTypeSymbol interfaceSymbol in interfaceSymbols)
             {
@@ -102,7 +103,7 @@ partial class ObservableValidatorValidateAllPropertiesGenerator
             return new(
                 typeSymbol.GetFullMetadataNameForFileName(),
                 typeSymbol.GetFullyQualifiedName(),
-                names.MoveToImmutable());
+                names.ToImmutable());
         }
 
         /// <summary>
@@ -112,8 +113,7 @@ partial class ObservableValidatorValidateAllPropertiesGenerator
         /// <returns>The head <see cref="CompilationUnitSyntax"/> instance with the type attributes.</returns>
         public static CompilationUnitSyntax GetSyntax(bool isDynamicallyAccessedMembersAttributeAvailable)
         {
-            int numberOfAttributes = 5 + (isDynamicallyAccessedMembersAttributeAvailable ? 1 : 0);
-            ImmutableArray<AttributeListSyntax>.Builder attributes = ImmutableArray.CreateBuilder<AttributeListSyntax>(numberOfAttributes);
+            using ImmutableArrayBuilder<AttributeListSyntax>.Lease attributes = ImmutableArrayBuilder<AttributeListSyntax>.Rent();
 
             // Prepare the base attributes with are always present:
             //
@@ -171,7 +171,7 @@ partial class ObservableValidatorValidateAllPropertiesGenerator
                     Token(SyntaxKind.InternalKeyword),
                     Token(SyntaxKind.StaticKeyword),
                     Token(SyntaxKind.PartialKeyword))
-                .AddAttributeLists(attributes.MoveToImmutable().ToArray())))
+                .AddAttributeLists(attributes.ToArray())))
                 .NormalizeWhitespace();
         }
 
@@ -261,7 +261,7 @@ partial class ObservableValidatorValidateAllPropertiesGenerator
         /// <returns>The sequence of <see cref="StatementSyntax"/> instances to validate declared properties.</returns>
         private static ImmutableArray<StatementSyntax> EnumerateValidationStatements(ValidationInfo validationInfo)
         {
-            ImmutableArray<StatementSyntax>.Builder statements = ImmutableArray.CreateBuilder<StatementSyntax>(validationInfo.PropertyNames.Length);
+            using ImmutableArrayBuilder<StatementSyntax>.Lease statements = ImmutableArrayBuilder<StatementSyntax>.Rent();
 
             // This loop produces a sequence of statements as follows:
             //
@@ -294,7 +294,7 @@ partial class ObservableValidatorValidateAllPropertiesGenerator
                                     IdentifierName(propertyName))))))));
             }
 
-            return statements.MoveToImmutable();
+            return statements.ToImmutable();
         }
     }
 }

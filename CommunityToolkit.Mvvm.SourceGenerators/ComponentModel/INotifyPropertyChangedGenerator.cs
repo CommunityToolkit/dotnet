@@ -5,6 +5,7 @@
 using System.Collections.Immutable;
 using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
+using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 using CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
 using CommunityToolkit.Mvvm.SourceGenerators.Models;
 using Microsoft.CodeAnalysis;
@@ -65,9 +66,17 @@ public sealed class INotifyPropertyChangedGenerator : TransitiveMembersGenerator
         // If requested, only include the event and the basic methods to raise it, but not the additional helpers
         if (!info.IncludeAdditionalHelperMethods)
         {
-            return memberDeclarations.Where(static member => member
-                is EventFieldDeclarationSyntax
-                or MethodDeclarationSyntax { Identifier.ValueText: "OnPropertyChanged" }).ToImmutableArray();
+            using ImmutableArrayBuilder<MemberDeclarationSyntax>.Lease selectedMembers = ImmutableArrayBuilder<MemberDeclarationSyntax>.Rent();
+
+            foreach (MemberDeclarationSyntax memberDeclaration in memberDeclarations)
+            {
+                if (memberDeclaration is EventFieldDeclarationSyntax or MethodDeclarationSyntax { Identifier.ValueText: "OnPropertyChanged" })
+                {
+                    selectedMembers.Add(memberDeclaration);
+                }
+            }
+
+            return selectedMembers.ToImmutable();
         }
 
         return memberDeclarations;

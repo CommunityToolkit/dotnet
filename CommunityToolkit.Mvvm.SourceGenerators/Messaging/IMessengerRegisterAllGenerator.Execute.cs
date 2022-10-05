@@ -5,6 +5,7 @@
 using System.Collections.Immutable;
 using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
+using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 using CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -28,7 +29,7 @@ partial class IMessengerRegisterAllGenerator
         /// <returns>An array of interface type symbols.</returns>
         public static ImmutableArray<INamedTypeSymbol> GetInterfaces(INamedTypeSymbol typeSymbol)
         {
-            ImmutableArray<INamedTypeSymbol>.Builder iRecipientInterfaces = ImmutableArray.CreateBuilder<INamedTypeSymbol>();
+            using ImmutableArrayBuilder<INamedTypeSymbol>.Lease iRecipientInterfaces = ImmutableArrayBuilder<INamedTypeSymbol>.Rent();
 
             foreach (INamedTypeSymbol interfaceSymbol in typeSymbol.AllInterfaces)
             {
@@ -50,7 +51,7 @@ partial class IMessengerRegisterAllGenerator
         /// <returns>A <see cref="RecipientInfo"/> instance for the current type being inspected.</returns>
         public static RecipientInfo GetInfo(INamedTypeSymbol typeSymbol, ImmutableArray<INamedTypeSymbol> interfaceSymbols)
         {
-            ImmutableArray<string>.Builder names = ImmutableArray.CreateBuilder<string>(interfaceSymbols.Length);
+            using ImmutableArrayBuilder<string>.Lease names = ImmutableArrayBuilder<string>.Rent();
 
             foreach (INamedTypeSymbol interfaceSymbol in interfaceSymbols)
             {
@@ -60,7 +61,7 @@ partial class IMessengerRegisterAllGenerator
             return new(
                 typeSymbol.GetFullMetadataNameForFileName(),
                 typeSymbol.GetFullyQualifiedName(),
-                names.MoveToImmutable());
+                names.ToImmutable());
         }
 
         /// <summary>
@@ -70,8 +71,7 @@ partial class IMessengerRegisterAllGenerator
         /// <returns>The head <see cref="CompilationUnitSyntax"/> instance with the type attributes.</returns>
         public static CompilationUnitSyntax GetSyntax(bool isDynamicallyAccessedMembersAttributeAvailable)
         {
-            int numberOfAttributes = 5 + (isDynamicallyAccessedMembersAttributeAvailable ? 1 : 0);
-            ImmutableArray<AttributeListSyntax>.Builder attributes = ImmutableArray.CreateBuilder<AttributeListSyntax>(numberOfAttributes);
+            using ImmutableArrayBuilder<AttributeListSyntax>.Lease attributes = ImmutableArrayBuilder<AttributeListSyntax>.Rent();
 
             // Prepare the base attributes with are always present:
             //
@@ -129,7 +129,7 @@ partial class IMessengerRegisterAllGenerator
                     Token(SyntaxKind.InternalKeyword),
                     Token(SyntaxKind.StaticKeyword),
                     Token(SyntaxKind.PartialKeyword))
-                .AddAttributeLists(attributes.MoveToImmutable().ToArray())))
+                .AddAttributeLists(attributes.ToArray())))
                 .NormalizeWhitespace();
         }
 
@@ -284,7 +284,7 @@ partial class IMessengerRegisterAllGenerator
         /// <returns>The sequence of <see cref="StatementSyntax"/> instances to register message handlers.</returns>
         private static ImmutableArray<StatementSyntax> EnumerateRegistrationStatements(RecipientInfo recipientInfo)
         {
-            ImmutableArray<StatementSyntax>.Builder statements = ImmutableArray.CreateBuilder<StatementSyntax>(recipientInfo.MessageTypes.Length);
+            using ImmutableArrayBuilder<StatementSyntax>.Lease statements = ImmutableArrayBuilder<StatementSyntax>.Rent();
 
             // This loop produces a sequence of statements as follows:
             //
@@ -305,7 +305,7 @@ partial class IMessengerRegisterAllGenerator
                         .AddArgumentListArguments(Argument(IdentifierName("recipient")))));
             }
 
-            return statements.MoveToImmutable();
+            return statements.ToImmutable();
         }
 
         /// <summary>
@@ -315,7 +315,7 @@ partial class IMessengerRegisterAllGenerator
         /// <returns>The sequence of <see cref="StatementSyntax"/> instances to register message handlers.</returns>
         private static ImmutableArray<StatementSyntax> EnumerateRegistrationStatementsWithTokens(RecipientInfo recipientInfo)
         {
-            ImmutableArray<StatementSyntax>.Builder statements = ImmutableArray.CreateBuilder<StatementSyntax>(recipientInfo.MessageTypes.Length);
+            using ImmutableArrayBuilder<StatementSyntax>.Lease statements = ImmutableArrayBuilder<StatementSyntax>.Rent();
 
             // This loop produces a sequence of statements as follows:
             //
@@ -336,7 +336,7 @@ partial class IMessengerRegisterAllGenerator
                         .AddArgumentListArguments(Argument(IdentifierName("recipient")), Argument(IdentifierName("token")))));
             }
 
-            return statements.MoveToImmutable();
+            return statements.ToImmutable();
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
+using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 using CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
 using CommunityToolkit.Mvvm.SourceGenerators.Models;
 using Microsoft.CodeAnalysis;
@@ -91,7 +92,7 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
     /// <inheritdoc/>
     protected override ImmutableArray<MemberDeclarationSyntax> FilterDeclaredMembers(ObservableRecipientInfo info, ImmutableArray<MemberDeclarationSyntax> memberDeclarations)
     {
-        ImmutableArray<MemberDeclarationSyntax>.Builder builder = ImmutableArray.CreateBuilder<MemberDeclarationSyntax>();
+        using ImmutableArrayBuilder<MemberDeclarationSyntax>.Lease builder = ImmutableArrayBuilder<MemberDeclarationSyntax>.Rent();
 
         // If the target type has no constructors, generate constructors as well
         if (!info.HasExplicitConstructors)

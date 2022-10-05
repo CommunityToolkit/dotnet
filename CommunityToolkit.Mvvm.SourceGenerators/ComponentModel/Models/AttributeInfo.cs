@@ -32,22 +32,25 @@ internal sealed record AttributeInfo(
     {
         string typeName = attributeData.AttributeClass!.GetFullyQualifiedName();
 
+        using ImmutableArrayBuilder<TypedConstantInfo>.Lease constructorArguments = ImmutableArrayBuilder<TypedConstantInfo>.Rent();
+        using ImmutableArrayBuilder<(string, TypedConstantInfo)>.Lease namedArguments = ImmutableArrayBuilder<(string, TypedConstantInfo)>.Rent();
+
         // Get the constructor arguments
-        ImmutableArray<TypedConstantInfo> constructorArguments =
-            attributeData.ConstructorArguments
-            .Select(TypedConstantInfo.From)
-            .ToImmutableArray();
+        foreach (TypedConstant typedConstant in attributeData.ConstructorArguments)
+        {
+            constructorArguments.Add(TypedConstantInfo.From(typedConstant));
+        }
 
         // Get the named arguments
-        ImmutableArray<(string, TypedConstantInfo)> namedArguments =
-            attributeData.NamedArguments
-            .Select(static arg => (arg.Key, TypedConstantInfo.From(arg.Value)))
-            .ToImmutableArray();
+        foreach (KeyValuePair<string, TypedConstant> namedConstant in attributeData.NamedArguments)
+        {
+            namedArguments.Add((namedConstant.Key, TypedConstantInfo.From(namedConstant.Value)));
+        }
 
         return new(
             typeName,
-            constructorArguments,
-            namedArguments);
+            constructorArguments.ToImmutable(),
+            namedArguments.ToImmutable());
     }
 
     /// <summary>
@@ -62,8 +65,8 @@ internal sealed record AttributeInfo(
     {
         string typeName = typeSymbol.GetFullyQualifiedName();
 
-        ImmutableArray<TypedConstantInfo>.Builder constructorArguments = ImmutableArray.CreateBuilder<TypedConstantInfo>();
-        ImmutableArray<(string, TypedConstantInfo)>.Builder namedArguments = ImmutableArray.CreateBuilder<(string, TypedConstantInfo)>();
+        using ImmutableArrayBuilder<TypedConstantInfo>.Lease constructorArguments = ImmutableArrayBuilder<TypedConstantInfo>.Rent();
+        using ImmutableArrayBuilder<(string, TypedConstantInfo)>.Lease namedArguments = ImmutableArrayBuilder<(string, TypedConstantInfo)>.Rent();
 
         foreach (AttributeArgumentSyntax argument in arguments)
         {

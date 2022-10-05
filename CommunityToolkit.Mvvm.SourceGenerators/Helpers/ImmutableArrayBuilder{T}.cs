@@ -74,6 +74,12 @@ internal static class ImmutableArrayBuilder<T>
             return this.builder!.ToImmutable();
         }
 
+        /// <inheritdoc cref="ImmutableArray{T}.Builder.ToArray"/>
+        public readonly T[] ToArray()
+        {
+            return this.builder!.ToArray();
+        }
+
         /// <inheritdoc cref="IDisposable.Dispose"/>
         public void Dispose()
         {
