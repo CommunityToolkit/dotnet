@@ -92,7 +92,7 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
     /// <inheritdoc/>
     protected override ImmutableArray<MemberDeclarationSyntax> FilterDeclaredMembers(ObservableRecipientInfo info, ImmutableArray<MemberDeclarationSyntax> memberDeclarations)
     {
-        using ImmutableArrayBuilder<MemberDeclarationSyntax>.Lease builder = ImmutableArrayBuilder<MemberDeclarationSyntax>.Rent();
+        using ImmutableArrayBuilder<MemberDeclarationSyntax> builder = ImmutableArrayBuilder<MemberDeclarationSyntax>.Rent();
 
         // If the target type has no constructors, generate constructors as well
         if (!info.HasExplicitConstructors)

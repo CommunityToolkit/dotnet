@@ -32,7 +32,7 @@ internal sealed partial record HierarchyInfo(string FilenameHint, string Metadat
     /// <returns>A <see cref="HierarchyInfo"/> instance describing <paramref name="typeSymbol"/>.</returns>
     public static HierarchyInfo From(INamedTypeSymbol typeSymbol)
     {
-        using ImmutableArrayBuilder<TypeInfo>.Lease hierarchy = ImmutableArrayBuilder<TypeInfo>.Rent();
+        using ImmutableArrayBuilder<TypeInfo> hierarchy = ImmutableArrayBuilder<TypeInfo>.Rent();
 
         for (INamedTypeSymbol? parent = typeSymbol;
              parent is not null;

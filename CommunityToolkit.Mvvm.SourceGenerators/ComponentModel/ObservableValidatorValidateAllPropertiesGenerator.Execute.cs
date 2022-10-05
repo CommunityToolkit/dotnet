@@ -40,7 +40,7 @@ partial class ObservableValidatorValidateAllPropertiesGenerator
         /// <returns>The resulting <see cref="ValidationInfo"/> instance for <paramref name="typeSymbol"/>.</returns>
         public static ValidationInfo GetInfo(INamedTypeSymbol typeSymbol)
         {
-            using ImmutableArrayBuilder<string>.Lease propertyNames = ImmutableArrayBuilder<string>.Rent();
+            using ImmutableArrayBuilder<string> propertyNames = ImmutableArrayBuilder<string>.Rent();
 
             foreach (ISymbol memberSymbol in typeSymbol.GetMembers())
             {
@@ -93,7 +93,7 @@ partial class ObservableValidatorValidateAllPropertiesGenerator
         /// <returns>A <see cref="RecipientInfo"/> instance for the current type being inspected.</returns>
         public static RecipientInfo GetInfo(INamedTypeSymbol typeSymbol, ImmutableArray<INamedTypeSymbol> interfaceSymbols)
         {
-            using ImmutableArrayBuilder<string>.Lease names = ImmutableArrayBuilder<string>.Rent();
+            using ImmutableArrayBuilder<string> names = ImmutableArrayBuilder<string>.Rent();
 
             foreach (INamedTypeSymbol interfaceSymbol in interfaceSymbols)
             {
@@ -113,7 +113,7 @@ partial class ObservableValidatorValidateAllPropertiesGenerator
         /// <returns>The head <see cref="CompilationUnitSyntax"/> instance with the type attributes.</returns>
         public static CompilationUnitSyntax GetSyntax(bool isDynamicallyAccessedMembersAttributeAvailable)
         {
-            using ImmutableArrayBuilder<AttributeListSyntax>.Lease attributes = ImmutableArrayBuilder<AttributeListSyntax>.Rent();
+            using ImmutableArrayBuilder<AttributeListSyntax> attributes = ImmutableArrayBuilder<AttributeListSyntax>.Rent();
 
             // Prepare the base attributes with are always present:
             //
@@ -261,7 +261,7 @@ partial class ObservableValidatorValidateAllPropertiesGenerator
         /// <returns>The sequence of <see cref="StatementSyntax"/> instances to validate declared properties.</returns>
         private static ImmutableArray<StatementSyntax> EnumerateValidationStatements(ValidationInfo validationInfo)
         {
-            using ImmutableArrayBuilder<StatementSyntax>.Lease statements = ImmutableArrayBuilder<StatementSyntax>.Rent();
+            using ImmutableArrayBuilder<StatementSyntax> statements = ImmutableArrayBuilder<StatementSyntax>.Rent();
 
             // This loop produces a sequence of statements as follows:
             //

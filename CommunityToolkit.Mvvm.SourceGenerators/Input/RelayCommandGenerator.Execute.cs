@@ -41,7 +41,7 @@ partial class RelayCommandGenerator
             [NotNullWhen(true)] out CommandInfo? commandInfo,
             out ImmutableArray<DiagnosticInfo> diagnostics)
         {
-            using ImmutableArrayBuilder<DiagnosticInfo>.Lease builder = ImmutableArrayBuilder<DiagnosticInfo>.Rent();
+            using ImmutableArrayBuilder<DiagnosticInfo> builder = ImmutableArrayBuilder<DiagnosticInfo>.Rent();
 
             // Validate the method definition is unique
             if (!IsCommandDefinitionUnique(methodSymbol, builder))
@@ -179,7 +179,7 @@ partial class RelayCommandGenerator
                     .WithOpenBracketToken(Token(TriviaList(Comment($"/// <summary>The backing field for <see cref=\"{commandInfo.PropertyName}\"/>.</summary>")), SyntaxKind.OpenBracketToken, TriviaList())));
 
             // Prepares the argument to pass the underlying method to invoke
-            using ImmutableArrayBuilder<ArgumentSyntax>.Lease commandCreationArguments = ImmutableArrayBuilder<ArgumentSyntax>.Rent();
+            using ImmutableArrayBuilder<ArgumentSyntax> commandCreationArguments = ImmutableArrayBuilder<ArgumentSyntax>.Rent();
 
             // The first argument is the execute method, which is always present
             commandCreationArguments.Add(
@@ -363,7 +363,7 @@ partial class RelayCommandGenerator
         /// <param name="methodSymbol">The input <see cref="IMethodSymbol"/> instance to process.</param>
         /// <param name="diagnostics">The current collection of gathered diagnostics.</param>
         /// <returns>Whether or not <paramref name="methodSymbol"/> was unique within its containing type.</returns>
-        private static bool IsCommandDefinitionUnique(IMethodSymbol methodSymbol, in ImmutableArrayBuilder<DiagnosticInfo>.Lease diagnostics)
+        private static bool IsCommandDefinitionUnique(IMethodSymbol methodSymbol, in ImmutableArrayBuilder<DiagnosticInfo> diagnostics)
         {
             // If a duplicate is present in any of the base types, always emit a diagnostic for the current method.
             // That is, there is no need to check the order: we assume the priority is top-down in the type hierarchy.
@@ -459,7 +459,7 @@ partial class RelayCommandGenerator
         /// <returns>Whether or not <paramref name="methodSymbol"/> was valid and the requested types have been set.</returns>
         private static bool TryMapCommandTypesFromMethod(
             IMethodSymbol methodSymbol,
-            in ImmutableArrayBuilder<DiagnosticInfo>.Lease diagnostics,
+            in ImmutableArrayBuilder<DiagnosticInfo> diagnostics,
             [NotNullWhen(true)] out string? commandInterfaceType,
             [NotNullWhen(true)] out string? commandClassType,
             [NotNullWhen(true)] out string? delegateType,
@@ -589,7 +589,7 @@ partial class RelayCommandGenerator
             IMethodSymbol methodSymbol,
             AttributeData attributeData,
             string commandClassType,
-            in ImmutableArrayBuilder<DiagnosticInfo>.Lease diagnostics,
+            in ImmutableArrayBuilder<DiagnosticInfo> diagnostics,
             out bool allowConcurrentExecutions)
         {
             // Try to get the custom switch for concurrent executions (the default is false)
@@ -627,7 +627,7 @@ partial class RelayCommandGenerator
             IMethodSymbol methodSymbol,
             AttributeData attributeData,
             string commandClassType,
-            in ImmutableArrayBuilder<DiagnosticInfo>.Lease diagnostics,
+            in ImmutableArrayBuilder<DiagnosticInfo> diagnostics,
             out bool flowExceptionsToTaskScheduler)
         {
             // Try to get the custom switch for task scheduler exception flow (the default is false)
@@ -666,7 +666,7 @@ partial class RelayCommandGenerator
             AttributeData attributeData,
             string commandClassType,
             bool supportsCancellation,
-            in ImmutableArrayBuilder<DiagnosticInfo>.Lease diagnostics,
+            in ImmutableArrayBuilder<DiagnosticInfo> diagnostics,
             out bool generateCancelCommand)
         {
             // Try to get the custom switch for cancel command generation (the default is false)
@@ -706,7 +706,7 @@ partial class RelayCommandGenerator
             IMethodSymbol methodSymbol,
             AttributeData attributeData,
             ImmutableArray<string> commandTypeArguments,
-            in ImmutableArrayBuilder<DiagnosticInfo>.Lease diagnostics,
+            in ImmutableArrayBuilder<DiagnosticInfo> diagnostics,
             out string? canExecuteMemberName,
             out CanExecuteExpressionType? canExecuteExpressionType)
         {
