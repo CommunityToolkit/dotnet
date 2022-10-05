@@ -32,8 +32,8 @@ internal sealed record AttributeInfo(
     {
         string typeName = attributeData.AttributeClass!.GetFullyQualifiedName();
 
-        using ImmutableArrayBuilder<TypedConstantInfo>.Lease constructorArguments = ImmutableArrayBuilder<TypedConstantInfo>.Rent();
-        using ImmutableArrayBuilder<(string, TypedConstantInfo)>.Lease namedArguments = ImmutableArrayBuilder<(string, TypedConstantInfo)>.Rent();
+        using ImmutableArrayBuilder<TypedConstantInfo> constructorArguments = ImmutableArrayBuilder<TypedConstantInfo>.Rent();
+        using ImmutableArrayBuilder<(string, TypedConstantInfo)> namedArguments = ImmutableArrayBuilder<(string, TypedConstantInfo)>.Rent();
 
         // Get the constructor arguments
         foreach (TypedConstant typedConstant in attributeData.ConstructorArguments)
@@ -65,8 +65,8 @@ internal sealed record AttributeInfo(
     {
         string typeName = typeSymbol.GetFullyQualifiedName();
 
-        using ImmutableArrayBuilder<TypedConstantInfo>.Lease constructorArguments = ImmutableArrayBuilder<TypedConstantInfo>.Rent();
-        using ImmutableArrayBuilder<(string, TypedConstantInfo)>.Lease namedArguments = ImmutableArrayBuilder<(string, TypedConstantInfo)>.Rent();
+        using ImmutableArrayBuilder<TypedConstantInfo> constructorArguments = ImmutableArrayBuilder<TypedConstantInfo>.Rent();
+        using ImmutableArrayBuilder<(string, TypedConstantInfo)> namedArguments = ImmutableArrayBuilder<(string, TypedConstantInfo)>.Rent();
 
         foreach (AttributeArgumentSyntax argument in arguments)
         {

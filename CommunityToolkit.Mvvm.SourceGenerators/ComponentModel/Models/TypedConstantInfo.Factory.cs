@@ -128,7 +128,7 @@ partial record TypedConstantInfo
                 return new Array(elementTypeName, ImmutableArray<TypedConstantInfo>.Empty);
             }
 
-            using ImmutableArrayBuilder<TypedConstantInfo>.Lease items = ImmutableArrayBuilder<TypedConstantInfo>.Rent();
+            using ImmutableArrayBuilder<TypedConstantInfo> items = ImmutableArrayBuilder<TypedConstantInfo>.Rent();
 
             // Enumerate all array elements and extract serialized info for them
             foreach (ExpressionSyntax initializationExpression in initializerExpression.Expressions)

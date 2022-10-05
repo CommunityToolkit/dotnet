@@ -66,7 +66,7 @@ public sealed class INotifyPropertyChangedGenerator : TransitiveMembersGenerator
         // If requested, only include the event and the basic methods to raise it, but not the additional helpers
         if (!info.IncludeAdditionalHelperMethods)
         {
-            using ImmutableArrayBuilder<MemberDeclarationSyntax>.Lease selectedMembers = ImmutableArrayBuilder<MemberDeclarationSyntax>.Rent();
+            using ImmutableArrayBuilder<MemberDeclarationSyntax> selectedMembers = ImmutableArrayBuilder<MemberDeclarationSyntax>.Rent();
 
             foreach (MemberDeclarationSyntax memberDeclaration in memberDeclarations)
             {

@@ -46,7 +46,7 @@ partial class ObservablePropertyGenerator
             [NotNullWhen(true)] out PropertyInfo? propertyInfo,
             out ImmutableArray<DiagnosticInfo> diagnostics)
         {
-            using ImmutableArrayBuilder<DiagnosticInfo>.Lease builder = ImmutableArrayBuilder<DiagnosticInfo>.Rent();
+            using ImmutableArrayBuilder<DiagnosticInfo> builder = ImmutableArrayBuilder<DiagnosticInfo>.Rent();
 
             // Validate the target type
             if (!IsTargetTypeValid(fieldSymbol, out bool shouldInvokeOnPropertyChanging))
@@ -101,10 +101,10 @@ partial class ObservablePropertyGenerator
                 return false;
             }
 
-            using ImmutableArrayBuilder<string>.Lease propertyChangedNames = ImmutableArrayBuilder<string>.Rent();
-            using ImmutableArrayBuilder<string>.Lease propertyChangingNames = ImmutableArrayBuilder<string>.Rent();
-            using ImmutableArrayBuilder<string>.Lease notifiedCommandNames = ImmutableArrayBuilder<string>.Rent();
-            using ImmutableArrayBuilder<AttributeInfo>.Lease forwardedAttributes = ImmutableArrayBuilder<AttributeInfo>.Rent();
+            using ImmutableArrayBuilder<string> propertyChangedNames = ImmutableArrayBuilder<string>.Rent();
+            using ImmutableArrayBuilder<string> propertyChangingNames = ImmutableArrayBuilder<string>.Rent();
+            using ImmutableArrayBuilder<string> notifiedCommandNames = ImmutableArrayBuilder<string>.Rent();
+            using ImmutableArrayBuilder<AttributeInfo> forwardedAttributes = ImmutableArrayBuilder<AttributeInfo>.Rent();
 
             bool notifyRecipients = false;
             bool notifyDataErrorInfo = false;
@@ -318,8 +318,8 @@ partial class ObservablePropertyGenerator
         private static bool TryGatherDependentPropertyChangedNames(
             IFieldSymbol fieldSymbol,
             AttributeData attributeData,
-            in ImmutableArrayBuilder<string>.Lease propertyChangedNames,
-            in ImmutableArrayBuilder<DiagnosticInfo>.Lease diagnostics)
+            in ImmutableArrayBuilder<string> propertyChangedNames,
+            in ImmutableArrayBuilder<DiagnosticInfo> diagnostics)
         {
             // Validates a property name using existing properties
             bool IsPropertyNameValid(string propertyName)
@@ -383,8 +383,8 @@ partial class ObservablePropertyGenerator
         private static bool TryGatherDependentCommandNames(
             IFieldSymbol fieldSymbol,
             AttributeData attributeData,
-            in ImmutableArrayBuilder<string>.Lease notifiedCommandNames,
-            in ImmutableArrayBuilder<DiagnosticInfo>.Lease diagnostics)
+            in ImmutableArrayBuilder<string> notifiedCommandNames,
+            in ImmutableArrayBuilder<DiagnosticInfo> diagnostics)
         {
             // Validates a command name using existing properties
             bool IsCommandNameValid(string commandName, out bool shouldLookForGeneratedMembersToo)
@@ -505,7 +505,7 @@ partial class ObservablePropertyGenerator
         private static bool TryGetIsNotifyingRecipients(
             IFieldSymbol fieldSymbol,
             AttributeData attributeData,
-            in ImmutableArrayBuilder<DiagnosticInfo>.Lease diagnostics,
+            in ImmutableArrayBuilder<DiagnosticInfo> diagnostics,
             bool hasOrInheritsClassLevelNotifyPropertyChangedRecipients,
             out bool isBroadcastTargetValid)
         {
@@ -608,7 +608,7 @@ partial class ObservablePropertyGenerator
         private static bool TryGetNotifyDataErrorInfo(
             IFieldSymbol fieldSymbol,
             AttributeData attributeData,
-            in ImmutableArrayBuilder<DiagnosticInfo>.Lease diagnostics,
+            in ImmutableArrayBuilder<DiagnosticInfo> diagnostics,
             bool hasOrInheritsClassLevelNotifyDataErrorInfo,
             out bool isValidationTargetValid)
         {
@@ -701,7 +701,7 @@ partial class ObservablePropertyGenerator
         /// <returns>The generated <see cref="MemberDeclarationSyntax"/> instance for <paramref name="propertyInfo"/>.</returns>
         public static MemberDeclarationSyntax GetPropertySyntax(PropertyInfo propertyInfo)
         {
-            using ImmutableArrayBuilder<StatementSyntax>.Lease setterStatements = ImmutableArrayBuilder<StatementSyntax>.Rent();
+            using ImmutableArrayBuilder<StatementSyntax> setterStatements = ImmutableArrayBuilder<StatementSyntax>.Rent();
 
             // Get the property type syntax
             TypeSyntax propertyType = IdentifierName(propertyInfo.TypeNameWithNullabilityAnnotations);
