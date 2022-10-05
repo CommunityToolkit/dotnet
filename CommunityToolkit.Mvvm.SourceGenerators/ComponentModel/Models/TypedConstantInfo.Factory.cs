@@ -6,6 +6,7 @@ using System;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
+using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Operations;
@@ -127,7 +128,7 @@ partial record TypedConstantInfo
                 return new Array(elementTypeName, ImmutableArray<TypedConstantInfo>.Empty);
             }
 
-            ImmutableArray<TypedConstantInfo>.Builder items = ImmutableArray.CreateBuilder<TypedConstantInfo>(initializerExpression.Expressions.Count);
+            using ImmutableArrayBuilder<TypedConstantInfo>.Lease items = ImmutableArrayBuilder<TypedConstantInfo>.Rent();
 
             // Enumerate all array elements and extract serialized info for them
             foreach (ExpressionSyntax initializationExpression in initializerExpression.Expressions)
@@ -140,7 +141,7 @@ partial record TypedConstantInfo
                 items.Add(From(initializationOperation, semanticModel, initializationExpression, token));
             }
 
-            return new Array(elementTypeName, items.MoveToImmutable());
+            return new Array(elementTypeName, items.ToImmutable());
         }
 
         throw new ArgumentException("Invalid attribute argument value");

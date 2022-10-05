@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading;
 using CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
+using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 using CommunityToolkit.Mvvm.SourceGenerators.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -45,7 +46,7 @@ partial class ObservablePropertyGenerator
             [NotNullWhen(true)] out PropertyInfo? propertyInfo,
             out ImmutableArray<DiagnosticInfo> diagnostics)
         {
-            ImmutableArray<DiagnosticInfo>.Builder builder = ImmutableArray.CreateBuilder<DiagnosticInfo>();
+            using ImmutableArrayBuilder<DiagnosticInfo>.Lease builder = ImmutableArrayBuilder<DiagnosticInfo>.Rent();
 
             // Validate the target type
             if (!IsTargetTypeValid(fieldSymbol, out bool shouldInvokeOnPropertyChanging))
@@ -100,10 +101,11 @@ partial class ObservablePropertyGenerator
                 return false;
             }
 
-            ImmutableArray<string>.Builder propertyChangedNames = ImmutableArray.CreateBuilder<string>();
-            ImmutableArray<string>.Builder propertyChangingNames = ImmutableArray.CreateBuilder<string>();
-            ImmutableArray<string>.Builder notifiedCommandNames = ImmutableArray.CreateBuilder<string>();
-            ImmutableArray<AttributeInfo>.Builder forwardedAttributes = ImmutableArray.CreateBuilder<AttributeInfo>();
+            using ImmutableArrayBuilder<string>.Lease propertyChangedNames = ImmutableArrayBuilder<string>.Rent();
+            using ImmutableArrayBuilder<string>.Lease propertyChangingNames = ImmutableArrayBuilder<string>.Rent();
+            using ImmutableArrayBuilder<string>.Lease notifiedCommandNames = ImmutableArrayBuilder<string>.Rent();
+            using ImmutableArrayBuilder<AttributeInfo>.Lease forwardedAttributes = ImmutableArrayBuilder<AttributeInfo>.Rent();
+
             bool notifyRecipients = false;
             bool notifyDataErrorInfo = false;
             bool hasOrInheritsClassLevelNotifyPropertyChangedRecipients = false;
@@ -137,14 +139,14 @@ partial class ObservablePropertyGenerator
             foreach (AttributeData attributeData in fieldSymbol.GetAttributes())
             {
                 // Gather dependent property and command names
-                if (TryGatherDependentPropertyChangedNames(fieldSymbol, attributeData, propertyChangedNames, builder) ||
-                    TryGatherDependentCommandNames(fieldSymbol, attributeData, notifiedCommandNames, builder))
+                if (TryGatherDependentPropertyChangedNames(fieldSymbol, attributeData, in propertyChangedNames, in builder) ||
+                    TryGatherDependentCommandNames(fieldSymbol, attributeData, in notifiedCommandNames, in builder))
                 {
                     continue;
                 }
 
                 // Check whether the property should also notify recipients
-                if (TryGetIsNotifyingRecipients(fieldSymbol, attributeData, builder, hasOrInheritsClassLevelNotifyPropertyChangedRecipients, out isBroadcastTargetValid))
+                if (TryGetIsNotifyingRecipients(fieldSymbol, attributeData, in builder, hasOrInheritsClassLevelNotifyPropertyChangedRecipients, out isBroadcastTargetValid))
                 {
                     notifyRecipients = isBroadcastTargetValid;
 
@@ -152,7 +154,7 @@ partial class ObservablePropertyGenerator
                 }
 
                 // Check whether the property should also be validated
-                if (TryGetNotifyDataErrorInfo(fieldSymbol, attributeData, builder, hasOrInheritsClassLevelNotifyDataErrorInfo, out isValidationTargetValid))
+                if (TryGetNotifyDataErrorInfo(fieldSymbol, attributeData, in builder, hasOrInheritsClassLevelNotifyDataErrorInfo, out isValidationTargetValid))
                 {
                     notifyDataErrorInfo = isValidationTargetValid;
 
@@ -266,9 +268,7 @@ partial class ObservablePropertyGenerator
         /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
         /// <param name="shouldInvokeOnPropertyChanging">Whether or not property changing events should also be raised.</param>
         /// <returns>Whether or not the containing type for <paramref name="fieldSymbol"/> is valid.</returns>
-        private static bool IsTargetTypeValid(
-            IFieldSymbol fieldSymbol,
-            out bool shouldInvokeOnPropertyChanging)
+        private static bool IsTargetTypeValid(IFieldSymbol fieldSymbol, out bool shouldInvokeOnPropertyChanging)
         {
             // The [ObservableProperty] attribute can only be used in types that are known to expose the necessary OnPropertyChanged and OnPropertyChanging methods.
             // That means that the containing type for the field needs to match one of the following conditions:
@@ -318,8 +318,8 @@ partial class ObservablePropertyGenerator
         private static bool TryGatherDependentPropertyChangedNames(
             IFieldSymbol fieldSymbol,
             AttributeData attributeData,
-            ImmutableArray<string>.Builder propertyChangedNames,
-            ImmutableArray<DiagnosticInfo>.Builder diagnostics)
+            in ImmutableArrayBuilder<string>.Lease propertyChangedNames,
+            in ImmutableArrayBuilder<DiagnosticInfo>.Lease diagnostics)
         {
             // Validates a property name using existing properties
             bool IsPropertyNameValid(string propertyName)
@@ -383,8 +383,8 @@ partial class ObservablePropertyGenerator
         private static bool TryGatherDependentCommandNames(
             IFieldSymbol fieldSymbol,
             AttributeData attributeData,
-            ImmutableArray<string>.Builder notifiedCommandNames,
-            ImmutableArray<DiagnosticInfo>.Builder diagnostics)
+            in ImmutableArrayBuilder<string>.Lease notifiedCommandNames,
+            in ImmutableArrayBuilder<DiagnosticInfo>.Lease diagnostics)
         {
             // Validates a command name using existing properties
             bool IsCommandNameValid(string commandName, out bool shouldLookForGeneratedMembersToo)
@@ -505,7 +505,7 @@ partial class ObservablePropertyGenerator
         private static bool TryGetIsNotifyingRecipients(
             IFieldSymbol fieldSymbol,
             AttributeData attributeData,
-            ImmutableArray<DiagnosticInfo>.Builder diagnostics,
+            in ImmutableArrayBuilder<DiagnosticInfo>.Lease diagnostics,
             bool hasOrInheritsClassLevelNotifyPropertyChangedRecipients,
             out bool isBroadcastTargetValid)
         {
@@ -608,7 +608,7 @@ partial class ObservablePropertyGenerator
         private static bool TryGetNotifyDataErrorInfo(
             IFieldSymbol fieldSymbol,
             AttributeData attributeData,
-            ImmutableArray<DiagnosticInfo>.Builder diagnostics,
+            in ImmutableArrayBuilder<DiagnosticInfo>.Lease diagnostics,
             bool hasOrInheritsClassLevelNotifyDataErrorInfo,
             out bool isValidationTargetValid)
         {
@@ -701,7 +701,7 @@ partial class ObservablePropertyGenerator
         /// <returns>The generated <see cref="MemberDeclarationSyntax"/> instance for <paramref name="propertyInfo"/>.</returns>
         public static MemberDeclarationSyntax GetPropertySyntax(PropertyInfo propertyInfo)
         {
-            ImmutableArray<StatementSyntax>.Builder setterStatements = ImmutableArray.CreateBuilder<StatementSyntax>();
+            using ImmutableArrayBuilder<StatementSyntax>.Lease setterStatements = ImmutableArrayBuilder<StatementSyntax>.Rent();
 
             // Get the property type syntax
             TypeSyntax propertyType = IdentifierName(propertyInfo.TypeNameWithNullabilityAnnotations);
@@ -848,7 +848,7 @@ partial class ObservablePropertyGenerator
                         .AddArgumentListArguments(
                             Argument(fieldExpression),
                             Argument(IdentifierName("value")))),
-                    Block(setterStatements));
+                    Block(setterStatements.ToArray()));
 
             // Prepare the forwarded attributes, if any
             ImmutableArray<AttributeListSyntax> forwardedAttributes =
