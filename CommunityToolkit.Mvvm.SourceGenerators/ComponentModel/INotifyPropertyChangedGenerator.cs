@@ -4,9 +4,10 @@
 
 using System.Collections.Immutable;
 using System.Linq;
-using CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
+using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 using CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
+using CommunityToolkit.Mvvm.SourceGenerators.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
@@ -28,16 +29,16 @@ public sealed class INotifyPropertyChangedGenerator : TransitiveMembersGenerator
     }
 
     /// <inheritdoc/>
-    protected override INotifyPropertyChangedInfo? ValidateTargetTypeAndGetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData, Compilation compilation, out ImmutableArray<Diagnostic> diagnostics)
+    private protected override INotifyPropertyChangedInfo? ValidateTargetTypeAndGetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData, Compilation compilation, out ImmutableArray<DiagnosticInfo> diagnostics)
     {
-        ImmutableArray<Diagnostic>.Builder builder = ImmutableArray.CreateBuilder<Diagnostic>();
+        diagnostics = ImmutableArray<DiagnosticInfo>.Empty;
 
         INotifyPropertyChangedInfo? info = null;
 
         // Check if the type already implements INotifyPropertyChanged
         if (typeSymbol.AllInterfaces.Any(i => i.HasFullyQualifiedName("global::System.ComponentModel.INotifyPropertyChanged")))
         {
-            builder.Add(DuplicateINotifyPropertyChangedInterfaceForINotifyPropertyChangedAttributeError, typeSymbol, typeSymbol);
+            diagnostics = ImmutableArray.Create(DiagnosticInfo.Create(DuplicateINotifyPropertyChangedInterfaceForINotifyPropertyChangedAttributeError, typeSymbol, typeSymbol));
 
             goto End;
         }
@@ -46,7 +47,7 @@ public sealed class INotifyPropertyChangedGenerator : TransitiveMembersGenerator
         if (typeSymbol.HasOrInheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute") ||
             typeSymbol.InheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.INotifyPropertyChangedAttribute"))
         {
-            builder.Add(InvalidAttributeCombinationForINotifyPropertyChangedAttributeError, typeSymbol, typeSymbol);
+            diagnostics = ImmutableArray.Create(DiagnosticInfo.Create(InvalidAttributeCombinationForINotifyPropertyChangedAttributeError, typeSymbol, typeSymbol));
 
             goto End;
         }
@@ -56,8 +57,6 @@ public sealed class INotifyPropertyChangedGenerator : TransitiveMembersGenerator
         info = new INotifyPropertyChangedInfo(includeAdditionalHelperMethods);
 
         End:
-        diagnostics = builder.ToImmutable();
-
         return info;
     }
 
@@ -67,9 +66,17 @@ public sealed class INotifyPropertyChangedGenerator : TransitiveMembersGenerator
         // If requested, only include the event and the basic methods to raise it, but not the additional helpers
         if (!info.IncludeAdditionalHelperMethods)
         {
-            return memberDeclarations.Where(static member => member
-                is EventFieldDeclarationSyntax
-                or MethodDeclarationSyntax { Identifier.ValueText: "OnPropertyChanged" }).ToImmutableArray();
+            using ImmutableArrayBuilder<MemberDeclarationSyntax> selectedMembers = ImmutableArrayBuilder<MemberDeclarationSyntax>.Rent();
+
+            foreach (MemberDeclarationSyntax memberDeclaration in memberDeclarations)
+            {
+                if (memberDeclaration is EventFieldDeclarationSyntax or MethodDeclarationSyntax { Identifier.ValueText: "OnPropertyChanged" })
+                {
+                    selectedMembers.Add(memberDeclaration);
+                }
+            }
+
+            return selectedMembers.ToImmutable();
         }
 
         return memberDeclarations;

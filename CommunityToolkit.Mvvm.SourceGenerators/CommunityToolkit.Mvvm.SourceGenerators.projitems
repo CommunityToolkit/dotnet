@@ -54,10 +54,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\UnsupportedCSharpLanguageVersionAnalyzer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Suppressors\ObservablePropertyAttributeWithPropertyTargetDiagnosticSuppressor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\DiagnosticDescriptors.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\DiagnosticExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\SuppressionDescriptors.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\AttributeDataExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\CompilationExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\DiagnosticsExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\HashCodeExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\IEqualityComparerExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\INamedTypeSymbolExtensions.cs" />
@@ -70,6 +70,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\TypeDeclarationSyntaxExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\Comparer{T,TSelf}.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\HashCode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\ImmutableArrayBuilder{T}.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\ObjectPool{T}.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Input\Models\CanExecuteExpressionType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Input\Models\CommandInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Input\RelayCommandGenerator.cs" />
@@ -77,6 +79,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Messaging\IMessengerRegisterAllGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Messaging\IMessengerRegisterAllGenerator.Execute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Messaging\Models\RecipientInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\DiagnosticInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\HierarchyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\HierarchyInfo.Syntax.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Result.cs" />

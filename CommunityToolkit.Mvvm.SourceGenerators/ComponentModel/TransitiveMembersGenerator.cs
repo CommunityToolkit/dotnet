@@ -85,7 +85,7 @@ public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGe
                     INamedTypeSymbol typeSymbol = (INamedTypeSymbol)context.TargetSymbol;
 
                     // Gather all generation info, and any diagnostics
-                    TInfo? info = ValidateTargetTypeAndGetInfo(typeSymbol, context.Attributes[0], context.SemanticModel.Compilation, out ImmutableArray<Diagnostic> diagnostics);
+                    TInfo? info = ValidateTargetTypeAndGetInfo(typeSymbol, context.Attributes[0], context.SemanticModel.Compilation, out ImmutableArray<DiagnosticInfo> diagnostics);
 
                     // If there are any diagnostics, there's no need to compute the hierarchy info at all, just return them
                     if (diagnostics.Length > 0)
@@ -129,7 +129,7 @@ public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGe
     /// <param name="diagnostics">The resulting diagnostics, if any.</param>
     /// <returns>The extracted info for the current type, if possible.</returns>
     /// <remarks>If <paramref name="diagnostics"/> is empty, the returned info will always be ignored and no sources will be produced.</remarks>
-    protected abstract TInfo? ValidateTargetTypeAndGetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData, Compilation compilation, out ImmutableArray<Diagnostic> diagnostics);
+    private protected abstract TInfo? ValidateTargetTypeAndGetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData, Compilation compilation, out ImmutableArray<DiagnosticInfo> diagnostics);
 
     /// <summary>
     /// Filters the <see cref="MemberDeclarationSyntax"/> nodes to generate from the input parsed tree.

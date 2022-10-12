@@ -5,8 +5,10 @@
 using System.Collections.Immutable;
 using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
-using CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
+using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
+using CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
+using CommunityToolkit.Mvvm.SourceGenerators.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -30,16 +32,16 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
     }
 
     /// <inheritdoc/>
-    protected override ObservableRecipientInfo? ValidateTargetTypeAndGetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData, Compilation compilation, out ImmutableArray<Diagnostic> diagnostics)
+    private protected override ObservableRecipientInfo? ValidateTargetTypeAndGetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData, Compilation compilation, out ImmutableArray<DiagnosticInfo> diagnostics)
     {
-        ImmutableArray<Diagnostic>.Builder builder = ImmutableArray.CreateBuilder<Diagnostic>();
+        diagnostics = ImmutableArray<DiagnosticInfo>.Empty;
 
         ObservableRecipientInfo? info = null;
 
         // Check if the type already inherits from ObservableRecipient
         if (typeSymbol.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableRecipient"))
         {
-            builder.Add(DuplicateObservableRecipientError, typeSymbol, typeSymbol);
+            diagnostics = ImmutableArray.Create(DiagnosticInfo.Create(DuplicateObservableRecipientError, typeSymbol, typeSymbol));
 
             goto End;
         }
@@ -47,7 +49,7 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
         // Check if the type already inherits [ObservableRecipient]
         if (typeSymbol.InheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableRecipientAttribute"))
         {
-            builder.Add(InvalidAttributeCombinationForObservableRecipientAttributeError, typeSymbol, typeSymbol);
+            diagnostics = ImmutableArray.Create(DiagnosticInfo.Create(InvalidAttributeCombinationForObservableRecipientAttributeError, typeSymbol, typeSymbol));
 
             goto End;
         }
@@ -60,7 +62,7 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
                 a.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.INotifyPropertyChangedAttribute") == true &&
                 !a.HasNamedArgument("IncludeAdditionalHelperMethods", false)))
         {
-            builder.Add(MissingBaseObservableObjectFunctionalityError, typeSymbol, typeSymbol);
+            diagnostics = ImmutableArray.Create(DiagnosticInfo.Create(MissingBaseObservableObjectFunctionalityError, typeSymbol, typeSymbol));
 
             goto End;
         }
@@ -84,15 +86,13 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
             hasOnDeactivatedMethod);
 
         End:
-        diagnostics = builder.ToImmutable();
-
         return info;
     }
 
     /// <inheritdoc/>
     protected override ImmutableArray<MemberDeclarationSyntax> FilterDeclaredMembers(ObservableRecipientInfo info, ImmutableArray<MemberDeclarationSyntax> memberDeclarations)
     {
-        ImmutableArray<MemberDeclarationSyntax>.Builder builder = ImmutableArray.CreateBuilder<MemberDeclarationSyntax>();
+        using ImmutableArrayBuilder<MemberDeclarationSyntax> builder = ImmutableArrayBuilder<MemberDeclarationSyntax>.Rent();
 
         // If the target type has no constructors, generate constructors as well
         if (!info.HasExplicitConstructors)
