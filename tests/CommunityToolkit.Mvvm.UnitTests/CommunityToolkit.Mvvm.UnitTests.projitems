@@ -25,6 +25,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Test_AsyncRelayCommand{T}.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Test_INotifyPropertyChangedAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Test_IRecipientGenerator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Test_Messenger.Observables.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Test_Messenger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Test_Messenger.Request.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Test_ObservableObject.cs" />

@@ -15,7 +15,7 @@ namespace CommunityToolkit.Mvvm.Messaging;
 /// <summary>
 /// Extensions for the <see cref="IMessenger"/> type.
 /// </summary>
-public static class IMessengerExtensions
+public static partial class IMessengerExtensions
 {
     /// <summary>
     /// A class that acts as a container to load the <see cref="MethodInfo"/> instance linked to

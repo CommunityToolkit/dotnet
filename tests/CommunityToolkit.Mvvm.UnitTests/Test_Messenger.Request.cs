@@ -12,7 +12,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommunityToolkit.Mvvm.UnitTests;
 
-public partial class Test_Messenger
+partial class Test_Messenger
 {
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
