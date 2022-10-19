@@ -23,7 +23,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.Models;
 /// <param name="MetadataName">The metadata name for the current type.</param>
 /// <param name="Namespace">Gets the namespace for the current type.</param>
 /// <param name="Hierarchy">Gets the sequence of type definitions containing the current type.</param>
-internal sealed partial record HierarchyInfo(string FilenameHint, string MetadataName, string Namespace, ImmutableArray<TypeInfo> Hierarchy)
+internal sealed partial record HierarchyInfo(string FilenameHint, string MetadataName, string Namespace, EquatableArray<TypeInfo> Hierarchy)
 {
     /// <summary>
     /// Creates a new <see cref="HierarchyInfo"/> instance from a given <see cref="INamedTypeSymbol"/>.
@@ -49,30 +49,5 @@ internal sealed partial record HierarchyInfo(string FilenameHint, string Metadat
             typeSymbol.MetadataName,
             typeSymbol.ContainingNamespace.ToDisplayString(new(typeQualificationStyle: NameAndContainingTypesAndNamespaces)),
             hierarchy.ToImmutable());
-    }
-
-    /// <summary>
-    /// An <see cref="IEqualityComparer{T}"/> implementation for <see cref="HierarchyInfo"/>.
-    /// </summary>
-    public sealed class Comparer : Comparer<HierarchyInfo, Comparer>
-    {
-        /// <inheritdoc/>
-        protected override void AddToHashCode(ref HashCode hashCode, HierarchyInfo obj)
-        {
-            hashCode.Add(obj.FilenameHint);
-            hashCode.Add(obj.MetadataName);
-            hashCode.Add(obj.Namespace);
-            hashCode.AddRange(obj.Hierarchy);
-        }
-
-        /// <inheritdoc/>
-        protected override bool AreEqual(HierarchyInfo x, HierarchyInfo y)
-        {
-            return
-                x.FilenameHint == y.FilenameHint &&
-                x.MetadataName == y.MetadataName &&
-                x.Namespace == y.Namespace &&
-                x.Hierarchy.SequenceEqual(y.Hierarchy);
-        }
     }
 }
