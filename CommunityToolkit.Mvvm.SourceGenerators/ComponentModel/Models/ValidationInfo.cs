@@ -17,37 +17,4 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
 /// <param name="FilenameHint">The filename hint for the current type.</param>
 /// <param name="TypeName">The fully qualified type name of the target type.</param>
 /// <param name="PropertyNames">The name of validatable properties.</param>
-internal sealed record ValidationInfo(
-    string FilenameHint,
-    string TypeName,
-    ImmutableArray<string> PropertyNames)
-{
-    /// <inheritdoc/>
-    public bool Equals(ValidationInfo? obj) => Comparer.Default.Equals(this, obj);
-
-    /// <inheritdoc/>
-    public override int GetHashCode() => Comparer.Default.GetHashCode(this);
-
-    /// <summary>
-    /// An <see cref="IEqualityComparer{T}"/> implementation for <see cref="ValidationInfo"/>.
-    /// </summary>
-    private sealed class Comparer : Comparer<ValidationInfo, Comparer>
-    {
-        /// <inheritdoc/>
-        protected override void AddToHashCode(ref HashCode hashCode, ValidationInfo obj)
-        {
-            hashCode.Add(obj.FilenameHint);
-            hashCode.Add(obj.TypeName);
-            hashCode.AddRange(obj.PropertyNames);
-        }
-
-        /// <inheritdoc/>
-        protected override bool AreEqual(ValidationInfo x, ValidationInfo y)
-        {
-            return
-                x.FilenameHint == y.FilenameHint &&
-                x.TypeName == y.TypeName &&
-                x.PropertyNames.SequenceEqual(y.PropertyNames);
-        }
-    }
-}
+internal sealed record ValidationInfo(string FilenameHint, string TypeName, EquatableArray<string> PropertyNames);
