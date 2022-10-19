@@ -3,6 +3,8 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -32,7 +34,7 @@ internal static class EquatableArray
 /// An imutable, equatable array. This is equivalent to <see cref="ImmutableArray{T}"/> but with value equality support.
 /// </summary>
 /// <typeparam name="T">The type of values in the array.</typeparam>
-internal readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>
+internal readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>, IEnumerable<T>
     where T : IEquatable<T>
 {
     /// <summary>
@@ -135,6 +137,27 @@ internal readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>
     public T[] ToArray()
     {
         return AsImmutableArray().ToArray();
+    }
+
+    /// <summary>
+    /// Gets an <see cref="ImmutableArray{T}.Enumerator"/> value to traverse items in the current array.
+    /// </summary>
+    /// <returns>An <see cref="ImmutableArray{T}.Enumerator"/> value to traverse items in the current array.</returns>
+    public ImmutableArray<T>.Enumerator GetEnumerator()
+    {
+        return AsImmutableArray().GetEnumerator();
+    }
+
+    /// <sinheritdoc/>
+    IEnumerator<T> IEnumerable<T>.GetEnumerator()
+    {
+        return ((IEnumerable<T>)AsImmutableArray()).GetEnumerator();
+    }
+
+    /// <sinheritdoc/>
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return ((IEnumerable)AsImmutableArray()).GetEnumerator();
     }
 
     /// <summary>
