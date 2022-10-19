@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 using Microsoft.CodeAnalysis;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators.Extensions;
@@ -22,36 +23,46 @@ internal static class IncrementalValuesProviderExtensions
     /// </summary>
     /// <typeparam name="TLeft">The type of left items in each tuple.</typeparam>
     /// <typeparam name="TRight">The type of right items in each tuple.</typeparam>
+    /// <typeparam name="TKey">The type of resulting key elements.</typeparam>
     /// <typeparam name="TElement">The type of resulting projected elements.</typeparam>
     /// <param name="source">The input <see cref="IncrementalValuesProvider{TValues}"/> instance.</param>
-    /// <param name="comparer">A <typeparamref name="TLeft"/> comparer.</param>
-    /// <param name="projection">A projection function to convert gathered elements.</param>
+    /// <param name="keySelector">The key selection <see cref="Func{T, TResult}"/>.</param>
+    /// <param name="elementSelector">The element selection <see cref="Func{T, TResult}"/>.</param>
     /// <returns>An <see cref="IncrementalValuesProvider{TValues}"/> with the grouped results.</returns>
-    public static IncrementalValuesProvider<(TLeft Left, ImmutableArray<TElement> Right)> GroupBy<TLeft, TRight, TElement>(
+    public static IncrementalValuesProvider<(TKey Key, EquatableArray<TElement> Right)> GroupBy<TLeft, TRight, TKey, TElement>(
         this IncrementalValuesProvider<(TLeft Left, TRight Right)> source,
-        IEqualityComparer<TLeft> comparer,
-        Func<TRight, TElement> projection)
+        Func<(TLeft Left, TRight Right), TKey> keySelector,
+        Func<(TLeft Left, TRight Right), TElement> elementSelector)
+        where TLeft : IEquatable<TLeft>
+        where TRight : IEquatable<TRight>
+        where TKey : IEquatable<TKey>
+        where TElement : IEquatable<TElement>
     {
-        return source.Collect().SelectMany((item, _) =>
+        return source.Collect().SelectMany((item, token) =>
         {
-            Dictionary<TLeft, ImmutableArray<TElement>.Builder> map = new(comparer);
+            Dictionary<TKey, ImmutableArray<TElement>.Builder> map = new();
 
-            foreach ((TLeft hierarchy, TRight info) in item)
+            foreach ((TLeft, TRight) pair in item)
             {
-                if (!map.TryGetValue(hierarchy, out ImmutableArray<TElement>.Builder builder))
+                TKey key = keySelector(pair);
+                TElement element = elementSelector(pair);
+
+                if (!map.TryGetValue(key, out ImmutableArray<TElement>.Builder builder))
                 {
                     builder = ImmutableArray.CreateBuilder<TElement>();
 
-                    map.Add(hierarchy, builder);
+                    map.Add(key, builder);
                 }
 
-                builder.Add(projection(info));
+                builder.Add(element);
             }
 
-            ImmutableArray<(TLeft Hierarchy, ImmutableArray<TElement> Elements)>.Builder result =
-                ImmutableArray.CreateBuilder<(TLeft, ImmutableArray<TElement>)>();
+            token.ThrowIfCancellationRequested();
 
-            foreach (KeyValuePair<TLeft, ImmutableArray<TElement>.Builder> entry in map)
+            ImmutableArray<(TKey Key, EquatableArray<TElement> Elements)>.Builder result =
+                ImmutableArray.CreateBuilder<(TKey, EquatableArray<TElement>)>();
+
+            foreach (KeyValuePair<TKey, ImmutableArray<TElement>.Builder> entry in map)
             {
                 result.Add((entry.Key, entry.Value.ToImmutable()));
             }

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
+using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 using CommunityToolkit.Mvvm.SourceGenerators.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -58,10 +59,9 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
             .Where(static item => item.Info.Value is not null)!;
 
         // Split and group by containing type
-        IncrementalValuesProvider<(HierarchyInfo Hierarchy, ImmutableArray<PropertyInfo> Properties)> groupedPropertyInfo =
+        IncrementalValuesProvider<(HierarchyInfo Hierarchy, EquatableArray<PropertyInfo> Properties)> groupedPropertyInfo =
             propertyInfo
-            .GroupBy(EqualityComparer<HierarchyInfo>.Default, static item => item.Value)
-            .WithComparers(EqualityComparer<HierarchyInfo>.Default, EqualityComparer<PropertyInfo>.Default.ForImmutableArray());
+            .GroupBy(static item => item.Left, static item => item.Right.Value);
 
         // Generate the requested properties and methods
         context.RegisterSourceOutput(groupedPropertyInfo, static (context, item) =>
