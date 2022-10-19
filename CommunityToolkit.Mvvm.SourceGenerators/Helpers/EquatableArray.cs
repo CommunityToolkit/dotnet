@@ -11,6 +11,24 @@ using System.Runtime.CompilerServices;
 namespace CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 
 /// <summary>
+/// Extensions for <see cref="EquatableArray{T}"/>.
+/// </summary>
+internal static class EquatableArray
+{
+    /// <summary>
+    /// Creates an <see cref="EquatableArray{T}"/> instance from a given <see cref="ImmutableArray{T}"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of items in the input array.</typeparam>
+    /// <param name="array">The input <see cref="ImmutableArray{T}"/> instance.</param>
+    /// <returns>An <see cref="EquatableArray{T}"/> instance from a given <see cref="ImmutableArray{T}"/>.</returns>
+    public static EquatableArray<T> AsEquatableArray<T>(this ImmutableArray<T> array)
+        where T : IEquatable<T>
+    {
+        return new(array);
+    }
+}
+
+/// <summary>
 /// An imutable, equatable array. This is equivalent to <see cref="ImmutableArray{T}"/> but with value equality support.
 /// </summary>
 /// <typeparam name="T">The type of values in the array.</typeparam>
@@ -29,6 +47,26 @@ internal readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>
     public EquatableArray(ImmutableArray<T> array)
     {
         this.array = Unsafe.As<ImmutableArray<T>, T[]?>(ref array);
+    }
+
+    /// <summary>
+    /// Gets a reference to an item at a specified position within the array.
+    /// </summary>
+    /// <param name="index">The index of the item to retrieve a reference to.</param>
+    /// <returns>A reference to an item at a specified position within the array.</returns>
+    public ref readonly T this[int index]
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => ref AsImmutableArray().ItemRef(index);
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether the current array is empty.
+    /// </summary>
+    public bool IsEmpty
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => AsImmutableArray().IsEmpty;
     }
 
     /// <sinheritdoc/>
@@ -65,6 +103,7 @@ internal readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>
     /// Gets an <see cref="ImmutableArray{T}"/> instance from the current <see cref="EquatableArray{T}"/>.
     /// </summary>
     /// <returns>The <see cref="ImmutableArray{T}"/> from the current <see cref="EquatableArray{T}"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ImmutableArray<T> AsImmutableArray()
     {
         return Unsafe.As<T[]?, ImmutableArray<T>>(ref Unsafe.AsRef(in this.array));
@@ -78,6 +117,24 @@ internal readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>
     public static EquatableArray<T> FromImmutableArray(ImmutableArray<T> array)
     {
         return new(array);
+    }
+
+    /// <summary>
+    /// Returns a <see cref="ReadOnlySpan{T}"/> wrapping the current items.
+    /// </summary>
+    /// <returns>A <see cref="ReadOnlySpan{T}"/> wrapping the current items.</returns>
+    public ReadOnlySpan<T> AsSpan()
+    {
+        return AsImmutableArray().AsSpan();
+    }
+
+    /// <summary>
+    /// Copies the contents of this <see cref="EquatableArray{T}"/> instance. to a mutable array.
+    /// </summary>
+    /// <returns>The newly instantiated array.</returns>
+    public T[] ToArray()
+    {
+        return AsImmutableArray().ToArray();
     }
 
     /// <summary>
