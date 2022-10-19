@@ -61,7 +61,7 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
         IncrementalValuesProvider<(HierarchyInfo Hierarchy, ImmutableArray<PropertyInfo> Properties)> groupedPropertyInfo =
             propertyInfo
             .GroupBy(HierarchyInfo.Comparer.Default, static item => item.Value)
-            .WithComparers(HierarchyInfo.Comparer.Default, PropertyInfo.Comparer.Default.ForImmutableArray());
+            .WithComparers(HierarchyInfo.Comparer.Default, EqualityComparer<PropertyInfo>.Default.ForImmutableArray());
 
         // Generate the requested properties and methods
         context.RegisterSourceOutput(groupedPropertyInfo, static (context, item) =>

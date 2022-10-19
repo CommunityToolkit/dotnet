@@ -38,7 +38,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\INotifyPropertyChangedInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\ObservableRecipientInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\PropertyInfo.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\TypedConstantInfo.Comparer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\TypedConstantInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\TypedConstantInfo.Factory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\ValidationInfo.cs" />

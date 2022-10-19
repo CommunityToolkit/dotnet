@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Immutable;
 using System.Linq;
+using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -25,25 +26,11 @@ internal abstract partial record TypedConstantInfo
     public abstract ExpressionSyntax GetSyntax();
 
     /// <summary>
-    /// Checks whether the current instance is the same as an input one.
-    /// </summary>
-    /// <param name="other">The <see cref="TypedConstantInfo"/> instance to compare to.</param>
-    /// <returns>Whether or not the two instances are the same.</returns>
-    /// <remarks>This method differs from <see cref="Equals(TypedConstantInfo?)"/> in that it checks for deep equality.</remarks>
-    protected abstract bool IsEqualTo(TypedConstantInfo other);
-
-    /// <summary>
-    /// Adds the current instance to an incremental <see cref="HashCode"/> value.
-    /// </summary>
-    /// <param name="hashCode">The target <see cref="HashCode"/> value.</param>
-    protected abstract void AddToHashCode(ref HashCode hashCode);
-
-    /// <summary>
     /// A <see cref="TypedConstantInfo"/> type representing an array.
     /// </summary>
     /// <param name="ElementTypeName">The type name for array elements.</param>
     /// <param name="Items">The sequence of contained elements.</param>
-    public sealed record Array(string ElementTypeName, ImmutableArray<TypedConstantInfo> Items) : TypedConstantInfo
+    public sealed record Array(string ElementTypeName, EquatableArray<TypedConstantInfo> Items) : TypedConstantInfo
     {
         /// <inheritdoc/>
         public override ExpressionSyntax GetSyntax()
@@ -54,38 +41,6 @@ internal abstract partial record TypedConstantInfo
                 .AddRankSpecifiers(ArrayRankSpecifier(SingletonSeparatedList<ExpressionSyntax>(OmittedArraySizeExpression()))))
                 .WithInitializer(InitializerExpression(SyntaxKind.ArrayInitializerExpression)
                 .AddExpressions(Items.Select(static c => c.GetSyntax()).ToArray()));
-        }
-
-        /// <inheritdoc/>
-        protected override bool IsEqualTo(TypedConstantInfo other)
-        {
-            if (other is Array array &&
-                ElementTypeName == array.ElementTypeName &&
-                Items.Length == array.Items.Length)
-            {
-                for (int i = 0; i < Items.Length; i++)
-                {
-                    if (!Items[i].IsEqualTo(array.Items[i]))
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
-            }
-
-            return false;
-        }
-
-        /// <inheritdoc/>
-        protected override void AddToHashCode(ref HashCode hashCode)
-        {
-            hashCode.Add(ElementTypeName);
-
-            foreach (TypedConstantInfo item in Items)
-            {
-                item.AddToHashCode(ref hashCode);
-            }
         }
     }
 
@@ -105,20 +60,6 @@ internal abstract partial record TypedConstantInfo
             {
                 return LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(Value));
             }
-
-            /// <inheritdoc/>
-            protected override bool IsEqualTo(TypedConstantInfo other)
-            {
-                return
-                    other is String @string &&
-                    Value == @string.Value;
-            }
-
-            /// <inheritdoc/>
-            protected override void AddToHashCode(ref HashCode hashCode)
-            {
-                hashCode.Add(Value);
-            }
         }
 
         /// <summary>
@@ -131,20 +72,6 @@ internal abstract partial record TypedConstantInfo
             public override ExpressionSyntax GetSyntax()
             {
                 return LiteralExpression(Value ? SyntaxKind.TrueLiteralExpression : SyntaxKind.FalseLiteralExpression);
-            }
-
-            /// <inheritdoc/>
-            protected override bool IsEqualTo(TypedConstantInfo other)
-            {
-                return
-                    other is Boolean @bool &&
-                    Value == @bool.Value;
-            }
-
-            /// <inheritdoc/>
-            protected override void AddToHashCode(ref HashCode hashCode)
-            {
-                hashCode.Add(Value);
             }
         }
 
@@ -175,20 +102,6 @@ internal abstract partial record TypedConstantInfo
                     _ => throw new ArgumentException("Invalid primitive type")
                 });
             }
-
-            /// <inheritdoc/>
-            protected override bool IsEqualTo(TypedConstantInfo other)
-            {
-                return
-                    other is Of<T> box &&
-                    Value.Equals(box.Value);
-            }
-
-            /// <inheritdoc/>
-            protected override void AddToHashCode(ref HashCode hashCode)
-            {
-                hashCode.Add(Value);
-            }
         }
     }
 
@@ -202,20 +115,6 @@ internal abstract partial record TypedConstantInfo
         public override ExpressionSyntax GetSyntax()
         {
             return TypeOfExpression(IdentifierName(TypeName));
-        }
-
-        /// <inheritdoc/>
-        protected override bool IsEqualTo(TypedConstantInfo other)
-        {
-            return
-                other is Type type &&
-                TypeName == type.TypeName;
-        }
-
-        /// <inheritdoc/>
-        protected override void AddToHashCode(ref HashCode hashCode)
-        {
-            hashCode.Add(TypeName);
         }
     }
 
@@ -234,22 +133,6 @@ internal abstract partial record TypedConstantInfo
                     IdentifierName(TypeName),
                     LiteralExpression(SyntaxKind.NumericLiteralExpression, ParseToken(Value.ToString())));
         }
-
-        /// <inheritdoc/>
-        protected override bool IsEqualTo(TypedConstantInfo other)
-        {
-            return
-                other is Enum @enum &&
-                TypeName == @enum.TypeName &&
-                Value.Equals(@enum.Value);
-        }
-
-        /// <inheritdoc/>
-        protected override void AddToHashCode(ref HashCode hashCode)
-        {
-            hashCode.Add(TypeName);
-            hashCode.Add(Value);
-        }
     }
 
     /// <summary>
@@ -261,18 +144,6 @@ internal abstract partial record TypedConstantInfo
         public override ExpressionSyntax GetSyntax()
         {
             return LiteralExpression(SyntaxKind.NullLiteralExpression);
-        }
-
-        /// <inheritdoc/>
-        protected override bool IsEqualTo(TypedConstantInfo other)
-        {
-            return other is Null;
-        }
-
-        /// <inheritdoc/>
-        protected override void AddToHashCode(ref HashCode hashCode)
-        {
-            hashCode.Add((object?)null);
         }
     }
 }
