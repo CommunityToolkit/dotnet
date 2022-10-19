@@ -80,12 +80,11 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
         });
 
         // Gather all property changing names
-        IncrementalValueProvider<ImmutableArray<string>> propertyChangingNames =
+        IncrementalValueProvider<EquatableArray<string>> propertyChangingNames =
             propertyInfo
             .SelectMany(static (item, _) => item.Info.Value.PropertyChangingNames)
             .Collect()
-            .Select(static (item, _) => item.Distinct().ToImmutableArray())
-            .WithComparer(EqualityComparer<string>.Default.ForImmutableArray());
+            .Select(static (item, _) => item.Distinct().ToImmutableArray().AsEquatableArray());
 
         // Generate the cached property changing names
         context.RegisterSourceOutput(propertyChangingNames, static (context, item) =>
@@ -99,12 +98,11 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
         });
 
         // Gather all property changed names
-        IncrementalValueProvider<ImmutableArray<string>> propertyChangedNames =
+        IncrementalValueProvider<EquatableArray<string>> propertyChangedNames =
             propertyInfo
             .SelectMany(static (item, _) => item.Info.Value.PropertyChangedNames)
             .Collect()
-            .Select(static (item, _) => item.Distinct().ToImmutableArray())
-            .WithComparer(EqualityComparer<string>.Default.ForImmutableArray());
+            .Select(static (item, _) => item.Distinct().ToImmutableArray().AsEquatableArray());
 
         // Generate the cached property changed names
         context.RegisterSourceOutput(propertyChangedNames, static (context, item) =>
