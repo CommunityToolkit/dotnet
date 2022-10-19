@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -19,19 +20,12 @@ namespace CommunityToolkit.Mvvm.SourceGenerators;
 /// </summary>
 /// <typeparam name="TInfo">The type of info gathered for each target type to process.</typeparam>
 public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGenerator
+    where TInfo : IEquatable<TInfo>
 {
     /// <summary>
     /// The fully qualified metadata name of the attribute type to look for.
     /// </summary>
     private readonly string fullyQualifiedAttributeMetadataName;
-
-    /// <summary>
-    /// An <see cref="IEqualityComparer{T}"/> instance to compare intermediate models.
-    /// </summary>
-    /// <remarks>
-    /// This is needed to cache extracted info on attributes used to annotate target types.
-    /// </remarks>
-    private readonly IEqualityComparer<TInfo> comparer;
 
     /// <summary>
     /// The preloaded <see cref="ClassDeclarationSyntax"/> instance with members to generate.
@@ -52,11 +46,9 @@ public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGe
     /// Initializes a new instance of the <see cref="TransitiveMembersGenerator{TInfo}"/> class.
     /// </summary>
     /// <param name="fullyQualifiedAttributeMetadataName">The fully qualified metadata name of the attribute type to look for.</param>
-    /// <param name="comparer">An <see cref="IEqualityComparer{T}"/> instance to compare intermediate models.</param>
-    private protected TransitiveMembersGenerator(string fullyQualifiedAttributeMetadataName, IEqualityComparer<TInfo>? comparer = null)
+    private protected TransitiveMembersGenerator(string fullyQualifiedAttributeMetadataName)
     {
         this.fullyQualifiedAttributeMetadataName = fullyQualifiedAttributeMetadataName;
-        this.comparer = comparer ?? EqualityComparer<TInfo>.Default;
         this.classDeclaration = Execute.LoadClassDeclaration(fullyQualifiedAttributeMetadataName);
 
         Execute.ProcessMemberDeclarations(
@@ -106,8 +98,7 @@ public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGe
         IncrementalValuesProvider<(HierarchyInfo Hierarchy, bool IsSealed, TInfo Info)> generationInfo =
             generationInfoWithErrors
             .Where(static item => item.Errors.IsEmpty)
-            .Select(static (item, _) => item.Value)!
-            .WithComparers(HierarchyInfo.Comparer.Default, EqualityComparer<bool>.Default, this.comparer);
+            .Select(static (item, _) => item.Value)!;
 
         // Generate the required members
         context.RegisterSourceOutput(generationInfo, (context, item) =>

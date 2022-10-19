@@ -16,7 +16,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators;
 /// A source generator for the <c>ObservableObjectAttribute</c> type.
 /// </summary>
 [Generator(LanguageNames.CSharp)]
-public sealed class ObservableObjectGenerator : TransitiveMembersGenerator<object?>
+public sealed class ObservableObjectGenerator : TransitiveMembersGenerator<int>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ObservableObjectGenerator"/> class.
@@ -27,7 +27,7 @@ public sealed class ObservableObjectGenerator : TransitiveMembersGenerator<objec
     }
 
     /// <inheritdoc/>
-    private protected override object? ValidateTargetTypeAndGetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData, Compilation compilation, out ImmutableArray<DiagnosticInfo> diagnostics)
+    private protected override int ValidateTargetTypeAndGetInfo(INamedTypeSymbol typeSymbol, AttributeData attributeData, Compilation compilation, out ImmutableArray<DiagnosticInfo> diagnostics)
     {
         diagnostics = ImmutableArray<DiagnosticInfo>.Empty;
 
@@ -57,11 +57,11 @@ public sealed class ObservableObjectGenerator : TransitiveMembersGenerator<objec
         }
 
         End:
-        return null;
+        return 0;
     }
 
     /// <inheritdoc/>
-    protected override ImmutableArray<MemberDeclarationSyntax> FilterDeclaredMembers(object? info, ImmutableArray<MemberDeclarationSyntax> memberDeclarations)
+    protected override ImmutableArray<MemberDeclarationSyntax> FilterDeclaredMembers(int info, ImmutableArray<MemberDeclarationSyntax> memberDeclarations)
     {
         return memberDeclarations;
     }
