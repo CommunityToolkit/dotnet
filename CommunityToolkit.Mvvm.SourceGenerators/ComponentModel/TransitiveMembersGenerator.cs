@@ -92,7 +92,7 @@ public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGe
             .Where(static item => item is not null)!;
 
         // Emit the diagnostic, if needed
-        context.ReportDiagnostics(generationInfoWithErrors.Select(static (item, _) => item.Errors));
+        context.ReportDiagnostics(generationInfoWithErrors.Select(static (item, _) => item.Errors.AsImmutableArray()));
 
         // Get the filtered sequence to enable caching
         IncrementalValuesProvider<(HierarchyInfo Hierarchy, bool IsSealed, TInfo Info)> generationInfo =

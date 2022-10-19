@@ -50,7 +50,7 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
             .Where(static item => item.Hierarchy is not null);
 
         // Output the diagnostics
-        context.ReportDiagnostics(propertyInfoWithErrors.Select(static (item, _) => item.Info.Errors));
+        context.ReportDiagnostics(propertyInfoWithErrors.Select(static (item, _) => item.Info.Errors.AsImmutableArray()));
 
         // Get the filtered sequence to enable caching
         IncrementalValuesProvider<(HierarchyInfo Hierarchy, Result<PropertyInfo> Info)> propertyInfo =
@@ -60,8 +60,8 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
         // Split and group by containing type
         IncrementalValuesProvider<(HierarchyInfo Hierarchy, ImmutableArray<PropertyInfo> Properties)> groupedPropertyInfo =
             propertyInfo
-            .GroupBy(HierarchyInfo.Comparer.Default, static item => item.Value)
-            .WithComparers(HierarchyInfo.Comparer.Default, EqualityComparer<PropertyInfo>.Default.ForImmutableArray());
+            .GroupBy(EqualityComparer<HierarchyInfo>.Default, static item => item.Value)
+            .WithComparers(EqualityComparer<HierarchyInfo>.Default, EqualityComparer<PropertyInfo>.Default.ForImmutableArray());
 
         // Generate the requested properties and methods
         context.RegisterSourceOutput(groupedPropertyInfo, static (context, item) =>
