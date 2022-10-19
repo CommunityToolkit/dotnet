@@ -27,45 +27,9 @@ internal sealed record PropertyInfo(
     string TypeNameWithNullabilityAnnotations,
     string FieldName,
     string PropertyName,
-    ImmutableArray<string> PropertyChangingNames,
-    ImmutableArray<string> PropertyChangedNames,
-    ImmutableArray<string> NotifiedCommandNames,
+    EquatableArray<string> PropertyChangingNames,
+    EquatableArray<string> PropertyChangedNames,
+    EquatableArray<string> NotifiedCommandNames,
     bool NotifyPropertyChangedRecipients,
     bool NotifyDataErrorInfo,
-    ImmutableArray<AttributeInfo> ForwardedAttributes)
-{
-    /// <summary>
-    /// An <see cref="IEqualityComparer{T}"/> implementation for <see cref="PropertyInfo"/>.
-    /// </summary>
-    public sealed class Comparer : Comparer<PropertyInfo, Comparer>
-    {
-        /// <inheritdoc/>
-        protected override void AddToHashCode(ref HashCode hashCode, PropertyInfo obj)
-        {
-            hashCode.Add(obj.TypeNameWithNullabilityAnnotations);
-            hashCode.Add(obj.FieldName);
-            hashCode.Add(obj.PropertyName);
-            hashCode.AddRange(obj.PropertyChangingNames);
-            hashCode.AddRange(obj.PropertyChangedNames);
-            hashCode.AddRange(obj.NotifiedCommandNames);
-            hashCode.Add(obj.NotifyPropertyChangedRecipients);
-            hashCode.Add(obj.NotifyDataErrorInfo);
-            hashCode.AddRange(obj.ForwardedAttributes, AttributeInfo.Comparer.Default);
-        }
-
-        /// <inheritdoc/>
-        protected override bool AreEqual(PropertyInfo x, PropertyInfo y)
-        {
-            return
-                x.TypeNameWithNullabilityAnnotations == y.TypeNameWithNullabilityAnnotations &&
-                x.FieldName == y.FieldName &&
-                x.PropertyName == y.PropertyName &&
-                x.PropertyChangingNames.SequenceEqual(y.PropertyChangingNames) &&
-                x.PropertyChangedNames.SequenceEqual(y.PropertyChangedNames) &&
-                x.NotifiedCommandNames.SequenceEqual(y.NotifiedCommandNames) &&
-                x.NotifyPropertyChangedRecipients == y.NotifyPropertyChangedRecipients &&
-                x.NotifyDataErrorInfo == y.NotifyDataErrorInfo &&
-                x.ForwardedAttributes.SequenceEqual(y.ForwardedAttributes, AttributeInfo.Comparer.Default);
-        }
-    }
-}
+    EquatableArray<AttributeInfo> ForwardedAttributes);
