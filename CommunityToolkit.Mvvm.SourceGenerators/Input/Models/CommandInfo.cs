@@ -34,60 +34,10 @@ internal sealed record CommandInfo(
     string CommandInterfaceType,
     string CommandClassType,
     string DelegateType,
-    ImmutableArray<string> CommandTypeArguments,
-    ImmutableArray<string> DelegateTypeArguments,
+    EquatableArray<string> CommandTypeArguments,
+    EquatableArray<string> DelegateTypeArguments,
     string? CanExecuteMemberName,
     CanExecuteExpressionType? CanExecuteExpressionType,
     bool AllowConcurrentExecutions,
     bool FlowExceptionsToTaskScheduler,
-    bool IncludeCancelCommand)
-{
-    /// <inheritdoc/>
-    public bool Equals(CommandInfo? obj) => Comparer.Default.Equals(this, obj);
-
-    /// <inheritdoc/>
-    public override int GetHashCode() => Comparer.Default.GetHashCode(this);
-
-    /// <summary>
-    /// An <see cref="IEqualityComparer{T}"/> implementation for <see cref="CommandInfo"/>.
-    /// </summary>
-    private sealed class Comparer : Comparer<CommandInfo, Comparer>
-    {
-        /// <inheritdoc/>
-        protected override void AddToHashCode(ref HashCode hashCode, CommandInfo obj)
-        {
-            hashCode.Add(obj.MethodName);
-            hashCode.Add(obj.FieldName);
-            hashCode.Add(obj.PropertyName);
-            hashCode.Add(obj.CommandInterfaceType);
-            hashCode.Add(obj.CommandClassType);
-            hashCode.Add(obj.DelegateType);
-            hashCode.AddRange(obj.CommandTypeArguments);
-            hashCode.AddRange(obj.DelegateTypeArguments);
-            hashCode.Add(obj.CanExecuteMemberName);
-            hashCode.Add(obj.CanExecuteExpressionType);
-            hashCode.Add(obj.AllowConcurrentExecutions);
-            hashCode.Add(obj.FlowExceptionsToTaskScheduler);
-            hashCode.Add(obj.IncludeCancelCommand);
-        }
-
-        /// <inheritdoc/>
-        protected override bool AreEqual(CommandInfo x, CommandInfo y)
-        {
-            return
-                x.MethodName == y.MethodName &&
-                x.FieldName == y.FieldName &&
-                x.PropertyName == y.PropertyName &&
-                x.CommandInterfaceType == y.CommandInterfaceType &&
-                x.CommandClassType == y.CommandClassType &&
-                x.DelegateType == y.DelegateType &&
-                x.CommandTypeArguments.SequenceEqual(y.CommandTypeArguments) &&
-                x.DelegateTypeArguments.SequenceEqual(y.CommandTypeArguments) &&
-                x.CanExecuteMemberName == y.CanExecuteMemberName &&
-                x.CanExecuteExpressionType == y.CanExecuteExpressionType &&
-                x.AllowConcurrentExecutions == y.AllowConcurrentExecutions &&
-                x.FlowExceptionsToTaskScheduler == y.FlowExceptionsToTaskScheduler &&
-                x.IncludeCancelCommand == y.IncludeCancelCommand;
-        }
-    }
-}
+    bool IncludeCancelCommand);
