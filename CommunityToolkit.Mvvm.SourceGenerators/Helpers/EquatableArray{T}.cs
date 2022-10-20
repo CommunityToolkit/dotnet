@@ -74,7 +74,7 @@ internal readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>, IEnu
     /// <sinheritdoc/>
     public bool Equals(EquatableArray<T> array)
     {
-        return AsImmutableArray().SequenceEqual(array.AsImmutableArray());
+        return AsSpan().SequenceEqual(array.AsSpan());
     }
 
     /// <sinheritdoc/>
