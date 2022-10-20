@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
@@ -51,7 +50,7 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
             .Where(static item => item.Hierarchy is not null);
 
         // Output the diagnostics
-        context.ReportDiagnostics(propertyInfoWithErrors.Select(static (item, _) => item.Info.Errors.AsImmutableArray()));
+        context.ReportDiagnostics(propertyInfoWithErrors.Select(static (item, _) => item.Info.Errors));
 
         // Get the filtered sequence to enable caching
         IncrementalValuesProvider<(HierarchyInfo Hierarchy, Result<PropertyInfo> Info)> propertyInfo =
