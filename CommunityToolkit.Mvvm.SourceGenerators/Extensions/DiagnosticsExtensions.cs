@@ -67,7 +67,7 @@ internal static class DiagnosticsExtensions
     /// </summary>
     /// <param name="context">The input <see cref="IncrementalGeneratorInitializationContext"/> instance.</param>
     /// <param name="diagnostics">The input <see cref="IncrementalValuesProvider{TValues}"/> sequence of diagnostics.</param>
-    public static void ReportDiagnostics(this IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<ImmutableArray<DiagnosticInfo>> diagnostics)
+    public static void ReportDiagnostics(this IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<EquatableArray<DiagnosticInfo>> diagnostics)
     {
         context.RegisterSourceOutput(diagnostics, static (context, diagnostics) =>
         {

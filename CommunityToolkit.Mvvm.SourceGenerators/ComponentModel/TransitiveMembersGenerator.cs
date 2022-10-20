@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
@@ -92,7 +91,7 @@ public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGe
             .Where(static item => item is not null)!;
 
         // Emit the diagnostic, if needed
-        context.ReportDiagnostics(generationInfoWithErrors.Select(static (item, _) => item.Errors.AsImmutableArray()));
+        context.ReportDiagnostics(generationInfoWithErrors.Select(static (item, _) => item.Errors));
 
         // Get the filtered sequence to enable caching
         IncrementalValuesProvider<(HierarchyInfo Hierarchy, bool IsSealed, TInfo Info)> generationInfo =

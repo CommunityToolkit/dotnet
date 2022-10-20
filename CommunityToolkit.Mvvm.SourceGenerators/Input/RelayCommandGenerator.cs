@@ -48,7 +48,7 @@ public sealed partial class RelayCommandGenerator : IIncrementalGenerator
             .Where(static item => item.Hierarchy is not null)!;
 
         // Output the diagnostics
-        context.ReportDiagnostics(commandInfoWithErrors.Select(static (item, _) => item.Info.Errors.AsImmutableArray()));
+        context.ReportDiagnostics(commandInfoWithErrors.Select(static (item, _) => item.Info.Errors));
 
         // Get the filtered sequence to enable caching
         IncrementalValuesProvider<(HierarchyInfo Hierarchy, Result<CommandInfo> Info)> commandInfo =
