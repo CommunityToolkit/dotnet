@@ -64,7 +64,7 @@ partial class ObservablePropertyGenerator
             }
 
             // Get the property type and name
-            string typeNameWithNullabilityAnnotations = fieldSymbol.Type.GetFullyQualifiedNameWithNullabilityAnnotations();
+            string typeNameWithNullabilityAnnotations = GetFullyQualifiedPropertyType(fieldSymbol, out bool isTaskNotifier);
             string fieldName = fieldSymbol.Name;
             string propertyName = GetGeneratedPropertyName(fieldSymbol);
 
@@ -255,6 +255,7 @@ partial class ObservablePropertyGenerator
                 notifiedCommandNames.ToImmutable(),
                 notifyRecipients,
                 notifyDataErrorInfo,
+                isTaskNotifier,
                 forwardedAttributes.ToImmutable());
 
             diagnostics = builder.ToImmutable();
@@ -282,6 +283,46 @@ partial class ObservablePropertyGenerator
             shouldInvokeOnPropertyChanging = isObservableObject || hasObservableObjectAttribute;
 
             return isObservableObject || hasObservableObjectAttribute || hasINotifyPropertyChangedAttribute;
+        }
+
+        /// <summary>
+        /// Gets the fully qualified property type to generated from a given field.
+        /// </summary>
+        /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
+        /// <param name="isTaskNotifier">Whether the field is of a <c>TaskNotifier</c> type (see <c>ObservableObject</c>).</param>
+        /// <returns>The fully qualified type name for the property to generate from <paramref name="fieldSymbol"/>.</returns>
+        private static string GetFullyQualifiedPropertyType(IFieldSymbol fieldSymbol, out bool isTaskNotifier)
+        {
+            // Check whether the field is an ObservableObject.TaskNotifier, which maps to a Task property
+            if (fieldSymbol.Type is INamedTypeSymbol { IsGenericType: false } fieldType &&
+                fieldType.HasFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableObject+TaskNotifier"))
+            {
+                isTaskNotifier = true;
+
+                return fieldType.NullableAnnotation switch
+                {
+                    NullableAnnotation.Annotated => "global::System.Threading.Tasks.Task?",
+                    _ => "global::System.Threading.Tasks.Task"
+                };
+            }
+
+            // Check whether the field is an ObservableObject.TaskNotifier<T>, which maps to a Task<T> property
+            if (fieldSymbol.Type is INamedTypeSymbol { IsGenericType: true, TypeArguments: [ITypeSymbol fieldTypeArgument] } fieldGenericType &&
+                fieldGenericType.ConstructedFrom.HasFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableObject+TaskNotifier`1"))
+            {
+                isTaskNotifier = true;
+
+                return fieldSymbol.Type.NullableAnnotation switch
+                {
+                    NullableAnnotation.Annotated => $"global::System.Threading.Tasks.Task<{fieldTypeArgument.GetFullyQualifiedNameWithNullabilityAnnotations()}>?",
+                    _ => $"global::System.Threading.Tasks.Task<{fieldTypeArgument.GetFullyQualifiedNameWithNullabilityAnnotations()}>"
+                };
+            }
+
+            // In all other cases, just map the field directly as is to the generated property
+            isTaskNotifier = false;
+
+            return fieldSymbol.Type.GetFullyQualifiedNameWithNullabilityAnnotations();
         }
 
         /// <summary>
