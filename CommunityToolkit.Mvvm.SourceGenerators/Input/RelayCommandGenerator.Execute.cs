@@ -439,7 +439,17 @@ partial class RelayCommandGenerator
 
             propertyName += "Command";
 
-            string fieldName = $"{char.ToLower(propertyName[0], CultureInfo.InvariantCulture)}{propertyName.Substring(1)}";
+            char firstCharacter = propertyName[0];
+            char loweredFirstCharacter = char.ToLower(firstCharacter, CultureInfo.InvariantCulture);
+
+            // The field name is generated depending on whether the first character can be lowered:
+            //   - If it can, then the field name is just the property name starting in lowercase.
+            //   - If it can't (eg. starts with '中'), then the '_' prefix is added to the property name.
+            string fieldName = (firstCharacter == loweredFirstCharacter) switch
+            {
+                true => $"_{propertyName}",
+                false => $"{loweredFirstCharacter}{propertyName.Substring(1)}"
+            };
 
             return (fieldName, propertyName);
         }
