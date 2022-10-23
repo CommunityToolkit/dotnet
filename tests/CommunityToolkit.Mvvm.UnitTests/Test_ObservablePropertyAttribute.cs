@@ -946,6 +946,25 @@ public partial class Test_ObservablePropertyAttribute
         Assert.AreEqual(testAttribute2.Animal, (Animal)67);
     }
 
+    // See https://github.com/CommunityToolkit/dotnet/issues/446
+    [TestMethod]
+    public void Test_ObservableProperty_CommandNamesThatCantBeLowered()
+    {
+        ModelWithCommandNamesThatCantBeLowered model = new();
+
+        // Just ensures this builds
+        _ = model.中文Command;
+        _ = model.c中文Command;
+
+        FieldInfo? fieldInfo = typeof(ModelWithCommandNamesThatCantBeLowered).GetField($"_{nameof(ModelWithCommandNamesThatCantBeLowered.中文)}Command", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        Assert.AreSame(model.中文Command, fieldInfo.GetValue(model));
+
+        fieldInfo = typeof(ModelWithCommandNamesThatCantBeLowered).GetField($"_{nameof(ModelWithCommandNamesThatCantBeLowered.c中文)}Command", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        Assert.AreSame(model.c中文Command, fieldInfo.GetValue(model));
+    }
+
     public abstract partial class BaseViewModel : ObservableObject
     {
         public string? Content { get; set; }
@@ -1516,5 +1535,18 @@ public partial class Test_ObservablePropertyAttribute
         public object? NestedArray { get; set; }
 
         public Animal Animal { get; set; }
+    }
+
+    private sealed partial class ModelWithCommandNamesThatCantBeLowered
+    {
+        [RelayCommand]
+        public void 中文()
+        {
+        }
+
+        [RelayCommand]
+        public void c中文()
+        {
+        }
     }
 }
