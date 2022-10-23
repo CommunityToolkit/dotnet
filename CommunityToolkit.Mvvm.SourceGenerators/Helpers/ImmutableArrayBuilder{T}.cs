@@ -19,11 +19,6 @@ internal ref struct ImmutableArrayBuilder<T>
     private static readonly ObjectPool<ImmutableArray<T>.Builder> sharedObjectPool = new(ImmutableArray.CreateBuilder<T>);
 
     /// <summary>
-    /// The owner <see cref="ObjectPool{T}"/> instance.
-    /// </summary>
-    private readonly ObjectPool<ImmutableArray<T>.Builder> objectPool;
-
-    /// <summary>
     /// The rented <see cref="ImmutableArray{T}.Builder"/> instance to use.
     /// </summary>
     private ImmutableArray<T>.Builder? builder;
@@ -34,17 +29,15 @@ internal ref struct ImmutableArrayBuilder<T>
     /// <returns>A <see cref="ImmutableArrayBuilder{T}"/> to interact with the underlying <see cref="ImmutableArray{T}.Builder"/> instance.</returns>
     public static ImmutableArrayBuilder<T> Rent()
     {
-        return new(sharedObjectPool, sharedObjectPool.Allocate());
+        return new(sharedObjectPool.Allocate());
     }
 
     /// <summary>
     /// Creates a new <see cref="ImmutableArrayBuilder{T}"/> object with the specified parameters.
     /// </summary>
-    /// <param name="objectPool"></param>
     /// <param name="builder"></param>
-    private ImmutableArrayBuilder(ObjectPool<ImmutableArray<T>.Builder> objectPool, ImmutableArray<T>.Builder builder)
+    private ImmutableArrayBuilder(ImmutableArray<T>.Builder builder)
     {
-        this.objectPool = objectPool;
         this.builder = builder;
     }
 
@@ -83,7 +76,7 @@ internal ref struct ImmutableArrayBuilder<T>
         {
             builder.Clear();
 
-            this.objectPool.Free(builder);
+            sharedObjectPool.Free(builder);
         }
     }
 }
