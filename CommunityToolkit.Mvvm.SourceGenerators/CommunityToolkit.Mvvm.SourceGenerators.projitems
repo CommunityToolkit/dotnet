@@ -38,7 +38,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\INotifyPropertyChangedInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\ObservableRecipientInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\PropertyInfo.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\TypedConstantInfo.Comparer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\TypedConstantInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\TypedConstantInfo.Factory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\ValidationInfo.cs" />
@@ -58,8 +57,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\AttributeDataExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\CompilationExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\DiagnosticsExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Extensions\HashCodeExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Extensions\IEqualityComparerExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\INamedTypeSymbolExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\IncrementalGeneratorInitializationContextExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\IncrementalValuesProviderExtensions.cs" />
@@ -68,7 +65,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\MemberDeclarationSyntaxExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\SyntaxNodeExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\TypeDeclarationSyntaxExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Helpers\Comparer{T,TSelf}.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\EquatableArray{T}.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\HashCode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ImmutableArrayBuilder{T}.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ObjectPool{T}.cs" />

@@ -20,8 +20,8 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 /// </summary>
 internal sealed record AttributeInfo(
     string TypeName,
-    ImmutableArray<TypedConstantInfo> ConstructorArgumentInfo,
-    ImmutableArray<(string Name, TypedConstantInfo Value)> NamedArgumentInfo)
+    EquatableArray<TypedConstantInfo> ConstructorArgumentInfo,
+    EquatableArray<(string Name, TypedConstantInfo Value)> NamedArgumentInfo)
 {
     /// <summary>
     /// Creates a new <see cref="AttributeInfo"/> instance from a given <see cref="AttributeData"/> value.
@@ -114,50 +114,5 @@ internal sealed record AttributeInfo(
                 .WithNameEquals(NameEquals(IdentifierName(arg.Name))));
 
         return Attribute(IdentifierName(TypeName), AttributeArgumentList(SeparatedList(arguments.Concat(namedArguments))));
-
-    }
-
-    /// <summary>
-    /// An <see cref="IEqualityComparer{T}"/> implementation for <see cref="AttributeInfo"/>.
-    /// </summary>
-    public sealed class Comparer : Comparer<AttributeInfo, Comparer>
-    {
-        /// <inheritdoc/>
-        protected override void AddToHashCode(ref HashCode hashCode, AttributeInfo obj)
-        {
-            hashCode.Add(obj.TypeName);
-            hashCode.AddRange(obj.ConstructorArgumentInfo, TypedConstantInfo.Comparer.Default);
-
-            foreach ((string key, TypedConstantInfo value) in obj.NamedArgumentInfo)
-            {
-                hashCode.Add(key);
-                hashCode.Add(value, TypedConstantInfo.Comparer.Default);
-            }
-        }
-
-        /// <inheritdoc/>
-        protected override bool AreEqual(AttributeInfo x, AttributeInfo y)
-        {
-            if (x.TypeName != y.TypeName ||
-                !x.ConstructorArgumentInfo.SequenceEqual(y.ConstructorArgumentInfo, TypedConstantInfo.Comparer.Default) ||
-                x.NamedArgumentInfo.Length != y.NamedArgumentInfo.Length)
-            {
-                return false;
-            }
-
-            for (int i = 0; i < x.NamedArgumentInfo.Length; i++)
-            {
-                (string Name, TypedConstantInfo Value) left = x.NamedArgumentInfo[i];
-                (string Name, TypedConstantInfo Value) right = y.NamedArgumentInfo[i];
-
-                if (left.Name != right.Name ||
-                    !TypedConstantInfo.Comparer.Default.Equals(left.Value, right.Value))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
     }
 }

@@ -2,12 +2,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
+using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 using CommunityToolkit.Mvvm.SourceGenerators.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -58,10 +58,9 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
             .Where(static item => item.Info.Value is not null)!;
 
         // Split and group by containing type
-        IncrementalValuesProvider<(HierarchyInfo Hierarchy, ImmutableArray<PropertyInfo> Properties)> groupedPropertyInfo =
+        IncrementalValuesProvider<(HierarchyInfo Hierarchy, EquatableArray<PropertyInfo> Properties)> groupedPropertyInfo =
             propertyInfo
-            .GroupBy(HierarchyInfo.Comparer.Default, static item => item.Value)
-            .WithComparers(HierarchyInfo.Comparer.Default, PropertyInfo.Comparer.Default.ForImmutableArray());
+            .GroupBy(static item => item.Left, static item => item.Right.Value);
 
         // Generate the requested properties and methods
         context.RegisterSourceOutput(groupedPropertyInfo, static (context, item) =>
@@ -80,12 +79,11 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
         });
 
         // Gather all property changing names
-        IncrementalValueProvider<ImmutableArray<string>> propertyChangingNames =
+        IncrementalValueProvider<EquatableArray<string>> propertyChangingNames =
             propertyInfo
             .SelectMany(static (item, _) => item.Info.Value.PropertyChangingNames)
             .Collect()
-            .Select(static (item, _) => item.Distinct().ToImmutableArray())
-            .WithComparer(EqualityComparer<string>.Default.ForImmutableArray());
+            .Select(static (item, _) => item.Distinct().ToImmutableArray().AsEquatableArray());
 
         // Generate the cached property changing names
         context.RegisterSourceOutput(propertyChangingNames, static (context, item) =>
@@ -99,12 +97,11 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
         });
 
         // Gather all property changed names
-        IncrementalValueProvider<ImmutableArray<string>> propertyChangedNames =
+        IncrementalValueProvider<EquatableArray<string>> propertyChangedNames =
             propertyInfo
             .SelectMany(static (item, _) => item.Info.Value.PropertyChangedNames)
             .Collect()
-            .Select(static (item, _) => item.Distinct().ToImmutableArray())
-            .WithComparer(EqualityComparer<string>.Default.ForImmutableArray());
+            .Select(static (item, _) => item.Distinct().ToImmutableArray().AsEquatableArray());
 
         // Generate the cached property changed names
         context.RegisterSourceOutput(propertyChangedNames, static (context, item) =>
