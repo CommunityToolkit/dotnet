@@ -23,7 +23,7 @@ var (type, prefix) = typeInfo;
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is != <paramref name="target"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsEqualTo(<#=type#> value, <#=type#> target, [CallerArgumentExpression("value")] string name = "")
+    public static void IsEqualTo(<#=type#> value, <#=type#> target, [CallerArgumentExpression(nameof(value))] string name = "")
     {
         if (value == target)
         {
@@ -42,7 +42,7 @@ var (type, prefix) = typeInfo;
     /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is == <paramref name="target"/>.</exception>
     /// <remarks>The method is generic to avoid boxing the parameters, if they are value types.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsNotEqualTo(<#=type#> value, <#=type#> target, [CallerArgumentExpression("value")] string name = "")
+    public static void IsNotEqualTo(<#=type#> value, <#=type#> target, [CallerArgumentExpression(nameof(value))] string name = "")
     {
         if (value != target)
         {
@@ -61,7 +61,7 @@ var (type, prefix) = typeInfo;
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is >= <paramref name="maximum"/>.</exception>
     /// <remarks>The method is generic to avoid boxing the parameters, if they are value types.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsLessThan(<#=type#> value, <#=type#> maximum, [CallerArgumentExpression("value")] string name = "")
+    public static void IsLessThan(<#=type#> value, <#=type#> maximum, [CallerArgumentExpression(nameof(value))] string name = "")
     {
         if (value < maximum)
         {
@@ -80,7 +80,7 @@ var (type, prefix) = typeInfo;
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is > <paramref name="maximum"/>.</exception>
     /// <remarks>The method is generic to avoid boxing the parameters, if they are value types.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsLessThanOrEqualTo(<#=type#> value, <#=type#> maximum, [CallerArgumentExpression("value")] string name = "")
+    public static void IsLessThanOrEqualTo(<#=type#> value, <#=type#> maximum, [CallerArgumentExpression(nameof(value))] string name = "")
     {
         if (value <= maximum)
         {
@@ -99,7 +99,7 @@ var (type, prefix) = typeInfo;
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is &lt;= <paramref name="minimum"/>.</exception>
     /// <remarks>The method is generic to avoid boxing the parameters, if they are value types.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsGreaterThan(<#=type#> value, <#=type#> minimum, [CallerArgumentExpression("value")] string name = "")
+    public static void IsGreaterThan(<#=type#> value, <#=type#> minimum, [CallerArgumentExpression(nameof(value))] string name = "")
     {
         if (value > minimum)
         {
@@ -118,7 +118,7 @@ var (type, prefix) = typeInfo;
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is &lt; <paramref name="minimum"/>.</exception>
     /// <remarks>The method is generic to avoid boxing the parameters, if they are value types.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsGreaterThanOrEqualTo(<#=type#> value, <#=type#> minimum, [CallerArgumentExpression("value")] string name = "")
+    public static void IsGreaterThanOrEqualTo(<#=type#> value, <#=type#> minimum, [CallerArgumentExpression(nameof(value))] string name = "")
     {
         if (value >= minimum)
         {
@@ -141,7 +141,7 @@ var (type, prefix) = typeInfo;
     /// The method is generic to avoid boxing the parameters, if they are value types.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsInRange(<#=type#> value, <#=type#> minimum, <#=type#> maximum, [CallerArgumentExpression("value")] string name = "")
+    public static void IsInRange(<#=type#> value, <#=type#> minimum, <#=type#> maximum, [CallerArgumentExpression(nameof(value))] string name = "")
     {
         if (value >= minimum && value < maximum)
         {
@@ -164,7 +164,7 @@ var (type, prefix) = typeInfo;
     /// The method is generic to avoid boxing the parameters, if they are value types.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsNotInRange(<#=type#> value, <#=type#> minimum, <#=type#> maximum, [CallerArgumentExpression("value")] string name = "")
+    public static void IsNotInRange(<#=type#> value, <#=type#> minimum, <#=type#> maximum, [CallerArgumentExpression(nameof(value))] string name = "")
     {
         if (value < minimum || value >= maximum)
         {
@@ -187,7 +187,7 @@ var (type, prefix) = typeInfo;
     /// The method is generic to avoid boxing the parameters, if they are value types.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsBetween(<#=type#> value, <#=type#> minimum, <#=type#> maximum, [CallerArgumentExpression("value")] string name = "")
+    public static void IsBetween(<#=type#> value, <#=type#> minimum, <#=type#> maximum, [CallerArgumentExpression(nameof(value))] string name = "")
     {
         if (value > minimum && value < maximum)
         {
@@ -210,7 +210,7 @@ var (type, prefix) = typeInfo;
     /// The method is generic to avoid boxing the parameters, if they are value types.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsNotBetween(<#=type#> value, <#=type#> minimum, <#=type#> maximum, [CallerArgumentExpression("value")] string name = "")
+    public static void IsNotBetween(<#=type#> value, <#=type#> minimum, <#=type#> maximum, [CallerArgumentExpression(nameof(value))] string name = "")
     {
         if (value <= minimum || value >= maximum)
         {
@@ -233,7 +233,7 @@ var (type, prefix) = typeInfo;
     /// The method is generic to avoid boxing the parameters, if they are value types.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsBetweenOrEqualTo(<#=type#> value, <#=type#> minimum, <#=type#> maximum, [CallerArgumentExpression("value")] string name = "")
+    public static void IsBetweenOrEqualTo(<#=type#> value, <#=type#> minimum, <#=type#> maximum, [CallerArgumentExpression(nameof(value))] string name = "")
     {
         if (value >= minimum && value <= maximum)
         {
@@ -256,7 +256,7 @@ var (type, prefix) = typeInfo;
     /// The method is generic to avoid boxing the parameters, if they are value types.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsNotBetweenOrEqualTo(<#=type#> value, <#=type#> minimum, <#=type#> maximum, [CallerArgumentExpression("value")] string name = "")
+    public static void IsNotBetweenOrEqualTo(<#=type#> value, <#=type#> minimum, <#=type#> maximum, [CallerArgumentExpression(nameof(value))] string name = "")
     {
         if (value < minimum || value > maximum)
         {

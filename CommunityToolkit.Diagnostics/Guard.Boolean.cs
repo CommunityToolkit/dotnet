@@ -3,10 +3,14 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+#if NET6_0_OR_GREATER
 using System.ComponentModel;
+#endif
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+#if NET6_0_OR_GREATER
 using System.Text;
+#endif
 
 namespace CommunityToolkit.Diagnostics;
 
@@ -20,7 +24,7 @@ public static partial class Guard
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is <see langword="false"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsTrue([DoesNotReturnIf(false)] bool value, [CallerArgumentExpression("value")] string name = "")
+    public static void IsTrue([DoesNotReturnIf(false)] bool value, [CallerArgumentExpression(nameof(value))] string name = "")
     {
         if (value)
         {
@@ -55,7 +59,7 @@ public static partial class Guard
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is <see langword="true"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsFalse([DoesNotReturnIf(true)] bool value, [CallerArgumentExpression("value")] string name = "")
+    public static void IsFalse([DoesNotReturnIf(true)] bool value, [CallerArgumentExpression(nameof(value))] string name = "")
     {
         if (!value)
         {
@@ -92,7 +96,7 @@ public static partial class Guard
     /// <param name="message">A message to display if <paramref name="value"/> is <see langword="false"/>.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is <see langword="false"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsTrue([DoesNotReturnIf(false)] bool value, string name, [InterpolatedStringHandlerArgument("value")] ref IsTrueInterpolatedStringHandler message)
+    public static void IsTrue([DoesNotReturnIf(false)] bool value, string name, [InterpolatedStringHandlerArgument(nameof(value))] ref IsTrueInterpolatedStringHandler message)
     {
         if (value)
         {
@@ -110,7 +114,7 @@ public static partial class Guard
     /// <param name="message">A message to display if <paramref name="value"/> is <see langword="true"/>.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is <see langword="true"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsFalse([DoesNotReturnIf(true)] bool value, string name, [InterpolatedStringHandlerArgument("value")] ref IsFalseInterpolatedStringHandler message)
+    public static void IsFalse([DoesNotReturnIf(true)] bool value, string name, [InterpolatedStringHandlerArgument(nameof(value))] ref IsFalseInterpolatedStringHandler message)
     {
         if (!value)
         {
