@@ -99,11 +99,6 @@ public sealed class ArrayPoolBufferWriter<T> : IBuffer<T>, IMemoryOwner<T>
         this.index = 0;
     }
 
-    /// <summary>
-    /// Finalizes an instance of the <see cref="ArrayPoolBufferWriter{T}"/> class.
-    /// </summary>
-    ~ArrayPoolBufferWriter() => Dispose();
-
     /// <inheritdoc/>
     Memory<T> IMemoryOwner<T>.Memory
     {
@@ -310,8 +305,6 @@ public sealed class ArrayPoolBufferWriter<T> : IBuffer<T>, IMemoryOwner<T>
         {
             return;
         }
-
-        GC.SuppressFinalize(this);
 
         this.array = null;
 
