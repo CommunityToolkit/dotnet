@@ -36,9 +36,7 @@
 
   <!-- Enable trimming support on .NET 6 -->
   <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
-    
-    <!-- Temporarily disabled as a workaround for https://github.com/dotnet/linker/issues/3032 -->
-    <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
     <IsTrimmable>true</IsTrimmable>
   </PropertyGroup>
 
