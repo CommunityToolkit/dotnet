@@ -6,10 +6,6 @@
 // more info in ThirdPartyNotices.txt in the root of the project.
 
 using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators.Models;
