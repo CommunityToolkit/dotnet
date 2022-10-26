@@ -4,7 +4,7 @@
 
 using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 
-namespace CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
+namespace CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 
 /// <summary>
 /// A model with gathered info on all validatable properties in a given type.
