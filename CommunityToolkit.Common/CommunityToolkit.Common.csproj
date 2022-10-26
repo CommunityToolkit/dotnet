@@ -14,12 +14,9 @@
     <PackageTags>Incremental;Loading;Collection;IncrementalLoadingCollection;String;Array;Extensions;Helpers</PackageTags>
   </PropertyGroup>
 
-  <!-- .NET Standard 2.1 and .NET 6 already have [NotNullIfNotNull] and [NotNullWhen].
-       Additionally, also enable trimming support on .NET 6. -->
+  <!-- .NET Standard 2.1 and .NET 6 already have [NotNullIfNotNull] and [NotNullWhen] -->
   <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
     <DefineConstants>NETSTANDARD2_1_OR_GREATER</DefineConstants>
-    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
-    <IsTrimmable>true</IsTrimmable>
   </PropertyGroup>
 
 </Project>
