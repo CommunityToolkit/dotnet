@@ -51,8 +51,6 @@
            Additionally, also enable trimming support on .NET 6. -->
       <PropertyGroup>
         <DefineConstants>NETSTANDARD2_1_OR_GREATER</DefineConstants>
-        <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
-        <IsTrimmable>true</IsTrimmable>
       </PropertyGroup>
     </When>
 

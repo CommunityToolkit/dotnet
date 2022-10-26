@@ -17,4 +17,10 @@
     <None Include="$(RepositoryDirectory)ThirdPartyNotices.txt" Pack="true" PackagePath="\" Visible="False" />
   </ItemGroup>
 
+  <!-- Configure trimming for core projects on .NET 6 and above -->
+  <PropertyGroup Condition="'$(IsCoreProject)' == 'true' AND ('$(TargetFramework)' == 'net6.0' OR '$(TargetFramework)' == 'net7.0')">
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+    <IsTrimmable>true</IsTrimmable>
+  </PropertyGroup>
+
 </Project>
