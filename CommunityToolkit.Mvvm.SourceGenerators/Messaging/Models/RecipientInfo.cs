@@ -4,7 +4,7 @@
 
 using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 
-namespace CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
+namespace CommunityToolkit.Mvvm.SourceGenerators.Messaging.Models;
 
 /// <summary>
 /// A model with gathered info on all message types being handled by a recipient.
