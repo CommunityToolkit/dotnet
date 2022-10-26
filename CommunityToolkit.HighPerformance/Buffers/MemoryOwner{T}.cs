@@ -78,11 +78,6 @@ public sealed class MemoryOwner<T> : IMemoryOwner<T>
     }
 
     /// <summary>
-    /// Finalizes an instance of the <see cref="MemoryOwner{T}"/> class.
-    /// </summary>
-    ~MemoryOwner() => Dispose();
-
-    /// <summary>
     /// Gets an empty <see cref="MemoryOwner{T}"/> instance.
     /// </summary>
     public static MemoryOwner<T> Empty
@@ -294,8 +289,6 @@ public sealed class MemoryOwner<T> : IMemoryOwner<T>
         {
             return;
         }
-
-        GC.SuppressFinalize(this);
 
         this.array = null;
 
