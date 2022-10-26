@@ -958,11 +958,11 @@ public partial class Test_ObservablePropertyAttribute
 
         FieldInfo? fieldInfo = typeof(ModelWithCommandNamesThatCantBeLowered).GetField($"_{nameof(ModelWithCommandNamesThatCantBeLowered.中文)}Command", BindingFlags.Instance | BindingFlags.NonPublic);
 
-        Assert.AreSame(model.中文Command, fieldInfo.GetValue(model));
+        Assert.AreSame(model.中文Command, fieldInfo?.GetValue(model));
 
         fieldInfo = typeof(ModelWithCommandNamesThatCantBeLowered).GetField($"_{nameof(ModelWithCommandNamesThatCantBeLowered.c中文)}Command", BindingFlags.Instance | BindingFlags.NonPublic);
 
-        Assert.AreSame(model.c中文Command, fieldInfo.GetValue(model));
+        Assert.AreSame(model.c中文Command, fieldInfo?.GetValue(model));
     }
 
     public abstract partial class BaseViewModel : ObservableObject
