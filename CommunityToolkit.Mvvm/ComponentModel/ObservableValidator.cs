@@ -145,7 +145,7 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// </remarks>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="propertyName"/> is <see langword="null"/>.</exception>
     [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")]
-    protected bool SetProperty<T>([NotNullIfNotNull("newValue")] ref T field, T newValue, bool validate, [CallerMemberName] string propertyName = null!)
+    protected bool SetProperty<T>([NotNullIfNotNull(nameof(newValue))] ref T field, T newValue, bool validate, [CallerMemberName] string propertyName = null!)
     {
         ArgumentNullException.ThrowIfNull(propertyName);
 
@@ -174,7 +174,7 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="comparer"/> or <paramref name="propertyName"/> are <see langword="null"/>.</exception>
     [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")]
-    protected bool SetProperty<T>([NotNullIfNotNull("newValue")] ref T field, T newValue, IEqualityComparer<T> comparer, bool validate, [CallerMemberName] string propertyName = null!)
+    protected bool SetProperty<T>([NotNullIfNotNull(nameof(newValue))] ref T field, T newValue, IEqualityComparer<T> comparer, bool validate, [CallerMemberName] string propertyName = null!)
     {
         ArgumentNullException.ThrowIfNull(comparer);
         ArgumentNullException.ThrowIfNull(propertyName);

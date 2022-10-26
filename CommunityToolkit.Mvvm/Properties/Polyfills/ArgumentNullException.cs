@@ -18,7 +18,7 @@ internal sealed class ArgumentNullException
     /// <param name="argument">The reference type argument to validate as non-<see langword="null"/>.</param>
     /// <param name="paramName">The name of the parameter with which <paramref name="argument"/> corresponds.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfNull([NotNull] object? argument, [CallerArgumentExpression("argument")] string? paramName = null)
+    public static void ThrowIfNull([NotNull] object? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
     {
         if (argument is null)
         {
@@ -42,7 +42,7 @@ internal sealed class ArgumentNullException
         /// <param name="argument">The reference type argument to validate as non-<see langword="null"/>.</param>
         /// <param name="paramName">The name of the parameter with which <paramref name="argument"/> corresponds.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ThrowIfNull([NotNull] T? argument, [CallerArgumentExpression("argument")] string? paramName = null)
+        public static void ThrowIfNull([NotNull] T? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
         {
             if (argument is null)
             {

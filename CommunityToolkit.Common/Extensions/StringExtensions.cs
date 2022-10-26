@@ -96,7 +96,7 @@ public static class StringExtensions
     /// </summary>
     /// <param name="htmlText">HTML string.</param>
     /// <returns>Decoded HTML string.</returns>
-    [return: NotNullIfNotNull("htmlText")]
+    [return: NotNullIfNotNull(nameof(htmlText))]
     public static string? DecodeHtml(this string? htmlText)
     {
         if (htmlText is null)

@@ -23,7 +23,7 @@ GenerateTextForItems(EnumerableTypes, item =>
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if the size of <paramref name="<#=item.Name#>"/> is != 0.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsEmpty<T>(<#=item.Type#> <#=item.Name#>, [CallerArgumentExpression("<#=item.Name#>")] string name = "")
+    public static void IsEmpty<T>(<#=item.Type#> <#=item.Name#>, [CallerArgumentExpression(nameof(<#=item.Name#>))] string name = "")
     {
         if (<#=item.Name#>.<#=item.Size#> == 0)
         {
@@ -41,7 +41,7 @@ GenerateTextForItems(EnumerableTypes, item =>
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if the size of <paramref name="<#=item.Name#>"/> is == 0.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsNotEmpty<T>(<#=item.Type#> <#=item.Name#>, [CallerArgumentExpression("<#=item.Name#>")] string name = "")
+    public static void IsNotEmpty<T>(<#=item.Type#> <#=item.Name#>, [CallerArgumentExpression(nameof(<#=item.Name#>))] string name = "")
     {
         if (<#=item.Name#>.<#=item.Size#> != 0)
         {
@@ -79,7 +79,7 @@ else
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if the size of <paramref name="<#=item.Name#>"/> is != <paramref name="size"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void HasSizeEqualTo<T>(<#=item.Type#> <#=item.Name#>, int size, [CallerArgumentExpression("<#=item.Name#>")] string name = "")
+    public static void HasSizeEqualTo<T>(<#=item.Type#> <#=item.Name#>, int size, [CallerArgumentExpression(nameof(<#=item.Name#>))] string name = "")
     {
         if (<#=item.Name#>.<#=item.Size#> == size)
         {
@@ -98,7 +98,7 @@ else
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if the size of <paramref name="<#=item.Name#>"/> is == <paramref name="size"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void HasSizeNotEqualTo<T>(<#=item.Type#> <#=item.Name#>, int size, [CallerArgumentExpression("<#=item.Name#>")] string name = "")
+    public static void HasSizeNotEqualTo<T>(<#=item.Type#> <#=item.Name#>, int size, [CallerArgumentExpression(nameof(<#=item.Name#>))] string name = "")
     {
         if (<#=item.Name#>.<#=item.Size#> != size)
         {
@@ -117,7 +117,7 @@ else
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if the size of <paramref name="<#=item.Name#>"/> is &lt;= <paramref name="size"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void HasSizeGreaterThan<T>(<#=item.Type#> <#=item.Name#>, int size, [CallerArgumentExpression("<#=item.Name#>")] string name = "")
+    public static void HasSizeGreaterThan<T>(<#=item.Type#> <#=item.Name#>, int size, [CallerArgumentExpression(nameof(<#=item.Name#>))] string name = "")
     {
         if (<#=item.Name#>.<#=item.Size#> > size)
         {
@@ -136,7 +136,7 @@ else
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if the size of <paramref name="<#=item.Name#>"/> is &lt; <paramref name="size"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void HasSizeGreaterThanOrEqualTo<T>(<#=item.Type#> <#=item.Name#>, int size, [CallerArgumentExpression("<#=item.Name#>")] string name = "")
+    public static void HasSizeGreaterThanOrEqualTo<T>(<#=item.Type#> <#=item.Name#>, int size, [CallerArgumentExpression(nameof(<#=item.Name#>))] string name = "")
     {
         if (<#=item.Name#>.<#=item.Size#> >= size)
         {
@@ -155,7 +155,7 @@ else
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if the size of <paramref name="<#=item.Name#>"/> is >= <paramref name="size"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void HasSizeLessThan<T>(<#=item.Type#> <#=item.Name#>, int size, [CallerArgumentExpression("<#=item.Name#>")] string name = "")
+    public static void HasSizeLessThan<T>(<#=item.Type#> <#=item.Name#>, int size, [CallerArgumentExpression(nameof(<#=item.Name#>))] string name = "")
     {
         if (<#=item.Name#>.<#=item.Size#> < size)
         {
@@ -174,7 +174,7 @@ else
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if the size of <paramref name="<#=item.Name#>"/> is > <paramref name="size"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void HasSizeLessThanOrEqualTo<T>(<#=item.Type#> <#=item.Name#>, int size, [CallerArgumentExpression("<#=item.Name#>")] string name = "")
+    public static void HasSizeLessThanOrEqualTo<T>(<#=item.Type#> <#=item.Name#>, int size, [CallerArgumentExpression(nameof(<#=item.Name#>))] string name = "")
     {
         if (<#=item.Name#>.<#=item.Size#> <= size)
         {
@@ -193,7 +193,7 @@ else
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if the size of <paramref name="source"/> is != the one of <paramref name="destination"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void HasSizeEqualTo<T>(<#=item.Type#> source, <#=item.DestinationType#> destination, [CallerArgumentExpression("source")] string name = "")
+    public static void HasSizeEqualTo<T>(<#=item.Type#> source, <#=item.DestinationType#> destination, [CallerArgumentExpression(nameof(source))] string name = "")
     {
         if (source.<#=item.Size#> == destination.<#=item.Size#>)
         {
@@ -225,7 +225,7 @@ else
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if the size of <paramref name="source"/> is > the one of <paramref name="destination"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void HasSizeLessThanOrEqualTo<T>(<#=item.Type#> source, <#=item.DestinationType#> destination, [CallerArgumentExpression("source")] string name = "")
+    public static void HasSizeLessThanOrEqualTo<T>(<#=item.Type#> source, <#=item.DestinationType#> destination, [CallerArgumentExpression(nameof(source))] string name = "")
     {
         if (source.<#=item.Size#> <= destination.<#=item.Size#>)
         {
@@ -257,7 +257,7 @@ else
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is not valid to access <paramref name="<#=item.Name#>"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsInRangeFor<T>(int index, <#=item.Type#> <#=item.Name#>, [CallerArgumentExpression("index")] string name = "")
+    public static void IsInRangeFor<T>(int index, <#=item.Type#> <#=item.Name#>, [CallerArgumentExpression(nameof(index))] string name = "")
     {
 <#
 // Here we're leveraging the fact that signed integers are represented
@@ -283,7 +283,7 @@ else
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is valid to access <paramref name="<#=item.Name#>"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsNotInRangeFor<T>(int index, <#=item.Type#> <#=item.Name#>, [CallerArgumentExpression("index")] string name = "")
+    public static void IsNotInRangeFor<T>(int index, <#=item.Type#> <#=item.Name#>, [CallerArgumentExpression(nameof(index))] string name = "")
     {
         if ((uint)index >= (uint)<#=item.Name#>.<#=item.Size#>)
         {

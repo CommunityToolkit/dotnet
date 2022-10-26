@@ -18,7 +18,7 @@ partial class Guard
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="stream"/> doesn't support reading.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void CanRead(Stream stream, [CallerArgumentExpression("stream")] string name = "")
+    public static void CanRead(Stream stream, [CallerArgumentExpression(nameof(stream))] string name = "")
     {
         if (stream.CanRead)
         {
@@ -35,7 +35,7 @@ partial class Guard
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="stream"/> doesn't support writing.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void CanWrite(Stream stream, [CallerArgumentExpression("stream")] string name = "")
+    public static void CanWrite(Stream stream, [CallerArgumentExpression(nameof(stream))] string name = "")
     {
         if (stream.CanWrite)
         {
@@ -52,7 +52,7 @@ partial class Guard
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="stream"/> doesn't support seeking.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void CanSeek(Stream stream, [CallerArgumentExpression("stream")] string name = "")
+    public static void CanSeek(Stream stream, [CallerArgumentExpression(nameof(stream))] string name = "")
     {
         if (stream.CanSeek)
         {
@@ -69,7 +69,7 @@ partial class Guard
     /// <param name="name">The name of the input parameter being tested.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="stream"/> is not at the starting position.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsAtStartPosition(Stream stream, [CallerArgumentExpression("stream")] string name = "")
+    public static void IsAtStartPosition(Stream stream, [CallerArgumentExpression(nameof(stream))] string name = "")
     {
         if (stream.Position == 0)
         {
