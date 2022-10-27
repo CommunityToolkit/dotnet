@@ -2,8 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
 using System.Collections.Generic;
 using System.Text;
+using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 using Microsoft.CodeAnalysis;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators.Extensions;
@@ -20,27 +22,46 @@ internal static class INamedTypeSymbolExtensions
     /// <returns>The full metadata name for <paramref name="symbol"/> that is also a valid filename.</returns>
     public static string GetFullMetadataNameForFileName(this INamedTypeSymbol symbol)
     {
-        static StringBuilder BuildFrom(ISymbol? symbol, StringBuilder builder)
+        using ImmutableArrayBuilder<char> builder = ImmutableArrayBuilder<char>.Rent();
+
+        static void BuildFrom(ISymbol? symbol, in ImmutableArrayBuilder<char> builder)
         {
-            return symbol switch
+            switch (symbol)
             {
-                INamespaceSymbol ns when ns.IsGlobalNamespace => builder,
-                INamespaceSymbol ns when ns.ContainingNamespace is { IsGlobalNamespace: false }
-                    => BuildFrom(ns.ContainingNamespace, builder.Insert(0, $".{ns.MetadataName}")),
-                ITypeSymbol ts when ts.ContainingType is ISymbol pt
-                    => BuildFrom(pt, builder.Insert(0, $"+{ts.MetadataName}")),
-                ITypeSymbol ts when ts.ContainingNamespace is ISymbol pn and not INamespaceSymbol { IsGlobalNamespace: true }
-                    => BuildFrom(pn, builder.Insert(0, $".{ts.MetadataName}")),
-                ISymbol => BuildFrom(symbol.ContainingSymbol, builder.Insert(0, symbol.MetadataName)),
-                _ => builder
-            };
+                // Namespaces that are nested also append a leading '.'
+                case INamespaceSymbol { ContainingNamespace.IsGlobalNamespace: false }:
+                    BuildFrom(symbol.ContainingNamespace, in builder);
+                    builder.Add('.');
+                    builder.AddRange(symbol.MetadataName.AsSpan());
+                    break;
+                // Other namespaces (ie. the one right before global) skip the leading '.'
+                case INamespaceSymbol { IsGlobalNamespace: false }:
+                    builder.AddRange(symbol.MetadataName.AsSpan());
+                    break;
+                // Types with no namespace just have their metadata name directly written
+                case ITypeSymbol { ContainingSymbol: INamespaceSymbol { IsGlobalNamespace: true } }:
+                    builder.AddRange(symbol.MetadataName.AsSpan());
+                    break;
+                // Types with a containing non-global namespace also append a leading '.'
+                case ITypeSymbol { ContainingSymbol: INamespaceSymbol namespaceSymbol }:
+                    BuildFrom(namespaceSymbol, in builder);
+                    builder.Add('.');
+                    builder.AddRange(symbol.MetadataName.AsSpan());
+                    break;
+                // Nested types append a leading '+'
+                case ITypeSymbol { ContainingSymbol: ITypeSymbol typeSymbol }:
+                    BuildFrom(typeSymbol, in builder);
+                    builder.Add('+');
+                    builder.AddRange(symbol.MetadataName.AsSpan());
+                    break;
+                default:
+                    break;
+            }
         }
 
-        // Build the full metadata name by concatenating the metadata names of all symbols from the input
-        // one to the outermost namespace, if any. Additionally, the ` and + symbols need to be replaced
-        // to avoid errors when generating code. This is a known issue with source generators not accepting
-        // those characters at the moment, see: https://github.com/dotnet/roslyn/issues/58476.
-        return BuildFrom(symbol, new StringBuilder(256)).Replace('`', '-').Replace('+', '.').ToString();
+        BuildFrom(symbol, in builder);
+
+        return builder.ToString();
     }
 
     /// <summary>
