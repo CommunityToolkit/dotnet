@@ -2,12 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#if NETSTANDARD2_1_OR_GREATER
+#if NET7_0_OR_GREATER
 
 using System;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
 
 namespace CommunityToolkit.HighPerformance;
 
@@ -15,15 +13,12 @@ namespace CommunityToolkit.HighPerformance;
 /// A <see langword="struct"/> that can store an optional readonly reference to a value of a specified type.
 /// </summary>
 /// <typeparam name="T">The type of value to reference.</typeparam>
-[RequiresPreviewFeatures(
-    "The NullableReadOnlyRef<T> type has no compiler support to ensure the lifetime of referenced values is respected, and as such using it incorrectly may lead to GC holes.",
-    Url = "https://github.com/dotnet/runtime/issues/46104")]
 public readonly ref struct NullableReadOnlyRef<T>
 {
     /// <summary>
-    /// The 1-length <see cref="ReadOnlySpan{T}"/> instance used to track the target <typeparamref name="T"/> value.
+    /// The reference to the target <typeparamref name="T"/> value.
     /// </summary>
-    private readonly ReadOnlySpan<T> span;
+    private readonly ref readonly T value;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NullableReadOnlyRef{T}"/> struct.
@@ -32,19 +27,7 @@ public readonly ref struct NullableReadOnlyRef<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public NullableReadOnlyRef(in T value)
     {
-        ref T r0 = ref Unsafe.AsRef(value);
-
-        this.span = MemoryMarshal.CreateReadOnlySpan(ref r0, 1);
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="NullableReadOnlyRef{T}"/> struct.
-    /// </summary>
-    /// <param name="span">The <see cref="ReadOnlySpan{T}"/> instance to track the target <typeparamref name="T"/> reference.</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private NullableReadOnlyRef(ReadOnlySpan<T> span)
-    {
-        this.span = span;
+        this.value = ref value;
     }
 
     /// <summary>
@@ -62,13 +45,7 @@ public readonly ref struct NullableReadOnlyRef<T>
     public unsafe bool HasValue
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
-        {
-            // See comment in NullableRef<T> about this
-            byte length = unchecked((byte)this.span.Length);
-
-            return *(bool*)&length;
-        }
+        get => !Unsafe.IsNullRef(ref Unsafe.AsRef(in this.value));
     }
 
     /// <summary>
@@ -85,7 +62,7 @@ public readonly ref struct NullableReadOnlyRef<T>
                 ThrowInvalidOperationException();
             }
 
-            return ref MemoryMarshal.GetReference(this.span);
+            return ref this.value;
         }
     }
 
@@ -96,7 +73,7 @@ public readonly ref struct NullableReadOnlyRef<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static implicit operator NullableReadOnlyRef<T>(Ref<T> reference)
     {
-        return new(reference.Span);
+        return new(in reference.Value);
     }
 
     /// <summary>
@@ -106,7 +83,7 @@ public readonly ref struct NullableReadOnlyRef<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static implicit operator NullableReadOnlyRef<T>(ReadOnlyRef<T> reference)
     {
-        return new(reference.Span);
+        return new(in reference.Value);
     }
 
     /// <summary>
@@ -116,7 +93,7 @@ public readonly ref struct NullableReadOnlyRef<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static implicit operator NullableReadOnlyRef<T>(NullableRef<T> reference)
     {
-        return new(reference.Span);
+        return new(in reference.Value);
     }
 
     /// <summary>

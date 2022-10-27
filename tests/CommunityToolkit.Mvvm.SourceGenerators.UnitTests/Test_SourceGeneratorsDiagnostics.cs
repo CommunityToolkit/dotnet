@@ -24,7 +24,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void DuplicateINotifyPropertyChangedInterfaceForINotifyPropertyChangedAttributeError_Explicit()
     {
-        string source = @"
+        string source = """
             using System.ComponentModel;
             using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -35,7 +35,8 @@ public class Test_SourceGeneratorsDiagnostics
                 {
                     public event PropertyChangedEventHandler? PropertyChanged;
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<INotifyPropertyChangedGenerator>(source, "MVVMTK0001");
     }
@@ -43,7 +44,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void DuplicateINotifyPropertyChangedInterfaceForINotifyPropertyChangedAttributeError_Inherited()
     {
-        string source = @"
+        string source = """
             using System.ComponentModel;
             using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -62,7 +63,8 @@ public class Test_SourceGeneratorsDiagnostics
                 public partial class SampleViewModel : ObservableObject
                 {
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<INotifyPropertyChangedGenerator>(source, "MVVMTK0001");
     }
@@ -70,7 +72,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void DuplicateINotifyPropertyChangedInterfaceForObservableObjectAttributeError_Explicit()
     {
-        string source = @"
+        string source = """
             using System.ComponentModel;
             using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -81,7 +83,8 @@ public class Test_SourceGeneratorsDiagnostics
                 {
                     public event PropertyChangedEventHandler? PropertyChanged;
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0002");
     }
@@ -89,7 +92,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void DuplicateINotifyPropertyChangedInterfaceForObservableObjectAttributeError_Inherited()
     {
-        string source = @"
+        string source = """
             using System.ComponentModel;
             using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -107,7 +110,8 @@ public class Test_SourceGeneratorsDiagnostics
                 public partial class SampleViewModel : ObservableObject
                 {
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0002");
     }
@@ -115,7 +119,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void DuplicateINotifyPropertyChangingInterfaceForObservableObjectAttributeError_Explicit()
     {
-        string source = @"
+        string source = """
             using System.ComponentModel;
             using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -126,7 +130,8 @@ public class Test_SourceGeneratorsDiagnostics
                 {
                     public event PropertyChangingEventHandler? PropertyChanging;
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0003");
     }
@@ -134,7 +139,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void DuplicateINotifyPropertyChangingInterfaceForObservableObjectAttributeError_Inherited()
     {
-        string source = @"
+        string source = """
             using System.ComponentModel;
             using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -149,7 +154,8 @@ public class Test_SourceGeneratorsDiagnostics
                 public partial class SampleViewModel : MyBaseViewModel
                 {
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0003");
     }
@@ -157,7 +163,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void DuplicateObservableRecipientError()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace CommunityToolkit.Mvvm.ComponentModel
@@ -173,7 +179,8 @@ public class Test_SourceGeneratorsDiagnostics
                 public partial class SampleViewModel : ObservableRecipient
                 {
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservableRecipientGenerator>(source, "MVVMTK0004");
     }
@@ -181,7 +188,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void MissingBaseObservableObjectFunctionalityError()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -190,7 +197,8 @@ public class Test_SourceGeneratorsDiagnostics
                 public partial class SampleViewModel
                 {
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservableRecipientGenerator>(source, "MVVMTK0005");
     }
@@ -198,7 +206,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void MissingObservableValidatorInheritanceForValidationAttributeError()
     {
-        string source = @"
+        string source = """
             using System.ComponentModel.DataAnnotations;
             using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -211,7 +219,8 @@ public class Test_SourceGeneratorsDiagnostics
                     [Required]
                     private string name;
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0006");
     }
@@ -219,7 +228,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void InvalidRelayCommandMethodSignatureError()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.Input;
 
             namespace MyApp
@@ -227,9 +236,10 @@ public class Test_SourceGeneratorsDiagnostics
                 public partial class SampleViewModel
                 {
                     [RelayCommand]
-                    private string GreetUser() => ""Hello world!"";
+                    private string GreetUser() => "Hello world!";
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0007");
     }
@@ -237,7 +247,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public async Task UnsupportedCSharpLanguageVersion_FromINotifyPropertyChangedGenerator()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -246,7 +256,8 @@ public class Test_SourceGeneratorsDiagnostics
                 public partial class {|MVVMTK0008:SampleViewModel|}
                 {
                 }
-            }";
+            }
+            """;
 
         await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<UnsupportedCSharpLanguageVersionAnalyzer>(source, LanguageVersion.CSharp7_3);
     }
@@ -254,7 +265,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public async Task UnsupportedCSharpLanguageVersion_FromObservableObjectGenerator()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -263,7 +274,8 @@ public class Test_SourceGeneratorsDiagnostics
                 public partial class {|MVVMTK0008:SampleViewModel|}
                 {
                 }
-            }";
+            }
+            """;
 
         await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<UnsupportedCSharpLanguageVersionAnalyzer>(source, LanguageVersion.CSharp7_3);
     }
@@ -271,7 +283,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public async Task UnsupportedCSharpLanguageVersion_FromObservablePropertyGenerator()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -282,7 +294,8 @@ public class Test_SourceGeneratorsDiagnostics
                     [ObservableProperty]
                     private string {|MVVMTK0008:name|};
                 }
-            }";
+            }
+            """;
 
         await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<UnsupportedCSharpLanguageVersionAnalyzer>(source, LanguageVersion.CSharp7_3);
     }
@@ -290,7 +303,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public async Task UnsupportedCSharpLanguageVersion_FromObservablePropertyGenerator_MultipleAttributes()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -307,7 +320,8 @@ public class Test_SourceGeneratorsDiagnostics
 
                     string Bar { get; set; }
                 }
-            }";
+            }
+            """;
 
         await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<UnsupportedCSharpLanguageVersionAnalyzer>(source, LanguageVersion.CSharp7_3);
     }
@@ -315,7 +329,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public async Task UnsupportedCSharpLanguageVersion_FromObservableValidatorValidateAllPropertiesGenerator()
     {
-        string source = @"
+        string source = """
             using System.ComponentModel.DataAnnotations;
             using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -326,7 +340,8 @@ public class Test_SourceGeneratorsDiagnostics
                     [Required]
                     public string Name { get; set; }
                 }
-            }";
+            }
+            """;
 
         await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<UnsupportedCSharpLanguageVersionAnalyzer>(source, LanguageVersion.CSharp7_3);
     }
@@ -334,7 +349,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public async Task UnsupportedCSharpLanguageVersion_FromRelayCommandGenerator()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.Input;
 
             namespace MyApp
@@ -346,7 +361,8 @@ public class Test_SourceGeneratorsDiagnostics
                     {
                     }
                 }
-            }";
+            }
+            """;
 
         await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<UnsupportedCSharpLanguageVersionAnalyzer>(source, LanguageVersion.CSharp7_3);
     }
@@ -354,7 +370,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public async Task UnsupportedCSharpLanguageVersion_FromIMessengerRegisterAllGenerator()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.Messaging;
 
             namespace MyApp
@@ -369,7 +385,8 @@ public class Test_SourceGeneratorsDiagnostics
                     {
                     }
                 }
-            }";
+            }
+            """;
 
         await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<UnsupportedCSharpLanguageVersionAnalyzer>(source, LanguageVersion.CSharp7_3);
     }
@@ -377,7 +394,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void InvalidCanExecuteMemberName()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.Input;
 
             namespace MyApp
@@ -386,12 +403,13 @@ public class Test_SourceGeneratorsDiagnostics
                 {
                     private bool Foo => true;
 
-                    [RelayCommand(CanExecute = ""Bar"")]
+                    [RelayCommand(CanExecute = "Bar")]
                     private void GreetUser()
                     {
                     }
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0009");
     }
@@ -399,7 +417,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void MultipleCanExecuteMemberNameMatches()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.Input;
 
             namespace MyApp
@@ -415,7 +433,8 @@ public class Test_SourceGeneratorsDiagnostics
                     {
                     }
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0010");
     }
@@ -423,7 +442,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void InvalidCanExecuteMember_NonReadableProperty()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.Input;
 
             namespace MyApp
@@ -437,7 +456,8 @@ public class Test_SourceGeneratorsDiagnostics
                     {
                     }
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0011");
     }
@@ -445,21 +465,22 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void InvalidCanExecuteMember_PropertyWithInvalidType()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.Input;
 
             namespace MyApp
             {
                 public partial class SampleViewModel
                 {
-                    private string Foo => ""Hi!"";
+                    private string Foo => "Hi!";
 
                     [RelayCommand(CanExecute = nameof(Foo))]
                     private void GreetUser()
                     {
                     }
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0011");
     }
@@ -467,21 +488,22 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void InvalidCanExecuteMember_MethodWithInvalidType()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.Input;
 
             namespace MyApp
             {
                 public partial class SampleViewModel
                 {
-                    private string Foo() => ""Hi!"";
+                    private string Foo() => "Hi!";
 
                     [RelayCommand(CanExecute = nameof(Foo))]
                     private void GreetUser()
                     {
                     }
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0011");
     }
@@ -489,7 +511,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void InvalidCanExecuteMember_MethodWithIncompatibleInputType_MissingInput()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.Input;
 
             namespace MyApp
@@ -503,7 +525,8 @@ public class Test_SourceGeneratorsDiagnostics
                     {
                     }
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0011");
     }
@@ -511,7 +534,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void InvalidCanExecuteMember_MethodWithIncompatibleInputType_NonMatchingInputType()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.Input;
 
             namespace MyApp
@@ -525,7 +548,8 @@ public class Test_SourceGeneratorsDiagnostics
                     {
                     }
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0011");
     }
@@ -533,7 +557,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void InvalidCanExecuteMember_MethodWithIncompatibleInputType_TooManyInputs()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.Input;
 
             namespace MyApp
@@ -547,7 +571,8 @@ public class Test_SourceGeneratorsDiagnostics
                     {
                     }
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0011");
     }
@@ -555,7 +580,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void InvalidRelayCommandAllowConcurrentExecutionsOption()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.Input;
 
             namespace MyApp
@@ -567,7 +592,8 @@ public class Test_SourceGeneratorsDiagnostics
                     {
                     }
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0012");
     }
@@ -575,7 +601,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void InvalidRelayCommandIncludeCancelCommandSettings_SynchronousMethod()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.Input;
 
             namespace MyApp
@@ -587,7 +613,8 @@ public class Test_SourceGeneratorsDiagnostics
                     {
                     }
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0013");
     }
@@ -595,7 +622,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void InvalidRelayCommandIncludeCancelCommandSettings_AsynchronousMethodWithNoCancellationToken()
     {
-        string source = @"
+        string source = """
             using System.Threading.Tasks;
             using CommunityToolkit.Mvvm.Input;
 
@@ -608,7 +635,8 @@ public class Test_SourceGeneratorsDiagnostics
                     {
                     }
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0013");
     }
@@ -616,7 +644,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void InvalidRelayCommandIncludeCancelCommandSettings_AsynchronousMethodWithParameterAndNoCancellationToken()
     {
-        string source = @"
+        string source = """
             using System.Threading.Tasks;
             using CommunityToolkit.Mvvm.Input;
 
@@ -629,7 +657,8 @@ public class Test_SourceGeneratorsDiagnostics
                     {
                     }
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0013");
     }
@@ -637,7 +666,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void NameCollisionForGeneratedObservableProperty()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -647,7 +676,8 @@ public class Test_SourceGeneratorsDiagnostics
                     [ObservableProperty]
                     private string Name;
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0014");
     }
@@ -655,7 +685,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void NotifyPropertyChangedForInvalidTargetError_Null()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -666,7 +696,8 @@ public class Test_SourceGeneratorsDiagnostics
                     [NotifyPropertyChangedFor(null)]
                     private string name;
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0015");
     }
@@ -674,7 +705,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void NotifyPropertyChangedForInvalidTargetError_SamePropertyAsGeneratedOneFromSelf()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -685,7 +716,8 @@ public class Test_SourceGeneratorsDiagnostics
                     [NotifyPropertyChangedFor(nameof(Name))]
                     private string name;
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0015");
     }
@@ -693,7 +725,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void NotifyPropertyChangedForInvalidTargetError_Missing()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -701,10 +733,11 @@ public class Test_SourceGeneratorsDiagnostics
                 public partial class SampleViewModel : ObservableObject
                 {
                     [ObservableProperty]
-                    [NotifyPropertyChangedFor(""FooBar"")]
+                    [NotifyPropertyChangedFor("FooBar")]
                     private string name;
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0015");
     }
@@ -712,7 +745,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void NotifyPropertyChangedForInvalidTargetError_InvalidType()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -727,7 +760,8 @@ public class Test_SourceGeneratorsDiagnostics
                     {
                     }
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0015");
     }
@@ -735,7 +769,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void NotifyCanExecuteChangedForInvalidTargetError_Null()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -746,7 +780,8 @@ public class Test_SourceGeneratorsDiagnostics
                     [NotifyCanExecuteChangedFor(null)]
                     private string name;
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0016");
     }
@@ -754,7 +789,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void NotifyCanExecuteChangedForInvalidTargetError_Missing()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -762,10 +797,11 @@ public class Test_SourceGeneratorsDiagnostics
                 public partial class SampleViewModel : ObservableObject
                 {
                     [ObservableProperty]
-                    [NotifyCanExecuteChangedFor(""FooBar"")]
+                    [NotifyCanExecuteChangedFor("FooBar")]
                     private string name;
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0016");
     }
@@ -773,7 +809,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void NotifyCanExecuteChangedForInvalidTargetError_InvalidMemberType()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -788,7 +824,8 @@ public class Test_SourceGeneratorsDiagnostics
                     {
                     }
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0016");
     }
@@ -796,7 +833,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void NotifyCanExecuteChangedForInvalidTargetError_InvalidPropertyType()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -809,7 +846,8 @@ public class Test_SourceGeneratorsDiagnostics
 
                     public string Foo { get; }
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0016");
     }
@@ -817,7 +855,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void NotifyCanExecuteChangedForInvalidTargetError_InvalidCommandType()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
             using CommunityToolkit.Mvvm.Input;
 
@@ -831,7 +869,8 @@ public class Test_SourceGeneratorsDiagnostics
 
                     public ICommand FooCommand { get; }
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0016");
     }
@@ -839,7 +878,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void InvalidAttributeCombinationForINotifyPropertyChangedAttributeError_InheritingINotifyPropertyChangedAttribute()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -853,7 +892,8 @@ public class Test_SourceGeneratorsDiagnostics
                 public partial class B : A
                 {
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<INotifyPropertyChangedGenerator>(source, "MVVMTK0017");
     }
@@ -861,7 +901,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void InvalidAttributeCombinationForINotifyPropertyChangedAttributeError_InheritingObservableObjectAttribute()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -875,7 +915,8 @@ public class Test_SourceGeneratorsDiagnostics
                 public partial class B : A
                 {
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<INotifyPropertyChangedGenerator>(source, "MVVMTK0017");
     }
@@ -883,7 +924,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void InvalidAttributeCombinationForINotifyPropertyChangedAttributeError_WithAlsoObservableObjectAttribute()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -893,7 +934,8 @@ public class Test_SourceGeneratorsDiagnostics
                 public partial class A
                 {
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<INotifyPropertyChangedGenerator>(source, "MVVMTK0017");
     }
@@ -901,7 +943,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void InvalidAttributeCombinationForObservableObjectAttributeError_InheritingINotifyPropertyChangedAttribute()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -915,7 +957,8 @@ public class Test_SourceGeneratorsDiagnostics
                 public partial class B : A
                 {
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0018");
     }
@@ -923,7 +966,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void InvalidAttributeCombinationForObservableObjectAttributeError_InheritingObservableObjectAttribute()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -937,7 +980,8 @@ public class Test_SourceGeneratorsDiagnostics
                 public partial class B : A
                 {
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0018");
     }
@@ -945,7 +989,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void InvalidAttributeCombinationForObservableObjectAttributeError_WithAlsoINotifyPropertyChangedAttribute()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -955,7 +999,8 @@ public class Test_SourceGeneratorsDiagnostics
                 public partial class A
                 {
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0018");
     }
@@ -963,7 +1008,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void InvalidContainingTypeForObservablePropertyFieldError()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -975,7 +1020,8 @@ public class Test_SourceGeneratorsDiagnostics
 
                     public event PropertyChangedEventHandler PropertyChanged;
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0019");
     }
@@ -983,17 +1029,18 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public async Task FieldWithOrphanedDependentObservablePropertyAttributesError_NotifyPropertyChangedFor()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
             {
                 public partial class MyViewModel
                 {
-                    [NotifyPropertyChangedFor("""")]
+                    [NotifyPropertyChangedFor("")]
                     public int {|MVVMTK0020:number|};
                 }
-            }";
+            }
+            """;
 
         await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<FieldWithOrphanedDependentObservablePropertyAttributesAnalyzer>(source, LanguageVersion.CSharp8);
     }
@@ -1001,17 +1048,18 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public async Task FieldWithOrphanedDependentObservablePropertyAttributesError_NotifyCanExecuteChangedFor()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
             {
                 public partial class MyViewModel
                 {
-                    [NotifyCanExecuteChangedFor("""")]
+                    [NotifyCanExecuteChangedFor("")]
                     public int {|MVVMTK0020:number|};
                 }
-            }";
+            }
+            """;
 
         await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<FieldWithOrphanedDependentObservablePropertyAttributesAnalyzer>(source, LanguageVersion.CSharp8);
     }
@@ -1019,7 +1067,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public async Task FieldWithOrphanedDependentObservablePropertyAttributesError_NotifyPropertyChangedRecipients()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -1029,7 +1077,8 @@ public class Test_SourceGeneratorsDiagnostics
                     [NotifyPropertyChangedRecipients]
                     public int {|MVVMTK0020:number|};
                 }
-            }";
+            }
+            """;
 
         await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<FieldWithOrphanedDependentObservablePropertyAttributesAnalyzer>(source, LanguageVersion.CSharp8);
     }
@@ -1037,22 +1086,23 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public async Task FieldWithOrphanedDependentObservablePropertyAttributesError_MultipleUsesStillGenerateOnlyASingleDiagnostic()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
             {
                 public partial class MyViewModel
                 {
-                    [NotifyPropertyChangedFor("""")]
-                    [NotifyPropertyChangedFor("""")]
-                    [NotifyPropertyChangedFor("""")]
-                    [NotifyCanExecuteChangedFor("""")]
-                    [NotifyCanExecuteChangedFor("""")]
+                    [NotifyPropertyChangedFor("")]
+                    [NotifyPropertyChangedFor("")]
+                    [NotifyPropertyChangedFor("")]
+                    [NotifyCanExecuteChangedFor("")]
+                    [NotifyCanExecuteChangedFor("")]
                     [NotifyPropertyChangedRecipients]
                     public int {|MVVMTK0020:number|};
                 }
-            }";
+            }
+            """;
 
         await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<FieldWithOrphanedDependentObservablePropertyAttributesAnalyzer>(source, LanguageVersion.CSharp8);
     }
@@ -1060,7 +1110,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void InvalidAttributeCombinationForObservableRecipientAttributeError()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -1074,7 +1124,8 @@ public class Test_SourceGeneratorsDiagnostics
                 public partial class B : A
                 {
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservableRecipientGenerator>(source, "MVVMTK0021");
     }
@@ -1082,7 +1133,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void InvalidContainingTypeForNotifyPropertyChangedRecipientsFieldError_ObservableObject()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -1093,7 +1144,8 @@ public class Test_SourceGeneratorsDiagnostics
                     [NotifyPropertyChangedRecipients]
                     public int number;
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0022");
     }
@@ -1101,7 +1153,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void MultipleRelayCommandMethodOverloads_WithOverloads()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.Input;
 
             namespace MyApp
@@ -1118,7 +1170,8 @@ public class Test_SourceGeneratorsDiagnostics
                     {
                     }
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0023");
     }
@@ -1126,27 +1179,28 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void MultipleRelayCommandMethodOverloads_WithOverloadInBaseType()
     {
-        string source = @"
-        using CommunityToolkit.Mvvm.Input;
+        string source = """
+            using CommunityToolkit.Mvvm.Input;
 
-        namespace MyApp
-        {
-            public partial class BaseViewModel
+            namespace MyApp
             {
-                [RelayCommand]
-                private void GreetUser()
+                public partial class BaseViewModel
                 {
+                    [RelayCommand]
+                    private void GreetUser()
+                    {
+                    }
+                }
+
+                public partial class SampleViewModel : BaseViewModel
+                {
+                    [RelayCommand]
+                    private void GreetUser(object value)
+                    {
+                    }
                 }
             }
-
-            public partial class SampleViewModel : BaseViewModel
-            {
-                [RelayCommand]
-                private void GreetUser(object value)
-                {
-                }
-            }
-        }";
+            """;
 
         VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0023");
     }
@@ -1154,7 +1208,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void InvalidObservablePropertyError_Object()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -1164,7 +1218,8 @@ public class Test_SourceGeneratorsDiagnostics
                     [ObservableProperty]
                     public object property;
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0024");
     }
@@ -1172,7 +1227,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void InvalidObservablePropertyError_PropertyChangingEventArgs()
     {
-        string source = @"
+        string source = """
             using System.ComponentModel;
             using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -1183,7 +1238,8 @@ public class Test_SourceGeneratorsDiagnostics
                     [ObservableProperty]
                     public PropertyChangingEventArgs property;
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0024");
     }
@@ -1191,7 +1247,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void InvalidObservablePropertyError_PropertyChangedEventArgs()
     {
-        string source = @"
+        string source = """
             using System.ComponentModel;
             using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -1202,7 +1258,8 @@ public class Test_SourceGeneratorsDiagnostics
                     [ObservableProperty]
                     public PropertyChangedEventArgs property;
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0024");
     }
@@ -1210,7 +1267,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void InvalidObservablePropertyError_CustomTypeDerivedFromPropertyChangedEventArgs()
     {
-        string source = @"
+        string source = """
             using System.ComponentModel;
             using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -1229,7 +1286,8 @@ public class Test_SourceGeneratorsDiagnostics
                     [ObservableProperty]
                     public MyPropertyChangedEventArgs property;
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0024");
     }
@@ -1237,7 +1295,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void MissingObservableValidatorInheritanceForNotifyDataErrorInfoError()
     {
-        string source = @"
+        string source = """
             using System.ComponentModel.DataAnnotations;
             using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -1251,7 +1309,8 @@ public class Test_SourceGeneratorsDiagnostics
                     [NotifyDataErrorInfo]
                     private string name;
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0006", "MVVMTK0025");
     }
@@ -1259,7 +1318,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void MissingValidationAttributesForNotifyDataErrorInfoError()
     {
-        string source = @"
+        string source = """
             using System.ComponentModel.DataAnnotations;
             using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -1271,7 +1330,8 @@ public class Test_SourceGeneratorsDiagnostics
                     [NotifyDataErrorInfo]
                     private string name;
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0026");
     }
@@ -1279,7 +1339,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void InvalidTypeForNotifyPropertyChangedRecipientsError()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -1290,7 +1350,8 @@ public class Test_SourceGeneratorsDiagnostics
                     [ObservableProperty]
                     public int number;
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0027");
     }
@@ -1298,7 +1359,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void InvalidTypeForNotifyDataErrorInfoError()
     {
-        string source = @"
+        string source = """
             using System.ComponentModel.DataAnnotations;
             using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -1311,7 +1372,8 @@ public class Test_SourceGeneratorsDiagnostics
                     [Required]
                     private string name;
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0006", "MVVMTK0028");
     }
@@ -1319,7 +1381,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void UnnecessaryNotifyPropertyChangedRecipientsWarning_SameType()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -1331,7 +1393,8 @@ public class Test_SourceGeneratorsDiagnostics
                     [NotifyPropertyChangedRecipients]
                     public int number;
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0029");
     }
@@ -1339,7 +1402,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void UnnecessaryNotifyPropertyChangedRecipientsWarning_BaseType()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -1355,7 +1418,8 @@ public class Test_SourceGeneratorsDiagnostics
                     [NotifyPropertyChangedRecipients]
                     public int number;
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0029");
     }
@@ -1363,7 +1427,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void UnnecessaryNotifyDataErrorInfoWarning_SameType()
     {
-        string source = @"
+        string source = """
             using System.ComponentModel.DataAnnotations;
             using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -1377,7 +1441,8 @@ public class Test_SourceGeneratorsDiagnostics
                     [NotifyDataErrorInfo]
                     public int number;
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0030");
     }
@@ -1385,7 +1450,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void UnnecessaryNotifyDataErrorInfoWarning_BaseType()
     {
-        string source = @"
+        string source = """
             using System.ComponentModel.DataAnnotations;
             using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -1403,7 +1468,8 @@ public class Test_SourceGeneratorsDiagnostics
                     [NotifyDataErrorInfo]
                     public int number;
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0030");
     }
@@ -1411,7 +1477,7 @@ public class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public void InvalidRelayCommandFlowExceptionsToTaskSchedulerOption()
     {
-        string source = @"
+        string source = """
             using CommunityToolkit.Mvvm.Input;
 
             namespace MyApp
@@ -1423,7 +1489,8 @@ public class Test_SourceGeneratorsDiagnostics
                     {
                     }
                 }
-            }";
+            }
+            """;
 
         VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0031");
     }

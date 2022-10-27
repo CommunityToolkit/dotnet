@@ -97,7 +97,7 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
     /// The <see cref="PropertyChanging"/> and <see cref="PropertyChanged"/> events are not raised
     /// if the current and new value for the target property are the same.
     /// </remarks>
-    protected bool SetProperty<T>([NotNullIfNotNull("newValue")] ref T field, T newValue, [CallerMemberName] string? propertyName = null)
+    protected bool SetProperty<T>([NotNullIfNotNull(nameof(newValue))] ref T field, T newValue, [CallerMemberName] string? propertyName = null)
     {
         // We duplicate the code here instead of calling the overload because we can't
         // guarantee that the invoked SetProperty<T> will be inlined, and we need the JIT
@@ -134,7 +134,7 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="comparer"/> is <see langword="null"/>.</exception>
-    protected bool SetProperty<T>([NotNullIfNotNull("newValue")] ref T field, T newValue, IEqualityComparer<T> comparer, [CallerMemberName] string? propertyName = null)
+    protected bool SetProperty<T>([NotNullIfNotNull(nameof(newValue))] ref T field, T newValue, IEqualityComparer<T> comparer, [CallerMemberName] string? propertyName = null)
     {
         ArgumentNullException.ThrowIfNull(comparer);
 

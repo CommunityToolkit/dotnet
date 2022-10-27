@@ -2,14 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
+#if NET7_0_OR_GREATER
+
 using System.Runtime.CompilerServices;
-using System.Runtime.Versioning;
-#if NETSTANDARD2_1_OR_GREATER
-using System.Runtime.InteropServices;
-#else
-using CommunityToolkit.HighPerformance.Helpers;
-#endif
 
 namespace CommunityToolkit.HighPerformance;
 
@@ -17,16 +12,12 @@ namespace CommunityToolkit.HighPerformance;
 /// A <see langword="struct"/> that can store a reference to a value of a specified type.
 /// </summary>
 /// <typeparam name="T">The type of value to reference.</typeparam>
-[RequiresPreviewFeatures(
-    "The Ref<T> type has no compiler support to ensure the lifetime of referenced values is respected, and as such using it incorrectly may lead to GC holes.",
-    Url = "https://github.com/dotnet/runtime/issues/46104")]
 public readonly ref struct Ref<T>
 {
-#if NETSTANDARD2_1_OR_GREATER
     /// <summary>
-    /// The 1-length <see cref="Span{T}"/> instance used to track the target <typeparamref name="T"/> value.
+    /// The reference to the target <typeparamref name="T"/> value.
     /// </summary>
-    internal readonly Span<T> Span;
+    private readonly ref T value;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Ref{T}"/> struct.
@@ -35,7 +26,7 @@ public readonly ref struct Ref<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Ref(ref T value)
     {
-        this.Span = MemoryMarshal.CreateSpan(ref value, 1);
+        this.value = ref value;
     }
 
     /// <summary>
@@ -54,45 +45,8 @@ public readonly ref struct Ref<T>
     public ref T Value
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref MemoryMarshal.GetReference(this.Span);
+        get => ref this.value;
     }
-#else
-    /// <summary>
-    /// The owner <see cref="object"/> the current instance belongs to
-    /// </summary>
-    internal readonly object Owner;
-
-    /// <summary>
-    /// The target offset within <see cref="Owner"/> the current instance is pointing to
-    /// </summary>
-    /// <remarks>
-    /// Using an <see cref="IntPtr"/> instead of <see cref="int"/> to avoid the int to
-    /// native int conversion in the generated asm (an extra movsxd on x64).
-    /// </remarks>
-    internal readonly IntPtr Offset;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Ref{T}"/> struct.
-    /// </summary>
-    /// <param name="owner">The owner <see cref="object"/> to create a portable reference for.</param>
-    /// <param name="value">The target reference to point to (it must be within <paramref name="owner"/>).</param>
-    /// <remarks>The <paramref name="value"/> parameter is not validated, and it's responsibility of the caller to ensure it's valid.</remarks>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Ref(object owner, ref T value)
-    {
-        this.Owner = owner;
-        this.Offset = ObjectMarshal.DangerousGetObjectDataByteOffset(owner, ref value);
-    }
-
-    /// <summary>
-    /// Gets the <typeparamref name="T"/> reference represented by the current <see cref="Ref{T}"/> instance.
-    /// </summary>
-    public ref T Value
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref ObjectMarshal.DangerousGetObjectDataReferenceAt<T>(this.Owner, this.Offset);
-    }
-#endif
 
     /// <summary>
     /// Implicitly gets the <typeparamref name="T"/> value from a given <see cref="Ref{T}"/> instance.
@@ -104,3 +58,5 @@ public readonly ref struct Ref<T>
         return reference.Value;
     }
 }
+
+#endif
