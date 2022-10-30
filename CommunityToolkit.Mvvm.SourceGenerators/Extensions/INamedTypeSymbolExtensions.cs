@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 using Microsoft.CodeAnalysis;
 
@@ -16,11 +15,11 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 internal static class INamedTypeSymbolExtensions
 {
     /// <summary>
-    /// Gets a valid filename for a given <see cref="INamedTypeSymbol"/> instance.
+    /// Gets a fully qualified metadata name for a given <see cref="INamedTypeSymbol"/> instance.
     /// </summary>
     /// <param name="symbol">The input <see cref="INamedTypeSymbol"/> instance.</param>
-    /// <returns>The full metadata name for <paramref name="symbol"/> that is also a valid filename.</returns>
-    public static string GetFullMetadataNameForFileName(this INamedTypeSymbol symbol)
+    /// <returns>The fully qualified metadata name for <paramref name="symbol"/>.</returns>
+    public static string GetFullyQualifiedMetadataName(this INamedTypeSymbol symbol)
     {
         using ImmutableArrayBuilder<char> builder = ImmutableArrayBuilder<char>.Rent();
 
