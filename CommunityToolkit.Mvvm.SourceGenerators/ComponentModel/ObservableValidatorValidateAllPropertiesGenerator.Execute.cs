@@ -8,7 +8,6 @@ using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
-using CommunityToolkit.Mvvm.SourceGenerators.Messaging.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -31,7 +30,7 @@ partial class ObservableValidatorValidateAllPropertiesGenerator
         /// <returns>Whether <paramref name="typeSymbol"/> inherits from <c>ObservableValidator</c>.</returns>
         public static bool IsObservableValidator(INamedTypeSymbol typeSymbol)
         {
-            return typeSymbol.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator");
+            return typeSymbol.InheritsFromFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableValidator");
         }
 
         /// <summary>
@@ -56,15 +55,15 @@ partial class ObservableValidatorValidateAllPropertiesGenerator
                 // all generators run in an undefined order and looking at the same original compilation, so the
                 // current one wouldn't be able to see generated properties from other generators directly.
                 if (memberSymbol is IFieldSymbol &&
-                    !attributes.Any(static a => a.AttributeClass?.HasFullyQualifiedName(
-                        "global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute") == true))
+                    !attributes.Any(static a => a.AttributeClass?.HasFullyQualifiedMetadataName(
+                        "CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute") == true))
                 {
                     continue;
                 }
 
                 // Skip the current member if there are no validation attributes applied to it
-                if (!attributes.Any(a => a.AttributeClass?.InheritsFromFullyQualifiedName(
-                    "global::System.ComponentModel.DataAnnotations.ValidationAttribute") == true))
+                if (!attributes.Any(a => a.AttributeClass?.InheritsFromFullyQualifiedMetadataName(
+                    "System.ComponentModel.DataAnnotations.ValidationAttribute") == true))
                 {
                     continue;
                 }
@@ -81,30 +80,9 @@ partial class ObservableValidatorValidateAllPropertiesGenerator
             }
 
             return new(
-                typeSymbol.GetFullMetadataNameForFileName(),
+                typeSymbol.GetFullyQualifiedMetadataName(),
                 typeSymbol.GetFullyQualifiedName(),
                 propertyNames.ToImmutable());
-        }
-
-        /// <summary>
-        /// Gets the <see cref="RecipientInfo"/> instance from the given info.
-        /// </summary>
-        /// <param name="typeSymbol">The type symbol for the target type being inspected.</param>
-        /// <param name="interfaceSymbols">The input array of interface type symbols being handled.</param>
-        /// <returns>A <see cref="RecipientInfo"/> instance for the current type being inspected.</returns>
-        public static RecipientInfo GetInfo(INamedTypeSymbol typeSymbol, ImmutableArray<INamedTypeSymbol> interfaceSymbols)
-        {
-            using ImmutableArrayBuilder<string> names = ImmutableArrayBuilder<string>.Rent();
-
-            foreach (INamedTypeSymbol interfaceSymbol in interfaceSymbols)
-            {
-                names.Add(interfaceSymbol.TypeArguments[0].GetFullyQualifiedName());
-            }
-
-            return new(
-                typeSymbol.GetFullMetadataNameForFileName(),
-                typeSymbol.GetFullyQualifiedName(),
-                names.ToImmutable());
         }
 
         /// <summary>

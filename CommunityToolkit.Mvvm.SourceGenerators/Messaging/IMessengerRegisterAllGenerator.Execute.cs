@@ -33,8 +33,7 @@ partial class IMessengerRegisterAllGenerator
 
             foreach (INamedTypeSymbol interfaceSymbol in typeSymbol.AllInterfaces)
             {
-                if (interfaceSymbol.MetadataName is "IRecipient`1" &&
-                    interfaceSymbol.OriginalDefinition.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.Messaging.IRecipient<TMessage>"))
+                if (interfaceSymbol.HasFullyQualifiedMetadataName("CommunityToolkit.Mvvm.Messaging.IRecipient`1"))
                 {
                     iRecipientInterfaces.Add(interfaceSymbol);
                 }
@@ -59,7 +58,7 @@ partial class IMessengerRegisterAllGenerator
             }
 
             return new(
-                typeSymbol.GetFullMetadataNameForFileName(),
+                typeSymbol.GetFullyQualifiedMetadataName(),
                 typeSymbol.GetFullyQualifiedName(),
                 names.ToImmutable());
         }

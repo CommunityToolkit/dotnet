@@ -38,8 +38,6 @@ internal static class SyntaxValueProviderExtensions
         Func<SyntaxNode, CancellationToken, bool> predicate,
         Func<GeneratorAttributeSyntaxContext, CancellationToken, T> transform)
     {
-        string fullyQualifiedMetadataNameWithGlobalPrefix = $"global::{fullyQualifiedMetadataName}";
-
         return
             syntaxValueProvider
             .CreateSyntaxProvider(
@@ -56,7 +54,7 @@ internal static class SyntaxValueProviderExtensions
                     }
 
                     // Skip symbols without the target attribute
-                    if (!symbol.TryGetAttributeWithFullyQualifiedName(fullyQualifiedMetadataNameWithGlobalPrefix, out AttributeData? attributeData))
+                    if (!symbol.TryGetAttributeWithFullyQualifiedMetadataName(fullyQualifiedMetadataName, out AttributeData? attributeData))
                     {
                         return null;
                     }
