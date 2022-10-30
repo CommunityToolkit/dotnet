@@ -785,7 +785,7 @@ partial class RelayCommandGenerator
             if (canExecuteSymbol is IMethodSymbol canExecuteMethodSymbol)
             {
                 // The return type must always be a bool
-                if (!canExecuteMethodSymbol.ReturnType.HasFullyQualifiedMetadataName("System.Boolean"))
+                if (canExecuteMethodSymbol.ReturnType is not { SpecialType: SpecialType.System_Boolean })
                 {
                     goto Failure;
                 }
@@ -820,7 +820,7 @@ partial class RelayCommandGenerator
             else if (canExecuteSymbol is IPropertySymbol { GetMethod: not null } canExecutePropertySymbol)
             {
                 // The property type must always be a bool
-                if (!canExecutePropertySymbol.Type.HasFullyQualifiedMetadataName("System.Boolean"))
+                if (canExecutePropertySymbol.Type is not { SpecialType: SpecialType.System_Boolean })
                 {
                     goto Failure;
                 }
@@ -860,8 +860,7 @@ partial class RelayCommandGenerator
             foreach (ISymbol memberSymbol in containingType.GetAllMembers())
             {
                 // Only look for instance fields of bool type
-                if (memberSymbol is not IFieldSymbol { IsStatic: false } fieldSymbol ||
-                    !fieldSymbol.Type.HasFullyQualifiedMetadataName("System.Boolean"))
+                if (memberSymbol is not IFieldSymbol { IsStatic: false, Type.SpecialType: SpecialType.System_Boolean } fieldSymbol)
                 {
                     continue;
                 }
