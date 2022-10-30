@@ -297,7 +297,7 @@ public abstract class ObservableObject : global::System.ComponentModel.INotifyPr
     /// public Task MyTask
     /// {
     ///     get => myTask;
-    ///     private set => SetAndNotifyOnCompletion(ref myTask, value);
+    ///     private set => SetPropertyAndNotifyOnCompletion(ref myTask, value);
     /// }
     /// </code>
     /// </summary>
@@ -357,7 +357,7 @@ public abstract class ObservableObject : global::System.ComponentModel.INotifyPr
     /// public Task&lt;int&gt; MyTask
     /// {
     ///     get => myTask;
-    ///     private set => SetAndNotifyOnCompletion(ref myTask, value);
+    ///     private set => SetPropertyAndNotifyOnCompletion(ref myTask, value);
     /// }
     /// </code>
     /// </summary>

@@ -256,7 +256,7 @@ public abstract class INotifyPropertyChanged : global::System.ComponentModel.INo
     /// public Task MyTask
     /// {
     ///     get => myTask;
-    ///     private set => SetAndNotifyOnCompletion(ref myTask, value);
+    ///     private set => SetPropertyAndNotifyOnCompletion(ref myTask, value);
     /// }
     /// </code>
     /// </summary>
@@ -313,7 +313,7 @@ public abstract class INotifyPropertyChanged : global::System.ComponentModel.INo
     /// public Task&lt;int&gt; MyTask
     /// {
     ///     get => myTask;
-    ///     private set => SetAndNotifyOnCompletion(ref myTask, value);
+    ///     private set => SetPropertyAndNotifyOnCompletion(ref myTask, value);
     /// }
     /// </code>
     /// </summary>
