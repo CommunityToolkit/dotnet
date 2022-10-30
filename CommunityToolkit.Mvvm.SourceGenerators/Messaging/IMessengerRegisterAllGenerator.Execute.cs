@@ -59,7 +59,7 @@ partial class IMessengerRegisterAllGenerator
             }
 
             return new(
-                typeSymbol.GetFullMetadataNameForFileName(),
+                typeSymbol.GetFullyQualifiedMetadataName(),
                 typeSymbol.GetFullyQualifiedName(),
                 names.ToImmutable());
         }

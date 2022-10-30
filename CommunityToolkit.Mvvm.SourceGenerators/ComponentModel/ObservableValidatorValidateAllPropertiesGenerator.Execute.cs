@@ -81,7 +81,7 @@ partial class ObservableValidatorValidateAllPropertiesGenerator
             }
 
             return new(
-                typeSymbol.GetFullMetadataNameForFileName(),
+                typeSymbol.GetFullyQualifiedMetadataName(),
                 typeSymbol.GetFullyQualifiedName(),
                 propertyNames.ToImmutable());
         }
@@ -102,7 +102,7 @@ partial class ObservableValidatorValidateAllPropertiesGenerator
             }
 
             return new(
-                typeSymbol.GetFullMetadataNameForFileName(),
+                typeSymbol.GetFullyQualifiedMetadataName(),
                 typeSymbol.GetFullyQualifiedName(),
                 names.ToImmutable());
         }
