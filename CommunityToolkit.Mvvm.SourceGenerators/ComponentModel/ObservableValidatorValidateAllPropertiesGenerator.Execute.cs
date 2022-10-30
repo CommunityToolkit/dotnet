@@ -31,7 +31,7 @@ partial class ObservableValidatorValidateAllPropertiesGenerator
         /// <returns>Whether <paramref name="typeSymbol"/> inherits from <c>ObservableValidator</c>.</returns>
         public static bool IsObservableValidator(INamedTypeSymbol typeSymbol)
         {
-            return typeSymbol.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator");
+            return typeSymbol.InheritsFromFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableValidator");
         }
 
         /// <summary>
@@ -56,15 +56,15 @@ partial class ObservableValidatorValidateAllPropertiesGenerator
                 // all generators run in an undefined order and looking at the same original compilation, so the
                 // current one wouldn't be able to see generated properties from other generators directly.
                 if (memberSymbol is IFieldSymbol &&
-                    !attributes.Any(static a => a.AttributeClass?.HasFullyQualifiedName(
-                        "global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute") == true))
+                    !attributes.Any(static a => a.AttributeClass?.HasFullyQualifiedMetadataName(
+                        "CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute") == true))
                 {
                     continue;
                 }
 
                 // Skip the current member if there are no validation attributes applied to it
-                if (!attributes.Any(a => a.AttributeClass?.InheritsFromFullyQualifiedName(
-                    "global::System.ComponentModel.DataAnnotations.ValidationAttribute") == true))
+                if (!attributes.Any(a => a.AttributeClass?.InheritsFromFullyQualifiedMetadataName(
+                    "System.ComponentModel.DataAnnotations.ValidationAttribute") == true))
                 {
                     continue;
                 }

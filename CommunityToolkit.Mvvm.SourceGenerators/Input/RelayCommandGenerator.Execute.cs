@@ -371,7 +371,7 @@ partial class RelayCommandGenerator
             foreach (ISymbol symbol in methodSymbol.ContainingType.BaseType?.GetAllMembers(methodSymbol.Name) ?? Enumerable.Empty<ISymbol>())
             {
                 if (symbol is IMethodSymbol otherSymbol &&
-                    otherSymbol.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.RelayCommandAttribute"))
+                    otherSymbol.HasAttributeWithFullyQualifiedMetadataName("CommunityToolkit.Mvvm.Input.RelayCommandAttribute"))
                 {
                     diagnostics.Add(
                         MultipleRelayCommandMethodOverloadsError,
@@ -387,7 +387,7 @@ partial class RelayCommandGenerator
             foreach (ISymbol symbol in methodSymbol.ContainingType.GetMembers(methodSymbol.Name))
             {
                 if (symbol is IMethodSymbol otherSymbol &&
-                    otherSymbol.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.RelayCommandAttribute"))
+                    otherSymbol.HasAttributeWithFullyQualifiedMetadataName("CommunityToolkit.Mvvm.Input.RelayCommandAttribute"))
                 {
                     // If the first [RelayCommand] overload is the current symbol, return immediately. This makes it so
                     // that if multiple overloads are present, only the ones after the first declared one will have
@@ -431,8 +431,7 @@ partial class RelayCommandGenerator
 
             // Strip the "Async" suffix for methods returning a Task type
             if (methodSymbol.Name.EndsWith("Async") &&
-                (methodSymbol.ReturnType.HasFullyQualifiedName("global::System.Threading.Tasks.Task") ||
-                 methodSymbol.ReturnType.InheritsFromFullyQualifiedName("global::System.Threading.Tasks.Task")))
+                methodSymbol.ReturnType.HasOrInheritsFromFullyQualifiedMetadataName("System.Threading.Tasks.Task"))
             {
                 propertyName = propertyName.Substring(0, propertyName.Length - "Async".Length);
             }
@@ -509,8 +508,7 @@ partial class RelayCommandGenerator
             }
 
             // Map all Task-returning methods
-            if (methodSymbol.ReturnType.HasFullyQualifiedName("global::System.Threading.Tasks.Task") ||
-                methodSymbol.ReturnType.InheritsFromFullyQualifiedName("global::System.Threading.Tasks.Task"))
+            if (methodSymbol.ReturnType.HasOrInheritsFromFullyQualifiedMetadataName("System.Threading.Tasks.Task"))
             {
                 // Map <void, Task> to IAsyncRelayCommand, AsyncRelayCommand, Func<Task>
                 if (methodSymbol.Parameters.Length == 0)
@@ -530,7 +528,7 @@ partial class RelayCommandGenerator
                     methodSymbol.Parameters[0] is IParameterSymbol { RefKind: RefKind.None, Type: { IsRefLikeType: false, TypeKind: not TypeKind.Pointer and not TypeKind.FunctionPointer } } singleParameter)
                 {
                     // Map <CancellationToken, Task> to IAsyncRelayCommand, AsyncRelayCommand, Func<CancellationToken, Task>
-                    if (singleParameter.Type.HasFullyQualifiedName("global::System.Threading.CancellationToken"))
+                    if (singleParameter.Type.HasFullyQualifiedMetadataName("System.Threading.CancellationToken"))
                     {
                         commandInterfaceType = "global::CommunityToolkit.Mvvm.Input.IAsyncRelayCommand";
                         commandClassType = "global::CommunityToolkit.Mvvm.Input.AsyncRelayCommand";
@@ -559,7 +557,7 @@ partial class RelayCommandGenerator
                 if (methodSymbol.Parameters.Length == 2 &&
                     methodSymbol.Parameters[0] is IParameterSymbol { RefKind: RefKind.None, Type: { IsRefLikeType: false, TypeKind: not TypeKind.Pointer and not TypeKind.FunctionPointer } } firstParameter &&
                     methodSymbol.Parameters[1] is IParameterSymbol { RefKind: RefKind.None, Type: { IsRefLikeType: false, TypeKind: not TypeKind.Pointer and not TypeKind.FunctionPointer } } secondParameter &&
-                    secondParameter.Type.HasFullyQualifiedName("global::System.Threading.CancellationToken"))
+                    secondParameter.Type.HasFullyQualifiedMetadataName("System.Threading.CancellationToken"))
                 {
                     commandInterfaceType = "global::CommunityToolkit.Mvvm.Input.IAsyncRelayCommand";
                     commandClassType = "global::CommunityToolkit.Mvvm.Input.AsyncRelayCommand";
@@ -787,7 +785,7 @@ partial class RelayCommandGenerator
             if (canExecuteSymbol is IMethodSymbol canExecuteMethodSymbol)
             {
                 // The return type must always be a bool
-                if (!canExecuteMethodSymbol.ReturnType.HasFullyQualifiedName("bool"))
+                if (!canExecuteMethodSymbol.ReturnType.HasFullyQualifiedMetadataName("System.Boolean"))
                 {
                     goto Failure;
                 }
@@ -822,7 +820,7 @@ partial class RelayCommandGenerator
             else if (canExecuteSymbol is IPropertySymbol { GetMethod: not null } canExecutePropertySymbol)
             {
                 // The property type must always be a bool
-                if (!canExecutePropertySymbol.Type.HasFullyQualifiedName("bool"))
+                if (!canExecutePropertySymbol.Type.HasFullyQualifiedMetadataName("System.Boolean"))
                 {
                     goto Failure;
                 }
@@ -863,7 +861,7 @@ partial class RelayCommandGenerator
             {
                 // Only look for instance fields of bool type
                 if (memberSymbol is not IFieldSymbol { IsStatic: false } fieldSymbol ||
-                    !fieldSymbol.Type.HasFullyQualifiedName("bool"))
+                    !fieldSymbol.Type.HasFullyQualifiedMetadataName("System.Boolean"))
                 {
                     continue;
                 }
@@ -872,8 +870,8 @@ partial class RelayCommandGenerator
 
                 // Only filter fields with the [ObservableProperty] attribute
                 if (memberSymbol is IFieldSymbol &&
-                    !attributes.Any(static a => a.AttributeClass?.HasFullyQualifiedName(
-                        "global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute") == true))
+                    !attributes.Any(static a => a.AttributeClass?.HasFullyQualifiedMetadataName(
+                        "CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute") == true))
                 {
                     continue;
                 }

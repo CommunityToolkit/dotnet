@@ -38,7 +38,7 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
         ObservableRecipientInfo? info = null;
 
         // Check if the type already inherits from ObservableRecipient
-        if (typeSymbol.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableRecipient"))
+        if (typeSymbol.InheritsFromFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableRecipient"))
         {
             diagnostics = ImmutableArray.Create(DiagnosticInfo.Create(DuplicateObservableRecipientError, typeSymbol, typeSymbol));
 
@@ -46,7 +46,7 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
         }
 
         // Check if the type already inherits [ObservableRecipient]
-        if (typeSymbol.InheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableRecipientAttribute"))
+        if (typeSymbol.InheritsAttributeWithFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableRecipientAttribute"))
         {
             diagnostics = ImmutableArray.Create(DiagnosticInfo.Create(InvalidAttributeCombinationForObservableRecipientAttributeError, typeSymbol, typeSymbol));
 
@@ -55,10 +55,10 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
 
         // In order to use [ObservableRecipient], the target type needs to inherit from ObservableObject,
         // or be annotated with [ObservableObject] or [INotifyPropertyChanged] (with additional helpers).
-        if (!typeSymbol.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableObject") &&
-            !typeSymbol.HasOrInheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute") &&
+        if (!typeSymbol.InheritsFromFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableObject") &&
+            !typeSymbol.HasOrInheritsAttributeWithFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute") &&
             !typeSymbol.HasOrInheritsAttribute(static a =>
-                a.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.INotifyPropertyChangedAttribute") == true &&
+                a.AttributeClass?.HasFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.INotifyPropertyChangedAttribute") == true &&
                 !a.HasNamedArgument("IncludeAdditionalHelperMethods", false)))
         {
             diagnostics = ImmutableArray.Create(DiagnosticInfo.Create(MissingBaseObservableObjectFunctionalityError, typeSymbol, typeSymbol));
@@ -70,7 +70,7 @@ public sealed class ObservableRecipientGenerator : TransitiveMembersGenerator<Ob
         string typeName = typeSymbol.Name;
         bool hasExplicitConstructors = !(typeSymbol.InstanceConstructors.Length == 1 && typeSymbol.InstanceConstructors[0] is { Parameters.IsEmpty: true, IsImplicitlyDeclared: true });
         bool isAbstract = typeSymbol.IsAbstract;
-        bool isObservableValidator = typeSymbol.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator");
+        bool isObservableValidator = typeSymbol.InheritsFromFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableValidator");
         bool isRequiresUnreferencedCodeAttributeAvailable = compilation.HasAccessibleTypeWithMetadataName("System.Diagnostics.CodeAnalysis.RequiresUnreferencedCodeAttribute");
         bool hasOnActivatedMethod = typeSymbol.GetMembers().Any(m => m is IMethodSymbol { Parameters.IsEmpty: true, Name: "OnActivated" });
         bool hasOnDeactivatedMethod = typeSymbol.GetMembers().Any(m => m is IMethodSymbol { Parameters.IsEmpty: true, Name: "OnDeactivated" });

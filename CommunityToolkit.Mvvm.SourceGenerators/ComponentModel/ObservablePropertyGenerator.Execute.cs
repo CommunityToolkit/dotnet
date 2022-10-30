@@ -162,7 +162,7 @@ partial class ObservablePropertyGenerator
                 }
 
                 // Track the current attribute for forwarding if it is a validation attribute
-                if (attributeData.AttributeClass?.InheritsFromFullyQualifiedName("global::System.ComponentModel.DataAnnotations.ValidationAttribute") == true)
+                if (attributeData.AttributeClass?.InheritsFromFullyQualifiedMetadataName("System.ComponentModel.DataAnnotations.ValidationAttribute") == true)
                 {
                     hasAnyValidationAttributes = true;
 
@@ -175,11 +175,11 @@ partial class ObservablePropertyGenerator
                 //   - Scaffold column attributes (System.ComponentModel.DataAnnotations.ScaffoldColumnAttribute)
                 //   - Editable attributes (System.ComponentModel.DataAnnotations.EditableAttribute)
                 //   - Key attributes (System.ComponentModel.DataAnnotations.KeyAttribute)
-                if (attributeData.AttributeClass?.HasOrInheritsFromFullyQualifiedName("global::System.ComponentModel.DataAnnotations.UIHintAttribute") == true ||
-                    attributeData.AttributeClass?.HasOrInheritsFromFullyQualifiedName("global::System.ComponentModel.DataAnnotations.ScaffoldColumnAttribute") == true ||
-                    attributeData.AttributeClass?.HasFullyQualifiedName("global::System.ComponentModel.DataAnnotations.DisplayAttribute") == true ||
-                    attributeData.AttributeClass?.HasFullyQualifiedName("global::System.ComponentModel.DataAnnotations.EditableAttribute") == true ||
-                    attributeData.AttributeClass?.HasFullyQualifiedName("global::System.ComponentModel.DataAnnotations.KeyAttribute") == true)
+                if (attributeData.AttributeClass?.HasOrInheritsFromFullyQualifiedMetadataName("System.ComponentModel.DataAnnotations.UIHintAttribute") == true ||
+                    attributeData.AttributeClass?.HasOrInheritsFromFullyQualifiedMetadataName("System.ComponentModel.DataAnnotations.ScaffoldColumnAttribute") == true ||
+                    attributeData.AttributeClass?.HasFullyQualifiedMetadataName("System.ComponentModel.DataAnnotations.DisplayAttribute") == true ||
+                    attributeData.AttributeClass?.HasFullyQualifiedMetadataName("System.ComponentModel.DataAnnotations.EditableAttribute") == true ||
+                    attributeData.AttributeClass?.HasFullyQualifiedMetadataName("System.ComponentModel.DataAnnotations.KeyAttribute") == true)
                 {
                     forwardedAttributes.Add(AttributeInfo.From(attributeData));
                 }
@@ -226,7 +226,7 @@ partial class ObservablePropertyGenerator
 
             // Log the diagnostic for missing ObservableValidator, if needed
             if (hasAnyValidationAttributes &&
-                !fieldSymbol.ContainingType.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator"))
+                !fieldSymbol.ContainingType.InheritsFromFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableValidator"))
             {
                 builder.Add(
                     MissingObservableValidatorInheritanceForValidationAttributeError,
@@ -275,9 +275,9 @@ partial class ObservablePropertyGenerator
             //   - It inherits from ObservableObject (in which case it also implements INotifyPropertyChanging).
             //   - It has the [ObservableObject] attribute (on itself or any of its base types).
             //   - It has the [INotifyPropertyChanged] attribute (on itself or any of its base types).
-            bool isObservableObject = fieldSymbol.ContainingType.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableObject");
-            bool hasObservableObjectAttribute = fieldSymbol.ContainingType.HasOrInheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute");
-            bool hasINotifyPropertyChangedAttribute = fieldSymbol.ContainingType.HasOrInheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.INotifyPropertyChangedAttribute");
+            bool isObservableObject = fieldSymbol.ContainingType.InheritsFromFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableObject");
+            bool hasObservableObjectAttribute = fieldSymbol.ContainingType.HasOrInheritsAttributeWithFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute");
+            bool hasINotifyPropertyChangedAttribute = fieldSymbol.ContainingType.HasOrInheritsAttributeWithFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.INotifyPropertyChangedAttribute");
 
             shouldInvokeOnPropertyChanging = isObservableObject || hasObservableObjectAttribute;
 
@@ -300,8 +300,8 @@ partial class ObservablePropertyGenerator
             {
                 return
                     propertyType.SpecialType == SpecialType.System_Object ||
-                    propertyType.HasOrInheritsFromFullyQualifiedName("global::System.ComponentModel.PropertyChangedEventArgs") ||
-                    propertyType.HasOrInheritsFromFullyQualifiedName("global::System.ComponentModel.PropertyChangingEventArgs");
+                    propertyType.HasOrInheritsFromFullyQualifiedMetadataName("System.ComponentModel.PropertyChangedEventArgs") ||
+                    propertyType.HasOrInheritsFromFullyQualifiedMetadataName("System.ComponentModel.PropertyChangingEventArgs");
             }
 
             return false;
@@ -334,7 +334,7 @@ partial class ObservablePropertyGenerator
                 {
                     if (member is IFieldSymbol otherFieldSymbol &&
                         !SymbolEqualityComparer.Default.Equals(fieldSymbol, otherFieldSymbol) &&
-                        otherFieldSymbol.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute") &&
+                        otherFieldSymbol.HasAttributeWithFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute") &&
                         propertyName == GetGeneratedPropertyName(otherFieldSymbol))
                     {
                         return true;
@@ -344,7 +344,7 @@ partial class ObservablePropertyGenerator
                 return false;
             }
 
-            if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyPropertyChangedForAttribute") == true)
+            if (attributeData.AttributeClass?.HasFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.NotifyPropertyChangedForAttribute") == true)
             {
                 foreach (string? dependentPropertyName in attributeData.GetConstructorArguments<string>())
                 {
@@ -397,8 +397,8 @@ partial class ObservablePropertyGenerator
                     // target is definitely not valid, and the additional checks below can just be skipped. The property
                     // is valid if it's of type IRelayCommand, or it has IRelayCommand in the set of all interfaces.
                     if (propertySymbol.Type is INamedTypeSymbol typeSymbol &&
-                        (typeSymbol.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.IRelayCommand") ||
-                         typeSymbol.HasInterfaceWithFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.IRelayCommand")))
+                        (typeSymbol.HasFullyQualifiedMetadataName("CommunityToolkit.Mvvm.Input.IRelayCommand") ||
+                         typeSymbol.HasInterfaceWithFullyQualifiedMetadataName("CommunityToolkit.Mvvm.Input.IRelayCommand")))
                     {
                         shouldLookForGeneratedMembersToo = true;
 
@@ -423,7 +423,7 @@ partial class ObservablePropertyGenerator
                 foreach (ISymbol member in fieldSymbol.ContainingType.GetAllMembers())
                 {
                     if (member is IMethodSymbol methodSymbol &&
-                        methodSymbol.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.Input.RelayCommandAttribute") &&
+                        methodSymbol.HasAttributeWithFullyQualifiedMetadataName("CommunityToolkit.Mvvm.Input.RelayCommandAttribute") &&
                         commandName == RelayCommandGenerator.Execute.GetGeneratedFieldAndPropertyNames(methodSymbol).PropertyName)
                     {
                         return true;
@@ -433,7 +433,7 @@ partial class ObservablePropertyGenerator
                 return false;
             }
 
-            if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyCanExecuteChangedForAttribute") == true)
+            if (attributeData.AttributeClass?.HasFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.NotifyCanExecuteChangedForAttribute") == true)
             {
                 foreach (string? commandName in attributeData.GetConstructorArguments<string>())
                 {
@@ -470,11 +470,11 @@ partial class ObservablePropertyGenerator
         /// <returns>Whether or not the generated property for <paramref name="fieldSymbol"/> is in a type annotated with <c>[NotifyPropertyChangedRecipients]</c>.</returns>
         private static bool TryGetIsNotifyingRecipients(IFieldSymbol fieldSymbol, out bool isBroadcastTargetValid)
         {
-            if (fieldSymbol.ContainingType?.HasOrInheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyPropertyChangedRecipientsAttribute") == true)
+            if (fieldSymbol.ContainingType?.HasOrInheritsAttributeWithFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.NotifyPropertyChangedRecipientsAttribute") == true)
             {
                 // If the containing type is valid, track it
-                if (fieldSymbol.ContainingType.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableRecipient") ||
-                    fieldSymbol.ContainingType.HasOrInheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableRecipientAttribute"))
+                if (fieldSymbol.ContainingType.InheritsFromFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableRecipient") ||
+                    fieldSymbol.ContainingType.HasOrInheritsAttributeWithFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableRecipientAttribute"))
                 {
                     isBroadcastTargetValid = true;
 
@@ -509,7 +509,7 @@ partial class ObservablePropertyGenerator
             bool hasOrInheritsClassLevelNotifyPropertyChangedRecipients,
             out bool isBroadcastTargetValid)
         {
-            if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyPropertyChangedRecipientsAttribute") == true)
+            if (attributeData.AttributeClass?.HasFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.NotifyPropertyChangedRecipientsAttribute") == true)
             {
                 // Emit a diagnostic if the attribute is unnecessary
                 if (hasOrInheritsClassLevelNotifyPropertyChangedRecipients)
@@ -522,8 +522,8 @@ partial class ObservablePropertyGenerator
                 }
 
                 // If the containing type is valid, track it
-                if (fieldSymbol.ContainingType.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableRecipient") ||
-                    fieldSymbol.ContainingType.HasOrInheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableRecipientAttribute"))
+                if (fieldSymbol.ContainingType.InheritsFromFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableRecipient") ||
+                    fieldSymbol.ContainingType.HasOrInheritsAttributeWithFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableRecipientAttribute"))
                 {
                     isBroadcastTargetValid = true;
 
@@ -555,8 +555,8 @@ partial class ObservablePropertyGenerator
         public static Diagnostic? GetIsNotifyingRecipientsDiagnosticForType(INamedTypeSymbol typeSymbol)
         {
             // If the containing type is valid, track it
-            if (!typeSymbol.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableRecipient") &&
-                !typeSymbol.HasOrInheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableRecipientAttribute"))
+            if (!typeSymbol.InheritsFromFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableRecipient") &&
+                !typeSymbol.HasOrInheritsAttributeWithFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableRecipientAttribute"))
             {
                 return Diagnostic.Create(
                     InvalidTypeForNotifyPropertyChangedRecipientsError,
@@ -575,10 +575,10 @@ partial class ObservablePropertyGenerator
         /// <returns>Whether or not the generated property for <paramref name="fieldSymbol"/> used <c>[NotifyDataErrorInfo]</c>.</returns>
         private static bool TryGetNotifyDataErrorInfo(IFieldSymbol fieldSymbol, out bool isValidationTargetValid)
         {
-            if (fieldSymbol.ContainingType?.HasOrInheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyDataErrorInfoAttribute") == true)
+            if (fieldSymbol.ContainingType?.HasOrInheritsAttributeWithFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.NotifyDataErrorInfoAttribute") == true)
             {
                 // If the containing type is valid, track it
-                if (fieldSymbol.ContainingType.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator"))
+                if (fieldSymbol.ContainingType.InheritsFromFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableValidator"))
                 {
                     isValidationTargetValid = true;
 
@@ -612,7 +612,7 @@ partial class ObservablePropertyGenerator
             bool hasOrInheritsClassLevelNotifyDataErrorInfo,
             out bool isValidationTargetValid)
         {
-            if (attributeData.AttributeClass?.HasFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyDataErrorInfoAttribute") == true)
+            if (attributeData.AttributeClass?.HasFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.NotifyDataErrorInfoAttribute") == true)
             {
                 // Emit a diagnostic if the attribute is unnecessary
                 if (hasOrInheritsClassLevelNotifyDataErrorInfo)
@@ -625,7 +625,7 @@ partial class ObservablePropertyGenerator
                 }
 
                 // If the containing type is valid, track it
-                if (fieldSymbol.ContainingType.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator"))
+                if (fieldSymbol.ContainingType.InheritsFromFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableValidator"))
                 {
                     isValidationTargetValid = true;
 
@@ -657,7 +657,7 @@ partial class ObservablePropertyGenerator
         public static Diagnostic? GetIsNotifyDataErrorInfoDiagnosticForType(INamedTypeSymbol typeSymbol)
         {
             // If the containing type is valid, track it
-            if (!typeSymbol.InheritsFromFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableValidator"))
+            if (!typeSymbol.InheritsFromFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableValidator"))
             {
                 return Diagnostic.Create(
                     InvalidTypeForNotifyDataErrorInfoError,
