@@ -32,7 +32,7 @@ public sealed class ObservableObjectGenerator : TransitiveMembersGenerator<int>
         diagnostics = ImmutableArray<DiagnosticInfo>.Empty;
 
         // Check if the type already implements INotifyPropertyChanged...
-        if (typeSymbol.AllInterfaces.Any(i => i.HasFullyQualifiedName("global::System.ComponentModel.INotifyPropertyChanged")))
+        if (typeSymbol.AllInterfaces.Any(i => i.HasFullyQualifiedMetadataName("System.ComponentModel.INotifyPropertyChanged")))
         {
             diagnostics = ImmutableArray.Create(DiagnosticInfo.Create(DuplicateINotifyPropertyChangedInterfaceForObservableObjectAttributeError, typeSymbol, typeSymbol));
 
@@ -40,7 +40,7 @@ public sealed class ObservableObjectGenerator : TransitiveMembersGenerator<int>
         }
 
         // ...or INotifyPropertyChanging
-        if (typeSymbol.AllInterfaces.Any(i => i.HasFullyQualifiedName("global::System.ComponentModel.INotifyPropertyChanging")))
+        if (typeSymbol.AllInterfaces.Any(i => i.HasFullyQualifiedMetadataName("System.ComponentModel.INotifyPropertyChanging")))
         {
             diagnostics = ImmutableArray.Create(DiagnosticInfo.Create(DuplicateINotifyPropertyChangingInterfaceForObservableObjectAttributeError, typeSymbol, typeSymbol));
 
@@ -48,8 +48,8 @@ public sealed class ObservableObjectGenerator : TransitiveMembersGenerator<int>
         }
 
         // Check if the type uses [INotifyPropertyChanged] or [ObservableObject] already (in the type hierarchy too)
-        if (typeSymbol.InheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute") ||
-            typeSymbol.HasOrInheritsAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.INotifyPropertyChangedAttribute"))
+        if (typeSymbol.InheritsAttributeWithFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute") ||
+            typeSymbol.HasOrInheritsAttributeWithFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.INotifyPropertyChangedAttribute"))
         {
             diagnostics = ImmutableArray.Create(DiagnosticInfo.Create(InvalidAttributeCombinationForObservableObjectAttributeError, typeSymbol, typeSymbol));
 

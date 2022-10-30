@@ -124,7 +124,7 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
         // Filter only the type symbols with [NotifyPropertyChangedRecipients] and create diagnostics for them
         IncrementalValuesProvider<Diagnostic> notifyRecipientsErrors =
             classSymbols
-            .Where(static item => item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyPropertyChangedRecipientsAttribute"))
+            .Where(static item => item.HasAttributeWithFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.NotifyPropertyChangedRecipientsAttribute"))
             .Select(static (item, _) => Execute.GetIsNotifyingRecipientsDiagnosticForType(item))
             .Where(static item => item is not null)!;
 
@@ -134,7 +134,7 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
         // Filter only the type symbols with [NotifyDataErrorInfo] and create diagnostics for them
         IncrementalValuesProvider<Diagnostic> notifyDataErrorInfoErrors =
             classSymbols
-            .Where(static item => item.HasAttributeWithFullyQualifiedName("global::CommunityToolkit.Mvvm.ComponentModel.NotifyDataErrorInfoAttribute"))
+            .Where(static item => item.HasAttributeWithFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.NotifyDataErrorInfoAttribute"))
             .Select(static (item, _) => Execute.GetIsNotifyDataErrorInfoDiagnosticForType(item))
             .Where(static item => item is not null)!;
 
