@@ -8,7 +8,6 @@ using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
-using CommunityToolkit.Mvvm.SourceGenerators.Messaging.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -84,27 +83,6 @@ partial class ObservableValidatorValidateAllPropertiesGenerator
                 typeSymbol.GetFullyQualifiedMetadataName(),
                 typeSymbol.GetFullyQualifiedName(),
                 propertyNames.ToImmutable());
-        }
-
-        /// <summary>
-        /// Gets the <see cref="RecipientInfo"/> instance from the given info.
-        /// </summary>
-        /// <param name="typeSymbol">The type symbol for the target type being inspected.</param>
-        /// <param name="interfaceSymbols">The input array of interface type symbols being handled.</param>
-        /// <returns>A <see cref="RecipientInfo"/> instance for the current type being inspected.</returns>
-        public static RecipientInfo GetInfo(INamedTypeSymbol typeSymbol, ImmutableArray<INamedTypeSymbol> interfaceSymbols)
-        {
-            using ImmutableArrayBuilder<string> names = ImmutableArrayBuilder<string>.Rent();
-
-            foreach (INamedTypeSymbol interfaceSymbol in interfaceSymbols)
-            {
-                names.Add(interfaceSymbol.TypeArguments[0].GetFullyQualifiedName());
-            }
-
-            return new(
-                typeSymbol.GetFullyQualifiedMetadataName(),
-                typeSymbol.GetFullyQualifiedName(),
-                names.ToImmutable());
         }
 
         /// <summary>
