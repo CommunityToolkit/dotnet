@@ -28,10 +28,10 @@
       <BuildOutputPerTarget Update="@(BuildOutputPerTarget)" TargetFramework="$(TargetFramework)" />
     </ItemGroup>
 
-    <ItemGroup Condition="'$(IsCompilerTargeting)' == 'true'">
-      <BuildOutputPerTarget Update="@(BuildOutputPerTarget)" IsCompilerExtension="true" />
+    <ItemGroup>
       <BuildOutputPerTarget Update="@(BuildOutputPerTarget)" TargetCompiler="$(TargetCompiler)" />
       <BuildOutputPerTarget Update="@(BuildOutputPerTarget)" TargetLanguage="$(TargetLanguage)" />
+      <BuildOutputPerTarget Update="@(BuildOutputPerTarget)" IsCompilerExtension="$(IsCompilerTargeting)" />
     </ItemGroup>
   </Target>
 

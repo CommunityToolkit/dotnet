@@ -78,10 +78,12 @@
 
     <!-- Include the Build Outputs (also for each Custom target, like Roslyn analyzers and generators) in the package -->
     <ItemGroup>
-      <PackageFile Include="@(NonReferencingProjectBuildOutput)">
+      <_NonReferencingProjectPackageFile Include="@(NonReferencingProjectBuildOutput->ClearMetadata())">
         <TargetPath Condition="'%(IsCompilerExtension)' == 'true'">$([System.IO.Path]::Combine('analyzers', 'dotnet', '%(TargetCompiler)', '%(TargetLanguage)'))</TargetPath>
-        <TargetPath Condition="'%(TargetPath)' == ''">$([System.IO.Path]::Combine('tools', '%(TargetFramework)'))</TargetPath>
-      </PackageFile>
+        <TargetPath Condition="'%(IsCompilerExtension)' != 'true'">$([System.IO.Path]::Combine('tools', '%(TargetFramework)'))</TargetPath>
+      </_NonReferencingProjectPackageFile>
+      <PackageFile Include="@(_NonReferencingProjectPackageFile)" />
+      <_NonReferencingProjectPackageFile Remove="@(_NonReferencingProjectPackageFile)" />
     </ItemGroup>
   </Target>
 
