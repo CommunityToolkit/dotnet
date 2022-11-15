@@ -37,7 +37,6 @@ jobs:
     displayName: Install the .NET 7 SDK
     inputs:
       version: $(DotNet.Version)
-      includePreviewVersions: true
       performMultiLevelLookup: true
 
   # Set Build Version
