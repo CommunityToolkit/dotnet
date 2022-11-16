@@ -194,7 +194,7 @@ public class Test_Memory2DT
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 0, 0, 0, 3, 3));
     }
 
-#if NETCOREAPP
+#if NET6_0_OR_GREATER
     [TestMethod]
     public void Test_Memory2DT_MemoryConstructor()
     {
@@ -352,7 +352,7 @@ public class Test_Memory2DT
         Assert.AreEqual(memory.Span[2], 3);
     }
 
-#if NETCOREAPP
+#if NET6_0_OR_GREATER
     [TestMethod]
     public void Test_Memory2DT_TryGetMemory_3()
     {

@@ -35,7 +35,7 @@ public class Test_ReadOnlySpan2DT
         Assert.AreEqual(empty2.Height, 0);
     }
 
-#if NETCOREAPP
+#if NET6_0_OR_GREATER
     [TestMethod]
     public unsafe void Test_ReadOnlySpan2DT_RefConstructor()
     {
@@ -386,7 +386,7 @@ public class Test_ReadOnlySpan2DT
         Assert.IsTrue(Unsafe.AreSame(ref r0, ref array[0, 0]));
     }
 
-#if NETCOREAPP3_1_OR_GREATER
+#if NET6_0_OR_GREATER
     [TestMethod]
     public unsafe void Test_ReadOnlySpan2DT_Index_Indexer_1()
     {
@@ -535,7 +535,7 @@ public class Test_ReadOnlySpan2DT
         Assert.AreEqual(slice3[0, 0], 5);
     }
 
-#if NETCOREAPP
+#if NET6_0_OR_GREATER
     [TestMethod]
     public void Test_ReadOnlySpan2DT_GetRowReadOnlySpan()
     {

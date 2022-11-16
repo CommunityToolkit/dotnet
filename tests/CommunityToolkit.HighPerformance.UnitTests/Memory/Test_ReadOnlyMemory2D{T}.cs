@@ -174,7 +174,7 @@ public class Test_ReadOnlyMemory2DT
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlyMemory2D<int>(array, 0, 0, 0, 3, 3));
     }
 
-#if NETCOREAPP
+#if NET6_0_OR_GREATER
     [TestMethod]
     public void Test_ReadOnlyMemory2DT_ReadOnlyMemoryConstructor()
     {
@@ -316,7 +316,7 @@ public class Test_ReadOnlyMemory2DT
         Assert.AreEqual(memory.Span[2], 3);
     }
 
-#if NETCOREAPP
+#if NET6_0_OR_GREATER
     [TestMethod]
     public void Test_ReadOnlyMemory2DT_TryGetReadOnlyMemory_3()
     {
