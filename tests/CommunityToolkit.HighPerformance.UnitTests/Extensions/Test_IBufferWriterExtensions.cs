@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-#if NETCOREAPP
+#if NET6_0_OR_GREATER
 using System.Buffers;
 #endif
 using System.IO;

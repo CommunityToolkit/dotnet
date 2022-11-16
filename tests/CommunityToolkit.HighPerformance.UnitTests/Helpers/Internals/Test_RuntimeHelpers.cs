@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#if !NETCOREAPP3_1_OR_GREATER
+#if !NET6_0_OR_GREATER
 
 using System;
 using CommunityToolkit.HighPerformance.Helpers.Internals;
