@@ -81,10 +81,22 @@ public ref struct ReadOnlySpanEnumerable<T>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public readonly ref struct Item
     {
+#if NET7_0_OR_GREATER
+        /// <summary>
+        /// The <typeparamref name="T"/> reference for the <see cref="Item"/> instance.
+        /// </summary>
+        private readonly ref readonly T reference;
+
+        /// <summary>
+        /// The index of the current <see cref="Item"/> instance.
+        /// </summary>
+        private readonly int index;
+#else
         /// <summary>
         /// The source <see cref="ReadOnlySpan{T}"/> instance.
         /// </summary>
         private readonly ReadOnlySpan<T> span;
+#endif
 
 #if NETSTANDARD2_1_OR_GREATER
         /// <summary>
@@ -95,7 +107,12 @@ public ref struct ReadOnlySpanEnumerable<T>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Item(ref T value, int index)
         {
+#if NET7_0_OR_GREATER
+            this.reference = ref value;
+            this.index = index;
+#else
             this.span = MemoryMarshal.CreateReadOnlySpan(ref value, index);
+#endif
         }
 #else
         /// <summary>
@@ -124,7 +141,9 @@ public ref struct ReadOnlySpanEnumerable<T>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-#if NETSTANDARD2_1_OR_GREATER
+#if NET7_0_OR_GREATER
+                return ref this.reference;
+#elif NETSTANDARD2_1_OR_GREATER
                 return ref MemoryMarshal.GetReference(this.span);
 #else
                 ref T r0 = ref MemoryMarshal.GetReference(this.span);
@@ -143,7 +162,9 @@ public ref struct ReadOnlySpanEnumerable<T>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-#if NETSTANDARD2_1_OR_GREATER
+#if NET7_0_OR_GREATER
+                return this.index;
+#elif NETSTANDARD2_1_OR_GREATER
                 return this.span.Length;
 #else
                 return this.index;
