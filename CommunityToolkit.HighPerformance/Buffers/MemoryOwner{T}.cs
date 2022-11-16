@@ -6,7 +6,7 @@ using System;
 using System.Buffers;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-#if NETCOREAPP3_1_OR_GREATER
+#if NET6_0_OR_GREATER
 using System.Runtime.InteropServices;
 #endif
 using CommunityToolkit.HighPerformance.Buffers.Views;
@@ -171,13 +171,13 @@ public sealed class MemoryOwner<T> : IMemoryOwner<T>
                 ThrowObjectDisposedException();
             }
 
-#if NETCOREAPP3_1_OR_GREATER
+#if NET6_0_OR_GREATER
             ref T r0 = ref array!.DangerousGetReferenceAt(this.start);
 
-            // On .NET Core runtimes, we can manually create a span from the starting reference to
+            // On .NET 6+ runtimes, we can manually create a span from the starting reference to
             // skip the argument validations, which include an explicit null check, covariance check
             // for the array and the actual validation for the starting offset and target length. We
-            // only do this on .NET Core as we can leverage the runtime-specific array layout to get
+            // only do this on .NET 6+ as we can leverage the runtime-specific array layout to get
             // a fast access to the initial element, which makes this trick worth it. Otherwise, on
             // runtimes where we would need to at least access a static field to retrieve the base
             // byte offset within an SZ array object, we can get better performance by just using the

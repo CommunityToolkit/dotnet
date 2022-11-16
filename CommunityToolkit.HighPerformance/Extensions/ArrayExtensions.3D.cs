@@ -29,11 +29,6 @@ partial class ArrayExtensions
     {
 #if NET6_0_OR_GREATER
         return ref Unsafe.As<byte, T>(ref MemoryMarshal.GetArrayDataReference(array));
-#elif NETCOREAPP3_1
-        RawArray3DData? arrayData = Unsafe.As<RawArray3DData>(array)!;
-        ref T r0 = ref Unsafe.As<byte, T>(ref arrayData.Data);
-
-        return ref r0;
 #else
         IntPtr offset = RuntimeHelpers.GetArray3DDataByteOffset<T>();
 
@@ -69,15 +64,6 @@ partial class ArrayExtensions
         ref T ri = ref Unsafe.Add(ref r0, index);
 
         return ref ri;
-#elif NETCOREAPP3_1
-        RawArray3DData? arrayData = Unsafe.As<RawArray3DData>(array)!;
-        nint offset =
-            ((nint)(uint)i * (nint)(uint)arrayData.Height * (nint)(uint)arrayData.Width) +
-            ((nint)(uint)j * (nint)(uint)arrayData.Width) + (nint)(uint)k;
-        ref T r0 = ref Unsafe.As<byte, T>(ref arrayData.Data);
-        ref T ri = ref Unsafe.Add(ref r0, offset);
-
-        return ref ri;
 #else
         int height = array.GetLength(1);
         int width = array.GetLength(2);
@@ -91,25 +77,6 @@ partial class ArrayExtensions
         return ref ri;
 #endif
     }
-
-#if NETCOREAPP3_1
-    // See description for this in the 2D partial file.
-    // Using the CHW naming scheme here (like with RGB images).
-    [StructLayout(LayoutKind.Sequential)]
-    private sealed class RawArray3DData
-    {
-#pragma warning disable CS0649 // Unassigned fields
-        public IntPtr Length;
-        public int Channel;
-        public int Height;
-        public int Width;
-        public int ChannelLowerBound;
-        public int HeightLowerBound;
-        public int WidthLowerBound;
-        public byte Data;
-#pragma warning restore CS0649
-    }
-#endif
 
 #if NETSTANDARD2_1_OR_GREATER
     /// <summary>

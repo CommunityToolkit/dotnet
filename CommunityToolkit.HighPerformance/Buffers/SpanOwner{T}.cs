@@ -6,7 +6,7 @@ using System;
 using System.Buffers;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-#if NETCOREAPP3_1_OR_GREATER
+#if NET6_0_OR_GREATER
 using System.Runtime.InteropServices;
 #endif
 using CommunityToolkit.HighPerformance.Buffers.Views;
@@ -141,7 +141,7 @@ public readonly ref struct SpanOwner<T>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get
         {
-#if NETCOREAPP3_1_OR_GREATER
+#if NET6_0_OR_GREATER
             ref T r0 = ref this.array!.DangerousGetReference();
 
             return MemoryMarshal.CreateSpan(ref r0, this.length);
