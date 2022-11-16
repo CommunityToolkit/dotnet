@@ -351,7 +351,7 @@ public class Test_ReadOnlySpan2DT
     {
         Assert.IsTrue(Unsafe.AreSame(
             ref Unsafe.AsRef<int>(null),
-            ref ReadOnlySpan2D<int>.Empty.GetPinnableReference()));
+            ref Unsafe.AsRef(in ReadOnlySpan2D<int>.Empty.GetPinnableReference())));
 
         int[,] array =
         {
@@ -361,7 +361,7 @@ public class Test_ReadOnlySpan2DT
 
         ReadOnlySpan2D<int> span2d = new(array);
 
-        ref int r0 = ref span2d.GetPinnableReference();
+        ref int r0 = ref Unsafe.AsRef(in span2d.GetPinnableReference());
 
         Assert.IsTrue(Unsafe.AreSame(ref r0, ref array[0, 0]));
     }
