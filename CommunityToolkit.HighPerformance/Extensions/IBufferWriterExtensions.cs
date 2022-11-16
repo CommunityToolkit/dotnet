@@ -44,7 +44,7 @@ public static class IBufferWriterExtensions
     /// <typeparam name="T">The type of value to write.</typeparam>
     /// <param name="writer">The target <see cref="IBufferWriter{T}"/> instance to write to.</param>
     /// <param name="value">The input value to write to <paramref name="writer"/>.</param>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="writer"/> reaches the end.</exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="writer"/> reaches the end.</exception>
     public static void Write<T>(this IBufferWriter<byte> writer, T value)
         where T : unmanaged
     {
@@ -69,7 +69,7 @@ public static class IBufferWriterExtensions
     /// <typeparam name="T">The type of value to write.</typeparam>
     /// <param name="writer">The target <see cref="IBufferWriter{T}"/> instance to write to.</param>
     /// <param name="value">The input value to write to <paramref name="writer"/>.</param>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="writer"/> reaches the end.</exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="writer"/> reaches the end.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Write<T>(this IBufferWriter<T> writer, T value)
     {
@@ -91,7 +91,7 @@ public static class IBufferWriterExtensions
     /// <typeparam name="T">The type of value to write.</typeparam>
     /// <param name="writer">The target <see cref="IBufferWriter{T}"/> instance to write to.</param>
     /// <param name="span">The input <see cref="ReadOnlySpan{T}"/> to write to <paramref name="writer"/>.</param>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="writer"/> reaches the end.</exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="writer"/> reaches the end.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Write<T>(this IBufferWriter<byte> writer, ReadOnlySpan<T> span)
         where T : unmanaged
@@ -111,7 +111,7 @@ public static class IBufferWriterExtensions
     /// <typeparam name="T">The type of value to write.</typeparam>
     /// <param name="writer">The target <see cref="IBufferWriter{T}"/> instance to write to.</param>
     /// <param name="span">The input <see cref="ReadOnlySpan{T}"/> to write to <paramref name="writer"/>.</param>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="writer"/> reaches the end.</exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="writer"/> reaches the end.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Write<T>(this IBufferWriter<T> writer, ReadOnlySpan<T> span)
     {
