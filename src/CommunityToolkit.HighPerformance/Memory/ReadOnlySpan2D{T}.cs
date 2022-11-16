@@ -780,14 +780,14 @@ public readonly ref partial struct ReadOnlySpan2D<T>
     /// <returns>A reference to the 0th element, or a <see langword="null"/> reference.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public unsafe ref T GetPinnableReference()
+    public unsafe ref readonly T GetPinnableReference()
     {
-        ref T r0 = ref Unsafe.AsRef<T>(null);
+        ref readonly T r0 = ref Unsafe.AsRef<T>(null);
 
         if (Length != 0)
         {
 #if NET7_0_OR_GREATER
-            r0 = ref Unsafe.AsRef(in this.reference);
+            r0 = ref this.reference;
 #elif NETSTANDARD2_1_OR_GREATER
             r0 = ref MemoryMarshal.GetReference(this.span);
 #else
