@@ -75,7 +75,7 @@ internal static class RuntimeHelpers
         return (nint)array.LongLength;
     }
 
-#if !NETCOREAPP3_1_OR_GREATER
+#if !NET6_0_OR_GREATER
     /// <summary>
     /// Gets the byte offset to the first <typeparamref name="T"/> element in a SZ array.
     /// </summary>

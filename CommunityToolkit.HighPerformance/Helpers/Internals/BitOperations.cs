@@ -5,10 +5,6 @@
 #if !NET6_0_OR_GREATER
 
 using System.Runtime.CompilerServices;
-#if NETCOREAPP3_1
-using System.Runtime.Intrinsics.X86;
-using static System.Numerics.BitOperations;
-#endif
 
 namespace CommunityToolkit.HighPerformance.Helpers.Internals;
 
@@ -29,22 +25,6 @@ internal static class BitOperations
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe uint RoundUpToPowerOf2(uint value)
     {
-#if NETCOREAPP3_1
-        if (Lzcnt.IsSupported)
-        {
-            if (sizeof(nint) == 8)
-            {
-                return (uint)(0x1_0000_0000ul >> LeadingZeroCount(value - 1));
-            }
-            else
-            {
-                int shift = 32 - LeadingZeroCount(value - 1);
-
-                return (1u ^ (uint)(shift >> 5)) << shift;
-            }
-        }
-#endif
-
         // Based on https://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
         --value;
         value |= value >> 1;

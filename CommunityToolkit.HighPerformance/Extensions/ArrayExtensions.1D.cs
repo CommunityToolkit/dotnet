@@ -4,7 +4,7 @@
 
 using System;
 using System.Runtime.CompilerServices;
-#if NETCOREAPP3_1_OR_GREATER
+#if NET6_0_OR_GREATER
 using System.Runtime.InteropServices;
 #endif
 using CommunityToolkit.HighPerformance.Enumerables;
@@ -33,11 +33,6 @@ public static partial class ArrayExtensions
     {
 #if NET6_0_OR_GREATER
         return ref MemoryMarshal.GetArrayDataReference(array);
-#elif NETCOREAPP3_1
-        RawArrayData? arrayData = Unsafe.As<RawArrayData>(array)!;
-        ref T r0 = ref Unsafe.As<byte, T>(ref arrayData.Data);
-
-        return ref r0;
 #else
         IntPtr offset = RuntimeHelpers.GetArrayDataByteOffset<T>();
 
@@ -61,12 +56,6 @@ public static partial class ArrayExtensions
         ref T ri = ref Unsafe.Add(ref r0, (nint)(uint)i);
 
         return ref ri;
-#elif NETCOREAPP3_1
-        RawArrayData? arrayData = Unsafe.As<RawArrayData>(array)!;
-        ref T r0 = ref Unsafe.As<byte, T>(ref arrayData.Data);
-        ref T ri = ref Unsafe.Add(ref r0, (nint)(uint)i);
-
-        return ref ri;
 #else
         IntPtr offset = RuntimeHelpers.GetArrayDataByteOffset<T>();
         ref T r0 = ref ObjectMarshal.DangerousGetObjectDataReferenceAt<T>(array, offset);
@@ -75,26 +64,6 @@ public static partial class ArrayExtensions
         return ref ri;
 #endif
     }
-
-#if NETCOREAPP3_1
-    // Description taken from CoreCLR: see https://source.dot.net/#System.Private.CoreLib/src/System/Runtime/CompilerServices/RuntimeHelpers.CoreCLR.cs,285.
-    // CLR arrays are laid out in memory as follows (multidimensional array bounds are optional):
-    // [ sync block || pMethodTable || num components || MD array bounds || array data .. ]
-    //                 ^                                 ^                  ^ returned reference
-    //                 |                                 \-- ref Unsafe.As<RawArrayData>(array).Data
-    //                 \-- array
-    // The base size of an array includes all the fields before the array data,
-    // including the sync block and method table. The reference to RawData.Data
-    // points at the number of components, skipping over these two pointer-sized fields.
-    [StructLayout(LayoutKind.Sequential)]
-    private sealed class RawArrayData
-    {
-#pragma warning disable CS0649 // Unassigned fields
-        public IntPtr Length;
-        public byte Data;
-#pragma warning restore CS0649
-    }
-#endif
 
     /// <summary>
     /// Counts the number of occurrences of a given value into a target <typeparamref name="T"/> array instance.

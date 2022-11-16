@@ -30,11 +30,6 @@ partial class ArrayExtensions
     {
 #if NET6_0_OR_GREATER
         return ref Unsafe.As<byte, T>(ref MemoryMarshal.GetArrayDataReference(array));
-#elif NETCOREAPP3_1
-        RawArray2DData? arrayData = Unsafe.As<RawArray2DData>(array)!;
-        ref T r0 = ref Unsafe.As<byte, T>(ref arrayData.Data);
-
-        return ref r0;
 #else
         IntPtr offset = RuntimeHelpers.GetArray2DDataByteOffset<T>();
 
@@ -66,13 +61,6 @@ partial class ArrayExtensions
         ref T ri = ref Unsafe.Add(ref r0, index);
 
         return ref ri;
-#elif NETCOREAPP3_1
-        RawArray2DData? arrayData = Unsafe.As<RawArray2DData>(array)!;
-        nint offset = ((nint)(uint)i * (nint)(uint)arrayData.Width) + (nint)(uint)j;
-        ref T r0 = ref Unsafe.As<byte, T>(ref arrayData.Data);
-        ref T ri = ref Unsafe.Add(ref r0, offset);
-
-        return ref ri;
 #else
         int width = array.GetLength(1);
         nint index = ((nint)(uint)i * (nint)(uint)width) + (nint)(uint)j;
@@ -83,29 +71,6 @@ partial class ArrayExtensions
         return ref ri;
 #endif
     }
-
-#if NETCOREAPP3_1
-    // Description adapted from CoreCLR: see https://source.dot.net/#System.Private.CoreLib/src/System/Runtime/CompilerServices/RuntimeHelpers.CoreCLR.cs,285.
-    // CLR 2D arrays are laid out in memory as follows:
-    // [ sync block || pMethodTable || Length (padded to IntPtr) || HxW || HxW bounds || array data .. ]
-    //                 ^                                                                 ^
-    //                 |                                                                 \-- ref Unsafe.As<RawArray2DData>(array).Data
-    //                 \-- array
-    // The length is always padded to IntPtr just like with SZ arrays.
-    // The total data padding is therefore 20 bytes on x86 (4 + 4 + 4 + 4 + 4), or 24 bytes on x64.
-    [StructLayout(LayoutKind.Sequential)]
-    private sealed class RawArray2DData
-    {
-#pragma warning disable CS0649 // Unassigned fields
-        public IntPtr Length;
-        public int Height;
-        public int Width;
-        public int HeightLowerBound;
-        public int WidthLowerBound;
-        public byte Data;
-#pragma warning restore CS0649
-    }
-#endif
 
     /// <summary>
     /// Returns a <see cref="RefEnumerable{T}"/> over a row in a given 2D <typeparamref name="T"/> array instance.
