@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0;net7.0</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -47,22 +47,10 @@
 
     <When Condition="'$(TargetFramework)' == 'net6.0' OR '$(TargetFramework)' == 'net7.0'">
 
-      <!-- NETSTANDARD2_1_OR_GREATER: includes both .NET Standard 2.1, .NET Core 3.1 and .NET 6.
-           Additionally, also enable trimming support on .NET 6. -->
+      <!-- NETSTANDARD2_1_OR_GREATER: includes both .NET Standard 2.1 and .NET 6 and above -->
       <PropertyGroup>
         <DefineConstants>NETSTANDARD2_1_OR_GREATER</DefineConstants>
       </PropertyGroup>
-    </When>
-
-    <When Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-      <PropertyGroup>
-        <DefineConstants>NETSTANDARD2_1_OR_GREATER</DefineConstants>
-      </PropertyGroup>
-
-      <!-- .NET Core 3.1 has the Unsafe type, but the version it ships with lacks Unsafe.IsNullRef<T> -->
-      <ItemGroup>
-        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
-      </ItemGroup>
     </When>
   </Choose>
 
