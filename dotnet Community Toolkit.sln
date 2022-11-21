@@ -4,7 +4,7 @@ VisualStudioVersion = 17.0.31815.197
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B30036C4-D514-4E5B-A323-587A061772CE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Common", "CommunityToolkit.Common\CommunityToolkit.Common.csproj", "{6FE128A8-CEFA-4A61-A987-EC92DE6B538E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Common", "src\CommunityToolkit.Common\CommunityToolkit.Common.csproj", "{6FE128A8-CEFA-4A61-A987-EC92DE6B538E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CFA75BE0-5A44-45DE-8114-426A605B062B}"
 	ProjectSection(SolutionItems) = preProject
@@ -19,9 +19,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		version.json = version.json
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm", "CommunityToolkit.Mvvm\CommunityToolkit.Mvvm.csproj", "{D82AE6E1-E612-434E-ACB2-363EE48738D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm", "src\CommunityToolkit.Mvvm\CommunityToolkit.Mvvm.csproj", "{D82AE6E1-E612-434E-ACB2-363EE48738D3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.HighPerformance", "CommunityToolkit.HighPerformance\CommunityToolkit.HighPerformance.csproj", "{7E30D48C-4CD8-47BE-B557-10A20391DCC4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.HighPerformance", "src\CommunityToolkit.HighPerformance\CommunityToolkit.HighPerformance.csproj", "{7E30D48C-4CD8-47BE-B557-10A20391DCC4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.HighPerformance.UnitTests", "tests\CommunityToolkit.HighPerformance.UnitTests\CommunityToolkit.HighPerformance.UnitTests.csproj", "{D9BDBC68-3D0A-47FC-9C88-0BF769101644}"
 EndProject
@@ -34,9 +34,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{88C6FFBE-3
 		ThirdPartyNotices.txt = ThirdPartyNotices.txt
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Diagnostics", "CommunityToolkit.Diagnostics\CommunityToolkit.Diagnostics.csproj", "{76F89522-CA28-458D-801D-947AB033A758}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Diagnostics", "src\CommunityToolkit.Diagnostics\CommunityToolkit.Diagnostics.csproj", "{76F89522-CA28-458D-801D-947AB033A758}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.SourceGenerators.Roslyn401", "CommunityToolkit.Mvvm.SourceGenerators.Roslyn401\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401.csproj", "{E24D1146-5AD8-498F-A518-4890D8BF4937}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.SourceGenerators.Roslyn401", "src\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401.csproj", "{E24D1146-5AD8-498F-A518-4890D8BF4937}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Diagnostics.UnitTests", "tests\CommunityToolkit.Diagnostics.UnitTests\CommunityToolkit.Diagnostics.UnitTests.csproj", "{35E48D4D-6433-4B70-98A9-BA544921EE04}"
 EndProject
@@ -59,9 +59,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.Disab
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.Internals.UnitTests", "tests\CommunityToolkit.Mvvm.Internals.UnitTests\CommunityToolkit.Mvvm.Internals.UnitTests.csproj", "{743D74BA-12AE-4639-AD77-B9DDA9C03255}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CommunityToolkit.Mvvm.SourceGenerators", "CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.shproj", "{5E7F1212-A54B-40CA-98C5-1FF5CD1A1638}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CommunityToolkit.Mvvm.SourceGenerators", "src\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.shproj", "{5E7F1212-A54B-40CA-98C5-1FF5CD1A1638}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.SourceGenerators.Roslyn431", "CommunityToolkit.Mvvm.SourceGenerators.Roslyn431\CommunityToolkit.Mvvm.SourceGenerators.Roslyn431.csproj", "{DF455C40-B18E-4890-8758-7CCCB5CA7052}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.SourceGenerators.Roslyn431", "src\CommunityToolkit.Mvvm.SourceGenerators.Roslyn431\CommunityToolkit.Mvvm.SourceGenerators.Roslyn431.csproj", "{DF455C40-B18E-4890-8758-7CCCB5CA7052}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CommunityToolkit.Mvvm.UnitTests", "tests\CommunityToolkit.Mvvm.UnitTests\CommunityToolkit.Mvvm.UnitTests.shproj", "{B8DCD82E-B53B-4249-AD4E-F9B99ACB9334}"
 EndProject
@@ -77,9 +77,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.Sourc
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CommunityToolkit.Mvvm.ExternalAssembly", "tests\CommunityToolkit.Mvvm.ExternalAssembly\CommunityToolkit.Mvvm.ExternalAssembly.shproj", "{E827A9CD-405F-43E4-84C7-68CC7E845CDC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunityToolkit.Mvvm.ExternalAssembly.Roslyn401", "tests\CommunityToolkit.Mvvm.ExternalAssembly.Roslyn401\CommunityToolkit.Mvvm.ExternalAssembly.Roslyn401.csproj", "{ECFE93AA-4B98-4292-B3FA-9430D513B4F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.ExternalAssembly.Roslyn401", "tests\CommunityToolkit.Mvvm.ExternalAssembly.Roslyn401\CommunityToolkit.Mvvm.ExternalAssembly.Roslyn401.csproj", "{ECFE93AA-4B98-4292-B3FA-9430D513B4F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunityToolkit.Mvvm.ExternalAssembly.Roslyn431", "tests\CommunityToolkit.Mvvm.ExternalAssembly.Roslyn431\CommunityToolkit.Mvvm.ExternalAssembly.Roslyn431.csproj", "{4FCD501C-1BB5-465C-AD19-356DAB6600C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.ExternalAssembly.Roslyn431", "tests\CommunityToolkit.Mvvm.ExternalAssembly.Roslyn431\CommunityToolkit.Mvvm.ExternalAssembly.Roslyn431.csproj", "{4FCD501C-1BB5-465C-AD19-356DAB6600C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -464,11 +464,11 @@ Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		tests\CommunityToolkit.Mvvm.ExternalAssembly\CommunityToolkit.Mvvm.ExternalAssembly.projitems*{4fcd501c-1bb5-465c-ad19-356dab6600c6}*SharedItemsImports = 5
 		tests\CommunityToolkit.Mvvm.UnitTests\CommunityToolkit.Mvvm.UnitTests.projitems*{5b44f7f1-dca2-4776-924e-a266f7bbf753}*SharedItemsImports = 5
-		CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.projitems*{5e7f1212-a54b-40ca-98c5-1ff5cd1a1638}*SharedItemsImports = 13
+		src\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.projitems*{5e7f1212-a54b-40ca-98c5-1ff5cd1a1638}*SharedItemsImports = 13
 		tests\CommunityToolkit.Mvvm.UnitTests\CommunityToolkit.Mvvm.UnitTests.projitems*{ad9c3223-8e37-4fd4-a0d4-a45119551d3a}*SharedItemsImports = 5
 		tests\CommunityToolkit.Mvvm.UnitTests\CommunityToolkit.Mvvm.UnitTests.projitems*{b8dcd82e-b53b-4249-ad4e-f9b99acb9334}*SharedItemsImports = 13
-		CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.projitems*{df455c40-b18e-4890-8758-7cccb5ca7052}*SharedItemsImports = 5
-		CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.projitems*{e24d1146-5ad8-498f-a518-4890d8bf4937}*SharedItemsImports = 5
+		src\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.projitems*{df455c40-b18e-4890-8758-7cccb5ca7052}*SharedItemsImports = 5
+		src\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.projitems*{e24d1146-5ad8-498f-a518-4890d8bf4937}*SharedItemsImports = 5
 		tests\CommunityToolkit.Mvvm.ExternalAssembly\CommunityToolkit.Mvvm.ExternalAssembly.projitems*{e827a9cd-405f-43e4-84c7-68cc7e845cdc}*SharedItemsImports = 13
 		tests\CommunityToolkit.Mvvm.ExternalAssembly\CommunityToolkit.Mvvm.ExternalAssembly.projitems*{ecfe93aa-4b98-4292-b3fa-9430d513b4f9}*SharedItemsImports = 5
 		tests\CommunityToolkit.Mvvm.SourceGenerators.UnitTests\CommunityToolkit.Mvvm.SourceGenerators.UnitTests.projitems*{f3799252-7a66-4533-89d8-b3c312052d95}*SharedItemsImports = 5
