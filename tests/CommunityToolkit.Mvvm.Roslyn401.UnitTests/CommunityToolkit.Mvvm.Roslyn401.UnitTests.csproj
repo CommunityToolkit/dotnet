@@ -16,8 +16,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CommunityToolkit.Mvvm.ExternalAssembly.Roslyn401\CommunityToolkit.Mvvm.ExternalAssembly.Roslyn401.csproj" />
-    <ProjectReference Include="..\..\CommunityToolkit.Mvvm\CommunityToolkit.Mvvm.csproj" />
-    <ProjectReference Include="..\..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="contentfiles;build" />
+    <ProjectReference Include="..\..\src\CommunityToolkit.Mvvm\CommunityToolkit.Mvvm.csproj" />
+    <ProjectReference Include="..\..\src\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="contentfiles;build" />
   </ItemGroup>
 
   <Import Project="..\CommunityToolkit.Mvvm.UnitTests\CommunityToolkit.Mvvm.UnitTests.projitems" Label="Shared" />

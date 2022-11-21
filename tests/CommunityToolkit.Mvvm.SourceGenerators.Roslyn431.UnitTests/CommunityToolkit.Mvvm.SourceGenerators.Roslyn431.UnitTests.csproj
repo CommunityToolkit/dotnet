@@ -13,8 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\CommunityToolkit.Mvvm\CommunityToolkit.Mvvm.csproj" />
-    <ProjectReference Include="..\..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn431\CommunityToolkit.Mvvm.SourceGenerators.Roslyn431.csproj" />
+    <ProjectReference Include="..\..\src\CommunityToolkit.Mvvm\CommunityToolkit.Mvvm.csproj" />
+    <ProjectReference Include="..\..\src\CommunityToolkit.Mvvm.SourceGenerators.Roslyn431\CommunityToolkit.Mvvm.SourceGenerators.Roslyn431.csproj" />
   </ItemGroup>
 
   <Import Project="..\CommunityToolkit.Mvvm.SourceGenerators.UnitTests\CommunityToolkit.Mvvm.SourceGenerators.UnitTests.projitems" Label="Shared" />

@@ -15,9 +15,6 @@
 [Ll]og/
 [Ll]ogs/
 
-# Generated file from .ttinclude
-**/Generated/*.g.cs
-
 # MSBuild Binary and Structured Log
 *.binlog
 
