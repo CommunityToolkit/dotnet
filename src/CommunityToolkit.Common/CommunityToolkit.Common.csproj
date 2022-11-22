@@ -14,9 +14,13 @@
     <PackageTags>Incremental;Loading;Collection;IncrementalLoadingCollection;String;Array;Extensions;Helpers</PackageTags>
   </PropertyGroup>
 
-  <!-- .NET Standard 2.1 and .NET 6 already have [NotNullIfNotNull] and [NotNullWhen] -->
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
-    <DefineConstants>NETSTANDARD2_1_OR_GREATER</DefineConstants>
+  <!-- Necessary polyfills -->
+  <PropertyGroup>
+    <PolySharpIncludeGeneratedTypes>
+      System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
+      System.Diagnostics.CodeAnalysis.NotNullWhenAttribute;
+      System.Runtime.CompilerServices.SkipLocalsInitAttribute;
+    </PolySharpIncludeGeneratedTypes>
   </PropertyGroup>
 
 </Project>
