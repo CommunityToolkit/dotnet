@@ -33,6 +33,7 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Attributes\NotNullWhenAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Attributes\NullabilityAttributesGenerator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Attributes\SkipLocalsInitAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\INotifyPropertyChangedGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\AttributeInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\INotifyPropertyChangedInfo.cs" />
