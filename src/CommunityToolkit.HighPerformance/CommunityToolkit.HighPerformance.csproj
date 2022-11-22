@@ -35,6 +35,11 @@
         <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
         <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
       </ItemGroup>
+
+      <!-- On .NET Standard 2.0, the unit test project also needs access to internals-->
+      <ItemGroup>
+        <InternalsVisibleTo Include="CommunityToolkit.HighPerformance.UnitTests, PublicKey=$(AssemblySignPublicKey)" />
+      </ItemGroup>
     </When>
 
     <When Condition="'$(TargetFramework)' == 'netstandard2.1'">
