@@ -19,4 +19,13 @@
     <DefineConstants>NETSTANDARD2_1_OR_GREATER</DefineConstants>
   </PropertyGroup>
 
+  <!-- Necessary polyfills -->
+  <PropertyGroup>
+    <PolySharpIncludeGeneratedTypes>
+      System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
+      System.Diagnostics.CodeAnalysis.NotNullWhenAttribute;
+      System.Runtime.CompilerServices.SkipLocalsInitAttribute;
+    </PolySharpIncludeGeneratedTypes>
+  </PropertyGroup>
+
 </Project>

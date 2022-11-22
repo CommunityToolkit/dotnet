@@ -34,13 +34,25 @@
       </ItemGroup>
     </When>
 
-    <!-- Enable trimming support on .NET 6 -->
+    <!-- For the .NET 6 target, simply define NETSTANDARD2_1_OR_GREATER too -->
     <When Condition="'$(TargetFramework)' == 'net6.0'">
       <PropertyGroup>
         <DefineConstants>NETSTANDARD2_1_OR_GREATER</DefineConstants>
       </PropertyGroup>
     </When>
   </Choose>
+
+  <!-- Necessary polyfills -->
+  <PropertyGroup>
+    <PolySharpIncludeGeneratedTypes>
+      System.Diagnostics.CodeAnalysis.DoesNotReturnAttribute;
+      System.Diagnostics.CodeAnalysis.DoesNotReturnIfAttribute;
+      System.Diagnostics.CodeAnalysis.NotNullAttribute;
+      System.Diagnostics.StackTraceHiddenAttribute;
+      System.Runtime.CompilerServices.CallerArgumentExpressionAttribute;
+      System.Runtime.CompilerServices.SkipLocalsInitAttribute;
+    </PolySharpIncludeGeneratedTypes>
+  </PropertyGroup>
 
   <ItemGroup>
     <None Update="Generated\Guard.Comparable.Numeric.tt">

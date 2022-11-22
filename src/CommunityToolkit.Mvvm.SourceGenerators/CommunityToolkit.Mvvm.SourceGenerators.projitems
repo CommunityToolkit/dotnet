@@ -31,9 +31,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Attributes\NotNullWhenAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Attributes\NullabilityAttributesGenerator.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Attributes\SkipLocalsInitAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\INotifyPropertyChangedGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\AttributeInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\INotifyPropertyChangedInfo.cs" />
@@ -84,7 +82,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\TypeInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Polyfills\GeneratorAttributeSyntaxContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Polyfills\SyntaxValueProviderExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)System.Runtime.CompilerServices\IsExternalInit.cs" />
   </ItemGroup>
   <ItemGroup>
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)AnalyzerReleases.Shipped.md" />
