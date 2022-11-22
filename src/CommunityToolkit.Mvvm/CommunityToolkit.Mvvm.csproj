@@ -40,6 +40,11 @@
     <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn431\CommunityToolkit.Mvvm.SourceGenerators.Roslyn431.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
+  <!-- Add the [InternalsVisibleTo] attribute for the test project -->
+  <ItemGroup>
+    <InternalsVisibleTo Include="CommunityToolkit.Mvvm.Internals.UnitTests, PublicKey=$(AssemblySignPublicKey)" />
+  </ItemGroup>
+
   <!-- Necessary polyfills -->
   <PropertyGroup>
     <PolySharpIncludeGeneratedTypes>
