@@ -50,11 +50,11 @@ public static class NullableExtensions
     /// <returns>A reference to the value of the input <see cref="Nullable{T}"/> instance, or a <see langword="null"/> <typeparamref name="T"/> reference.</returns>
     /// <remarks>The returned reference can be tested for <see langword="null"/> using <see cref="Unsafe.IsNullRef{T}(ref T)"/>.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ref T DangerousGetValueOrNullReference<T>(ref this T? value)
+    public static unsafe ref T DangerousGetValueOrNullReference<T>(ref this T? value)
         where T : struct
     {
 #if NET7_0_OR_GREATER
-        ref T resultRef = ref Unsafe.NullRef<T>();
+        ref T resultRef = ref *(T*)null;
 
         // This pattern ensures that the resulting code ends up having a single return, and a single
         // forward branch (the one where the value is null) that is predicted non taken. That is,
@@ -80,7 +80,7 @@ public static class NullableExtensions
             return ref Unsafe.As<T?, RawNullableData<T>>(ref value).Value;
         }
 
-        return ref Unsafe.NullRef<T>();
+        return ref *(T*)null;
 #endif
     }
 

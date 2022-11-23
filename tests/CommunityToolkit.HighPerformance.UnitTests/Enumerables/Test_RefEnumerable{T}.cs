@@ -5,7 +5,6 @@
 #if NET6_0_OR_GREATER
 
 using System;
-using System.Runtime.CompilerServices;
 using CommunityToolkit.HighPerformance.Enumerables;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -41,9 +40,9 @@ public class Test_RefEnumerable
     [DataRow(10, -14)]
     [DataRow(-32, -1)]
     [ExpectedException(typeof(ArgumentOutOfRangeException))]
-    public void Test_RefEnumerable_DangerousCreate_BelowZero(int length, int step)
+    public unsafe void Test_RefEnumerable_DangerousCreate_BelowZero(int length, int step)
     {
-        _ = RefEnumerable<int>.DangerousCreate(ref Unsafe.NullRef<int>(), length, step);
+        _ = RefEnumerable<int>.DangerousCreate(ref *(int*)null, length, step);
     }
 
     [TestMethod]
