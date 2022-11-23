@@ -66,13 +66,13 @@ internal sealed class StringMemoryManager<TTo> : MemoryManager<TTo>, IMemoryMana
     /// <inheritdoc/>
     public override unsafe MemoryHandle Pin(int elementIndex = 0)
     {
-        if ((uint)elementIndex >= (uint)(this.length * Unsafe.SizeOf<char>() / Unsafe.SizeOf<TTo>()))
+        if ((uint)elementIndex >= (uint)(this.length * sizeof(char) / sizeof(TTo)))
         {
             ThrowArgumentOutOfRangeExceptionForInvalidIndex();
         }
 
-        int bytePrefix = this.offset * Unsafe.SizeOf<char>();
-        int byteSuffix = elementIndex * Unsafe.SizeOf<TTo>();
+        int bytePrefix = this.offset * sizeof(char);
+        int byteSuffix = elementIndex * sizeof(TTo);
         int byteOffset = bytePrefix + byteSuffix;
 
         GCHandle handle = GCHandle.Alloc(this.text, GCHandleType.Pinned);

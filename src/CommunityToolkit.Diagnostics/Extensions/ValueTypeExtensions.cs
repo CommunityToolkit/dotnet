@@ -44,7 +44,7 @@ public static class ValueTypeExtensions
     public static unsafe string ToHexString<T>(this T value)
         where T : unmanaged
     {
-        int sizeOfT = Unsafe.SizeOf<T>();
+        int sizeOfT = sizeof(T);
         int bufferSize = (2 * sizeOfT) + 2;
         char* p = stackalloc char[bufferSize];
 

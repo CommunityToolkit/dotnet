@@ -4,7 +4,6 @@
 
 using System;
 using System.Buffers;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace CommunityToolkit.HighPerformance.UnitTests.Buffers.Internals;
@@ -32,7 +31,7 @@ internal sealed unsafe class UnmanagedSpanOwner<T> : MemoryManager<T>
     /// <param name="size">The size of the buffer to rent.</param>
     public UnmanagedSpanOwner(int size)
     {
-        this.ptr = Marshal.AllocHGlobal(size * Unsafe.SizeOf<T>());
+        this.ptr = Marshal.AllocHGlobal(size * sizeof(T));
         this.length = size;
     }
 

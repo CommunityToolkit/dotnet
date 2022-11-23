@@ -4,7 +4,6 @@
 
 using System;
 using System.Buffers;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using CommunityToolkit.HighPerformance.Buffers.Internals.Interfaces;
 using RuntimeHelpers = CommunityToolkit.HighPerformance.Helpers.Internals.RuntimeHelpers;
@@ -57,17 +56,17 @@ internal sealed class ProxyMemoryManager<TFrom, TTo> : MemoryManager<TTo>, IMemo
     }
 
     /// <inheritdoc/>
-    public override MemoryHandle Pin(int elementIndex = 0)
+    public override unsafe MemoryHandle Pin(int elementIndex = 0)
     {
-        if ((uint)elementIndex >= (uint)(this.length * Unsafe.SizeOf<TFrom>() / Unsafe.SizeOf<TTo>()))
+        if ((uint)elementIndex >= (uint)(this.length * sizeof(TFrom) / sizeof(TTo)))
         {
             ThrowArgumentExceptionForInvalidIndex();
         }
 
-        int bytePrefix = this.offset * Unsafe.SizeOf<TFrom>();
-        int byteSuffix = elementIndex * Unsafe.SizeOf<TTo>();
+        int bytePrefix = this.offset * sizeof(TFrom);
+        int byteSuffix = elementIndex * sizeof(TTo);
         int byteOffset = bytePrefix + byteSuffix;
-        int shiftedOffset = Math.DivRem(byteOffset, Unsafe.SizeOf<TFrom>(), out int remainder);
+        int shiftedOffset = Math.DivRem(byteOffset, sizeof(TFrom), out int remainder);
 
         if (remainder != 0)
         {

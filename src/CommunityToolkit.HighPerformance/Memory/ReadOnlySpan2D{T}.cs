@@ -801,7 +801,7 @@ public readonly ref partial struct ReadOnlySpan2D<T>
     /// are negative or not within the bounds that are valid for the current instance.
     /// </exception>
     /// <returns>A new <see cref="ReadOnlySpan2D{T}"/> instance representing a slice of the current one.</returns>
-    public ReadOnlySpan2D<T> Slice(int row, int column, int height, int width)
+    public unsafe ReadOnlySpan2D<T> Slice(int row, int column, int height, int width)
     {
         if ((uint)row >= Height)
         {
@@ -831,7 +831,7 @@ public readonly ref partial struct ReadOnlySpan2D<T>
 
         return new(in r0, height, width, pitch);
 #else
-        IntPtr offset = this.offset + (shift * (nint)(uint)Unsafe.SizeOf<T>());
+        IntPtr offset = this.offset + (shift * (nint)(uint)sizeof(T));
 
         return new(this.instance, offset, height, width, pitch);
 #endif
