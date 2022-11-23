@@ -50,7 +50,7 @@ public struct HashCode<T>
     /// <returns>The hash code for the input <see cref="ReadOnlySpan{T}"/> instance</returns>
     /// <remarks>The returned hash code is not processed through <see cref="HashCode"/> APIs.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static int CombineValues(ReadOnlySpan<T> span)
+    internal static unsafe int CombineValues(ReadOnlySpan<T> span)
     {
         ref T r0 = ref MemoryMarshal.GetReference(span);
 
@@ -70,7 +70,7 @@ public struct HashCode<T>
         // process. In that case it will just compute the byte size as a 32 bit
         // multiplication with overflow, which is guaranteed never to happen anyway.
         ref byte rb = ref Unsafe.As<T, byte>(ref r0);
-        nint length = (nint)((uint)span.Length * (uint)Unsafe.SizeOf<T>());
+        nint length = (nint)((uint)span.Length * (uint)sizeof(T));
 
         return SpanHelper.GetDjb2LikeByteHash(ref rb, length);
     }

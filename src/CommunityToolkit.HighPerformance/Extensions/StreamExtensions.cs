@@ -202,12 +202,12 @@ public static class StreamExtensions
 #if NETSTANDARD2_1_OR_GREATER
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-    public static T Read<T>(this Stream stream)
+    public static unsafe T Read<T>(this Stream stream)
         where T : unmanaged
     {
 #if NETSTANDARD2_1_OR_GREATER
         T result = default;
-        int length = Unsafe.SizeOf<T>();
+        int length = sizeof(T);
 
         unsafe
         {
@@ -219,7 +219,7 @@ public static class StreamExtensions
 
         return result;
 #else
-        int length = Unsafe.SizeOf<T>();
+        int length = sizeof(T);
         byte[] buffer = ArrayPool<byte>.Shared.Rent(length);
 
         try
@@ -247,19 +247,19 @@ public static class StreamExtensions
 #if NETSTANDARD2_1_OR_GREATER
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-    public static void Write<T>(this Stream stream, in T value)
+    public static unsafe void Write<T>(this Stream stream, in T value)
         where T : unmanaged
     {
 #if NETSTANDARD2_1_OR_GREATER
         ref T r0 = ref Unsafe.AsRef(value);
         ref byte r1 = ref Unsafe.As<T, byte>(ref r0);
-        int length = Unsafe.SizeOf<T>();
+        int length = sizeof(T);
 
         ReadOnlySpan<byte> span = MemoryMarshal.CreateReadOnlySpan(ref r1, length);
 
         stream.Write(span);
 #else
-        int length = Unsafe.SizeOf<T>();
+        int length = sizeof(T);
         byte[] buffer = ArrayPool<byte>.Shared.Rent(length);
 
         try

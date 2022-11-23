@@ -148,12 +148,12 @@ public static class SpanExtensions
     /// <param name="value">The reference to the target item to get the index for.</param>
     /// <returns>The index of <paramref name="value"/> within <paramref name="span"/>, or <c>-1</c>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int IndexOf<T>(this Span<T> span, ref T value)
+    public static unsafe int IndexOf<T>(this Span<T> span, ref T value)
     {
         ref T r0 = ref MemoryMarshal.GetReference(span);
         IntPtr byteOffset = Unsafe.ByteOffset(ref r0, ref value);
 
-        nint elementOffset = byteOffset / (nint)(uint)Unsafe.SizeOf<T>();
+        nint elementOffset = byteOffset / (nint)(uint)sizeof(T);
 
         if ((nuint)elementOffset >= (uint)span.Length)
         {
