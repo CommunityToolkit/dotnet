@@ -493,7 +493,7 @@ public sealed class StringPool
         private unsafe ref string TryGet(ReadOnlySpan<char> span, int hashcode)
         {
             ref MapEntry mapEntriesRef = ref this.mapEntries.DangerousGetReference();
-            ref MapEntry entry = ref Unsafe.NullRef<MapEntry>();
+            ref MapEntry entry = ref *(MapEntry*)null;
             int length = this.buckets.Length;
             int bucketIndex = hashcode & (length - 1);
 
@@ -512,7 +512,7 @@ public sealed class StringPool
                 }
             }
 
-            return ref Unsafe.NullRef<string>();
+            return ref *(string*)null;
         }
 
         /// <summary>
