@@ -70,13 +70,13 @@ internal sealed class ArrayMemoryManager<TFrom, TTo> : MemoryManager<TTo>, IMemo
     /// <inheritdoc/>
     public override unsafe MemoryHandle Pin(int elementIndex = 0)
     {
-        if ((uint)elementIndex >= (uint)(this.length * Unsafe.SizeOf<TFrom>() / Unsafe.SizeOf<TTo>()))
+        if ((uint)elementIndex >= (uint)(this.length * sizeof(TFrom) / sizeof(TTo)))
         {
             ThrowArgumentOutOfRangeExceptionForInvalidIndex();
         }
 
-        int bytePrefix = this.offset * Unsafe.SizeOf<TFrom>();
-        int byteSuffix = elementIndex * Unsafe.SizeOf<TTo>();
+        int bytePrefix = this.offset * sizeof(TFrom);
+        int byteSuffix = elementIndex * sizeof(TTo);
         int byteOffset = bytePrefix + byteSuffix;
 
         GCHandle handle = GCHandle.Alloc(this.array, GCHandleType.Pinned);

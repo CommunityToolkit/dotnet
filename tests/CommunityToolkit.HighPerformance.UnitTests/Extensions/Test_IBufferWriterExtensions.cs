@@ -7,7 +7,6 @@ using System;
 using System.Buffers;
 #endif
 using System.IO;
-using System.Runtime.CompilerServices;
 using CommunityToolkit.HighPerformance.Buffers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -17,7 +16,7 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Extensions;
 public class Test_IBufferWriterExtensions
 {
     [TestMethod]
-    public void Test_IBufferWriterExtensions_WriteReadOverBytes()
+    public unsafe void Test_IBufferWriterExtensions_WriteReadOverBytes()
     {
         ArrayPoolBufferWriter<byte> writer = new();
 
@@ -33,7 +32,7 @@ public class Test_IBufferWriterExtensions
         writer.Write(d);
         writer.Write(guid);
 
-        int count = sizeof(byte) + sizeof(char) + sizeof(float) + sizeof(double) + Unsafe.SizeOf<Guid>();
+        int count = sizeof(byte) + sizeof(char) + sizeof(float) + sizeof(double) + sizeof(Guid);
 
         Assert.AreEqual(count, writer.WrittenCount);
 

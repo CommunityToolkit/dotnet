@@ -45,10 +45,10 @@ public static class IBufferWriterExtensions
     /// <param name="writer">The target <see cref="IBufferWriter{T}"/> instance to write to.</param>
     /// <param name="value">The input value to write to <paramref name="writer"/>.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="writer"/> reaches the end.</exception>
-    public static void Write<T>(this IBufferWriter<byte> writer, T value)
+    public static unsafe void Write<T>(this IBufferWriter<byte> writer, T value)
         where T : unmanaged
     {
-        int length = Unsafe.SizeOf<T>();
+        int length = sizeof(T);
         Span<byte> span = writer.GetSpan(1);
 
         if (span.Length < length)

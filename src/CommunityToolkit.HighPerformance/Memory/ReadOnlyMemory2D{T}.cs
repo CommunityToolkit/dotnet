@@ -670,7 +670,7 @@ public readonly struct ReadOnlyMemory2D<T> : IEquatable<ReadOnlyMemory2D<T>>
     /// are negative or not within the bounds that are valid for the current instance.
     /// </exception>
     /// <returns>A new <see cref="ReadOnlyMemory2D{T}"/> instance representing a slice of the current one.</returns>
-    public ReadOnlyMemory2D<T> Slice(int row, int column, int height, int width)
+    public unsafe ReadOnlyMemory2D<T> Slice(int row, int column, int height, int width)
     {
         if ((uint)row >= Height)
         {
@@ -695,7 +695,7 @@ public readonly struct ReadOnlyMemory2D<T> : IEquatable<ReadOnlyMemory2D<T>>
         int shift = ((this.width + this.pitch) * row) + column;
         int pitch = this.pitch + (this.width - width);
 
-        IntPtr offset = this.offset + (shift * Unsafe.SizeOf<T>());
+        IntPtr offset = this.offset + (shift * sizeof(T));
 
         return new(this.instance!, offset, height, width, pitch);
     }
