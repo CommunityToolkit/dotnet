@@ -207,27 +207,45 @@ public static class StreamExtensions
     {
 #if NETSTANDARD2_1_OR_GREATER
         T result = default;
-        int length = sizeof(T);
+        int bytesOffset = 0;
 
-        unsafe
+        // As per Stream.Read's documentation:
+        // "The total number of bytes read into the buffer. This can be less than the number of bytes allocated in the
+        // buffer if that many bytes are not currently available, or zero (0) if the end of the stream has been reached."
+        // Because of this, we have to loop until all requires bytes have been read, and only throw if the return is 0.
+        do
         {
-            if (stream.Read(new Span<byte>(&result, length)) != length)
+            int bytesRead = stream.Read(new Span<byte>((byte*)&result + bytesOffset, sizeof(T) - bytesOffset));
+
+            // A return value of 0 indicates that the end of the stream has been reached
+            if (bytesRead == 0)
             {
                 ThrowInvalidOperationExceptionForEndOfStream();
             }
+
+            bytesOffset += bytesRead;
         }
+        while (bytesOffset < sizeof(T));
 
         return result;
 #else
-        int length = sizeof(T);
-        byte[] buffer = ArrayPool<byte>.Shared.Rent(length);
+        int bytesOffset = 0;
+        byte[] buffer = ArrayPool<byte>.Shared.Rent(sizeof(T));
 
         try
         {
-            if (stream.Read(buffer, 0, length) != length)
+            do
             {
-                ThrowInvalidOperationExceptionForEndOfStream();
+                int bytesRead = stream.Read(buffer.AsSpan(bytesOffset, sizeof(T) - bytesOffset));
+
+                if (bytesRead == 0)
+                {
+                    ThrowInvalidOperationExceptionForEndOfStream();
+                }
+
+                bytesOffset += bytesRead;
             }
+            while (bytesOffset < sizeof(T));
 
             return Unsafe.ReadUnaligned<T>(ref buffer[0]);
         }
