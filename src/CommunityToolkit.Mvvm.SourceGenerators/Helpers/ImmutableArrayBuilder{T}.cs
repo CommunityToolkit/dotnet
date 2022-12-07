@@ -147,7 +147,7 @@ internal struct ImmutableArrayBuilder<T> : IDisposable
         public int Count
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => this.array!.Length;
+            get => this.index;
         }
 
         /// <inheritdoc cref="ImmutableArrayBuilder{T}.WrittenSpan"/>
