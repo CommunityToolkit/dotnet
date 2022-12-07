@@ -236,7 +236,7 @@ public static class StreamExtensions
         {
             do
             {
-                int bytesRead = stream.Read(buffer.AsSpan(bytesOffset, sizeof(T) - bytesOffset));
+                int bytesRead = stream.Read(buffer, bytesOffset, sizeof(T) - bytesOffset);
 
                 if (bytesRead == 0)
                 {
