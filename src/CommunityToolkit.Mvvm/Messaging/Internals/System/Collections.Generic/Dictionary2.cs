@@ -340,9 +340,9 @@ internal class Dictionary2<TKey, TValue> : IDictionary2<TKey, TValue>
     /// </summary>
     /// <param name="key">Key to look for.</param>
     /// <returns>Reference to the existing value.</returns>
-    private ref TValue FindValue(TKey key)
+    private unsafe ref TValue FindValue(TKey key)
     {
-        ref Entry entry = ref Unsafe.NullRef<Entry>();
+        ref Entry entry = ref *(Entry*)null;
         uint hashCode = (uint)key.GetHashCode();
         int i = GetBucket(hashCode);
         Entry[] entries = this.entries;
@@ -373,7 +373,7 @@ internal class Dictionary2<TKey, TValue> : IDictionary2<TKey, TValue>
         return ref value;
 
         ReturnNotFound:
-        value = ref Unsafe.NullRef<TValue>();
+        value = ref *(TValue*)null;
 
         goto Return;
     }
