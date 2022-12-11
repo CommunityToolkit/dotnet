@@ -4,6 +4,8 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 
+#pragma warning disable MVVMTK0032
+
 namespace CommunityToolkit.Mvvm.ExternalAssembly;
 
 /// <summary>
