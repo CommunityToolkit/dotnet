@@ -543,4 +543,20 @@ internal static class DiagnosticDescriptors
             "Classes with no base types should prefer inheriting from ObservableObject instead of using attributes to generate INotifyPropertyChanged code, as that will " +
             "reduce the binary size of the application (the attributes are only meant to support cases where the annotated types are already inheriting from a different type).",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0032");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a field with <c>[ObservableProperty]</c> is being directly referenced.
+    /// <para>
+    /// Format: <c>"The field {0}.{1} is annotated with [ObservableProperty] and should not be directly referenced (use the generated property instead)"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor FieldReferenceForObservablePropertyFieldWarning = new DiagnosticDescriptor(
+        id: "MVVMTK0034",
+        title: "Invalid task scheduler exception flow option usage",
+        messageFormat: "The field {0}.{1} is annotated with [ObservableProperty] and should not be directly referenced (use the generated property instead)",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description: "Fields with [ObservableProperty] should not be directly referenced, and the generated properties should be used instead.",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0033");
 }

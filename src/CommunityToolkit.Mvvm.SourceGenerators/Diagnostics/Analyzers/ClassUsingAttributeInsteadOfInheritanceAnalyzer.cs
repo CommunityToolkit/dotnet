@@ -46,8 +46,6 @@ public sealed class ClassUsingAttributeInsteadOfInheritanceAnalyzer : Diagnostic
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
         context.EnableConcurrentExecution();
 
-        // Defer the callback registration to when the compilation starts, so we can execute more
-        // preliminary checks and skip registering any kind of symbol analysis at all if not needed.
         context.RegisterSymbolAction(static context =>
         {
             // We're looking for class declarations
