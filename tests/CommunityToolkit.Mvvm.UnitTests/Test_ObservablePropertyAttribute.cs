@@ -21,7 +21,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-#pragma warning disable MVVMTK0032, MVVMTK0033
+#pragma warning disable MVVMTK0032, MVVMTK0033, MVVMTK0034
 
 namespace CommunityToolkit.Mvvm.UnitTests;
 
