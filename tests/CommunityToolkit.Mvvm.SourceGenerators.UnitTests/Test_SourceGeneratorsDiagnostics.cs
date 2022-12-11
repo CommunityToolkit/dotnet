@@ -1531,6 +1531,77 @@ public class Test_SourceGeneratorsDiagnostics
         await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<ClassUsingAttributeInsteadOfInheritanceAnalyzer>(source, LanguageVersion.CSharp8);
     }
 
+    // See https://github.com/CommunityToolkit/dotnet/issues/518
+    [TestMethod]
+    public async Task FieldReferenceToFieldWithObservablePropertyAttribute_Assignment()
+    {
+        string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            partial class MyViewModel : ObservableObject
+            {
+                [ObservableProperty]
+                int number;
+
+                void M1()
+                {
+                    {|MVVMTK0034:number|} = 1;
+                }
+
+                void M2()
+                {
+                    {|MVVMTK0034:this.number|} = 1;
+                }
+            }
+            """;
+
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<FieldReferenceForObservablePropertyFieldAnalyzer>(source, LanguageVersion.CSharp8);
+    }
+
+    // See https://github.com/CommunityToolkit/dotnet/issues/518
+    [TestMethod]
+    public async Task FieldReferenceToFieldWithObservablePropertyAttribute_Read()
+    {
+        string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            partial class MyViewModel : ObservableObject
+            {
+                [ObservableProperty]
+                int number;
+
+                void M()
+                {
+                    var temp = {|MVVMTK0034:number|};
+                }
+            }
+            """;
+
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<FieldReferenceForObservablePropertyFieldAnalyzer>(source, LanguageVersion.CSharp8);
+    }
+
+    // See https://github.com/CommunityToolkit/dotnet/issues/518
+    [TestMethod]
+    public async Task FieldReferenceToFieldWithObservablePropertyAttribute_Ref()
+    {
+        string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            partial class MyViewModel : ObservableObject
+            {
+                [ObservableProperty]
+                int number;
+
+                void M()
+                {
+                    ref var x = ref {|MVVMTK0034:number|};
+                }
+            }
+            """;
+
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<FieldReferenceForObservablePropertyFieldAnalyzer>(source, LanguageVersion.CSharp8);
+    }
+
     /// <summary>
     /// Verifies the diagnostic errors for a given analyzer, and that all available source generators can run successfully with the input source (including subsequent compilation).
     /// </summary>
