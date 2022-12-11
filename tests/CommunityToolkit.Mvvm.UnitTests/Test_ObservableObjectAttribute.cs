@@ -6,6 +6,8 @@ using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+#pragma warning disable MVVMTK0033
+
 namespace CommunityToolkit.Mvvm.UnitTests;
 
 [TestClass]

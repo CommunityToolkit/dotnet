@@ -7,6 +7,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+#pragma warning disable MVVMTK0032
+
 namespace CommunityToolkit.Mvvm.UnitTests;
 
 /// <summary>

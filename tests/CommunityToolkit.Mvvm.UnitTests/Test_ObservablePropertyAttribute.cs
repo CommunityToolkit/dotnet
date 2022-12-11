@@ -8,7 +8,9 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+#if NET6_0_OR_GREATER
 using System.Runtime.CompilerServices;
+#endif
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
@@ -18,6 +20,8 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+#pragma warning disable MVVMTK0032, MVVMTK0033
 
 namespace CommunityToolkit.Mvvm.UnitTests;
 
