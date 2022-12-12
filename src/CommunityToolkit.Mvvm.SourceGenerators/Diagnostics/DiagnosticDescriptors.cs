@@ -4,7 +4,6 @@
 
 using System.ComponentModel;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 
 #pragma warning disable IDE0090 // Use 'new DiagnosticDescriptor(...)'
 
@@ -547,13 +546,13 @@ internal static class DiagnosticDescriptors
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a field with <c>[ObservableProperty]</c> is being directly referenced.
     /// <para>
-    /// Format: <c>"The field {0}.{1} is annotated with [ObservableProperty] and should not be directly referenced (use the generated property instead)"</c>.
+    /// Format: <c>"The field {0} is annotated with [ObservableProperty] and should not be directly referenced (use the generated property instead)"</c>.
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor FieldReferenceForObservablePropertyFieldWarning = new DiagnosticDescriptor(
         id: "MVVMTK0034",
         title: "Invalid task scheduler exception flow option usage",
-        messageFormat: "The field {0}.{1} is annotated with [ObservableProperty] and should not be directly referenced (use the generated property instead)",
+        messageFormat: "The field {0} is annotated with [ObservableProperty] and should not be directly referenced (use the generated property instead)",
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
