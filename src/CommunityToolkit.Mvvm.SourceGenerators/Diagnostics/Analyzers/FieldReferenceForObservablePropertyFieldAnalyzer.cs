@@ -41,7 +41,7 @@ public sealed class FieldReferenceForObservablePropertyFieldAnalyzer : Diagnosti
                     SymbolEqualityComparer.Default.Equals(attributeClass, attributeSymbol))
                 {
                     // Emit a warning to redirect users to access the generated property instead
-                    context.ReportDiagnostic(Diagnostic.Create(FieldReferenceForObservablePropertyFieldWarning, context.Operation.Syntax.GetLocation(), fieldSymbol.ContainingType, fieldSymbol));
+                    context.ReportDiagnostic(Diagnostic.Create(FieldReferenceForObservablePropertyFieldWarning, context.Operation.Syntax.GetLocation(), fieldSymbol));
 
                     return;
                 }
