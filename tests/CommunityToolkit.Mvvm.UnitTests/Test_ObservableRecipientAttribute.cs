@@ -12,6 +12,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+#pragma warning disable MVVMTK0033
+
 namespace CommunityToolkit.Mvvm.UnitTests;
 
 [TestClass]

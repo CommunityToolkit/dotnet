@@ -134,7 +134,7 @@ internal static class DiagnosticDescriptors
         id: "MVVMTK0008",
         title: "Unsupported C# language version",
         messageFormat: "The source generator features from the MVVM Toolkit require consuming projects to set the C# language version to at least C# 8.0",
-        category: typeof(CSharpParseOptions).FullName,
+        category: typeof(UnsupportedCSharpLanguageVersionAnalyzer).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "The source generator features from the MVVM Toolkit require consuming projects to set the C# language version to at least C# 8.0. Make sure to add <LangVersion>8.0</LangVersion> (or above) to your .csproj file.",
@@ -507,4 +507,40 @@ internal static class DiagnosticDescriptors
         isEnabledByDefault: true,
         description: "Cannot apply the [RelayCommand] attribute specifying a task scheduler exception flow option to methods mapping to non-asynchronous command types.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0031");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[INotifyPropertyChanged]</c> is used on a type that could inherit from <c>ObservableObject</c> instead.
+    /// <para>
+    /// Format: <c>"The type {0} is using the [INotifyPropertyChanged] attribute while having no base type, and it should instead inherit from ObservableObject"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor InheritFromObservableObjectInsteadOfUsingINotifyPropertyChangedAttributeWarning = new DiagnosticDescriptor(
+        id: "MVVMTK0032",
+        title: "Inherit from ObservableObject instead of using [INotifyPropertyChanged]",
+        messageFormat: "The type {0} is using the [INotifyPropertyChanged] attribute while having no base type, and it should instead inherit from ObservableObject",
+        category: typeof(INotifyPropertyChangedGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description:
+            "Classes with no base types should prefer inheriting from ObservableObject instead of using attributes to generate INotifyPropertyChanged code, as that will " +
+            "reduce the binary size of the application (the attributes are only meant to support cases where the annotated types are already inheriting from a different type).",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0032");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[ObservableObject]</c> is used on a type that could inherit from <c>ObservableObject</c> instead.
+    /// <para>
+    /// Format: <c>"The type {0} is using the [ObservableObject] attribute while having no base type, and it should instead inherit from ObservableObject"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor InheritFromObservableObjectInsteadOfUsingObservableObjectAttributeWarning = new DiagnosticDescriptor(
+        id: "MVVMTK0033",
+        title: "Inherit from ObservableObject instead of using [ObservableObject]",
+        messageFormat: "The type {0} is using the [ObservableObject] attribute while having no base type, and it should instead inherit from ObservableObject",
+        category: typeof(ObservableObjectGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description:
+            "Classes with no base types should prefer inheriting from ObservableObject instead of using attributes to generate INotifyPropertyChanged code, as that will " +
+            "reduce the binary size of the application (the attributes are only meant to support cases where the annotated types are already inheriting from a different type).",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0032");
 }

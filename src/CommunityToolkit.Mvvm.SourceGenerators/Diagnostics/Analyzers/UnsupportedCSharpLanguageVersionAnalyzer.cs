@@ -32,7 +32,7 @@ public sealed class UnsupportedCSharpLanguageVersionAnalyzer : DiagnosticAnalyze
         new KeyValuePair<string, string>("ObservableObjectAttribute", "CommunityToolkit.Mvvm.ComponentModel.ObservableObjectAttribute"),
         new KeyValuePair<string, string>("ObservablePropertyAttribute", "CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute"),
         new KeyValuePair<string, string>("ObservableRecipientAttribute", "CommunityToolkit.Mvvm.ComponentModel.ObservableRecipientAttribute"),
-        new KeyValuePair<string, string>("RelayCommandAttribute", "CommunityToolkit.Mvvm.Input.RelayCommandAttribute"),
+        new KeyValuePair<string, string>("RelayCommandAttribute", "CommunityToolkit.Mvvm.Input.RelayCommandAttribute")
     });
 
     /// <inheritdoc/>
@@ -62,15 +62,7 @@ public sealed class UnsupportedCSharpLanguageVersionAnalyzer : DiagnosticAnalyze
                     return;
                 }
 
-                ImmutableArray<AttributeData> attributes = context.Symbol.GetAttributes();
-
-                // If the symbol has no attributes, there's nothing left to do
-                if (attributes.IsEmpty)
-                {
-                    return;
-                }
-
-                foreach (AttributeData attribute in attributes)
+                foreach (AttributeData attribute in context.Symbol.GetAttributes())
                 {
                     // Go over each attribute on the target symbol, and check if the attribute type name is a candidate.
                     // If it is, double check by actually resolving the symbol from the compilation and comparing against it.

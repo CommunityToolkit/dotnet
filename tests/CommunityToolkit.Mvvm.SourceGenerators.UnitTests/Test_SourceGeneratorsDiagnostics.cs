@@ -1495,6 +1495,42 @@ public class Test_SourceGeneratorsDiagnostics
         VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0031");
     }
 
+    [TestMethod]
+    public async Task UsingINotifyPropertyChangedAttributeOnClassWithNoBaseType()
+    {
+        string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                [INotifyPropertyChanged]
+                public partial class {|MVVMTK0032:SampleViewModel|}
+                {
+                }
+            }
+            """;
+
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<ClassUsingAttributeInsteadOfInheritanceAnalyzer>(source, LanguageVersion.CSharp8);
+    }
+
+    [TestMethod]
+    public async Task UsingObservableObjectAttributeOnClassWithNoBaseType()
+    {
+        string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                [ObservableObject]
+                public partial class {|MVVMTK0033:SampleViewModel|}
+                {
+                }
+            }
+            """;
+
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<ClassUsingAttributeInsteadOfInheritanceAnalyzer>(source, LanguageVersion.CSharp8);
+    }
+
     /// <summary>
     /// Verifies the diagnostic errors for a given analyzer, and that all available source generators can run successfully with the input source (including subsequent compilation).
     /// </summary>
@@ -1536,20 +1572,6 @@ public class Test_SourceGeneratorsDiagnostics
         IIncrementalGenerator generator = new TGenerator();
 
         VerifyGeneratedDiagnostics(CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp8)), new[] { generator }, diagnosticsIds);
-    }
-
-    /// <summary>
-    /// Verifies the output of a source generator.
-    /// </summary>
-    /// <typeparam name="TGenerator">The generator type to use.</typeparam>
-    /// <param name="syntaxTree">The input source to process.</param>
-    /// <param name="diagnosticsIds">The diagnostic ids to expect for the input source code.</param>
-    private static void VerifyGeneratedDiagnostics<TGenerator>(SyntaxTree syntaxTree, params string[] diagnosticsIds)
-        where TGenerator : class, IIncrementalGenerator, new()
-    {
-        IIncrementalGenerator generator = new TGenerator();
-
-        VerifyGeneratedDiagnostics(syntaxTree, new[] { generator }, diagnosticsIds);
     }
 
     /// <summary>
