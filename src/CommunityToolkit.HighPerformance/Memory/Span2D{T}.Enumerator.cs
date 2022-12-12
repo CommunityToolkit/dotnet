@@ -2,13 +2,15 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#if !NET7_0_OR_GREATER
 using System;
+#endif
 using System.Runtime.CompilerServices;
 using CommunityToolkit.HighPerformance.Enumerables;
 using CommunityToolkit.HighPerformance.Memory.Internals;
-#if NETSTANDARD2_1_OR_GREATER
+#if NETSTANDARD2_1_OR_GREATER && !NET7_0_OR_GREATER
 using System.Runtime.InteropServices;
-#else
+#elif NETSTANDARD2_0
 using RuntimeHelpers = CommunityToolkit.HighPerformance.Helpers.Internals.RuntimeHelpers;
 #endif
 
@@ -84,7 +86,17 @@ partial struct Span2D<T>
     /// </summary>
     public ref struct Enumerator
     {
-#if NETSTANDARD2_1_OR_GREATER
+#if NET7_0_OR_GREATER
+        /// <summary>
+        /// The <typeparamref name="T"/> reference for the <see cref="Span2D{T}"/> instance.
+        /// </summary>
+        private readonly ref T reference;
+
+        /// <summary>
+        /// The height of the specified 2D region.
+        /// </summary>
+        private readonly int height;
+#elif NETSTANDARD2_1_OR_GREATER
         /// <summary>
         /// The <see cref="Span{T}"/> instance pointing to the first item in the target memory area.
         /// </summary>
@@ -133,7 +145,10 @@ partial struct Span2D<T>
         /// <param name="span">The target <see cref="Span2D{T}"/> instance to enumerate.</param>
         internal Enumerator(Span2D<T> span)
         {
-#if NETSTANDARD2_1_OR_GREATER
+#if NET7_0_OR_GREATER
+            this.reference = ref span.reference;
+            this.height = span.height;
+#elif NETSTANDARD2_1_OR_GREATER
             this.span = span.span;
 #else
             this.instance = span.Instance;
@@ -167,7 +182,9 @@ partial struct Span2D<T>
             // another row available: wrap to a new line and continue.
             this.x = 0;
 
-#if NETSTANDARD2_1_OR_GREATER
+#if NET7_0_OR_GREATER
+            return ++this.y < this.height;
+#elif NETSTANDARD2_1_OR_GREATER
             return ++this.y < this.span.Length;
 #else
             return ++this.y < this.height;
@@ -182,7 +199,9 @@ partial struct Span2D<T>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-#if NETSTANDARD2_1_OR_GREATER
+#if NET7_0_OR_GREATER
+                ref T r0 = ref this.reference;
+#elif NETSTANDARD2_1_OR_GREATER
                 ref T r0 = ref MemoryMarshal.GetReference(this.span);
 #else
                 ref T r0 = ref RuntimeHelpers.GetObjectDataAtOffsetOrPointerReference<T>(this.instance, this.offset);
