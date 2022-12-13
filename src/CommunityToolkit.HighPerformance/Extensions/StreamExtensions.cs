@@ -198,7 +198,7 @@ public static class StreamExtensions
     /// <typeparam name="T">The type of value to read.</typeparam>
     /// <param name="stream">The source <see cref="Stream"/> instance to read from.</param>
     /// <returns>The <typeparamref name="T"/> value read from <paramref name="stream"/>.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if <paramref name="stream"/> reaches the end.</exception>
+    /// <exception cref="EndOfStreamException">Thrown if <paramref name="stream"/> reaches the end.</exception>
 #if NETSTANDARD2_1_OR_GREATER
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
@@ -226,7 +226,7 @@ public static class StreamExtensions
             // A return value of 0 indicates that the end of the stream has been reached
             if (bytesRead == 0)
             {
-                ThrowInvalidOperationExceptionForEndOfStream();
+                ThrowEndOfStreamException();
             }
 
             bytesOffset += bytesRead;
@@ -246,7 +246,7 @@ public static class StreamExtensions
 
                 if (bytesRead == 0)
                 {
-                    ThrowInvalidOperationExceptionForEndOfStream();
+                    ThrowEndOfStreamException();
                 }
 
                 bytesOffset += bytesRead;
@@ -299,11 +299,13 @@ public static class StreamExtensions
 #endif
     }
 
+#if !NET7_0_OR_GREATER
     /// <summary>
-    /// Throws an <see cref="InvalidOperationException"/> when <see cref="Read{T}"/> fails.
+    /// Throws an <see cref="EndOfStreamException"/> when <see cref="Read{T}"/> fails.
     /// </summary>
-    private static void ThrowInvalidOperationExceptionForEndOfStream()
+    private static void ThrowEndOfStreamException()
     {
-        throw new InvalidOperationException("The stream didn't contain enough data to read the requested item.");
+        throw new EndOfStreamException("The stream didn't contain enough data to read the requested item.");
     }
+#endif
 }
