@@ -40,3 +40,4 @@ MVVMTK0030 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator 
 MVVMTK0031 | CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator | Error | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0031
 MVVMTK0032 | CommunityToolkit.Mvvm.SourceGenerators.INotifyPropertyChangedGenerator | Warning | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0032
 MVVMTK0033 | CommunityToolkit.Mvvm.SourceGenerators.ObservableObjectGenerator | Warning | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0033
+MVVMTK0034 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Warning | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0034
