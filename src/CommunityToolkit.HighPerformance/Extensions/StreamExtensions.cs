@@ -205,8 +205,14 @@ public static class StreamExtensions
     public static unsafe T Read<T>(this Stream stream)
         where T : unmanaged
     {
-#if NETSTANDARD2_1_OR_GREATER
-        T result = default;
+#if NET7_0_OR_GREATER
+        T result;
+
+        stream.ReadExactly(new Span<byte>(&result, sizeof(T)));
+
+        return result;
+#elif NETSTANDARD2_1_OR_GREATER
+        T result;
         int bytesOffset = 0;
 
         // As per Stream.Read's documentation:
