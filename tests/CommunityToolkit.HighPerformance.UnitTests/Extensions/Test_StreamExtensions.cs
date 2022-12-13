@@ -34,7 +34,7 @@ public class Test_StreamExtensions
         Assert.AreEqual(3.14f, stream.Read<float>());
         Assert.AreEqual(unchecked(uint.MaxValue * 324823489204ul), stream.Read<ulong>());
 
-        _ = Assert.ThrowsException<InvalidOperationException>(() => stream.Read<long>());
+        _ = Assert.ThrowsException<EndOfStreamException>(() => stream.Read<long>());
     }
 
     // See https://github.com/CommunityToolkit/dotnet/issues/513
@@ -55,7 +55,7 @@ public class Test_StreamExtensions
         Assert.AreEqual(3.14f, stream.Read<float>());
         Assert.AreEqual(unchecked(uint.MaxValue * 324823489204ul), stream.Read<ulong>());
 
-        _ = Assert.ThrowsException<InvalidOperationException>(() => stream.Read<long>());
+        _ = Assert.ThrowsException<EndOfStreamException>(() => stream.Read<long>());
     }
 
     private sealed class BufferedStream : MemoryStream
