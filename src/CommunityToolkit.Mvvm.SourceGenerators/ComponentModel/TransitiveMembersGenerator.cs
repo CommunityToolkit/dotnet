@@ -85,7 +85,7 @@ public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGe
                     }
 
                     HierarchyInfo hierarchy = HierarchyInfo.From(typeSymbol);
-                    MetadataInfo metadataInfo = new(typeSymbol.IsSealed, true);
+                    MetadataInfo metadataInfo = new(typeSymbol.IsSealed, Execute.IsNullabilitySupported(context.SemanticModel.Compilation));
 
                     return new Result<(HierarchyInfo, MetadataInfo?, TInfo?)>((hierarchy, metadataInfo, info), diagnostics);
                 })
@@ -105,7 +105,8 @@ public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGe
         {
             ImmutableArray<MemberDeclarationSyntax> sourceMemberDeclarations = item.MetadataInfo.IsSealed ? this.sealedMemberDeclarations : this.nonSealedMemberDeclarations;
             ImmutableArray<MemberDeclarationSyntax> filteredMemberDeclarations = FilterDeclaredMembers(item.Info, sourceMemberDeclarations);
-            CompilationUnitSyntax compilationUnit = item.Hierarchy.GetCompilationUnit(filteredMemberDeclarations, this.classDeclaration.BaseList);
+            ImmutableArray<MemberDeclarationSyntax> updatedMemberDeclarations = Execute.AdjustMemberDeclarationNullabilityAnnotations(filteredMemberDeclarations, item.MetadataInfo.IsNullabilitySupported);
+            CompilationUnitSyntax compilationUnit = item.Hierarchy.GetCompilationUnit(updatedMemberDeclarations, this.classDeclaration.BaseList);
 
             context.AddSource($"{item.Hierarchy.FilenameHint}.g.cs", compilationUnit.GetText(Encoding.UTF8));
         });
