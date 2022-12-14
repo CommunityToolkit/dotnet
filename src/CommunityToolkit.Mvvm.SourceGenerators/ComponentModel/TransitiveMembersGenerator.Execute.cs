@@ -68,8 +68,14 @@ partial class TransitiveMembersGenerator<TInfo>
                             AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(generatorType.Assembly.GetName().Version.ToString())))))))
                     .WithLeadingTrivia(member.GetLeadingTrivia());
 
+                // [DebuggerNonUserCode] is not supported on interfaces, fields and event
+                if (member.Kind() is not (SyntaxKind.InterfaceDeclaration or SyntaxKind.FieldDeclaration or SyntaxKind.EventFieldDeclaration))
+                {
+                    member = member.AddAttributeLists(AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.DebuggerNonUserCode")))));
+                }
+
                 // [ExcludeFromCodeCoverage] is not supported on interfaces and fields
-                if (member.Kind() is not SyntaxKind.InterfaceDeclaration and not SyntaxKind.FieldDeclaration)
+                if (member.Kind() is not (SyntaxKind.InterfaceDeclaration or SyntaxKind.FieldDeclaration))
                 {
                     member = member.AddAttributeLists(AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage")))));
                 }
