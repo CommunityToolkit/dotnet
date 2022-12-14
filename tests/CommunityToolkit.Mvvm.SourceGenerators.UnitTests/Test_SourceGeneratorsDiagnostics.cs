@@ -1639,7 +1639,6 @@ public class Test_SourceGeneratorsDiagnostics
         IIncrementalGenerator[] generators =
         {
             new IMessengerRegisterAllGenerator(),
-            new NullabilityAttributesGenerator(),
             new ObservableObjectGenerator(),
             new INotifyPropertyChangedGenerator(),
             new ObservablePropertyGenerator(),
