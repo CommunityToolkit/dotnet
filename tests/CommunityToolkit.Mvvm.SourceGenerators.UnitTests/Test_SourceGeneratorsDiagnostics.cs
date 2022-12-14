@@ -1602,6 +1602,29 @@ public class Test_SourceGeneratorsDiagnostics
         await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<FieldReferenceForObservablePropertyFieldAnalyzer>(source, LanguageVersion.CSharp8);
     }
 
+    [TestMethod]
+    public async Task FieldReferenceToFieldWithObservablePropertyAttribute_DoesNotEmitWarningFromWithinConstructor()
+    {
+        string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            partial class MyViewModel : ObservableObject
+            {
+                [ObservableProperty]
+                int number;
+
+                public MyViewModel()
+                {
+                    number = 42;
+                    var temp = number;
+                    ref var x = ref number;
+                }
+            }
+            """;
+
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<FieldReferenceForObservablePropertyFieldAnalyzer>(source, LanguageVersion.CSharp8);
+    }
+
     /// <summary>
     /// Verifies the diagnostic errors for a given analyzer, and that all available source generators can run successfully with the input source (including subsequent compilation).
     /// </summary>
