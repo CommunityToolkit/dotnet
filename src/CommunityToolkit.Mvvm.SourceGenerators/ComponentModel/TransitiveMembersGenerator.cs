@@ -61,7 +61,7 @@ public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGe
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         // Gather all generation info, and any diagnostics
-        IncrementalValuesProvider<Result<(HierarchyInfo Hierarchy, bool IsSealed, TInfo? Info)>> generationInfoWithErrors =
+        IncrementalValuesProvider<Result<(HierarchyInfo Hierarchy, MetadataInfo? MetadataInfo, TInfo? Info)>> generationInfoWithErrors =
             context.SyntaxProvider
             .ForAttributeWithMetadataName(
                 this.fullyQualifiedAttributeMetadataName,
@@ -81,12 +81,13 @@ public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGe
                     // If there are any diagnostics, there's no need to compute the hierarchy info at all, just return them
                     if (diagnostics.Length > 0)
                     {
-                        return new Result<(HierarchyInfo, bool, TInfo?)>(default, diagnostics);
+                        return new Result<(HierarchyInfo, MetadataInfo?, TInfo?)>(default, diagnostics);
                     }
 
                     HierarchyInfo hierarchy = HierarchyInfo.From(typeSymbol);
+                    MetadataInfo metadataInfo = new(typeSymbol.IsSealed, true);
 
-                    return new Result<(HierarchyInfo, bool, TInfo?)>((hierarchy, typeSymbol.IsSealed, info), diagnostics);
+                    return new Result<(HierarchyInfo, MetadataInfo?, TInfo?)>((hierarchy, metadataInfo, info), diagnostics);
                 })
             .Where(static item => item is not null)!;
 
@@ -94,7 +95,7 @@ public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGe
         context.ReportDiagnostics(generationInfoWithErrors.Select(static (item, _) => item.Errors));
 
         // Get the filtered sequence to enable caching
-        IncrementalValuesProvider<(HierarchyInfo Hierarchy, bool IsSealed, TInfo Info)> generationInfo =
+        IncrementalValuesProvider<(HierarchyInfo Hierarchy, MetadataInfo MetadataInfo, TInfo Info)> generationInfo =
             generationInfoWithErrors
             .Where(static item => item.Errors.IsEmpty)
             .Select(static (item, _) => item.Value)!;
@@ -102,7 +103,7 @@ public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGe
         // Generate the required members
         context.RegisterSourceOutput(generationInfo, (context, item) =>
         {
-            ImmutableArray<MemberDeclarationSyntax> sourceMemberDeclarations = item.IsSealed ? this.sealedMemberDeclarations : this.nonSealedMemberDeclarations;
+            ImmutableArray<MemberDeclarationSyntax> sourceMemberDeclarations = item.MetadataInfo.IsSealed ? this.sealedMemberDeclarations : this.nonSealedMemberDeclarations;
             ImmutableArray<MemberDeclarationSyntax> filteredMemberDeclarations = FilterDeclaredMembers(item.Info, sourceMemberDeclarations);
             CompilationUnitSyntax compilationUnit = item.Hierarchy.GetCompilationUnit(filteredMemberDeclarations, this.classDeclaration.BaseList);
 
@@ -128,4 +129,11 @@ public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGe
     /// <param name="memberDeclarations">The input sequence of <see cref="MemberDeclarationSyntax"/> instances to generate.</param>
     /// <returns>A sequence of <see cref="MemberDeclarationSyntax"/> nodes to emit in the generated file.</returns>
     protected abstract ImmutableArray<MemberDeclarationSyntax> FilterDeclaredMembers(TInfo info, ImmutableArray<MemberDeclarationSyntax> memberDeclarations);
+
+    /// <summary>
+    /// A small record for metadata info on types to generate.
+    /// </summary>
+    /// <param name="IsSealed">Whether the target type is sealed.</param>
+    /// <param name="IsNullabilitySupported">Whether nullability attributes are supported.</param>
+    private sealed record MetadataInfo(bool IsSealed, bool IsNullabilitySupported);
 }
