@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
+using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -23,6 +24,18 @@ partial class TransitiveMembersGenerator<TInfo>
     /// </summary>
     internal static class Execute
     {
+        /// <summary>
+        /// Checks whether or not nullability attributes are currently available.
+        /// </summary>
+        /// <param name="compilation">The input <see cref="Compilation"/> instance.</param>
+        /// <returns>Whether or not nullability attributes are currently available.</returns>
+        public static bool IsNullabilitySupported(Compilation compilation)
+        {
+            return
+                compilation.HasAccessibleTypeWithMetadataName("System.Diagnostics.CodeAnalysis.NotNullAttribute") &&
+                compilation.HasAccessibleTypeWithMetadataName("System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute");
+        }
+
         /// <summary>
         /// Loads the source <see cref="ClassDeclarationSyntax"/> instance to get member declarations from.
         /// </summary>
@@ -100,6 +113,68 @@ partial class TransitiveMembersGenerator<TInfo>
             }).ToImmutableArray();
 
             nonSealedMemberDeclarations = annotatedMemberDeclarations;
+        }
+
+        /// <summary>
+        /// Adjusts the nullability annotations for generated members, dropping attributes if needed.
+        /// </summary>
+        /// <param name="memberDeclarations">The input sequence of member declarations to generate.</param>
+        /// <param name="isNullabilitySupported">Whether nullability attributes are supported.</param>
+        /// <returns>The updated collection of member declarations to generate.</returns>
+        public static ImmutableArray<MemberDeclarationSyntax> AdjustMemberDeclarationNullabilityAnnotations(
+            ImmutableArray<MemberDeclarationSyntax> memberDeclarations,
+            bool isNullabilitySupported)
+        {
+            // If nullability attributes are supported, there is nothing else to do
+            if (isNullabilitySupported)
+            {
+                return memberDeclarations;
+            }
+
+            using ImmutableArrayBuilder<MemberDeclarationSyntax> builder = ImmutableArrayBuilder<MemberDeclarationSyntax>.Rent();
+
+            NullabilityAdjustmentSyntaxRewriter syntaxRewriter = new();
+
+            // Iterate over all members and adjust the method declarations, if needed
+            foreach (MemberDeclarationSyntax memberDeclaration in memberDeclarations)
+            {
+                if (memberDeclaration is MethodDeclarationSyntax methodDeclaration)
+                {
+                    builder.Add((MethodDeclarationSyntax)syntaxRewriter.Visit(methodDeclaration));
+                }
+                else
+                {
+                    builder.Add(memberDeclaration);
+                }
+            }
+
+            return builder.ToImmutable();
+        }
+
+        /// <summary>
+        /// A custom syntax rewriter that removes nullability attributes from method parameters.
+        /// </summary>
+        private sealed class NullabilityAdjustmentSyntaxRewriter : CSharpSyntaxRewriter
+        {
+            /// <inheritdoc/>
+            public override SyntaxNode? VisitParameter(ParameterSyntax node)
+            {
+                SyntaxNode? updatedNode = base.VisitParameter(node);
+
+                // If the node is a parameter node with a single attribute being either [NotNull] or [NotNullIfNotNull], drop it.
+                // This expression will match all parameters with the following format:
+                //
+                // ([global::<NAMESPACE>.<ATTRIBUTE_NAME>] <TYPE> <PARAMETER_NAME>)
+                //
+                // Where <ATTRIBUTE_NAME> is either "NotNull" or "NotNullIfNotNull". This relies on parameters following this structure
+                // for nullability annotations, but that is fine in this context given the only source files are the embedded ones.
+                if (updatedNode is ParameterSyntax { AttributeLists: [{ Attributes: [{ Name: QualifiedNameSyntax { Right.Identifier.Text: "NotNull" or "NotNullIfNotNull"} }] }] } parameterNode)
+                {
+                    return parameterNode.WithAttributeLists(default);
+                }
+
+                return updatedNode;
+            }
         }
     }
 }
