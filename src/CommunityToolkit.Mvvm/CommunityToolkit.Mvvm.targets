@@ -41,6 +41,36 @@
     <Warning Condition ="'$(MVVMToolkitCurrentCompilerVersionIsNotNewEnough)' == 'true'" Text="The MVVM Toolkit source generators have been disabled on the current configuration, as they need Roslyn 4.x in order to work. The MVVM Toolkit will work just fine, but features relying on the source generators will not be available."/>
   </Target>
 
+  <!--
+    Manually remove duplicate analyzers if Roslyn component versioning is not supported (ie. if a legacy .csproj project is used).
+    This target is only run if Roslyn 4.0 or greater is present, as otherwise all analyzers would have already been removed anyway.
+  -->
+  <Target Name="MVVMToolkitRemoveDuplicateAnalyzersWhenRoslynComponentVersioningIsNotSupported"
+          Condition="'$(MVVMToolkitCurrentCompilerVersionIsNotNewEnough)' != 'true' AND '$(SupportsRoslynComponentVersioning)' != 'true'"
+          AfterTargets="ResolvePackageDependenciesForBuild;ResolveNuGetPackageAssets"
+          DependsOnTargets="MVVMToolkitRemoveAnalyzersForRoslyn3">
+
+      <!--
+        This switch manually implements Roslyn component versioning. That is, it checks the current version of Roslyn and
+        removes and removes all analyzers except the highest version that is supported. The fallback is just Roslyn 4.0.
+      -->
+    <PropertyGroup>
+      <MVVMToolkitSelectedRoslynAnalyzerDirectoryName Condition="$([MSBuild]::VersionGreaterThanOrEquals($(MVVMToolkitCurrentCompilerVersion), 4.3))">roslyn4.3</MVVMToolkitSelectedRoslynAnalyzerDirectoryName>
+      <MVVMToolkitSelectedRoslynAnalyzerDirectoryName Condition="'$(MVVMToolkitSelectedRoslynAnalyzerDirectoryName)' == ''">roslyn4.0</MVVMToolkitSelectedRoslynAnalyzerDirectoryName>
+    </PropertyGroup>
+    <ItemGroup>
+      
+      <!--
+        This condition is a bit convoluted, but it's essentially just selecting all analyzers from the NuGet package that don't have the target Roslyn directory name in their full path.
+        For instance, if Roslyn 4.3 is the highest supported version, the target directory name will be "roslyn 4.3", and this condition will filter out all analyzers with a path such
+        as: "C:\...\.nuget\...\CommunityToolkit.Mvvm\analyzers\roslyn4.0\cs\CommunityToolkit.Mvvm". The [System.String]::Concat trick is used to achieve two things: we can't directly
+        invoke a property function (ie. Contains in this case) on a metadata item, so we need an intermediate string to invoke it on. We could also use [System.String]::new, but using
+        Concat is more efficient as it'll just skip the allocation entirely if one of the two inputs is an empty string, which is the case here.
+      -->
+      <Analyzer Remove="@(MVVMToolkitAnalyzer)" Condition="!$([System.String]::Concat('', '%(MVVMToolkitAnalyzer.FullPath)').Contains('$(MVVMToolkitSelectedRoslynAnalyzerDirectoryName)'))"/>
+    </ItemGroup>
+  </Target>
+
   <!-- Remove the analyzer if Roslyn is missing -->
   <Target Name="MVVMToolkitRemoveAnalyzersForRosynNotFound"
           Condition="'$(CSharpCoreTargetsPath)' == ''"
