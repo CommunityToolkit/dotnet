@@ -969,6 +969,20 @@ public partial class Test_ObservablePropertyAttribute
         Assert.AreSame(model.c中文Command, fieldInfo?.GetValue(model));
     }
 
+    // See https://github.com/CommunityToolkit/dotnet/issues/375
+    [TestMethod]
+    public void Test_ObservableProperty_ModelWithObservablePropertyWithUnderscoreAndUppercase()
+    {
+        ModelWithObservablePropertyWithUnderscoreAndUppercase model = new();
+
+        Assert.IsFalse(model.IsReadOnly);
+
+        // Just ensures this builds and the property is generated with the expected name
+        model.IsReadOnly = true;
+
+        Assert.IsTrue(model.IsReadOnly);
+    }
+
     public abstract partial class BaseViewModel : ObservableObject
     {
         public string? Content { get; set; }
@@ -1552,5 +1566,11 @@ public partial class Test_ObservablePropertyAttribute
         public void c中文()
         {
         }
+    }
+
+    private partial class ModelWithObservablePropertyWithUnderscoreAndUppercase : ObservableObject
+    {
+        [ObservableProperty]
+        private bool _IsReadOnly;
     }
 }
