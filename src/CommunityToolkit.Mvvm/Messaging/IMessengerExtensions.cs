@@ -256,6 +256,10 @@ public static partial class IMessengerExtensions
         {
             weakReferenceMessenger.Register<TMessage, Unit>(recipient, default);
         }
+        else if (messenger is StrongReferenceMessenger strongReferenceMessenger)
+        {
+            strongReferenceMessenger.Register<TMessage, Unit>(recipient, default);
+        }
         else
         {
             messenger.Register<IRecipient<TMessage>, TMessage, Unit>(recipient, default, static (r, m) => r.Receive(m));
