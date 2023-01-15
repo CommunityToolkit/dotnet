@@ -2,11 +2,6 @@
 
 .NET Community Toolkit is a collection of helpers and APIs that work for all .NET developers and are agnostic of any specific UI platform. The toolkit is maintained and published by Microsoft, and part of the .NET Foundation.
 
-| Target | Branch | Status | Recommended package version |
-| ------ | ------ | ------ | ------ |
-| Production | rel/8.0.0 | [![Build Status](https://dev.azure.com/dotnet/CommunityToolkit/_apis/build/status/CommunityToolkit.dotnet?branchName=rel/8.0.0)](https://dev.azure.com/dotnet/CommunityToolkit/_build/latest?definitionId=180&branchName=rel/8.0.0) | [![NuGet](https://img.shields.io/nuget/v/CommunityToolkit.Common.svg)](https://www.nuget.org/profiles/Microsoft.Toolkit) |
-| Previews | main | [![Build Status](https://dev.azure.com/dotnet/CommunityToolkit/_apis/build/status/CommunityToolkit.dotnet?branchName=main)](https://dev.azure.com/dotnet/CommunityToolkit/_build/latest?definitionId=180) | [![DevOps](https://vsrm.dev.azure.com/dotnet/_apis/public/Release/badge/696bc9fd-f160-4e97-a1bd-7cbbb3b58f66/9/26)](https://dev.azure.com/dotnet/CommunityToolkit/_packaging?_a=feed&feed=CommunityToolkit-MainLatest) |
-
 ## 👀 What does this repo contain?
 
 This repository contains several .NET libraries (originally developed as part of the [Windows Community Toolkit](https://github.com/CommunityToolkit/WindowsCommunityToolkit)) that can be used both by application developers (regardless on the specific UI framework in use, they work everywhere!) and library authors. These libraries are also being used internally at Microsoft to power many of our first party apps (such as the new Microsoft Store) and constantly improved by listening to feedbacks from other teams, external partners and other developers from the community. Here's a quick breakdown of the various components you'll find in this repository:
