@@ -551,7 +551,7 @@ internal static class DiagnosticDescriptors
     /// </summary>
     public static readonly DiagnosticDescriptor FieldReferenceForObservablePropertyFieldWarning = new DiagnosticDescriptor(
         id: "MVVMTK0034",
-        title: "Invalid task scheduler exception flow option usage",
+        title: "Direct field reference to [ObservableProperty] backing field",
         messageFormat: "The field {0} is annotated with [ObservableProperty] and should not be directly referenced (use the generated property instead)",
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Warning,
