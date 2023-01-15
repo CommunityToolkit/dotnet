@@ -38,6 +38,13 @@ MVVMTK0028 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator 
 MVVMTK0029 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Warning | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0029
 MVVMTK0030 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Warning | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0030
 MVVMTK0031 | CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator | Error | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0031
+
+## Release 8.1
+
+### New Rules
+
+Rule ID | Category | Severity | Notes
+--------|----------|----------|-------
 MVVMTK0032 | CommunityToolkit.Mvvm.SourceGenerators.INotifyPropertyChangedGenerator | Warning | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0032
 MVVMTK0033 | CommunityToolkit.Mvvm.SourceGenerators.ObservableObjectGenerator | Warning | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0033
 MVVMTK0034 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Warning | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0034
