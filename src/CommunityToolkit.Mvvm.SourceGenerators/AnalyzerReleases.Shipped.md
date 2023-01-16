@@ -48,3 +48,4 @@ Rule ID | Category | Severity | Notes
 MVVMTK0032 | CommunityToolkit.Mvvm.SourceGenerators.INotifyPropertyChangedGenerator | Warning | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0032
 MVVMTK0033 | CommunityToolkit.Mvvm.SourceGenerators.ObservableObjectGenerator | Warning | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0033
 MVVMTK0034 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Warning | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0034
+MVVMTK0035 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Error | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0035
