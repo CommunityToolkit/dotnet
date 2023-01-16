@@ -1625,6 +1625,56 @@ public class Test_SourceGeneratorsDiagnostics
         await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<FieldReferenceForObservablePropertyFieldAnalyzer>(source, LanguageVersion.CSharp8);
     }
 
+    // See https://github.com/CommunityToolkit/dotnet/issues/563
+    [TestMethod]
+    public void InvalidPropertyTargetedAttributeOnObservablePropertyField_MissingUsingDirective()
+    {
+        string source = """
+            using System;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class MyViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    [property: MyTest]
+                    public int number;
+                }
+            }
+
+            namespace MyAttributes
+            {
+                [AttributeUsage(AttributeTargets.Property)]
+                public class MyTestAttribute : Attribute
+                {
+                }
+            }
+            """;
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0035");
+    }
+
+    [TestMethod]
+    public void InvalidPropertyTargetedAttributeOnObservablePropertyField_TypoInAttributeName()
+    {
+        string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class MyViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    [property: Fbuifbweif]
+                    public int number;
+                }
+            }
+            """;
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0035");
+    }
+
     /// <summary>
     /// Verifies the diagnostic errors for a given analyzer, and that all available source generators can run successfully with the input source (including subsequent compilation).
     /// </summary>
