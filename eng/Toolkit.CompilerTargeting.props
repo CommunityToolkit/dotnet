@@ -1,0 +1,66 @@
+<Project>
+
+  <!--
+      This file contains logic that supports targeting multiple Compiler (i.e. Roslyn) versions.
+      So, Define Identifiers and supported Versions before entering this file like so...
+
+      <PropertyGroup Condition="$(MSBuildProjectName.Contains('.Roslyn'))>
+        <IsCompilerTargeting>True</IsCompilerTargeting>
+        <TargetCompilerIdentifier>Roslyn</TargetCompilerIdentifier>
+        <SupportedCompilerVersions>4.1;4.2;4.3;4.4;4.5</SupportedCompilerVersion>
+      </PropertyGroup>
+
+      Then, this file can be conditionally imported using the $(IsCompilerTargeting) property only for
+      projects that actually needs compiler targeting. In this case, the $(MSBuildProjectName) property
+      contains compiler targeting information.
+
+      Hence, using that to set the former property allows to keep the the following import and
+      the above default properties in a common place rather than duplicating them in each and
+      every required project file. This keeps the project files simple.
+
+      <Import Project="Toolkit.CompilerTargeting.props" Condition="'$(IsCompilerTargeting)' == 'true'" />
+  -->
+
+  <PropertyGroup>
+    <!-- Make a lower-case version of the identifier to use it as a folder name. e.g., roslyn4.0 -->
+    <_ShortCompilerIdentifier>$(TargetCompilerIdentifier.ToLowerInvariant())</_ShortCompilerIdentifier>
+
+    <!-- Extract Version 40 from Roslyn40 in the Project Name: e.g., 'CommunityToolkit.Mvvm.Roslyn40.UnitTests' -->
+    <_CompilerNameInProjectNameIndex>$(MSBuildProjectName.IndexOf($(TargetCompilerIdentifier)))</_CompilerNameInProjectNameIndex>
+    <_ShortCompilerVersion Condition="$(_CompilerNameInProjectNameIndex) != -1">$(MSBuildProjectName.Substring($([MSBuild]::Add($(_CompilerNameInProjectNameIndex), $(TargetCompilerIdentifier.Length))), 2))</_ShortCompilerVersion>
+
+    <!-- Convert to a valid Version string by adding a missing period ('.') -->
+    <TargetCompilerVersion Condition="$(_ShortCompilerVersion.Length) == 2">$(_ShortCompilerVersion[0]).$(_ShortCompilerVersion[1])</TargetCompilerVersion>
+
+    <!-- Default to v4.0 for Roslyn compiler since, only from that version onwards supports Source Generators -->
+    <TargetCompilerVersion Condition="'$(TargetCompilerVersion)' == ''">4.0</TargetCompilerVersion>
+
+    <!-- This can be used as folder names and also in paths. e.g., roslyn4.0 -->
+    <TargetCompiler Condition="'$(TargetCompiler)' == ''">$(_ShortCompilerIdentifier)$(TargetCompilerVersion)</TargetCompiler>
+  </PropertyGroup>
+
+  <!-- Use a default 'TargetLanguage' based on project extension if not set in project file -->
+  <PropertyGroup Condition="'$(TargetLanguage)' == ''">
+    <TargetLanguage Condition="'$(MSBuildProjectExtension)' == '.csproj'">cs</TargetLanguage>
+    <TargetLanguage Condition="'$(MSBuildProjectExtension)' == '.fsproj'">fs</TargetLanguage>
+    <TargetLanguage Condition="'$(MSBuildProjectExtension)' == '.vbproj'">vb</TargetLanguage>
+  </PropertyGroup>
+
+  <!-- Since we're are separating the assets, we can use the project name without the "Roslyn40" identifier for other default properties -->
+  <PropertyGroup>
+    <ProjectName Condition="'$(ProjectName)' == ''">$(MSBuildProjectName.Replace('.$(TargetCompilerIdentifier)$(_ShortCompilerVersion)', ''))</ProjectName>
+    <AssemblyName Condition="'$(AssemblyName)' == '' AND '$(ProjectName)' != ''">$(ProjectName)</AssemblyName>
+    <RootNamespace Condition="'$(RootNamespace)' == '' AND '$(ProjectName)' != ''">$(ProjectName)</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Currently 'project.assets.json' and 'project.nuget.cache' doesn't have unique file-names based on project name like other restore assets do -->
+    <ProjectDirName Condition="'$(ProjectDirName)' != ''">$(ProjectDirName.Replace('.$(TargetCompilerIdentifier)$(_ShortCompilerVersion)', ''))</ProjectDirName>
+  </PropertyGroup>
+
+  <!-- We also override output paths to separate compiler version specific assets but only after .NET SDK appends 'TargetFramework' -->
+  <PropertyGroup>
+    <CustomBeforeMicrosoftCommonTargets>$(MSBuildThisFileDirectory)Toolkit.CompilerTargeting.targets</CustomBeforeMicrosoftCommonTargets>
+  </PropertyGroup>
+
+</Project>

@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net472;net6.0;net7.0</TargetFrameworks>
+    <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\CommunityToolkit.Mvvm\CommunityToolkit.Mvvm.csproj" />
+    <ProjectReference Include="..\..\src\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.Roslyn43.csproj"
+                      OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="build;contentFiles" />
+    <ProjectReference Include="..\CommunityToolkit.Mvvm.ExternalAssembly\CommunityToolkit.Mvvm.ExternalAssembly.Roslyn43.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Reactive" />
+    <PackageReference Include="System.Text.Json" />
+    <PackageReference Include="Dbs.Signed3.Nito.AsyncEx.Context" />
+  </ItemGroup>
+
+</Project>

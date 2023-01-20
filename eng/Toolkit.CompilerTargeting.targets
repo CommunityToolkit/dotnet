@@ -1,0 +1,63 @@
+<Project>
+
+  <PropertyGroup>
+    <VSTestResultsDirectory Condition="'$(BuildDir)' == ''">$([System.IO.Path]::Combine('$(BaseOutputPath)', 'TestResults'))</VSTestResultsDirectory>
+  </PropertyGroup>
+
+  <!-- Append the Compiler moniker (i.e., roslyn4.0) to 'TargetFramework' in the output paths -->
+  <Choose>
+    <When Condition="'$(TargetCompilerVersion)' != ''">
+      <PropertyGroup>
+        <OutputPath>$(OutputPath.Replace('$(TargetFramework)', '$(TargetFramework)-$(TargetCompiler)'))</OutputPath>
+        <IntermediateOutputPath>$(IntermediateOutputPath.Replace('$(TargetFramework)', '$(TargetFramework)-$(TargetCompiler)'))</IntermediateOutputPath>
+        <DocumentationFile>$(DocumentationFile.Replace('$(TargetFramework)', '$(TargetFramework)-$(TargetCompiler)'))</DocumentationFile>
+        <VSTestResultsDirectory>$([System.IO.Path]::Combine('$(VSTestResultsDirectory)', '$(TargetCompiler)'))</VSTestResultsDirectory>
+        <PublishDir>$(PublishDir.Replace('$(TargetFramework)', '$(TargetFramework)-$(TargetCompiler)'))</PublishDir>
+      </PropertyGroup>
+    </When>
+  </Choose>
+
+  <PropertyGroup>
+    <!-- Define an compiler identifier pre-processor constant. This enables to group targeting code under multi-targeting -->
+    <_ImplicitCompilerIdentifierDefine>$(TargetCompilerIdentifier.ToUpperInvariant())</_ImplicitCompilerIdentifierDefine>
+    <!-- If supported version list is given, then enable multi-version implicit defines -->
+    <_EnableImplicitMultiVersionDefines Condition="'$(SupportedCompilerVersions)' != '' AND $(SupportedCompilerVersions.Contains(';'))" >true</_EnableImplicitMultiVersionDefines>
+    <!-- Define a single version pre-processor constant, if the project does not need multi-version defines -->
+    <_ImplicitCompilerVersionDefine Condition="'$(_ShortCompilerVersion)' != '' AND '$(_EnableImplicitMultiVersionDefines)' != 'true'">$(_ImplicitCompilerIdentifierDefine)_$(TargetCompilerVersion.Replace('.', '_'))</_ImplicitCompilerVersionDefine>
+  </PropertyGroup>
+
+  <!--
+      Add the symbols to @(_ImplicitDefineConstant) list which will be used to
+      populate the $(DefineConstants) and $(FinalDefineConstants) in VB projects.
+  -->
+  <ItemGroup>
+    <!-- Add implicit define constants for the target compiler -->
+    <_ImplicitDefineConstant Include="$(_ImplicitCompilerIdentifierDefine)" />
+    <_ImplicitDefineConstant Include="$(_ImplicitCompilerVersionDefine)" Condition="'$(_ImplicitCompilerVersionDefine)' != ''" />
+    <!-- Add supported compiler versions to item list for expanding them into implicit defines -->
+    <_SupportedCompilerVersion Include="$(SupportedCompilerVersions)" Condition="'$(_EnableImplicitMultiVersionDefines)' == 'true'" />
+  </ItemGroup>
+
+  <!--
+  ====================================================================================================
+                                AddImplicitMultiVersionDefineConstants
+
+      Generate the multi-version pre-processor defines, so the source code can be multi-targeted
+      across compiler and its versions. Be sure to insert all the defines into the SDK internal
+      @(_ImplicitDefineConstant) list before the 'AddImplicitDefineConstants' target is run.
+  ====================================================================================================
+  -->
+  <Target Name="AddImplicitMultiVersionDefineConstants"
+          Condition="'$(_EnableImplicitMultiVersionDefines)' == 'true'"
+          BeforeTargets="AddImplicitDefineConstants">
+
+    <!-- Adding custom defines through conditional batching is only supported inside targets -->
+    <ItemGroup>
+      <TargetCompilerVersion Include="@(_SupportedCompilerVersion)" Condition="$([MSBuild]::VersionLessThanOrEquals(%(Identity), $(TargetCompilerVersion)))" />
+      <!-- Generate the multi-version "<COMPILER>_<MAJOR>_<MINOR>_OR_GREATER" pre-processor defines -->
+      <_ImplicitCompilerVersionDefine Include="@(TargetCompilerVersion->Replace('.', '_')->'$(_ImplicitCompilerIdentifierDefine)_%(Identity)_OR_GREATER')" />
+      <_ImplicitDefineConstant Include="@(_ImplicitCompilerVersionDefine)" />
+    </ItemGroup>
+  </Target>
+
+</Project>

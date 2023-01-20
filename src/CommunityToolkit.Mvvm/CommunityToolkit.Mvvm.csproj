@@ -20,31 +20,6 @@
     <PackageTags>MVVM;Toolkit;MVVMToolkit;INotifyPropertyChanged;Observable;IOC;DI;Dependency Injection;Object Messaging;Extensions;Helpers</PackageTags>
   </PropertyGroup>
 
-  <!-- .NET Standard 2.0 doesn't have the Span<T> and IAsyncEnumerable<T> types -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="7.0.0" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageReference Include="System.Memory" Version="4.5.5" />
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
-  </ItemGroup>
-
-  <!-- .NET Standard 2.1 doesn't have the Unsafe type -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
-    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
-  </ItemGroup>
-
-  <!-- Reference the various multi-targeted versions of the source generator project (one per Roslyn version) -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401.csproj" ReferenceOutputAssembly="false" />
-    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn431\CommunityToolkit.Mvvm.SourceGenerators.Roslyn431.csproj" ReferenceOutputAssembly="false" />
-  </ItemGroup>
-
-  <!-- Add the [InternalsVisibleTo] attribute for the test project -->
-  <ItemGroup>
-    <InternalsVisibleTo Include="CommunityToolkit.Mvvm.Internals.UnitTests, PublicKey=$(AssemblySignPublicKey)" />
-  </ItemGroup>
-
   <!-- Necessary polyfills -->
   <PropertyGroup>
     <PolySharpIncludeGeneratedTypes>
@@ -62,20 +37,51 @@
     </PolySharpIncludeGeneratedTypes>
   </PropertyGroup>
 
-  <ItemGroup Label="Package">
-
-    <!-- Include the custom .targets file to check the source generator (.NET 6 is not needed as it guarantees Roslyn 4.x) -->
-    <None Include="CommunityToolkit.Mvvm.targets" PackagePath="buildTransitive\netstandard2.0" Pack="true" />
-    <None Include="CommunityToolkit.Mvvm.targets" PackagePath="buildTransitive\netstandard2.1" Pack="true" />
-    <None Include="CommunityToolkit.Mvvm.targets" PackagePath="build\netstandard2.0" Pack="true" />
-    <None Include="CommunityToolkit.Mvvm.targets" PackagePath="build\netstandard2.1" Pack="true" />
-
-    <!--
-      Pack the source generator to the right package folders (each matching the target Roslyn version).
-      Roslyn will automatically load the highest version compatible with Roslyn's version in the SDK.
-    -->
-    <None Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.SourceGenerators.dll" PackagePath="analyzers\dotnet\roslyn4.0\cs" Pack="true" Visible="false" />
-    <None Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn431\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.SourceGenerators.dll" PackagePath="analyzers\dotnet\roslyn4.3\cs" Pack="true" Visible="false" />
+  <!-- Add the [InternalsVisibleTo] attribute for the test project -->
+  <ItemGroup>
+    <InternalsVisibleTo Include="CommunityToolkit.Mvvm.Internals.UnitTests" />
   </ItemGroup>
+
+  <!--
+      Include a custom targets file to check the compiler version required for the source generator.
+      It needs Roslyn 4.x and including the targets in .NET 6+ is not needed as it guarantees the same.
+  -->
+  <ItemGroup Condition="$(TargetFramework.StartsWith('netstandard'))">
+    <PackageFile Include="CommunityToolkit.Mvvm.targets" IsSpecific="True" TargetPath="build\$(TargetFramework)" />
+    <PackageFile Include="CommunityToolkit.Mvvm.targets" IsSpecific="True" TargetPath="buildTransitive\$(TargetFramework)" />
+  </ItemGroup>
+
+  <!-- .NET Standard 2.0 doesn't have the Span<T> and IAsyncEnumerable<T> types -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
+    <PackageReference Include="System.ComponentModel.Annotations" />
+    <PackageReference Include="System.Memory" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" />
+  </ItemGroup>
+
+  <!-- .NET Standard 2.1 doesn't have the Unsafe type -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
+    <PackageReference Include="System.ComponentModel.Annotations" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" />
+  </ItemGroup>
+
+  <!-- Reference the various multi-targeted versions of the source generator project (one per Roslyn version) -->
+  <ItemGroup>
+    <!-- Roslyn v4.0 target -->
+    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.Roslyn40.csproj"
+        ReferenceOutputAssembly="false" ExcludeAssets="All" />
+    <!-- Roslyn v4.3 target -->
+    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.Roslyn43.csproj"
+        ReferenceOutputAssembly="false" ExcludeAssets="All" />
+  </ItemGroup>
+
+  <!--
+      Pack the source generator build outputs to the correct package folders for it to be used as an analyzer.
+      Roslyn compilers will automatically load the highest version compatible with it's version in the SDK.
+      This uses the Custom Packaging targets that the toolkit build infrastructure imports.
+  -->
+  <PropertyGroup>
+    <PackNonReferencingProjects>true</PackNonReferencingProjects>
+  </PropertyGroup>
 
 </Project>

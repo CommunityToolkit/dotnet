@@ -70,7 +70,7 @@ jobs:
     displayName: Publish test results
     inputs:
       testResultsFormat: VSTest
-      testResultsFiles: '**/TestResults/VSTestResults*.trx'
+      testResultsFiles: build/*/TestResults/VSTestResults*.trx
     condition: always()
 
   # Pack solution
@@ -78,15 +78,15 @@ jobs:
     displayName: Pack solution
 
   # Sign packages
-  - pwsh: build/Sign-Package.ps1
+  - pwsh: eng/Sign-Package.ps1
     displayName: Authenticode sign packages
     env:
       SignClientUser: $(SignClientUser)
       SignClientSecret: $(SignClientSecret)
-      ArtifactDirectory: bin/nupkg
+      ArtifactDirectory: packages
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), ne(variables['SignClientUser'], ''), ne(variables['SignClientSecret'], ''))
 
   # Publish build artifacts
-  - publish: bin/nupkg
+  - publish: packages
     artifact: Packages
     displayName: Publish package artifacts

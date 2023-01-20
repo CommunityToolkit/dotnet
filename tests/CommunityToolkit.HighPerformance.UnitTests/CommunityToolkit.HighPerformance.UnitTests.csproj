@@ -10,10 +10,4 @@
     <ProjectReference Include="..\..\src\CommunityToolkit.HighPerformance\CommunityToolkit.HighPerformance.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="MSTest.TestAdapter" Version="3.0.1" />
-    <PackageReference Include="MSTest.TestFramework" Version="3.0.1" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
-  </ItemGroup>
-
 </Project>

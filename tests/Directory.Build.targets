@@ -1,0 +1,12 @@
+<Project>
+
+  <Import Project="..\$(MSBuildThisFile)" />
+
+  <!-- MSTest v2 -->
+  <ItemGroup Condition="'$(IsTestProject)' == 'true'">
+    <PackageReference Include="MSTest.TestAdapter" />
+    <PackageReference Include="MSTest.TestFramework" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+  </ItemGroup>
+
+</Project>

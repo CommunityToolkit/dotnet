@@ -1,0 +1,53 @@
+<Project>
+
+  <!-- We depend on these Common Targets that gathers various Build Outputs of the included project -->
+  <PropertyGroup>
+    <_GetBuildOutputsDependsOn>BuiltProjectOutputGroup;DocumentationProjectOutputGroup</_GetBuildOutputsDependsOn>
+    <_GetBuildOutputsDependsOn Condition="'$(IncludeSymbols)' != 'false'">$(_GetBuildOutputsDependsOn);DebugSymbolsProjectOutputGroup</_GetBuildOutputsDependsOn>
+    <_GetBuildOutputsDependsOn Condition="'$(IncludeSatelliteAssemblies)' != 'false'">$(_GetBuildOutputsDependsOn);SatelliteDllsProjectOutputGroup</_GetBuildOutputsDependsOn>
+  </PropertyGroup>
+
+  <!-- Check for 'TargetFramework' input before proceeding. -->
+  <Target Name="_CheckTargetFrameworkInput"
+          DependsOnTargets="_CheckForInvalidConfigurationAndPlatform"
+          Condition="'$(TargetFramework)' == ''">
+    <Error Code="NCTDEV01" Text="The 'GetBuildOutputsPerTarget' target is meant to output the build items per 'TargetFramework'. Please call the target with a non-empty 'TargetFramework'." />
+  </Target>
+
+  <!--
+      Gathers various Build Outputs from included Project per 'TargetFramework'.
+      This target is called in by the 'GetBuildOutputs' target to combine build outputs from all 'TargetFrameworks'.
+  -->
+  <Target Name="GetBuildOutputsPerTarget"
+          DependsOnTargets="_CheckTargetFrameworkInput;$(_GetBuildOutputsDependsOn)"
+          Returns="@(BuildOutputPerTarget)">
+    <ItemGroup>
+      <BuildOutputPerTarget Include="@(BuiltProjectOutputGroupOutput);@(DocumentationProjectOutputGroupOutput)" />
+      <BuildOutputPerTarget Include="@(DebugSymbolsProjectOutputGroupOutput)" Condition="'$(IncludeSymbols)' != 'false'" />
+      <BuildOutputPerTarget Include="@(SatelliteDllsProjectOutputGroupOutput)" Condition="'$(IncludeSatelliteAssemblies)' != 'false'" />
+      <BuildOutputPerTarget Update="@(BuildOutputPerTarget)" TargetFramework="$(TargetFramework)" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <BuildOutputPerTarget Update="@(BuildOutputPerTarget)" TargetCompiler="$(TargetCompiler)" />
+      <BuildOutputPerTarget Update="@(BuildOutputPerTarget)" TargetLanguage="$(TargetLanguage)" />
+      <BuildOutputPerTarget Update="@(BuildOutputPerTarget)" IsCompilerExtension="$(IsCompilerTargeting)" />
+    </ItemGroup>
+  </Target>
+
+  <!--
+      Gathers various Build Outputs from this Project across 'TargetFrameworks'.
+      This target is called in the parent project to pack into a package.
+  -->
+  <Target Name="GetBuildOutputs"
+          DependsOnTargets="_GetTargetFrameworksOutput"
+          Returns="@(BuildOutput)">
+    <MSBuild
+      Projects="$(MSBuildProjectFullPath)"
+      Targets="GetBuildOutputsPerTarget"
+      Properties="TargetFramework=%(_TargetFrameworks.Identity)">
+      <Output TaskParameter="TargetOutputs" ItemName="BuildOutput" />
+    </MSBuild>
+  </Target>
+
+</Project>

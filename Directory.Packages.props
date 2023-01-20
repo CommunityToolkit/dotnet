@@ -1,0 +1,47 @@
+<Project>
+
+  <PropertyGroup Label="Core">
+    <NETStandardImplicitPackageVersion>2.0.3</NETStandardImplicitPackageVersion>
+  </PropertyGroup>
+
+  <ItemGroup Label="System">
+    <!-- BCL Extensions -->
+    <PackageVersion Version="7.0.0" Include="Microsoft.Bcl.AsyncInterfaces" />
+    <PackageVersion Version="1.1.1" Include="Microsoft.Bcl.HashCode" />
+    <!-- Annotations -->
+    <PackageVersion Version="5.0.0" Include="System.ComponentModel.Annotations" />
+    <!-- Memory -->
+    <PackageVersion Version="4.5.5" Include="System.Memory" />
+    <!-- Reactive -->
+    <PackageVersion Version="5.0.0" Include="System.Reactive" />
+    <!-- Runtime -->
+    <PackageVersion Version="6.0.0" Include="System.Runtime.CompilerServices.Unsafe" />
+    <!-- Json -->
+    <PackageVersion Version="7.0.0" Include="System.Text.Json" />
+    <!-- Tasks -->
+    <PackageVersion Version="4.5.4" Include="System.Threading.Tasks.Extensions" />
+  </ItemGroup>
+
+  <ItemGroup Label="Core">
+    <!-- PolySharp -->
+    <PackageVersion Version="1.8.1" Include="PolySharp" />
+  </ItemGroup>
+
+  <ItemGroup Label="Global">
+    <!-- Build Helpers -->
+    <PackageVersion Version="1.1.1"   Include="Microsoft.SourceLink.GitHub" />
+    <PackageVersion Version="3.5.119" Include="Nerdbank.GitVersioning" />
+    <PackageVersion Version="1.1.118" Include="StyleCop.Analyzers" />
+  </ItemGroup>
+
+  <ItemGroup Label="Tests">
+    <!-- MSTest -->
+    <PackageVersion Version="3.0.1"  Include="MSTest.TestAdapter" />
+    <PackageVersion Version="3.0.1"  Include="MSTest.TestFramework" />
+    <PackageVersion Version="17.4.1" Include="Microsoft.NET.Test.Sdk" />
+    <!-- MSTest Extensions -->
+    <PackageVersion Version="5.0.0" Include="Dbs.Signed3.Nito.AsyncEx.Context" />
+    <PackageVersion Version="1.1.1" Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing.MSTest" />
+  </ItemGroup>
+
+</Project>

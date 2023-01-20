@@ -25,31 +25,6 @@
     <PackageTags>Parallel;Performance;Unsafe;Span;Memory;String;StringPool;Array;Stream;Buffer;Extensions;Helpers</PackageTags>
   </PropertyGroup>
 
-  <Choose>
-    <When Condition="'$(TargetFramework)' == 'netstandard2.0'">
-
-      <!-- .NET Standard 2.0 doesn't have the Span<T>, HashCode and ValueTask types -->
-      <ItemGroup>
-        <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
-        <PackageReference Include="System.Memory" Version="4.5.5" />
-        <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
-        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
-      </ItemGroup>
-
-      <!-- On .NET Standard 2.0, the unit test project also needs access to internals-->
-      <ItemGroup>
-        <InternalsVisibleTo Include="CommunityToolkit.HighPerformance.UnitTests, PublicKey=$(AssemblySignPublicKey)" />
-      </ItemGroup>
-    </When>
-
-    <!-- .NET Standard 2.1 doesn't have the Unsafe type -->
-    <When Condition="'$(TargetFramework)' == 'netstandard2.1'">
-      <ItemGroup>
-        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
-      </ItemGroup>
-    </When>
-  </Choose>
-
   <!-- Necessary polyfills -->
   <PropertyGroup>
     <PolySharpIncludeGeneratedTypes>
@@ -58,5 +33,30 @@
       System.Runtime.CompilerServices.SkipLocalsInitAttribute;
     </PolySharpIncludeGeneratedTypes>
   </PropertyGroup>
+
+  <Choose>
+    <When Condition="'$(TargetFramework)' == 'netstandard2.0'">
+
+      <!-- On .NET Standard 2.0, the unit test project also needs access to internals -->
+      <ItemGroup>
+        <InternalsVisibleTo Include="CommunityToolkit.HighPerformance.UnitTests" />
+      </ItemGroup>
+
+      <!-- .NET Standard 2.0 doesn't have the Span<T>, HashCode and ValueTask types -->
+      <ItemGroup>
+        <PackageReference Include="Microsoft.Bcl.HashCode" />
+        <PackageReference Include="System.Memory" />
+        <PackageReference Include="System.Threading.Tasks.Extensions" />
+        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" />
+      </ItemGroup>
+    </When>
+
+    <!-- .NET Standard 2.1 doesn't have the Unsafe type -->
+    <When Condition="'$(TargetFramework)' == 'netstandard2.1'">
+      <ItemGroup>
+        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" />
+      </ItemGroup>
+    </When>
+  </Choose>
 
 </Project>

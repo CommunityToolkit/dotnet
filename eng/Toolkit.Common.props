@@ -1,0 +1,74 @@
+<Project>
+
+  <PropertyGroup Label="Build">
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <ContinuousIntegrationBuild>$(TF_BUILD)</ContinuousIntegrationBuild>
+    <SourceLinkEnabled>$(ContinuousIntegrationBuild)</SourceLinkEnabled>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Compile">
+    <Features>Strict</Features>
+    <Nullable>Enable</Nullable>
+    <LangVersion>Latest</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <!--
+      Suppress `ref` usage safety warnings in unsafe contexts (see https://github.com/dotnet/csharplang/issues/6476).
+      This is used to replace `Unsafe.*` calls with standard language notations (e.g., `Unsafe.SizeOf<T>()` to `sizeof(T)`).
+      The `CS8500` warning is not necessary, since in order to use these APIs the caller already has to be in an unsafe context.
+  -->
+  <PropertyGroup>
+    <NoWarn>$(NoWarn);CS8500</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Assembly">
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)toolkit.snk</AssemblyOriginatorKeyFile>
+    <AssemblySignPublicKeyFile>$(MSBuildThisFileDirectory)toolkit.spk</AssemblySignPublicKeyFile>
+    <AssemblySignPublicKey>$([System.IO.File]::ReadAllText($(AssemblySignPublicKeyFile)))</AssemblySignPublicKey>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Outputs.Initial">
+    <!-- Build Outputs -->
+    <BuildDir>$(RepositoryDirectory)build\</BuildDir>
+    <!-- Publish Outputs -->
+    <PublishDir>$(RepositoryDirectory)publish\</PublishDir>
+    <!-- Restore Outputs-->
+    <MSBuildProjectExtensionsPath>$(BuildDir)ext\</MSBuildProjectExtensionsPath>
+    <!-- Pack Outputs -->
+    <NuSpecOutputPath>$(RepositoryDirectory)build\</NuSpecOutputPath>
+    <PackageOutputPath>$(RepositoryDirectory)packages\</PackageOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Project">
+    <ProjectDirName>$(MSBuildProjectName.Replace('CommunityToolkit.', ''))</ProjectDirName>
+  </PropertyGroup>
+
+  <!-- Identify projects targeting multiple Roslyn versions and add defaults -->
+  <PropertyGroup Condition="$(MSBuildProjectName.Contains('.Roslyn'))">
+    <IsCompilerTargeting>True</IsCompilerTargeting>
+    <TargetCompilerIdentifier>Roslyn</TargetCompilerIdentifier>
+    <!-- TODO: Update the supported Compiler versions here as new ones get released -->
+    <SupportedCompilerVersions>4.0;4.1;4.2;4.3;4.4;4.5</SupportedCompilerVersions>
+  </PropertyGroup>
+
+  <!-- Use custom build logic for projects targeting multiple version of the Roslyn Compiler -->
+  <Import Project="Toolkit.CompilerTargeting.props" Condition="'$(IsCompilerTargeting)' == 'true'" />
+
+  <PropertyGroup Label="Outputs.Final">
+    <!-- Build Outputs -->
+    <BuildDir>$(BuildDir)$(ProjectDirName)\</BuildDir>
+    <BaseOutputPath>$(BuildDir)bin\</BaseOutputPath>
+    <BaseIntermediateOutputPath>$(BuildDir)obj\</BaseIntermediateOutputPath>
+    <!-- Restore Outputs-->
+    <MSBuildProjectExtensionsPath>$(BuildDir)ext\</MSBuildProjectExtensionsPath>
+    <MSBuildProjectExtensionsPath Condition="'$(TargetCompiler)' != ''">$(MSBuildProjectExtensionsPath)$(TargetCompiler)\</MSBuildProjectExtensionsPath>
+    <RestoreOutputPath>$(MSBuildProjectExtensionsPath)</RestoreOutputPath>
+    <!-- Publish Outputs -->
+    <PublishDir>$(PublishDir)$(ProjectDirName)\</PublishDir>
+    <!-- Test Outputs -->
+    <VSTestResultsDirectory>$(BuildDir)TestResults\</VSTestResultsDirectory>
+  </PropertyGroup>
+
+</Project>
