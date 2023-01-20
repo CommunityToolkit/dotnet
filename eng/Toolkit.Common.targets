@@ -1,0 +1,50 @@
+<Project>
+
+  <PropertyGroup Condition="'$(IsPackable)' == 'true'">
+    <Company>Microsoft</Company>
+    <Authors>Microsoft</Authors>
+    <Product>.NET Community Toolkit</Product>
+    <CommonTags>.NET;Community;Toolkit;dotnet</CommonTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Copyright>(c) .NET Foundation and Contributors. All rights reserved.</Copyright>
+    <PackageProjectUrl>https://github.com/CommunityToolkit/dotnet</PackageProjectUrl>
+    <PackageReleaseNotes>https://github.com/CommunityToolkit/dotnet/releases</PackageReleaseNotes>
+    <PackageIcon>Icon.png</PackageIcon>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(IsPackable)' == 'true'">
+    <Title Condition="'$(Title)' == ''">$(Product) Asset</Title>
+    <PackageTags Condition="'$(PackageTags)' != ''">$(CommonTags);$(PackageTags)</PackageTags>
+    <PackageTags Condition="'$(PackageTags)' == ''">$(CommonTags)</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(IsPackable)' == 'true'">
+    <None Pack="true" PackagePath="\" Visible="False" Include="$(BuildToolsDirectory)Icon.png" />
+    <None Pack="true" PackagePath="\" Visible="False" Include="$(RepositoryDirectory)License.md" />
+    <None Pack="true" PackagePath="\" Visible="False" Include="$(RepositoryDirectory)ThirdPartyNotices.txt" />
+  </ItemGroup>
+
+  <!-- Checked Version properties to use down the line -->
+  <PropertyGroup Condition="'$([MSBuild]::GetTargetFrameworkIdentifier($(TargetFramework)))' == '.NETCoreApp'">
+    <_ToolkitTargetFrameworkVersion>$([MSBuild]::GetTargetFrameworkVersion($(TargetFramework)))</_ToolkitTargetFrameworkVersion>
+    <_NET_6_OR_GREATER>$([MSBuild]::VersionGreaterThanOrEquals($(_ToolkitTargetFrameworkVersion), '6.0'))</_NET_6_OR_GREATER>
+  </PropertyGroup>
+
+  <!--
+      Add additional Pre-Processor symbols to $(DefineConstants) and $(FinalDefineConstants) in VB.
+      This overrides the same target in the .NET SDK. Since, that version has issues in DesignTime.
+  -->
+  <Target Name="AddImplicitDefineConstants"
+          Condition="'$(DisableImplicitDefineConstants)' != 'true'"
+          DependsOnTargets="GenerateTargetPlatformDefineConstants;GenerateNETCompatibleDefineConstants;GeneratePlatformCompatibleDefineConstants"
+          BeforeTargets="CompileDesignTime;CoreCompile">
+
+    <!-- Add the Custom defines before entering compilation process. Make sure it also works in Design Time -->
+    <PropertyGroup Condition="@(_ImplicitDefineConstant->Count()) > 0">
+      <DefineConstants Condition="'$(Language)' != 'VB'">$(DefineConstants);@(_ImplicitDefineConstant)</DefineConstants>
+      <FinalDefineConstants Condition="'$(Language)' == 'VB'">$(FinalDefineConstants),@(_ImplicitDefineConstant->'%(Identity)=-1', ',')</FinalDefineConstants>
+    </PropertyGroup>
+  </Target>
+
+</Project>

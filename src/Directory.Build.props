@@ -1,11 +1,19 @@
 <Project>
-  <Import Project="..\Directory.Build.props" />
+
+  <Import Project="..\$(MSBuildThisFile)" />
+
+  <!-- Common properties for all projects under src folder -->
+  <PropertyGroup Label="Build">
+    <IsPackable>true</IsPackable>
+    <IsPublishable>true</IsPublishable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageOutputPath>$(RepositoryDirectory)bin\nupkg</PackageOutputPath>
+    <TreatWarningsAsErrors Condition="'$(Configuration)' == 'Release'">true</TreatWarningsAsErrors>
+  </PropertyGroup>
 
   <!-- Include PolySharp to generate polyfills for all projects (on their .NET Standard 2.x targets) -->
   <ItemGroup>
-    <PackageReference Include="PolySharp" Version="1.8.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>build; analyzers</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="PolySharp" Version="1.8.1" PrivateAssets="All" IncludeAssets="Analyzers;Build" />
   </ItemGroup>
+
 </Project>

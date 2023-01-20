@@ -1,0 +1,5 @@
+-NoLogo
+-MaxCPUCount
+-NodeReuse:True
+-Verbosity:Normal
+-ConsoleLoggerParameters:ForceNoAlign

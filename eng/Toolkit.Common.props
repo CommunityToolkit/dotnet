@@ -1,0 +1,42 @@
+<Project>
+
+  <PropertyGroup Label="Build">
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <ContinuousIntegrationBuild>$(TF_BUILD)</ContinuousIntegrationBuild>
+    <SourceLinkEnabled>$(ContinuousIntegrationBuild)</SourceLinkEnabled>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Compile">
+    <Nullable>Enable</Nullable>
+    <LangVersion>11.0</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <!--
+      Suppress `ref` usage safety warnings in unsafe contexts (see https://github.com/dotnet/csharplang/issues/6476).
+      This is used to replace `Unsafe.*` calls with standard language notations (e.g., `Unsafe.SizeOf<T>()` to `sizeof(T)`).
+      The `CS8500` warning is not necessary, since in order to use these APIs the caller already has to be in an unsafe context.
+  -->
+  <PropertyGroup>
+    <NoWarn>$(NoWarn);CS8500</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Assembly">
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)toolkit.snk</AssemblyOriginatorKeyFile>
+    <AssemblySignPublicKeyFile>$(MSBuildThisFileDirectory)toolkit.spk</AssemblySignPublicKeyFile>
+    <AssemblySignPublicKey>$([System.IO.File]::ReadAllText($(AssemblySignPublicKeyFile)))</AssemblySignPublicKey>
+  </PropertyGroup>
+
+  <!-- Identify projects targeting multiple Roslyn versions and add defaults -->
+  <PropertyGroup Condition="$(MSBuildProjectName.Contains('.Roslyn'))">
+    <IsCompilerTargeting>True</IsCompilerTargeting>
+    <TargetCompilerIdentifier>Roslyn</TargetCompilerIdentifier>
+    <!-- TODO: Update the supported Compiler versions here as new ones get released -->
+    <SupportedCompilerVersions>4.0;4.1;4.2;4.3;4.4;4.5</SupportedCompilerVersions>
+  </PropertyGroup>
+
+  <!-- Use custom build logic for projects targeting multiple version of the Roslyn Compiler -->
+  <Import Project="Toolkit.CompilerTargeting.props" Condition="'$(IsCompilerTargeting)' == 'true'" />
+
+</Project>

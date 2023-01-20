@@ -28,14 +28,21 @@
 # Visual Studio 15+ auto generated files
 Generated\ Files/
 
+# Backup folder for Package Reference Convert tool in Visual Studio 15+
+MigrationBackup/
+
+# Live Unit Testing for Visual Studio
+.lutignore
+*.lutconfig
+
 # Local History for Visual Studio
 .localhistory/
 
 # Visual Studio History (VSHistory) files
 .vshistory/
 
-# Backup folder for Package Reference Convert tool in Visual Studio 2017
-MigrationBackup/
+# Local History for Visual Studio Code
+.history/
 
 # VS Code files for those working on multiple tools
 .vscode/*
@@ -44,9 +51,6 @@ MigrationBackup/
 !.vscode/launch.json
 !.vscode/extensions.json
 *.code-workspace
-
-# Local History for Visual Studio Code
-.history/
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
@@ -95,7 +99,7 @@ StyleCopReport.xml
 *.tlog
 *.vspscc
 *.vssscc
-.builds
+*.builds
 *.pidb
 *.svclog
 *.scc
@@ -177,7 +181,7 @@ _pkginfo.txt
 
 # Others
 ClientBin/
-~$*
+~*
 *~
 *~.*
 *.dbmdl
