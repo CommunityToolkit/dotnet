@@ -1,0 +1,22 @@
+<Project>
+
+  <Import Project="..\$(MSBuildThisFile)" />
+
+  <!--
+      By default, all projects under tests are neither packed nor published.
+      This also includes non-test projects as well. But if it's required then
+      override the following properties only within those projects.
+  -->
+  <PropertyGroup Label="Build">
+    <IsPackable>false</IsPackable>
+    <IsPublishable>false</IsPublishable>
+    <NoWarn>$(NoWarn);CS8002;SA0001</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Project">
+    <IsTestProject>true</IsTestProject>
+    <!-- The MVVM Toolkit unit tests use `Mvvm.ExternalAssembly` project as a `ProjectReference` for testing -->
+    <IsTestProject Condition="$(MSBuildProjectName.Contains('Mvvm.ExternalAssembly'))">false</IsTestProject>
+  </PropertyGroup>
+
+</Project>

@@ -1,0 +1,9 @@
+<Project>
+
+  <!--
+      Supports getting common build outputs out of a project in a coherent and packable way.
+      This also makes it easy to pack the Roslyn source generator outputs to the NuGet package.
+  -->
+  <Import Project="Toolkit.GetBuildOutputs.targets" Condition="'$(IsPackable)' == 'false'" />
+
+</Project>

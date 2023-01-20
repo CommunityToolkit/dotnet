@@ -1,0 +1,16 @@
+<Project>
+
+  <!-- Any item metadata defined in item definitions is default for all items of that name -->
+  <ItemDefinitionGroup>
+    <PackageFile>
+      <Visible>False</Visible>
+      <TargetPath>\</TargetPath>
+    </PackageFile>
+  </ItemDefinitionGroup>
+
+  <!-- Any item types included via 'AvailableItemName' adds to build action UI list in VS IDE -->
+  <ItemGroup>
+    <AvailableItemName Include="PackageFile" />
+  </ItemGroup>
+
+</Project>

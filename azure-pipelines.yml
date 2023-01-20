@@ -78,7 +78,7 @@ jobs:
     displayName: Pack solution
 
   # Sign packages
-  - pwsh: build/Sign-Package.ps1
+  - pwsh: eng/Sign-Package.ps1
     displayName: Authenticode sign packages
     env:
       SignClientUser: $(SignClientUser)
