@@ -683,19 +683,15 @@ partial class ObservablePropertyGenerator
                 string name => IdentifierName(name)
             };
 
-            if (propertyInfo.NotifyPropertyChangedRecipients)
-            {
-                // If broadcasting changes are required, also store the old value.
-                // This code generates a statement as follows:
-                //
-                // <PROPERTY_TYPE> __oldValue = <FIELD_EXPRESSIONS>;
-                setterStatements.Add(
-                    LocalDeclarationStatement(
-                        VariableDeclaration(propertyType)
-                        .AddVariables(
-                            VariableDeclarator(Identifier("__oldValue"))
-                            .WithInitializer(EqualsValueClause(fieldExpression)))));
-            }
+            // Store the old value for later. This code generates a statement as follows:
+            //
+            // <PROPERTY_TYPE> __oldValue = <FIELD_EXPRESSIONS>;
+            setterStatements.Add(
+                LocalDeclarationStatement(
+                    VariableDeclaration(propertyType)
+                    .AddVariables(
+                        VariableDeclarator(Identifier("__oldValue"))
+                        .WithInitializer(EqualsValueClause(fieldExpression)))));
 
             // Add the OnPropertyChanging() call first:
             //
@@ -704,6 +700,14 @@ partial class ObservablePropertyGenerator
                 ExpressionStatement(
                     InvocationExpression(IdentifierName($"On{propertyInfo.PropertyName}Changing"))
                     .AddArgumentListArguments(Argument(IdentifierName("value")))));
+
+            // Also call the overload after that:
+            //
+            // On<PROPERTY_NAME>Changing(__oldValue, value);
+            setterStatements.Add(
+                ExpressionStatement(
+                    InvocationExpression(IdentifierName($"On{propertyInfo.PropertyName}Changing"))
+                    .AddArgumentListArguments(Argument(IdentifierName("__oldValue")), Argument(IdentifierName("value")))));
 
             // Gather the statements to notify dependent properties
             foreach (string propertyName in propertyInfo.PropertyChangingNames)
@@ -750,6 +754,14 @@ partial class ObservablePropertyGenerator
                 ExpressionStatement(
                     InvocationExpression(IdentifierName($"On{propertyInfo.PropertyName}Changed"))
                     .AddArgumentListArguments(Argument(IdentifierName("value")))));
+
+            // Do the same for the overload, as above:
+            //
+            // On<PROPERTY_NAME>Changed(__oldValue, value);
+            setterStatements.Add(
+                ExpressionStatement(
+                    InvocationExpression(IdentifierName($"On{propertyInfo.PropertyName}Changed"))
+                    .AddArgumentListArguments(Argument(IdentifierName("__oldValue")), Argument(IdentifierName("value")))));
 
             // Gather the statements to notify dependent properties
             foreach (string propertyName in propertyInfo.PropertyChangedNames)
