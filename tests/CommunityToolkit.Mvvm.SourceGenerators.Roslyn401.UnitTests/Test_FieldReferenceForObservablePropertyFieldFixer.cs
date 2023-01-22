@@ -58,6 +58,7 @@ public class Test_FieldReferenceForObservablePropertyFieldFixer
         {
             TestCode = original,
             FixedCode = @fixed,
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net60
         };
 
         test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
@@ -119,6 +120,7 @@ public class Test_FieldReferenceForObservablePropertyFieldFixer
         {
             TestCode = original,
             FixedCode = @fixed,
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net60
         };
 
         test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
@@ -188,6 +190,7 @@ public class Test_FieldReferenceForObservablePropertyFieldFixer
         {
             TestCode = original,
             FixedCode = @fixed,
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net60
         };
 
         test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
@@ -255,6 +258,7 @@ public class Test_FieldReferenceForObservablePropertyFieldFixer
         {
             TestCode = original,
             FixedCode = @fixed,
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net60
         };
 
         test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);

@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections.Immutable;
+using System.Composition;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -18,7 +19,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace CommunityToolkit.Mvvm.Fixers;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-[ExportCodeFixProvider(LanguageNames.CSharp)]
+[ExportCodeFixProvider(LanguageNames.CSharp), Shared]
 public class FieldReferenceForObservablePropertyFieldFixer : CodeFixProvider
 {
     public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(DiagnosticDescriptors.FieldReferenceForObservablePropertyFieldId);
@@ -60,7 +61,7 @@ public class FieldReferenceForObservablePropertyFieldFixer : CodeFixProvider
 
     }
 
-    private async Task<Document> UpdateReference(Document document, IdentifierNameSyntax fieldReference, string propertyName, CancellationToken cancellationToken)
+    private static async Task<Document> UpdateReference(Document document, IdentifierNameSyntax fieldReference, string propertyName, CancellationToken cancellationToken)
     {
         IdentifierNameSyntax propertyReference = SyntaxFactory.IdentifierName(propertyName);
         SyntaxNode originalRoot = await fieldReference.SyntaxTree.GetRootAsync(cancellationToken);
