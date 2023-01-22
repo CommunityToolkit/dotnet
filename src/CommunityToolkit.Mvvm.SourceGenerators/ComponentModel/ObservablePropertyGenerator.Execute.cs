@@ -111,6 +111,7 @@ partial class ObservablePropertyGenerator
             bool hasOrInheritsClassLevelNotifyPropertyChangedRecipients = false;
             bool hasOrInheritsClassLevelNotifyDataErrorInfo = false;
             bool hasAnyValidationAttributes = false;
+            bool isOldPropertyValueDirectlyReferenced = IsOldPropertyValueDirectlyReferenced(fieldSymbol, propertyName);
 
             // Track the property changing event for the property, if the type supports it
             if (shouldInvokeOnPropertyChanging)
@@ -263,6 +264,7 @@ partial class ObservablePropertyGenerator
                 notifiedCommandNames.ToImmutable(),
                 notifyRecipients,
                 notifyDataErrorInfo,
+                isOldPropertyValueDirectlyReferenced,
                 forwardedAttributes.ToImmutable());
 
             diagnostics = builder.ToImmutable();
@@ -638,6 +640,38 @@ partial class ObservablePropertyGenerator
         }
 
         /// <summary>
+        /// Checks whether the generated code has to directly reference the old property value.
+        /// </summary>
+        /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
+        /// <param name="propertyName">The name of the property being generated.</param>
+        /// <returns>Whether the generated code needs direct access to the old property value.</returns>
+        private static bool IsOldPropertyValueDirectlyReferenced(IFieldSymbol fieldSymbol, string propertyName)
+        {
+            // Check On<PROPERTY_NAME>Changing(<PROPERTY_TYPE> oldValue, <PROPERTY_TYPE> newValue) first
+            foreach (ISymbol symbol in fieldSymbol.ContainingType.GetMembers($"On{propertyName}Changing"))
+            {
+                // No need to be too specific as we're not expecting false positives (which also wouldn't really
+                // cause any problems anyway, just produce slightly worse codegen). Just checking the number of
+                // parameters is good enough, and keeps the code very simple and cheap to run.
+                if (symbol is IMethodSymbol { Parameters.Length: 2 })
+                {
+                    return true;
+                }
+            }
+
+            // Do the same for On<PROPERTY_NAME>Changed(<PROPERTY_TYPE> oldValue, <PROPERTY_TYPE> newValue)
+            foreach (ISymbol symbol in fieldSymbol.ContainingType.GetMembers($"On{propertyName}Changed"))
+            {
+                if (symbol is IMethodSymbol { Parameters.Length: 2 })
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Gets a <see cref="CompilationUnitSyntax"/> instance with the cached args for property changing notifications.
         /// </summary>
         /// <param name="names">The sequence of property names to cache args for.</param>
@@ -683,15 +717,18 @@ partial class ObservablePropertyGenerator
                 string name => IdentifierName(name)
             };
 
-            // Store the old value for later. This code generates a statement as follows:
-            //
-            // <PROPERTY_TYPE> __oldValue = <FIELD_EXPRESSIONS>;
-            setterStatements.Add(
-                LocalDeclarationStatement(
-                    VariableDeclaration(propertyType)
-                    .AddVariables(
-                        VariableDeclarator(Identifier("__oldValue"))
-                        .WithInitializer(EqualsValueClause(fieldExpression)))));
+            if (propertyInfo.NotifyPropertyChangedRecipients || propertyInfo.IsOldPropertyValueDirectlyReferenced)
+            {
+                // Store the old value for later. This code generates a statement as follows:
+                //
+                // <PROPERTY_TYPE> __oldValue = <FIELD_EXPRESSIONS>;
+                setterStatements.Add(
+                    LocalDeclarationStatement(
+                        VariableDeclaration(propertyType)
+                        .AddVariables(
+                            VariableDeclarator(Identifier("__oldValue"))
+                            .WithInitializer(EqualsValueClause(fieldExpression)))));
+            }
 
             // Add the OnPropertyChanging() call first:
             //
@@ -701,13 +738,22 @@ partial class ObservablePropertyGenerator
                     InvocationExpression(IdentifierName($"On{propertyInfo.PropertyName}Changing"))
                     .AddArgumentListArguments(Argument(IdentifierName("value")))));
 
+            // Optimization: if the previous property value is not being referenced (which we can check by looking for an existing
+            // symbol matching the name of either of these generated methods), we can pass a default expression and avoid generating
+            // a field read, which won't otherwise be elided by Roslyn. Otherwise, we just store the value in a local as usual.
+            ArgumentSyntax oldPropertyValueArgument = propertyInfo.IsOldPropertyValueDirectlyReferenced switch
+            {
+                true => Argument(IdentifierName("__oldValue")),
+                false => Argument(LiteralExpression(SyntaxKind.DefaultLiteralExpression, Token(SyntaxKind.DefaultKeyword)))
+            };
+
             // Also call the overload after that:
             //
-            // On<PROPERTY_NAME>Changing(__oldValue, value);
+            // On<PROPERTY_NAME>Changing(<OLD_PROPERTY_VALUE_EXPRESSION>, value);
             setterStatements.Add(
                 ExpressionStatement(
                     InvocationExpression(IdentifierName($"On{propertyInfo.PropertyName}Changing"))
-                    .AddArgumentListArguments(Argument(IdentifierName("__oldValue")), Argument(IdentifierName("value")))));
+                    .AddArgumentListArguments(oldPropertyValueArgument, Argument(IdentifierName("value")))));
 
             // Gather the statements to notify dependent properties
             foreach (string propertyName in propertyInfo.PropertyChangingNames)
@@ -757,11 +803,11 @@ partial class ObservablePropertyGenerator
 
             // Do the same for the overload, as above:
             //
-            // On<PROPERTY_NAME>Changed(__oldValue, value);
+            // On<PROPERTY_NAME>Changed(<OLD_PROPERTY_VALUE_EXPRESSION>, value);
             setterStatements.Add(
                 ExpressionStatement(
                     InvocationExpression(IdentifierName($"On{propertyInfo.PropertyName}Changed"))
-                    .AddArgumentListArguments(Argument(IdentifierName("__oldValue")), Argument(IdentifierName("value")))));
+                    .AddArgumentListArguments(oldPropertyValueArgument, Argument(IdentifierName("value")))));
 
             // Gather the statements to notify dependent properties
             foreach (string propertyName in propertyInfo.PropertyChangedNames)

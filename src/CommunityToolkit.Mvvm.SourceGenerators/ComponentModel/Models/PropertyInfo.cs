@@ -17,6 +17,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 /// <param name="NotifiedCommandNames">The sequence of commands to notify.</param>
 /// <param name="NotifyPropertyChangedRecipients">Whether or not the generated property also broadcasts changes.</param>
 /// <param name="NotifyDataErrorInfo">Whether or not the generated property also validates its value.</param>
+/// <param name="IsOldPropertyValueDirectlyReferenced">Whether the old property value is being directly referenced.</param>
 /// <param name="ForwardedAttributes">The sequence of forwarded attributes for the generated property.</param>
 internal sealed record PropertyInfo(
     string TypeNameWithNullabilityAnnotations,
@@ -27,4 +28,5 @@ internal sealed record PropertyInfo(
     EquatableArray<string> NotifiedCommandNames,
     bool NotifyPropertyChangedRecipients,
     bool NotifyDataErrorInfo,
+    bool IsOldPropertyValueDirectlyReferenced,
     EquatableArray<AttributeInfo> ForwardedAttributes);
