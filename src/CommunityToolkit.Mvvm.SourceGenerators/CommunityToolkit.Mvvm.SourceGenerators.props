@@ -35,4 +35,9 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="$(MvvmToolkitSourceGeneratorRoslynVersion)" PrivateAssets="all" Pack="false" />
   </ItemGroup>
 
+  <!-- Give access to the code fixers project for the exported diagnostic ids and properties -->
+  <ItemGroup>
+    <InternalsVisibleTo Include="CommunityToolkit.Mvvm.Fixers, PublicKey=$(AssemblySignPublicKey)" />
+  </ItemGroup>
+
 </Project>

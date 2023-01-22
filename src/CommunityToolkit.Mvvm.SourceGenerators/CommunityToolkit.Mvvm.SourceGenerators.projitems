@@ -65,7 +65,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Input\Models\CommandInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Input\RelayCommandGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Input\RelayCommandGenerator.Execute.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)InternalsVisibleTo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Messaging\IMessengerRegisterAllGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Messaging\IMessengerRegisterAllGenerator.Execute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Messaging\Models\RecipientInfo.cs" />
