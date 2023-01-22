@@ -894,6 +894,33 @@ partial class ObservablePropertyGenerator
 
             // Construct the generated method as follows:
             //
+            // /// <summary>Executes the logic for when <see cref="<PROPERTY_NAME>"/> is changing.</summary>
+            // /// <param name="oldValue">The previous property value that is being replaced.</param>
+            // /// <param name="newValue">The new property value being set.</param>
+            // /// <remarks>This method is invoked right before the value of <see cref="<PROPERTY_NAME>"/> is changed.</remarks>
+            // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
+            // partial void On<PROPERTY_NAME>Changing(<OLD_VALUE_TYPE> oldValue, <PROPERTY_TYPE> newValue);
+            MemberDeclarationSyntax onPropertyChanging2Declaration =
+                MethodDeclaration(PredefinedType(Token(SyntaxKind.VoidKeyword)), Identifier($"On{propertyInfo.PropertyName}Changing"))
+                .AddModifiers(Token(SyntaxKind.PartialKeyword))
+                .AddParameterListParameters(
+                    Parameter(Identifier("oldValue")).WithType(parameterType),
+                    Parameter(Identifier("newValue")).WithType(parameterType))
+                .AddAttributeLists(
+                    AttributeList(SingletonSeparatedList(
+                        Attribute(IdentifierName("global::System.CodeDom.Compiler.GeneratedCode"))
+                        .AddArgumentListArguments(
+                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservablePropertyGenerator).FullName))),
+                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservablePropertyGenerator).Assembly.GetName().Version.ToString()))))))
+                    .WithOpenBracketToken(Token(TriviaList(
+                        Comment($"/// <summary>Executes the logic for when <see cref=\"{propertyInfo.PropertyName}\"/> is changing.</summary>"),
+                        Comment("/// <param name=\"oldValue\">The previous property value that is being replaced.</param>"),
+                        Comment("/// <param name=\"newValue\">The new property value being set.</param>"),
+                        Comment($"/// <remarks>This method is invoked right before the value of <see cref=\"{propertyInfo.PropertyName}\"/> is changed.</remarks>")), SyntaxKind.OpenBracketToken, TriviaList())))
+                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+
+            // Construct the generated method as follows:
+            //
             // /// <summary>Executes the logic for when <see cref="<PROPERTY_NAME>"/> ust changed.</summary>
             // /// <param name="value">The new property value that was set.</param>
             // /// <remarks>This method is invoked right after the value of <see cref="<PROPERTY_NAME>"/> is changed.</remarks>
@@ -915,7 +942,38 @@ partial class ObservablePropertyGenerator
                         Comment($"/// <remarks>This method is invoked right after the value of <see cref=\"{propertyInfo.PropertyName}\"/> is changed.</remarks>")), SyntaxKind.OpenBracketToken, TriviaList())))
                 .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
 
-            return ImmutableArray.Create(onPropertyChangingDeclaration, onPropertyChangedDeclaration);
+            // Construct the generated method as follows:
+            //
+            // /// <summary>Executes the logic for when <see cref="<PROPERTY_NAME>"/> ust changed.</summary>
+            // /// <param name="oldValue">The previous property value that was replaced.</param>
+            // /// <param name="newValue">The new property value that was set.</param>
+            // /// <remarks>This method is invoked right after the value of <see cref="<PROPERTY_NAME>"/> is changed.</remarks>
+            // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
+            // partial void On<PROPERTY_NAME>Changed(<OLD_VALUE_TYPE> oldValue, <PROPERTY_TYPE> newValue);
+            MemberDeclarationSyntax onPropertyChanged2Declaration =
+                MethodDeclaration(PredefinedType(Token(SyntaxKind.VoidKeyword)), Identifier($"On{propertyInfo.PropertyName}Changed"))
+                .AddModifiers(Token(SyntaxKind.PartialKeyword))
+                .AddParameterListParameters(
+                    Parameter(Identifier("oldValue")).WithType(parameterType),
+                    Parameter(Identifier("newValue")).WithType(parameterType))
+                .AddAttributeLists(
+                    AttributeList(SingletonSeparatedList(
+                        Attribute(IdentifierName("global::System.CodeDom.Compiler.GeneratedCode"))
+                        .AddArgumentListArguments(
+                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservablePropertyGenerator).FullName))),
+                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservablePropertyGenerator).Assembly.GetName().Version.ToString()))))))
+                    .WithOpenBracketToken(Token(TriviaList(
+                        Comment($"/// <summary>Executes the logic for when <see cref=\"{propertyInfo.PropertyName}\"/> just changed.</summary>"),
+                        Comment("/// <param name=\"oldValue\">The previous property value that was replaced.</param>"),
+                        Comment("/// <param name=\"newValue\">The new property value that was set.</param>"),
+                        Comment($"/// <remarks>This method is invoked right after the value of <see cref=\"{propertyInfo.PropertyName}\"/> is changed.</remarks>")), SyntaxKind.OpenBracketToken, TriviaList())))
+                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+
+            return ImmutableArray.Create(
+                onPropertyChangingDeclaration,
+                onPropertyChanging2Declaration,
+                onPropertyChangedDeclaration,
+                onPropertyChanged2Declaration);
         }
 
         /// <summary>
