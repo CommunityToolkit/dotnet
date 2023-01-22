@@ -36,7 +36,7 @@
         <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
       </ItemGroup>
 
-      <!-- On .NET Standard 2.0, the unit test project also needs access to internals-->
+      <!-- On .NET Standard 2.0, the unit test project also needs access to internals -->
       <ItemGroup>
         <InternalsVisibleTo Include="CommunityToolkit.HighPerformance.UnitTests, PublicKey=$(AssemblySignPublicKey)" />
       </ItemGroup>
