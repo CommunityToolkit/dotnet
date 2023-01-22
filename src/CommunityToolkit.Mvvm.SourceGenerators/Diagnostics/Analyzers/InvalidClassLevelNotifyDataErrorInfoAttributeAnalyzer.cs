@@ -12,13 +12,13 @@ using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescri
 namespace CommunityToolkit.Mvvm.SourceGenerators;
 
 /// <summary>
-/// A diagnostic analyzer that generates an error when a class level <c>[NotifyPropertyChangedRecipients]</c> use is detected.
+/// A diagnostic analyzer that generates an error when a class level <c>[NotifyDataErrorInfo]</c> use is detected.
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public sealed class InvalidClassLevelNotifyPropertyChangedRecipientsAttributeAnalyzer : DiagnosticAnalyzer
+public sealed class InvalidClassLevelNotifyDataErrorInfoAttributeAnalyzer : DiagnosticAnalyzer
 {
     /// <inheritdoc/>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(InvalidTypeForNotifyPropertyChangedRecipientsError);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(InvalidTypeForNotifyDataErrorInfoError);
 
     /// <inheritdoc/>
     public override void Initialize(AnalysisContext context)
@@ -34,18 +34,17 @@ public sealed class InvalidClassLevelNotifyPropertyChangedRecipientsAttributeAna
                 return;
             }
 
-            // Only inspect classes that are using [NotifyPropertyChangedRecipients]
-            if (!classSymbol.HasAttributeWithFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.NotifyPropertyChangedRecipientsAttribute"))
+            // Only inspect classes that are using [NotifyDataErrorInfo]
+            if (!classSymbol.HasAttributeWithFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.NotifyDataErrorInfoAttribute"))
             {
                 return;
             }
 
             // If the containing type is not valid, emit a diagnostic
-            if (!classSymbol.InheritsFromFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableRecipient") &&
-                !classSymbol.HasOrInheritsAttributeWithFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableRecipientAttribute"))
+            if (!classSymbol.InheritsFromFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableValidator"))
             {
                 context.ReportDiagnostic(Diagnostic.Create(
-                    InvalidTypeForNotifyPropertyChangedRecipientsError,
+                    InvalidTypeForNotifyDataErrorInfoError,
                     classSymbol.Locations.FirstOrDefault(),
                     classSymbol));
             }

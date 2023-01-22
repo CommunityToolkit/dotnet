@@ -113,22 +113,5 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
                 context.AddSource("__KnownINotifyPropertyChangedArgs.g.cs", compilationUnit.GetText(Encoding.UTF8));
             }
         });
-
-        // Get all class declarations with at least one attribute
-        IncrementalValuesProvider<INamedTypeSymbol> classSymbols =
-            context.SyntaxProvider
-            .CreateSyntaxProvider(
-                static (node, _) => node is ClassDeclarationSyntax { AttributeLists.Count: > 0 },
-                static (context, _) => (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!);
-
-        // Filter only the type symbols with [NotifyDataErrorInfo] and create diagnostics for them
-        IncrementalValuesProvider<Diagnostic> notifyDataErrorInfoErrors =
-            classSymbols
-            .Where(static item => item.HasAttributeWithFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.NotifyDataErrorInfoAttribute"))
-            .Select(static (item, _) => Execute.GetIsNotifyDataErrorInfoDiagnosticForType(item))
-            .Where(static item => item is not null)!;
-
-        // Output the diagnostics for [NotifyDataErrorInfo]
-        context.ReportDiagnostics(notifyDataErrorInfoErrors);
     }
 }
