@@ -543,6 +543,8 @@ internal static class DiagnosticDescriptors
             "reduce the binary size of the application (the attributes are only meant to support cases where the annotated types are already inheriting from a different type).",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0033");
 
+    public const string FieldReferenceForObservablePropertyFieldId = "MVVMTK0034";
+
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a field with <c>[ObservableProperty]</c> is being directly referenced.
     /// <para>
@@ -550,7 +552,7 @@ internal static class DiagnosticDescriptors
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor FieldReferenceForObservablePropertyFieldWarning = new DiagnosticDescriptor(
-        id: "MVVMTK0034",
+        id: FieldReferenceForObservablePropertyFieldId,
         title: "Direct field reference to [ObservableProperty] backing field",
         messageFormat: "The field {0} is annotated with [ObservableProperty] and should not be directly referenced (use the generated property instead)",
         category: typeof(ObservablePropertyGenerator).FullName,

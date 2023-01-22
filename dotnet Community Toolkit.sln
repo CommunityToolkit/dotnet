@@ -81,6 +81,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.Exter
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.ExternalAssembly.Roslyn431", "tests\CommunityToolkit.Mvvm.ExternalAssembly.Roslyn431\CommunityToolkit.Mvvm.ExternalAssembly.Roslyn431.csproj", "{4FCD501C-1BB5-465C-AD19-356DAB6600C6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunityToolkit.Mvvm.Fixers", "src\CommunityToolkit.Mvvm.Fixers\CommunityToolkit.Mvvm.Fixers.csproj", "{E79DCA2A-4C59-499F-85BD-F45215ED6B72}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -435,6 +437,26 @@ Global
 		{4FCD501C-1BB5-465C-AD19-356DAB6600C6}.Release|x64.Build.0 = Release|Any CPU
 		{4FCD501C-1BB5-465C-AD19-356DAB6600C6}.Release|x86.ActiveCfg = Release|Any CPU
 		{4FCD501C-1BB5-465C-AD19-356DAB6600C6}.Release|x86.Build.0 = Release|Any CPU
+		{E79DCA2A-4C59-499F-85BD-F45215ED6B72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E79DCA2A-4C59-499F-85BD-F45215ED6B72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E79DCA2A-4C59-499F-85BD-F45215ED6B72}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{E79DCA2A-4C59-499F-85BD-F45215ED6B72}.Debug|ARM.Build.0 = Debug|Any CPU
+		{E79DCA2A-4C59-499F-85BD-F45215ED6B72}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{E79DCA2A-4C59-499F-85BD-F45215ED6B72}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{E79DCA2A-4C59-499F-85BD-F45215ED6B72}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E79DCA2A-4C59-499F-85BD-F45215ED6B72}.Debug|x64.Build.0 = Debug|Any CPU
+		{E79DCA2A-4C59-499F-85BD-F45215ED6B72}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E79DCA2A-4C59-499F-85BD-F45215ED6B72}.Debug|x86.Build.0 = Debug|Any CPU
+		{E79DCA2A-4C59-499F-85BD-F45215ED6B72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E79DCA2A-4C59-499F-85BD-F45215ED6B72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E79DCA2A-4C59-499F-85BD-F45215ED6B72}.Release|ARM.ActiveCfg = Release|Any CPU
+		{E79DCA2A-4C59-499F-85BD-F45215ED6B72}.Release|ARM.Build.0 = Release|Any CPU
+		{E79DCA2A-4C59-499F-85BD-F45215ED6B72}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{E79DCA2A-4C59-499F-85BD-F45215ED6B72}.Release|ARM64.Build.0 = Release|Any CPU
+		{E79DCA2A-4C59-499F-85BD-F45215ED6B72}.Release|x64.ActiveCfg = Release|Any CPU
+		{E79DCA2A-4C59-499F-85BD-F45215ED6B72}.Release|x64.Build.0 = Release|Any CPU
+		{E79DCA2A-4C59-499F-85BD-F45215ED6B72}.Release|x86.ActiveCfg = Release|Any CPU
+		{E79DCA2A-4C59-499F-85BD-F45215ED6B72}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
