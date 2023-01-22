@@ -121,16 +121,6 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
                 static (node, _) => node is ClassDeclarationSyntax { AttributeLists.Count: > 0 },
                 static (context, _) => (INamedTypeSymbol)context.SemanticModel.GetDeclaredSymbol(context.Node)!);
 
-        // Filter only the type symbols with [NotifyPropertyChangedRecipients] and create diagnostics for them
-        IncrementalValuesProvider<Diagnostic> notifyRecipientsErrors =
-            classSymbols
-            .Where(static item => item.HasAttributeWithFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.NotifyPropertyChangedRecipientsAttribute"))
-            .Select(static (item, _) => Execute.GetIsNotifyingRecipientsDiagnosticForType(item))
-            .Where(static item => item is not null)!;
-
-        // Output the diagnostics for [NotifyPropertyChangedRecipients]
-        context.ReportDiagnostics(notifyRecipientsErrors);
-
         // Filter only the type symbols with [NotifyDataErrorInfo] and create diagnostics for them
         IncrementalValuesProvider<Diagnostic> notifyDataErrorInfoErrors =
             classSymbols
