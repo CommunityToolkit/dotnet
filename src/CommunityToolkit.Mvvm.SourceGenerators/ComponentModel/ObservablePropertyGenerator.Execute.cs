@@ -638,25 +638,6 @@ partial class ObservablePropertyGenerator
         }
 
         /// <summary>
-        /// Checks whether a given type using <c>[NotifyDataErrorInfo]</c> is valid and creates a <see cref="Diagnostic"/> if not.
-        /// </summary>
-        /// <param name="typeSymbol">The input <see cref="INamedTypeSymbol"/> instance to process.</param>
-        /// <returns>The <see cref="Diagnostic"/> for <paramref name="typeSymbol"/>, if not a valid type.</returns>
-        public static Diagnostic? GetIsNotifyDataErrorInfoDiagnosticForType(INamedTypeSymbol typeSymbol)
-        {
-            // If the containing type is valid, track it
-            if (!typeSymbol.InheritsFromFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableValidator"))
-            {
-                return Diagnostic.Create(
-                    InvalidTypeForNotifyDataErrorInfoError,
-                    typeSymbol.Locations.FirstOrDefault(),
-                    typeSymbol);
-            }
-
-            return null;
-        }
-
-        /// <summary>
         /// Gets a <see cref="CompilationUnitSyntax"/> instance with the cached args for property changing notifications.
         /// </summary>
         /// <param name="names">The sequence of property names to cache args for.</param>
