@@ -439,6 +439,60 @@ public partial class Test_ObservablePropertyAttribute
     }
 
     [TestMethod]
+    public void Test_OnPropertyChangingAndChangedPartialMethods_WithPreviousValues()
+    {
+        ViewModelWithImplementedUpdateMethods2 model = new();
+
+        Assert.AreEqual(null, model.Name);
+        Assert.AreEqual(0, model.Number);
+
+        CollectionAssert.AreEqual(Array.Empty<(string, string)>(), model.OnNameChangingValues);
+        CollectionAssert.AreEqual(Array.Empty<(string, string)>(), model.OnNameChangedValues);
+        CollectionAssert.AreEqual(Array.Empty<(int, int)>(), model.OnNumberChangingValues);
+        CollectionAssert.AreEqual(Array.Empty<(int, int)>(), model.OnNumberChangedValues);
+
+        model.Name = "Bob";
+
+        CollectionAssert.AreEqual(new[] { ((string?)null, "Bob") }, model.OnNameChangingValues);
+        CollectionAssert.AreEqual(new[] { ((string?)null, "Bob") }, model.OnNameChangedValues);
+
+        Assert.AreEqual("Bob", model.Name);
+
+        CollectionAssert.AreEqual(new[] { ((string?)null, "Bob") }, model.OnNameChangingValues);
+        CollectionAssert.AreEqual(new[] { ((string?)null, "Bob") }, model.OnNameChangedValues);
+
+        model.Name = "Alice";
+
+        CollectionAssert.AreEqual(new[] { (null, "Bob"), ("Bob", "Alice") }, model.OnNameChangingValues);
+        CollectionAssert.AreEqual(new[] { (null, "Bob"), ("Bob", "Alice") }, model.OnNameChangedValues);
+
+        Assert.AreEqual("Alice", model.Name);
+
+        CollectionAssert.AreEqual(new[] { (null, "Bob"), ("Bob", "Alice") }, model.OnNameChangingValues);
+        CollectionAssert.AreEqual(new[] { (null, "Bob"), ("Bob", "Alice") }, model.OnNameChangedValues);
+
+        model.Number = 42;
+
+        CollectionAssert.AreEqual(new[] { (0, 42) }, model.OnNumberChangingValues);
+        CollectionAssert.AreEqual(new[] { (0, 42) }, model.OnNumberChangedValues);
+
+        Assert.AreEqual(42, model.Number);
+
+        CollectionAssert.AreEqual(new[] { (0, 42) }, model.OnNumberChangingValues);
+        CollectionAssert.AreEqual(new[] { (0, 42) }, model.OnNumberChangedValues);
+
+        model.Number = 77;
+
+        CollectionAssert.AreEqual(new[] { (0, 42), (42, 77) }, model.OnNumberChangingValues);
+        CollectionAssert.AreEqual(new[] { (0, 42), (42, 77) }, model.OnNumberChangedValues);
+
+        Assert.AreEqual(77, model.Number);
+
+        CollectionAssert.AreEqual(new[] { (0, 42), (42, 77) }, model.OnNumberChangingValues);
+        CollectionAssert.AreEqual(new[] { (0, 42), (42, 77) }, model.OnNumberChangedValues);
+    }
+
+    [TestMethod]
     public void Test_OnPropertyChangingAndChangedPartialMethodWithAdditionalValidation()
     {
         ViewModelWithImplementedUpdateMethodAndAdditionalValidation model = new();
@@ -1250,6 +1304,43 @@ public partial class Test_ObservablePropertyAttribute
         partial void OnNumberChanged(int value)
         {
             NumberChangedValue = value;
+        }
+    }
+
+    public partial class ViewModelWithImplementedUpdateMethods2 : ObservableObject
+    {
+        [ObservableProperty]
+        public string? name;
+
+        [ObservableProperty]
+        public int number;
+
+        public List<(string? Old, string? New)> OnNameChangingValues { get; } = new();
+
+        public List<(string? Old, string? New)> OnNameChangedValues { get; } = new();
+
+        public List<(int Old, int New)> OnNumberChangingValues { get; } = new();
+
+        public List<(int Old, int New)> OnNumberChangedValues { get; } = new();
+
+        partial void OnNameChanging(string? oldValue, string? newValue)
+        {
+            OnNameChangingValues.Add((oldValue, newValue));
+        }
+
+        partial void OnNameChanged(string? oldValue, string? newValue)
+        {
+            OnNameChangedValues.Add((oldValue, newValue));
+        }
+
+        partial void OnNumberChanging(int oldValue, int newValue)
+        {
+            OnNumberChangingValues.Add((oldValue, newValue));
+        }
+
+        partial void OnNumberChanged(int oldValue, int newValue)
+        {
+            OnNumberChangedValues.Add((oldValue, newValue));
         }
     }
 
