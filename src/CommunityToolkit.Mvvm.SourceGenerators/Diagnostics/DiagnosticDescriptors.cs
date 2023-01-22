@@ -15,6 +15,11 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
 internal static class DiagnosticDescriptors
 {
     /// <summary>
+    /// The diagnostic id for <see cref="FieldReferenceForObservablePropertyFieldWarning"/>.
+    /// </summary>
+    public const string FieldReferenceForObservablePropertyFieldId = "MVVMTK0034";
+
+    /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a duplicate declaration of <see cref="INotifyPropertyChanged"/> would happen.
     /// <para>
     /// Format: <c>"Cannot apply [INotifyPropertyChangedAttribute] to type {0}, as it already declares the INotifyPropertyChanged interface"</c>.
@@ -542,8 +547,6 @@ internal static class DiagnosticDescriptors
             "Classes with no base types should prefer inheriting from ObservableObject instead of using attributes to generate INotifyPropertyChanged code, as that will " +
             "reduce the binary size of the application (the attributes are only meant to support cases where the annotated types are already inheriting from a different type).",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0033");
-
-    public const string FieldReferenceForObservablePropertyFieldId = "MVVMTK0034";
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a field with <c>[ObservableProperty]</c> is being directly referenced.

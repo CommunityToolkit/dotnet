@@ -16,6 +16,7 @@ using VerifyCS = Microsoft.CodeAnalysis.CSharp.Testing.CSharpCodeFixVerifier<
     Microsoft.CodeAnalysis.Testing.Verifiers.MSTestVerifier>;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators.Roslyn401.UnitTests;
+
 [TestClass]
 public class Test_FieldReferenceForObservablePropertyFieldFixer
 {
@@ -66,6 +67,7 @@ public class Test_FieldReferenceForObservablePropertyFieldFixer
         {
             // /0/Test0.cs(10,13): warning MVVMTK0034: The field C.i is annotated with [ObservableProperty] and should not be directly referenced (use the generated property instead)
             VerifyCS.Diagnostic().WithSpan(10, 13, 10, 14).WithArguments("C.i"),
+
             // /0/Test0.cs(11,9): warning MVVMTK0034: The field C.i is annotated with [ObservableProperty] and should not be directly referenced (use the generated property instead)
             VerifyCS.Diagnostic().WithSpan(11, 9, 11, 10).WithArguments("C.i")
         });
@@ -74,6 +76,7 @@ public class Test_FieldReferenceForObservablePropertyFieldFixer
         {
             // /0/Test0.cs(10,13): error CS0103: The name 'I' does not exist in the current context
             DiagnosticResult.CompilerError("CS0103").WithSpan(10, 13, 10, 14).WithArguments("I"),
+
             // /0/Test0.cs(11,9): error CS0103: The name 'I' does not exist in the current context
             DiagnosticResult.CompilerError("CS0103").WithSpan(11, 9, 11, 10).WithArguments("I"),
         });
@@ -128,6 +131,7 @@ public class Test_FieldReferenceForObservablePropertyFieldFixer
         {
             // /0/Test0.cs(10,13): warning MVVMTK0034: The field C.i is annotated with [ObservableProperty] and should not be directly referenced (use the generated property instead)
             VerifyCS.Diagnostic().WithSpan(10, 13, 10, 19).WithArguments("C.i"),
+
             // /0/Test0.cs(11,9): warning MVVMTK0034: The field C.i is annotated with [ObservableProperty] and should not be directly referenced (use the generated property instead)
             VerifyCS.Diagnostic().WithSpan(11, 9, 11, 15).WithArguments("C.i"),
         });
@@ -136,6 +140,7 @@ public class Test_FieldReferenceForObservablePropertyFieldFixer
         {
             // /0/Test0.cs(10,18): error CS1061: 'C' does not contain a definition for 'I' and no accessible extension method 'I' accepting a first argument of type 'C' could be found (are you missing a using directive or an assembly reference?)
             DiagnosticResult.CompilerError("CS1061").WithSpan(10, 18, 10, 19).WithArguments("C", "I"),
+
             // /0/Test0.cs(11,14): error CS1061: 'C' does not contain a definition for 'I' and no accessible extension method 'I' accepting a first argument of type 'C' could be found (are you missing a using directive or an assembly reference?)
             DiagnosticResult.CompilerError("CS1061").WithSpan(11, 14, 11, 15).WithArguments("C", "I"),
         });
@@ -198,6 +203,7 @@ public class Test_FieldReferenceForObservablePropertyFieldFixer
         {
             // /0/Test0.cs(14,9): warning MVVMTK0034: The field C.i is annotated with [ObservableProperty] and should not be directly referenced (use the generated property instead)
             VerifyCS.Diagnostic().WithSpan(14, 9, 14, 12).WithArguments("C.i"),
+
             // /0/Test0.cs(15,13): warning MVVMTK0034: The field C.i is annotated with [ObservableProperty] and should not be directly referenced (use the generated property instead)
             VerifyCS.Diagnostic().WithSpan(15, 13, 15, 16).WithArguments("C.i"),
         });
@@ -206,6 +212,7 @@ public class Test_FieldReferenceForObservablePropertyFieldFixer
         {
             // /0/Test0.cs(14,11): error CS1061: 'C' does not contain a definition for 'I' and no accessible extension method 'I' accepting a first argument of type 'C' could be found (are you missing a using directive or an assembly reference?)
             DiagnosticResult.CompilerError("CS1061").WithSpan(14, 11, 14, 12).WithArguments("C", "I"),
+
             // /0/Test0.cs(15,15): error CS1061: 'C' does not contain a definition for 'I' and no accessible extension method 'I' accepting a first argument of type 'C' could be found (are you missing a using directive or an assembly reference?)
             DiagnosticResult.CompilerError("CS1061").WithSpan(15, 15, 15, 16).WithArguments("C", "I"),
         });
