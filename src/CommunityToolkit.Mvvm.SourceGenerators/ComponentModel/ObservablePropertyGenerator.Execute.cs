@@ -872,6 +872,8 @@ partial class ObservablePropertyGenerator
             // Construct the generated method as follows:
             //
             // /// <summary>Executes the logic for when <see cref="<PROPERTY_NAME>"/> is changing.</summary>
+            // /// <param name="value">The new property value being set.</param>
+            // /// <remarks>This method is invoked right before the value of <see cref="<PROPERTY_NAME>"/> is changed.</remarks>
             // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
             // partial void On<PROPERTY_NAME>Changing(<PROPERTY_TYPE> value);
             MemberDeclarationSyntax onPropertyChangingDeclaration =
@@ -884,12 +886,17 @@ partial class ObservablePropertyGenerator
                         .AddArgumentListArguments(
                             AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservablePropertyGenerator).FullName))),
                             AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservablePropertyGenerator).Assembly.GetName().Version.ToString()))))))
-                    .WithOpenBracketToken(Token(TriviaList(Comment($"/// <summary>Executes the logic for when <see cref=\"{propertyInfo.PropertyName}\"/> is changing.</summary>")), SyntaxKind.OpenBracketToken, TriviaList())))
+                    .WithOpenBracketToken(Token(TriviaList(
+                        Comment($"/// <summary>Executes the logic for when <see cref=\"{propertyInfo.PropertyName}\"/> is changing.</summary>"),
+                        Comment("/// <param name=\"value\">The new property value being set.</param>"),
+                        Comment($"/// <remarks>This method is invoked right before the value of <see cref=\"{propertyInfo.PropertyName}\"/> is changed.</remarks>")), SyntaxKind.OpenBracketToken, TriviaList())))
                 .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
 
             // Construct the generated method as follows:
             //
             // /// <summary>Executes the logic for when <see cref="<PROPERTY_NAME>"/> ust changed.</summary>
+            // /// <param name="value">The new property value that was set.</param>
+            // /// <remarks>This method is invoked right after the value of <see cref="<PROPERTY_NAME>"/> is changed.</remarks>
             // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
             // partial void On<PROPERTY_NAME>Changed(<PROPERTY_TYPE> value);
             MemberDeclarationSyntax onPropertyChangedDeclaration =
@@ -902,7 +909,10 @@ partial class ObservablePropertyGenerator
                         .AddArgumentListArguments(
                             AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservablePropertyGenerator).FullName))),
                             AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservablePropertyGenerator).Assembly.GetName().Version.ToString()))))))
-                    .WithOpenBracketToken(Token(TriviaList(Comment($"/// <summary>Executes the logic for when <see cref=\"{propertyInfo.PropertyName}\"/> just changed.</summary>")), SyntaxKind.OpenBracketToken, TriviaList())))
+                    .WithOpenBracketToken(Token(TriviaList(
+                        Comment($"/// <summary>Executes the logic for when <see cref=\"{propertyInfo.PropertyName}\"/> just changed.</summary>"),
+                        Comment("/// <param name=\"value\">The new property value that was set.</param>"),
+                        Comment($"/// <remarks>This method is invoked right after the value of <see cref=\"{propertyInfo.PropertyName}\"/> is changed.</remarks>")), SyntaxKind.OpenBracketToken, TriviaList())))
                 .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
 
             return ImmutableArray.Create(onPropertyChangingDeclaration, onPropertyChangedDeclaration);
