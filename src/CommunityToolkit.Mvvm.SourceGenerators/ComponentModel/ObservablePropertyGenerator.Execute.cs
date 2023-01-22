@@ -112,6 +112,7 @@ partial class ObservablePropertyGenerator
             bool hasOrInheritsClassLevelNotifyDataErrorInfo = false;
             bool hasAnyValidationAttributes = false;
             bool isOldPropertyValueDirectlyReferenced = IsOldPropertyValueDirectlyReferenced(fieldSymbol, propertyName);
+            bool isReferenceType = fieldSymbol.Type.IsReferenceType;
 
             // Track the property changing event for the property, if the type supports it
             if (shouldInvokeOnPropertyChanging)
@@ -265,6 +266,7 @@ partial class ObservablePropertyGenerator
                 notifyRecipients,
                 notifyDataErrorInfo,
                 isOldPropertyValueDirectlyReferenced,
+                isReferenceType,
                 forwardedAttributes.ToImmutable());
 
             diagnostics = builder.ToImmutable();
@@ -950,6 +952,18 @@ partial class ObservablePropertyGenerator
                         Comment($"/// <remarks>This method is invoked right before the value of <see cref=\"{propertyInfo.PropertyName}\"/> is changed.</remarks>")), SyntaxKind.OpenBracketToken, TriviaList())))
                 .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
 
+            // Prepare the nullable type for the previous property value. This is needed because if the type is a reference
+            // type, the previous value might be null even if the property type is not nullable, as the first invocation would
+            // happen when the property is first set to some value that is not null (but the backing field would still be so).
+            // As a cheap way to check whether we need to add nullable, we can simply check whether the type name with nullability
+            // annotations ends with a '?'. If it doesn't and the type is a reference type, we add it. Otherwise, we keep it.
+            TypeSyntax oldValueTypeSyntax = propertyInfo.IsReferenceType switch
+            {
+                true when !propertyInfo.TypeNameWithNullabilityAnnotations.EndsWith("?")
+                    => IdentifierName($"{propertyInfo.TypeNameWithNullabilityAnnotations}?"),
+                _ => parameterType
+            };
+
             // Construct the generated method as follows:
             //
             // /// <summary>Executes the logic for when <see cref="<PROPERTY_NAME>"/> is changing.</summary>
@@ -962,7 +976,7 @@ partial class ObservablePropertyGenerator
                 MethodDeclaration(PredefinedType(Token(SyntaxKind.VoidKeyword)), Identifier($"On{propertyInfo.PropertyName}Changing"))
                 .AddModifiers(Token(SyntaxKind.PartialKeyword))
                 .AddParameterListParameters(
-                    Parameter(Identifier("oldValue")).WithType(parameterType),
+                    Parameter(Identifier("oldValue")).WithType(oldValueTypeSyntax),
                     Parameter(Identifier("newValue")).WithType(parameterType))
                 .AddAttributeLists(
                     AttributeList(SingletonSeparatedList(
@@ -1012,7 +1026,7 @@ partial class ObservablePropertyGenerator
                 MethodDeclaration(PredefinedType(Token(SyntaxKind.VoidKeyword)), Identifier($"On{propertyInfo.PropertyName}Changed"))
                 .AddModifiers(Token(SyntaxKind.PartialKeyword))
                 .AddParameterListParameters(
-                    Parameter(Identifier("oldValue")).WithType(parameterType),
+                    Parameter(Identifier("oldValue")).WithType(oldValueTypeSyntax),
                     Parameter(Identifier("newValue")).WithType(parameterType))
                 .AddAttributeLists(
                     AttributeList(SingletonSeparatedList(
