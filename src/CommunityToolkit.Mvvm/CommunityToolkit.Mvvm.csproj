@@ -34,10 +34,11 @@
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
   </ItemGroup>
 
-  <!-- Reference the various multi-targeted versions of the source generator project (one per Roslyn version) -->
+  <!-- Reference the various multi-targeted versions of the source generator project (one per Roslyn version), and the code fixer -->
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401.csproj" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn431\CommunityToolkit.Mvvm.SourceGenerators.Roslyn431.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\CommunityToolkit.Mvvm.Fixers\CommunityToolkit.Mvvm.Fixers.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <!-- Add the [InternalsVisibleTo] attribute for the test project -->
@@ -73,9 +74,17 @@
     <!--
       Pack the source generator to the right package folders (each matching the target Roslyn version).
       Roslyn will automatically load the highest version compatible with Roslyn's version in the SDK.
+      Also pack the code fixer along with each target analyzer, the multi-targeting take care of it.
+      Note: the code fixer is not currently multi-targeting, as there are no Roslyn APIs it needs from
+      versions later than 4.0.1. As such, we can just use a single project (without the shared project
+      and two multi-targeted ones), and pack the resulting assembly twice along with the generators.
+      Even though the fixer only references the 4.0.1 generator target, both versions export the same
+      APIs that the code fixer project needs, and Roslyn versions are also forward compatible.
     -->
     <None Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.SourceGenerators.dll" PackagePath="analyzers\dotnet\roslyn4.0\cs" Pack="true" Visible="false" />
     <None Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn431\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.SourceGenerators.dll" PackagePath="analyzers\dotnet\roslyn4.3\cs" Pack="true" Visible="false" />
+    <None Include="..\CommunityToolkit.Mvvm.Fixers\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.Fixers.dll" PackagePath="analyzers\dotnet\roslyn4.0\cs" Pack="true" Visible="false" />
+    <None Include="..\CommunityToolkit.Mvvm.Fixers\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.Fixers.dll" PackagePath="analyzers\dotnet\roslyn4.3\cs" Pack="true" Visible="false" />
   </ItemGroup>
 
 </Project>
