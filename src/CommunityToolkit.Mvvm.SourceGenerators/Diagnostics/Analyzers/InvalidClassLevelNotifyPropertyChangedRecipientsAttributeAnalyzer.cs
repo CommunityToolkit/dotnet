@@ -26,32 +26,35 @@ public sealed class InvalidClassLevelNotifyPropertyChangedRecipientsAttributeAna
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
         context.EnableConcurrentExecution();
 
-        context.RegisterSymbolAction(static context =>
+        context.RegisterCompilationStartAction(static context =>
         {
-            // We're looking for all class declarations
-            if (context.Symbol is not INamedTypeSymbol { TypeKind: TypeKind.Class, IsImplicitlyDeclared: false } classSymbol)
-            {
-                return;
-            }
-
-            // Only inspect classes that are using [NotifyPropertyChangedRecipients]
+            // Get the symbols for [NotifyPropertyChangedRecipients], ObservableRecipient and [ObservableRecipient]
             if (context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.NotifyPropertyChangedRecipientsAttribute") is not INamedTypeSymbol notifyPropertyChangedRecipientsAttributeSymbol ||
-                !classSymbol.HasAttributeWithType(notifyPropertyChangedRecipientsAttributeSymbol))
+                context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableRecipient") is not INamedTypeSymbol observableRecipientSymbol ||
+                context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableRecipientAttribute") is not INamedTypeSymbol observableRecipientAttributeSymbol)
             {
                 return;
             }
 
-            // If the containing type is not valid, emit a diagnostic
-            if (context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableRecipient") is INamedTypeSymbol observableRecipientSymbol &&
-                context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableRecipientAttribute") is INamedTypeSymbol observableRecipientAttributeSymbol &&
-                !classSymbol.InheritsFromType(observableRecipientSymbol) &&
-                !classSymbol.HasOrInheritsAttributeWithType(observableRecipientAttributeSymbol))
+            context.RegisterSymbolAction(context =>
             {
-                context.ReportDiagnostic(Diagnostic.Create(
-                    InvalidTypeForNotifyPropertyChangedRecipientsError,
-                    classSymbol.Locations.FirstOrDefault(),
-                    classSymbol));
-            }
-        }, SymbolKind.NamedType);
+                // We're looking for all class declarations
+                if (context.Symbol is not INamedTypeSymbol { TypeKind: TypeKind.Class, IsImplicitlyDeclared: false } classSymbol)
+                {
+                    return;
+                }
+
+                // Emit a diagnstic for types that use [NotifyPropertyChangedRecipients] but are neither inheriting from ObservableRecipient nor using [ObservableRecipient]
+                if (classSymbol.HasAttributeWithType(notifyPropertyChangedRecipientsAttributeSymbol) &&
+                    !classSymbol.InheritsFromType(observableRecipientSymbol) &&
+                    !classSymbol.HasOrInheritsAttributeWithType(observableRecipientAttributeSymbol))
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(
+                        InvalidTypeForNotifyPropertyChangedRecipientsError,
+                        classSymbol.Locations.FirstOrDefault(),
+                        classSymbol));
+                }
+            }, SymbolKind.NamedType);
+        });
     }
 }
