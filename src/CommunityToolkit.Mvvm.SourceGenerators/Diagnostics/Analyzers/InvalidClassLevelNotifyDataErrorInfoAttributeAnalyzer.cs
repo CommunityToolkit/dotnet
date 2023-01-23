@@ -26,30 +26,33 @@ public sealed class InvalidClassLevelNotifyDataErrorInfoAttributeAnalyzer : Diag
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
         context.EnableConcurrentExecution();
 
-        context.RegisterSymbolAction(static context =>
+        context.RegisterCompilationStartAction(static context =>
         {
-            // We're looking for all class declarations
-            if (context.Symbol is not INamedTypeSymbol { TypeKind: TypeKind.Class, IsImplicitlyDeclared: false } classSymbol)
-            {
-                return;
-            }
-
-            // Only inspect classes that are using [NotifyDataErrorInfo]
+            // Get the symbols for [NotifyDataErrorInfo] and ObservableValidator
             if (context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.NotifyDataErrorInfoAttribute") is not INamedTypeSymbol notifyDataErrorInfoAttributeSymbol ||
-                !classSymbol.HasAttributeWithType(notifyDataErrorInfoAttributeSymbol))
+                context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableValidator") is not INamedTypeSymbol observableValidatorSymbol)
             {
                 return;
             }
 
-            // If the containing type is not valid, emit a diagnostic
-            if (context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableValidator") is not INamedTypeSymbol observableValidatorSymbol ||
-                !classSymbol.InheritsFromType(observableValidatorSymbol))
+            context.RegisterSymbolAction(context =>
             {
-                context.ReportDiagnostic(Diagnostic.Create(
-                    InvalidTypeForNotifyDataErrorInfoError,
-                    classSymbol.Locations.FirstOrDefault(),
-                    classSymbol));
-            }
-        }, SymbolKind.NamedType);
+                // We're looking for all class declarations
+                if (context.Symbol is not INamedTypeSymbol { TypeKind: TypeKind.Class, IsImplicitlyDeclared: false } classSymbol)
+                {
+                    return;
+                }
+
+                // Emit a diagnostic for types that use [NotifyDataErrorInfo] but don't inherit from ObservableValidator
+                if (classSymbol.HasAttributeWithType(notifyDataErrorInfoAttributeSymbol) &&
+                    !classSymbol.InheritsFromType(observableValidatorSymbol))
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(
+                        InvalidTypeForNotifyDataErrorInfoError,
+                        classSymbol.Locations.FirstOrDefault(),
+                        classSymbol));
+                }
+            }, SymbolKind.NamedType);
+        });
     }
 }
