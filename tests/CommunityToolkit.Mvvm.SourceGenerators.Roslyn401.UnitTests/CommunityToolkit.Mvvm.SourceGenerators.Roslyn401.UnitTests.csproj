@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\CommunityToolkit.Mvvm\CommunityToolkit.Mvvm.csproj" />
-    <ProjectReference Include="..\..\src\CommunityToolkit.Mvvm.Fixers\CommunityToolkit.Mvvm.Fixers.csproj" />
+    <ProjectReference Include="..\..\src\CommunityToolkit.Mvvm.CodeFixers\CommunityToolkit.Mvvm.CodeFixers.csproj" />
     <ProjectReference Include="..\..\src\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401.csproj" />
   </ItemGroup>
 

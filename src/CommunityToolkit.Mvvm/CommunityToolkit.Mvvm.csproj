@@ -38,7 +38,7 @@
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401.csproj" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn431\CommunityToolkit.Mvvm.SourceGenerators.Roslyn431.csproj" ReferenceOutputAssembly="false" />
-    <ProjectReference Include="..\CommunityToolkit.Mvvm.Fixers\CommunityToolkit.Mvvm.Fixers.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\CommunityToolkit.Mvvm.CodeFixers\CommunityToolkit.Mvvm.CodeFixers.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <!-- Add the [InternalsVisibleTo] attribute for the test project -->
@@ -83,8 +83,8 @@
     -->
     <None Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.SourceGenerators.dll" PackagePath="analyzers\dotnet\roslyn4.0\cs" Pack="true" Visible="false" />
     <None Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn431\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.SourceGenerators.dll" PackagePath="analyzers\dotnet\roslyn4.3\cs" Pack="true" Visible="false" />
-    <None Include="..\CommunityToolkit.Mvvm.Fixers\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.Fixers.dll" PackagePath="analyzers\dotnet\roslyn4.0\cs" Pack="true" Visible="false" />
-    <None Include="..\CommunityToolkit.Mvvm.Fixers\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.Fixers.dll" PackagePath="analyzers\dotnet\roslyn4.3\cs" Pack="true" Visible="false" />
+    <None Include="..\CommunityToolkit.Mvvm.CodeFixers\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.CodeFixers.dll" PackagePath="analyzers\dotnet\roslyn4.0\cs" Pack="true" Visible="false" />
+    <None Include="..\CommunityToolkit.Mvvm.CodeFixers\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.CodeFixers.dll" PackagePath="analyzers\dotnet\roslyn4.3\cs" Pack="true" Visible="false" />
   </ItemGroup>
 
 </Project>

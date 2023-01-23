@@ -6,19 +6,19 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.CodeAnalysis.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Test = Microsoft.CodeAnalysis.CSharp.Testing.CSharpCodeFixTest<
+using CSharpCodeFixTest = Microsoft.CodeAnalysis.CSharp.Testing.CSharpCodeFixTest<
     CommunityToolkit.Mvvm.SourceGenerators.FieldReferenceForObservablePropertyFieldAnalyzer,
-    CommunityToolkit.Mvvm.Fixers.FieldReferenceForObservablePropertyFieldFixer,
+    CommunityToolkit.Mvvm.CodeFixers.FieldReferenceForObservablePropertyFieldCodeFixer,
     Microsoft.CodeAnalysis.Testing.Verifiers.MSTestVerifier>;
-using VerifyCS = Microsoft.CodeAnalysis.CSharp.Testing.CSharpCodeFixVerifier<
+using CSharpCodeFixVerifier = Microsoft.CodeAnalysis.CSharp.Testing.CSharpCodeFixVerifier<
     CommunityToolkit.Mvvm.SourceGenerators.FieldReferenceForObservablePropertyFieldAnalyzer,
-    CommunityToolkit.Mvvm.Fixers.FieldReferenceForObservablePropertyFieldFixer,
+    CommunityToolkit.Mvvm.CodeFixers.FieldReferenceForObservablePropertyFieldCodeFixer,
     Microsoft.CodeAnalysis.Testing.Verifiers.MSTestVerifier>;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators.Roslyn401.UnitTests;
 
 [TestClass]
-public class Test_FieldReferenceForObservablePropertyFieldFixer
+public class Test_FieldReferenceForObservablePropertyFieldCodeFixer
 {
     [TestMethod]
     public async Task SimpleMemberAccess()
@@ -55,7 +55,7 @@ public class Test_FieldReferenceForObservablePropertyFieldFixer
             }
             """;
 
-        Test test = new()
+        CSharpCodeFixTest test = new()
         {
             TestCode = original,
             FixedCode = @fixed,
@@ -66,10 +66,10 @@ public class Test_FieldReferenceForObservablePropertyFieldFixer
         test.ExpectedDiagnostics.AddRange(new[]
         {
             // /0/Test0.cs(10,13): warning MVVMTK0034: The field C.i is annotated with [ObservableProperty] and should not be directly referenced (use the generated property instead)
-            VerifyCS.Diagnostic().WithSpan(10, 13, 10, 14).WithArguments("C.i"),
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(10, 13, 10, 14).WithArguments("C.i"),
 
             // /0/Test0.cs(11,9): warning MVVMTK0034: The field C.i is annotated with [ObservableProperty] and should not be directly referenced (use the generated property instead)
-            VerifyCS.Diagnostic().WithSpan(11, 9, 11, 10).WithArguments("C.i")
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(11, 9, 11, 10).WithArguments("C.i")
         });
 
         test.FixedState.ExpectedDiagnostics.AddRange(new[]
@@ -119,7 +119,7 @@ public class Test_FieldReferenceForObservablePropertyFieldFixer
             }
             """;
 
-        Test test = new()
+        CSharpCodeFixTest test = new()
         {
             TestCode = original,
             FixedCode = @fixed,
@@ -130,10 +130,10 @@ public class Test_FieldReferenceForObservablePropertyFieldFixer
         test.ExpectedDiagnostics.AddRange(new[]
         {
             // /0/Test0.cs(10,13): warning MVVMTK0034: The field C.i is annotated with [ObservableProperty] and should not be directly referenced (use the generated property instead)
-            VerifyCS.Diagnostic().WithSpan(10, 13, 10, 19).WithArguments("C.i"),
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(10, 13, 10, 19).WithArguments("C.i"),
 
             // /0/Test0.cs(11,9): warning MVVMTK0034: The field C.i is annotated with [ObservableProperty] and should not be directly referenced (use the generated property instead)
-            VerifyCS.Diagnostic().WithSpan(11, 9, 11, 15).WithArguments("C.i"),
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(11, 9, 11, 15).WithArguments("C.i"),
         });
 
         test.FixedState.ExpectedDiagnostics.AddRange(new[]
@@ -191,7 +191,7 @@ public class Test_FieldReferenceForObservablePropertyFieldFixer
             }
             """;
 
-        Test test = new()
+        CSharpCodeFixTest test = new()
         {
             TestCode = original,
             FixedCode = @fixed,
@@ -202,10 +202,10 @@ public class Test_FieldReferenceForObservablePropertyFieldFixer
         test.ExpectedDiagnostics.AddRange(new[]
         {
             // /0/Test0.cs(14,9): warning MVVMTK0034: The field C.i is annotated with [ObservableProperty] and should not be directly referenced (use the generated property instead)
-            VerifyCS.Diagnostic().WithSpan(14, 9, 14, 12).WithArguments("C.i"),
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(14, 9, 14, 12).WithArguments("C.i"),
 
             // /0/Test0.cs(15,13): warning MVVMTK0034: The field C.i is annotated with [ObservableProperty] and should not be directly referenced (use the generated property instead)
-            VerifyCS.Diagnostic().WithSpan(15, 13, 15, 16).WithArguments("C.i"),
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(15, 13, 15, 16).WithArguments("C.i"),
         });
 
         test.FixedState.ExpectedDiagnostics.AddRange(new[]
@@ -261,7 +261,7 @@ public class Test_FieldReferenceForObservablePropertyFieldFixer
             }
             """;
 
-        Test test = new()
+        CSharpCodeFixTest test = new()
         {
             TestCode = original,
             FixedCode = @fixed,
@@ -272,7 +272,7 @@ public class Test_FieldReferenceForObservablePropertyFieldFixer
         test.ExpectedDiagnostics.AddRange(new[]
         {
             // /0/Test0.cs(14,15): warning MVVMTK0034: The field C.i is annotated with [ObservableProperty] and should not be directly referenced (use the generated property instead)
-            VerifyCS.Diagnostic().WithSpan(14, 15, 14, 17).WithArguments("C.i"),
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(14, 15, 14, 17).WithArguments("C.i"),
         });
 
         test.FixedState.ExpectedDiagnostics.AddRange(new[]

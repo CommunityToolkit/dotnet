@@ -15,14 +15,14 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
-namespace CommunityToolkit.Mvvm.Fixers;
+namespace CommunityToolkit.Mvvm.CodeFixers;
 
 /// <summary>
 /// A code fixer that automatically updates references to fields with <c>[ObservableProperty]</c> to reference the generated property instead.
 /// </summary>
 [ExportCodeFixProvider(LanguageNames.CSharp)]
 [Shared]
-public sealed class FieldReferenceForObservablePropertyFieldFixer : CodeFixProvider
+public sealed class FieldReferenceForObservablePropertyFieldCodeFixer : CodeFixProvider
 {
     /// <inheritdoc/>
     public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(DiagnosticDescriptors.FieldReferenceForObservablePropertyFieldId);

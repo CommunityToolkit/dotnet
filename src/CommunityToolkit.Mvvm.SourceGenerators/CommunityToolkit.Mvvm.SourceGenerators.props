@@ -37,7 +37,7 @@
 
   <!-- Give access to the code fixers project for the exported diagnostic ids and properties -->
   <ItemGroup>
-    <InternalsVisibleTo Include="CommunityToolkit.Mvvm.Fixers, PublicKey=$(AssemblySignPublicKey)" />
+    <InternalsVisibleTo Include="CommunityToolkit.Mvvm.CodeFixers, PublicKey=$(AssemblySignPublicKey)" />
   </ItemGroup>
 
 </Project>
