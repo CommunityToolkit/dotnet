@@ -35,13 +35,15 @@ public sealed class InvalidClassLevelNotifyDataErrorInfoAttributeAnalyzer : Diag
             }
 
             // Only inspect classes that are using [NotifyDataErrorInfo]
-            if (!classSymbol.HasAttributeWithFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.NotifyDataErrorInfoAttribute"))
+            if (context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.NotifyDataErrorInfoAttribute") is not INamedTypeSymbol notifyDataErrorInfoAttributeSymbol ||
+                !classSymbol.HasAttributeWithType(notifyDataErrorInfoAttributeSymbol))
             {
                 return;
             }
 
             // If the containing type is not valid, emit a diagnostic
-            if (!classSymbol.InheritsFromFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableValidator"))
+            if (context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableValidator") is not INamedTypeSymbol observableValidatorSymbol ||
+                !classSymbol.InheritsFromType(observableValidatorSymbol))
             {
                 context.ReportDiagnostic(Diagnostic.Create(
                     InvalidTypeForNotifyDataErrorInfoError,

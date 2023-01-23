@@ -35,14 +35,17 @@ public sealed class InvalidClassLevelNotifyPropertyChangedRecipientsAttributeAna
             }
 
             // Only inspect classes that are using [NotifyPropertyChangedRecipients]
-            if (!classSymbol.HasAttributeWithFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.NotifyPropertyChangedRecipientsAttribute"))
+            if (context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.NotifyPropertyChangedRecipientsAttribute") is not INamedTypeSymbol notifyPropertyChangedRecipientsAttributeSymbol ||
+                !classSymbol.HasAttributeWithType(notifyPropertyChangedRecipientsAttributeSymbol))
             {
                 return;
             }
 
             // If the containing type is not valid, emit a diagnostic
-            if (!classSymbol.InheritsFromFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableRecipient") &&
-                !classSymbol.HasOrInheritsAttributeWithFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableRecipientAttribute"))
+            if (context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableRecipient") is INamedTypeSymbol observableRecipientSymbol &&
+                context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableRecipientAttribute") is INamedTypeSymbol observableRecipientAttributeSymbol &&
+                !classSymbol.InheritsFromType(observableRecipientSymbol) &&
+                !classSymbol.HasOrInheritsAttributeWithType(observableRecipientAttributeSymbol))
             {
                 context.ReportDiagnostic(Diagnostic.Create(
                     InvalidTypeForNotifyPropertyChangedRecipientsError,
