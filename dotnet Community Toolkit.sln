@@ -81,7 +81,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.Exter
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.ExternalAssembly.Roslyn431", "tests\CommunityToolkit.Mvvm.ExternalAssembly.Roslyn431\CommunityToolkit.Mvvm.ExternalAssembly.Roslyn431.csproj", "{4FCD501C-1BB5-465C-AD19-356DAB6600C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunityToolkit.Mvvm.Fixers", "src\CommunityToolkit.Mvvm.Fixers\CommunityToolkit.Mvvm.Fixers.csproj", "{E79DCA2A-4C59-499F-85BD-F45215ED6B72}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunityToolkit.Mvvm.CodeFixers", "src\CommunityToolkit.Mvvm.CodeFixers\CommunityToolkit.Mvvm.CodeFixers.csproj", "{E79DCA2A-4C59-499F-85BD-F45215ED6B72}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
