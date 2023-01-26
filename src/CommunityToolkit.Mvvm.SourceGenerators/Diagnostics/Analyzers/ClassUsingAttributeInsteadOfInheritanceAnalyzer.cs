@@ -68,7 +68,7 @@ public sealed class ClassUsingAttributeInsteadOfInheritanceAnalyzer : Diagnostic
             context.RegisterSymbolAction(context =>
             {
                 // We're looking for class declarations that don't have any base type
-                if (context.Symbol is not INamedTypeSymbol { TypeKind: TypeKind.Class, IsRecord: false, IsStatic: false, IsImplicitlyDeclared: false } classSymbol)
+                if (context.Symbol is not INamedTypeSymbol { TypeKind: TypeKind.Class, IsRecord: false, IsStatic: false, IsImplicitlyDeclared: false, BaseType.SpecialType: SpecialType.System_Object } classSymbol)
                 {
                     return;
                 }
@@ -80,18 +80,15 @@ public sealed class ClassUsingAttributeInsteadOfInheritanceAnalyzer : Diagnostic
                         typeSymbols.TryGetValue(attributeName, out INamedTypeSymbol? attributeSymbol) &&
                         SymbolEqualityComparer.Default.Equals(attributeClass, attributeSymbol))
                     {
-                        // The type is annotated with either [ObservableObject] or [INotifyPropertyChanged].
-                        if (classSymbol.BaseType is { SpecialType: SpecialType.System_Object })
-                        {
-                            // This type is using the attribute when it could just inherit from ObservableObject, which is preferred
-                            context.ReportDiagnostic(Diagnostic.Create(
-                                GeneratorAttributeNamesToDiagnosticsMap[attributeClass.Name],
-                                context.Symbol.Locations.FirstOrDefault(),
-                                ImmutableDictionary.Create<string, string?>()
-                                    .Add(TypeNameKey, classSymbol.Name)
-                                    .Add(AttributeTypeNameKey, attributeName),
-                                context.Symbol));
-                        }
+                        // The type is annotated with either [ObservableObject] or [INotifyPropertyChanged], and we already validated
+                        // that it has no other base type, so emit a diagnostic to suggest inheriting from ObservableObject instead.
+                        context.ReportDiagnostic(Diagnostic.Create(
+                            GeneratorAttributeNamesToDiagnosticsMap[attributeClass.Name],
+                            context.Symbol.Locations.FirstOrDefault(),
+                            ImmutableDictionary.Create<string, string?>()
+                                .Add(TypeNameKey, classSymbol.Name)
+                                .Add(AttributeTypeNameKey, attributeName),
+                            context.Symbol));
                     }
                 }
             }, SymbolKind.NamedType);
