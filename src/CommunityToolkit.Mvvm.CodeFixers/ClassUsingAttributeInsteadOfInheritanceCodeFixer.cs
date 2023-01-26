@@ -98,7 +98,7 @@ public sealed class ClassUsingAttributeInsteadOfInheritanceCodeFixer : CodeFixPr
             foreach (AttributeSyntax attribute in attributeList.Attributes)
             {
                 if (attribute.Name is IdentifierNameSyntax { Identifier.Text: string identifierName } &&
-                    identifierName == attributeTypeName)
+                    (identifierName == attributeTypeName || (identifierName + "Attribute") == attributeTypeName))
                 {
                     // We found the attribute to remove and the list to update
                     targetAttributeList = attributeList;
