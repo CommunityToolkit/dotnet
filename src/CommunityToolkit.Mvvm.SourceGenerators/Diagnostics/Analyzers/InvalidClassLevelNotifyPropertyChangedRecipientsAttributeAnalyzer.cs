@@ -44,7 +44,7 @@ public sealed class InvalidClassLevelNotifyPropertyChangedRecipientsAttributeAna
                     return;
                 }
 
-                // Emit a diagnstic for types that use [NotifyPropertyChangedRecipients] but are neither inheriting from ObservableRecipient nor using [ObservableRecipient]
+                // Emit a diagnostic for types that use [NotifyPropertyChangedRecipients] but are neither inheriting from ObservableRecipient nor using [ObservableRecipient]
                 if (classSymbol.HasAttributeWithType(notifyPropertyChangedRecipientsAttributeSymbol) &&
                     !classSymbol.InheritsFromType(observableRecipientSymbol) &&
                     !classSymbol.HasOrInheritsAttributeWithType(observableRecipientAttributeSymbol))
