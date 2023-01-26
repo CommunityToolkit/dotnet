@@ -16,6 +16,16 @@ namespace CommunityToolkit.Mvvm.SourceGenerators;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class FieldReferenceForObservablePropertyFieldAnalyzer : DiagnosticAnalyzer
 {
+    /// <summary>
+    /// The key for the name of the target field to update.
+    /// </summary>
+    internal const string FieldNameKey = "FieldName";
+
+    /// <summary>
+    /// The key for the name of the generated property to update a field reference to.
+    /// </summary>
+    internal const string PropertyNameKey = "PropertyName";
+
     /// <inheritdoc/>
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(FieldReferenceForObservablePropertyFieldWarning);
 
@@ -59,7 +69,13 @@ public sealed class FieldReferenceForObservablePropertyFieldAnalyzer : Diagnosti
                     SymbolEqualityComparer.Default.Equals(attributeClass, attributeSymbol))
                 {
                     // Emit a warning to redirect users to access the generated property instead
-                    context.ReportDiagnostic(Diagnostic.Create(FieldReferenceForObservablePropertyFieldWarning, context.Operation.Syntax.GetLocation(), fieldSymbol));
+                    context.ReportDiagnostic(Diagnostic.Create(
+                        FieldReferenceForObservablePropertyFieldWarning,
+                        context.Operation.Syntax.GetLocation(),
+                        ImmutableDictionary.Create<string, string?>()
+                            .Add(FieldNameKey, fieldSymbol.Name)
+                            .Add(PropertyNameKey, ObservablePropertyGenerator.Execute.GetGeneratedPropertyName(fieldSymbol)),
+                        fieldSymbol));
 
                     return;
                 }

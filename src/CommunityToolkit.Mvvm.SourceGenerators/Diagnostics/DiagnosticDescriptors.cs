@@ -15,6 +15,11 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
 internal static class DiagnosticDescriptors
 {
     /// <summary>
+    /// The diagnostic id for <see cref="FieldReferenceForObservablePropertyFieldWarning"/>.
+    /// </summary>
+    public const string FieldReferenceForObservablePropertyFieldId = "MVVMTK0034";
+
+    /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a duplicate declaration of <see cref="INotifyPropertyChanged"/> would happen.
     /// <para>
     /// Format: <c>"Cannot apply [INotifyPropertyChangedAttribute] to type {0}, as it already declares the INotifyPropertyChanged interface"</c>.
@@ -550,7 +555,7 @@ internal static class DiagnosticDescriptors
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor FieldReferenceForObservablePropertyFieldWarning = new DiagnosticDescriptor(
-        id: "MVVMTK0034",
+        id: FieldReferenceForObservablePropertyFieldId,
         title: "Direct field reference to [ObservableProperty] backing field",
         messageFormat: "The field {0} is annotated with [ObservableProperty] and should not be directly referenced (use the generated property instead)",
         category: typeof(ObservablePropertyGenerator).FullName,
