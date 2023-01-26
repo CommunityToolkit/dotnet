@@ -7,13 +7,13 @@ using System.Composition;
 using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.SourceGenerators;
-using CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
 
 namespace CommunityToolkit.Mvvm.CodeFixers;
 
@@ -25,7 +25,7 @@ namespace CommunityToolkit.Mvvm.CodeFixers;
 public sealed class FieldReferenceForObservablePropertyFieldCodeFixer : CodeFixProvider
 {
     /// <inheritdoc/>
-    public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(DiagnosticDescriptors.FieldReferenceForObservablePropertyFieldId);
+    public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(FieldReferenceForObservablePropertyFieldId);
 
     /// <inheritdoc/>
     public override FixAllProvider? GetFixAllProvider()

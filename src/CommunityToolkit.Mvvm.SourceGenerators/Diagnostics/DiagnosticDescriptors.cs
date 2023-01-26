@@ -15,6 +15,16 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.Diagnostics;
 internal static class DiagnosticDescriptors
 {
     /// <summary>
+    /// The diagnostic id for <see cref="InheritFromObservableObjectInsteadOfUsingINotifyPropertyChangedAttributeWarning"/>.
+    /// </summary>
+    public const string InheritFromObservableObjectInsteadOfUsingINotifyPropertyChangedAttributeId = "MVVMTK0032";
+
+    /// <summary>
+    /// The diagnostic id for <see cref="InheritFromObservableObjectInsteadOfUsingObservableObjectAttributeWarning"/>.
+    /// </summary>
+    public const string InheritFromObservableObjectInsteadOfUsingObservableObjectAttributeId = "MVVMTK0033";
+
+    /// <summary>
     /// The diagnostic id for <see cref="FieldReferenceForObservablePropertyFieldWarning"/>.
     /// </summary>
     public const string FieldReferenceForObservablePropertyFieldId = "MVVMTK0034";
@@ -519,7 +529,7 @@ internal static class DiagnosticDescriptors
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor InheritFromObservableObjectInsteadOfUsingINotifyPropertyChangedAttributeWarning = new DiagnosticDescriptor(
-        id: "MVVMTK0032",
+        id: InheritFromObservableObjectInsteadOfUsingINotifyPropertyChangedAttributeId,
         title: "Inherit from ObservableObject instead of using [INotifyPropertyChanged]",
         messageFormat: "The type {0} is using the [INotifyPropertyChanged] attribute while having no base type, and it should instead inherit from ObservableObject",
         category: typeof(INotifyPropertyChangedGenerator).FullName,
@@ -537,7 +547,7 @@ internal static class DiagnosticDescriptors
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor InheritFromObservableObjectInsteadOfUsingObservableObjectAttributeWarning = new DiagnosticDescriptor(
-        id: "MVVMTK0033",
+        id: InheritFromObservableObjectInsteadOfUsingObservableObjectAttributeId,
         title: "Inherit from ObservableObject instead of using [ObservableObject]",
         messageFormat: "The type {0} is using the [ObservableObject] attribute while having no base type, and it should instead inherit from ObservableObject",
         category: typeof(ObservableObjectGenerator).FullName,
