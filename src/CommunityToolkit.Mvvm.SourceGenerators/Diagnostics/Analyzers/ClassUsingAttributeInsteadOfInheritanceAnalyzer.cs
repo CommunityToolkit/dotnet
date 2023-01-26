@@ -5,6 +5,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
@@ -56,37 +57,44 @@ public sealed class ClassUsingAttributeInsteadOfInheritanceAnalyzer : Diagnostic
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
         context.EnableConcurrentExecution();
 
-        context.RegisterSymbolAction(static context =>
+        context.RegisterCompilationStartAction(static context =>
         {
-            // We're looking for class declarations
-            if (context.Symbol is not INamedTypeSymbol { TypeKind: TypeKind.Class, IsRecord: false, IsStatic: false, IsImplicitlyDeclared: false } classSymbol)
+            // Try to get all necessary type symbols
+            if (!context.Compilation.TryBuildNamedTypeSymbolMap(GeneratorAttributeNamesToFullyQualifiedNamesMap, out ImmutableDictionary<string, INamedTypeSymbol>? typeSymbols))
             {
                 return;
             }
 
-            foreach (AttributeData attribute in context.Symbol.GetAttributes())
+            context.RegisterSymbolAction(context =>
             {
-                // Same logic as in FieldWithOrphanedDependentObservablePropertyAttributesAnalyzer to find target attributes
-                if (attribute.AttributeClass is { Name: string attributeName } attributeClass &&
-                    GeneratorAttributeNamesToFullyQualifiedNamesMap.TryGetValue(attributeName, out string? fullyQualifiedAttributeName) &&
-                    context.Compilation.GetTypeByMetadataName(fullyQualifiedAttributeName) is INamedTypeSymbol attributeSymbol &&
-                    SymbolEqualityComparer.Default.Equals(attributeClass, attributeSymbol))
+                // We're looking for class declarations that don't have any base type
+                if (context.Symbol is not INamedTypeSymbol { TypeKind: TypeKind.Class, IsRecord: false, IsStatic: false, IsImplicitlyDeclared: false } classSymbol)
                 {
-                    // The type is annotated with either [ObservableObject] or [INotifyPropertyChanged].
-                    // Next, we need to check whether it isn't already inheriting from another type.
-                    if (classSymbol.BaseType is { SpecialType: SpecialType.System_Object })
+                    return;
+                }
+
+                foreach (AttributeData attribute in context.Symbol.GetAttributes())
+                {
+                    // Same logic as in FieldWithOrphanedDependentObservablePropertyAttributesAnalyzer to find target attributes
+                    if (attribute.AttributeClass is { Name: string attributeName } attributeClass &&
+                        typeSymbols.TryGetValue(attributeName, out INamedTypeSymbol? attributeSymbol) &&
+                        SymbolEqualityComparer.Default.Equals(attributeClass, attributeSymbol))
                     {
-                        // This type is using the attribute when it could just inherit from ObservableObject, which is preferred
-                        context.ReportDiagnostic(Diagnostic.Create(
-                            GeneratorAttributeNamesToDiagnosticsMap[attributeClass.Name],
-                            context.Symbol.Locations.FirstOrDefault(),
-                            ImmutableDictionary.Create<string, string?>()
-                                .Add(TypeNameKey, classSymbol.Name)
-                                .Add(AttributeTypeNameKey, attributeName),
-                            context.Symbol));
+                        // The type is annotated with either [ObservableObject] or [INotifyPropertyChanged].
+                        if (classSymbol.BaseType is { SpecialType: SpecialType.System_Object })
+                        {
+                            // This type is using the attribute when it could just inherit from ObservableObject, which is preferred
+                            context.ReportDiagnostic(Diagnostic.Create(
+                                GeneratorAttributeNamesToDiagnosticsMap[attributeClass.Name],
+                                context.Symbol.Locations.FirstOrDefault(),
+                                ImmutableDictionary.Create<string, string?>()
+                                    .Add(TypeNameKey, classSymbol.Name)
+                                    .Add(AttributeTypeNameKey, attributeName),
+                                context.Symbol));
+                        }
                     }
                 }
-            }
-        }, SymbolKind.NamedType);
+            }, SymbolKind.NamedType);
+        });
     }
 }

@@ -48,7 +48,19 @@ public sealed class FieldWithOrphanedDependentObservablePropertyAttributesAnalyz
                 return;
             }
 
-            context.RegisterSymbolAction(static context =>
+            // Try to get all necessary type symbols to map
+            if (!context.Compilation.TryBuildNamedTypeSymbolMap(GeneratorAttributeNamesToFullyQualifiedNamesMap, out ImmutableDictionary<string, INamedTypeSymbol>? typeSymbols))
+            {
+                return;
+            }
+
+            // We also need the symbol for [ObservableProperty], separately
+            if (context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute") is not INamedTypeSymbol observablePropertySymbol)
+            {
+                return;
+            }
+
+            context.RegisterSymbolAction(context =>
             {
                 ImmutableArray<AttributeData> attributes = context.Symbol.GetAttributes();
 
@@ -61,17 +73,15 @@ public sealed class FieldWithOrphanedDependentObservablePropertyAttributesAnalyz
                 foreach (AttributeData dependentAttribute in attributes)
                 {
                     // Go over each attribute on the target symbol, anche check if any of them matches one of the trigger attributes.
-                    // The logic here is the same as the one in UnsupportedCSharpLanguageVersionAnalyzer, to minimize retrieving symbols.
+                    // The logic here is the same as the one in UnsupportedCSharpLanguageVersionAnalyzer.
                     if (dependentAttribute.AttributeClass is { Name: string attributeName } dependentAttributeClass &&
-                        GeneratorAttributeNamesToFullyQualifiedNamesMap.TryGetValue(attributeName, out string? fullyQualifiedDependentAttributeName) &&
-                        context.Compilation.GetTypeByMetadataName(fullyQualifiedDependentAttributeName) is INamedTypeSymbol dependentAttributeSymbol &&
+                        typeSymbols.TryGetValue(attributeName, out INamedTypeSymbol? dependentAttributeSymbol) &&
                         SymbolEqualityComparer.Default.Equals(dependentAttributeClass, dependentAttributeSymbol))
                     {
                         // If the attribute matches, iterate over the attributes to try to find [ObservableProperty]
                         foreach (AttributeData attribute in attributes)
                         {
                             if (attribute.AttributeClass is { Name: "ObservablePropertyAttribute" } attributeSymbol &&
-                                context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute") is INamedTypeSymbol observablePropertySymbol &&
                                 SymbolEqualityComparer.Default.Equals(attributeSymbol, observablePropertySymbol))
                             {
                                 // If [ObservableProperty] is found, then this field is valid in that it doesn't have orphaned dependent attributes
