@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Collections.Immutable;
 #if !ROSLYN_4_3_1_OR_GREATER
 using System.Diagnostics.CodeAnalysis;
 #endif
@@ -54,11 +53,28 @@ internal static class ISymbolExtensions
     /// <returns>Whether or not <paramref name="symbol"/> has an attribute with the specified name.</returns>
     public static bool HasAttributeWithFullyQualifiedMetadataName(this ISymbol symbol, string name)
     {
-        ImmutableArray<AttributeData> attributes = symbol.GetAttributes();
-
-        foreach (AttributeData attribute in attributes)
+        foreach (AttributeData attribute in symbol.GetAttributes())
         {
             if (attribute.AttributeClass?.HasFullyQualifiedMetadataName(name) == true)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Checks whether or not a given symbol has an attribute with the specified fully qualified metadata name.
+    /// </summary>
+    /// <param name="symbol">The input <see cref="ISymbol"/> instance to check.</param>
+    /// <param name="typeSymbol">The <see cref="ITypeSymbol"/> instance for the attribute type to look for.</param>
+    /// <returns>Whether or not <paramref name="symbol"/> has an attribute with the specified type.</returns>
+    public static bool HasAttributeWithType(this ISymbol symbol, ITypeSymbol typeSymbol)
+    {
+        foreach (AttributeData attribute in symbol.GetAttributes())
+        {
+            if (SymbolEqualityComparer.Default.Equals(attribute.AttributeClass, typeSymbol))
             {
                 return true;
             }
@@ -77,9 +93,7 @@ internal static class ISymbolExtensions
     /// <returns>Whether or not <paramref name="symbol"/> has an attribute with the specified name.</returns>
     public static bool TryGetAttributeWithFullyQualifiedMetadataName(this ISymbol symbol, string name, [NotNullWhen(true)] out AttributeData? attributeData)
     {
-        ImmutableArray<AttributeData> attributes = symbol.GetAttributes();
-
-        foreach (AttributeData attribute in attributes)
+        foreach (AttributeData attribute in symbol.GetAttributes())
         {
             if (attribute.AttributeClass?.HasFullyQualifiedMetadataName(name) == true)
             {

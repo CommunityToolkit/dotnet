@@ -1337,7 +1337,7 @@ public class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void InvalidTypeForNotifyPropertyChangedRecipientsError()
+    public async Task InvalidTypeForNotifyPropertyChangedRecipientsError()
     {
         string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -1345,7 +1345,7 @@ public class Test_SourceGeneratorsDiagnostics
             namespace MyApp
             {
                 [NotifyPropertyChangedRecipients]
-                public partial class MyViewModel : ObservableObject
+                public partial class {|MVVMTK0027:MyViewModel|} : ObservableObject
                 {
                     [ObservableProperty]
                     public int number;
@@ -1353,11 +1353,11 @@ public class Test_SourceGeneratorsDiagnostics
             }
             """;
 
-        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0027");
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<InvalidClassLevelNotifyPropertyChangedRecipientsAttributeAnalyzer>(source, LanguageVersion.CSharp8);
     }
 
     [TestMethod]
-    public void InvalidTypeForNotifyDataErrorInfoError()
+    public async Task InvalidTypeForNotifyDataErrorInfoError()
     {
         string source = """
             using System.ComponentModel.DataAnnotations;
@@ -1366,16 +1366,13 @@ public class Test_SourceGeneratorsDiagnostics
             namespace MyApp
             {
                 [NotifyDataErrorInfo]
-                public partial class SampleViewModel : ObservableObject
+                public partial class {|MVVMTK0028:SampleViewModel|} : ObservableObject
                 {
-                    [ObservableProperty]
-                    [Required]
-                    private string name;
                 }
             }
             """;
 
-        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0006", "MVVMTK0028");
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<InvalidClassLevelNotifyDataErrorInfoAttributeAnalyzer>(source, LanguageVersion.CSharp8);
     }
 
     [TestMethod]

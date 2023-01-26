@@ -43,7 +43,7 @@ internal static class ITypeSymbolExtensions
     {
         INamedTypeSymbol? baseType = typeSymbol.BaseType;
 
-        while (baseType != null)
+        while (baseType is not null)
         {
             if (baseType.HasFullyQualifiedMetadataName(name))
             {
@@ -51,6 +51,29 @@ internal static class ITypeSymbolExtensions
             }
 
             baseType = baseType.BaseType;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Checks whether or not a given <see cref="ITypeSymbol"/> inherits from a specified type.
+    /// </summary>
+    /// <param name="typeSymbol">The target <see cref="ITypeSymbol"/> instance to check.</param>
+    /// <param name="baseTypeSymbol">The <see cref="ITypeSymbol"/> instane to check for inheritance from.</param>
+    /// <returns>Whether or not <paramref name="typeSymbol"/> inherits from <paramref name="baseTypeSymbol"/>.</returns>
+    public static bool InheritsFromType(this ITypeSymbol typeSymbol, ITypeSymbol baseTypeSymbol)
+    {
+        INamedTypeSymbol? currentBaseTypeSymbol = typeSymbol.BaseType;
+
+        while (currentBaseTypeSymbol is not null)
+        {
+            if (SymbolEqualityComparer.Default.Equals(currentBaseTypeSymbol, baseTypeSymbol))
+            {
+                return true;
+            }
+
+            currentBaseTypeSymbol = currentBaseTypeSymbol.BaseType;
         }
 
         return false;
@@ -105,6 +128,25 @@ internal static class ITypeSymbolExtensions
         for (ITypeSymbol? currentType = typeSymbol; currentType is not null; currentType = currentType.BaseType)
         {
             if (currentType.HasAttributeWithFullyQualifiedMetadataName(name))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Checks whether or not a given <see cref="ITypeSymbol"/> has or inherits a specified attribute.
+    /// </summary>
+    /// <param name="typeSymbol">The target <see cref="ITypeSymbol"/> instance to check.</param>
+    /// <param name="baseTypeSymbol">The <see cref="ITypeSymbol"/> instane to check for inheritance from.</param>
+    /// <returns>Whether or not <paramref name="typeSymbol"/> has or inherits an attribute of type <paramref name="baseTypeSymbol"/>.</returns>
+    public static bool HasOrInheritsAttributeWithType(this ITypeSymbol typeSymbol, ITypeSymbol baseTypeSymbol)
+    {
+        for (ITypeSymbol? currentType = typeSymbol; currentType is not null; currentType = currentType.BaseType)
+        {
+            if (currentType.HasAttributeWithType(baseTypeSymbol))
             {
                 return true;
             }
