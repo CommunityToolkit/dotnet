@@ -64,7 +64,7 @@ public sealed class ClassUsingAttributeInsteadOfInheritanceCodeFixer : CodeFixPr
                 context.RegisterCodeFix(
                     CodeAction.Create(
                         title: "Inherit from ObservableObject",
-                        createChangedDocument: token => UpdateReference(context.Document, root, classDeclaration, attributeTypeName, token),
+                        createChangedDocument: token => UpdateReference(context.Document, root, classDeclaration, attributeTypeName),
                         equivalenceKey: "Inherit from ObservableObject"),
                     diagnostic);
 
@@ -80,9 +80,8 @@ public sealed class ClassUsingAttributeInsteadOfInheritanceCodeFixer : CodeFixPr
     /// <param name="root">The original tree root belonging to the current document.</param>
     /// <param name="classDeclaration">The <see cref="ClassDeclarationSyntax"/> to update.</param>
     /// <param name="attributeTypeName">The name of the attribute that should be removed.</param>
-    /// <param name="cancellationToken">The cancellation token for the operation.</param>
     /// <returns>An updated document with the applied code fix, and <paramref name="classDeclaration"/> inheriting from <c>ObservableObject</c>.</returns>
-    private static Task<Document> UpdateReference(Document document, SyntaxNode root, ClassDeclarationSyntax classDeclaration, string attributeTypeName, CancellationToken cancellationToken)
+    private static Task<Document> UpdateReference(Document document, SyntaxNode root, ClassDeclarationSyntax classDeclaration, string attributeTypeName)
     {
         // Insert ObservableObject always in first position in the base list. The type might have
         // some interfaces in the base list, so we just copy them back after ObservableObject.
