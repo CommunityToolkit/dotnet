@@ -2,11 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
 using System.Collections.Immutable;
 using System.Composition;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.SourceGenerators;
 using Microsoft.CodeAnalysis;
@@ -54,22 +51,19 @@ public sealed class ClassUsingAttributeInsteadOfInheritanceCodeFixer : CodeFixPr
 
         SyntaxNode? root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
 
-        foreach (SyntaxNode syntaxNode in root!.FindNode(diagnosticSpan).DescendantNodesAndSelf())
+        // Get the class declaration from the target diagnostic
+        if (root!.FindNode(diagnosticSpan) is ClassDeclarationSyntax { Identifier.Text: string identifierName } classDeclaration &&
+            identifierName == typeName)
         {
-            // Find the first descendant node from the source of the diagnostic that is a class declaration with the target name
-            if (syntaxNode is ClassDeclarationSyntax { Identifier.Text: string identifierName } classDeclaration &&
-                identifierName == typeName)
-            {
-                // Register the code fix to update the class declaration to inherit from ObservableObject instead
-                context.RegisterCodeFix(
-                    CodeAction.Create(
-                        title: "Inherit from ObservableObject",
-                        createChangedDocument: token => UpdateReference(context.Document, root, classDeclaration, attributeTypeName),
-                        equivalenceKey: "Inherit from ObservableObject"),
-                    diagnostic);
+            // Register the code fix to update the class declaration to inherit from ObservableObject instead
+            context.RegisterCodeFix(
+                CodeAction.Create(
+                    title: "Inherit from ObservableObject",
+                    createChangedDocument: token => UpdateReference(context.Document, root, classDeclaration, attributeTypeName),
+                    equivalenceKey: "Inherit from ObservableObject"),
+                diagnostic);
 
-                return;
-            }
+            return;
         }
     }
 
