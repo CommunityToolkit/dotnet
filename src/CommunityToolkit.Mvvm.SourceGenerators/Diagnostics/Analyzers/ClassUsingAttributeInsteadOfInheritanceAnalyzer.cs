@@ -18,6 +18,16 @@ namespace CommunityToolkit.Mvvm.SourceGenerators;
 public sealed class ClassUsingAttributeInsteadOfInheritanceAnalyzer : DiagnosticAnalyzer
 {
     /// <summary>
+    /// The key for the name of the target type to update.
+    /// </summary>
+    internal const string TypeNameKey = "TypeName";
+
+    /// <summary>
+    /// The key for the name of the attribute that was found and should be removed.
+    /// </summary>
+    internal const string AttributeTypeNameKey = "AttributeTypeName";
+
+    /// <summary>
     /// The mapping of target attributes that will trigger the analyzer.
     /// </summary>
     private static readonly ImmutableDictionary<string, string> GeneratorAttributeNamesToFullyQualifiedNamesMap = ImmutableDictionary.CreateRange(new[]
@@ -67,7 +77,13 @@ public sealed class ClassUsingAttributeInsteadOfInheritanceAnalyzer : Diagnostic
                     if (classSymbol.BaseType is { SpecialType: SpecialType.System_Object })
                     {
                         // This type is using the attribute when it could just inherit from ObservableObject, which is preferred
-                        context.ReportDiagnostic(Diagnostic.Create(GeneratorAttributeNamesToDiagnosticsMap[attributeClass.Name], context.Symbol.Locations.FirstOrDefault(), context.Symbol));
+                        context.ReportDiagnostic(Diagnostic.Create(
+                            GeneratorAttributeNamesToDiagnosticsMap[attributeClass.Name],
+                            context.Symbol.Locations.FirstOrDefault(),
+                            ImmutableDictionary.Create<string, string?>()
+                                .Add(TypeNameKey, classSymbol.Name)
+                                .Add(AttributeTypeNameKey, attributeName),
+                            context.Symbol));
                     }
                 }
             }
