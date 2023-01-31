@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\CSharpAnalyzerWithLanguageVersionTest{TAnalyzer}.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Test_SourceGeneratorsCodegen.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Test_SourceGeneratorsDiagnostics.cs" />
   </ItemGroup>
 </Project>
