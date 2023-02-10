@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Globalization;
 using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 using Microsoft.CodeAnalysis;
@@ -89,7 +90,13 @@ internal abstract partial record TypedConstantInfo
                 {
                     byte b => Literal(b),
                     char c => Literal(c),
-                    double d => Literal(d),
+
+                    // For doubles, we need to manually format it and always add the trailing "D" suffix.
+                    // This ensures that the correct type is produced if the expression was assigned to
+                    // an object (eg. the literal was used in an attribute object parameter/property).
+                    double d => Literal(d.ToString("R", CultureInfo.InvariantCulture) + "D", d),
+
+                    // For floats, Roslyn will automatically add the "F" suffix, so no extra work is needed
                     float f => Literal(f),
                     int i => Literal(i),
                     long l => Literal(l),
