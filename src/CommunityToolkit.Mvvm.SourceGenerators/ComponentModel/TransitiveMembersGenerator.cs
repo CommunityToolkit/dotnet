@@ -33,12 +33,12 @@ public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGe
     /// <summary>
     /// The sequence of member declarations for sealed types.
     /// </summary>
-    private ImmutableArray<MemberDeclarationSyntax> sealedMemberDeclarations;
+    private readonly ImmutableArray<MemberDeclarationSyntax> sealedMemberDeclarations;
 
     /// <summary>
     /// The resulting sequence of member declarations for non sealed types.
     /// </summary>
-    private ImmutableArray<MemberDeclarationSyntax> nonSealedMemberDeclarations;
+    private readonly ImmutableArray<MemberDeclarationSyntax> nonSealedMemberDeclarations;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TransitiveMembersGenerator{TInfo}"/> class.
