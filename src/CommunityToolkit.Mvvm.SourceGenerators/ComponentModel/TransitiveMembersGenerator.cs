@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Text;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using CommunityToolkit.Mvvm.SourceGenerators.Models;
 using Microsoft.CodeAnalysis;
@@ -34,12 +33,12 @@ public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGe
     /// <summary>
     /// The sequence of member declarations for sealed types.
     /// </summary>
-    private ImmutableArray<MemberDeclarationSyntax> sealedMemberDeclarations;
+    private readonly ImmutableArray<MemberDeclarationSyntax> sealedMemberDeclarations;
 
     /// <summary>
     /// The resulting sequence of member declarations for non sealed types.
     /// </summary>
-    private ImmutableArray<MemberDeclarationSyntax> nonSealedMemberDeclarations;
+    private readonly ImmutableArray<MemberDeclarationSyntax> nonSealedMemberDeclarations;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TransitiveMembersGenerator{TInfo}"/> class.
@@ -108,7 +107,7 @@ public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGe
             ImmutableArray<MemberDeclarationSyntax> updatedMemberDeclarations = Execute.AdjustMemberDeclarationNullabilityAnnotations(filteredMemberDeclarations, item.MetadataInfo.IsNullabilitySupported);
             CompilationUnitSyntax compilationUnit = item.Hierarchy.GetCompilationUnit(updatedMemberDeclarations, this.classDeclaration.BaseList);
 
-            context.AddSource($"{item.Hierarchy.FilenameHint}.g.cs", compilationUnit.GetText(Encoding.UTF8));
+            context.AddSource($"{item.Hierarchy.FilenameHint}.g.cs", compilationUnit);
         });
     }
 
