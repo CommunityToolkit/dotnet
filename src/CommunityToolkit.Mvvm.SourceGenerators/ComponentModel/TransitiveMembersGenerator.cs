@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Text;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using CommunityToolkit.Mvvm.SourceGenerators.Models;
 using Microsoft.CodeAnalysis;
@@ -108,7 +107,7 @@ public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGe
             ImmutableArray<MemberDeclarationSyntax> updatedMemberDeclarations = Execute.AdjustMemberDeclarationNullabilityAnnotations(filteredMemberDeclarations, item.MetadataInfo.IsNullabilitySupported);
             CompilationUnitSyntax compilationUnit = item.Hierarchy.GetCompilationUnit(updatedMemberDeclarations, this.classDeclaration.BaseList);
 
-            context.AddSource($"{item.Hierarchy.FilenameHint}.g.cs", compilationUnit.GetText(Encoding.UTF8));
+            context.AddSource($"{item.Hierarchy.FilenameHint}.g.cs", compilationUnit);
         });
     }
 

@@ -4,7 +4,6 @@
 
 using System.Collections.Immutable;
 using System.Linq;
-using System.Text;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
 using CommunityToolkit.Mvvm.SourceGenerators.Models;
@@ -61,7 +60,7 @@ public sealed partial class RelayCommandGenerator : IIncrementalGenerator
             ImmutableArray<MemberDeclarationSyntax> memberDeclarations = Execute.GetSyntax(item.Info.Value);
             CompilationUnitSyntax compilationUnit = item.Hierarchy.GetCompilationUnit(memberDeclarations);
 
-            context.AddSource($"{item.Hierarchy.FilenameHint}.{item.Info.Value.MethodName}.g.cs", compilationUnit.GetText(Encoding.UTF8));
+            context.AddSource($"{item.Hierarchy.FilenameHint}.{item.Info.Value.MethodName}.g.cs", compilationUnit);
         });
     }
 }
