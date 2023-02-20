@@ -245,6 +245,30 @@ public sealed class ArrayPoolBufferWriter<T> : IBuffer<T>, IMemoryOwner<T>
     }
 
     /// <summary>
+    /// Gets an <see cref="ArraySegment{T}"/> instance wrapping the underlying <typeparamref name="T"/> array in use.
+    /// </summary>
+    /// <returns>An <see cref="ArraySegment{T}"/> instance wrapping the underlying <typeparamref name="T"/> array in use.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the buffer in use has already been disposed.</exception>
+    /// <remarks>
+    /// This method is meant to be used when working with APIs that only accept an array as input, and should be used with caution.
+    /// In particular, the returned array is rented from an array pool, and it is responsibility of the caller to ensure that it's
+    /// not used after the current <see cref="ArrayPoolBufferWriter{T}"/> instance is disposed. Doing so is considered undefined
+    /// behavior, as the same array might be in use within another <see cref="ArrayPoolBufferWriter{T}"/> instance.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ArraySegment<T> DangerousGetArray()
+    {
+        T[]? array = this.array;
+
+        if (array is null)
+        {
+            ThrowObjectDisposedException();
+        }
+
+        return new(array!, 0, this.index);
+    }
+
+    /// <summary>
     /// Ensures that <see cref="array"/> has enough free space to contain a given number of new items.
     /// </summary>
     /// <param name="sizeHint">The minimum number of items to ensure space for in <see cref="array"/>.</param>
