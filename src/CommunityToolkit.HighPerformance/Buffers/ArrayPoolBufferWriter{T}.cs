@@ -268,6 +268,35 @@ public sealed class ArrayPoolBufferWriter<T> : IBuffer<T>, IMemoryOwner<T>
         return new(array!, 0, this.index);
     }
 
+    /// <inheritdoc/>
+    public void Dispose()
+    {
+        T[]? array = this.array;
+
+        if (array is null)
+        {
+            return;
+        }
+
+        this.array = null;
+
+        this.pool.Return(array);
+    }
+
+    /// <inheritdoc/>
+    public override string ToString()
+    {
+        // See comments in MemoryOwner<T> about this
+        if (typeof(T) == typeof(char) &&
+            this.array is char[] chars)
+        {
+            return new(chars, 0, this.index);
+        }
+
+        // Same representation used in Span<T>
+        return $"CommunityToolkit.HighPerformance.Buffers.ArrayPoolBufferWriter<{typeof(T)}>[{this.index}]";
+    }
+
     /// <summary>
     /// Ensures that <see cref="array"/> has enough free space to contain a given number of new items.
     /// </summary>
@@ -318,35 +347,6 @@ public sealed class ArrayPoolBufferWriter<T> : IBuffer<T>, IMemoryOwner<T>
         }
 
         this.pool.Resize(ref this.array, (int)minimumSize);
-    }
-
-    /// <inheritdoc/>
-    public void Dispose()
-    {
-        T[]? array = this.array;
-
-        if (array is null)
-        {
-            return;
-        }
-
-        this.array = null;
-
-        this.pool.Return(array);
-    }
-
-    /// <inheritdoc/>
-    public override string ToString()
-    {
-        // See comments in MemoryOwner<T> about this
-        if (typeof(T) == typeof(char) &&
-            this.array is char[] chars)
-        {
-            return new(chars, 0, this.index);
-        }
-
-        // Same representation used in Span<T>
-        return $"CommunityToolkit.HighPerformance.Buffers.ArrayPoolBufferWriter<{typeof(T)}>[{this.index}]";
     }
 
     /// <summary>
