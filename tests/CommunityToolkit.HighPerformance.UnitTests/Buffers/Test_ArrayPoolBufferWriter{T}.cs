@@ -3,9 +3,11 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Buffers;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using CommunityToolkit.HighPerformance;
 using CommunityToolkit.HighPerformance.Buffers;
 using CommunityToolkit.HighPerformance.UnitTests.Buffers.Internals;
@@ -217,5 +219,31 @@ public class Test_ArrayPoolBufferWriterOfT
 
         // Now check that the writer is actually disposed instead
         _ = Assert.ThrowsException<ObjectDisposedException>(() => writer.Capacity);
+    }
+
+    [TestMethod]
+    public void Test_ArrayPoolBufferWriterOfT_AllocateAndGetArray()
+    {
+        ArrayPoolBufferWriter<int>? bufferWriter = new();
+
+        // Write some random data
+        bufferWriter.Write(Enumerable.Range(0, 127).ToArray());
+
+        // Get the array for the written segment
+        ArraySegment<int> segment = bufferWriter.DangerousGetArray();
+
+        Assert.IsNotNull(segment.Array);
+        Assert.IsTrue(segment.Array.Length >= bufferWriter.WrittenSpan.Length);
+        Assert.AreEqual(segment.Offset, 0);
+        Assert.AreEqual(segment.Count, bufferWriter.WrittenSpan.Length);
+
+        _ = MemoryMarshal.TryGetArray(bufferWriter.WrittenMemory, out ArraySegment<int> writtenSegment);
+
+        // The array is the same one as the one from the written span
+        Assert.AreSame(segment.Array, writtenSegment.Array);
+
+        bufferWriter.Dispose();
+
+        _ = Assert.ThrowsException<ObjectDisposedException>(() => bufferWriter.DangerousGetArray());
     }
 }
