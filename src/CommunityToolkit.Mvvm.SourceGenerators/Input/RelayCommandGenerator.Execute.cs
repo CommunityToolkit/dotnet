@@ -7,6 +7,8 @@ using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
+using CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 using CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
@@ -32,12 +34,16 @@ partial class RelayCommandGenerator
         /// </summary>
         /// <param name="methodSymbol">The input <see cref="IMethodSymbol"/> instance to process.</param>
         /// <param name="attributeData">The <see cref="AttributeData"/> instance the method was annotated with.</param>
+        /// <param name="semanticModel">The <see cref="SemanticModel"/> instance for the current run.</param>
+        /// <param name="token">The cancellation token for the current operation.</param>
         /// <param name="commandInfo">The resulting <see cref="CommandInfo"/> instance, if successfully generated.</param>
         /// <param name="diagnostics">The resulting diagnostics from the processing operation.</param>
         /// <returns>Whether a <see cref="CommandInfo"/> instance could be generated successfully.</returns>
         public static bool TryGetInfo(
             IMethodSymbol methodSymbol,
             AttributeData attributeData,
+            SemanticModel semanticModel,
+            CancellationToken token,
             [NotNullWhen(true)] out CommandInfo? commandInfo,
             out ImmutableArray<DiagnosticInfo> diagnostics)
         {
@@ -113,6 +119,15 @@ partial class RelayCommandGenerator
                 goto Failure;
             }
 
+            // Get all forwarded attributes (don't stop in case of errors, just ignore faulting attributes)
+            GatherForwardedAttributes(
+                methodSymbol,
+                semanticModel,
+                token,
+                in builder,
+                out ImmutableArray<AttributeInfo> fieldAttributes,
+                out ImmutableArray<AttributeInfo> propertyAttributes);
+
             commandInfo = new CommandInfo(
                 methodSymbol.Name,
                 fieldName,
@@ -126,7 +141,9 @@ partial class RelayCommandGenerator
                 canExecuteExpressionType,
                 allowConcurrentExecutions,
                 flowExceptionsToTaskScheduler,
-                generateCancelCommand);
+                generateCancelCommand,
+                fieldAttributes,
+                propertyAttributes);
 
             diagnostics = builder.ToImmutable();
 
@@ -160,10 +177,23 @@ partial class RelayCommandGenerator
                 ? commandInfo.DelegateType
                 : $"{commandInfo.DelegateType}<{string.Join(", ", commandInfo.DelegateTypeArguments)}>";
 
+            // Prepare the forwarded field attributes, if any
+            ImmutableArray<AttributeListSyntax> forwardedFieldAttributes =
+                commandInfo.ForwardedFieldAttributes
+                .Select(static a => AttributeList(SingletonSeparatedList(a.GetSyntax())))
+                .ToImmutableArray();
+
+            // Also prepare any forwarded property attributes
+            ImmutableArray<AttributeListSyntax> forwardedPropertyAttributes =
+                commandInfo.ForwardedPropertyAttributes
+                .Select(static a => AttributeList(SingletonSeparatedList(a.GetSyntax())))
+                .ToImmutableArray();
+
             // Construct the generated field as follows:
             //
             // /// <summary>The backing field for <see cref="<COMMAND_PROPERTY_NAME>"/></summary>
             // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
+            // <FORWARDED_ATTRIBUTES>
             // private <COMMAND_TYPE>? <COMMAND_FIELD_NAME>;
             FieldDeclarationSyntax fieldDeclaration =
                 FieldDeclaration(
@@ -176,7 +206,8 @@ partial class RelayCommandGenerator
                         .AddArgumentListArguments(
                             AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(RelayCommandGenerator).FullName))),
                             AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(RelayCommandGenerator).Assembly.GetName().Version.ToString()))))))
-                    .WithOpenBracketToken(Token(TriviaList(Comment($"/// <summary>The backing field for <see cref=\"{commandInfo.PropertyName}\"/>.</summary>")), SyntaxKind.OpenBracketToken, TriviaList())));
+                    .WithOpenBracketToken(Token(TriviaList(Comment($"/// <summary>The backing field for <see cref=\"{commandInfo.PropertyName}\"/>.</summary>")), SyntaxKind.OpenBracketToken, TriviaList())))
+                .AddAttributeLists(forwardedFieldAttributes.ToArray());
 
             // Prepares the argument to pass the underlying method to invoke
             using ImmutableArrayBuilder<ArgumentSyntax> commandCreationArguments = ImmutableArrayBuilder<ArgumentSyntax>.Rent();
@@ -265,6 +296,7 @@ partial class RelayCommandGenerator
             // /// <summary>Gets an <see cref="<COMMAND_INTERFACE_TYPE>" instance wrapping <see cref="<METHOD_NAME>"/> and <see cref="<OPTIONAL_CAN_EXECUTE>"/>.</summary>
             // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
             // [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+            // <FORWARDED_ATTRIBUTES>
             // public <COMMAND_TYPE> <COMMAND_PROPERTY_NAME> => <COMMAND_FIELD_NAME> ??= new <RELAY_COMMAND_TYPE>(<COMMAND_CREATION_ARGUMENTS>);
             PropertyDeclarationSyntax propertyDeclaration =
                 PropertyDeclaration(
@@ -282,6 +314,7 @@ partial class RelayCommandGenerator
                         SyntaxKind.OpenBracketToken,
                         TriviaList())),
                     AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage")))))
+                .AddAttributeLists(forwardedPropertyAttributes.ToArray())
                 .WithExpressionBody(
                     ArrowExpressionClause(
                         AssignmentExpression(
@@ -897,6 +930,76 @@ partial class RelayCommandGenerator
             canExecuteExpressionType = null;
 
             return false;
+        }
+
+        /// <summary>
+        /// Gathers all forwarded attributes for the generated field and property.
+        /// </summary>
+        /// <param name="methodSymbol">The input <see cref="IMethodSymbol"/> instance to process.</param>
+        /// <param name="semanticModel">The <see cref="SemanticModel"/> instance for the current run.</param>
+        /// <param name="token">The cancellation token for the current operation.</param>
+        /// <param name="diagnostics">The current collection of gathered diagnostics.</param>
+        /// <param name="fieldAttributes">The resulting field attributes to forward.</param>
+        /// <param name="propertyAttributes">The resulting property attributes to forward.</param>
+        private static void GatherForwardedAttributes(
+            IMethodSymbol methodSymbol,
+            SemanticModel semanticModel,
+            CancellationToken token,
+            in ImmutableArrayBuilder<DiagnosticInfo> diagnostics,
+            out ImmutableArray<AttributeInfo> fieldAttributes,
+            out ImmutableArray<AttributeInfo> propertyAttributes)
+        {
+            using ImmutableArrayBuilder<AttributeInfo> fieldAttributesInfo = ImmutableArrayBuilder<AttributeInfo>.Rent();
+            using ImmutableArrayBuilder<AttributeInfo> propertyAttributesInfo = ImmutableArrayBuilder<AttributeInfo>.Rent();
+
+            foreach (SyntaxReference syntaxReference in methodSymbol.DeclaringSyntaxReferences)
+            {
+                // Try to get the target method declaration syntax node
+                if (syntaxReference.GetSyntax(token) is not MethodDeclarationSyntax methodDeclaration)
+                {
+                    continue;
+                }
+
+                // Gather explicit forwarded attributes info
+                foreach (AttributeListSyntax attributeList in methodDeclaration.AttributeLists)
+                {
+                    // Same as in the [ObservableProperty] generator, except we're also looking for fields here
+                    if (attributeList.Target?.Identifier.Kind() is not (SyntaxKind.PropertyKeyword or SyntaxKind.FieldKeyword))
+                    {
+                        continue;
+                    }
+
+                    foreach (AttributeSyntax attribute in attributeList.Attributes)
+                    {
+                        // Get the symbol info for the attribute (once again just like in the [ObservableProperty] generator)
+                        if (!semanticModel.GetSymbolInfo(attribute, token).TryGetAttributeTypeSymbol(out INamedTypeSymbol? attributeTypeSymbol))
+                        {
+                            diagnostics.Add(
+                                InvalidFieldOrPropertyTargetedAttributeOnRelayCommandMethod,
+                                attribute,
+                                methodSymbol,
+                                attribute.Name);
+
+                            continue;
+                        }
+
+                        AttributeInfo attributeInfo = AttributeInfo.From(attributeTypeSymbol, semanticModel, attribute.ArgumentList?.Arguments ?? Enumerable.Empty<AttributeArgumentSyntax>(), token);
+
+                        // Add the new attribute info to the right builder
+                        if (attributeList.Target?.Identifier.Kind() is SyntaxKind.FieldKeyword)
+                        {
+                            fieldAttributesInfo.Add(attributeInfo);
+                        }
+                        else
+                        {
+                            propertyAttributesInfo.Add(attributeInfo);
+                        }
+                    }
+                }
+            }
+
+            fieldAttributes = fieldAttributesInfo.ToImmutable();
+            propertyAttributes = propertyAttributesInfo.ToImmutable();
         }
     }
 }
