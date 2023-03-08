@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using Microsoft.CodeAnalysis;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators.Extensions;
@@ -26,8 +25,16 @@ internal static class SymbolInfoExtensions
     /// </remarks>
     public static bool TryGetAttributeTypeSymbol(this SymbolInfo symbolInfo, [NotNullWhen(true)] out INamedTypeSymbol? typeSymbol)
     {
-        if ((symbolInfo.Symbol ?? symbolInfo.CandidateSymbols.SingleOrDefault()) is not ISymbol attributeSymbol ||
-            (attributeSymbol as INamedTypeSymbol ?? attributeSymbol.ContainingType) is not INamedTypeSymbol resultingSymbol)
+        ISymbol? attributeSymbol = symbolInfo.Symbol;
+
+        // If no symbol is selected and there is a single candidate symbol, use that
+        if (attributeSymbol is null && symbolInfo.CandidateSymbols is [ISymbol candidateSymbol])
+        {
+            attributeSymbol = candidateSymbol;
+        }
+
+        // Extract the symbol from either the current one or the containing type
+        if ((attributeSymbol as INamedTypeSymbol ?? attributeSymbol?.ContainingType) is not INamedTypeSymbol resultingSymbol)
         {
             typeSymbol = null;
 
