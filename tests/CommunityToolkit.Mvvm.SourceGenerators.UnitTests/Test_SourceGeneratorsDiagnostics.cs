@@ -1672,6 +1672,59 @@ public class Test_SourceGeneratorsDiagnostics
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0035");
     }
 
+    [TestMethod]
+    public void InvalidPropertyTargetedAttributeOnRelayCommandMethod_MissingUsingDirective()
+    {
+        string source = """
+            using System;
+            using CommunityToolkit.Mvvm.Input;
+
+            namespace MyApp
+            {
+                public partial class MyViewModel
+                {
+                    [RelayCommand]
+                    [property: MyTest]
+                    private void Test()
+                    {
+                    }
+                }
+            }
+
+            namespace MyAttributes
+            {
+                [AttributeUsage(AttributeTargets.Property)]
+                public class MyTestAttribute : Attribute
+                {
+                }
+            }
+            """;
+
+        VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0036");
+    }
+
+    [TestMethod]
+    public void InvalidPropertyTargetedAttributeOnRelayCommandMethod_TypoInAttributeName()
+    {
+        string source = """
+            using CommunityToolkit.Mvvm.Input;
+
+            namespace MyApp
+            {
+                public partial class MyViewModel
+                {
+                    [RelayCommand]
+                    [property: Fbuifbweif]
+                    private void Test()
+                    {
+                    }
+                }
+            }
+            """;
+
+        VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0036");
+    }
+
     /// <summary>
     /// Verifies the diagnostic errors for a given analyzer, and that all available source generators can run successfully with the input source (including subsequent compilation).
     /// </summary>
