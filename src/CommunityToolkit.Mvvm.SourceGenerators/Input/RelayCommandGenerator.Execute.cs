@@ -964,7 +964,7 @@ partial class RelayCommandGenerator
                 foreach (AttributeListSyntax attributeList in methodDeclaration.AttributeLists)
                 {
                     // Same as in the [ObservableProperty] generator, except we're also looking for fields here
-                    if (attributeList.Target?.Identifier.Kind() is not (SyntaxKind.PropertyKeyword or SyntaxKind.FieldKeyword))
+                    if (attributeList.Target?.Identifier is not SyntaxToken(SyntaxKind.PropertyKeyword or SyntaxKind.FieldKeyword))
                     {
                         continue;
                     }
@@ -986,7 +986,7 @@ partial class RelayCommandGenerator
                         AttributeInfo attributeInfo = AttributeInfo.From(attributeTypeSymbol, semanticModel, attribute.ArgumentList?.Arguments ?? Enumerable.Empty<AttributeArgumentSyntax>(), token);
 
                         // Add the new attribute info to the right builder
-                        if (attributeList.Target?.Identifier.Kind() is SyntaxKind.FieldKeyword)
+                        if (attributeList.Target?.Identifier is SyntaxToken(SyntaxKind.FieldKeyword))
                         {
                             fieldAttributesInfo.Add(attributeInfo);
                         }
