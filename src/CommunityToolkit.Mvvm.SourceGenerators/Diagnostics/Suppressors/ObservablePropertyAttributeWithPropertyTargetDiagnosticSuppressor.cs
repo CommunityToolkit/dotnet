@@ -3,7 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections.Immutable;
-using System.Linq;
+using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -19,7 +19,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators;
 /// <para>
 /// That is, this diagnostic suppressor will suppress the following diagnostic:
 /// <code>
-/// public class MyViewModel : ObservableObject
+/// public partial class MyViewModel : ObservableObject
 /// {
 ///     [ObservableProperty]
 ///     [property: JsonPropertyName("Name")]
@@ -53,7 +53,7 @@ public sealed class ObservablePropertyAttributeWithPropertyTargetDiagnosticSuppr
                 // Check if the field is using [ObservableProperty], in which case we should suppress the warning
                 if (declaredSymbol is IFieldSymbol fieldSymbol &&
                     semanticModel.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute") is INamedTypeSymbol observablePropertySymbol &&
-                    fieldSymbol.GetAttributes().Select(attribute => attribute.AttributeClass).Contains(observablePropertySymbol, SymbolEqualityComparer.Default))
+                    fieldSymbol.HasAttributeWithType(observablePropertySymbol))
                 {
                     context.ReportSuppression(Suppression.Create(PropertyAttributeListForObservablePropertyField, diagnostic));
                 }
