@@ -40,7 +40,13 @@ public sealed partial class RelayCommandGenerator : IIncrementalGenerator
                     // Get the hierarchy info for the target symbol, and try to gather the command info
                     HierarchyInfo? hierarchy = HierarchyInfo.From(methodSymbol.ContainingType);
 
-                    _ = Execute.TryGetInfo(methodSymbol, context.Attributes[0], out CommandInfo? commandInfo, out ImmutableArray<DiagnosticInfo> diagnostics);
+                    _ = Execute.TryGetInfo(
+                        methodSymbol,
+                        context.Attributes[0],
+                        context.SemanticModel,
+                        token,
+                        out CommandInfo? commandInfo,
+                        out ImmutableArray<DiagnosticInfo> diagnostics);
 
                     return (Hierarchy: hierarchy, new Result<CommandInfo?>(commandInfo, diagnostics));
                 })

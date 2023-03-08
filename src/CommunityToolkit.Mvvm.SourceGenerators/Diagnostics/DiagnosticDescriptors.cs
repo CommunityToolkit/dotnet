@@ -589,4 +589,20 @@ internal static class DiagnosticDescriptors
         isEnabledByDefault: true,
         description: "All attributes targeting the generated property for a field annotated with [ObservableProperty] must correctly be resolved to valid types.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0035");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a method with <c>[RelayCommand]</c> is using an invalid attribute targeting the field or property.
+    /// <para>
+    /// Format: <c>"The method {0} annotated with [RelayCommand] is using attribute "{1}" which was not recognized as a valid type (are you missing a using directive?)"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor InvalidFieldOrPropertyTargetedAttributeOnRelayCommandMethod = new DiagnosticDescriptor(
+        id: "MVVMTK0036",
+        title: "Invalid field targeted attribute type",
+        messageFormat: "The method {0} annotated with [RelayCommand] is using attribute \"{1}\" which was not recognized as a valid type (are you missing a using directive?)",
+        category: typeof(RelayCommandGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "All attributes targeting the generated field or property for a method annotated with [RelayCommand] must correctly be resolved to valid types.",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0036");
 }

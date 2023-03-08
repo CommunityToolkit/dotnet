@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
@@ -22,6 +23,8 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
 /// <param name="AllowConcurrentExecutions">Whether or not concurrent executions have been enabled.</param>
 /// <param name="FlowExceptionsToTaskScheduler">Whether or not exceptions should flow to the task scheduler.</param>
 /// <param name="IncludeCancelCommand">Whether or not to also generate a cancel command.</param>
+/// <param name="ForwardedFieldAttributes">The sequence of forwarded attributes for the generated field.</param>
+/// <param name="ForwardedPropertyAttributes">The sequence of forwarded attributes for the generated property.</param>
 internal sealed record CommandInfo(
     string MethodName,
     string FieldName,
@@ -35,4 +38,6 @@ internal sealed record CommandInfo(
     CanExecuteExpressionType? CanExecuteExpressionType,
     bool AllowConcurrentExecutions,
     bool FlowExceptionsToTaskScheduler,
-    bool IncludeCancelCommand);
+    bool IncludeCancelCommand,
+    EquatableArray<AttributeInfo> ForwardedFieldAttributes,
+    EquatableArray<AttributeInfo> ForwardedPropertyAttributes);
