@@ -193,7 +193,7 @@ partial class ObservablePropertyGenerator
                 // Only look for attribute lists explicitly targeting the (generated) property. Roslyn will normally emit a
                 // CS0657 warning (invalid target), but that is automatically suppressed by a dedicated diagnostic suppressor
                 // that recognizes uses of this target specifically to support [ObservableProperty].
-                if (attributeList.Target?.Identifier.Kind() is not SyntaxKind.PropertyKeyword)
+                if (attributeList.Target?.Identifier is not SyntaxToken(SyntaxKind.PropertyKeyword))
                 {
                     continue;
                 }
