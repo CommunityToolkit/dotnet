@@ -969,48 +969,51 @@ partial class RelayCommandGenerator
                 in ImmutableArrayBuilder<AttributeInfo> fieldAttributesInfo,
                 in ImmutableArrayBuilder<AttributeInfo> propertyAttributesInfo)
             {
-                foreach (SyntaxReference syntaxReference in methodSymbol.DeclaringSyntaxReferences)
+                // Get the single syntax reference for the input method symbol (there should be only one)
+                if (methodSymbol.DeclaringSyntaxReferences is not [SyntaxReference syntaxReference])
                 {
-                    // Try to get the target method declaration syntax node
-                    if (syntaxReference.GetSyntax(token) is not MethodDeclarationSyntax methodDeclaration)
+                    return;
+                }
+
+                // Try to get the target method declaration syntax node
+                if (syntaxReference.GetSyntax(token) is not MethodDeclarationSyntax methodDeclaration)
+                {
+                    return;
+                }
+
+                // Gather explicit forwarded attributes info
+                foreach (AttributeListSyntax attributeList in methodDeclaration.AttributeLists)
+                {
+                    // Same as in the [ObservableProperty] generator, except we're also looking for fields here
+                    if (attributeList.Target?.Identifier is not SyntaxToken(SyntaxKind.PropertyKeyword or SyntaxKind.FieldKeyword))
                     {
                         continue;
                     }
 
-                    // Gather explicit forwarded attributes info
-                    foreach (AttributeListSyntax attributeList in methodDeclaration.AttributeLists)
+                    foreach (AttributeSyntax attribute in attributeList.Attributes)
                     {
-                        // Same as in the [ObservableProperty] generator, except we're also looking for fields here
-                        if (attributeList.Target?.Identifier is not SyntaxToken(SyntaxKind.PropertyKeyword or SyntaxKind.FieldKeyword))
+                        // Get the symbol info for the attribute (once again just like in the [ObservableProperty] generator)
+                        if (!semanticModel.GetSymbolInfo(attribute, token).TryGetAttributeTypeSymbol(out INamedTypeSymbol? attributeTypeSymbol))
                         {
+                            diagnostics.Add(
+                                InvalidFieldOrPropertyTargetedAttributeOnRelayCommandMethod,
+                                attribute,
+                                methodSymbol,
+                                attribute.Name);
+
                             continue;
                         }
 
-                        foreach (AttributeSyntax attribute in attributeList.Attributes)
+                        AttributeInfo attributeInfo = AttributeInfo.From(attributeTypeSymbol, semanticModel, attribute.ArgumentList?.Arguments ?? Enumerable.Empty<AttributeArgumentSyntax>(), token);
+
+                        // Add the new attribute info to the right builder
+                        if (attributeList.Target?.Identifier is SyntaxToken(SyntaxKind.FieldKeyword))
                         {
-                            // Get the symbol info for the attribute (once again just like in the [ObservableProperty] generator)
-                            if (!semanticModel.GetSymbolInfo(attribute, token).TryGetAttributeTypeSymbol(out INamedTypeSymbol? attributeTypeSymbol))
-                            {
-                                diagnostics.Add(
-                                    InvalidFieldOrPropertyTargetedAttributeOnRelayCommandMethod,
-                                    attribute,
-                                    methodSymbol,
-                                    attribute.Name);
-
-                                continue;
-                            }
-
-                            AttributeInfo attributeInfo = AttributeInfo.From(attributeTypeSymbol, semanticModel, attribute.ArgumentList?.Arguments ?? Enumerable.Empty<AttributeArgumentSyntax>(), token);
-
-                            // Add the new attribute info to the right builder
-                            if (attributeList.Target?.Identifier is SyntaxToken(SyntaxKind.FieldKeyword))
-                            {
-                                fieldAttributesInfo.Add(attributeInfo);
-                            }
-                            else
-                            {
-                                propertyAttributesInfo.Add(attributeInfo);
-                            }
+                            fieldAttributesInfo.Add(attributeInfo);
+                        }
+                        else
+                        {
+                            propertyAttributesInfo.Add(attributeInfo);
                         }
                     }
                 }
