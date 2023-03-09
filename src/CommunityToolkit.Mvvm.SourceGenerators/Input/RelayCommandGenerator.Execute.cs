@@ -961,50 +961,73 @@ partial class RelayCommandGenerator
             using ImmutableArrayBuilder<AttributeInfo> fieldAttributesInfo = ImmutableArrayBuilder<AttributeInfo>.Rent();
             using ImmutableArrayBuilder<AttributeInfo> propertyAttributesInfo = ImmutableArrayBuilder<AttributeInfo>.Rent();
 
-            foreach (SyntaxReference syntaxReference in methodSymbol.DeclaringSyntaxReferences)
+            static void GatherForwardedAttributes(
+                IMethodSymbol methodSymbol,
+                SemanticModel semanticModel,
+                CancellationToken token,
+                in ImmutableArrayBuilder<DiagnosticInfo> diagnostics,
+                in ImmutableArrayBuilder<AttributeInfo> fieldAttributesInfo,
+                in ImmutableArrayBuilder<AttributeInfo> propertyAttributesInfo)
             {
-                // Try to get the target method declaration syntax node
-                if (syntaxReference.GetSyntax(token) is not MethodDeclarationSyntax methodDeclaration)
+                foreach (SyntaxReference syntaxReference in methodSymbol.DeclaringSyntaxReferences)
                 {
-                    continue;
-                }
-
-                // Gather explicit forwarded attributes info
-                foreach (AttributeListSyntax attributeList in methodDeclaration.AttributeLists)
-                {
-                    // Same as in the [ObservableProperty] generator, except we're also looking for fields here
-                    if (attributeList.Target?.Identifier is not SyntaxToken(SyntaxKind.PropertyKeyword or SyntaxKind.FieldKeyword))
+                    // Try to get the target method declaration syntax node
+                    if (syntaxReference.GetSyntax(token) is not MethodDeclarationSyntax methodDeclaration)
                     {
                         continue;
                     }
 
-                    foreach (AttributeSyntax attribute in attributeList.Attributes)
+                    // Gather explicit forwarded attributes info
+                    foreach (AttributeListSyntax attributeList in methodDeclaration.AttributeLists)
                     {
-                        // Get the symbol info for the attribute (once again just like in the [ObservableProperty] generator)
-                        if (!semanticModel.GetSymbolInfo(attribute, token).TryGetAttributeTypeSymbol(out INamedTypeSymbol? attributeTypeSymbol))
+                        // Same as in the [ObservableProperty] generator, except we're also looking for fields here
+                        if (attributeList.Target?.Identifier is not SyntaxToken(SyntaxKind.PropertyKeyword or SyntaxKind.FieldKeyword))
                         {
-                            diagnostics.Add(
-                                InvalidFieldOrPropertyTargetedAttributeOnRelayCommandMethod,
-                                attribute,
-                                methodSymbol,
-                                attribute.Name);
-
                             continue;
                         }
 
-                        AttributeInfo attributeInfo = AttributeInfo.From(attributeTypeSymbol, semanticModel, attribute.ArgumentList?.Arguments ?? Enumerable.Empty<AttributeArgumentSyntax>(), token);
+                        foreach (AttributeSyntax attribute in attributeList.Attributes)
+                        {
+                            // Get the symbol info for the attribute (once again just like in the [ObservableProperty] generator)
+                            if (!semanticModel.GetSymbolInfo(attribute, token).TryGetAttributeTypeSymbol(out INamedTypeSymbol? attributeTypeSymbol))
+                            {
+                                diagnostics.Add(
+                                    InvalidFieldOrPropertyTargetedAttributeOnRelayCommandMethod,
+                                    attribute,
+                                    methodSymbol,
+                                    attribute.Name);
 
-                        // Add the new attribute info to the right builder
-                        if (attributeList.Target?.Identifier is SyntaxToken(SyntaxKind.FieldKeyword))
-                        {
-                            fieldAttributesInfo.Add(attributeInfo);
-                        }
-                        else
-                        {
-                            propertyAttributesInfo.Add(attributeInfo);
+                                continue;
+                            }
+
+                            AttributeInfo attributeInfo = AttributeInfo.From(attributeTypeSymbol, semanticModel, attribute.ArgumentList?.Arguments ?? Enumerable.Empty<AttributeArgumentSyntax>(), token);
+
+                            // Add the new attribute info to the right builder
+                            if (attributeList.Target?.Identifier is SyntaxToken(SyntaxKind.FieldKeyword))
+                            {
+                                fieldAttributesInfo.Add(attributeInfo);
+                            }
+                            else
+                            {
+                                propertyAttributesInfo.Add(attributeInfo);
+                            }
                         }
                     }
                 }
+            }
+
+            // Gather attributes from the method declaration
+            GatherForwardedAttributes(methodSymbol, semanticModel, token, in diagnostics, in fieldAttributesInfo, in propertyAttributesInfo);
+
+            // If the method is a partial definition, also gather attributes from the implementation part
+            if (methodSymbol is { IsPartialDefinition: true, PartialImplementationPart: { } partialImplementation })
+            {
+                GatherForwardedAttributes(partialImplementation, semanticModel, token, in diagnostics, in fieldAttributesInfo, in propertyAttributesInfo);
+            }
+            else if (methodSymbol is { IsPartialDefinition: false, PartialDefinitionPart: { } partialDefinition })
+            {
+                // If the method is a partial implementation, also gather attributes from the definition part
+                GatherForwardedAttributes(partialDefinition, semanticModel, token, in diagnostics, in fieldAttributesInfo, in propertyAttributesInfo);
             }
 
             fieldAttributes = fieldAttributesInfo.ToImmutable();
