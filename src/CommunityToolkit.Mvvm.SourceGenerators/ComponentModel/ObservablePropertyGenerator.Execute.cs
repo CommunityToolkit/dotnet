@@ -193,7 +193,7 @@ partial class ObservablePropertyGenerator
                 // Only look for attribute lists explicitly targeting the (generated) property. Roslyn will normally emit a
                 // CS0657 warning (invalid target), but that is automatically suppressed by a dedicated diagnostic suppressor
                 // that recognizes uses of this target specifically to support [ObservableProperty].
-                if (attributeList.Target?.Identifier.Kind() is not SyntaxKind.PropertyKeyword)
+                if (attributeList.Target?.Identifier is not SyntaxToken(SyntaxKind.PropertyKeyword))
                 {
                     continue;
                 }
@@ -214,12 +214,7 @@ partial class ObservablePropertyGenerator
                     // There is no need to validate anything here: the attribute will be forwarded as is, and then Roslyn will validate on the
                     // generated property. Users will get the same validation they'd have had directly over the field. The only drawback is the
                     // lack of IntelliSense when constructing attributes over the field, but this is the best we can do from this end anyway.
-                    SymbolInfo attributeSymbolInfo = semanticModel.GetSymbolInfo(attribute, token);
-
-                    // Check if the attribute type can be resolved, and emit a diagnostic if that is not the case. This happens if eg. the
-                    // attribute type is spelled incorrectly, or if a user is missing the using directive for the attribute type being used.
-                    if ((attributeSymbolInfo.Symbol ?? attributeSymbolInfo.CandidateSymbols.SingleOrDefault()) is not ISymbol attributeSymbol ||
-                        (attributeSymbol as INamedTypeSymbol ?? attributeSymbol.ContainingType) is not INamedTypeSymbol attributeTypeSymbol)
+                    if (!semanticModel.GetSymbolInfo(attribute, token).TryGetAttributeTypeSymbol(out INamedTypeSymbol? attributeTypeSymbol))
                     {
                         builder.Add(
                             InvalidPropertyTargetedAttributeOnObservablePropertyField,

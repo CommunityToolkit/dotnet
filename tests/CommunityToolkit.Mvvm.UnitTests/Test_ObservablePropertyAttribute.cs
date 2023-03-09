@@ -1611,13 +1611,13 @@ public partial class Test_ObservablePropertyAttribute
         private int someComplexRandomAttribute;
     }
 
-    [AttributeUsage(AttributeTargets.Property)]
-    private sealed class TestAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    public sealed class TestAttribute : Attribute
     {
     }
 
-    [AttributeUsage(AttributeTargets.Property)]
-    private sealed class PropertyInfoAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    public sealed class PropertyInfoAttribute : Attribute
     {
         public PropertyInfoAttribute(object? o, Type t, bool flag, double d, string[] names, object[] objects)
         {

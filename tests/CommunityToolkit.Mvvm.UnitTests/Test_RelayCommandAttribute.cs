@@ -4,10 +4,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -565,6 +568,97 @@ public partial class Test_RelayCommandAttribute
         Assert.IsTrue(model.DoSomething3Command.CanExecute((0, "Hello")));
     }
 
+    [TestMethod]
+    public void Test_RelayCommandAttribute_WithExplicitAttributesForFieldAndProperty()
+    {
+        FieldInfo fooField = typeof(MyViewModelWithExplicitFieldAndPropertyAttributes).GetField("fooCommand", BindingFlags.Instance | BindingFlags.NonPublic)!;
+
+        Assert.IsNotNull(fooField.GetCustomAttribute<RequiredAttribute>());
+        Assert.IsNotNull(fooField.GetCustomAttribute<MinLengthAttribute>());
+        Assert.AreEqual(fooField.GetCustomAttribute<MinLengthAttribute>()!.Length, 1);
+        Assert.IsNotNull(fooField.GetCustomAttribute<MaxLengthAttribute>());
+        Assert.AreEqual(fooField.GetCustomAttribute<MaxLengthAttribute>()!.Length, 100);
+
+        PropertyInfo fooProperty = typeof(MyViewModelWithExplicitFieldAndPropertyAttributes).GetProperty("FooCommand")!;
+
+        Assert.IsNotNull(fooProperty.GetCustomAttribute<RequiredAttribute>());
+        Assert.IsNotNull(fooProperty.GetCustomAttribute<MinLengthAttribute>());
+        Assert.AreEqual(fooProperty.GetCustomAttribute<MinLengthAttribute>()!.Length, 1);
+        Assert.IsNotNull(fooProperty.GetCustomAttribute<MaxLengthAttribute>());
+        Assert.AreEqual(fooProperty.GetCustomAttribute<MaxLengthAttribute>()!.Length, 100);
+
+        PropertyInfo barProperty = typeof(MyViewModelWithExplicitFieldAndPropertyAttributes).GetProperty("BarCommand")!;
+
+        Assert.IsNotNull(barProperty.GetCustomAttribute<JsonPropertyNameAttribute>());
+        Assert.AreEqual(barProperty.GetCustomAttribute<JsonPropertyNameAttribute>()!.Name, "bar");
+        Assert.IsNotNull(barProperty.GetCustomAttribute<XmlIgnoreAttribute>());
+
+        PropertyInfo bazProperty = typeof(MyViewModelWithExplicitFieldAndPropertyAttributes).GetProperty("BazCommand")!;
+
+        Assert.IsNotNull(bazProperty.GetCustomAttribute<Test_ObservablePropertyAttribute.TestAttribute>());
+
+        static void ValidateTestAttribute(TestValidationAttribute testAttribute)
+        {
+            Assert.IsNotNull(testAttribute);
+            Assert.IsNull(testAttribute.O);
+            Assert.AreEqual(testAttribute.T, typeof(MyViewModelWithExplicitFieldAndPropertyAttributes));
+            Assert.AreEqual(testAttribute.Flag, true);
+            Assert.AreEqual(testAttribute.D, 6.28);
+            CollectionAssert.AreEqual(testAttribute.Names, new[] { "Bob", "Ross" });
+
+            object[]? nestedArray = (object[]?)testAttribute.NestedArray;
+
+            Assert.IsNotNull(nestedArray);
+            Assert.AreEqual(nestedArray!.Length, 3);
+            Assert.AreEqual(nestedArray[0], 1);
+            Assert.AreEqual(nestedArray[1], "Hello");
+            Assert.IsTrue(nestedArray[2] is int[]);
+            CollectionAssert.AreEqual((int[])nestedArray[2], new[] { 2, 3, 4 });
+
+            Assert.AreEqual(testAttribute.Animal, Test_ObservablePropertyAttribute.Animal.Llama);
+        }
+
+        FieldInfo fooBarField = typeof(MyViewModelWithExplicitFieldAndPropertyAttributes).GetField("fooBarCommand", BindingFlags.Instance | BindingFlags.NonPublic)!;
+
+        ValidateTestAttribute(fooBarField.GetCustomAttribute<TestValidationAttribute>()!);
+
+        PropertyInfo fooBarProperty = typeof(MyViewModelWithExplicitFieldAndPropertyAttributes).GetProperty("FooBarCommand")!;
+
+        ValidateTestAttribute(fooBarProperty.GetCustomAttribute<TestValidationAttribute>()!);
+
+        FieldInfo barBazField = typeof(MyViewModelWithExplicitFieldAndPropertyAttributes).GetField("barBazCommand", BindingFlags.Instance | BindingFlags.NonPublic)!;
+
+        Assert.IsNotNull(barBazField.GetCustomAttribute<Test_ObservablePropertyAttribute.TestAttribute>());
+
+        PropertyInfo barBazCommand = typeof(MyViewModelWithExplicitFieldAndPropertyAttributes).GetProperty("BarBazCommand")!;
+
+        Assert.IsNotNull(barBazCommand.GetCustomAttribute<Test_ObservablePropertyAttribute.TestAttribute>());
+
+        Test_ObservablePropertyAttribute.PropertyInfoAttribute testAttribute2 = barBazCommand.GetCustomAttribute<Test_ObservablePropertyAttribute.PropertyInfoAttribute>()!;
+
+        Assert.IsNotNull(testAttribute2);
+        Assert.IsNull(testAttribute2.O);
+        Assert.AreEqual(testAttribute2.T, typeof(MyViewModelWithExplicitFieldAndPropertyAttributes));
+        Assert.AreEqual(testAttribute2.Flag, true);
+        Assert.AreEqual(testAttribute2.D, 6.28);
+        Assert.IsNotNull(testAttribute2.Objects);
+        Assert.IsTrue(testAttribute2.Objects is object[]);
+        Assert.AreEqual(((object[])testAttribute2.Objects).Length, 1);
+        Assert.AreEqual(((object[])testAttribute2.Objects)[0], "Test");
+        CollectionAssert.AreEqual(testAttribute2.Names, new[] { "Bob", "Ross" });
+
+        object[]? nestedArray2 = (object[]?)testAttribute2.NestedArray;
+
+        Assert.IsNotNull(nestedArray2);
+        Assert.AreEqual(nestedArray2!.Length, 4);
+        Assert.AreEqual(nestedArray2[0], 1);
+        Assert.AreEqual(nestedArray2[1], "Hello");
+        Assert.AreEqual(nestedArray2[2], 42);
+        Assert.IsNull(nestedArray2[3]);
+
+        Assert.AreEqual(testAttribute2.Animal, (Test_ObservablePropertyAttribute.Animal)67);
+    }
+
     #region Region
     public class Region
     {
@@ -1037,5 +1131,75 @@ public partial class Test_RelayCommandAttribute
         private void DoSomething3((int A, string? B) parameter)
         {
         }
+    }
+
+    public partial class MyViewModelWithExplicitFieldAndPropertyAttributes
+    {
+        [RelayCommand]
+        [field: Required]
+        [field: MinLength(1)]
+        [field: MaxLength(100)]
+        [property: Required]
+        [property: MinLength(1)]
+        [property: MaxLength(100)]
+        private void Foo()
+        {
+        }
+
+        [RelayCommand]
+        [property: JsonPropertyName("bar")]
+        [property: XmlIgnore]
+        private void Bar()
+        {
+        }
+
+        [RelayCommand]
+        [property: Test_ObservablePropertyAttribute.Test]
+        private async Task BazAsync()
+        {
+            await Task.Yield();
+        }
+
+        [RelayCommand]
+        [field: TestValidation(null, typeof(MyViewModelWithExplicitFieldAndPropertyAttributes), true, 6.28, new[] { "Bob", "Ross" }, NestedArray = new object[] { 1, "Hello", new int[] { 2, 3, 4 } }, Animal = Test_ObservablePropertyAttribute.Animal.Llama)]
+        [property: TestValidation(null, typeof(MyViewModelWithExplicitFieldAndPropertyAttributes), true, 6.28, new[] { "Bob", "Ross" }, NestedArray = new object[] { 1, "Hello", new int[] { 2, 3, 4 } }, Animal = Test_ObservablePropertyAttribute.Animal.Llama)]
+        private void FooBar()
+        {
+        }
+
+        [RelayCommand]
+        [field: Test_ObservablePropertyAttribute.Test]
+        [property: Test_ObservablePropertyAttribute.Test]
+        [property: Test_ObservablePropertyAttribute.PropertyInfo(null, typeof(MyViewModelWithExplicitFieldAndPropertyAttributes), true, 6.28, new[] { "Bob", "Ross" }, new object[] { "Test" }, NestedArray = new object[] { 1, "Hello", 42, null }, Animal = (Test_ObservablePropertyAttribute.Animal)67)]
+        private void BarBaz()
+        {
+        }
+    }
+
+    // Copy of the attribute from Test_ObservablePropertyAttribute, to test nested types
+    private sealed class TestValidationAttribute : ValidationAttribute
+    {
+        public TestValidationAttribute(object? o, Type t, bool flag, double d, string[] names)
+        {
+            O = o;
+            T = t;
+            Flag = flag;
+            D = d;
+            Names = names;
+        }
+
+        public object? O { get; }
+
+        public Type T { get; }
+
+        public bool Flag { get; }
+
+        public double D { get; }
+
+        public string[] Names { get; }
+
+        public object? NestedArray { get; set; }
+
+        public Test_ObservablePropertyAttribute.Animal Animal { get; set; }
     }
 }
