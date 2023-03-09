@@ -26,8 +26,7 @@ internal static class SyntaxNodeExtensions
     public static bool IsFirstSyntaxDeclarationForSymbol(this SyntaxNode syntaxNode, ISymbol symbol)
     {
         return
-            symbol.DeclaringSyntaxReferences.Length > 0 &&
-            symbol.DeclaringSyntaxReferences[0] is SyntaxReference syntaxReference &&
+            symbol.DeclaringSyntaxReferences is [SyntaxReference syntaxReference, ..] &&
             syntaxReference.SyntaxTree == syntaxNode.SyntaxTree &&
             syntaxReference.Span == syntaxNode.Span;
     }
