@@ -322,14 +322,14 @@ public class Test_SourceGeneratorsCodegen
                 {
                     /// <summary>The backing field for <see cref="Test1Command"/>.</summary>
                     [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", "8.1.0.0")]
-                    [global::MyApp.ValueAttribute(0)]
                     [global::MyApp.ValueAttribute(2)]
+                    [global::MyApp.ValueAttribute(0)]
                     private global::CommunityToolkit.Mvvm.Input.RelayCommand? test1Command;
                     /// <summary>Gets an <see cref="global::CommunityToolkit.Mvvm.Input.IRelayCommand"/> instance wrapping <see cref="Test1"/>.</summary>
                     [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", "8.1.0.0")]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-                    [global::MyApp.ValueAttribute(1)]
                     [global::MyApp.ValueAttribute(3)]
+                    [global::MyApp.ValueAttribute(1)]
                     public global::CommunityToolkit.Mvvm.Input.IRelayCommand Test1Command => test1Command ??= new global::CommunityToolkit.Mvvm.Input.RelayCommand(new global::System.Action(Test1));
                 }
             }

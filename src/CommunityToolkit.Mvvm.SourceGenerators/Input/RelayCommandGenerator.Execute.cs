@@ -1016,18 +1016,20 @@ partial class RelayCommandGenerator
                 }
             }
 
-            // Gather attributes from the method declaration
-            GatherForwardedAttributes(methodSymbol, semanticModel, token, in diagnostics, in fieldAttributesInfo, in propertyAttributesInfo);
-
             // If the method is a partial definition, also gather attributes from the implementation part
-            if (methodSymbol is { IsPartialDefinition: true, PartialImplementationPart: { } partialImplementation })
+            if (methodSymbol is { IsPartialDefinition: true } or { PartialDefinitionPart: not null })
             {
+                IMethodSymbol partialDefinition = methodSymbol.PartialDefinitionPart ?? methodSymbol;
+                IMethodSymbol partialImplementation = methodSymbol.PartialImplementationPart ?? methodSymbol;
+
+                // We always give priority to the partial definition, to ensure a predictable and testable ordering
+                GatherForwardedAttributes(partialDefinition, semanticModel, token, in diagnostics, in fieldAttributesInfo, in propertyAttributesInfo);
                 GatherForwardedAttributes(partialImplementation, semanticModel, token, in diagnostics, in fieldAttributesInfo, in propertyAttributesInfo);
             }
-            else if (methodSymbol is { IsPartialDefinition: false, PartialDefinitionPart: { } partialDefinition })
+            else
             {
-                // If the method is a partial implementation, also gather attributes from the definition part
-                GatherForwardedAttributes(partialDefinition, semanticModel, token, in diagnostics, in fieldAttributesInfo, in propertyAttributesInfo);
+                // If the method is not a partial definition/implementation, just gather attributes from the method with no modifications
+                GatherForwardedAttributes(methodSymbol, semanticModel, token, in diagnostics, in fieldAttributesInfo, in propertyAttributesInfo);
             }
 
             fieldAttributes = fieldAttributesInfo.ToImmutable();

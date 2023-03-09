@@ -59,6 +59,15 @@ internal static class SyntaxValueProviderExtensions
                         return null;
                     }
 
+                    // Edge case: if the symbol is a partial method, skip the implementation part and only process the partial method
+                    // definition. This is needed because attributes will be reported as available on both the definition and the
+                    // implementation part. To avoid generating duplicate files, we only give priority to the definition part.
+                    // On Roslyn 4.3+, ForAttributeWithMetadataName will already only return the symbol the attribute was located on.
+                    if (symbol is IMethodSymbol { IsPartialDefinition: false, PartialDefinitionPart: not null })
+                    {
+                        return null;
+                    }
+
                     // Create the GeneratorAttributeSyntaxContext value to pass to the input transform. The attributes array
                     // will only ever have a single value, but that's fine with the attributes the various generators look for.
                     GeneratorAttributeSyntaxContext syntaxContext = new(
