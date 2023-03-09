@@ -659,6 +659,42 @@ public partial class Test_RelayCommandAttribute
         Assert.AreEqual(testAttribute2.Animal, (Test_ObservablePropertyAttribute.Animal)67);
     }
 
+    // See https://github.com/CommunityToolkit/dotnet/issues/632
+    [TestMethod]
+    public void Test_RelayCommandAttribute_WithPartialCommandMethodDefinitions()
+    {
+        ModelWithPartialCommandMethods model = new();
+
+        Assert.IsInstanceOfType<RelayCommand>(model.FooCommand);
+        Assert.IsInstanceOfType<RelayCommand<string>>(model.BarCommand);
+        Assert.IsInstanceOfType<RelayCommand>(model.BazCommand);
+        Assert.IsInstanceOfType<AsyncRelayCommand>(model.FooBarCommand);
+
+        FieldInfo bazField = typeof(ModelWithPartialCommandMethods).GetField("bazCommand", BindingFlags.Instance | BindingFlags.NonPublic)!;
+
+        Assert.IsNotNull(bazField.GetCustomAttribute<RequiredAttribute>());
+        Assert.IsNotNull(bazField.GetCustomAttribute<MinLengthAttribute>());
+        Assert.AreEqual(bazField.GetCustomAttribute<MinLengthAttribute>()!.Length, 1);
+
+        PropertyInfo bazProperty = typeof(ModelWithPartialCommandMethods).GetProperty("BazCommand")!;
+
+        Assert.IsNotNull(bazProperty.GetCustomAttribute<MinLengthAttribute>());
+        Assert.AreEqual(bazProperty.GetCustomAttribute<MinLengthAttribute>()!.Length, 2);
+        Assert.IsNotNull(bazProperty.GetCustomAttribute<XmlIgnoreAttribute>());
+
+        FieldInfo fooBarField = typeof(ModelWithPartialCommandMethods).GetField("fooBarCommand", BindingFlags.Instance | BindingFlags.NonPublic)!;
+
+        Assert.IsNotNull(fooBarField.GetCustomAttribute<RequiredAttribute>());
+        Assert.IsNotNull(fooBarField.GetCustomAttribute<MinLengthAttribute>());
+        Assert.AreEqual(fooBarField.GetCustomAttribute<MinLengthAttribute>()!.Length, 1);
+
+        PropertyInfo fooBarProperty = typeof(ModelWithPartialCommandMethods).GetProperty("FooBarCommand")!;
+
+        Assert.IsNotNull(fooBarProperty.GetCustomAttribute<MinLengthAttribute>());
+        Assert.AreEqual(fooBarProperty.GetCustomAttribute<MinLengthAttribute>()!.Length, 2);
+        Assert.IsNotNull(fooBarProperty.GetCustomAttribute<XmlIgnoreAttribute>());
+    }
+
     #region Region
     public class Region
     {
@@ -1201,5 +1237,45 @@ public partial class Test_RelayCommandAttribute
         public object? NestedArray { get; set; }
 
         public Test_ObservablePropertyAttribute.Animal Animal { get; set; }
+    }
+
+    public partial class ModelWithPartialCommandMethods
+    {
+        [RelayCommand]
+        private partial void Foo();
+
+        private partial void Foo()
+        {
+        }
+
+        private partial void Bar(string name);
+
+        [RelayCommand]
+        private partial void Bar(string name)
+        {
+        }
+
+        [RelayCommand]
+        [field: Required]
+        [property: MinLength(2)]
+        partial void Baz();
+
+        [field: MinLength(1)]
+        [property: XmlIgnore]
+        partial void Baz()
+        {
+        }
+
+        [field: Required]
+        [property: MinLength(2)]
+        private partial Task FooBarAsync();
+
+        [RelayCommand]
+        [field: MinLength(1)]
+        [property: XmlIgnore]
+        private partial Task FooBarAsync()
+        {
+            return Task.CompletedTask;
+        }
     }
 }
