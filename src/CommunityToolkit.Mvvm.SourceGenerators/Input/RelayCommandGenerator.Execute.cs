@@ -430,6 +430,15 @@ partial class RelayCommandGenerator
                         return true;
                     }
 
+                    // If the two method symbols are partial and either is the implementation of the other one, this is allowed
+                    if ((methodSymbol is { IsPartialDefinition: true, PartialImplementationPart: { } partialImplementation } &&
+                         SymbolEqualityComparer.Default.Equals(otherSymbol, partialImplementation)) ||
+                        (otherSymbol is { IsPartialDefinition: true, PartialImplementationPart: { } otherPartialImplementation } &&
+                         SymbolEqualityComparer.Default.Equals(methodSymbol, otherPartialImplementation)))
+                    {
+                        continue;
+                    }
+
                     diagnostics.Add(
                         MultipleRelayCommandMethodOverloadsError,
                         methodSymbol,
