@@ -27,7 +27,7 @@ public sealed partial class RelayCommandGenerator : IIncrementalGenerator
             context.SyntaxProvider
             .ForAttributeWithMetadataName(
                 "CommunityToolkit.Mvvm.Input.RelayCommandAttribute",
-                static (node, _) => node is MethodDeclarationSyntax { Parent: ClassDeclarationSyntax, AttributeLists.Count: > 0 },
+                static (node, _) => node is MethodDeclarationSyntax { Parent: ClassDeclarationSyntax } methodDeclaration && methodDeclaration.HasOrPotentiallyHasAttributeLists(),
                 static (context, token) =>
                 {
                     if (!context.SemanticModel.Compilation.HasLanguageVersionAtLeastEqualTo(LanguageVersion.CSharp8))

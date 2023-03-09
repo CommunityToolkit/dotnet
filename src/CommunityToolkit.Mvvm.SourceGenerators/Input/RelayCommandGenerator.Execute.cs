@@ -430,6 +430,15 @@ partial class RelayCommandGenerator
                         return true;
                     }
 
+                    // If the two method symbols are partial and either is the implementation of the other one, this is allowed
+                    if ((methodSymbol is { IsPartialDefinition: true, PartialImplementationPart: { } partialImplementation } &&
+                         SymbolEqualityComparer.Default.Equals(otherSymbol, partialImplementation)) ||
+                        (otherSymbol is { IsPartialDefinition: true, PartialImplementationPart: { } otherPartialImplementation } &&
+                         SymbolEqualityComparer.Default.Equals(methodSymbol, otherPartialImplementation)))
+                    {
+                        continue;
+                    }
+
                     diagnostics.Add(
                         MultipleRelayCommandMethodOverloadsError,
                         methodSymbol,
@@ -952,12 +961,24 @@ partial class RelayCommandGenerator
             using ImmutableArrayBuilder<AttributeInfo> fieldAttributesInfo = ImmutableArrayBuilder<AttributeInfo>.Rent();
             using ImmutableArrayBuilder<AttributeInfo> propertyAttributesInfo = ImmutableArrayBuilder<AttributeInfo>.Rent();
 
-            foreach (SyntaxReference syntaxReference in methodSymbol.DeclaringSyntaxReferences)
+            static void GatherForwardedAttributes(
+                IMethodSymbol methodSymbol,
+                SemanticModel semanticModel,
+                CancellationToken token,
+                in ImmutableArrayBuilder<DiagnosticInfo> diagnostics,
+                in ImmutableArrayBuilder<AttributeInfo> fieldAttributesInfo,
+                in ImmutableArrayBuilder<AttributeInfo> propertyAttributesInfo)
             {
+                // Get the single syntax reference for the input method symbol (there should be only one)
+                if (methodSymbol.DeclaringSyntaxReferences is not [SyntaxReference syntaxReference])
+                {
+                    return;
+                }
+
                 // Try to get the target method declaration syntax node
                 if (syntaxReference.GetSyntax(token) is not MethodDeclarationSyntax methodDeclaration)
                 {
-                    continue;
+                    return;
                 }
 
                 // Gather explicit forwarded attributes info
@@ -996,6 +1017,22 @@ partial class RelayCommandGenerator
                         }
                     }
                 }
+            }
+
+            // If the method is a partial definition, also gather attributes from the implementation part
+            if (methodSymbol is { IsPartialDefinition: true } or { PartialDefinitionPart: not null })
+            {
+                IMethodSymbol partialDefinition = methodSymbol.PartialDefinitionPart ?? methodSymbol;
+                IMethodSymbol partialImplementation = methodSymbol.PartialImplementationPart ?? methodSymbol;
+
+                // We always give priority to the partial definition, to ensure a predictable and testable ordering
+                GatherForwardedAttributes(partialDefinition, semanticModel, token, in diagnostics, in fieldAttributesInfo, in propertyAttributesInfo);
+                GatherForwardedAttributes(partialImplementation, semanticModel, token, in diagnostics, in fieldAttributesInfo, in propertyAttributesInfo);
+            }
+            else
+            {
+                // If the method is not a partial definition/implementation, just gather attributes from the method with no modifications
+                GatherForwardedAttributes(methodSymbol, semanticModel, token, in diagnostics, in fieldAttributesInfo, in propertyAttributesInfo);
             }
 
             fieldAttributes = fieldAttributesInfo.ToImmutable();
