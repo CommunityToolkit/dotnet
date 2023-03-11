@@ -42,11 +42,25 @@ public class Test_TypeExtensions
     }
 
     [TestMethod]
+    [DataRow("System.Span<>", typeof(Span<>))]
+    [DataRow("System.Collections.Generic.List<>", typeof(List<>))]
+    [DataRow("System.Collections.Generic.Dictionary<,>", typeof(Dictionary<,>))]
+    [DataRow("(,)", typeof(ValueTuple<,>))]
+    [DataRow("(,,,,,)", typeof(ValueTuple<,,,,,>))]
+    [DataRow("CommunityToolkit.Diagnostics.UnitTests.Extensions.Test_TypeExtensions.Animal.Rabbit<>.Foo<>", typeof(Animal.Rabbit<>.Foo<>))]
+    [DataRow("CommunityToolkit.Diagnostics.UnitTests.Extensions.Test_TypeExtensions.Animal.Llama<,>.Foo<>", typeof(Animal.Llama<,>.Foo<>))]
+    public void Test_TypeExtensions_OpenGenericTypes(string name, Type type)
+    {
+        Assert.AreEqual(name, type.ToTypeString());
+    }
+
+    [TestMethod]
     [DataRow("CommunityToolkit.Diagnostics.UnitTests.Extensions.Test_TypeExtensions.Animal", typeof(Animal))]
     [DataRow("CommunityToolkit.Diagnostics.UnitTests.Extensions.Test_TypeExtensions.Animal.Cat", typeof(Animal.Cat))]
     [DataRow("CommunityToolkit.Diagnostics.UnitTests.Extensions.Test_TypeExtensions.Animal.Dog", typeof(Animal.Dog))]
     [DataRow("CommunityToolkit.Diagnostics.UnitTests.Extensions.Test_TypeExtensions.Animal.Rabbit<int?>", typeof(Animal.Rabbit<int?>))]
     [DataRow("CommunityToolkit.Diagnostics.UnitTests.Extensions.Test_TypeExtensions.Animal.Rabbit<string>", typeof(Animal.Rabbit<string>))]
+    [DataRow("CommunityToolkit.Diagnostics.UnitTests.Extensions.Test_TypeExtensions.Animal.Rabbit<CommunityToolkit.Diagnostics.UnitTests.Extensions.Test_TypeExtensions.Animal.Dog>", typeof(Animal.Rabbit<Animal.Dog>))]
     [DataRow("CommunityToolkit.Diagnostics.UnitTests.Extensions.Test_TypeExtensions.Animal.Rabbit<int>.Foo", typeof(Animal.Rabbit<int>.Foo))]
     [DataRow("CommunityToolkit.Diagnostics.UnitTests.Extensions.Test_TypeExtensions.Animal.Rabbit<(string, int)?>.Foo", typeof(Animal.Rabbit<(string, int)?>.Foo))]
     [DataRow("CommunityToolkit.Diagnostics.UnitTests.Extensions.Test_TypeExtensions.Animal.Rabbit<int>.Foo<string>", typeof(Animal.Rabbit<int>.Foo<string>))]
