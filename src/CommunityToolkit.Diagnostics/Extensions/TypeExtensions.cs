@@ -131,7 +131,18 @@ public static class TypeExtensions
                 genericTypeDefinition == typeof(ValueTuple<,,,,,,>) ||
                 genericTypeDefinition == typeof(ValueTuple<,,,,,,,>))
             {
-                IEnumerable<string> formattedTypes = FormatDisplayStringForAllTypes(type.GetGenericArguments());
+                Type[] tupleArguments = type.GetGenericArguments();
+
+                // If the tuple is using open generics, format in the form (,,,) to match other generic type
+                // definitions. Note that it's not possible to have a mix of generic type parameters and
+                // concrete type arguments, so we just need to check the first one to know what to do here.
+                if (tupleArguments[0].IsGenericParameter)
+                {
+                    return $"({new string(',', tupleArguments.Length - 1)})";
+                }
+
+                // If the tuple type is constructed, format it normally in the (T1, T2, ..., TN) format
+                IEnumerable<string> formattedTypes = FormatDisplayStringForAllTypes(tupleArguments);
 
                 return $"({string.Join(", ", formattedTypes)})";
             }
@@ -147,10 +158,19 @@ public static class TypeExtensions
             int genericArgumentsCount = int.Parse(tokens[1]);
             int typeArgumentsOffset = typeArguments.Length - genericTypeOffset - genericArgumentsCount;
             Type[] currentTypeArguments = typeArguments.Slice(typeArgumentsOffset, genericArgumentsCount).ToArray();
-            IEnumerable<string> formattedTypes = FormatDisplayStringForAllTypes(currentTypeArguments);
 
-            // Standard generic types are displayed as Foo<T>
-            displayName = $"{tokens[0]}<{string.Join(", ", formattedTypes)}>";
+            // Special case generic type parameters (same as with tuples)
+            if (currentTypeArguments[0].IsGenericParameter)
+            {
+                displayName = $"{tokens[0]}<{new string(',', currentTypeArguments.Length - 1)}>";
+            }
+            else
+            {
+                IEnumerable<string> formattedTypes = FormatDisplayStringForAllTypes(currentTypeArguments);
+
+                // Standard generic types are displayed as Foo<T>
+                displayName = $"{tokens[0]}<{string.Join(", ", formattedTypes)}>";
+            }
 
             // Track the current offset for the shared generic arguments list
             genericTypeOffset += genericArgumentsCount;
@@ -161,8 +181,10 @@ public static class TypeExtensions
             displayName = type.Name;
         }
 
-        // If the type is nested, recursively format the hierarchy as well
-        if (type.IsNested)
+        // If the type is nested, recursively format the hierarchy as well, unless the type is a generic type parameter. In that case,
+        // the declaring type would return the parent class that defined the generic type parameter. However, the current invocation of
+        // FormatDisplayString has already been invoked recursively while trying to format the parent class, so we need to stop here.
+        if (type.IsNested && !type.IsGenericParameter)
         {
             return $"{FormatDisplayString(type.DeclaringType!, genericTypeOffset, typeArguments)}.{displayName}";
         }
