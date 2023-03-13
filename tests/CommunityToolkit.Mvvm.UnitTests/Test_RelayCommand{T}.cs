@@ -34,16 +34,16 @@ public class Test_RelayCommandOfT
 
         command.NotifyCanExecuteChanged();
 
-        Assert.AreSame(args.Item1, command);
-        Assert.AreSame(args.Item2, EventArgs.Empty);
+        Assert.AreSame(command, args.Item1);
+        Assert.AreSame(EventArgs.Empty, args.Item2);
 
         command.Execute((object)"Hello");
 
-        Assert.AreEqual(text, "Hello");
+        Assert.AreEqual("Hello", text);
 
         command.Execute(null);
 
-        Assert.AreEqual(text, null);
+        Assert.AreEqual(null, text);
     }
 
     [TestMethod]

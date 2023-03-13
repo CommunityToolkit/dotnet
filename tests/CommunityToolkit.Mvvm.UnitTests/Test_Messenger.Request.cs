@@ -38,8 +38,8 @@ partial class Test_Messenger
 
         int result = messenger.Send<NumberRequestMessage>();
 
-        Assert.AreSame(test, recipient);
-        Assert.AreEqual(result, 42);
+        Assert.AreSame(recipient, test);
+        Assert.AreEqual(42, result);
     }
 
     [TestMethod]
@@ -246,9 +246,9 @@ partial class Test_Messenger
             responses.Add(response);
         }
 
-        Assert.AreSame(r1, recipient1);
-        Assert.AreSame(r2, recipient2);
-        Assert.AreSame(r3, recipient3);
+        Assert.AreSame(recipient1, r1);
+        Assert.AreSame(recipient2, r2);
+        Assert.AreSame(recipient3, r3);
 
         CollectionAssert.AreEquivalent(responses, new[] { 1, 2, 3 });
     }

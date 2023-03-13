@@ -222,8 +222,8 @@ public partial class Test_Messenger
 
         _ = messenger.Send(new MessageA { Text = nameof(MessageA) });
 
-        Assert.AreSame(recipient, a);
-        Assert.AreEqual(result, nameof(MessageA));
+        Assert.AreSame(a, recipient);
+        Assert.AreEqual(nameof(MessageA), result);
 
         messenger.Unregister<MessageA>(a);
 
@@ -397,9 +397,9 @@ public partial class Test_Messenger
         ValueChangedMessage<string> message2 = messenger.Send(new ValueChangedMessage<string>("Hello"));
         MessageA message3 = messenger.Send<MessageA>();
 
-        Assert.AreSame(recipient.ReceivedMessage1, message1);
-        Assert.AreSame(recipient.ReceivedMessage2, message2);
-        Assert.AreSame(recipient.ReceivedMessage3, message3);
+        Assert.AreSame(message1, recipient.ReceivedMessage1);
+        Assert.AreSame(message2, recipient.ReceivedMessage2);
+        Assert.AreSame(message3, recipient.ReceivedMessage3);
 
         messenger.UnregisterAll(recipient);
 

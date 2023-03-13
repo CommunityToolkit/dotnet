@@ -44,8 +44,8 @@ public class Test_Dictionary2
             // Verify the key now exists
             Assert.IsTrue(dictionary.ContainsKey(key));
             Assert.IsTrue(dictionary.TryGetValue(key, out obj));
-            Assert.AreSame(obj, value);
-            Assert.AreSame(obj, values[i]);
+            Assert.AreSame(value, obj);
+            Assert.AreSame(values[i], obj);
 
             // Get the key again, should point to the same location
             ref object? value2 = ref dictionary.GetOrAddValueRef(key);

@@ -38,8 +38,8 @@ public class Test_AsyncRelayCommandOfT
 
         command.NotifyCanExecuteChanged();
 
-        Assert.AreSame(args.Item1, command);
-        Assert.AreSame(args.Item2, EventArgs.Empty);
+        Assert.AreSame(command, args.Item1);
+        Assert.AreSame(EventArgs.Empty, args.Item2);
 
         Assert.IsNull(command.ExecutionTask);
         Assert.IsFalse(command.IsRunning);
@@ -47,20 +47,20 @@ public class Test_AsyncRelayCommandOfT
         Task task = command.ExecuteAsync((object)"42");
 
         Assert.IsNotNull(command.ExecutionTask);
-        Assert.AreSame(command.ExecutionTask, task);
+        Assert.AreSame(task, command.ExecutionTask);
         Assert.IsTrue(command.IsRunning);
 
         await task;
 
         Assert.IsFalse(command.IsRunning);
 
-        Assert.AreEqual(ticks, 42);
+        Assert.AreEqual(42, ticks);
 
         command.Execute("2");
 
         await command.ExecutionTask!;
 
-        Assert.AreEqual(ticks, 2);
+        Assert.AreEqual(2, ticks);
 
         ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(new object()), "parameter");
         ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(42), "parameter");
@@ -250,8 +250,8 @@ public class Test_AsyncRelayCommandOfT
 
         command.NotifyCanExecuteChanged();
 
-        Assert.AreSame(args.Item1, command);
-        Assert.AreSame(args.Item2, EventArgs.Empty);
+        Assert.AreSame(command, args.Item1);
+        Assert.AreSame(EventArgs.Empty, args.Item2);
 
         Assert.IsNull(command.ExecutionTask);
         Assert.IsFalse(command.IsRunning);
@@ -259,7 +259,7 @@ public class Test_AsyncRelayCommandOfT
         Task task = command.ExecuteAsync((object)"42");
 
         Assert.IsNotNull(command.ExecutionTask);
-        Assert.AreSame(command.ExecutionTask, task);
+        Assert.AreSame(task, command.ExecutionTask);
         Assert.IsTrue(command.IsRunning);
 
         // The command can't be executed now, as there's a pending operation

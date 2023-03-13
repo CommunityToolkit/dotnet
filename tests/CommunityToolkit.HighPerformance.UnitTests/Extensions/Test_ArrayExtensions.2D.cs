@@ -177,7 +177,7 @@ public partial class Test_ArrayExtensions
         CollectionAssert.AreEqual(array.GetRow(1).ToArray(), new[] { 5, 6, 7, 8 });
 
         // Test an empty array
-        Assert.AreSame(new int[1, 0].GetRow(0).ToArray(), Array.Empty<int>());
+        Assert.AreSame(Array.Empty<int>(), new int[1, 0].GetRow(0).ToArray());
 
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetRow(-1));
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetRow(3));

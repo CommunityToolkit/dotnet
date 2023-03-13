@@ -195,10 +195,10 @@ public class Test_ObservableObject
             model.Data = task;
 
             Assert.IsFalse(task.IsCompleted);
-            Assert.AreEqual(changing.Item1?.PropertyName, nameof(SampleModelWithTask<int>.Data));
+            Assert.AreEqual(nameof(SampleModelWithTask<int>.Data), changing.Item1?.PropertyName);
             Assert.IsNull(changing.Item2);
-            Assert.AreEqual(changed.Item1?.PropertyName, nameof(SampleModelWithTask<int>.Data));
-            Assert.AreSame(changed.Item2, task);
+            Assert.AreEqual(nameof(SampleModelWithTask<int>.Data), changed.Item1?.PropertyName);
+            Assert.AreSame(task, changed.Item2);
 
             changed = default;
 
@@ -207,8 +207,8 @@ public class Test_ObservableObject
             await Task.Delay(100); // Time for the notification to dispatch
 
             Assert.IsTrue(task.IsCompleted);
-            Assert.AreEqual(changed.Item1?.PropertyName, nameof(SampleModel<int>.Data));
-            Assert.AreSame(changed.Item2, task);
+            Assert.AreEqual(nameof(SampleModel<int>.Data), changed.Item1?.PropertyName);
+            Assert.AreSame(task, changed.Item2);
         }
 
         await TestAsync(tcs => tcs.SetResult(42));

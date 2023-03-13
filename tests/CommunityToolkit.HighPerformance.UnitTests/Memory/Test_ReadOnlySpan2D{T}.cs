@@ -792,7 +792,7 @@ public class Test_ReadOnlySpan2DT
 
         CollectionAssert.AreEqual(enumerable.ToArray(), expected);
 
-        Assert.AreSame(default(ReadOnlyRefEnumerable<int>).ToArray(), Array.Empty<int>());
+        Assert.AreSame(Array.Empty<int>(), default(ReadOnlyRefEnumerable<int>).ToArray());
 
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).GetRow(-1));
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).GetRow(2));

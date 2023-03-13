@@ -58,17 +58,17 @@ public class Test_ObservableValidator
 
         model.Name = "Foo";
 
-        Assert.AreEqual(errors.Count, 1);
-        Assert.AreSame(errors[0].Sender, model);
-        Assert.AreEqual(errors[0].Args.PropertyName, nameof(Person.Name));
+        Assert.AreEqual(1, errors.Count);
+        Assert.AreSame(model, errors[0].Sender);
+        Assert.AreEqual(nameof(Person.Name), errors[0].Args.PropertyName);
 
         errors.Clear();
 
         model.Name = "Bar";
 
-        Assert.AreEqual(errors.Count, 1);
-        Assert.AreSame(errors[0].Sender, model);
-        Assert.AreEqual(errors[0].Args.PropertyName, nameof(Person.Name));
+        Assert.AreEqual(1, errors.Count);
+        Assert.AreSame(model, errors[0].Sender);
+        Assert.AreEqual(nameof(Person.Name), errors[0].Args.PropertyName);
 
         errors.Clear();
 

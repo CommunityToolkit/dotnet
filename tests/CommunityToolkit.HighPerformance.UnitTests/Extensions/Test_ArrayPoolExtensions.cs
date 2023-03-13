@@ -41,7 +41,7 @@ public class Test_ArrayPoolExtensions
 
         ArrayPool<int>.Shared.Resize(ref array, array.Length);
 
-        Assert.AreSame(array, backup);
+        Assert.AreSame(backup, array);
     }
 
     [TestMethod]
