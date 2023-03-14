@@ -6,6 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+#if NET6_0_OR_GREATER
+using System.Diagnostics.CodeAnalysis;
+#endif
 using System.Linq;
 using System.Reflection;
 #if NET6_0_OR_GREATER
@@ -1037,6 +1040,17 @@ public partial class Test_ObservablePropertyAttribute
         Assert.IsTrue(model.IsReadOnly);
     }
 
+#if NET6_0_OR_GREATER
+    [TestMethod]
+    public void Test_ObservableProperty_MemberNotNullAttributeIsPresent()
+    {
+        MemberNotNullAttribute? attribute = typeof(ModelWithNonNullableObservableProperty).GetProperty(nameof(ModelWithNonNullableObservableProperty.Name))!.SetMethod!.GetCustomAttribute<MemberNotNullAttribute>();
+
+        Assert.IsNotNull(attribute);
+        CollectionAssert.AreEqual(new[] { nameof(ModelWithNonNullableObservableProperty.name) }, attribute.Members);
+    }
+#endif
+
     public abstract partial class BaseViewModel : ObservableObject
     {
         public string? Content { get; set; }
@@ -1664,4 +1678,19 @@ public partial class Test_ObservablePropertyAttribute
         [ObservableProperty]
         private bool _IsReadOnly;
     }
+
+#if NET6_0_OR_GREATER
+    // See https://github.com/CommunityToolkit/dotnet/issues/645
+    // This viewmodel is here only to double check no warnings are emitted when the attribute is present
+    public partial class ModelWithNonNullableObservableProperty : ObservableObject
+    {
+        public ModelWithNonNullableObservableProperty()
+        {
+            Name = "Bob";
+        }
+
+        [ObservableProperty]
+        internal string name;
+    }
+#endif
 }
