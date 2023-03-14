@@ -112,8 +112,13 @@ partial class ObservablePropertyGenerator
             bool hasOrInheritsClassLevelNotifyDataErrorInfo = false;
             bool hasAnyValidationAttributes = false;
             bool isOldPropertyValueDirectlyReferenced = IsOldPropertyValueDirectlyReferenced(fieldSymbol, propertyName);
-            bool isReferenceType = fieldSymbol.Type.IsReferenceType;
-            bool includeMemberNotNullOnSetAccessor = GetIncludeMemberNotNullOnSetAccessor(fieldSymbol, semanticModel);
+
+            // Get the nullability info for the property
+            GetNullabilityInfo(
+                fieldSymbol,
+                semanticModel,
+                out bool isReferenceTypeOrUnconstraindTypeParameter,
+                out bool includeMemberNotNullOnSetAccessor);
 
             // Track the property changing event for the property, if the type supports it
             if (shouldInvokeOnPropertyChanging)
@@ -262,7 +267,7 @@ partial class ObservablePropertyGenerator
                 notifyRecipients,
                 notifyDataErrorInfo,
                 isOldPropertyValueDirectlyReferenced,
-                isReferenceType,
+                isReferenceTypeOrUnconstraindTypeParameter,
                 includeMemberNotNullOnSetAccessor,
                 forwardedAttributes.ToImmutable());
 
@@ -671,13 +676,24 @@ partial class ObservablePropertyGenerator
         }
 
         /// <summary>
-        /// Checks whether <see cref="MemberNotNullAttribute"/> should be used on the setter.
+        /// Gets the nullability info on the generated property
         /// </summary>
         /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
         /// <param name="semanticModel">The <see cref="SemanticModel"/> instance for the current run.</param>
-        /// <returns>Whether <see cref="MemberNotNullAttribute"/> should be used on the setter.</returns>
-        private static bool GetIncludeMemberNotNullOnSetAccessor(IFieldSymbol fieldSymbol, SemanticModel semanticModel)
+        /// <param name="isReferenceTypeOrUnconstraindTypeParameter">Whether the property type supports nullability.</param>
+        /// <param name="includeMemberNotNullOnSetAccessor">Whether <see cref="MemberNotNullAttribute"/> should be used on the setter.</param>
+        /// <returns></returns>
+        private static void GetNullabilityInfo(
+            IFieldSymbol fieldSymbol,
+            SemanticModel semanticModel,
+            out bool isReferenceTypeOrUnconstraindTypeParameter,
+            out bool includeMemberNotNullOnSetAccessor)
         {
+            // We're using IsValueType here and not IsReferenceType to also cover unconstrained type parameter cases.
+            // This will cover both reference types as well T when the constraints are not struct or unmanaged.
+            // If this is true, it means the field storage can potentially be in a null state (even if not annotated).
+            isReferenceTypeOrUnconstraindTypeParameter = !fieldSymbol.Type.IsValueType;
+
             // This is used to avoid nullability warnings when setting the property from a constructor, in case the field
             // was marked as not nullable. Nullability annotations are assumed to always be enabled to make the logic simpler.
             // Consider this example:
@@ -695,8 +711,10 @@ partial class ObservablePropertyGenerator
             //
             // The [MemberNotNull] attribute is needed on the setter for the generated Name property so that when Name
             // is set, the compiler can determine that the name backing field is also being set (to a non null value).
-            return
-                fieldSymbol.Type is { NullableAnnotation: not NullableAnnotation.Annotated, IsReferenceType: true } &&
+            // Of course, this can only be the case if the field type is also of a type that could be in a null state.
+            includeMemberNotNullOnSetAccessor =
+                isReferenceTypeOrUnconstraindTypeParameter &&
+                fieldSymbol.Type.NullableAnnotation != NullableAnnotation.Annotated &&
                 semanticModel.Compilation.HasAccessibleTypeWithMetadataName("System.Diagnostics.CodeAnalysis.MemberNotNullAttribute");
         }
 
@@ -1001,7 +1019,7 @@ partial class ObservablePropertyGenerator
             // happen when the property is first set to some value that is not null (but the backing field would still be so).
             // As a cheap way to check whether we need to add nullable, we can simply check whether the type name with nullability
             // annotations ends with a '?'. If it doesn't and the type is a reference type, we add it. Otherwise, we keep it.
-            TypeSyntax oldValueTypeSyntax = propertyInfo.IsReferenceType switch
+            TypeSyntax oldValueTypeSyntax = propertyInfo.IsReferenceTypeOrUnconstraindTypeParameter switch
             {
                 true when !propertyInfo.TypeNameWithNullabilityAnnotations.EndsWith("?")
                     => IdentifierName($"{propertyInfo.TypeNameWithNullabilityAnnotations}?"),
