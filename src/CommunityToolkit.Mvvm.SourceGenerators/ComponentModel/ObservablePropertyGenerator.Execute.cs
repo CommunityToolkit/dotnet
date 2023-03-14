@@ -113,6 +113,7 @@ partial class ObservablePropertyGenerator
             bool hasAnyValidationAttributes = false;
             bool isOldPropertyValueDirectlyReferenced = IsOldPropertyValueDirectlyReferenced(fieldSymbol, propertyName);
             bool isReferenceType = fieldSymbol.Type.IsReferenceType;
+            bool includeMemberNotNullOnSetAccessor = GetIncludeMemberNotNullOnSetAccessor(fieldSymbol, semanticModel);
 
             // Track the property changing event for the property, if the type supports it
             if (shouldInvokeOnPropertyChanging)
@@ -262,6 +263,7 @@ partial class ObservablePropertyGenerator
                 notifyDataErrorInfo,
                 isOldPropertyValueDirectlyReferenced,
                 isReferenceType,
+                includeMemberNotNullOnSetAccessor,
                 forwardedAttributes.ToImmutable());
 
             diagnostics = builder.ToImmutable();
@@ -669,6 +671,36 @@ partial class ObservablePropertyGenerator
         }
 
         /// <summary>
+        /// Checks whether <see cref="MemberNotNullAttribute"/> should be used on the setter.
+        /// </summary>
+        /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
+        /// <param name="semanticModel">The <see cref="SemanticModel"/> instance for the current run.</param>
+        /// <returns>Whether <see cref="MemberNotNullAttribute"/> should be used on the setter.</returns>
+        private static bool GetIncludeMemberNotNullOnSetAccessor(IFieldSymbol fieldSymbol, SemanticModel semanticModel)
+        {
+            // This is used to avoid nullability warnings when setting the property from a constructor, in case the field
+            // was marked as not nullable. Nullability annotations are assumed to always be enabled to make the logic simpler.
+            // Consider this example:
+            //
+            // partial class MyViewModel : ObservableObject
+            // {
+            //    public MyViewModel()
+            //    {
+            //        Name = "Bob";
+            //    }
+            //
+            //    [ObservableProperty]
+            //    private string name;
+            // }
+            //
+            // The [MemberNotNull] attribute is needed on the setter for the generated Name property so that when Name
+            // is set, the compiler can determine that the name backing field is also being set (to a non null value).
+            return
+                fieldSymbol.Type is { NullableAnnotation: not NullableAnnotation.Annotated, IsReferenceType: true } &&
+                semanticModel.Compilation.HasAccessibleTypeWithMetadataName("System.Diagnostics.CodeAnalysis.MemberNotNullAttribute");
+        }
+
+        /// <summary>
         /// Gets a <see cref="CompilationUnitSyntax"/> instance with the cached args for property changing notifications.
         /// </summary>
         /// <param name="names">The sequence of property names to cache args for.</param>
@@ -880,6 +912,27 @@ partial class ObservablePropertyGenerator
                 .Select(static a => AttributeList(SingletonSeparatedList(a.GetSyntax())))
                 .ToImmutableArray();
 
+            // Prepare the setter for the generated property:
+            //
+            // set
+            // {
+            //     <BODY>
+            // }
+            AccessorDeclarationSyntax setAccessor = AccessorDeclaration(SyntaxKind.SetAccessorDeclaration).WithBody(Block(setterIfStatement));
+
+            // Add the [MemberNotNull] attribute if needed:
+            //
+            // [MemberNotNull("<FIELD_NAME>")]
+            // <SET_ACCESSOR>
+            if (propertyInfo.IncludeMemberNotNullOnSetAccessor)
+            {
+                setAccessor = setAccessor.AddAttributeLists(
+                    AttributeList(SingletonSeparatedList(
+                        Attribute(IdentifierName("global::System.Diagnostics.CodeAnalysis.MemberNotNull"))
+                        .AddArgumentListArguments(
+                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(propertyInfo.FieldName)))))));
+            }
+
             // Construct the generated property as follows:
             //
             // /// <inheritdoc cref="<FIELD_NAME>"/>
@@ -889,10 +942,7 @@ partial class ObservablePropertyGenerator
             // public <FIELD_TYPE><NULLABLE_ANNOTATION?> <PROPERTY_NAME>
             // {
             //     get => <FIELD_NAME>;
-            //     set
-            //     {
-            //         <BODY>
-            //     }
+            //     <SET_ACCESSOR>
             // }
             return
                 PropertyDeclaration(propertyType, Identifier(propertyInfo.PropertyName))
@@ -910,8 +960,7 @@ partial class ObservablePropertyGenerator
                     AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
                     .WithExpressionBody(ArrowExpressionClause(IdentifierName(propertyInfo.FieldName)))
                     .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)),
-                    AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
-                    .WithBody(Block(setterIfStatement)));
+                    setAccessor);
         }
 
         /// <summary>
