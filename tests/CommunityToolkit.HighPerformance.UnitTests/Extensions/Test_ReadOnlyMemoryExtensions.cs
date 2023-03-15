@@ -19,7 +19,7 @@ public class Test_ReadOnlyMemoryExtensions
         Stream stream = memory.AsStream();
 
         Assert.IsNotNull(stream);
-        Assert.AreEqual(stream.Length, memory.Length);
+        Assert.AreEqual(memory.Length, stream.Length);
         Assert.IsFalse(stream.CanWrite);
     }
 
@@ -31,7 +31,7 @@ public class Test_ReadOnlyMemoryExtensions
         Stream stream = memory.AsStream();
 
         Assert.IsNotNull(stream);
-        Assert.AreEqual(stream.Length, memory.Length);
+        Assert.AreEqual(memory.Length, stream.Length);
         Assert.IsFalse(stream.CanWrite);
     }
 }

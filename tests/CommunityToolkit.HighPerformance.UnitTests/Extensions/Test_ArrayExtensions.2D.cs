@@ -174,7 +174,7 @@ public partial class Test_ArrayExtensions
         }
 
         // Check that RefEnumerable<T>.ToArray() works correctly
-        CollectionAssert.AreEqual(array.GetRow(1).ToArray(), new[] { 5, 6, 7, 8 });
+        CollectionAssert.AreEqual(new[] { 5, 6, 7, 8 }, array.GetRow(1).ToArray());
 
         // Test an empty array
         Assert.AreSame(Array.Empty<int>(), new int[1, 0].GetRow(0).ToArray());
@@ -202,7 +202,7 @@ public partial class Test_ArrayExtensions
             Assert.IsTrue(Unsafe.AreSame(ref value, ref array[i++, 1]));
         }
 
-        CollectionAssert.AreEqual(array.GetColumn(1).ToArray(), new[] { 2, 6, 10 });
+        CollectionAssert.AreEqual(new[] { 2, 6, 10 }, array.GetColumn(1).ToArray());
 
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetColumn(-1));
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetColumn(4));
@@ -242,7 +242,7 @@ public partial class Test_ArrayExtensions
             { 13, 14, 15, 16 }
         };
 
-        CollectionAssert.AreEqual(array, expected);
+        CollectionAssert.AreEqual(expected, array);
 
         // Same as before, but this time we fill a column with a value
         array.GetColumn(2).Fill(42);
@@ -255,7 +255,7 @@ public partial class Test_ArrayExtensions
             { 13, 14, 42, 16 }
         };
 
-        CollectionAssert.AreEqual(array, expected);
+        CollectionAssert.AreEqual(expected, array);
 
         int[] copy = new int[4];
 
@@ -264,14 +264,14 @@ public partial class Test_ArrayExtensions
 
         int[] result = { 9, 10, 42, 12 };
 
-        CollectionAssert.AreEqual(copy, result);
+        CollectionAssert.AreEqual(result, copy);
 
         // Same as above, but copying from a column (so we test non contiguous sequences too)
         array.GetColumn(1).CopyTo(copy);
 
         result = new[] { 2, 0, 10, 14 };
 
-        CollectionAssert.AreEqual(copy, result);
+        CollectionAssert.AreEqual(result, copy);
 
         // Some invalid attempts to copy to an empty span or sequence
         _ = Assert.ThrowsException<ArgumentException>(() => array.GetRow(0).CopyTo(default(RefEnumerable<int>)));
@@ -286,7 +286,7 @@ public partial class Test_ArrayExtensions
 
         result = new[] { 9, 10, 42, 12 };
 
-        CollectionAssert.AreEqual(copy, result);
+        CollectionAssert.AreEqual(result, copy);
 
         // Also fill a row and then further down clear a column (trying out all possible combinations)
         array.GetRow(2).Fill(99);
@@ -299,7 +299,7 @@ public partial class Test_ArrayExtensions
             { 13, 14, 42, 16 }
         };
 
-        CollectionAssert.AreEqual(array, expected);
+        CollectionAssert.AreEqual(expected, array);
 
         array.GetColumn(2).Clear();
 
@@ -311,7 +311,7 @@ public partial class Test_ArrayExtensions
             { 13, 14, 0, 16 }
         };
 
-        CollectionAssert.AreEqual(array, expected);
+        CollectionAssert.AreEqual(expected, array);
     }
 
     [TestMethod]
@@ -336,13 +336,13 @@ public partial class Test_ArrayExtensions
 
         int[] result = { 9, 10, 11, 12 };
 
-        CollectionAssert.AreEqual(copy, result);
+        CollectionAssert.AreEqual(result, copy);
 
         span2D.GetColumn(1).CopyTo(copy);
 
         result = new[] { 2, 6, 10, 14 };
 
-        CollectionAssert.AreEqual(copy, result);
+        CollectionAssert.AreEqual(result, copy);
 
         _ = Assert.ThrowsException<ArgumentException>(() => ((ReadOnlySpan2D<int>)array).GetRow(0).CopyTo(default(RefEnumerable<int>)));
         _ = Assert.ThrowsException<ArgumentException>(() => ((ReadOnlySpan2D<int>)array).GetRow(0).CopyTo(default(Span<int>)));
@@ -355,7 +355,7 @@ public partial class Test_ArrayExtensions
 
         result = new[] { 9, 10, 11, 12 };
 
-        CollectionAssert.AreEqual(copy, result);
+        CollectionAssert.AreEqual(result, copy);
     }
 
     [TestMethod]
@@ -391,7 +391,7 @@ public partial class Test_ArrayExtensions
             { 0, 8, 0, 16 }
         };
 
-        CollectionAssert.AreEqual(array2, result);
+        CollectionAssert.AreEqual(result, array2);
 
         // Test a valid and an invalid TryCopyTo call with the RefEnumerable<T> overload
         bool shouldBeTrue = array1.GetRow(0).TryCopyTo(array2.GetColumn(0));
@@ -405,7 +405,7 @@ public partial class Test_ArrayExtensions
             { 4, 8, 0, 16 }
         };
 
-        CollectionAssert.AreEqual(array2, result);
+        CollectionAssert.AreEqual(result, array2);
 
         Assert.IsTrue(shouldBeTrue);
         Assert.IsFalse(shouldBeFalse);
@@ -428,7 +428,7 @@ public partial class Test_ArrayExtensions
         Span<int> span = array.AsSpan();
 
         // Check that the empty array was loaded properly
-        Assert.AreEqual(span.Length, array.Length);
+        Assert.AreEqual(array.Length, span.Length);
         Assert.IsTrue(span.IsEmpty);
     }
 
@@ -445,7 +445,7 @@ public partial class Test_ArrayExtensions
         Span<int> span = array.AsSpan();
 
         // Test the total length of the span
-        Assert.AreEqual(span.Length, array.Length);
+        Assert.AreEqual(array.Length, span.Length);
 
         ref int r0 = ref array[0, 0];
         ref int r1 = ref span[0];

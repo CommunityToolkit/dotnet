@@ -85,8 +85,8 @@ public class Test_TaskExtensions
 
         _ = await taskFromBuilder;
 
-        Assert.AreEqual(((Task)taskFromBuilder).GetResultOrDefault(), "Test");
-        Assert.AreEqual(taskFromBuilder.GetResultOrDefault(), "Test");
+        Assert.AreEqual("Test", ((Task)taskFromBuilder).GetResultOrDefault());
+        Assert.AreEqual("Test", taskFromBuilder.GetResultOrDefault());
     }
 
     [TestMethod]

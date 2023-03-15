@@ -33,7 +33,7 @@ public class Test_SpanOwnerOfT
 
         using (SpanOwner<int> buffer = SpanOwner<int>.Allocate(127, pool))
         {
-            Assert.AreEqual(pool.RentedArrays.Count, 1);
+            Assert.AreEqual(1, pool.RentedArrays.Count);
 
             Assert.IsTrue(buffer.Length == 127);
             Assert.IsTrue(buffer.Span.Length == 127);
@@ -43,7 +43,7 @@ public class Test_SpanOwnerOfT
             Assert.IsTrue(buffer.Span.ToArray().All(i => i == 42));
         }
 
-        Assert.AreEqual(pool.RentedArrays.Count, 0);
+        Assert.AreEqual(0, pool.RentedArrays.Count);
     }
 
     [TestMethod]
@@ -87,7 +87,7 @@ public class Test_SpanOwnerOfT
         // is all documented in the XML docs for the SpanOwner<T> type.
         Assert.IsNotNull(segment.Array);
         Assert.IsTrue(segment.Array.Length >= buffer.Length);
-        Assert.AreEqual(segment.Offset, 0);
-        Assert.AreEqual(segment.Count, buffer.Length);
+        Assert.AreEqual(0, segment.Offset);
+        Assert.AreEqual(buffer.Length, segment.Count);
     }
 }

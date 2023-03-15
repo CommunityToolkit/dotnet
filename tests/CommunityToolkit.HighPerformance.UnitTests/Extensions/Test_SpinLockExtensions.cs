@@ -32,7 +32,7 @@ public class Test_SpinLockExtensions
                 }
             });
 
-        Assert.AreEqual(sum, 1000 * 10);
+        Assert.AreEqual(1000 * 10, sum);
     }
 
 #if NET7_0_OR_GREATER
@@ -54,7 +54,7 @@ public class Test_SpinLockExtensions
             }
         });
 
-        Assert.AreEqual(sum, 1000 * 10);
+        Assert.AreEqual(1000 * 10, sum);
     }
 
     /// <summary>

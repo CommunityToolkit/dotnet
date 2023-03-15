@@ -177,7 +177,7 @@ public class Test_SpanExtensions
             { 0, 44, 0, 0, 0 }
         };
 
-        CollectionAssert.AreEqual(array, result);
+        CollectionAssert.AreEqual(result, array);
 
         // Try to copy to a valid row and an invalid column (too short for the source span)
         bool shouldBeTrue = values1.AsSpan().TryCopyTo(array.GetRow(2));
@@ -194,6 +194,6 @@ public class Test_SpanExtensions
             { 0, 44, 0, 0, 0 }
         };
 
-        CollectionAssert.AreEqual(array, result);
+        CollectionAssert.AreEqual(result, array);
     }
 }

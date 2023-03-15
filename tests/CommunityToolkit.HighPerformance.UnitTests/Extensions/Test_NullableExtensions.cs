@@ -23,11 +23,11 @@ public class Test_NullableExtensions
             T? nullable = before;
             ref T reference = ref nullable.DangerousGetValueOrDefaultReference();
 
-            Assert.AreEqual(nullable!.Value, before);
+            Assert.AreEqual(before, nullable!.Value);
 
             reference = after;
 
-            Assert.AreEqual(nullable.Value, after);
+            Assert.AreEqual(after, nullable.Value);
         }
 
         Test(0, 42);
@@ -49,11 +49,11 @@ public class Test_NullableExtensions
             ref T reference = ref nullable.DangerousGetValueOrNullReference();
 
             Assert.IsFalse(Unsafe.IsNullRef(ref reference));
-            Assert.AreEqual(nullable!.Value, before);
+            Assert.AreEqual(before, nullable!.Value);
 
             reference = after;
 
-            Assert.AreEqual(nullable.Value, after);
+            Assert.AreEqual(after, nullable.Value);
         }
 
         Test(0, 42);

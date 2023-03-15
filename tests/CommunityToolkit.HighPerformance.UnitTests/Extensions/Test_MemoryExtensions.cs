@@ -61,13 +61,13 @@ public class Test_MemoryExtensions
         Memory<byte> m2 = new byte[13];
         Memory<float> mc2 = m2.Cast<byte, float>();
 
-        Assert.AreEqual(mc2.Length, 3);
+        Assert.AreEqual(3, mc2.Length);
 
         // 16 - 5 = 11 ---> 11 / sizeof(int) = 2
         Memory<byte> m3 = new byte[16].AsMemory(5);
         Memory<float> mc3 = m3.Cast<byte, float>();
 
-        Assert.AreEqual(mc3.Length, 2);
+        Assert.AreEqual(2, mc3.Length);
     }
 
     [TestMethod]
@@ -77,7 +77,7 @@ public class Test_MemoryExtensions
         Memory<byte> memoryOfBytes = new byte[128];
         Memory<float> memoryOfFloats = memoryOfBytes.Cast<byte, float>();
 
-        Assert.AreEqual(memoryOfFloats.Length, 128 / sizeof(float));
+        Assert.AreEqual(128 / sizeof(float), memoryOfFloats.Length);
 
         Span<byte> spanOfBytes = memoryOfBytes.Span;
         Span<float> spanOfFloats = memoryOfFloats.Span;
@@ -99,7 +99,7 @@ public class Test_MemoryExtensions
         Memory<float> memoryOfFloats = new float[128];
         Memory<byte> memoryOfBytes = memoryOfFloats.Cast<float, byte>();
 
-        Assert.AreEqual(memoryOfBytes.Length, 128 * sizeof(float));
+        Assert.AreEqual(128 * sizeof(float), memoryOfBytes.Length);
 
         Span<float> spanOfFloats = memoryOfFloats.Span;
         Span<byte> spanOfBytes = memoryOfBytes.Span;
@@ -119,7 +119,7 @@ public class Test_MemoryExtensions
         Memory<float> memoryOfFloats = new float[128];
         Memory<short> memoryOfShorts = memoryOfFloats.Cast<float, short>();
 
-        Assert.AreEqual(memoryOfShorts.Length, 128 * sizeof(float) / sizeof(short));
+        Assert.AreEqual(128 * sizeof(float) / sizeof(short), memoryOfShorts.Length);
 
         Span<float> spanOfFloats = memoryOfFloats.Span;
         Span<short> spanOfShorts = memoryOfShorts.Span;
@@ -353,7 +353,7 @@ public class Test_MemoryExtensions
         Memory<byte> memoryOfBytes = new ArrayMemoryManager<byte>(512).Memory.Slice(128, 128);
         Memory<float> memoryOfFloats = memoryOfBytes.Cast<byte, float>();
 
-        Assert.AreEqual(memoryOfFloats.Length, 128 / sizeof(float));
+        Assert.AreEqual(128 / sizeof(float), memoryOfFloats.Length);
 
         Span<byte> spanOfBytes = memoryOfBytes.Span;
         Span<float> spanOfFloats = memoryOfFloats.Span;
@@ -371,7 +371,7 @@ public class Test_MemoryExtensions
         Memory<float> memoryOfFloats = new ArrayMemoryManager<float>(512).Memory.Slice(128, 128);
         Memory<byte> memoryOfBytes = memoryOfFloats.Cast<float, byte>();
 
-        Assert.AreEqual(memoryOfBytes.Length, 128 * sizeof(float));
+        Assert.AreEqual(128 * sizeof(float), memoryOfBytes.Length);
 
         Span<float> spanOfFloats = memoryOfFloats.Span;
         Span<byte> spanOfBytes = memoryOfBytes.Span;
@@ -389,7 +389,7 @@ public class Test_MemoryExtensions
         Memory<float> memoryOfFloats = new ArrayMemoryManager<float>(512).Memory.Slice(128, 128);
         Memory<short> memoryOfShorts = memoryOfFloats.Cast<float, short>();
 
-        Assert.AreEqual(memoryOfShorts.Length, 128 * sizeof(float) / sizeof(short));
+        Assert.AreEqual(128 * sizeof(float) / sizeof(short), memoryOfShorts.Length);
 
         Span<float> spanOfFloats = memoryOfFloats.Span;
         Span<short> spanOfShorts = memoryOfShorts.Span;
@@ -553,7 +553,7 @@ public class Test_MemoryExtensions
         Stream stream = memory.AsStream();
 
         Assert.IsNotNull(stream);
-        Assert.AreEqual(stream.Length, memory.Length);
+        Assert.AreEqual(memory.Length, stream.Length);
         Assert.IsTrue(stream.CanWrite);
     }
 
@@ -565,7 +565,7 @@ public class Test_MemoryExtensions
         Stream stream = memory.AsStream();
 
         Assert.IsNotNull(stream);
-        Assert.AreEqual(stream.Length, memory.Length);
+        Assert.AreEqual(memory.Length, stream.Length);
         Assert.IsTrue(stream.CanWrite);
     }
 
