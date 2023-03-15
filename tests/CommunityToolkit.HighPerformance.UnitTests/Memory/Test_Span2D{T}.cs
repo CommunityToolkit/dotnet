@@ -66,7 +66,7 @@ public class Test_Span2DT
 
         Assert.IsFalse(span2d.IsEmpty);
         Assert.AreEqual(6, span2d.Length);
-        Assert.AreEqual(6, span2d.Width);
+        Assert.AreEqual(3, span2d.Width);
         Assert.AreEqual(2, span2d.Height);
 
         span2d[0, 0] = 99;
