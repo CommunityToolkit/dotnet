@@ -312,6 +312,6 @@ public partial class Test_ArgumentNullException
     {
         System.ArgumentNullException exception = Microsoft.VisualStudio.TestTools.UnitTesting.Assert.ThrowsException<System.ArgumentNullException>(action);
 
-        Microsoft.VisualStudio.TestTools.UnitTesting.Assert.AreEqual(exception.ParamName, parameterName);
+        Microsoft.VisualStudio.TestTools.UnitTesting.Assert.AreEqual(parameterName, exception.ParamName);
     }
 }

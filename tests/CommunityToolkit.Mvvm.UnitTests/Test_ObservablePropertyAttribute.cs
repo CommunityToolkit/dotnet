@@ -60,10 +60,10 @@ public partial class Test_ObservablePropertyAttribute
 
         model.Data = 42;
 
-        Assert.AreEqual(changing.Item1?.PropertyName, nameof(SampleModel.Data));
-        Assert.AreEqual(changing.Item2, 0);
-        Assert.AreEqual(changed.Item1?.PropertyName, nameof(SampleModel.Data));
-        Assert.AreEqual(changed.Item2, 42);
+        Assert.AreEqual(nameof(SampleModel.Data), changing.Item1?.PropertyName);
+        Assert.AreEqual(0, changing.Item2);
+        Assert.AreEqual(nameof(SampleModel.Data), changed.Item1?.PropertyName);
+        Assert.AreEqual(42, changed.Item2);
     }
 
     // See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4225
@@ -99,10 +99,10 @@ public partial class Test_ObservablePropertyAttribute
 
         model.Counter = 42;
 
-        Assert.AreEqual(changing.Item1?.PropertyName, nameof(SampleModel.Counter));
-        Assert.AreEqual(changing.Item2, 0);
-        Assert.AreEqual(changed.Item1?.PropertyName, nameof(SampleModel.Counter));
-        Assert.AreEqual(changed.Item2, 42);
+        Assert.AreEqual(nameof(SampleModel.Counter), changing.Item1?.PropertyName);
+        Assert.AreEqual(0, changing.Item2);
+        Assert.AreEqual(nameof(SampleModel.Counter), changed.Item1?.PropertyName);
+        Assert.AreEqual(42, changed.Item2);
     }
 
     // See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4225
@@ -138,10 +138,10 @@ public partial class Test_ObservablePropertyAttribute
 
         model.Name = "Bob";
 
-        Assert.AreEqual(changing.Item1?.PropertyName, nameof(SampleModel.Name));
-        Assert.AreEqual(changing.Item2, null);
-        Assert.AreEqual(changed.Item1?.PropertyName, nameof(SampleModel.Name));
-        Assert.AreEqual(changed.Item2, "Bob");
+        Assert.AreEqual(nameof(SampleModel.Name), changing.Item1?.PropertyName);
+        Assert.AreEqual(null, changing.Item2);
+        Assert.AreEqual(nameof(SampleModel.Name), changed.Item1?.PropertyName);
+        Assert.AreEqual("Bob", changed.Item2);
     }
 
     [TestMethod]
@@ -166,15 +166,15 @@ public partial class Test_ObservablePropertyAttribute
 
         Assert.IsNotNull(nameProperty.GetCustomAttribute<RequiredAttribute>());
         Assert.IsNotNull(nameProperty.GetCustomAttribute<MinLengthAttribute>());
-        Assert.AreEqual(nameProperty.GetCustomAttribute<MinLengthAttribute>()!.Length, 1);
+        Assert.AreEqual(1, nameProperty.GetCustomAttribute<MinLengthAttribute>()!.Length);
         Assert.IsNotNull(nameProperty.GetCustomAttribute<MaxLengthAttribute>());
-        Assert.AreEqual(nameProperty.GetCustomAttribute<MaxLengthAttribute>()!.Length, 100);
+        Assert.AreEqual(100, nameProperty.GetCustomAttribute<MaxLengthAttribute>()!.Length);
 
         PropertyInfo ageProperty = typeof(MyFormViewModel).GetProperty(nameof(MyFormViewModel.Age))!;
 
         Assert.IsNotNull(ageProperty.GetCustomAttribute<RangeAttribute>());
-        Assert.AreEqual(ageProperty.GetCustomAttribute<RangeAttribute>()!.Minimum, 0);
-        Assert.AreEqual(ageProperty.GetCustomAttribute<RangeAttribute>()!.Maximum, 120);
+        Assert.AreEqual(0, ageProperty.GetCustomAttribute<RangeAttribute>()!.Minimum);
+        Assert.AreEqual(120, ageProperty.GetCustomAttribute<RangeAttribute>()!.Maximum);
 
         PropertyInfo emailProperty = typeof(MyFormViewModel).GetProperty(nameof(MyFormViewModel.Email))!;
 
@@ -186,21 +186,21 @@ public partial class Test_ObservablePropertyAttribute
 
         Assert.IsNotNull(testAttribute);
         Assert.IsNull(testAttribute.O);
-        Assert.AreEqual(testAttribute.T, typeof(SampleModel));
-        Assert.AreEqual(testAttribute.Flag, true);
-        Assert.AreEqual(testAttribute.D, 6.28);
-        CollectionAssert.AreEqual(testAttribute.Names, new[] { "Bob", "Ross" });
+        Assert.AreEqual(typeof(SampleModel), testAttribute.T);
+        Assert.AreEqual(true, testAttribute.Flag);
+        Assert.AreEqual(6.28, testAttribute.D);
+        CollectionAssert.AreEqual(new[] { "Bob", "Ross" }, testAttribute.Names);
 
         object[]? nestedArray = (object[]?)testAttribute.NestedArray;
 
         Assert.IsNotNull(nestedArray);
-        Assert.AreEqual(nestedArray!.Length, 3);
-        Assert.AreEqual(nestedArray[0], 1);
-        Assert.AreEqual(nestedArray[1], "Hello");
+        Assert.AreEqual(3, nestedArray!.Length);
+        Assert.AreEqual(1, nestedArray[0]);
+        Assert.AreEqual("Hello", nestedArray[1]);
         Assert.IsTrue(nestedArray[2] is int[]);
-        CollectionAssert.AreEqual((int[])nestedArray[2], new[] { 2, 3, 4 });
+        CollectionAssert.AreEqual(new[] { 2, 3, 4 }, (int[])nestedArray[2]);
 
-        Assert.AreEqual(testAttribute.Animal, Animal.Llama);
+        Assert.AreEqual(Animal.Llama, testAttribute.Animal);
     }
 
     // See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4216
@@ -215,7 +215,7 @@ public partial class Test_ObservablePropertyAttribute
 
         model.Value = "Hello world";
 
-        Assert.AreEqual(model.Value, "Hello world");
+        Assert.AreEqual("Hello world", model.Value);
 
         CollectionAssert.AreEqual(new[] { nameof(model.Value) }, propertyNames);
     }
@@ -236,7 +236,7 @@ public partial class Test_ObservablePropertyAttribute
 
         model.Value = "Hello world";
 
-        Assert.AreEqual(model.Value, "Hello world");
+        Assert.AreEqual("Hello world", model.Value);
 
         // The [NotifyDataErrorInfo] attribute wasn't used, so the property shouldn't be validated
         Assert.IsFalse(errorsChanged);
@@ -260,14 +260,14 @@ public partial class Test_ObservablePropertyAttribute
         model.Value = "Bo";
 
         Assert.IsTrue(model.HasErrors);
-        Assert.AreEqual(errors.Count, 1);
-        Assert.AreEqual(errors[0].PropertyName, nameof(ModelWithValuePropertyWithAutomaticValidation.Value));
+        Assert.AreEqual(1, errors.Count);
+        Assert.AreEqual(nameof(ModelWithValuePropertyWithAutomaticValidation.Value), errors[0].PropertyName);
 
         model.Value = "Hello world";
 
         Assert.IsFalse(model.HasErrors);
-        Assert.AreEqual(errors.Count, 2);
-        Assert.AreEqual(errors[1].PropertyName, nameof(ModelWithValuePropertyWithAutomaticValidation.Value));
+        Assert.AreEqual(2, errors.Count);
+        Assert.AreEqual(nameof(ModelWithValuePropertyWithAutomaticValidation.Value), errors[1].PropertyName);
     }
 
     [TestMethod]
@@ -286,14 +286,14 @@ public partial class Test_ObservablePropertyAttribute
         model.Value = "Bo";
 
         Assert.IsTrue(model.HasErrors);
-        Assert.AreEqual(errors.Count, 1);
-        Assert.AreEqual(errors[0].PropertyName, nameof(ModelWithValuePropertyWithAutomaticValidationWithClassLevelAttribute.Value));
+        Assert.AreEqual(1, errors.Count);
+        Assert.AreEqual(nameof(ModelWithValuePropertyWithAutomaticValidationWithClassLevelAttribute.Value), errors[0].PropertyName);
 
         model.Value = "Hello world";
 
         Assert.IsFalse(model.HasErrors);
-        Assert.AreEqual(errors.Count, 2);
-        Assert.AreEqual(errors[1].PropertyName, nameof(ModelWithValuePropertyWithAutomaticValidationWithClassLevelAttribute.Value));
+        Assert.AreEqual(2, errors.Count);
+        Assert.AreEqual(nameof(ModelWithValuePropertyWithAutomaticValidationWithClassLevelAttribute.Value), errors[1].PropertyName);
     }
 
     [TestMethod]
@@ -312,14 +312,14 @@ public partial class Test_ObservablePropertyAttribute
         model.Value2 = "Bo";
 
         Assert.IsTrue(model.HasErrors);
-        Assert.AreEqual(errors.Count, 1);
-        Assert.AreEqual(errors[0].PropertyName, nameof(ModelWithValuePropertyWithAutomaticValidationInheritingClassLevelAttribute.Value2));
+        Assert.AreEqual(1, errors.Count);
+        Assert.AreEqual(nameof(ModelWithValuePropertyWithAutomaticValidationInheritingClassLevelAttribute.Value2), errors[0].PropertyName);
 
         model.Value2 = "Hello world";
 
         Assert.IsFalse(model.HasErrors);
-        Assert.AreEqual(errors.Count, 2);
-        Assert.AreEqual(errors[1].PropertyName, nameof(ModelWithValuePropertyWithAutomaticValidationInheritingClassLevelAttribute.Value2));
+        Assert.AreEqual(2, errors.Count);
+        Assert.AreEqual(nameof(ModelWithValuePropertyWithAutomaticValidationInheritingClassLevelAttribute.Value2), errors[1].PropertyName);
     }
 
     // See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4184
@@ -345,7 +345,7 @@ public partial class Test_ObservablePropertyAttribute
 
         ValidationResult[] validationErrors = model.GetErrors().ToArray();
 
-        Assert.AreEqual(validationErrors.Length, 2);
+        Assert.AreEqual(2, validationErrors.Length);
 
         CollectionAssert.AreEqual(new[] { nameof(ViewModelWithValidatableGeneratedProperties.First) }, validationErrors[0].MemberNames.ToArray());
         CollectionAssert.AreEqual(new[] { nameof(ViewModelWithValidatableGeneratedProperties.Last) }, validationErrors[1].MemberNames.ToArray());
@@ -615,7 +615,7 @@ public partial class Test_ObservablePropertyAttribute
         model.Name = null;
 
         // The [NotifyPropertyChangedRecipients] attribute wasn't used, so no messages should have been sent
-        Assert.AreEqual(messages.Count, 0);
+        Assert.AreEqual(0, messages.Count);
     }
 
 #if NET6_0_OR_GREATER
@@ -761,9 +761,9 @@ public partial class Test_ObservablePropertyAttribute
         model.UValue = "Hello";
         model.List = new List<int>() { 420 };
 
-        Assert.AreEqual(model.Value, true);
-        Assert.AreEqual(model.TValue, 42);
-        Assert.AreEqual(model.UValue, "Hello");
+        Assert.AreEqual(true, model.Value);
+        Assert.AreEqual(42, model.TValue);
+        Assert.AreEqual("Hello", model.UValue);
         CollectionAssert.AreEqual(new[] { 420 }, model.List);
 
         CollectionAssert.AreEqual(new[] { nameof(model.Value), nameof(model.TValue), nameof(model.UValue), nameof(model.List) }, propertyNames);
@@ -779,13 +779,13 @@ public partial class Test_ObservablePropertyAttribute
 
         model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
 
-        Assert.AreEqual(model.OtherProperty, "Ok");
+        Assert.AreEqual("Ok", model.OtherProperty);
 
         model.MyProperty = "A";
         model.OtherProperty = "B";
 
-        Assert.AreEqual(model.MyProperty, "A");
-        Assert.AreEqual(model.OtherProperty, "B");
+        Assert.AreEqual("A", model.MyProperty);
+        Assert.AreEqual("B", model.OtherProperty);
 
         CollectionAssert.AreEqual(new[] { nameof(model.MyProperty), nameof(model.OtherProperty) }, propertyNames);
     }
@@ -802,7 +802,7 @@ public partial class Test_ObservablePropertyAttribute
 
         model.InputFolder = 42;
 
-        Assert.AreEqual(model.InputFolder, 42);
+        Assert.AreEqual(42, model.InputFolder);
 
         CollectionAssert.AreEqual(new[] { nameof(model.InputFolder) }, propertyNames);
     }
@@ -838,7 +838,7 @@ public partial class Test_ObservablePropertyAttribute
 
         model.SomeProperty = newValue;
 
-        Assert.AreEqual(model.SomeProperty, newValue);
+        Assert.AreEqual(newValue, model.SomeProperty);
         Assert.IsTrue(isMessageReceived);
 
         CollectionAssert.AreEqual(new[] { nameof(model.SomeProperty) }, propertyNames);
@@ -865,9 +865,9 @@ public partial class Test_ObservablePropertyAttribute
         DisplayAttribute? displayAttribute = (DisplayAttribute?)propertyInfo.GetCustomAttribute(typeof(DisplayAttribute));
 
         Assert.IsNotNull(displayAttribute);
-        Assert.AreEqual(displayAttribute!.Name, "MyProperty");
-        Assert.AreEqual(displayAttribute.ResourceType, typeof(List<double>));
-        Assert.AreEqual(displayAttribute.Prompt, "Foo bar baz");
+        Assert.AreEqual("MyProperty", displayAttribute!.Name);
+        Assert.AreEqual(typeof(List<double>), displayAttribute.ResourceType);
+        Assert.AreEqual("Foo bar baz", displayAttribute.Prompt);
 
         KeyAttribute? keyAttribute = (KeyAttribute?)propertyInfo.GetCustomAttribute(typeof(KeyAttribute));
 
@@ -881,15 +881,15 @@ public partial class Test_ObservablePropertyAttribute
         UIHintAttribute? uiHintAttribute = (UIHintAttribute?)propertyInfo.GetCustomAttribute(typeof(UIHintAttribute));
 
         Assert.IsNotNull(uiHintAttribute);
-        Assert.AreEqual(uiHintAttribute!.UIHint, "MyControl");
-        Assert.AreEqual(uiHintAttribute.PresentationLayer, "WPF");
-        Assert.AreEqual(uiHintAttribute.ControlParameters.Count, 3);
+        Assert.AreEqual("MyControl", uiHintAttribute!.UIHint);
+        Assert.AreEqual("WPF", uiHintAttribute.PresentationLayer);
+        Assert.AreEqual(3, uiHintAttribute.ControlParameters.Count);
         Assert.IsTrue(uiHintAttribute.ControlParameters.ContainsKey("Foo"));
         Assert.IsTrue(uiHintAttribute.ControlParameters.ContainsKey("Bar"));
         Assert.IsTrue(uiHintAttribute.ControlParameters.ContainsKey("Baz"));
-        Assert.AreEqual(uiHintAttribute.ControlParameters["Foo"], 42);
-        Assert.AreEqual(uiHintAttribute.ControlParameters["Bar"], 3.14);
-        Assert.AreEqual(uiHintAttribute.ControlParameters["Baz"], "Hello");
+        Assert.AreEqual(42, uiHintAttribute.ControlParameters["Foo"]);
+        Assert.AreEqual(3.14, uiHintAttribute.ControlParameters["Bar"]);
+        Assert.AreEqual("Hello", uiHintAttribute.ControlParameters["Baz"]);
 
         ScaffoldColumnAttribute? scaffoldColumnAttribute = (ScaffoldColumnAttribute?)propertyInfo.GetCustomAttribute(typeof(ScaffoldColumnAttribute));
 
@@ -910,7 +910,7 @@ public partial class Test_ObservablePropertyAttribute
         model.Number = 3.14f;
 
         // We mostly just need to verify this class compiles fine with the right generated code
-        CollectionAssert.AreEqual(propertyNames, new[] { nameof(model.Number) });
+        CollectionAssert.AreEqual(new[] { nameof(model.Number) }, propertyNames);
     }
 
     // See https://github.com/CommunityToolkit/dotnet/issues/272
@@ -939,14 +939,14 @@ public partial class Test_ObservablePropertyAttribute
 
         Assert.IsNotNull(nameProperty.GetCustomAttribute<RequiredAttribute>());
         Assert.IsNotNull(nameProperty.GetCustomAttribute<MinLengthAttribute>());
-        Assert.AreEqual(nameProperty.GetCustomAttribute<MinLengthAttribute>()!.Length, 1);
+        Assert.AreEqual(1, nameProperty.GetCustomAttribute<MinLengthAttribute>()!.Length);
         Assert.IsNotNull(nameProperty.GetCustomAttribute<MaxLengthAttribute>());
-        Assert.AreEqual(nameProperty.GetCustomAttribute<MaxLengthAttribute>()!.Length, 100);
+        Assert.AreEqual(100, nameProperty.GetCustomAttribute<MaxLengthAttribute>()!.Length);
 
         PropertyInfo lastNameProperty = typeof(MyViewModelWithExplicitPropertyAttributes).GetProperty(nameof(MyViewModelWithExplicitPropertyAttributes.LastName))!;
 
         Assert.IsNotNull(lastNameProperty.GetCustomAttribute<JsonPropertyNameAttribute>());
-        Assert.AreEqual(lastNameProperty.GetCustomAttribute<JsonPropertyNameAttribute>()!.Name, "lastName");
+        Assert.AreEqual("lastName", lastNameProperty.GetCustomAttribute<JsonPropertyNameAttribute>()!.Name);
         Assert.IsNotNull(lastNameProperty.GetCustomAttribute<XmlIgnoreAttribute>());
 
         PropertyInfo justOneSimpleAttributeProperty = typeof(MyViewModelWithExplicitPropertyAttributes).GetProperty(nameof(MyViewModelWithExplicitPropertyAttributes.JustOneSimpleAttribute))!;
@@ -959,21 +959,21 @@ public partial class Test_ObservablePropertyAttribute
 
         Assert.IsNotNull(testAttribute);
         Assert.IsNull(testAttribute.O);
-        Assert.AreEqual(testAttribute.T, typeof(MyViewModelWithExplicitPropertyAttributes));
-        Assert.AreEqual(testAttribute.Flag, true);
-        Assert.AreEqual(testAttribute.D, 6.28);
-        CollectionAssert.AreEqual(testAttribute.Names, new[] { "Bob", "Ross" });
+        Assert.AreEqual(typeof(MyViewModelWithExplicitPropertyAttributes), testAttribute.T);
+        Assert.AreEqual(true, testAttribute.Flag);
+        Assert.AreEqual(6.28, testAttribute.D);
+        CollectionAssert.AreEqual(new[] { "Bob", "Ross" }, testAttribute.Names);
 
         object[]? nestedArray = (object[]?)testAttribute.NestedArray;
 
         Assert.IsNotNull(nestedArray);
-        Assert.AreEqual(nestedArray!.Length, 3);
-        Assert.AreEqual(nestedArray[0], 1);
-        Assert.AreEqual(nestedArray[1], "Hello");
+        Assert.AreEqual(3, nestedArray!.Length);
+        Assert.AreEqual(1, nestedArray[0]);
+        Assert.AreEqual("Hello", nestedArray[1]);
         Assert.IsTrue(nestedArray[2] is int[]);
-        CollectionAssert.AreEqual((int[])nestedArray[2], new[] { 2, 3, 4 });
+        CollectionAssert.AreEqual(new[] { 2, 3, 4 }, (int[])nestedArray[2]);
 
-        Assert.AreEqual(testAttribute.Animal, Animal.Llama);
+        Assert.AreEqual(Animal.Llama, testAttribute.Animal);
 
         PropertyInfo someComplexRandomAttribute = typeof(MyViewModelWithExplicitPropertyAttributes).GetProperty(nameof(MyViewModelWithExplicitPropertyAttributes.SomeComplexRandomAttribute))!;
 
@@ -983,25 +983,25 @@ public partial class Test_ObservablePropertyAttribute
 
         Assert.IsNotNull(testAttribute2);
         Assert.IsNull(testAttribute2.O);
-        Assert.AreEqual(testAttribute2.T, typeof(MyViewModelWithExplicitPropertyAttributes));
-        Assert.AreEqual(testAttribute2.Flag, true);
-        Assert.AreEqual(testAttribute2.D, 6.28);
+        Assert.AreEqual(typeof(MyViewModelWithExplicitPropertyAttributes), testAttribute2.T);
+        Assert.AreEqual(true, testAttribute2.Flag);
+        Assert.AreEqual(6.28, testAttribute2.D);
         Assert.IsNotNull(testAttribute2.Objects);
         Assert.IsTrue(testAttribute2.Objects is object[]);
-        Assert.AreEqual(((object[])testAttribute2.Objects).Length, 1);
-        Assert.AreEqual(((object[])testAttribute2.Objects)[0], "Test");
-        CollectionAssert.AreEqual(testAttribute2.Names, new[] { "Bob", "Ross" });
+        Assert.AreEqual(1, ((object[])testAttribute2.Objects).Length);
+        Assert.AreEqual("Test", ((object[])testAttribute2.Objects)[0]);
+        CollectionAssert.AreEqual(new[] { "Bob", "Ross" }, testAttribute2.Names);
 
         object[]? nestedArray2 = (object[]?)testAttribute2.NestedArray;
 
         Assert.IsNotNull(nestedArray2);
-        Assert.AreEqual(nestedArray2!.Length, 4);
-        Assert.AreEqual(nestedArray2[0], 1);
-        Assert.AreEqual(nestedArray2[1], "Hello");
-        Assert.AreEqual(nestedArray2[2], 42);
+        Assert.AreEqual(4, nestedArray2!.Length);
+        Assert.AreEqual(1, nestedArray2[0]);
+        Assert.AreEqual("Hello", nestedArray2[1]);
+        Assert.AreEqual(42, nestedArray2[2]);
         Assert.IsNull(nestedArray2[3]);
 
-        Assert.AreEqual(testAttribute2.Animal, (Animal)67);
+        Assert.AreEqual((Animal)67, testAttribute2.Animal);
     }
 
     // See https://github.com/CommunityToolkit/dotnet/issues/446

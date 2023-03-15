@@ -33,14 +33,14 @@ partial class Test_Messenger
         _ = messenger.Send(message2);
 
         // The expected messages have been observed
-        CollectionAssert.AreEqual(messages, new[] { message1, message2 });
+        CollectionAssert.AreEqual(new[] { message1, message2 }, messages);
 
         disposable.Dispose();
 
         _ = messenger.Send<MessageA>();
 
         // No messages are sent after unsubscribing the observable
-        CollectionAssert.AreEqual(messages, new[] { message1, message2 });
+        CollectionAssert.AreEqual(new[] { message1, message2 }, messages);
     }
 
     [TestMethod]
@@ -68,7 +68,7 @@ partial class Test_Messenger
         _ = messenger.Send(new MessageA(), 999);
 
         // The expected messages have been observed (only for matching tokens)
-        CollectionAssert.AreEqual(messages, new[] { message1, message2 });
+        CollectionAssert.AreEqual(new[] { message1, message2 }, messages);
 
         disposable.Dispose();
 
@@ -76,7 +76,7 @@ partial class Test_Messenger
         _ = messenger.Send(new MessageA(), 1);
 
         // No messages are sent after unsubscribing the observable (regardless of token)
-        CollectionAssert.AreEqual(messages, new[] { message1, message2 });
+        CollectionAssert.AreEqual(new[] { message1, message2 }, messages);
     }
 
     [TestMethod]

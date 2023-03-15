@@ -64,7 +64,7 @@ public class Test_RelayCommandOfT
 
         command.Execute((object)"Hello");
 
-        Assert.AreEqual(text, "Hello");
+        Assert.AreEqual("Hello", text);
 
         command.Execute(null);
 

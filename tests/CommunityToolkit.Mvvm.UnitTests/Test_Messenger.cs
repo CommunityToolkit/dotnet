@@ -255,7 +255,7 @@ public partial class Test_Messenger
 
         _ = messenger.Send(new MessageA { Text = nameof(MessageA) });
 
-        Assert.AreEqual(result, nameof(MessageA));
+        Assert.AreEqual(nameof(MessageA), result);
 
         messenger.UnregisterAll(a);
 
@@ -284,7 +284,7 @@ public partial class Test_Messenger
 
         _ = messenger.Send(new MessageA { Text = nameof(MessageA) }, nameof(MessageA));
 
-        Assert.AreEqual(result, nameof(MessageA));
+        Assert.AreEqual(nameof(MessageA), result);
 
         messenger.Unregister<MessageA, string>(a, nameof(MessageA));
 
@@ -355,18 +355,18 @@ public partial class Test_Messenger
         Assert.IsTrue(messenger.IsRegistered<MessageA>(recipient));
         Assert.IsTrue(messenger.IsRegistered<MessageB>(recipient));
 
-        Assert.AreEqual(recipient.As, 0);
-        Assert.AreEqual(recipient.Bs, 0);
+        Assert.AreEqual(0, recipient.As);
+        Assert.AreEqual(0, recipient.Bs);
 
         _ = messenger.Send<MessageA>();
 
-        Assert.AreEqual(recipient.As, 1);
-        Assert.AreEqual(recipient.Bs, 0);
+        Assert.AreEqual(1, recipient.As);
+        Assert.AreEqual(0, recipient.Bs);
 
         _ = messenger.Send<MessageB>();
 
-        Assert.AreEqual(recipient.As, 1);
-        Assert.AreEqual(recipient.Bs, 1);
+        Assert.AreEqual(1, recipient.As);
+        Assert.AreEqual(1, recipient.Bs);
 
         messenger.UnregisterAll(recipient);
 
@@ -425,18 +425,18 @@ public partial class Test_Messenger
         Assert.IsFalse(messenger.IsRegistered<MessageA>(recipient));
         Assert.IsFalse(messenger.IsRegistered<MessageB>(recipient));
 
-        Assert.AreEqual(recipient.As, 0);
-        Assert.AreEqual(recipient.Bs, 0);
+        Assert.AreEqual(0, recipient.As);
+        Assert.AreEqual(0, recipient.Bs);
 
         _ = messenger.Send<MessageB, string>(token);
 
-        Assert.AreEqual(recipient.As, 0);
-        Assert.AreEqual(recipient.Bs, 1);
+        Assert.AreEqual(0, recipient.As);
+        Assert.AreEqual(1, recipient.Bs);
 
         _ = messenger.Send<MessageA, string>(token);
 
-        Assert.AreEqual(recipient.As, 1);
-        Assert.AreEqual(recipient.Bs, 1);
+        Assert.AreEqual(1, recipient.As);
+        Assert.AreEqual(1, recipient.Bs);
 
         messenger.UnregisterAll(recipient, token);
 
@@ -458,7 +458,7 @@ public partial class Test_Messenger
 
         _ = messenger.Send<MessageA>();
 
-        Assert.AreEqual(number, 42);
+        Assert.AreEqual(42, number);
     }
 
     [TestMethod]
@@ -589,8 +589,8 @@ public partial class Test_Messenger
 
             foreach (RecipientWithSomeMessages? recipient in recipients)
             {
-                Assert.AreEqual(recipient!.As, 1);
-                Assert.AreEqual(recipient!.Bs, 2);
+                Assert.AreEqual(1, recipient!.As);
+                Assert.AreEqual(2, recipient!.Bs);
             }
 
             foreach (ref RecipientWithSomeMessages? recipient in recipients.AsSpan())
