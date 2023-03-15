@@ -41,10 +41,10 @@ public class Test_ReadOnlyObservableGroupedCollection
         Assert.AreEqual(2, readOnlyGroup.Count);
 
         Assert.AreEqual("A", readOnlyGroup[0].Key);
-        CollectionAssert.AreEquivalent(readOnlyGroup[0], new[] { 1, 3, 5 });
+        CollectionAssert.AreEquivalent(new[] { 1, 3, 5 }, readOnlyGroup[0]);
 
         Assert.AreEqual("B", readOnlyGroup[1].Key);
-        CollectionAssert.AreEquivalent(readOnlyGroup[1], new[] { 2, 4, 6 });
+        CollectionAssert.AreEquivalent(new[] { 2, 4, 6 }, readOnlyGroup[1]);
     }
 
     [TestMethod]
@@ -270,7 +270,7 @@ public class Test_ReadOnlyObservableGroupedCollection
         Assert.AreEqual(1, readOnlyGroup.Count);
 
         Assert.AreEqual("A", readOnlyGroup[0].Key);
-        CollectionAssert.AreEquivalent(readOnlyGroup[0], aItemsList);
+        CollectionAssert.AreEquivalent(aItemsList, readOnlyGroup[0]);
 
         Assert.IsTrue(isCountPropertyChangedEventRaised);
         Assert.IsNotNull(collectionChangedEventArgs);
@@ -315,7 +315,7 @@ public class Test_ReadOnlyObservableGroupedCollection
         Assert.AreEqual(groups.Count, readOnlyGroup.Count);
 
         Assert.AreEqual("B", readOnlyGroup[0].Key);
-        CollectionAssert.AreEquivalent(readOnlyGroup[0], bItemsList);
+        CollectionAssert.AreEquivalent(bItemsList, readOnlyGroup[0]);
 
         List<IGrouping<string, int>> tempList = new(groups);
         IGrouping<string, int> tempItem = tempList[oldIndex];
@@ -401,10 +401,10 @@ public class Test_ReadOnlyObservableGroupedCollection
         Assert.AreEqual(2, readOnlyGroup.Count);
 
         Assert.AreEqual("C", readOnlyGroup[0].Key);
-        CollectionAssert.AreEquivalent(readOnlyGroup[0], cItemsList);
+        CollectionAssert.AreEquivalent(cItemsList, readOnlyGroup[0]);
 
         Assert.AreEqual("B", readOnlyGroup[1].Key);
-        CollectionAssert.AreEquivalent(readOnlyGroup[1], bItemsList);
+        CollectionAssert.AreEquivalent(bItemsList, readOnlyGroup[1]);
 
         Assert.IsFalse(isCountPropertyChangedEventRaised);
         Assert.IsNotNull(collectionChangedEventArgs);

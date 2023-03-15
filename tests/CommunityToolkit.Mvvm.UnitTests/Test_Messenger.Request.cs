@@ -250,7 +250,7 @@ partial class Test_Messenger
         Assert.AreSame(recipient2, r2);
         Assert.AreSame(recipient3, r3);
 
-        CollectionAssert.AreEquivalent(responses, new[] { 1, 2, 3 });
+        CollectionAssert.AreEquivalent(new[] { 1, 2, 3 }, responses);
     }
 
     public class NumbersCollectionRequestMessage : CollectionRequestMessage<int>
@@ -308,7 +308,7 @@ partial class Test_Messenger
 
         IReadOnlyCollection<int>? responses = await messenger.Send<AsyncNumbersCollectionRequestMessage>().GetResponsesAsync();
 
-        CollectionAssert.AreEquivalent(responses.ToArray(), new[] { 1, 2, 3, 3 });
+        CollectionAssert.AreEquivalent(new[] { 1, 2, 3, 3 }, responses.ToArray());
 
         GC.KeepAlive(recipient1);
         GC.KeepAlive(recipient2);
@@ -351,7 +351,7 @@ partial class Test_Messenger
             responses.Add(response);
         }
 
-        CollectionAssert.AreEquivalent(responses, new[] { 1, 2, 3, 3 });
+        CollectionAssert.AreEquivalent(new[] { 1, 2, 3, 3 }, responses);
 
         GC.KeepAlive(recipient1);
         GC.KeepAlive(recipient2);
