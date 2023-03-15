@@ -24,7 +24,7 @@ public class Test_NullableRefOfT
 
         reference.Value++;
 
-        Assert.AreEqual(value, 2);
+        Assert.AreEqual(2, value);
     }
 
     [TestMethod]

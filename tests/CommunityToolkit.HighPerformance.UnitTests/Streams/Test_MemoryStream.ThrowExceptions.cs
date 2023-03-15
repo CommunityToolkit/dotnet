@@ -23,7 +23,7 @@ public partial class Test_MemoryStream
         }
         catch (ArgumentOutOfRangeException e) when (e.GetType() == typeof(ArgumentOutOfRangeException))
         {
-            Assert.AreEqual(e.ParamName, nameof(Stream.Position));
+            Assert.AreEqual(nameof(Stream.Position), e.ParamName);
 
             return;
         }
@@ -45,7 +45,7 @@ public partial class Test_MemoryStream
             System.Reflection.MethodInfo? method = stream.GetType().GetMethod(nameof(Stream.Seek));
             string? name = method!.GetParameters()[1].Name;
 
-            Assert.AreEqual(e.ParamName, name);
+            Assert.AreEqual(name, e.ParamName);
 
             return;
         }
@@ -75,7 +75,7 @@ public partial class Test_MemoryStream
                     normalParams[2].ParameterType == typeof(int)
                 select normalParams[0].Name).Single();
 
-            Assert.AreEqual(e.ParamName, name);
+            Assert.AreEqual(name, e.ParamName);
 
             return;
         }
@@ -105,7 +105,7 @@ public partial class Test_MemoryStream
                     normalParams[2].ParameterType == typeof(int)
                 select normalParams[1].Name).Single();
 
-            Assert.AreEqual(e.ParamName, name);
+            Assert.AreEqual(name, e.ParamName);
 
             return;
         }
@@ -135,7 +135,7 @@ public partial class Test_MemoryStream
                     normalParams[2].ParameterType == typeof(int)
                 select normalParams[2].Name).Single();
 
-            Assert.AreEqual(e.ParamName, name);
+            Assert.AreEqual(name, e.ParamName);
 
             return;
         }
@@ -165,7 +165,7 @@ public partial class Test_MemoryStream
                     normalParams[2].ParameterType == typeof(int)
                 select normalParams[0].Name).Single();
 
-            Assert.AreEqual(e.ParamName, name);
+            Assert.AreEqual(name, e.ParamName);
 
             return;
         }

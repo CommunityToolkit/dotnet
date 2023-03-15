@@ -22,8 +22,8 @@ public class Test_IMemoryOwnerStream
         Assert.IsTrue(stream.CanRead);
         Assert.IsTrue(stream.CanSeek);
         Assert.IsTrue(stream.CanWrite);
-        Assert.AreEqual(stream.Length, buffer.Length);
-        Assert.AreEqual(stream.Position, 0);
+        Assert.AreEqual(buffer.Length, stream.Length);
+        Assert.AreEqual(0, stream.Position);
 
         stream.Dispose();
 

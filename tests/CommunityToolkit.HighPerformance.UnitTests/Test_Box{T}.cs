@@ -65,9 +65,9 @@ public class Test_BoxOfT
     {
         Box<T>? box = value;
 
-        Assert.AreEqual(box.GetReference(), value);
-        Assert.AreEqual(box.ToString(), value.ToString());
-        Assert.AreEqual(box.GetHashCode(), value.GetHashCode());
+        Assert.AreEqual(value, box.GetReference());
+        Assert.AreEqual(value.ToString(), box.ToString());
+        Assert.AreEqual(value.GetHashCode(), box.GetHashCode());
 
         object obj = value;
 
@@ -76,22 +76,22 @@ public class Test_BoxOfT
         Assert.IsTrue(success);
         Assert.IsTrue(ReferenceEquals(obj, box));
         Assert.IsNotNull(box);
-        Assert.AreEqual(box.GetReference(), value);
-        Assert.AreEqual(box.ToString(), value.ToString());
-        Assert.AreEqual(box.GetHashCode(), value.GetHashCode());
+        Assert.AreEqual(value, box.GetReference());
+        Assert.AreEqual(value.ToString(), box.ToString());
+        Assert.AreEqual(value.GetHashCode(), box.GetHashCode());
 
         box = Box<T>.DangerousGetFrom(obj);
 
         Assert.IsTrue(ReferenceEquals(obj, box));
-        Assert.AreEqual(box.GetReference(), value);
-        Assert.AreEqual(box.ToString(), value.ToString());
-        Assert.AreEqual(box.GetHashCode(), value.GetHashCode());
+        Assert.AreEqual(value, box.GetReference());
+        Assert.AreEqual(value.ToString(), box.ToString());
+        Assert.AreEqual(value.GetHashCode(), box.GetHashCode());
 
         box.GetReference() = test;
 
-        Assert.AreEqual(box.GetReference(), test);
-        Assert.AreEqual(box.ToString(), test.ToString());
-        Assert.AreEqual(box.GetHashCode(), test.GetHashCode());
+        Assert.AreEqual(test, box.GetReference());
+        Assert.AreEqual(test.ToString(), box.ToString());
+        Assert.AreEqual(test.GetHashCode(), box.GetHashCode());
         Assert.AreEqual(obj, test);
     }
 }
