@@ -118,15 +118,15 @@ partial class Guard
     }
 
     /// <summary>
-    /// Asserts that the input <see cref="string"/> instance must be whitespace.
+    /// Asserts that the input <see cref="string"/> instance must consists exclusively of white-space characters.
     /// </summary>
     /// <param name="text">The input <see cref="string"/> instance to test.</param>
     /// <param name="name">The name of the input parameter being tested.</param>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="text"/> is neither <see langword="null"/> nor whitespace.</exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="text"/> has some not white-space characters.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsWhiteSpace(string text, [CallerArgumentExpression(nameof(text))] string name = "")
     {
-        if (string.IsNullOrWhiteSpace(text))
+        if (text != null && string.IsNullOrWhiteSpace(text))
         {
             return;
         }
@@ -135,15 +135,15 @@ partial class Guard
     }
 
     /// <summary>
-    /// Asserts that the input <see cref="string"/> instance must not be <see langword="null"/> or whitespace.
+    /// Asserts that the input <see cref="string"/> instance must not consists exclusively of white-space characters.
     /// </summary>
     /// <param name="text">The input <see cref="string"/> instance to test.</param>
     /// <param name="name">The name of the input parameter being tested.</param>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="text"/> is <see langword="null"/> or whitespace.</exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="text"/> has only white-space characters.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNotWhiteSpace(string text, [CallerArgumentExpression(nameof(text))] string name = "")
     {
-        if (!string.IsNullOrWhiteSpace(text))
+        if (text == null || !string.IsNullOrWhiteSpace(text))
         {
             return;
         }
