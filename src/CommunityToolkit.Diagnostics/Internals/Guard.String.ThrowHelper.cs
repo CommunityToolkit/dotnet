@@ -94,7 +94,7 @@ partial class Guard
         /// Throws an <see cref="ArgumentException"/> when <see cref="IsWhiteSpace"/> fails.
         /// </summary>
         [DoesNotReturn]
-        public static void ThrowArgumentExceptionForIsWhiteSpace(string text, string name)
+        public static void ThrowArgumentExceptionForIsWhiteSpace(string? text, string name)
         {
             throw new ArgumentException($"Parameter {AssertString(name)} (string) must be whitespace, was {AssertString(text)}.", name);
         }
@@ -103,7 +103,7 @@ partial class Guard
         /// Throws an <see cref="ArgumentException"/> when <see cref="IsNotWhiteSpace"/> fails.
         /// </summary>
         [DoesNotReturn]
-        public static void ThrowArgumentExceptionForIsNotWhiteSpace(string text, string name)
+        public static void ThrowArgumentExceptionForIsNotWhiteSpace(string? text, string name)
         {
             throw new ArgumentException($"Parameter {AssertString(name)} (string) must not be whitespace, was {AssertString(text)}.", name);
         }
