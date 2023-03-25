@@ -4,6 +4,7 @@
 
 using System.Collections.Immutable;
 using System.Linq;
+using CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 using CommunityToolkit.Mvvm.SourceGenerators.Messaging.Models;
@@ -74,6 +75,9 @@ partial class IMessengerRegisterAllGenerator
 
             // Prepare the base attributes with are always present:
             //
+            // /// <summary>
+            // /// A helper type with generated registration stubs for types implementing <see cref="global::CommunityToolkit.Mvvm.Messaging.IRecipient{T}"/>.
+            // /// </summary>
             // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
             // [global::System.Diagnostics.DebuggerNonUserCode]
             // [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
@@ -83,7 +87,11 @@ partial class IMessengerRegisterAllGenerator
                 AttributeList(SingletonSeparatedList(
                     Attribute(IdentifierName($"global::System.CodeDom.Compiler.GeneratedCode")).AddArgumentListArguments(
                         AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(IMessengerRegisterAllGenerator).FullName))),
-                        AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(IMessengerRegisterAllGenerator).Assembly.GetName().Version.ToString())))))));
+                        AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(IMessengerRegisterAllGenerator).Assembly.GetName().Version.ToString()))))))
+                .WithOpenBracketToken(Token(TriviaList(
+                    Comment("/// <summary>"),
+                    Comment("/// A helper type with generated registration stubs for types implementing <see cref=\"global::CommunityToolkit.Mvvm.Messaging.IRecipient{T}\"/>."),
+                    Comment("/// </summary>")), SyntaxKind.OpenBracketToken, TriviaList())));
             attributes.Add(AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.DebuggerNonUserCode")))));
             attributes.Add(AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage")))));
             attributes.Add(
@@ -146,6 +154,11 @@ partial class IMessengerRegisterAllGenerator
             // with no tokens, which is the most common scenario and will help particularly with AOT.
             // This code will produce a syntax tree as follows:
             //
+            // /// <summary>
+            // /// Creates a message registration stub for <see cref="<RECIPIENT_TYPE>"/> objects.
+            // /// </summary>
+            // /// <param name="_">Dummy parameter, only used to disambiguate the method signature.</param>
+            // /// <returns>A message registration stub for <see cref="<RECIPIENT_TYPE>"/> objects.</returns>
             // [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
             // [global::System.Obsolete("This method is not intended to be called directly by user code")]
             // public static global::System.Action<global::CommunityToolkit.Mvvm.Messaging.IMessenger, object> CreateAllMessagesRegistrator(<RECIPIENT_TYPE> _)
@@ -166,7 +179,13 @@ partial class IMessengerRegisterAllGenerator
                     Identifier("CreateAllMessagesRegistrator")).AddAttributeLists(
                         AttributeList(SingletonSeparatedList(
                             Attribute(IdentifierName("global::System.ComponentModel.EditorBrowsable")).AddArgumentListArguments(
-                            AttributeArgument(ParseExpression("global::System.ComponentModel.EditorBrowsableState.Never"))))),
+                            AttributeArgument(ParseExpression("global::System.ComponentModel.EditorBrowsableState.Never")))))
+                        .WithOpenBracketToken(Token(TriviaList(
+                            Comment("/// <summary>"),
+                            Comment($"/// Creates a message registration stub for <see cref=\"{recipientInfo.TypeName}\"/> objects."),
+                            Comment("/// </summary>"),
+                            Comment("/// <param name=\"_\">Dummy parameter, only used to disambiguate the method signature.</param>"),
+                            Comment($"/// <returns>A message registration stub for <see cref=\"{recipientInfo.TypeName}\"/> objects.</returns>")), SyntaxKind.OpenBracketToken, TriviaList())),
                         AttributeList(SingletonSeparatedList(
                             Attribute(IdentifierName("global::System.Obsolete")).AddArgumentListArguments(
                             AttributeArgument(LiteralExpression(
@@ -199,6 +218,12 @@ partial class IMessengerRegisterAllGenerator
             // Note: the generic overload has a different name to simplify the lookup with reflection.
             // This code will produce a syntax tree as follows:
             //
+            // /// <summary>
+            // /// Creates a message registration stub for <see cref="<RECIPIENT_TYPE>"/> objects, with an input token.
+            // /// </summary>
+            // /// <typeparam name="TToken">The type of tokens that will be used to register messages.
+            // /// <param name="_">Dummy parameter, only used to disambiguate the method signature.</param>
+            // /// <returns>A message registration stub for <see cref="<RECIPIENT_TYPE>"/> objects.</returns>
             // [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
             // [global::System.Obsolete("This method is not intended to be called directly by user code")]
             // public static global::System.Action<global::CommunityToolkit.Mvvm.Messaging.IMessenger, object, TToken> CreateAllMessagesRegistratorWithToken<TToken>(<RECIPIENT_TYPE> _)
@@ -221,7 +246,14 @@ partial class IMessengerRegisterAllGenerator
                     Identifier("CreateAllMessagesRegistratorWithToken")).AddAttributeLists(
                         AttributeList(SingletonSeparatedList(
                             Attribute(IdentifierName("global::System.ComponentModel.EditorBrowsable")).AddArgumentListArguments(
-                            AttributeArgument(ParseExpression("global::System.ComponentModel.EditorBrowsableState.Never"))))),
+                            AttributeArgument(ParseExpression("global::System.ComponentModel.EditorBrowsableState.Never")))))
+                        .WithOpenBracketToken(Token(TriviaList(
+                            Comment("/// <summary>"),
+                            Comment($"/// Creates a message registration stub for <see cref=\"{recipientInfo.TypeName}\"/> objects."),
+                            Comment("/// </summary>"),
+                            Comment("/// <typeparam name=\"TToken\">The type of tokens that will be used to register messages.</typeparam>"),
+                            Comment("/// <param name=\"_\">Dummy parameter, only used to disambiguate the method signature.</param>"),
+                            Comment($"/// <returns>A message registration stub for <see cref=\"{recipientInfo.TypeName}\"/> objects.</returns>")), SyntaxKind.OpenBracketToken, TriviaList())),
                         AttributeList(SingletonSeparatedList(
                             Attribute(IdentifierName("global::System.Obsolete")).AddArgumentListArguments(
                             AttributeArgument(LiteralExpression(
@@ -261,6 +293,7 @@ partial class IMessengerRegisterAllGenerator
             // #pragma warning disable
             // namespace CommunityToolkit.Mvvm.Messaging.__Internals
             // {
+            //     /// <inheritdoc/>
             //     partial class __IMessengerExtensions
             //     {
             //         <GENERATED_MEMBERS>
@@ -271,7 +304,8 @@ partial class IMessengerRegisterAllGenerator
                 NamespaceDeclaration(IdentifierName("CommunityToolkit.Mvvm.Messaging.__Internals")).WithLeadingTrivia(TriviaList(
                     Comment("// <auto-generated/>"),
                     Trivia(PragmaWarningDirectiveTrivia(Token(SyntaxKind.DisableKeyword), true)))).AddMembers(
-                ClassDeclaration("__IMessengerExtensions").AddModifiers(Token(SyntaxKind.PartialKeyword))
+                ClassDeclaration("__IMessengerExtensions").AddModifiers(
+                    Token(TriviaList(Comment("/// <inheritdoc/>")), SyntaxKind.PartialKeyword, TriviaList()))
                 .AddMembers(defaultChannelMethodDeclaration, customChannelMethodDeclaration)))
                 .NormalizeWhitespace();
         }
