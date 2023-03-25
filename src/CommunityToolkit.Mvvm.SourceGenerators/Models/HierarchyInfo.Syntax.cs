@@ -68,6 +68,10 @@ partial record HierarchyInfo
 
         if (Namespace is "")
         {
+            // Special case for top level types with no namespace: we need to re-add the
+            // inheritdoc XML comment, as otherwise the call below would remove it.
+            syntaxTriviaList = syntaxTriviaList.Add(Comment("/// <inheritdoc/>"));
+
             // If there is no namespace, attach the pragma directly to the declared type,
             // and skip the namespace declaration. This will produce code as follows:
             //
