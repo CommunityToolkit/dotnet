@@ -42,6 +42,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel
                 {
                     /// <inheritdoc cref="name"/>
@@ -98,6 +99,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel
                 {
                     /// <inheritdoc cref="name"/>
@@ -175,6 +177,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel
                 {
                     /// <inheritdoc cref="id"/>
@@ -252,6 +255,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel<T>
                 {
                     /// <inheritdoc cref="content"/>
@@ -308,6 +312,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel<T>
                 {
                     /// <inheritdoc cref="content"/>
@@ -390,6 +395,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel<T>
                 {
                     /// <inheritdoc cref="content"/>
@@ -446,6 +452,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel<T>
                 {
                     /// <inheritdoc cref="content"/>
@@ -525,6 +532,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel<T>
                 {
                     /// <inheritdoc cref="content"/>
@@ -581,6 +589,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel<T>
                 {
                     /// <inheritdoc cref="content"/>
@@ -659,6 +668,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel<T>
                 {
                     /// <inheritdoc cref="content"/>
@@ -734,6 +744,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel
                 {
                     /// <inheritdoc cref="name"/>
@@ -810,6 +821,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel
                 {
                     /// <inheritdoc cref="id"/>
@@ -886,6 +898,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel<T>
                 {
                     /// <inheritdoc cref="content"/>
@@ -963,6 +976,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel<T>
                 {
                     /// <inheritdoc cref="content"/>
@@ -1040,6 +1054,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel<T>
                 {
                     /// <inheritdoc cref="content"/>
@@ -1133,6 +1148,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel
                 {
                     /// <inheritdoc cref="a"/>
@@ -1238,6 +1254,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel
                 {
                     /// <summary>The backing field for <see cref="TestCommand"/>.</summary>
@@ -1301,6 +1318,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel
                 {
                     /// <summary>The backing field for <see cref="Test1Command"/>.</summary>
@@ -1320,6 +1338,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel
                 {
                     /// <summary>The backing field for <see cref="Test2Command"/>.</summary>
@@ -1386,6 +1405,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel
                 {
                     /// <summary>The backing field for <see cref="Test1Command"/>.</summary>
@@ -1409,6 +1429,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel
                 {
                     /// <summary>The backing field for <see cref="Test2Command"/>.</summary>
@@ -1456,8 +1477,10 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class Foo
                 {
+                    /// <inheritdoc/>
                     partial class MyViewModel<T>
                     {
                         /// <inheritdoc cref="a"/>
@@ -1513,6 +1536,166 @@ public class Test_SourceGeneratorsCodegen
 #else
         VerifyGenerateSources(source, new[] { new ObservablePropertyGenerator() }, ("MyApp.Foo.MyViewModel_1.g.cs", result));
 #endif
+    }
+
+    [TestMethod]
+    public void ObservableProperty_ValidateGeneratedCachedArguments()
+    {
+        string source = """
+            using System.ComponentModel;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp;
+            
+            partial class MyViewModel : ObservableObject
+            {
+                [ObservableProperty]
+                private string? name;
+            }
+            """;
+
+        string result = """
+            // <auto-generated/>
+            #pragma warning disable
+            #nullable enable
+            namespace MyApp
+            {
+                /// <inheritdoc/>
+                partial class MyViewModel
+                {
+                    /// <inheritdoc cref="name"/>
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+                    public string? Name
+                    {
+                        get => name;
+                        set
+                        {
+                            if (!global::System.Collections.Generic.EqualityComparer<string?>.Default.Equals(name, value))
+                            {
+                                OnNameChanging(value);
+                                OnNameChanging(default, value);
+                                OnPropertyChanging(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.Name);
+                                name = value;
+                                OnNameChanged(value);
+                                OnNameChanged(default, value);
+                                OnPropertyChanged(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.Name);
+                            }
+                        }
+                    }
+
+                    /// <summary>Executes the logic for when <see cref="Name"/> is changing.</summary>
+                    /// <param name="value">The new property value being set.</param>
+                    /// <remarks>This method is invoked right before the value of <see cref="Name"/> is changed.</remarks>
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    partial void OnNameChanging(string? value);
+                    /// <summary>Executes the logic for when <see cref="Name"/> is changing.</summary>
+                    /// <param name="oldValue">The previous property value that is being replaced.</param>
+                    /// <param name="newValue">The new property value being set.</param>
+                    /// <remarks>This method is invoked right before the value of <see cref="Name"/> is changed.</remarks>
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    partial void OnNameChanging(string? oldValue, string? newValue);
+                    /// <summary>Executes the logic for when <see cref="Name"/> just changed.</summary>
+                    /// <param name="value">The new property value that was set.</param>
+                    /// <remarks>This method is invoked right after the value of <see cref="Name"/> is changed.</remarks>
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    partial void OnNameChanged(string? value);
+                    /// <summary>Executes the logic for when <see cref="Name"/> just changed.</summary>
+                    /// <param name="oldValue">The previous property value that was replaced.</param>
+                    /// <param name="newValue">The new property value that was set.</param>
+                    /// <remarks>This method is invoked right after the value of <see cref="Name"/> is changed.</remarks>
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    partial void OnNameChanged(string? oldValue, string? newValue);
+                }
+            }
+            """;
+
+        string changingArgs = """
+            // <auto-generated/>
+            #pragma warning disable
+            #nullable enable
+            namespace CommunityToolkit.Mvvm.ComponentModel.__Internals
+            {
+                /// <summary>
+                /// A helper type providing cached, reusable <see cref="global::System.ComponentModel.PropertyChangingEventArgs"/> instances
+                /// for all properties generated with <see cref="global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute"/>.
+                /// </summary>
+                [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                [global::System.Diagnostics.DebuggerNonUserCode]
+                [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+                [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+                [global::System.Obsolete("This type is not intended to be used directly by user code")]
+                internal static class __KnownINotifyPropertyChangingArgs
+                {
+                    /// <summary>The cached <see cref="global::System.ComponentModel.PropertyChangingEventArgs"/> instance for all "Name" generated properties.</summary>
+                    [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+                    [global::System.Obsolete("This field is not intended to be referenced directly by user code")]
+                    public static readonly global::System.ComponentModel.PropertyChangingEventArgs Name = new global::System.ComponentModel.PropertyChangingEventArgs("Name");
+                }
+            }
+            """;
+
+        string changedArgs = """
+            // <auto-generated/>
+            #pragma warning disable
+            #nullable enable
+            namespace CommunityToolkit.Mvvm.ComponentModel.__Internals
+            {
+                /// <summary>
+                /// A helper type providing cached, reusable <see cref="global::System.ComponentModel.PropertyChangedEventArgs"/> instances
+                /// for all properties generated with <see cref="global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute"/>.
+                /// </summary>
+                [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                [global::System.Diagnostics.DebuggerNonUserCode]
+                [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+                [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+                [global::System.Obsolete("This type is not intended to be used directly by user code")]
+                internal static class __KnownINotifyPropertyChangedArgs
+                {
+                    /// <summary>The cached <see cref="global::System.ComponentModel.PropertyChangedEventArgs"/> instance for all "Name" generated properties.</summary>
+                    [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+                    [global::System.Obsolete("This field is not intended to be referenced directly by user code")]
+                    public static readonly global::System.ComponentModel.PropertyChangedEventArgs Name = new global::System.ComponentModel.PropertyChangedEventArgs("Name");
+                }
+            }
+            """;
+
+        VerifyGenerateSources(source, new[] { new ObservablePropertyGenerator() }, ("MyApp.MyViewModel.g.cs", result), ("__KnownINotifyPropertyChangingArgs.g.cs", changingArgs), ("__KnownINotifyPropertyChangedArgs.g.cs", changedArgs));
+    }
+
+    [TestMethod]
+    public void RelayCommandMethodInTopLevelTypeWithNoNamespace_PreservesInheritdoc()
+    {
+        string source = """
+            using CommunityToolkit.Mvvm.Input;
+            
+            partial class MyViewModel
+            {
+                [RelayCommand]
+                private void Test()
+                {
+                }
+            }
+            """;
+
+        string result = """
+            // <auto-generated/>
+            #pragma warning disable
+            #nullable enable
+            /// <inheritdoc/>
+            partial class MyViewModel
+            {
+                /// <summary>The backing field for <see cref="TestCommand"/>.</summary>
+                [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", "8.2.0.0")]
+                private global::CommunityToolkit.Mvvm.Input.RelayCommand? testCommand;
+                /// <summary>Gets an <see cref="global::CommunityToolkit.Mvvm.Input.IRelayCommand"/> instance wrapping <see cref="Test"/>.</summary>
+                [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", "8.2.0.0")]
+                [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+                public global::CommunityToolkit.Mvvm.Input.IRelayCommand TestCommand => testCommand ??= new global::CommunityToolkit.Mvvm.Input.RelayCommand(new global::System.Action(Test));
+            }
+            """;
+
+        VerifyGenerateSources(source, new[] { new RelayCommandGenerator() }, ("MyViewModel.Test.g.cs", result));
     }
 
     /// <summary>

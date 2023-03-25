@@ -30,13 +30,14 @@ partial record HierarchyInfo
         // Create the partial type declaration with the given member declarations.
         // This code produces a class declaration as follows:
         //
+        // /// <inheritdoc/>
         // partial <TYPE_KIND> TYPE_NAME>
         // {
         //     <MEMBERS>
         // }
         TypeDeclarationSyntax typeDeclarationSyntax =
             Hierarchy[0].GetSyntax()
-            .AddModifiers(Token(SyntaxKind.PartialKeyword))
+            .AddModifiers(Token(TriviaList(Comment("/// <inheritdoc/>")), SyntaxKind.PartialKeyword, TriviaList()))
             .AddMembers(memberDeclarations.ToArray());
 
         // Add the base list, if present
@@ -50,7 +51,7 @@ partial record HierarchyInfo
         {
             typeDeclarationSyntax =
                 parentType.GetSyntax()
-                .AddModifiers(Token(SyntaxKind.PartialKeyword))
+                .AddModifiers(Token(TriviaList(Comment("/// <inheritdoc/>")), SyntaxKind.PartialKeyword, TriviaList()))
                 .AddMembers(typeDeclarationSyntax);
         }
 
@@ -67,6 +68,10 @@ partial record HierarchyInfo
 
         if (Namespace is "")
         {
+            // Special case for top level types with no namespace: we need to re-add the
+            // inheritdoc XML comment, as otherwise the call below would remove it.
+            syntaxTriviaList = syntaxTriviaList.Add(Comment("/// <inheritdoc/>"));
+
             // If there is no namespace, attach the pragma directly to the declared type,
             // and skip the namespace declaration. This will produce code as follows:
             //
