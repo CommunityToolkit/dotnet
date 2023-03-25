@@ -42,6 +42,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel
                 {
                     /// <inheritdoc cref="name"/>
@@ -98,6 +99,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel
                 {
                     /// <inheritdoc cref="name"/>
@@ -175,6 +177,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel
                 {
                     /// <inheritdoc cref="id"/>
@@ -252,6 +255,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel<T>
                 {
                     /// <inheritdoc cref="content"/>
@@ -308,6 +312,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel<T>
                 {
                     /// <inheritdoc cref="content"/>
@@ -390,6 +395,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel<T>
                 {
                     /// <inheritdoc cref="content"/>
@@ -446,6 +452,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel<T>
                 {
                     /// <inheritdoc cref="content"/>
@@ -525,6 +532,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel<T>
                 {
                     /// <inheritdoc cref="content"/>
@@ -581,6 +589,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel<T>
                 {
                     /// <inheritdoc cref="content"/>
@@ -659,6 +668,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel<T>
                 {
                     /// <inheritdoc cref="content"/>
@@ -734,6 +744,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel
                 {
                     /// <inheritdoc cref="name"/>
@@ -810,6 +821,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel
                 {
                     /// <inheritdoc cref="id"/>
@@ -886,6 +898,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel<T>
                 {
                     /// <inheritdoc cref="content"/>
@@ -963,6 +976,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel<T>
                 {
                     /// <inheritdoc cref="content"/>
@@ -1040,6 +1054,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel<T>
                 {
                     /// <inheritdoc cref="content"/>
@@ -1133,6 +1148,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel
                 {
                     /// <inheritdoc cref="a"/>
@@ -1238,6 +1254,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel
                 {
                     /// <summary>The backing field for <see cref="TestCommand"/>.</summary>
@@ -1301,6 +1318,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel
                 {
                     /// <summary>The backing field for <see cref="Test1Command"/>.</summary>
@@ -1320,6 +1338,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel
                 {
                     /// <summary>The backing field for <see cref="Test2Command"/>.</summary>
@@ -1386,6 +1405,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel
                 {
                     /// <summary>The backing field for <see cref="Test1Command"/>.</summary>
@@ -1409,6 +1429,7 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class MyViewModel
                 {
                     /// <summary>The backing field for <see cref="Test2Command"/>.</summary>
@@ -1456,8 +1477,10 @@ public class Test_SourceGeneratorsCodegen
             #nullable enable
             namespace MyApp
             {
+                /// <inheritdoc/>
                 partial class Foo
                 {
+                    /// <inheritdoc/>
                     partial class MyViewModel<T>
                     {
                         /// <inheritdoc cref="a"/>
