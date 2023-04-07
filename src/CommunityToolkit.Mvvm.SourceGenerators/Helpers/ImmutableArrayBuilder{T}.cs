@@ -6,6 +6,7 @@
 // more info in ThirdPartyNotices.txt in the root of the project.
 
 using System;
+using System.Buffers;
 using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
 
@@ -18,11 +19,6 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 internal struct ImmutableArrayBuilder<T> : IDisposable
 {
     /// <summary>
-    /// The shared <see cref="ObjectPool{T}"/> instance to share <see cref="Writer"/> objects.
-    /// </summary>
-    private static readonly ObjectPool<Writer> SharedObjectPool = new(static () => new Writer());
-
-    /// <summary>
     /// The rented <see cref="Writer"/> instance to use.
     /// </summary>
     private Writer? writer;
@@ -33,7 +29,7 @@ internal struct ImmutableArrayBuilder<T> : IDisposable
     /// <returns>A <see cref="ImmutableArrayBuilder{T}"/> instance to write data to.</returns>
     public static ImmutableArrayBuilder<T> Rent()
     {
-        return new(SharedObjectPool.Allocate());
+        return new(new Writer());
     }
 
     /// <summary>
@@ -103,23 +99,18 @@ internal struct ImmutableArrayBuilder<T> : IDisposable
 
         this.writer = null;
 
-        if (writer is not null)
-        {
-            writer.Clear();
-
-            SharedObjectPool.Free(writer);
-        }
+        writer?.Dispose();
     }
 
     /// <summary>
     /// A class handling the actual buffer writing.
     /// </summary>
-    private sealed class Writer
+    private sealed class Writer : IDisposable
     {
         /// <summary>
         /// The underlying <typeparamref name="T"/> array.
         /// </summary>
-        private T[] array;
+        private T?[]? array;
 
         /// <summary>
         /// The starting offset within <see cref="array"/>.
@@ -131,15 +122,7 @@ internal struct ImmutableArrayBuilder<T> : IDisposable
         /// </summary>
         public Writer()
         {
-            if (typeof(T) == typeof(char))
-            {
-                this.array = new T[1024];
-            }
-            else
-            {
-                this.array = new T[8];
-            }
-
+            this.array = ArrayPool<T?>.Shared.Rent(typeof(T) == typeof(char) ? 1024 : 8);
             this.index = 0;
         }
 
@@ -154,7 +137,7 @@ internal struct ImmutableArrayBuilder<T> : IDisposable
         public ReadOnlySpan<T> WrittenSpan
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new(this.array, 0, this.index);
+            get => new(this.array!, 0, this.index);
         }
 
         /// <inheritdoc cref="ImmutableArrayBuilder{T}.Add"/>
@@ -162,7 +145,7 @@ internal struct ImmutableArrayBuilder<T> : IDisposable
         {
             EnsureCapacity(1);
 
-            this.array[this.index++] = value;
+            this.array![this.index++] = value;
         }
 
         /// <inheritdoc cref="ImmutableArrayBuilder{T}.AddRange"/>
@@ -170,22 +153,22 @@ internal struct ImmutableArrayBuilder<T> : IDisposable
         {
             EnsureCapacity(items.Length);
 
-            items.CopyTo(this.array.AsSpan(this.index));
+            items.CopyTo(this.array.AsSpan(this.index)!);
 
             this.index += items.Length;
         }
 
-        /// <summary>
-        /// Clears the items in the current writer.
-        /// </summary>
-        public void Clear()
+        /// <inheritdoc/>
+        public void Dispose()
         {
-            if (typeof(T) != typeof(char))
-            {
-                this.array.AsSpan(0, this.index).Clear();
-            }
+            T?[]? array = this.array;
 
-            this.index = 0;
+            this.array = null;
+
+            if (array is not null)
+            {
+                ArrayPool<T?>.Shared.Return(array, clearArray: typeof(T) != typeof(char));
+            }
         }
 
         /// <summary>
@@ -195,7 +178,7 @@ internal struct ImmutableArrayBuilder<T> : IDisposable
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void EnsureCapacity(int requestedSize)
         {
-            if (requestedSize > this.array.Length - this.index)
+            if (requestedSize > this.array!.Length - this.index)
             {
                 ResizeBuffer(requestedSize);
             }
@@ -209,13 +192,15 @@ internal struct ImmutableArrayBuilder<T> : IDisposable
         private void ResizeBuffer(int sizeHint)
         {
             int minimumSize = this.index + sizeHint;
-            int requestedSize = Math.Max(this.array.Length * 2, minimumSize);
 
-            T[] newArray = new T[requestedSize];
+            T?[] oldArray = this.array!;
+            T?[] newArray = ArrayPool<T?>.Shared.Rent(minimumSize);
 
-            Array.Copy(this.array, newArray, this.index);
+            Array.Copy(oldArray, newArray, this.index);
 
             this.array = newArray;
+
+            ArrayPool<T?>.Shared.Return(oldArray, clearArray: typeof(T) != typeof(char));
         }
     }
 }
