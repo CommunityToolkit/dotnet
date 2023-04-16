@@ -118,7 +118,7 @@ partial class Guard
     }
 
     /// <summary>
-    /// Asserts that the input <see cref="string"/> instance must consists exclusively of white-space characters.
+    /// Asserts that the input <see cref="string"/> instance must consists only of white-space characters.
     /// </summary>
     /// <param name="text">The input <see cref="string"/> instance to test.</param>
     /// <param name="name">The name of the input parameter being tested.</param>
@@ -126,7 +126,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsWhiteSpace(string text, [CallerArgumentExpression(nameof(text))] string name = "")
     {
-        if (text != null && string.IsNullOrWhiteSpace(text))
+        if (!string.IsNullOrEmpty(text) && string.IsNullOrWhiteSpace(text))
         {
             return;
         }
@@ -135,7 +135,7 @@ partial class Guard
     }
 
     /// <summary>
-    /// Asserts that the input <see cref="string"/> instance must not consists exclusively of white-space characters.
+    /// Asserts that the input <see cref="string"/> instance must not consists only of white-space characters.
     /// </summary>
     /// <param name="text">The input <see cref="string"/> instance to test.</param>
     /// <param name="name">The name of the input parameter being tested.</param>
@@ -143,7 +143,7 @@ partial class Guard
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void IsNotWhiteSpace(string text, [CallerArgumentExpression(nameof(text))] string name = "")
     {
-        if (text == null || !string.IsNullOrWhiteSpace(text))
+        if (string.IsNullOrEmpty(text) || !string.IsNullOrWhiteSpace(text))
         {
             return;
         }
