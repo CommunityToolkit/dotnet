@@ -238,7 +238,7 @@ public partial class Test_Guard
     {
         Guard.IsWhiteSpace(null, nameof(Test_Guard_IsWhiteSpace_Null));
     }
-
+    
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsWhiteSpace_Empty()
