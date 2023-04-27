@@ -109,9 +109,9 @@ partial struct ReadOnlySpan2D<T>
         private readonly object? instance;
 
         /// <summary>
-        /// The initial offset within <see cref="instance"/>.
+        /// The initial byte offset within <see cref="instance"/>.
         /// </summary>
-        private readonly IntPtr offset;
+        private readonly nint offset;
 
         /// <summary>
         /// The height of the specified 2D region.

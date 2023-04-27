@@ -37,9 +37,9 @@ public readonly struct Memory2D<T> : IEquatable<Memory2D<T>>
     private readonly object? instance;
 
     /// <summary>
-    /// The initial offset within <see cref="instance"/>.
+    /// The initial byte offset within <see cref="instance"/>.
     /// </summary>
-    private readonly IntPtr offset;
+    private readonly nint offset;
 
     /// <summary>
     /// The height of the specified 2D region.
@@ -603,7 +603,7 @@ public readonly struct Memory2D<T> : IEquatable<Memory2D<T>>
                 if (this.instance is MemoryManager<T> memoryManager)
                 {
                     ref T r0 = ref memoryManager.GetSpan().DangerousGetReference();
-                    ref T r1 = ref Unsafe.Add(ref r0, this.offset);
+                    ref T r1 = ref Unsafe.AddByteOffset(ref r0, this.offset);
 
                     return new(ref r1, this.height, this.width, this.pitch);
                 }

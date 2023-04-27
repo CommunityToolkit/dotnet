@@ -82,9 +82,9 @@ public readonly ref partial struct Span2D<T>
     internal readonly object? Instance;
 
     /// <summary>
-    /// The initial offset within <see cref="Instance"/>.
+    /// The initial byte offset within <see cref="Instance"/>.
     /// </summary>
-    internal readonly IntPtr Offset;
+    internal readonly nint Offset;
 
     /// <summary>
     /// The height of the specified 2D region.
