@@ -71,15 +71,15 @@ internal sealed class StringMemoryManager<TTo> : MemoryManager<TTo>, IMemoryMana
             ThrowArgumentOutOfRangeExceptionForInvalidIndex();
         }
 
-        int bytePrefix = this.offset * sizeof(char);
-        int byteSuffix = elementIndex * sizeof(TTo);
-        int byteOffset = bytePrefix + byteSuffix;
+        nint bytePrefix = this.offset * sizeof(char);
+        nint byteSuffix = elementIndex * sizeof(TTo);
+        nint byteOffset = bytePrefix + byteSuffix;
 
         GCHandle handle = GCHandle.Alloc(this.text, GCHandleType.Pinned);
 
         ref char r0 = ref this.text.DangerousGetReference();
         ref byte r1 = ref Unsafe.As<char, byte>(ref r0);
-        ref byte r2 = ref Unsafe.Add(ref r1, byteOffset);
+        ref byte r2 = ref Unsafe.AddByteOffset(ref r1, byteOffset);
         void* pi = Unsafe.AsPointer(ref r2);
 
         return new(pi, handle);
