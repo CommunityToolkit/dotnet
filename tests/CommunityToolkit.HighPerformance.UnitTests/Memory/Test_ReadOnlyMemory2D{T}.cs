@@ -464,4 +464,29 @@ public class Test_ReadOnlyMemory2DT
 
         Assert.AreEqual(text, expected);
     }
+
+#if NET6_0_OR_GREATER
+    // See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/3536
+    [TestMethod]
+    [DataRow(720, 1280)]
+    public void Test_ReadOnlyMemory2DT_CastAndSlice_WorksCorrectly(int height, int width)
+    {
+        ReadOnlyMemory2D<int> data =
+            new byte[width * height * sizeof(int)]
+            .AsMemory()
+            .Cast<byte, int>()
+            .AsMemory2D(height: height, width: width);
+
+        ReadOnlyMemory2D<int> slice = data.Slice(
+            row: height / 2,
+            column: 0,
+            height: height / 2,
+            width: width);
+
+        Assert.IsTrue(Unsafe.AreSame(ref Unsafe.AsRef(in data.Span[height / 2, 0]), ref Unsafe.AsRef(in slice.Span[0, 0])));
+        Assert.IsTrue(Unsafe.AreSame(ref Unsafe.AsRef(in data.Span[height / 2, width - 1]), ref Unsafe.AsRef(in slice.Span[0, width - 1])));
+        Assert.IsTrue(Unsafe.AreSame(ref Unsafe.AsRef(in data.Span[height - 1, 0]), ref Unsafe.AsRef(in slice.Span[(height / 2) - 1, 0])));
+        Assert.IsTrue(Unsafe.AreSame(ref Unsafe.AsRef(in data.Span[height - 1, width - 1]), ref Unsafe.AsRef(in slice.Span[(height / 2) - 1, width - 1])));
+    }
+#endif
 }
