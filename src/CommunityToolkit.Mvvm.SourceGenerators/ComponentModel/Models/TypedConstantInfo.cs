@@ -134,10 +134,9 @@ internal abstract partial record TypedConstantInfo
         /// <inheritdoc/>
         public override ExpressionSyntax GetSyntax()
         {
-            return
-                CastExpression(
-                    IdentifierName(TypeName),
-                    LiteralExpression(SyntaxKind.NumericLiteralExpression, ParseToken(Value.ToString())));
+            // We let Roslyn parse the value expression, so that it can automatically handle both positive and negative values. This
+            // is needed because negative values have a different syntax tree (UnaryMinuxExpression holding the numeric expression).
+            return CastExpression(IdentifierName(TypeName), ParseExpression(Value.ToString()));
         }
     }
 
