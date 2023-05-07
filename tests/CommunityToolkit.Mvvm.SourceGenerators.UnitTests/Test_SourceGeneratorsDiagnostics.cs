@@ -1672,6 +1672,30 @@ public class Test_SourceGeneratorsDiagnostics
         VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0035");
     }
 
+    // See https://github.com/CommunityToolkit/dotnet/issues/683
+    [TestMethod]
+    public void InvalidPropertyTargetedAttributeOnObservablePropertyField_InvalidExpression()
+    {
+        string source = """
+            using System;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            public partial class MyViewModel : ObservableObject
+            {
+                [ObservableProperty]
+                [property: Test(TestAttribute.M)]
+                private int number;
+            }
+
+            public class TestAttribute : Attribute
+            {
+                public static string M => "";
+            }
+            """;
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0037");
+    }
+
     [TestMethod]
     public void InvalidPropertyTargetedAttributeOnRelayCommandMethod_MissingUsingDirective()
     {
@@ -1723,6 +1747,58 @@ public class Test_SourceGeneratorsDiagnostics
             """;
 
         VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0036");
+    }
+
+    // See https://github.com/CommunityToolkit/dotnet/issues/683
+    [TestMethod]
+    public void InvalidPropertyTargetedAttributeOnRelayCommandMethod_InvalidExpressionOnFieldAttribute()
+    {
+        string source = """
+            using System;
+            using CommunityToolkit.Mvvm.Input;
+
+            public partial class MyViewModel
+            {
+                [RelayCommand]
+                [field: Test(TestAttribute.M)]
+                private void Test()
+                {
+                }
+            }
+
+            public class TestAttribute : Attribute
+            {
+                public static string M => "";
+            }
+            """;
+
+        VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0038");
+    }
+
+    // See https://github.com/CommunityToolkit/dotnet/issues/683
+    [TestMethod]
+    public void InvalidPropertyTargetedAttributeOnRelayCommandMethod_InvalidExpressionOnPropertyAttribute()
+    {
+        string source = """
+            using System;
+            using CommunityToolkit.Mvvm.Input;
+
+            public partial class MyViewModel
+            {
+                [RelayCommand]
+                [property: Test(TestAttribute.M)]
+                private void Test()
+                {
+                }
+            }
+
+            public class TestAttribute : Attribute
+            {
+                public static string M => "";
+            }
+            """;
+
+        VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0038");
     }
 
     /// <summary>
