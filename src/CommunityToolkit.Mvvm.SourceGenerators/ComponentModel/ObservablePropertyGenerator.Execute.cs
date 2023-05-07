@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
@@ -174,7 +175,7 @@ partial class ObservablePropertyGenerator
                 {
                     hasAnyValidationAttributes = true;
 
-                    forwardedAttributes.Add(AttributeInfo.From(attributeData));
+                    forwardedAttributes.Add(AttributeInfo.Create(attributeData));
                 }
 
                 // Also track the current attribute for forwarding if it is of any of the following types:
@@ -189,7 +190,7 @@ partial class ObservablePropertyGenerator
                     attributeData.AttributeClass?.HasFullyQualifiedMetadataName("System.ComponentModel.DataAnnotations.EditableAttribute") == true ||
                     attributeData.AttributeClass?.HasFullyQualifiedMetadataName("System.ComponentModel.DataAnnotations.KeyAttribute") == true)
                 {
-                    forwardedAttributes.Add(AttributeInfo.From(attributeData));
+                    forwardedAttributes.Add(AttributeInfo.Create(attributeData));
                 }
             }
 
@@ -231,7 +232,21 @@ partial class ObservablePropertyGenerator
                         continue;
                     }
 
-                    forwardedAttributes.Add(AttributeInfo.From(attributeTypeSymbol, semanticModel, attribute.ArgumentList?.Arguments ?? Enumerable.Empty<AttributeArgumentSyntax>(), token));
+                    IEnumerable<AttributeArgumentSyntax> attributeArguments = attribute.ArgumentList?.Arguments ?? Enumerable.Empty<AttributeArgumentSyntax>();
+
+                    // Try to extract the forwarded attribute
+                    if (!AttributeInfo.TryCreate(attributeTypeSymbol, semanticModel, attributeArguments, token, out AttributeInfo? attributeInfo))
+                    {
+                        builder.Add(
+                            InvalidPropertyTargetedAttributeExpressionOnObservablePropertyField,
+                            attribute,
+                            fieldSymbol,
+                            attribute.Name);
+
+                        continue;
+                    }
+
+                    forwardedAttributes.Add(attributeInfo);
                 }
             }
 
