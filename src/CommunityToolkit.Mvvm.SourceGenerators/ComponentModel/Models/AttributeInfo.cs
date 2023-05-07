@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
@@ -16,6 +17,9 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 /// <summary>
 /// A model representing an attribute declaration.
 /// </summary>
+/// <param name="TypeName">The type name of the attribute.</param>
+/// <param name="ConstructorArgumentInfo">The <see cref="TypedConstantInfo"/> values for all constructor arguments for the attribute.</param>
+/// <param name="NamedArgumentInfo">The <see cref="TypedConstantInfo"/> values for all named arguments for the attribute.</param>
 internal sealed record AttributeInfo(
     string TypeName,
     EquatableArray<TypedConstantInfo> ConstructorArgumentInfo,
@@ -26,7 +30,7 @@ internal sealed record AttributeInfo(
     /// </summary>
     /// <param name="attributeData">The input <see cref="AttributeData"/> value.</param>
     /// <returns>A <see cref="AttributeInfo"/> instance representing <paramref name="attributeData"/>.</returns>
-    public static AttributeInfo From(AttributeData attributeData)
+    public static AttributeInfo Create(AttributeData attributeData)
     {
         string typeName = attributeData.AttributeClass!.GetFullyQualifiedName();
 
@@ -36,13 +40,13 @@ internal sealed record AttributeInfo(
         // Get the constructor arguments
         foreach (TypedConstant typedConstant in attributeData.ConstructorArguments)
         {
-            constructorArguments.Add(TypedConstantInfo.From(typedConstant));
+            constructorArguments.Add(TypedConstantInfo.Create(typedConstant));
         }
 
         // Get the named arguments
         foreach (KeyValuePair<string, TypedConstant> namedConstant in attributeData.NamedArguments)
         {
-            namedArguments.Add((namedConstant.Key, TypedConstantInfo.From(namedConstant.Value)));
+            namedArguments.Add((namedConstant.Key, TypedConstantInfo.Create(namedConstant.Value)));
         }
 
         return new(
@@ -58,8 +62,14 @@ internal sealed record AttributeInfo(
     /// <param name="semanticModel">The <see cref="SemanticModel"/> instance for the current run.</param>
     /// <param name="arguments">The sequence of <see cref="AttributeArgumentSyntax"/> instances to process.</param>
     /// <param name="token">The cancellation token for the current operation.</param>
-    /// <returns>A <see cref="AttributeInfo"/> instance representing the input attribute data.</returns>
-    public static AttributeInfo From(INamedTypeSymbol typeSymbol, SemanticModel semanticModel, IEnumerable<AttributeArgumentSyntax> arguments, CancellationToken token)
+    /// <param name="info">The resulting <see cref="AttributeInfo"/> instance, if available</param>
+    /// <returns>Whether a resulting <see cref="AttributeInfo"/> instance could be created.</returns>
+    public static bool TryCreate(
+        INamedTypeSymbol typeSymbol,
+        SemanticModel semanticModel,
+        IEnumerable<AttributeArgumentSyntax> arguments,
+        CancellationToken token,
+        [NotNullWhen(true)] out AttributeInfo? info)
     {
         string typeName = typeSymbol.GetFullyQualifiedName();
 
@@ -74,7 +84,13 @@ internal sealed record AttributeInfo(
                 continue;
             }
 
-            TypedConstantInfo argumentInfo = TypedConstantInfo.From(operation, semanticModel, argument.Expression, token);
+            // Try to get the info for the current argument
+            if (!TypedConstantInfo.TryCreate(operation, semanticModel, argument.Expression, token, out TypedConstantInfo? argumentInfo))
+            {
+                info = null;
+
+                return false;
+            }
 
             // Try to get the identifier name if the current expression is a named argument expression. If it
             // isn't, then the expression is a normal attribute constructor argument, so no extra work is needed.
@@ -88,10 +104,12 @@ internal sealed record AttributeInfo(
             }
         }
 
-        return new(
+        info = new AttributeInfo(
             typeName,
             constructorArguments.ToImmutable(),
             namedArguments.ToImmutable());
+
+        return true;
     }
 
     /// <summary>

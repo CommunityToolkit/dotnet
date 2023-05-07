@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -1004,7 +1005,19 @@ partial class RelayCommandGenerator
                             continue;
                         }
 
-                        AttributeInfo attributeInfo = AttributeInfo.From(attributeTypeSymbol, semanticModel, attribute.ArgumentList?.Arguments ?? Enumerable.Empty<AttributeArgumentSyntax>(), token);
+                        IEnumerable<AttributeArgumentSyntax> attributeArguments = attribute.ArgumentList?.Arguments ?? Enumerable.Empty<AttributeArgumentSyntax>();
+
+                        // Try to extract the forwarded attribute
+                        if (!AttributeInfo.TryCreate(attributeTypeSymbol, semanticModel, attributeArguments, token, out AttributeInfo? attributeInfo))
+                        {
+                            diagnostics.Add(
+                                InvalidFieldOrPropertyTargetedAttributeExpressionOnRelayCommandMethod,
+                                attribute,
+                                methodSymbol,
+                                attribute.Name);
+
+                            continue;
+                        }
 
                         // Add the new attribute info to the right builder
                         if (attributeList.Target?.Identifier is SyntaxToken(SyntaxKind.FieldKeyword))

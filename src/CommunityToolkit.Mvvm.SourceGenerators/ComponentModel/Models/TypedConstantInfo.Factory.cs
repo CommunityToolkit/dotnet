@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
@@ -22,7 +23,7 @@ partial record TypedConstantInfo
     /// <param name="arg">The input <see cref="TypedConstant"/> value.</param>
     /// <returns>A <see cref="TypedConstantInfo"/> instance representing <paramref name="arg"/>.</returns>
     /// <exception cref="ArgumentException">Thrown if the input argument is not valid.</exception>
-    public static TypedConstantInfo From(TypedConstant arg)
+    public static TypedConstantInfo Create(TypedConstant arg)
     {
         if (arg.IsNull)
         {
@@ -32,7 +33,7 @@ partial record TypedConstantInfo
         if (arg.Kind == TypedConstantKind.Array)
         {
             string elementTypeName = ((IArrayTypeSymbol)arg.Type!).ElementType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-            ImmutableArray<TypedConstantInfo> items = arg.Values.Select(From).ToImmutableArray();
+            ImmutableArray<TypedConstantInfo> items = arg.Values.Select(Create).ToImmutableArray();
 
             return new Array(elementTypeName, items);
         }
@@ -69,24 +70,28 @@ partial record TypedConstantInfo
     /// <param name="semanticModel">The <see cref="SemanticModel"/> that was used to retrieve <paramref name="operation"/>.</param>
     /// <param name="expression">The <see cref="ExpressionSyntax"/> that <paramref name="operation"/> was retrieved from.</param>
     /// <param name="token">The cancellation token for the current operation.</param>
-    /// <returns>A <see cref="TypedConstantInfo"/> instance representing <paramref name="operation"/>.</returns>
+    /// <param name="info">The resulting <see cref="TypedConstantInfo"/> instance, if available</param>
+    /// <returns>Whether a resulting <see cref="TypedConstantInfo"/> instance could be created.</returns>
     /// <exception cref="ArgumentException">Thrown if the input argument is not valid.</exception>
-    public static TypedConstantInfo From(
+    public static bool TryCreate(
         IOperation operation,
         SemanticModel semanticModel,
         ExpressionSyntax expression,
-        CancellationToken token)
+        CancellationToken token,
+        [NotNullWhen(true)] out TypedConstantInfo? info)
     {
         if (operation.ConstantValue.HasValue)
         {
             // Enum values are constant but need to be checked explicitly in this case
             if (operation.Type?.TypeKind is TypeKind.Enum)
             {
-                return new Enum(operation.Type!.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), operation.ConstantValue.Value!);
+                info = new Enum(operation.Type!.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), operation.ConstantValue.Value!);
+
+                return true;
             }
 
             // Handle all other constant literals normally
-            return operation.ConstantValue.Value switch
+            info = operation.ConstantValue.Value switch
             {
                 null => new Null(),
                 string text => new Primitive.String(text),
@@ -104,11 +109,15 @@ partial record TypedConstantInfo
                 ushort ush => new Primitive.Of<ushort>(ush),
                 _ => throw new ArgumentException("Invalid primitive type")
             };
+
+            return true;
         }
 
         if (operation is ITypeOfOperation typeOfOperation)
         {
-            return new Type(typeOfOperation.TypeOperand.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
+            info = new Type(typeOfOperation.TypeOperand.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
+
+            return true;
         }
 
         if (operation is IArrayCreationOperation)
@@ -125,7 +134,9 @@ partial record TypedConstantInfo
             // No initializer found, just return an empty array
             if (initializerExpression is null)
             {
-                return new Array(elementTypeName, ImmutableArray<TypedConstantInfo>.Empty);
+                info = new Array(elementTypeName, ImmutableArray<TypedConstantInfo>.Empty);
+
+                return true;
             }
 
             using ImmutableArrayBuilder<TypedConstantInfo> items = ImmutableArrayBuilder<TypedConstantInfo>.Rent();
@@ -135,15 +146,25 @@ partial record TypedConstantInfo
             {
                 if (semanticModel.GetOperation(initializationExpression, token) is not IOperation initializationOperation)
                 {
-                    throw new ArgumentException("Failed to retrieve an operation for the current array element");
+                    goto Failure;
                 }
 
-                items.Add(From(initializationOperation, semanticModel, initializationExpression, token));
+                if (!TryCreate(initializationOperation, semanticModel, initializationExpression, token, out TypedConstantInfo? elementInfo))
+                {
+                    goto Failure;
+                }
+
+                items.Add(elementInfo);
             }
 
-            return new Array(elementTypeName, items.ToImmutable());
+            info = new Array(elementTypeName, items.ToImmutable());
+
+            return true;
         }
 
-        throw new ArgumentException("Invalid attribute argument value");
+        Failure:
+        info = null;
+
+        return false;
     }
 }
