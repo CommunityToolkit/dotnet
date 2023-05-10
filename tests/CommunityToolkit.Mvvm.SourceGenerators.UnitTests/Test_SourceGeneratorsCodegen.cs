@@ -46,7 +46,7 @@ public class Test_SourceGeneratorsCodegen
                 partial class MyViewModel
                 {
                     /// <inheritdoc cref="name"/>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     public string Name
                     {
@@ -70,24 +70,24 @@ public class Test_SourceGeneratorsCodegen
                     /// <summary>Executes the logic for when <see cref="Name"/> is changing.</summary>
                     /// <param name="value">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Name"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnNameChanging(string value);
                     /// <summary>Executes the logic for when <see cref="Name"/> is changing.</summary>
                     /// <param name="oldValue">The previous property value that is being replaced.</param>
                     /// <param name="newValue">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Name"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnNameChanging(string? oldValue, string newValue);
                     /// <summary>Executes the logic for when <see cref="Name"/> just changed.</summary>
                     /// <param name="value">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Name"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnNameChanged(string value);
                     /// <summary>Executes the logic for when <see cref="Name"/> just changed.</summary>
                     /// <param name="oldValue">The previous property value that was replaced.</param>
                     /// <param name="newValue">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Name"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnNameChanged(string? oldValue, string newValue);
                 }
             }
@@ -103,7 +103,7 @@ public class Test_SourceGeneratorsCodegen
                 partial class MyViewModel
                 {
                     /// <inheritdoc cref="name"/>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     public string Name
                     {
@@ -126,24 +126,24 @@ public class Test_SourceGeneratorsCodegen
                     /// <summary>Executes the logic for when <see cref="Name"/> is changing.</summary>
                     /// <param name="value">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Name"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnNameChanging(string value);
                     /// <summary>Executes the logic for when <see cref="Name"/> is changing.</summary>
                     /// <param name="oldValue">The previous property value that is being replaced.</param>
                     /// <param name="newValue">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Name"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnNameChanging(string? oldValue, string newValue);
                     /// <summary>Executes the logic for when <see cref="Name"/> just changed.</summary>
                     /// <param name="value">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Name"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnNameChanged(string value);
                     /// <summary>Executes the logic for when <see cref="Name"/> just changed.</summary>
                     /// <param name="oldValue">The previous property value that was replaced.</param>
                     /// <param name="newValue">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Name"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnNameChanged(string? oldValue, string newValue);
                 }
             }
@@ -181,7 +181,7 @@ public class Test_SourceGeneratorsCodegen
                 partial class MyViewModel
                 {
                     /// <inheritdoc cref="id"/>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     public global::System.Guid Id
                     {
@@ -204,24 +204,24 @@ public class Test_SourceGeneratorsCodegen
                     /// <summary>Executes the logic for when <see cref="Id"/> is changing.</summary>
                     /// <param name="value">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Id"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnIdChanging(global::System.Guid value);
                     /// <summary>Executes the logic for when <see cref="Id"/> is changing.</summary>
                     /// <param name="oldValue">The previous property value that is being replaced.</param>
                     /// <param name="newValue">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Id"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnIdChanging(global::System.Guid oldValue, global::System.Guid newValue);
                     /// <summary>Executes the logic for when <see cref="Id"/> just changed.</summary>
                     /// <param name="value">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Id"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnIdChanged(global::System.Guid value);
                     /// <summary>Executes the logic for when <see cref="Id"/> just changed.</summary>
                     /// <param name="oldValue">The previous property value that was replaced.</param>
                     /// <param name="newValue">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Id"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnIdChanged(global::System.Guid oldValue, global::System.Guid newValue);
                 }
             }
@@ -259,7 +259,7 @@ public class Test_SourceGeneratorsCodegen
                 partial class MyViewModel<T>
                 {
                     /// <inheritdoc cref="content"/>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     public T Content
                     {
@@ -283,24 +283,24 @@ public class Test_SourceGeneratorsCodegen
                     /// <summary>Executes the logic for when <see cref="Content"/> is changing.</summary>
                     /// <param name="value">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanging(T value);
                     /// <summary>Executes the logic for when <see cref="Content"/> is changing.</summary>
                     /// <param name="oldValue">The previous property value that is being replaced.</param>
                     /// <param name="newValue">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanging(T? oldValue, T newValue);
                     /// <summary>Executes the logic for when <see cref="Content"/> just changed.</summary>
                     /// <param name="value">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanged(T value);
                     /// <summary>Executes the logic for when <see cref="Content"/> just changed.</summary>
                     /// <param name="oldValue">The previous property value that was replaced.</param>
                     /// <param name="newValue">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanged(T? oldValue, T newValue);
                 }
             }
@@ -316,7 +316,7 @@ public class Test_SourceGeneratorsCodegen
                 partial class MyViewModel<T>
                 {
                     /// <inheritdoc cref="content"/>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     public T Content
                     {
@@ -339,24 +339,24 @@ public class Test_SourceGeneratorsCodegen
                     /// <summary>Executes the logic for when <see cref="Content"/> is changing.</summary>
                     /// <param name="value">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanging(T value);
                     /// <summary>Executes the logic for when <see cref="Content"/> is changing.</summary>
                     /// <param name="oldValue">The previous property value that is being replaced.</param>
                     /// <param name="newValue">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanging(T? oldValue, T newValue);
                     /// <summary>Executes the logic for when <see cref="Content"/> just changed.</summary>
                     /// <param name="value">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanged(T value);
                     /// <summary>Executes the logic for when <see cref="Content"/> just changed.</summary>
                     /// <param name="oldValue">The previous property value that was replaced.</param>
                     /// <param name="newValue">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanged(T? oldValue, T newValue);
                 }
             }
@@ -399,7 +399,7 @@ public class Test_SourceGeneratorsCodegen
                 partial class MyViewModel<T>
                 {
                     /// <inheritdoc cref="content"/>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     public T Content
                     {
@@ -423,24 +423,24 @@ public class Test_SourceGeneratorsCodegen
                     /// <summary>Executes the logic for when <see cref="Content"/> is changing.</summary>
                     /// <param name="value">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanging(T value);
                     /// <summary>Executes the logic for when <see cref="Content"/> is changing.</summary>
                     /// <param name="oldValue">The previous property value that is being replaced.</param>
                     /// <param name="newValue">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanging(T? oldValue, T newValue);
                     /// <summary>Executes the logic for when <see cref="Content"/> just changed.</summary>
                     /// <param name="value">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanged(T value);
                     /// <summary>Executes the logic for when <see cref="Content"/> just changed.</summary>
                     /// <param name="oldValue">The previous property value that was replaced.</param>
                     /// <param name="newValue">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanged(T? oldValue, T newValue);
                 }
             }
@@ -456,7 +456,7 @@ public class Test_SourceGeneratorsCodegen
                 partial class MyViewModel<T>
                 {
                     /// <inheritdoc cref="content"/>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     public T Content
                     {
@@ -479,24 +479,24 @@ public class Test_SourceGeneratorsCodegen
                     /// <summary>Executes the logic for when <see cref="Content"/> is changing.</summary>
                     /// <param name="value">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanging(T value);
                     /// <summary>Executes the logic for when <see cref="Content"/> is changing.</summary>
                     /// <param name="oldValue">The previous property value that is being replaced.</param>
                     /// <param name="newValue">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanging(T? oldValue, T newValue);
                     /// <summary>Executes the logic for when <see cref="Content"/> just changed.</summary>
                     /// <param name="value">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanged(T value);
                     /// <summary>Executes the logic for when <see cref="Content"/> just changed.</summary>
                     /// <param name="oldValue">The previous property value that was replaced.</param>
                     /// <param name="newValue">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanged(T? oldValue, T newValue);
                 }
             }
@@ -536,7 +536,7 @@ public class Test_SourceGeneratorsCodegen
                 partial class MyViewModel<T>
                 {
                     /// <inheritdoc cref="content"/>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     public T Content
                     {
@@ -560,24 +560,24 @@ public class Test_SourceGeneratorsCodegen
                     /// <summary>Executes the logic for when <see cref="Content"/> is changing.</summary>
                     /// <param name="value">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanging(T value);
                     /// <summary>Executes the logic for when <see cref="Content"/> is changing.</summary>
                     /// <param name="oldValue">The previous property value that is being replaced.</param>
                     /// <param name="newValue">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanging(T? oldValue, T newValue);
                     /// <summary>Executes the logic for when <see cref="Content"/> just changed.</summary>
                     /// <param name="value">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanged(T value);
                     /// <summary>Executes the logic for when <see cref="Content"/> just changed.</summary>
                     /// <param name="oldValue">The previous property value that was replaced.</param>
                     /// <param name="newValue">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanged(T? oldValue, T newValue);
                 }
             }
@@ -593,7 +593,7 @@ public class Test_SourceGeneratorsCodegen
                 partial class MyViewModel<T>
                 {
                     /// <inheritdoc cref="content"/>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     public T Content
                     {
@@ -616,24 +616,24 @@ public class Test_SourceGeneratorsCodegen
                     /// <summary>Executes the logic for when <see cref="Content"/> is changing.</summary>
                     /// <param name="value">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanging(T value);
                     /// <summary>Executes the logic for when <see cref="Content"/> is changing.</summary>
                     /// <param name="oldValue">The previous property value that is being replaced.</param>
                     /// <param name="newValue">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanging(T? oldValue, T newValue);
                     /// <summary>Executes the logic for when <see cref="Content"/> just changed.</summary>
                     /// <param name="value">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanged(T value);
                     /// <summary>Executes the logic for when <see cref="Content"/> just changed.</summary>
                     /// <param name="oldValue">The previous property value that was replaced.</param>
                     /// <param name="newValue">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanged(T? oldValue, T newValue);
                 }
             }
@@ -672,7 +672,7 @@ public class Test_SourceGeneratorsCodegen
                 partial class MyViewModel<T>
                 {
                     /// <inheritdoc cref="content"/>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     public T Content
                     {
@@ -695,24 +695,24 @@ public class Test_SourceGeneratorsCodegen
                     /// <summary>Executes the logic for when <see cref="Content"/> is changing.</summary>
                     /// <param name="value">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanging(T value);
                     /// <summary>Executes the logic for when <see cref="Content"/> is changing.</summary>
                     /// <param name="oldValue">The previous property value that is being replaced.</param>
                     /// <param name="newValue">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanging(T oldValue, T newValue);
                     /// <summary>Executes the logic for when <see cref="Content"/> just changed.</summary>
                     /// <param name="value">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanged(T value);
                     /// <summary>Executes the logic for when <see cref="Content"/> just changed.</summary>
                     /// <param name="oldValue">The previous property value that was replaced.</param>
                     /// <param name="newValue">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanged(T oldValue, T newValue);
                 }
             }
@@ -748,7 +748,7 @@ public class Test_SourceGeneratorsCodegen
                 partial class MyViewModel
                 {
                     /// <inheritdoc cref="name"/>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     public string? Name
                     {
@@ -771,24 +771,24 @@ public class Test_SourceGeneratorsCodegen
                     /// <summary>Executes the logic for when <see cref="Name"/> is changing.</summary>
                     /// <param name="value">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Name"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnNameChanging(string? value);
                     /// <summary>Executes the logic for when <see cref="Name"/> is changing.</summary>
                     /// <param name="oldValue">The previous property value that is being replaced.</param>
                     /// <param name="newValue">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Name"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnNameChanging(string? oldValue, string? newValue);
                     /// <summary>Executes the logic for when <see cref="Name"/> just changed.</summary>
                     /// <param name="value">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Name"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnNameChanged(string? value);
                     /// <summary>Executes the logic for when <see cref="Name"/> just changed.</summary>
                     /// <param name="oldValue">The previous property value that was replaced.</param>
                     /// <param name="newValue">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Name"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnNameChanged(string? oldValue, string? newValue);
                 }
             }
@@ -825,7 +825,7 @@ public class Test_SourceGeneratorsCodegen
                 partial class MyViewModel
                 {
                     /// <inheritdoc cref="id"/>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     public global::System.Guid? Id
                     {
@@ -848,24 +848,24 @@ public class Test_SourceGeneratorsCodegen
                     /// <summary>Executes the logic for when <see cref="Id"/> is changing.</summary>
                     /// <param name="value">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Id"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnIdChanging(global::System.Guid? value);
                     /// <summary>Executes the logic for when <see cref="Id"/> is changing.</summary>
                     /// <param name="oldValue">The previous property value that is being replaced.</param>
                     /// <param name="newValue">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Id"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnIdChanging(global::System.Guid? oldValue, global::System.Guid? newValue);
                     /// <summary>Executes the logic for when <see cref="Id"/> just changed.</summary>
                     /// <param name="value">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Id"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnIdChanged(global::System.Guid? value);
                     /// <summary>Executes the logic for when <see cref="Id"/> just changed.</summary>
                     /// <param name="oldValue">The previous property value that was replaced.</param>
                     /// <param name="newValue">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Id"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnIdChanged(global::System.Guid? oldValue, global::System.Guid? newValue);
                 }
             }
@@ -902,7 +902,7 @@ public class Test_SourceGeneratorsCodegen
                 partial class MyViewModel<T>
                 {
                     /// <inheritdoc cref="content"/>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     public T? Content
                     {
@@ -925,24 +925,24 @@ public class Test_SourceGeneratorsCodegen
                     /// <summary>Executes the logic for when <see cref="Content"/> is changing.</summary>
                     /// <param name="value">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanging(T? value);
                     /// <summary>Executes the logic for when <see cref="Content"/> is changing.</summary>
                     /// <param name="oldValue">The previous property value that is being replaced.</param>
                     /// <param name="newValue">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanging(T? oldValue, T? newValue);
                     /// <summary>Executes the logic for when <see cref="Content"/> just changed.</summary>
                     /// <param name="value">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanged(T? value);
                     /// <summary>Executes the logic for when <see cref="Content"/> just changed.</summary>
                     /// <param name="oldValue">The previous property value that was replaced.</param>
                     /// <param name="newValue">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanged(T? oldValue, T? newValue);
                 }
             }
@@ -980,7 +980,7 @@ public class Test_SourceGeneratorsCodegen
                 partial class MyViewModel<T>
                 {
                     /// <inheritdoc cref="content"/>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     public T? Content
                     {
@@ -1003,24 +1003,24 @@ public class Test_SourceGeneratorsCodegen
                     /// <summary>Executes the logic for when <see cref="Content"/> is changing.</summary>
                     /// <param name="value">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanging(T? value);
                     /// <summary>Executes the logic for when <see cref="Content"/> is changing.</summary>
                     /// <param name="oldValue">The previous property value that is being replaced.</param>
                     /// <param name="newValue">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanging(T? oldValue, T? newValue);
                     /// <summary>Executes the logic for when <see cref="Content"/> just changed.</summary>
                     /// <param name="value">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanged(T? value);
                     /// <summary>Executes the logic for when <see cref="Content"/> just changed.</summary>
                     /// <param name="oldValue">The previous property value that was replaced.</param>
                     /// <param name="newValue">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanged(T? oldValue, T? newValue);
                 }
             }
@@ -1058,7 +1058,7 @@ public class Test_SourceGeneratorsCodegen
                 partial class MyViewModel<T>
                 {
                     /// <inheritdoc cref="content"/>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     public T? Content
                     {
@@ -1081,24 +1081,24 @@ public class Test_SourceGeneratorsCodegen
                     /// <summary>Executes the logic for when <see cref="Content"/> is changing.</summary>
                     /// <param name="value">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanging(T? value);
                     /// <summary>Executes the logic for when <see cref="Content"/> is changing.</summary>
                     /// <param name="oldValue">The previous property value that is being replaced.</param>
                     /// <param name="newValue">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanging(T? oldValue, T? newValue);
                     /// <summary>Executes the logic for when <see cref="Content"/> just changed.</summary>
                     /// <param name="value">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanged(T? value);
                     /// <summary>Executes the logic for when <see cref="Content"/> just changed.</summary>
                     /// <param name="oldValue">The previous property value that was replaced.</param>
                     /// <param name="newValue">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Content"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnContentChanged(T? oldValue, T? newValue);
                 }
             }
@@ -1152,7 +1152,7 @@ public class Test_SourceGeneratorsCodegen
                 partial class MyViewModel
                 {
                     /// <inheritdoc cref="a"/>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     [global::MyApp.DefaultValueAttribute(0D)]
                     [global::MyApp.DefaultValueAttribute(1.24D)]
@@ -1181,24 +1181,24 @@ public class Test_SourceGeneratorsCodegen
                     /// <summary>Executes the logic for when <see cref="A"/> is changing.</summary>
                     /// <param name="value">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="A"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnAChanging(object? value);
                     /// <summary>Executes the logic for when <see cref="A"/> is changing.</summary>
                     /// <param name="oldValue">The previous property value that is being replaced.</param>
                     /// <param name="newValue">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="A"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnAChanging(object? oldValue, object? newValue);
                     /// <summary>Executes the logic for when <see cref="A"/> just changed.</summary>
                     /// <param name="value">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="A"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnAChanged(object? value);
                     /// <summary>Executes the logic for when <see cref="A"/> just changed.</summary>
                     /// <param name="oldValue">The previous property value that was replaced.</param>
                     /// <param name="newValue">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="A"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnAChanged(object? oldValue, object? newValue);
                 }
             }
@@ -1258,7 +1258,7 @@ public class Test_SourceGeneratorsCodegen
                 partial class MyViewModel
                 {
                     /// <summary>The backing field for <see cref="TestCommand"/>.</summary>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", <ASSEMBLY_VERSION>)]
                     [global::MyApp.DefaultValueAttribute(0D)]
                     [global::MyApp.DefaultValueAttribute(1.24D)]
                     [global::MyApp.DefaultValueAttribute(0F)]
@@ -1267,7 +1267,7 @@ public class Test_SourceGeneratorsCodegen
                     [global::MyApp.DefaultValueAttribute(3.14F)]
                     private global::CommunityToolkit.Mvvm.Input.RelayCommand? testCommand;
                     /// <summary>Gets an <see cref="global::CommunityToolkit.Mvvm.Input.IRelayCommand"/> instance wrapping <see cref="Test"/>.</summary>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     [global::MyApp.DefaultValueAttribute(0D)]
                     [global::MyApp.DefaultValueAttribute(1.24D)]
@@ -1347,7 +1347,7 @@ public class Test_SourceGeneratorsCodegen
                 partial class MyViewModel
                 {
                     /// <inheritdoc cref="a"/>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum1)-1073741824)]
                     [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum2)-9223372036854775808)]
@@ -1374,24 +1374,24 @@ public class Test_SourceGeneratorsCodegen
                     /// <summary>Executes the logic for when <see cref="A"/> is changing.</summary>
                     /// <param name="value">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="A"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnAChanging(object? value);
                     /// <summary>Executes the logic for when <see cref="A"/> is changing.</summary>
                     /// <param name="oldValue">The previous property value that is being replaced.</param>
                     /// <param name="newValue">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="A"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnAChanging(object? oldValue, object? newValue);
                     /// <summary>Executes the logic for when <see cref="A"/> just changed.</summary>
                     /// <param name="value">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="A"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnAChanged(object? value);
                     /// <summary>Executes the logic for when <see cref="A"/> just changed.</summary>
                     /// <param name="oldValue">The previous property value that was replaced.</param>
                     /// <param name="newValue">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="A"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnAChanged(object? oldValue, object? newValue);
                 }
             }
@@ -1486,7 +1486,7 @@ public class Test_SourceGeneratorsCodegen
                 partial class MyViewModel
                 {
                     /// <inheritdoc cref="a"/>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum1)0)]
                     [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum1)-1073741824)]
@@ -1529,24 +1529,24 @@ public class Test_SourceGeneratorsCodegen
                     /// <summary>Executes the logic for when <see cref="A"/> is changing.</summary>
                     /// <param name="value">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="A"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnAChanging(object? value);
                     /// <summary>Executes the logic for when <see cref="A"/> is changing.</summary>
                     /// <param name="oldValue">The previous property value that is being replaced.</param>
                     /// <param name="newValue">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="A"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnAChanging(object? oldValue, object? newValue);
                     /// <summary>Executes the logic for when <see cref="A"/> just changed.</summary>
                     /// <param name="value">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="A"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnAChanged(object? value);
                     /// <summary>Executes the logic for when <see cref="A"/> just changed.</summary>
                     /// <param name="oldValue">The previous property value that was replaced.</param>
                     /// <param name="newValue">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="A"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnAChanged(object? oldValue, object? newValue);
                 }
             }
@@ -1594,10 +1594,10 @@ public class Test_SourceGeneratorsCodegen
                 partial class MyViewModel
                 {
                     /// <summary>The backing field for <see cref="Test1Command"/>.</summary>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", <ASSEMBLY_VERSION>)]
                     private global::CommunityToolkit.Mvvm.Input.RelayCommand? test1Command;
                     /// <summary>Gets an <see cref="global::CommunityToolkit.Mvvm.Input.IRelayCommand"/> instance wrapping <see cref="Test1"/>.</summary>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     public global::CommunityToolkit.Mvvm.Input.IRelayCommand Test1Command => test1Command ??= new global::CommunityToolkit.Mvvm.Input.RelayCommand(new global::System.Action(Test1));
                 }
@@ -1614,10 +1614,10 @@ public class Test_SourceGeneratorsCodegen
                 partial class MyViewModel
                 {
                     /// <summary>The backing field for <see cref="Test2Command"/>.</summary>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", <ASSEMBLY_VERSION>)]
                     private global::CommunityToolkit.Mvvm.Input.RelayCommand? test2Command;
                     /// <summary>Gets an <see cref="global::CommunityToolkit.Mvvm.Input.IRelayCommand"/> instance wrapping <see cref="Test2"/>.</summary>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     public global::CommunityToolkit.Mvvm.Input.IRelayCommand Test2Command => test2Command ??= new global::CommunityToolkit.Mvvm.Input.RelayCommand(new global::System.Action(Test2));
                 }
@@ -1681,12 +1681,12 @@ public class Test_SourceGeneratorsCodegen
                 partial class MyViewModel
                 {
                     /// <summary>The backing field for <see cref="Test1Command"/>.</summary>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", <ASSEMBLY_VERSION>)]
                     [global::MyApp.ValueAttribute(2)]
                     [global::MyApp.ValueAttribute(0)]
                     private global::CommunityToolkit.Mvvm.Input.RelayCommand? test1Command;
                     /// <summary>Gets an <see cref="global::CommunityToolkit.Mvvm.Input.IRelayCommand"/> instance wrapping <see cref="Test1"/>.</summary>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     [global::MyApp.ValueAttribute(3)]
                     [global::MyApp.ValueAttribute(1)]
@@ -1705,12 +1705,12 @@ public class Test_SourceGeneratorsCodegen
                 partial class MyViewModel
                 {
                     /// <summary>The backing field for <see cref="Test2Command"/>.</summary>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", <ASSEMBLY_VERSION>)]
                     [global::MyApp.ValueAttribute(2)]
                     [global::MyApp.ValueAttribute(0)]
                     private global::CommunityToolkit.Mvvm.Input.RelayCommand? test2Command;
                     /// <summary>Gets an <see cref="global::CommunityToolkit.Mvvm.Input.IRelayCommand"/> instance wrapping <see cref="Test2"/>.</summary>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     [global::MyApp.ValueAttribute(3)]
                     [global::MyApp.ValueAttribute(1)]
@@ -1791,14 +1791,14 @@ public class Test_SourceGeneratorsCodegen
                 partial class MyViewModel
                 {
                     /// <summary>The backing field for <see cref="TestCommand"/>.</summary>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", <ASSEMBLY_VERSION>)]
                     [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum1)-1073741824)]
                     [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum2)-9223372036854775808)]
                     [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum3)-1234)]
                     [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum4)-1)]
                     private global::CommunityToolkit.Mvvm.Input.RelayCommand? testCommand;
                     /// <summary>Gets an <see cref="global::CommunityToolkit.Mvvm.Input.IRelayCommand"/> instance wrapping <see cref="Test"/>.</summary>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum1)-1073741824)]
                     [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum2)-9223372036854775808)]
@@ -1846,7 +1846,7 @@ public class Test_SourceGeneratorsCodegen
                     partial class MyViewModel<T>
                     {
                         /// <inheritdoc cref="a"/>
-                        [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                        [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                         [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                         public string? A
                         {
@@ -1869,24 +1869,24 @@ public class Test_SourceGeneratorsCodegen
                         /// <summary>Executes the logic for when <see cref="A"/> is changing.</summary>
                         /// <param name="value">The new property value being set.</param>
                         /// <remarks>This method is invoked right before the value of <see cref="A"/> is changed.</remarks>
-                        [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                        [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                         partial void OnAChanging(string? value);
                         /// <summary>Executes the logic for when <see cref="A"/> is changing.</summary>
                         /// <param name="oldValue">The previous property value that is being replaced.</param>
                         /// <param name="newValue">The new property value being set.</param>
                         /// <remarks>This method is invoked right before the value of <see cref="A"/> is changed.</remarks>
-                        [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                        [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                         partial void OnAChanging(string? oldValue, string? newValue);
                         /// <summary>Executes the logic for when <see cref="A"/> just changed.</summary>
                         /// <param name="value">The new property value that was set.</param>
                         /// <remarks>This method is invoked right after the value of <see cref="A"/> is changed.</remarks>
-                        [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                        [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                         partial void OnAChanged(string? value);
                         /// <summary>Executes the logic for when <see cref="A"/> just changed.</summary>
                         /// <param name="oldValue">The previous property value that was replaced.</param>
                         /// <param name="newValue">The new property value that was set.</param>
                         /// <remarks>This method is invoked right after the value of <see cref="A"/> is changed.</remarks>
-                        [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                        [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                         partial void OnAChanged(string? oldValue, string? newValue);
                     }
                 }
@@ -1926,7 +1926,7 @@ public class Test_SourceGeneratorsCodegen
                 partial class MyViewModel
                 {
                     /// <inheritdoc cref="name"/>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     public string? Name
                     {
@@ -1949,24 +1949,24 @@ public class Test_SourceGeneratorsCodegen
                     /// <summary>Executes the logic for when <see cref="Name"/> is changing.</summary>
                     /// <param name="value">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Name"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnNameChanging(string? value);
                     /// <summary>Executes the logic for when <see cref="Name"/> is changing.</summary>
                     /// <param name="oldValue">The previous property value that is being replaced.</param>
                     /// <param name="newValue">The new property value being set.</param>
                     /// <remarks>This method is invoked right before the value of <see cref="Name"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnNameChanging(string? oldValue, string? newValue);
                     /// <summary>Executes the logic for when <see cref="Name"/> just changed.</summary>
                     /// <param name="value">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Name"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnNameChanged(string? value);
                     /// <summary>Executes the logic for when <see cref="Name"/> just changed.</summary>
                     /// <param name="oldValue">The previous property value that was replaced.</param>
                     /// <param name="newValue">The new property value that was set.</param>
                     /// <remarks>This method is invoked right after the value of <see cref="Name"/> is changed.</remarks>
-                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                    [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     partial void OnNameChanged(string? oldValue, string? newValue);
                 }
             }
@@ -1982,7 +1982,7 @@ public class Test_SourceGeneratorsCodegen
                 /// A helper type providing cached, reusable <see cref="global::System.ComponentModel.PropertyChangingEventArgs"/> instances
                 /// for all properties generated with <see cref="global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute"/>.
                 /// </summary>
-                [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                 [global::System.Diagnostics.DebuggerNonUserCode]
                 [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                 [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
@@ -2007,7 +2007,7 @@ public class Test_SourceGeneratorsCodegen
                 /// A helper type providing cached, reusable <see cref="global::System.ComponentModel.PropertyChangedEventArgs"/> instances
                 /// for all properties generated with <see cref="global::CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute"/>.
                 /// </summary>
-                [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "8.2.0.0")]
+                [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                 [global::System.Diagnostics.DebuggerNonUserCode]
                 [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                 [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
@@ -2048,10 +2048,10 @@ public class Test_SourceGeneratorsCodegen
             partial class MyViewModel
             {
                 /// <summary>The backing field for <see cref="TestCommand"/>.</summary>
-                [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", "8.2.0.0")]
+                [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", <ASSEMBLY_VERSION>)]
                 private global::CommunityToolkit.Mvvm.Input.RelayCommand? testCommand;
                 /// <summary>Gets an <see cref="global::CommunityToolkit.Mvvm.Input.IRelayCommand"/> instance wrapping <see cref="Test"/>.</summary>
-                [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", "8.2.0.0")]
+                [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", <ASSEMBLY_VERSION>)]
                 [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                 public global::CommunityToolkit.Mvvm.Input.IRelayCommand TestCommand => testCommand ??= new global::CommunityToolkit.Mvvm.Input.RelayCommand(new global::System.Action(Test));
             }
@@ -2112,6 +2112,10 @@ public class Test_SourceGeneratorsCodegen
         {
             string filePath = filename;
 
+            // Update the assembly version using the version from the assembly of the input generators.
+            // This allows the tests to not need updates whenever the version of the MVVM Toolkit changes.
+            string expectedText = text.Replace("<ASSEMBLY_VERSION>", $"\"{generators[0].GetType().Assembly.GetName().Version}\"");
+
 #if !ROSLYN_4_3_1_OR_GREATER
             // Adjust the filenames for the legacy Roslyn 4.0
             filePath = filePath.Replace('`', '_');
@@ -2119,7 +2123,7 @@ public class Test_SourceGeneratorsCodegen
 
             SyntaxTree generatedTree = outputCompilation.SyntaxTrees.Single(tree => Path.GetFileName(tree.FilePath) == filePath);
 
-            Assert.AreEqual(text, generatedTree.ToString());
+            Assert.AreEqual(expectedText, generatedTree.ToString());
         }
 
         GC.KeepAlive(observableObjectType);
