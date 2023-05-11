@@ -491,7 +491,7 @@ public class Test_ObservableValidator
     {
         ObservableValidatorBase viewmodel = (ObservableValidatorBase)Activator.CreateInstance(type)!;
 
-        viewmodel.ValidateAll();
+        viewmodel.ValidateAllProperties();
     }
 
     // See: https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4272
@@ -564,6 +564,50 @@ public class Test_ObservableValidator
 
         Assert.IsFalse(model.HasErrors);
     }
+
+    // See https://github.com/CommunityToolkit/dotnet/issues/691
+    [TestMethod]
+    public void Test_ObservableValidator_ValidateAllProperties_IncludeInheritedProperties()
+    {
+        DerivedModelWithValidatableProperties model = new();
+        List<DataErrorsChangedEventArgs> events = new();
+
+        model.ErrorsChanged += (s, e) => events.Add(e);
+
+        model.ValidateAllProperties();
+
+        Assert.IsTrue(model.HasErrors);
+        Assert.IsTrue(events.Count == 2);
+
+        Assert.IsTrue(events.Any(e => e.PropertyName == nameof(DerivedModelWithValidatableProperties.Name)));
+        Assert.IsTrue(events.Any(e => e.PropertyName == nameof(DerivedModelWithValidatableProperties.Number)));
+
+        events.Clear();
+
+        model.Number = 42;
+
+        model.ValidateAllProperties();
+
+        Assert.IsTrue(model.HasErrors);
+        Assert.IsTrue(events.Count == 2);
+
+        Assert.IsTrue(events.Any(e => e.PropertyName == nameof(DerivedModelWithValidatableProperties.Name)));
+        Assert.IsTrue(events.Any(e => e.PropertyName == nameof(DerivedModelWithValidatableProperties.Number)));
+
+        Assert.AreEqual(1, model.GetErrors(nameof(DerivedModelWithValidatableProperties.Name)).Count());
+        Assert.AreEqual(0, model.GetErrors(nameof(DerivedModelWithValidatableProperties.Number)).Count());
+
+        events.Clear();
+
+        model.Name = "Bob";
+        model.Number = 80;
+
+        model.ValidateAllProperties();
+
+        Assert.IsFalse(model.HasErrors);
+        Assert.IsTrue(events.Count == 1);
+
+        Assert.IsTrue(events.Any(e => e.PropertyName == nameof(DerivedModelWithValidatableProperties.Name)));    }
 
     public class Person : ObservableValidator
     {
@@ -786,9 +830,9 @@ public class Test_ObservableValidator
     {
         public int? MyDummyInt { get; set; } = 0;
 
-        public void ValidateAll()
+        public new void ValidateAllProperties()
         {
-            ValidateAllProperties();
+            base.ValidateAllProperties();
         }
     }
 
@@ -822,6 +866,17 @@ public class Test_ObservableValidator
         [Required]
         [MinLength(2)]
         public string? Name { get; set; }
+    }
+
+    public class DerivedModelWithValidatableProperties : AbstractModelWithValidatableProperty
+    {
+        [Range(10, 1000)]
+        public int Number { get; set; }
+
+        public new void ValidateAllProperties()
+        {
+            base.ValidateAllProperties();
+        }
     }
 
     public class GenericPerson<T> : ObservableValidator
