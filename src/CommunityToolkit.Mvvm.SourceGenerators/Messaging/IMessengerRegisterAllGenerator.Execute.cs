@@ -4,7 +4,6 @@
 
 using System.Collections.Immutable;
 using System.Linq;
-using CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 using CommunityToolkit.Mvvm.SourceGenerators.Messaging.Models;

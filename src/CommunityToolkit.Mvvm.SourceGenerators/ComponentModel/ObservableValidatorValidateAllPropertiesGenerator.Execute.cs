@@ -42,7 +42,7 @@ partial class ObservableValidatorValidateAllPropertiesGenerator
         {
             using ImmutableArrayBuilder<string> propertyNames = ImmutableArrayBuilder<string>.Rent();
 
-            foreach (ISymbol memberSymbol in typeSymbol.GetMembers())
+            foreach (ISymbol memberSymbol in typeSymbol.GetAllMembers())
             {
                 if (memberSymbol is { IsStatic: true } or not (IPropertySymbol { IsIndexer: false } or IFieldSymbol))
                 {
