@@ -598,11 +598,43 @@ internal static class DiagnosticDescriptors
     /// </summary>
     public static readonly DiagnosticDescriptor InvalidFieldOrPropertyTargetedAttributeOnRelayCommandMethod = new DiagnosticDescriptor(
         id: "MVVMTK0036",
-        title: "Invalid field targeted attribute type",
+        title: "Invalid field or property targeted attribute type",
         messageFormat: "The method {0} annotated with [RelayCommand] is using attribute \"{1}\" which was not recognized as a valid type (are you missing a using directive?)",
         category: typeof(RelayCommandGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "All attributes targeting the generated field or property for a method annotated with [RelayCommand] must correctly be resolved to valid types.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0036");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a field with <c>[ObservableProperty]</c> is using an invalid attribute expression targeting the property.
+    /// <para>
+    /// Format: <c>"The field {0} annotated with [ObservableProperty] is using attribute "{1}" with an invalid expression (are you passing any incorrect parameters to the attribute constructor?)"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor InvalidPropertyTargetedAttributeExpressionOnObservablePropertyField = new DiagnosticDescriptor(
+        id: "MVVMTK0037",
+        title: "Invalid property targeted attribute expression",
+        messageFormat: "The field {0} annotated with [ObservableProperty] is using attribute \"{1}\" with an invalid expression (are you passing any incorrect parameters to the attribute constructor?)",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "All attributes targeting the generated property for a field annotated with [ObservableProperty] must be using valid expressions.",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0037");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a method with <c>[RelayCommand]</c> is using an invalid attribute targeting the field or property.
+    /// <para>
+    /// Format: <c>"The method {0} annotated with [RelayCommand] is using attribute "{1}" with an invalid expression (are you passing any incorrect parameters to the attribute constructor?)"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor InvalidFieldOrPropertyTargetedAttributeExpressionOnRelayCommandMethod = new DiagnosticDescriptor(
+        id: "MVVMTK0038",
+        title: "Invalid field or property targeted attribute expression",
+        messageFormat: "The method {0} annotated with [RelayCommand] is using attribute \"{1}\" with an invalid expression (are you passing any incorrect parameters to the attribute constructor?)",
+        category: typeof(RelayCommandGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "All attributes targeting the generated field or property for a method annotated with [RelayCommand] must be using valid expressions.",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0038");
 }
