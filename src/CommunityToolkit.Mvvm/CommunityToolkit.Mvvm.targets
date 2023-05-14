@@ -54,7 +54,10 @@
       emitting this manually lets us customize the message to inform developers as to why exactly the generators have been
       disabled, and that the rest of the MVVM Toolkit will still keep working as intended, just without additional features.
     -->
-    <Warning Condition ="'$(MVVMToolkitCurrentCompilerVersionIsNotNewEnough)' == 'true'" Text="The MVVM Toolkit source generators have been disabled on the current configuration, as they need Roslyn 4.x in order to work. The MVVM Toolkit will work just fine, but features relying on the source generators will not be available."/>
+    <Warning Condition ="'$(MVVMToolkitCurrentCompilerVersionIsNotNewEnough)' == 'true'"
+             Code="MVVMTKCFG0001"
+             HelpLink="https://aka.ms/mvvmtoolkit/errors/mvvmtkcfg0001"
+             Text="The MVVM Toolkit source generators have been disabled on the current configuration, as they need Roslyn 4.x in order to work. The MVVM Toolkit will work just fine, but features relying on the source generators will not be available."/>
   
     <PropertyGroup>
 
@@ -109,7 +112,10 @@
       This happens when either the project style is using packages.config, or when explicitly requested.
       See https://learn.microsoft.com/en-us/nuget/reference/msbuild-targets#restoring-packagereference-and-packagesconfig-projects-with-msbuild.
     -->
-    <Warning Condition ="'$(RestorePackagesConfig)' == 'true' OR '$(RestoreProjectStyle)' == 'PackagesConfig'" Text="The MVVM Toolkit source generators might not be loaded correctly, as the current project is using the packages.config setup to restore NuGet packages. Source generators require PackageReference to be used (either in a legacy-style or SDK-style .csproj project, both are supported as long as PackageReference is used)."/>
+    <Warning Condition ="'$(RestorePackagesConfig)' == 'true' OR '$(RestoreProjectStyle)' == 'PackagesConfig'"
+             Code="MVVMTKCFG0002"
+             HelpLink="https://aka.ms/mvvmtoolkit/errors/mvvmtkcfg0002"
+             Text="The MVVM Toolkit source generators might not be loaded correctly, as the current project is using the packages.config setup to restore NuGet packages. Source generators require PackageReference to be used (either in a legacy-style or SDK-style .csproj project, both are supported as long as PackageReference is used)."/>
   </Target>
 
 </Project>
