@@ -15,7 +15,7 @@ Package | Latest stable | Latest Preview | Description
 
 ## 🙌 Getting Started
 
-Please read the [Getting Started with the .NET Community Toolkit](https://learn.microsoft.com/en-us/windows/communitytoolkit/getting-started) page for more detailed information.
+Please read the [Getting Started with the .NET Community Toolkit](https://learn.microsoft.com/windows/communitytoolkit/getting-started) page for more detailed information.
 
 ## 📃 Documentation
 
