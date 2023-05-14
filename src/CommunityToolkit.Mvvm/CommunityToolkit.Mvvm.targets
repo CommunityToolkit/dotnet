@@ -106,13 +106,35 @@
   <Target Name="MVVMToolkitWarnForPackagesConfigUse"
           AfterTargets="ResolvePackageDependenciesForBuild;ResolveNuGetPackageAssets"
           DependsOnTargets="MVVMToolkitGatherAnalyzers">
-
+    
     <!--
-      Emit a warning in case packages.config is used, by reading the associated MSBuild property.
+      Check whether packages are being restored via packages.config, by reading the associated MSBuild property.
       This happens when either the project style is using packages.config, or when explicitly requested.
       See https://learn.microsoft.com/en-us/nuget/reference/msbuild-targets#restoring-packagereference-and-packagesconfig-projects-with-msbuild.
     -->
-    <Warning Condition ="'$(RestorePackagesConfig)' == 'true' OR '$(RestoreProjectStyle)' == 'PackagesConfig'"
+    <PropertyGroup>
+      <MVVMToolkitIsTargetProjectUsingPackagesConfig Condition ="'$(RestorePackagesConfig)' == 'true' OR '$(RestoreProjectStyle)' == 'PackagesConfig'">true</MVVMToolkitIsTargetProjectUsingPackagesConfig>
+    </PropertyGroup>
+
+    <!--
+      If no packages.config properties are set, also try to manually find the packages.config file.
+      This will be in the @(None) elements, if present. Doing so makes sure this works in builds as
+      well, since the implicit targets populating the properties above only run when restoring.
+    -->
+    <FindInList ItemSpecToFind="packages.config"
+                List="@(None)"
+                MatchFileNameOnly="false"
+                Condition="'$(MVVMToolkitIsTargetProjectUsingPackagesConfig)' != 'true'">
+      <Output TaskParameter="ItemFound" PropertyName="MVVMToolkitPackagesConfigFile"/>
+    </FindInList>
+
+    <!-- Make sure to update the MSBuild property if the above task did find something -->
+    <PropertyGroup>
+      <MVVMToolkitIsTargetProjectUsingPackagesConfig Condition ="'$(MVVMToolkitPackagesConfigFile)' == 'packages.config'">true</MVVMToolkitIsTargetProjectUsingPackagesConfig>
+    </PropertyGroup>
+
+    <!-- Emit a warning in case packages.config is used -->
+    <Warning Condition ="'$(MVVMToolkitIsTargetProjectUsingPackagesConfig)' == 'true'"
              Code="MVVMTKCFG0002"
              HelpLink="https://aka.ms/mvvmtoolkit/errors/mvvmtkcfg0002"
              Text="The MVVM Toolkit source generators might not be loaded correctly, as the current project is using the packages.config setup to restore NuGet packages. Source generators require PackageReference to be used (either in a legacy-style or SDK-style .csproj project, both are supported as long as PackageReference is used)."/>
