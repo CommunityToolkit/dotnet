@@ -54,7 +54,10 @@
       emitting this manually lets us customize the message to inform developers as to why exactly the generators have been
       disabled, and that the rest of the MVVM Toolkit will still keep working as intended, just without additional features.
     -->
-    <Warning Condition ="'$(MVVMToolkitCurrentCompilerVersionIsNotNewEnough)' == 'true'" Text="The MVVM Toolkit source generators have been disabled on the current configuration, as they need Roslyn 4.x in order to work. The MVVM Toolkit will work just fine, but features relying on the source generators will not be available."/>
+    <Warning Condition ="'$(MVVMToolkitCurrentCompilerVersionIsNotNewEnough)' == 'true'"
+             Code="MVVMTKCFG0001"
+             HelpLink="https://aka.ms/mvvmtoolkit/errors/mvvmtkcfg0001"
+             Text="The MVVM Toolkit source generators have been disabled on the current configuration, as they need Roslyn 4.x in order to work. The MVVM Toolkit will work just fine, but features relying on the source generators will not be available."/>
   
     <PropertyGroup>
 
@@ -97,6 +100,50 @@
       -->
       <Analyzer Remove="@(MVVMToolkitAnalyzer)" Condition="!$([System.String]::Concat('', '%(MVVMToolkitAnalyzer.FullPath)').Contains('$(MVVMToolkitSelectedRoslynAnalyzerDirectoryName)'))"/>
     </ItemGroup>
+  </Target>
+
+  <!--
+    Inform the user if packages.config is used (as the analyzers and the source generators
+    won't work at all). Since packages.config can only be used with legacy-style projects,
+    the entire package can be skipped if an SDK-style project is used.
+  -->
+  <Target Name="MVVMToolkitWarnForPackagesConfigUse"
+          AfterTargets="ResolvePackageDependenciesForBuild;ResolveNuGetPackageAssets"
+          Condition="'$(UsingMicrosoftNetSDK)' != 'true'">
+    
+    <!--
+      Check whether packages are being restored via packages.config, by reading the associated MSBuild property.
+      This happens when either the project style is using packages.config, or when explicitly requested.
+      See https://learn.microsoft.com/nuget/reference/msbuild-targets#restoring-packagereference-and-packagesconfig-projects-with-msbuild.
+    -->
+    <PropertyGroup>
+      <MVVMToolkitIsTargetProjectUsingPackagesConfig Condition ="'$(RestorePackagesConfig)' == 'true' OR '$(RestoreProjectStyle)' == 'PackagesConfig'">true</MVVMToolkitIsTargetProjectUsingPackagesConfig>
+    </PropertyGroup>
+
+    <!--
+      If no packages.config properties are set, also try to manually find the packages.config file.
+      This will be in the @(None) elements, if present. Doing so makes sure this works in builds as
+      well, since the implicit targets populating the properties above only run when restoring.
+      Since the packages.config file will always be in the root of the project, if present, we will
+      match with the full item spec (see https://learn.microsoft.com/nuget/reference/packages-config).
+    -->
+    <FindInList ItemSpecToFind="packages.config"
+                List="@(None)"
+                MatchFileNameOnly="false"
+                Condition="'$(MVVMToolkitIsTargetProjectUsingPackagesConfig)' != 'true'">
+      <Output TaskParameter="ItemFound" PropertyName="MVVMToolkitPackagesConfigFile"/>
+    </FindInList>
+
+    <!-- Make sure to update the MSBuild property if the above task did find something -->
+    <PropertyGroup>
+      <MVVMToolkitIsTargetProjectUsingPackagesConfig Condition ="'$(MVVMToolkitPackagesConfigFile)' == 'packages.config'">true</MVVMToolkitIsTargetProjectUsingPackagesConfig>
+    </PropertyGroup>
+
+    <!-- Emit a warning in case packages.config is used -->
+    <Warning Condition ="'$(MVVMToolkitIsTargetProjectUsingPackagesConfig)' == 'true'"
+             Code="MVVMTKCFG0002"
+             HelpLink="https://aka.ms/mvvmtoolkit/errors/mvvmtkcfg0002"
+             Text="The MVVM Toolkit source generators might not be loaded correctly, as the current project is using the packages.config setup to restore NuGet packages. Source generators require PackageReference to be used (either in a legacy-style or SDK-style .csproj project, both are supported as long as PackageReference is used)."/>
   </Target>
 
 </Project>
