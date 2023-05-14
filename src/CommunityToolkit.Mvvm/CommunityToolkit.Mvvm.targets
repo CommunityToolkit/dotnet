@@ -99,4 +99,17 @@
     </ItemGroup>
   </Target>
 
+  <!-- Remove the analyzer if packages.config is used -->
+  <Target Name="MVVMToolkitWarnForPackagesConfigUse"
+          AfterTargets="ResolvePackageDependenciesForBuild;ResolveNuGetPackageAssets"
+          DependsOnTargets="MVVMToolkitGatherAnalyzers">
+
+    <!--
+      Emit a warning in case packages.config is used, by reading the associated MSBuild property.
+      This happens when either the project style is using packages.config, or when explicitly requested.
+      See https://learn.microsoft.com/en-us/nuget/reference/msbuild-targets#restoring-packagereference-and-packagesconfig-projects-with-msbuild.
+    -->
+    <Warning Condition ="'$(RestorePackagesConfig)' == 'true' OR '$(RestoreProjectStyle)' == 'PackagesConfig'" Text="The MVVM Toolkit source generators might not be loaded correctly, as the current project is using the packages.config setup to restore NuGet packages. Source generators require PackageReference to be used (either in a legacy-style or SDK-style .csproj project, both are supported as long as PackageReference is used)."/>
+  </Target>
+
 </Project>
