@@ -842,11 +842,12 @@ public readonly ref partial struct ReadOnlySpan2D<T>
     /// <param name="column">The target column to map within the current instance.</param>
     /// <param name="height">The height to map within the current instance.</param>
     /// <param name="width">The width to map within the current instance.</param>
-    /// <exception cref="ArgumentException">
+    /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when either <paramref name="height"/>, <paramref name="width"/> or <paramref name="height"/>
     /// are negative or not within the bounds that are valid for the current instance.
     /// </exception>
     /// <returns>A new <see cref="ReadOnlySpan2D{T}"/> instance representing a slice of the current one.</returns>
+    /// <remarks>See additional remarks in the <see cref="Span2D{T}.Slice(int, int, int, int)"/> docs.</remarks>
     public unsafe ReadOnlySpan2D<T> Slice(int row, int column, int height, int width)
     {
         if ((uint)row >= Height)

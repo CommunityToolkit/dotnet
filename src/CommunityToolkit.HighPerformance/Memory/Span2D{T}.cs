@@ -999,11 +999,34 @@ public readonly ref partial struct Span2D<T>
     /// <param name="column">The target column to map within the current instance.</param>
     /// <param name="height">The height to map within the current instance.</param>
     /// <param name="width">The width to map within the current instance.</param>
-    /// <exception cref="ArgumentException">
+    /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when either <paramref name="height"/>, <paramref name="width"/> or <paramref name="height"/>
     /// are negative or not within the bounds that are valid for the current instance.
     /// </exception>
     /// <returns>A new <see cref="Span2D{T}"/> instance representing a slice of the current one.</returns>
+    /// <remarks>
+    /// <para>
+    /// Contrary to <see cref="Span{T}.Slice(int, int)"/>, this method will throw an <see cref="ArgumentOutOfRangeException"/>
+    /// if attempting to perform a slice operation that would result in either axes being 0. That is, trying to call
+    /// <see cref="Slice(int, int, int, int)"/> as eg. <c>Slice(row: 1, column: 0, height: 0, width: 2)</c> on an instance
+    /// that has 1 row and 2 columns will throw, rather than returning a new <see cref="Span2D{T}"/> instance with 0 rows and
+    /// 2 columns. For contrast, trying to eg. call <c>Slice(start: 1, length: 0)</c> on a <see cref="Span{T}"/> instance of
+    /// length 1 would return a span of length 0, with the internal reference being set to right past the end of the memory.
+    /// </para>
+    /// <para>
+    /// This is by design, and it is due to the internal memory layout that <see cref="Span2D{T}"/> has. That is, in the case
+    /// of <see cref="Span{T}"/>, the only edge case scenario would be to obtain a new span of size 0, referencing the very end
+    /// of the backing object (eg. an array or a <see cref="string"/> instance). In that case, the GC can correctly track things.
+    /// With <see cref="Span2D{T}"/>, on the other hand, it would be possible to slice an instance with a sizeof 0 in either axis,
+    /// but with the computed starting reference pointing well past the end of the internal memory area. Such a behavior would not
+    /// be valid if the reference was pointing to a managed object, and it would cause memory corruptions (ie. "GC holes").
+    /// </para>
+    /// <para>
+    /// If you specifically need to be able to obtain empty values from slicing past the valid range, consider performing the range
+    /// validation yourself (ie. through some helper method), and then only invoking <see cref="Slice(int, int, int, int)"/> once the
+    /// parameters are in the accepted range. Otherwise, consider returning another return explicitly, such as <see cref="Empty"/>.
+    /// </para>
+    /// </remarks>
     public unsafe Span2D<T> Slice(int row, int column, int height, int width)
     {
         if ((uint)row >= Height)
