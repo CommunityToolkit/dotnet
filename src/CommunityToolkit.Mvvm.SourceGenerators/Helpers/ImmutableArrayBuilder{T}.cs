@@ -43,7 +43,7 @@ internal ref struct ImmutableArrayBuilder<T>
     }
 
     /// <inheritdoc cref="ImmutableArray{T}.Builder.Count"/>
-    public int Count
+    public readonly int Count
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => this.writer!.Count;
