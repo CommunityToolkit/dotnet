@@ -64,6 +64,8 @@ partial class ObservablePropertyGenerator
                 return false;
             }
 
+            token.ThrowIfCancellationRequested();
+
             // Get the property type and name
             string typeNameWithNullabilityAnnotations = fieldSymbol.Type.GetFullyQualifiedNameWithNullabilityAnnotations();
             string fieldName = fieldSymbol.Name;
@@ -87,6 +89,8 @@ partial class ObservablePropertyGenerator
                 return false;
             }
 
+            token.ThrowIfCancellationRequested();
+
             // Check for special cases that are explicitly not allowed
             if (IsGeneratedPropertyInvalid(propertyName, fieldSymbol.Type))
             {
@@ -102,6 +106,8 @@ partial class ObservablePropertyGenerator
                 return false;
             }
 
+            token.ThrowIfCancellationRequested();
+
             using ImmutableArrayBuilder<string> propertyChangedNames = ImmutableArrayBuilder<string>.Rent();
             using ImmutableArrayBuilder<string> propertyChangingNames = ImmutableArrayBuilder<string>.Rent();
             using ImmutableArrayBuilder<string> notifiedCommandNames = ImmutableArrayBuilder<string>.Rent();
@@ -114,12 +120,16 @@ partial class ObservablePropertyGenerator
             bool hasAnyValidationAttributes = false;
             bool isOldPropertyValueDirectlyReferenced = IsOldPropertyValueDirectlyReferenced(fieldSymbol, propertyName);
 
+            token.ThrowIfCancellationRequested();
+
             // Get the nullability info for the property
             GetNullabilityInfo(
                 fieldSymbol,
                 semanticModel,
                 out bool isReferenceTypeOrUnconstraindTypeParameter,
                 out bool includeMemberNotNullOnSetAccessor);
+
+            token.ThrowIfCancellationRequested();
 
             // Track the property changing event for the property, if the type supports it
             if (shouldInvokeOnPropertyChanging)
@@ -137,6 +147,8 @@ partial class ObservablePropertyGenerator
                 hasOrInheritsClassLevelNotifyPropertyChangedRecipients = true;
             }
 
+            token.ThrowIfCancellationRequested();
+
             // Get the class-level [NotifyDataErrorInfo] setting, if any
             if (TryGetNotifyDataErrorInfo(fieldSymbol, out bool isValidationTargetValid))
             {
@@ -144,9 +156,13 @@ partial class ObservablePropertyGenerator
                 hasOrInheritsClassLevelNotifyDataErrorInfo = true;
             }
 
+            token.ThrowIfCancellationRequested();
+
             // Gather attributes info
             foreach (AttributeData attributeData in fieldSymbol.GetAttributes())
             {
+                token.ThrowIfCancellationRequested();
+
                 // Gather dependent property and command names
                 if (TryGatherDependentPropertyChangedNames(fieldSymbol, attributeData, in propertyChangedNames, in builder) ||
                     TryGatherDependentCommandNames(fieldSymbol, attributeData, in notifiedCommandNames, in builder))
@@ -194,6 +210,8 @@ partial class ObservablePropertyGenerator
                 }
             }
 
+            token.ThrowIfCancellationRequested();
+
             // Gather explicit forwarded attributes info
             foreach (AttributeListSyntax attributeList in fieldSyntax.AttributeLists)
             {
@@ -204,6 +222,8 @@ partial class ObservablePropertyGenerator
                 {
                     continue;
                 }
+
+                token.ThrowIfCancellationRequested();
 
                 foreach (AttributeSyntax attribute in attributeList.Attributes)
                 {
@@ -250,6 +270,8 @@ partial class ObservablePropertyGenerator
                 }
             }
 
+            token.ThrowIfCancellationRequested();
+
             // Log the diagnostic for missing ObservableValidator, if needed
             if (hasAnyValidationAttributes &&
                 !fieldSymbol.ContainingType.InheritsFromFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservableValidator"))
@@ -271,6 +293,8 @@ partial class ObservablePropertyGenerator
                     fieldSymbol.ContainingType,
                     fieldSymbol.Name);
             }
+
+            token.ThrowIfCancellationRequested();
 
             propertyInfo = new PropertyInfo(
                 typeNameWithNullabilityAnnotations,
