@@ -206,17 +206,3 @@ internal ref struct ImmutableArrayBuilder<T>
         }
     }
 }
-
-/// <summary>
-/// Private helpers for the <see cref="ImmutableArrayBuilder{T}"/> type.
-/// </summary>
-file static class ImmutableArrayBuilder
-{
-    /// <summary>
-    /// Throws an <see cref="ArgumentOutOfRangeException"/> for <c>"index"</c>.
-    /// </summary>
-    public static void ThrowArgumentOutOfRangeExceptionForIndex()
-    {
-        throw new ArgumentOutOfRangeException("index");
-    }
-}
