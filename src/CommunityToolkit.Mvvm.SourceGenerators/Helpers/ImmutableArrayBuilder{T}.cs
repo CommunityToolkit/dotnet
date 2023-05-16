@@ -8,6 +8,7 @@
 using System;
 using System.Buffers;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators.Helpers;
@@ -16,7 +17,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 /// A helper type to build sequences of values with pooled buffers.
 /// </summary>
 /// <typeparam name="T">The type of items to create sequences for.</typeparam>
-internal struct ImmutableArrayBuilder<T> : IDisposable
+internal ref struct ImmutableArrayBuilder<T>
 {
     /// <summary>
     /// The rented <see cref="Writer"/> instance to use.
@@ -51,6 +52,7 @@ internal struct ImmutableArrayBuilder<T> : IDisposable
     /// <summary>
     /// Gets the data written to the underlying buffer so far, as a <see cref="ReadOnlySpan{T}"/>.
     /// </summary>
+    [UnscopedRef]
     public readonly ReadOnlySpan<T> WrittenSpan
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -67,7 +69,7 @@ internal struct ImmutableArrayBuilder<T> : IDisposable
     /// Adds the specified items to the end of the array.
     /// </summary>
     /// <param name="items">The items to add at the end of the array.</param>
-    public readonly void AddRange(ReadOnlySpan<T> items)
+    public readonly void AddRange(scoped ReadOnlySpan<T> items)
     {
         this.writer!.AddRange(items);
     }
@@ -92,7 +94,7 @@ internal struct ImmutableArrayBuilder<T> : IDisposable
         return this.writer!.WrittenSpan.ToString();
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="IDisposable.Dispose"/>
     public void Dispose()
     {
         Writer? writer = this.writer;
