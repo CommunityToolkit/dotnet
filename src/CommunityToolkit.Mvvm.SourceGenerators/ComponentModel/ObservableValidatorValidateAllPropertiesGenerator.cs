@@ -48,13 +48,17 @@ public sealed partial class ObservableValidatorValidateAllPropertiesGenerator : 
                         return default;
                     }
 
+                    token.ThrowIfCancellationRequested();
+
                     // Only select types inheriting from ObservableValidator
                     if (!Execute.IsObservableValidator(typeSymbol))
                     {
                         return default;
                     }
 
-                    return Execute.GetInfo(typeSymbol);
+                    token.ThrowIfCancellationRequested();
+
+                    return Execute.GetInfo(typeSymbol, token);
                 })
             .Where(static item => item is not null)!;
 

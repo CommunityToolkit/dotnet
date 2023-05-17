@@ -56,8 +56,12 @@ partial class RelayCommandGenerator
                 goto Failure;
             }
 
+            token.ThrowIfCancellationRequested();
+
             // Get the command field and property names
             (string fieldName, string propertyName) = GetGeneratedFieldAndPropertyNames(methodSymbol);
+
+            token.ThrowIfCancellationRequested();
 
             // Get the command type symbols
             if (!TryMapCommandTypesFromMethod(
@@ -74,6 +78,8 @@ partial class RelayCommandGenerator
                 goto Failure;
             }
 
+            token.ThrowIfCancellationRequested();
+
             // Check the switch to allow concurrent executions
             if (!TryGetAllowConcurrentExecutionsSwitch(
                 methodSymbol,
@@ -84,6 +90,8 @@ partial class RelayCommandGenerator
             {
                 goto Failure;   
             }
+
+            token.ThrowIfCancellationRequested();
 
             // Check the switch to control exception flow
             if (!TryGetFlowExceptionsToTaskSchedulerSwitch(
@@ -96,17 +104,22 @@ partial class RelayCommandGenerator
                 goto Failure;
             }
 
+            token.ThrowIfCancellationRequested();
+
             // Get the CanExecute expression type, if any
             if (!TryGetCanExecuteExpressionType(
                 methodSymbol,
                 attributeData,
                 commandTypeArguments,
+                token,
                 in builder,
                 out string? canExecuteMemberName,
                 out CanExecuteExpressionType? canExecuteExpressionType))
             {
                 goto Failure;
             }
+
+            token.ThrowIfCancellationRequested();
 
             // Get the option to include a cancel command, if any
             if (!TryGetIncludeCancelCommandSwitch(
@@ -120,6 +133,8 @@ partial class RelayCommandGenerator
                 goto Failure;
             }
 
+            token.ThrowIfCancellationRequested();
+
             // Get all forwarded attributes (don't stop in case of errors, just ignore faulting attributes)
             GatherForwardedAttributes(
                 methodSymbol,
@@ -128,6 +143,8 @@ partial class RelayCommandGenerator
                 in builder,
                 out ImmutableArray<AttributeInfo> fieldAttributes,
                 out ImmutableArray<AttributeInfo> propertyAttributes);
+
+            token.ThrowIfCancellationRequested();
 
             commandInfo = new CommandInfo(
                 methodSymbol.Name,
@@ -749,6 +766,7 @@ partial class RelayCommandGenerator
         /// <param name="methodSymbol">The input <see cref="IMethodSymbol"/> instance to process.</param>
         /// <param name="attributeData">The <see cref="AttributeData"/> instance for <paramref name="methodSymbol"/>.</param>
         /// <param name="commandTypeArguments">The command type arguments, if any.</param>
+        /// <param name="token">The cancellation token for the current operation.</param>
         /// <param name="diagnostics">The current collection of gathered diagnostics.</param>
         /// <param name="canExecuteMemberName">The resulting can execute member name, if available.</param>
         /// <param name="canExecuteExpressionType">The resulting expression type, if available.</param>
@@ -757,6 +775,7 @@ partial class RelayCommandGenerator
             IMethodSymbol methodSymbol,
             AttributeData attributeData,
             ImmutableArray<string> commandTypeArguments,
+            CancellationToken token,
             in ImmutableArrayBuilder<DiagnosticInfo> diagnostics,
             out string? canExecuteMemberName,
             out CanExecuteExpressionType? canExecuteExpressionType)
@@ -782,7 +801,7 @@ partial class RelayCommandGenerator
             if (canExecuteSymbols.IsEmpty)
             {
                 // Special case for when the target member is a generated property from [ObservableProperty]
-                if (TryGetCanExecuteMemberFromGeneratedProperty(memberName, methodSymbol.ContainingType, commandTypeArguments, out canExecuteExpressionType))
+                if (TryGetCanExecuteMemberFromGeneratedProperty(memberName, methodSymbol.ContainingType, commandTypeArguments, token, out canExecuteExpressionType))
                 {
                     canExecuteMemberName = memberName;
 
@@ -892,12 +911,14 @@ partial class RelayCommandGenerator
         /// <param name="memberName">The member name passed to <c>[RelayCommand(CanExecute = ...)]</c>.</param>
         /// <param name="containingType">The containing type for the method annotated with <c>[RelayCommand]</c>.</param>
         /// <param name="commandTypeArguments">The type arguments for the command interface, if any.</param>
+        /// <param name="token">The cancellation token for the current operation.</param>
         /// <param name="canExecuteExpressionType">The resulting can execute expression type, if available.</param>
         /// <returns>Whether or not <paramref name="canExecuteExpressionType"/> was set and the input symbol was valid.</returns>
         private static bool TryGetCanExecuteMemberFromGeneratedProperty(
             string memberName,
             INamedTypeSymbol containingType,
             ImmutableArray<string> commandTypeArguments,
+            CancellationToken token,
             [NotNullWhen(true)] out CanExecuteExpressionType? canExecuteExpressionType)
         {
             foreach (ISymbol memberSymbol in containingType.GetAllMembers())
@@ -907,6 +928,8 @@ partial class RelayCommandGenerator
                 {
                     continue;
                 }
+
+                token.ThrowIfCancellationRequested();
 
                 ImmutableArray<AttributeData> attributes = memberSymbol.GetAttributes();
 
@@ -990,6 +1013,8 @@ partial class RelayCommandGenerator
                     {
                         continue;
                     }
+
+                    token.ThrowIfCancellationRequested();
 
                     foreach (AttributeSyntax attribute in attributeList.Attributes)
                     {

@@ -52,13 +52,19 @@ public sealed partial class IMessengerRegisterAllGenerator : IIncrementalGenerat
 
                     ImmutableArray<INamedTypeSymbol> interfaceSymbols = Execute.GetInterfaces(typeSymbol);
 
+                    token.ThrowIfCancellationRequested();
+
                     // Check that the type implements at least one IRecipient<TMessage> interface
                     if (interfaceSymbols.IsEmpty)
                     {
                         return default;
                     }
 
-                    return Execute.GetInfo(typeSymbol, interfaceSymbols);
+                    RecipientInfo info = Execute.GetInfo(typeSymbol, interfaceSymbols);
+
+                    token.ThrowIfCancellationRequested();
+
+                    return info;
                 })
             .Where(static item => item is not null)!;
 
