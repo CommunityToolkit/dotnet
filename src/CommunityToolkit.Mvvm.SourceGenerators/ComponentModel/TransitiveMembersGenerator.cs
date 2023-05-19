@@ -77,6 +77,8 @@ public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGe
                     // Gather all generation info, and any diagnostics
                     TInfo? info = ValidateTargetTypeAndGetInfo(typeSymbol, context.Attributes[0], context.SemanticModel.Compilation, out ImmutableArray<DiagnosticInfo> diagnostics);
 
+                    token.ThrowIfCancellationRequested();
+
                     // If there are any diagnostics, there's no need to compute the hierarchy info at all, just return them
                     if (diagnostics.Length > 0)
                     {
@@ -84,7 +86,12 @@ public abstract partial class TransitiveMembersGenerator<TInfo> : IIncrementalGe
                     }
 
                     HierarchyInfo hierarchy = HierarchyInfo.From(typeSymbol);
+
+                    token.ThrowIfCancellationRequested();
+
                     MetadataInfo metadataInfo = new(typeSymbol.IsSealed, Execute.IsNullabilitySupported(context.SemanticModel.Compilation));
+
+                    token.ThrowIfCancellationRequested();
 
                     return new Result<(HierarchyInfo, MetadataInfo?, TInfo?)>((hierarchy, metadataInfo, info), diagnostics);
                 })

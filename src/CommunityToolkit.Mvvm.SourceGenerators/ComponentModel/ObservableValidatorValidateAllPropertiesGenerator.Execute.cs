@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Threading;
 using CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
@@ -37,8 +38,9 @@ partial class ObservableValidatorValidateAllPropertiesGenerator
         /// Gets the <see cref="ValidationInfo"/> instance from an input symbol.
         /// </summary>
         /// <param name="typeSymbol">The input <see cref="INamedTypeSymbol"/> instance to inspect.</param>
+        /// <param name="token">The cancellation token for the current operation.</param>
         /// <returns>The resulting <see cref="ValidationInfo"/> instance for <paramref name="typeSymbol"/>.</returns>
-        public static ValidationInfo GetInfo(INamedTypeSymbol typeSymbol)
+        public static ValidationInfo GetInfo(INamedTypeSymbol typeSymbol, CancellationToken token)
         {
             using ImmutableArrayBuilder<string> propertyNames = ImmutableArrayBuilder<string>.Rent();
 
@@ -48,6 +50,8 @@ partial class ObservableValidatorValidateAllPropertiesGenerator
                 {
                     continue;
                 }
+
+                token.ThrowIfCancellationRequested();
 
                 ImmutableArray<AttributeData> attributes = memberSymbol.GetAttributes();
 
@@ -78,6 +82,8 @@ partial class ObservableValidatorValidateAllPropertiesGenerator
 
                 propertyNames.Add(propertyName);
             }
+
+            token.ThrowIfCancellationRequested();
 
             return new(
                 typeSymbol.GetFullyQualifiedMetadataName(),

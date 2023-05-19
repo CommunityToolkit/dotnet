@@ -42,7 +42,11 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
                     // Get the hierarchy info for the target symbol, and try to gather the property info
                     HierarchyInfo hierarchy = HierarchyInfo.From(fieldSymbol.ContainingType);
 
+                    token.ThrowIfCancellationRequested();
+
                     _ = Execute.TryGetInfo(fieldDeclaration, fieldSymbol, context.SemanticModel, token, out PropertyInfo? propertyInfo, out ImmutableArray<DiagnosticInfo> diagnostics);
+
+                    token.ThrowIfCancellationRequested();
 
                     return (Hierarchy: hierarchy, new Result<PropertyInfo?>(propertyInfo, diagnostics));
                 })
