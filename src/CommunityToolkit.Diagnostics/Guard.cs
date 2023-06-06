@@ -13,6 +13,7 @@ namespace CommunityToolkit.Diagnostics;
 /// Helper methods to verify conditions when running code.
 /// </summary>
 [DebuggerStepThrough]
+[StackTraceHidden]
 public static partial class Guard
 {
     /// <summary>

@@ -4,6 +4,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -14,6 +15,7 @@ namespace CommunityToolkit.Diagnostics;
 /// <summary>
 /// Helper methods to efficiently throw exceptions.
 /// </summary>
+[StackTraceHidden]
 public static partial class ThrowHelper
 {
     /// <summary>
