@@ -30,6 +30,11 @@ internal static class DiagnosticDescriptors
     public const string FieldReferenceForObservablePropertyFieldId = "MVVMTK0034";
 
     /// <summary>
+    /// The diagnostic id for <see cref="AsyncVoidReturningRelayCommandMethod"/>.
+    /// </summary>
+    public const string AsyncVoidReturningRelayCommandMethodId = "MVVMTK0039";
+
+    /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a duplicate declaration of <see cref="INotifyPropertyChanged"/> would happen.
     /// <para>
     /// Format: <c>"Cannot apply [INotifyPropertyChangedAttribute] to type {0}, as it already declares the INotifyPropertyChanged interface"</c>.
@@ -645,7 +650,7 @@ internal static class DiagnosticDescriptors
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor AsyncVoidReturningRelayCommandMethod = new DiagnosticDescriptor(
-        id: "MVVMTK0039",
+        id: AsyncVoidReturningRelayCommandMethodId,
         title: "Async void returning method annotated with RelayCommand",
         messageFormat: "The method {0} annotated with [RelayCommand] is async void (make sure to return a Task type instead)",
         category: typeof(RelayCommandGenerator).FullName,

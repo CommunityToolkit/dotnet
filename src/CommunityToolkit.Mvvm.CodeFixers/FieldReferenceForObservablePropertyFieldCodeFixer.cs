@@ -37,7 +37,7 @@ public sealed class FieldReferenceForObservablePropertyFieldCodeFixer : CodeFixP
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
         Diagnostic diagnostic = context.Diagnostics[0];
-        TextSpan diagnosticSpan = diagnostic.Location.SourceSpan;
+        TextSpan diagnosticSpan = context.Span;
 
         // Retrieve the properties passed by the analyzer
         if (diagnostic.Properties[FieldReferenceForObservablePropertyFieldAnalyzer.FieldNameKey] is not string fieldName ||
