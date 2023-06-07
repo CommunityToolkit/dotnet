@@ -637,4 +637,20 @@ internal static class DiagnosticDescriptors
         isEnabledByDefault: true,
         description: "All attributes targeting the generated field or property for a method annotated with [RelayCommand] must be using valid expressions.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0038");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a method with <c>[RelayCommand]</c> is async void.
+    /// <para>
+    /// Format: <c>"The method {0} annotated with [RelayCommand] is async void (make sure to return a Task type instead)"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor AsyncVoidReturningRelayCommandMethod = new DiagnosticDescriptor(
+        id: "MVVMTK0039",
+        title: "Async void returning method annotated with RelayCommand",
+        messageFormat: "The method {0} annotated with [RelayCommand] is async void (make sure to return a Task type instead)",
+        category: typeof(RelayCommandGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description: "All asynchronous methods annotated with [RelayCommand] should return a Task type, to benefit from the additional support provided by AsyncRelayCommand and AsyncRelayCommand<T>.",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0039");
 }

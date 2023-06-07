@@ -66,3 +66,4 @@ Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
 MVVMTK0037 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Error | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0037
 MVVMTK0038 | CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator | Error | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0038
+MVVMTK0039 | CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator | Warning | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0039
