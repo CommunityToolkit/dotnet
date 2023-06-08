@@ -40,9 +40,9 @@ public sealed class ClassUsingAttributeInsteadOfInheritanceCodeFixer : CodeFixPr
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
         Diagnostic diagnostic = context.Diagnostics[0];
-        TextSpan diagnosticSpan = diagnostic.Location.SourceSpan;
+        TextSpan diagnosticSpan = context.Span;
 
-        // Retrieve the property passed by the analyzer
+        // Retrieve the properties passed by the analyzer
         if (diagnostic.Properties[ClassUsingAttributeInsteadOfInheritanceAnalyzer.TypeNameKey] is not string typeName ||
             diagnostic.Properties[ClassUsingAttributeInsteadOfInheritanceAnalyzer.AttributeTypeNameKey] is not string attributeTypeName)
         {
@@ -59,11 +59,9 @@ public sealed class ClassUsingAttributeInsteadOfInheritanceCodeFixer : CodeFixPr
             context.RegisterCodeFix(
                 CodeAction.Create(
                     title: "Inherit from ObservableObject",
-                    createChangedDocument: token => UpdateReference(context.Document, root, classDeclaration, attributeTypeName),
+                    createChangedDocument: token => RemoveAttribute(context.Document, root, classDeclaration, attributeTypeName),
                     equivalenceKey: "Inherit from ObservableObject"),
                 diagnostic);
-
-            return;
         }
     }
 
@@ -75,7 +73,7 @@ public sealed class ClassUsingAttributeInsteadOfInheritanceCodeFixer : CodeFixPr
     /// <param name="classDeclaration">The <see cref="ClassDeclarationSyntax"/> to update.</param>
     /// <param name="attributeTypeName">The name of the attribute that should be removed.</param>
     /// <returns>An updated document with the applied code fix, and <paramref name="classDeclaration"/> inheriting from <c>ObservableObject</c>.</returns>
-    private static Task<Document> UpdateReference(Document document, SyntaxNode root, ClassDeclarationSyntax classDeclaration, string attributeTypeName)
+    private static Task<Document> RemoveAttribute(Document document, SyntaxNode root, ClassDeclarationSyntax classDeclaration, string attributeTypeName)
     {
         // Insert ObservableObject always in first position in the base list. The type might have
         // some interfaces in the base list, so we just copy them back after ObservableObject.

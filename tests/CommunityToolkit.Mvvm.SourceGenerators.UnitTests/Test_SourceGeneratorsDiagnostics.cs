@@ -1801,6 +1801,25 @@ public class Test_SourceGeneratorsDiagnostics
         VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0038");
     }
 
+    [TestMethod]
+    public async Task AsyncVoidReturningRelayCommandMethodAnalyzer()
+    {
+        string source = """
+            using System;
+            using CommunityToolkit.Mvvm.Input;
+
+            public partial class MyViewModel
+            {
+                [RelayCommand]
+                private async void {|MVVMTK0039:TestAsync|}()
+                {
+                }
+            }
+            """;
+
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<AsyncVoidReturningRelayCommandMethodAnalyzer>(source, LanguageVersion.CSharp8);
+    }
+
     /// <summary>
     /// Verifies the diagnostic errors for a given analyzer, and that all available source generators can run successfully with the input source (including subsequent compilation).
     /// </summary>
