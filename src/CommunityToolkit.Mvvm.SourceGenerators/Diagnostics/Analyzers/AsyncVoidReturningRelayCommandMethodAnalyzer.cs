@@ -17,11 +17,6 @@ namespace CommunityToolkit.Mvvm.SourceGenerators;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class AsyncVoidReturningRelayCommandMethodAnalyzer : DiagnosticAnalyzer
 {
-    /// <summary>
-    /// The key for the name of the target method to update.
-    /// </summary>
-    internal const string MethodNameKey = "MethodName";
-
     /// <inheritdoc/>
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(AsyncVoidReturningRelayCommandMethod);
 
@@ -57,7 +52,6 @@ public sealed class AsyncVoidReturningRelayCommandMethodAnalyzer : DiagnosticAna
                 context.ReportDiagnostic(Diagnostic.Create(
                     AsyncVoidReturningRelayCommandMethod,
                     context.Symbol.Locations.FirstOrDefault(),
-                    ImmutableDictionary.Create<string, string?>().Add(MethodNameKey, methodSymbol.Name),
                     context.Symbol));
             }, SymbolKind.Method);
         });

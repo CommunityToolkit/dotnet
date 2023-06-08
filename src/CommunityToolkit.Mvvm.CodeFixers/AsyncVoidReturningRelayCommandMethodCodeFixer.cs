@@ -6,7 +6,6 @@ using System.Collections.Immutable;
 using System.Composition;
 using System.Threading;
 using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.SourceGenerators;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
@@ -40,17 +39,10 @@ public sealed class AsyncVoidReturningRelayCommandMethodCodeFixer : CodeFixProvi
         Diagnostic diagnostic = context.Diagnostics[0];
         TextSpan diagnosticSpan = context.Span;
 
-        // Retrieve the property passed by the analyzer
-        if (diagnostic.Properties[AsyncVoidReturningRelayCommandMethodAnalyzer.MethodNameKey] is not string methodName)
-        {
-            return;
-        }
-
         SyntaxNode? root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
 
         // Get the method declaration from the target diagnostic
-        if (root!.FindNode(diagnosticSpan) is MethodDeclarationSyntax { Identifier.Text: string identifierName } methodDeclaration &&
-            identifierName == methodName)
+        if (root!.FindNode(diagnosticSpan) is MethodDeclarationSyntax methodDeclaration)
         {
             // Register the code fix to update the return type to be Task instead
             context.RegisterCodeFix(
