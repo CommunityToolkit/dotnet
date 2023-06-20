@@ -7,6 +7,8 @@
 
 using System;
 using System.Buffers;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
@@ -88,6 +90,18 @@ internal ref struct ImmutableArrayBuilder<T>
         return this.writer!.WrittenSpan.ToArray();
     }
 
+    /// <summary>
+    /// Gets an <see cref="IEnumerable{T}"/> instance for the current builder.
+    /// </summary>
+    /// <returns>An <see cref="IEnumerable{T}"/> instance for the current builder.</returns>
+    /// <remarks>
+    /// The builder should not be mutated while an enumerator is in use.
+    /// </remarks>
+    public readonly IEnumerable<T> AsEnumerable()
+    {
+        return this.writer!;
+    }
+
     /// <inheritdoc/>
     public override readonly string ToString()
     {
@@ -107,7 +121,7 @@ internal ref struct ImmutableArrayBuilder<T>
     /// <summary>
     /// A class handling the actual buffer writing.
     /// </summary>
-    private sealed class Writer : IDisposable
+    private sealed class Writer : ICollection<T>, IDisposable
     {
         /// <summary>
         /// The underlying <typeparamref name="T"/> array.
@@ -142,6 +156,9 @@ internal ref struct ImmutableArrayBuilder<T>
             get => new(this.array!, 0, this.index);
         }
 
+        /// <inheritdoc/>
+        bool ICollection<T>.IsReadOnly => true;
+
         /// <inheritdoc cref="ImmutableArrayBuilder{T}.Add"/>
         public void Add(T value)
         {
@@ -171,6 +188,48 @@ internal ref struct ImmutableArrayBuilder<T>
             {
                 ArrayPool<T?>.Shared.Return(array, clearArray: typeof(T) != typeof(char));
             }
+        }
+
+        /// <inheritdoc/>
+        void ICollection<T>.Clear()
+        {
+            throw new NotSupportedException();
+        }
+
+        /// <inheritdoc/>
+        bool ICollection<T>.Contains(T item)
+        {
+            throw new NotSupportedException();
+        }
+
+        /// <inheritdoc/>
+        void ICollection<T>.CopyTo(T[] array, int arrayIndex)
+        {
+            Array.Copy(this.array!, 0, array, arrayIndex, this.index);
+        }
+
+        /// <inheritdoc/>
+        IEnumerator<T> IEnumerable<T>.GetEnumerator()
+        {
+            T?[] array = this.array!;
+            int length = this.index;
+
+            for (int i = 0; i < length; i++)
+            {
+                yield return array[i]!;
+            }
+        }
+
+        /// <inheritdoc/>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IEnumerable<T>)this).GetEnumerator();
+        }
+
+        /// <inheritdoc/>
+        bool ICollection<T>.Remove(T item)
+        {
+            throw new NotSupportedException();
         }
 
         /// <summary>
