@@ -961,7 +961,7 @@ partial class ObservablePropertyGenerator
                         .AddArgumentListArguments(
                             Argument(fieldExpression),
                             Argument(IdentifierName("value")))),
-                    Block(setterStatements.ToArray()));
+                    Block(setterStatements.AsEnumerable()));
 
             // Prepare the forwarded attributes, if any
             ImmutableArray<AttributeListSyntax> forwardedAttributes =
