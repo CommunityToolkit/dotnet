@@ -795,13 +795,33 @@ partial class ObservablePropertyGenerator
             // Get the property type syntax
             TypeSyntax propertyType = IdentifierName(propertyInfo.TypeNameWithNullabilityAnnotations);
 
+            string getterFieldIdentifierName;
+            ExpressionSyntax getterFieldExpression;
+            ExpressionSyntax setterFieldExpression;
+
             // In case the backing field is exactly named "value", we need to add the "this." prefix to ensure that comparisons and assignments
             // with it in the generated setter body are executed correctly and without conflicts with the implicit value parameter.
-            ExpressionSyntax fieldExpression = propertyInfo.FieldName switch
+            if (propertyInfo.FieldName == "value")
             {
-                "value" => MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, ThisExpression(), IdentifierName("value")),
-                string name => IdentifierName(name)
-            };
+                // We only need to add "this." when referencing the field in the setter (getter and XML docs are not ambiguous)
+                getterFieldIdentifierName = "value";
+                getterFieldExpression = IdentifierName(getterFieldIdentifierName);
+                setterFieldExpression = MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, ThisExpression(), (IdentifierNameSyntax)getterFieldExpression);
+            }
+            else if (SyntaxFacts.GetKeywordKind(propertyInfo.FieldName) != SyntaxKind.None ||
+                     SyntaxFacts.GetContextualKeywordKind(propertyInfo.FieldName) != SyntaxKind.None)
+            {
+                // If the identifier for the field could potentially be a keyword, we must escape it.
+                // This usually happens if the annotated field was escaped as well (eg. "@event").
+                // In this case, we must always escape the identifier, in all cases.
+                getterFieldIdentifierName = $"@{propertyInfo.FieldName}";
+                getterFieldExpression = setterFieldExpression = IdentifierName(getterFieldIdentifierName);
+            }
+            else
+            {
+                getterFieldIdentifierName = propertyInfo.FieldName;
+                getterFieldExpression = setterFieldExpression = IdentifierName(getterFieldIdentifierName);
+            }
 
             if (propertyInfo.NotifyPropertyChangedRecipients || propertyInfo.IsOldPropertyValueDirectlyReferenced)
             {
@@ -813,7 +833,7 @@ partial class ObservablePropertyGenerator
                         VariableDeclaration(propertyType)
                         .AddVariables(
                             VariableDeclarator(Identifier("__oldValue"))
-                            .WithInitializer(EqualsValueClause(fieldExpression)))));
+                            .WithInitializer(EqualsValueClause(setterFieldExpression)))));
             }
 
             // Add the OnPropertyChanging() call first:
@@ -863,7 +883,7 @@ partial class ObservablePropertyGenerator
                 ExpressionStatement(
                     AssignmentExpression(
                         SyntaxKind.SimpleAssignmentExpression,
-                        fieldExpression,
+                        setterFieldExpression,
                         IdentifierName("value"))));
 
             // If validation is requested, add a call to ValidateProperty:
@@ -959,7 +979,7 @@ partial class ObservablePropertyGenerator
                                     IdentifierName("Default")),
                                 IdentifierName("Equals")))
                         .AddArgumentListArguments(
-                            Argument(fieldExpression),
+                            Argument(setterFieldExpression),
                             Argument(IdentifierName("value")))),
                     Block(setterStatements.AsEnumerable()));
 
@@ -1009,13 +1029,13 @@ partial class ObservablePropertyGenerator
                         .AddArgumentListArguments(
                             AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservablePropertyGenerator).FullName))),
                             AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservablePropertyGenerator).Assembly.GetName().Version.ToString()))))))
-                    .WithOpenBracketToken(Token(TriviaList(Comment($"/// <inheritdoc cref=\"{propertyInfo.FieldName}\"/>")), SyntaxKind.OpenBracketToken, TriviaList())),
+                    .WithOpenBracketToken(Token(TriviaList(Comment($"/// <inheritdoc cref=\"{getterFieldIdentifierName}\"/>")), SyntaxKind.OpenBracketToken, TriviaList())),
                     AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage")))))
                 .AddAttributeLists(forwardedAttributes.ToArray())
                 .AddModifiers(Token(SyntaxKind.PublicKeyword))
                 .AddAccessorListAccessors(
                     AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
-                    .WithExpressionBody(ArrowExpressionClause(IdentifierName(propertyInfo.FieldName)))
+                    .WithExpressionBody(ArrowExpressionClause(getterFieldExpression))
                     .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)),
                     setAccessor);
         }
