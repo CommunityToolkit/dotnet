@@ -109,7 +109,6 @@ partial class ObservablePropertyGenerator
             token.ThrowIfCancellationRequested();
 
             using ImmutableArrayBuilder<string> propertyChangedNames = ImmutableArrayBuilder<string>.Rent();
-            using ImmutableArrayBuilder<string> propertyChangingNames = ImmutableArrayBuilder<string>.Rent();
             using ImmutableArrayBuilder<string> notifiedCommandNames = ImmutableArrayBuilder<string>.Rent();
             using ImmutableArrayBuilder<AttributeInfo> forwardedAttributes = ImmutableArrayBuilder<AttributeInfo>.Rent();
 
@@ -130,12 +129,6 @@ partial class ObservablePropertyGenerator
                 out bool includeMemberNotNullOnSetAccessor);
 
             token.ThrowIfCancellationRequested();
-
-            // Track the property changing event for the property, if the type supports it
-            if (shouldInvokeOnPropertyChanging)
-            {
-                propertyChangingNames.Add(propertyName);
-            }
 
             // The current property is always notified
             propertyChangedNames.Add(propertyName);
@@ -296,12 +289,24 @@ partial class ObservablePropertyGenerator
 
             token.ThrowIfCancellationRequested();
 
+            // Prepare the effective property changing/changed names. For the property changing names,
+            // there are two possible cases: if the mode is disabled, then there are no names to report
+            // at all. If the mode is enabled, then the list is just the same as for property changed.
+            ImmutableArray<string> effectivePropertyChangedNames = propertyChangedNames.ToImmutable();
+            ImmutableArray<string> effectivePropertyChangingNames = shouldInvokeOnPropertyChanging switch
+            {
+                true => effectivePropertyChangedNames,
+                false => ImmutableArray<string>.Empty
+            };
+
+            token.ThrowIfCancellationRequested();
+
             propertyInfo = new PropertyInfo(
                 typeNameWithNullabilityAnnotations,
                 fieldName,
                 propertyName,
-                propertyChangingNames.ToImmutable(),
-                propertyChangedNames.ToImmutable(),
+                effectivePropertyChangingNames,
+                effectivePropertyChangedNames,
                 notifiedCommandNames.ToImmutable(),
                 notifyRecipients,
                 notifyDataErrorInfo,
