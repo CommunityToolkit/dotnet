@@ -46,8 +46,14 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 ///         get => name;
 ///         set
 ///         {
-///             if (SetProperty(ref name, value))
+///             if (!EqualityComparer&lt;string&gt;.Default.Equals(name, value))
 ///             {
+///                 OnPropertyChanging(nameof(Name));
+///                 OnPropertyChanged(nameof(FullName));
+///                 
+///                 name = value;
+///                 
+///                 OnPropertyChanged(nameof(Name));
 ///                 OnPropertyChanged(nameof(FullName));
 ///             }
 ///         }
@@ -58,8 +64,14 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 ///         get => surname;
 ///         set
 ///         {
-///             if (SetProperty(ref surname, value))
+///             if (!EqualityComparer&lt;string&gt;.Default.Equals(name, value))
 ///             {
+///                 OnPropertyChanging(nameof(Surname));
+///                 OnPropertyChanged(nameof(FullName));
+///                 
+///                 surname = value;
+///                 
+///                 OnPropertyChanged(nameof(Surname));
 ///                 OnPropertyChanged(nameof(FullName));
 ///             }
 ///         }
