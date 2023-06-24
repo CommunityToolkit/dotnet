@@ -1,0 +1,10 @@
+<linker>
+  <assembly fullname="CommunityToolkit.Mvvm">
+    <type fullname="Configuration" feature="MVVMTOOLKIT_DISABLE_INOTIFYPROPERTYCHANGING" featurevalue="true">
+      <field name="IsINotifyPropertyChangingDisabled" value="true" />
+    </type>
+    <type fullname="Configuration" feature="MVVMTOOLKIT_DISABLE_INOTIFYPROPERTYCHANGING" featurevalue="false">
+      <field name="IsINotifyPropertyChangingDisabled" value="false" />
+    </type>
+  </assembly>
+</linker>

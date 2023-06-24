@@ -41,6 +41,11 @@
     <ProjectReference Include="..\CommunityToolkit.Mvvm.CodeFixers\CommunityToolkit.Mvvm.CodeFixers.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
+  <!-- Include the ILLink file on the .NET 6 target (to properly trim configuration switches in publish builds) -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+    <EmbeddedResource Include="Properties\ILLink.Substitutions.xml" LogicalName="ILLink.Substitutions.xml" />
+  </ItemGroup>
+
   <!-- Add the [InternalsVisibleTo] attribute for the test project -->
   <ItemGroup>
     <InternalsVisibleTo Include="CommunityToolkit.Mvvm.Internals.UnitTests, PublicKey=$(AssemblySignPublicKey)" />
