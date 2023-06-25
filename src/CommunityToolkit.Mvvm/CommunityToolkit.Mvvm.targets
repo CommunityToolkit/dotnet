@@ -146,4 +146,14 @@
              Text="The MVVM Toolkit source generators might not be loaded correctly, as the current project is using the packages.config setup to restore NuGet packages. Source generators require PackageReference to be used (either in a legacy-style or SDK-style .csproj project, both are supported as long as PackageReference is used)."/>
   </Target>
 
+  <!-- Automatically set the configuration switches -->
+  <ItemGroup>
+
+    <!-- MVVMTOOLKIT_DISABLE_INOTIFYPROPERTYCHANGING switch -->
+    <RuntimeHostConfigurationOption Condition="'$(MvvmToolkitDisableINotifyPropertyChanging)' != ''"
+                                    Include="MVVMTOOLKIT_DISABLE_INOTIFYPROPERTYCHANGING"
+                                    Value="$(MvvmToolkitDisableINotifyPropertyChanging)"
+                                    Trim="true" />
+  </ItemGroup>
+
 </Project>
