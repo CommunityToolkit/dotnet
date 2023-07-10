@@ -1820,6 +1820,66 @@ public class Test_SourceGeneratorsDiagnostics
         await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<AsyncVoidReturningRelayCommandMethodAnalyzer>(source, LanguageVersion.CSharp8);
     }
 
+    [TestMethod]
+    public async Task FieldTargetedObservablePropertyAttribute_InstanceAutoProperty()
+    {
+        string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [field: {|MVVMTK0040:ObservableProperty|}]
+                    public string Name { get; set; }
+                }
+            }
+            """;
+
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<AutoPropertyWithFieldTargetedObservablePropertyAttributeAnalyzer>(source, LanguageVersion.CSharp8);
+    }
+
+    [TestMethod]
+    public async Task FieldTargetedObservablePropertyAttribute_StaticAutoProperty()
+    {
+        string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [field: {|MVVMTK0040:ObservableProperty|}]
+                    public static string Name { get; set; }
+                }
+            }
+            """;
+
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<AutoPropertyWithFieldTargetedObservablePropertyAttributeAnalyzer>(source, LanguageVersion.CSharp8);
+    }
+
+    [TestMethod]
+    public async Task FieldTargetedObservablePropertyAttribute_RecordPrimaryConstructorParameter()
+    {
+        string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial record SampleViewModel([field: {|MVVMTK0040:ObservableProperty|}] string Name);
+            }
+
+            namespace System.Runtime.CompilerServices
+            {
+                internal static class IsExternalInit
+                {
+                }
+            }
+            """;
+
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<AutoPropertyWithFieldTargetedObservablePropertyAttributeAnalyzer>(source, LanguageVersion.CSharp9);
+    }
+
     /// <summary>
     /// Verifies the diagnostic errors for a given analyzer, and that all available source generators can run successfully with the input source (including subsequent compilation).
     /// </summary>
