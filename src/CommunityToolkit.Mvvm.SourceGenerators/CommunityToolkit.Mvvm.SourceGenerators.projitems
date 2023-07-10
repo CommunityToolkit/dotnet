@@ -41,6 +41,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\TransitiveMembersGenerator.Execute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\AsyncVoidReturningRelayCommandMethodAnalyzer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\InvalidClassLevelNotifyDataErrorInfoAttributeAnalyzer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\AutoPropertyWithFieldTargetedObservablePropertyAttributeAnalyzer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\InvalidClassLevelNotifyPropertyChangedRecipientsAttributeAnalyzer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\ClassUsingAttributeInsteadOfInheritanceAnalyzer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\FieldWithOrphanedDependentObservablePropertyAttributesAnalyzer.cs" />
