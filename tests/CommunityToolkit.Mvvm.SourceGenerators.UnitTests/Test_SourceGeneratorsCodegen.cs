@@ -1349,10 +1349,10 @@ public class Test_SourceGeneratorsCodegen
                     /// <inheritdoc cref="a"/>
                     [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum1)-1073741824)]
-                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum2)-9223372036854775808)]
-                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum3)-1234)]
-                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum4)-1)]
+                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum1)(-1073741824))]
+                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum2)(-9223372036854775808))]
+                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum3)(-1234))]
+                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum4)(-1))]
                     public object? A
                     {
                         get => a;
@@ -1489,24 +1489,24 @@ public class Test_SourceGeneratorsCodegen
                     [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum1)0)]
-                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum1)-1073741824)]
+                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum1)(-1073741824))]
                     [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum1)42)]
                     [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum1)456)]
                     [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum1)123)]
                     [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum2)0)]
-                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum2)-9223372036854775808)]
+                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum2)(-9223372036854775808))]
                     [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum2)42)]
                     [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum2)456)]
                     [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum2)123)]
                     [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum3)1)]
-                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum3)-1234)]
+                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum3)(-1234))]
                     [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum3)42)]
                     [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum3)456)]
                     [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum3)123)]
                     [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum4)1)]
-                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum4)-1)]
+                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum4)(-1))]
                     [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum4)42)]
-                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum4)-56)]
+                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum4)(-56))]
                     [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum4)123)]
                     public object? A
                     {
@@ -1792,18 +1792,18 @@ public class Test_SourceGeneratorsCodegen
                 {
                     /// <summary>The backing field for <see cref="TestCommand"/>.</summary>
                     [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", <ASSEMBLY_VERSION>)]
-                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum1)-1073741824)]
-                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum2)-9223372036854775808)]
-                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum3)-1234)]
-                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum4)-1)]
+                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum1)(-1073741824))]
+                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum2)(-9223372036854775808))]
+                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum3)(-1234))]
+                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum4)(-1))]
                     private global::CommunityToolkit.Mvvm.Input.RelayCommand? testCommand;
                     /// <summary>Gets an <see cref="global::CommunityToolkit.Mvvm.Input.IRelayCommand"/> instance wrapping <see cref="Test"/>.</summary>
                     [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum1)-1073741824)]
-                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum2)-9223372036854775808)]
-                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum3)-1234)]
-                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum4)-1)]
+                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum1)(-1073741824))]
+                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum2)(-9223372036854775808))]
+                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum3)(-1234))]
+                    [global::MyApp.DefaultValueAttribute((global::MyApp.NegativeEnum4)(-1))]
                     public global::CommunityToolkit.Mvvm.Input.IRelayCommand TestCommand => testCommand ??= new global::CommunityToolkit.Mvvm.Input.RelayCommand(new global::System.Action(Test));
                 }
             }
