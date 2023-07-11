@@ -1051,6 +1051,23 @@ public partial class Test_ObservablePropertyAttribute
     }
 #endif
 
+    // See https://github.com/CommunityToolkit/dotnet/issues/731
+    [TestMethod]
+    public void Test_ObservableProperty_ForwardedAttributesWithNegativeValues()
+    {
+        Assert.AreEqual(PositiveEnum.Something,
+            typeof(ModelWithForwardedAttributesWithNegativeValues)
+            .GetProperty(nameof(ModelWithForwardedAttributesWithNegativeValues.Test2))!
+            .GetCustomAttribute<DefaultValueAttribute>()!
+            .Value);
+
+        Assert.AreEqual(NegativeEnum.Problem,
+            typeof(ModelWithForwardedAttributesWithNegativeValues)
+            .GetProperty(nameof(ModelWithForwardedAttributesWithNegativeValues.Test3))!
+            .GetCustomAttribute<DefaultValueAttribute>()!
+            .Value);
+    }
+
     public abstract partial class BaseViewModel : ObservableObject
     {
         public string? Content { get; set; }
@@ -1693,4 +1710,39 @@ public partial class Test_ObservablePropertyAttribute
         internal string name;
     }
 #endif
+
+    private partial class ModelWithForwardedAttributesWithNegativeValues : ObservableObject
+    {
+        [ObservableProperty]
+        private bool _test1;
+
+        [ObservableProperty]
+        [property: DefaultValue(PositiveEnum.Something)]
+        private PositiveEnum _test2;
+
+        [ObservableProperty]
+        [property: DefaultValue(NegativeEnum.Problem)]
+        private NegativeEnum _test3;
+
+        [ObservableProperty]
+        private int _test4;
+
+        public ModelWithForwardedAttributesWithNegativeValues()
+        {
+            Test1 = true;
+            Test2 = PositiveEnum.Else;
+        }
+    }
+
+    public enum PositiveEnum
+    {
+        Something = 0,
+        Else = 1
+    }
+
+    public enum NegativeEnum
+    {
+        Problem = -1,
+        OK = 0
+    }
 }
