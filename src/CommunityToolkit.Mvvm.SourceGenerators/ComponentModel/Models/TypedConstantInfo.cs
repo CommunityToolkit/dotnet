@@ -135,8 +135,17 @@ internal abstract partial record TypedConstantInfo
         public override ExpressionSyntax GetSyntax()
         {
             // We let Roslyn parse the value expression, so that it can automatically handle both positive and negative values. This
-            // is needed because negative values have a different syntax tree (UnaryMinuxExpression holding the numeric expression).
-            return CastExpression(IdentifierName(TypeName), ParseExpression(Value.ToString()));
+            // is needed because negative values have a different syntax tree (UnaryMinusExpression holding the numeric expression).
+            ExpressionSyntax valueExpression = ParseExpression(Value.ToString());
+
+            // If the value is negative, we have to put parentheses around them (to avoid CS0075 errors)
+            if (valueExpression is PrefixUnaryExpressionSyntax unaryExpression && unaryExpression.IsKind(SyntaxKind.UnaryMinusExpression))
+            {
+                valueExpression = ParenthesizedExpression(valueExpression);
+            }
+
+            // Now we can safely return the cast expression for the target enum type (with optional parentheses if needed)
+            return CastExpression(IdentifierName(TypeName), valueExpression);
         }
     }
 
