@@ -1,5 +1,5 @@
 {
-  "version": "8.2.1-build.{height}",
+  "version": "8.2.2-build.{height}",
   "publicReleaseRefSpec": [
     "^refs/heads/main$", // we release out of main
     "^refs/heads/dev$", // we release out of dev
