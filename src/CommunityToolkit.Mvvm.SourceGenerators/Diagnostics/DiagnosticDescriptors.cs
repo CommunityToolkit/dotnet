@@ -658,4 +658,20 @@ internal static class DiagnosticDescriptors
         isEnabledByDefault: true,
         description: "All asynchronous methods annotated with [RelayCommand] should return a Task type, to benefit from the additional support provided by AsyncRelayCommand and AsyncRelayCommand<T>.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0039");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[ObservableProperty]</c> is used on a generated field of an auto-property.
+    /// <para>
+    /// Format: <c>"The backing field for property {0}.{1} cannot be annotated with [ObservableProperty] (the attribute can only be used directly on fields, and the generator will then handle generating the corresponding property)"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor AutoPropertyBackingFieldObservableProperty = new DiagnosticDescriptor(
+        id: "MVVMTK0040",
+        title: "[ObservableProperty] on auto-property backing field",
+        messageFormat: "The backing field for property {0}.{1} cannot be annotated with [ObservableProperty] (the attribute can only be used directly on fields, and the generator will then handle generating the corresponding property)",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "The backing fields of auto-properties cannot be annotated with [ObservableProperty] (the attribute can only be used directly on fields, and the generator will then handle generating the corresponding property).",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0040");
 }
