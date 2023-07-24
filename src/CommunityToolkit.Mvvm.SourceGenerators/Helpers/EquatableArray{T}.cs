@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -34,6 +35,8 @@ internal static class EquatableArray
 /// An imutable, equatable array. This is equivalent to <see cref="ImmutableArray{T}"/> but with value equality support.
 /// </summary>
 /// <typeparam name="T">The type of values in the array.</typeparam>
+[DebuggerDisplay("Length = {array.Length,nq}")]
+[DebuggerTypeProxy(typeof(EquatableArray<>.DebugView))]
 internal readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>, IEnumerable<T>
     where T : IEquatable<T>
 {
@@ -71,19 +74,19 @@ internal readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>, IEnu
         get => AsImmutableArray().IsEmpty;
     }
 
-    /// <sinheritdoc/>
+    /// <inheritdoc/>
     public bool Equals(EquatableArray<T> array)
     {
         return AsSpan().SequenceEqual(array.AsSpan());
     }
 
-    /// <sinheritdoc/>
+    /// <inheritdoc/>
     public override bool Equals([NotNullWhen(true)] object? obj)
     {
         return obj is EquatableArray<T> array && Equals(this, array);
     }
 
-    /// <sinheritdoc/>
+    /// <inheritdoc/>
     public override int GetHashCode()
     {
         if (this.array is not T[] array)
@@ -131,7 +134,7 @@ internal readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>, IEnu
     }
 
     /// <summary>
-    /// Copies the contents of this <see cref="EquatableArray{T}"/> instance. to a mutable array.
+    /// Copies the contents of this <see cref="EquatableArray{T}"/> instance to a mutable array.
     /// </summary>
     /// <returns>The newly instantiated array.</returns>
     public T[] ToArray()
@@ -148,13 +151,13 @@ internal readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>, IEnu
         return AsImmutableArray().GetEnumerator();
     }
 
-    /// <sinheritdoc/>
+    /// <inheritdoc/>
     IEnumerator<T> IEnumerable<T>.GetEnumerator()
     {
         return ((IEnumerable<T>)AsImmutableArray()).GetEnumerator();
     }
 
-    /// <sinheritdoc/>
+    /// <inheritdoc/>
     IEnumerator IEnumerable.GetEnumerator()
     {
         return ((IEnumerable)AsImmutableArray()).GetEnumerator();
@@ -198,5 +201,22 @@ internal readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>, IEnu
     public static bool operator !=(EquatableArray<T> left, EquatableArray<T> right)
     {
         return !left.Equals(right);
+    }
+
+    /// <summary>
+    /// Debug view for <see cref="EquatableArray{T}"/>.
+    /// Instead of internal state shows array view where each element is under its own index. 
+    /// </summary>
+    private sealed class DebugView
+    {
+        private readonly EquatableArray<T> array;
+
+        public DebugView(EquatableArray<T> array)
+        {
+            this.array = array;   
+        }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+        public T[] Items => this.array.ToArray();
     }
 }
