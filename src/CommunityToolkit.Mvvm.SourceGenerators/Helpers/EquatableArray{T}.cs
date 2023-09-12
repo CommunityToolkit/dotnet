@@ -31,7 +31,7 @@ internal static class EquatableArray
 }
 
 /// <summary>
-/// An imutable, equatable array. This is equivalent to <see cref="ImmutableArray{T}"/> but with value equality support.
+/// An immutable, equatable array. This is equivalent to <see cref="ImmutableArray{T}"/> but with value equality support.
 /// </summary>
 /// <typeparam name="T">The type of values in the array.</typeparam>
 internal readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>, IEnumerable<T>
@@ -131,7 +131,7 @@ internal readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>, IEnu
     }
 
     /// <summary>
-    /// Copies the contents of this <see cref="EquatableArray{T}"/> instance. to a mutable array.
+    /// Copies the contents of this <see cref="EquatableArray{T}"/> instance to a mutable array.
     /// </summary>
     /// <returns>The newly instantiated array.</returns>
     public T[] ToArray()
