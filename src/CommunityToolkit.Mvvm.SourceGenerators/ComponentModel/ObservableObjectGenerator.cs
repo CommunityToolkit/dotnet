@@ -2,12 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Collections.Immutable;
-using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using CommunityToolkit.Mvvm.SourceGenerators.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Collections.Immutable;
 using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators;
@@ -32,7 +31,7 @@ public sealed class ObservableObjectGenerator : TransitiveMembersGenerator<int>
         diagnostics = ImmutableArray<DiagnosticInfo>.Empty;
 
         // Check if the type already implements INotifyPropertyChanged...
-        if (typeSymbol.AllInterfaces.Any(i => i.HasFullyQualifiedMetadataName("System.ComponentModel.INotifyPropertyChanged")))
+        if (typeSymbol.ImplementsInterfaceMember("System.ComponentModel.INotifyPropertyChanged"))
         {
             diagnostics = ImmutableArray.Create(DiagnosticInfo.Create(DuplicateINotifyPropertyChangedInterfaceForObservableObjectAttributeError, typeSymbol, typeSymbol));
 
@@ -40,7 +39,7 @@ public sealed class ObservableObjectGenerator : TransitiveMembersGenerator<int>
         }
 
         // ...or INotifyPropertyChanging
-        if (typeSymbol.AllInterfaces.Any(i => i.HasFullyQualifiedMetadataName("System.ComponentModel.INotifyPropertyChanging")))
+        if (typeSymbol.ImplementsInterfaceMember("System.ComponentModel.INotifyPropertyChanging"))
         {
             diagnostics = ImmutableArray.Create(DiagnosticInfo.Create(DuplicateINotifyPropertyChangingInterfaceForObservableObjectAttributeError, typeSymbol, typeSymbol));
 

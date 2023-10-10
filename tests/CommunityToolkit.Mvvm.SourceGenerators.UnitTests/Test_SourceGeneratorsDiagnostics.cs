@@ -39,6 +39,22 @@ public class Test_SourceGeneratorsDiagnostics
             """;
 
         VerifyGeneratedDiagnostics<INotifyPropertyChangedGenerator>(source, "MVVMTK0001");
+
+        string source_NoImplementation = """
+            using System.ComponentModel;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                [INotifyPropertyChanged]
+                public partial class SampleViewModel : INotifyPropertyChanged
+                {
+                    
+                }
+            }
+            """;
+
+        VerifyGeneratedDiagnostics<INotifyPropertyChangedGenerator>(source_NoImplementation);
     }
 
     [TestMethod]
@@ -87,6 +103,22 @@ public class Test_SourceGeneratorsDiagnostics
             """;
 
         VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0002");
+
+        string source_NoImplementation = """
+            using System.ComponentModel;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                [ObservableObject]
+                public partial class SampleViewModel : INotifyPropertyChanged
+                {
+                    
+                }
+            }
+            """;
+
+        VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source_NoImplementation);
     }
 
     [TestMethod]
@@ -134,6 +166,22 @@ public class Test_SourceGeneratorsDiagnostics
             """;
 
         VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source, "MVVMTK0003");
+
+        string source_NoImplementation = """
+            using System.ComponentModel;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                [ObservableObject]
+                public partial class SampleViewModel : INotifyPropertyChanging
+                {
+                    
+                }
+            }
+            """;
+
+        VerifyGeneratedDiagnostics<ObservableObjectGenerator>(source_NoImplementation);
     }
 
     [TestMethod]
