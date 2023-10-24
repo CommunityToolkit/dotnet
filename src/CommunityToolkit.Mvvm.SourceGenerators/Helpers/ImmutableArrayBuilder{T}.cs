@@ -121,7 +121,7 @@ internal ref struct ImmutableArrayBuilder<T>
     /// <summary>
     /// A class handling the actual buffer writing.
     /// </summary>
-    private sealed class Writer : ICollection<T>, IDisposable
+    public sealed class Writer : ICollection<T>, IDisposable
     {
         /// <summary>
         /// The underlying <typeparamref name="T"/> array.
