@@ -1040,6 +1040,39 @@ public partial class Test_ObservablePropertyAttribute
         Assert.IsTrue(model.IsReadOnly);
     }
 
+    // See https://github.com/CommunityToolkit/dotnet/issues/711
+    [TestMethod]
+    public void Test_ObservableProperty_ModelWithDependentPropertyAndPropertyChanging()
+    {
+        ModelWithDependentPropertyAndPropertyChanging model = new();
+
+        List<string> changingArgs = new();
+        List<string> changedArgs = new();
+
+        model.PropertyChanging += (s, e) => changingArgs.Add(e.PropertyName);
+        model.PropertyChanged += (s, e) => changedArgs.Add(e.PropertyName);
+
+        model.Name = "Bob";
+
+        CollectionAssert.AreEqual(new[] { nameof(ModelWithDependentPropertyAndPropertyChanging.Name), nameof(ModelWithDependentPropertyAndPropertyChanging.FullName) }, changingArgs);
+        CollectionAssert.AreEqual(new[] { nameof(ModelWithDependentPropertyAndPropertyChanging.Name), nameof(ModelWithDependentPropertyAndPropertyChanging.FullName) }, changedArgs);
+    }
+
+    // See https://github.com/CommunityToolkit/dotnet/issues/711
+    [TestMethod]
+    public void Test_ObservableProperty_ModelWithDependentPropertyAndNoPropertyChanging()
+    {
+        ModelWithDependentPropertyAndNoPropertyChanging model = new();
+
+        List<string> changedArgs = new();
+
+        model.PropertyChanged += (s, e) => changedArgs.Add(e.PropertyName);
+
+        model.Name = "Alice";
+
+        CollectionAssert.AreEqual(new[] { nameof(ModelWithDependentPropertyAndNoPropertyChanging.Name), nameof(ModelWithDependentPropertyAndNoPropertyChanging.FullName) }, changedArgs);
+    }
+
 #if NET6_0_OR_GREATER
     [TestMethod]
     public void Test_ObservableProperty_MemberNotNullAttributeIsPresent()
@@ -1744,5 +1777,24 @@ public partial class Test_ObservablePropertyAttribute
     {
         Problem = -1,
         OK = 0
+    }
+    
+    private sealed partial class ModelWithDependentPropertyAndPropertyChanging : ObservableObject
+    {
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(FullName))]
+        private string? name;
+
+        public string? FullName => "";
+    }
+
+    [INotifyPropertyChanged(IncludeAdditionalHelperMethods = false)]
+    private sealed partial class ModelWithDependentPropertyAndNoPropertyChanging
+    {
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(FullName))]
+        private string? name;
+
+        public string? FullName => "";
     }
 }
