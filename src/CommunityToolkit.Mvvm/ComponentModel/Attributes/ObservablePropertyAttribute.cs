@@ -54,4 +54,19 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
 public sealed class ObservablePropertyAttribute : Attribute
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ObservablePropertyAttribute"/> class. 
+    /// </summary>
+    /// <param name="hidesInheritedProperty">
+    /// Specifies if the generated property will hide an inherited property declaration.
+    /// </param>
+    public ObservablePropertyAttribute(bool hidesInheritedProperty = false)
+    {
+        Hidesinheritedproperty = hidesInheritedProperty;
+    }
+
+    /// <summary>
+    /// Specifies if the generated property will hide an inherited property declaration.
+    /// </summary>
+    public bool Hidesinheritedproperty { get; }
 }

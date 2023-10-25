@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel;
@@ -117,6 +118,7 @@ partial class ObservablePropertyGenerator
             bool hasOrInheritsClassLevelNotifyPropertyChangedRecipients = false;
             bool hasOrInheritsClassLevelNotifyDataErrorInfo = false;
             bool hasAnyValidationAttributes = false;
+            bool hidesInheritedProperty = false;
             bool isOldPropertyValueDirectlyReferenced = IsOldPropertyValueDirectlyReferenced(fieldSymbol, propertyName);
 
             token.ThrowIfCancellationRequested();
@@ -185,6 +187,15 @@ partial class ObservablePropertyGenerator
                     hasAnyValidationAttributes = true;
 
                     forwardedAttributes.Add(AttributeInfo.Create(attributeData));
+                }
+
+                // Check if the generated property should hide an inherited property declaration
+                if (attributeData.AttributeClass?.HasFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute") == true)
+                {
+                    if (Convert.ToBoolean(attributeData.ConstructorArguments[0].Value) == true)
+                    {
+                        hidesInheritedProperty = true;
+                    }
                 }
 
                 // Also track the current attribute for forwarding if it is of any of the following types:
@@ -313,6 +324,7 @@ partial class ObservablePropertyGenerator
                 isOldPropertyValueDirectlyReferenced,
                 isReferenceTypeOrUnconstraindTypeParameter,
                 includeMemberNotNullOnSetAccessor,
+                hidesInheritedProperty,
                 forwardedAttributes.ToImmutable());
 
             diagnostics = builder.ToImmutable();
@@ -1021,11 +1033,18 @@ partial class ObservablePropertyGenerator
             // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
             // [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
             // <FORWARDED_ATTRIBUTES>
-            // public <FIELD_TYPE><NULLABLE_ANNOTATION?> <PROPERTY_NAME>
+            // public <NEW_KEYWORD> <FIELD_TYPE><NULLABLE_ANNOTATION?> <PROPERTY_NAME>
             // {
             //     get => <FIELD_NAME>;
             //     <SET_ACCESSOR>
             // }
+
+            List<SyntaxToken> propertyDeclarationModifier = new() { Token(SyntaxKind.PublicKeyword) };
+            if (propertyInfo.hidesInheritedProperty)
+            {
+                propertyDeclarationModifier.Add(Token(SyntaxKind.NewKeyword));
+            }
+
             return
                 PropertyDeclaration(propertyType, Identifier(propertyInfo.PropertyName))
                 .AddAttributeLists(
@@ -1037,7 +1056,7 @@ partial class ObservablePropertyGenerator
                     .WithOpenBracketToken(Token(TriviaList(Comment($"/// <inheritdoc cref=\"{getterFieldIdentifierName}\"/>")), SyntaxKind.OpenBracketToken, TriviaList())),
                     AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage")))))
                 .AddAttributeLists(forwardedAttributes.ToArray())
-                .AddModifiers(Token(SyntaxKind.PublicKeyword))
+                .AddModifiers(propertyDeclarationModifier.ToArray())
                 .AddAccessorListAccessors(
                     AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
                     .WithExpressionBody(ArrowExpressionClause(getterFieldExpression))
