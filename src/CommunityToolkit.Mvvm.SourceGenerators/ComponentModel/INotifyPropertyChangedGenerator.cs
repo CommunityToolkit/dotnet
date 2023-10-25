@@ -33,14 +33,12 @@ public sealed class INotifyPropertyChangedGenerator : TransitiveMembersGenerator
     {
         diagnostics = ImmutableArray<DiagnosticInfo>.Empty;
 
-        INotifyPropertyChangedInfo? info = null;
-
         // Check if the type already implements INotifyPropertyChanged
-        if (typeSymbol.AllInterfaces.Any(i => i.HasFullyQualifiedMetadataName("System.ComponentModel.INotifyPropertyChanged")))
+        if (typeSymbol.ImplementsInterfaceMember("System.ComponentModel.INotifyPropertyChanged"))
         {
             diagnostics = ImmutableArray.Create(DiagnosticInfo.Create(DuplicateINotifyPropertyChangedInterfaceForINotifyPropertyChangedAttributeError, typeSymbol, typeSymbol));
 
-            goto End;
+            return null;
         }
 
         // Check if the type uses [INotifyPropertyChanged] or [ObservableObject] already (in the type hierarchy too)
@@ -49,15 +47,12 @@ public sealed class INotifyPropertyChangedGenerator : TransitiveMembersGenerator
         {
             diagnostics = ImmutableArray.Create(DiagnosticInfo.Create(InvalidAttributeCombinationForINotifyPropertyChangedAttributeError, typeSymbol, typeSymbol));
 
-            goto End;
+            return null;
         }
 
         bool includeAdditionalHelperMethods = attributeData.GetNamedArgument("IncludeAdditionalHelperMethods", true);
 
-        info = new INotifyPropertyChangedInfo(includeAdditionalHelperMethods);
-
-        End:
-        return info;
+        return new INotifyPropertyChangedInfo(includeAdditionalHelperMethods);
     }
 
     /// <inheritdoc/>
