@@ -52,7 +52,7 @@ public class Test_IBufferWriterStream
         // that the state of the writer is consistent, and the written content matches.
         stream.Write(data, 0, data.Length);
 
-        Assert.AreEqual(writer.WrittenCount, data.Length);
+        Assert.AreEqual(data.Length, writer.WrittenCount);
         Assert.IsTrue(writer.WrittenSpan.SequenceEqual(data));
 
         // A few tests with invalid inputs (null buffers, invalid indices, etc.)
@@ -78,7 +78,7 @@ public class Test_IBufferWriterStream
         // Same test as above, but using an asynchronous write instead
         await stream.WriteAsync(data, 0, data.Length);
 
-        Assert.AreEqual(writer.WrittenCount, data.Length);
+        Assert.AreEqual(data.Length, writer.WrittenCount);
         Assert.IsTrue(writer.WrittenSpan.SequenceEqual(data));
 
         _ = await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => stream.WriteAsync(null!, 0, 10));
@@ -104,14 +104,14 @@ public class Test_IBufferWriterStream
         {
             // Since we're enumerating, we can also double check the current written count
             // at each iteration, to ensure the writes are done correctly every time.
-            Assert.AreEqual(writer.WrittenCount, item.Index);
+            Assert.AreEqual(item.Index, writer.WrittenCount);
 
             // Write a number of bytes one by one to test this API as well
             stream.WriteByte(item.Value);
         }
 
         // Validate the final written length and actual data
-        Assert.AreEqual(writer.WrittenCount, data.Length);
+        Assert.AreEqual(data.Length, writer.WrittenCount);
         Assert.IsTrue(data.SequenceEqual(writer.WrittenSpan));
 
         _ = Assert.ThrowsException<NotSupportedException>(() => stream.ReadByte());
@@ -129,7 +129,7 @@ public class Test_IBufferWriterStream
         // Stream class doesn't have Spam<T> or Memory<T> public APIs there.
         stream.Write(data.Span);
 
-        Assert.AreEqual(writer.WrittenCount, data.Length);
+        Assert.AreEqual(data.Length, writer.WrittenCount);
         Assert.IsTrue(data.Span.SequenceEqual(writer.WrittenSpan));
     }
 
@@ -144,7 +144,7 @@ public class Test_IBufferWriterStream
         // Same as the other asynchronous test above, but writing from a Memory<T>
         await stream.WriteAsync(data);
 
-        Assert.AreEqual(writer.WrittenCount, data.Length);
+        Assert.AreEqual(data.Length, writer.WrittenCount);
         Assert.IsTrue(data.Span.SequenceEqual(writer.WrittenSpan));
     }
 }

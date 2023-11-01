@@ -38,8 +38,8 @@ public class Test_AsyncRelayCommandOfT
 
         command.NotifyCanExecuteChanged();
 
-        Assert.AreSame(args.Item1, command);
-        Assert.AreSame(args.Item2, EventArgs.Empty);
+        Assert.AreSame(command, args.Item1);
+        Assert.AreSame(EventArgs.Empty, args.Item2);
 
         Assert.IsNull(command.ExecutionTask);
         Assert.IsFalse(command.IsRunning);
@@ -47,20 +47,20 @@ public class Test_AsyncRelayCommandOfT
         Task task = command.ExecuteAsync((object)"42");
 
         Assert.IsNotNull(command.ExecutionTask);
-        Assert.AreSame(command.ExecutionTask, task);
+        Assert.AreSame(task, command.ExecutionTask);
         Assert.IsTrue(command.IsRunning);
 
         await task;
 
         Assert.IsFalse(command.IsRunning);
 
-        Assert.AreEqual(ticks, 42);
+        Assert.AreEqual(42, ticks);
 
         command.Execute("2");
 
         await command.ExecutionTask!;
 
-        Assert.AreEqual(ticks, 2);
+        Assert.AreEqual(2, ticks);
 
         ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(new object()), "parameter");
         ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(42), "parameter");
@@ -86,11 +86,11 @@ public class Test_AsyncRelayCommandOfT
 
         command.Execute("42");
 
-        Assert.AreEqual(ticks, 42);
+        Assert.AreEqual(42, ticks);
 
         command.Execute("2");
 
-        Assert.AreEqual(ticks, 2);
+        Assert.AreEqual(2, ticks);
 
         ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(new object()), "parameter");
         ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(42), "parameter");
@@ -117,11 +117,11 @@ public class Test_AsyncRelayCommandOfT
         command.Execute("2");
 
         // Like in the RelayCommand test, ensure Execute is unconditionally invoked
-        Assert.AreEqual(ticks, 2);
+        Assert.AreEqual(2, ticks);
 
         command.Execute("42");
 
-        Assert.AreEqual(ticks, 42);
+        Assert.AreEqual(42, ticks);
 
         ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(new object()), "parameter");
         ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(42), "parameter");
@@ -197,17 +197,17 @@ public class Test_AsyncRelayCommandOfT
         Assert.IsTrue(command.CanBeCanceled);
         Assert.IsFalse(command.IsCancellationRequested);
 
-        Assert.AreEqual(args.Count, 4);
-        Assert.AreEqual(args[0].PropertyName, nameof(IAsyncRelayCommand.ExecutionTask));
-        Assert.AreEqual(args[1].PropertyName, nameof(IAsyncRelayCommand.IsRunning));
-        Assert.AreEqual(args[2].PropertyName, nameof(IAsyncRelayCommand.CanBeCanceled));
-        Assert.AreEqual(args[3].PropertyName, nameof(IAsyncRelayCommand.IsCancellationRequested));
+        Assert.AreEqual(4, args.Count);
+        Assert.AreEqual(nameof(IAsyncRelayCommand.ExecutionTask), args[0].PropertyName);
+        Assert.AreEqual(nameof(IAsyncRelayCommand.IsRunning), args[1].PropertyName);
+        Assert.AreEqual(nameof(IAsyncRelayCommand.CanBeCanceled), args[2].PropertyName);
+        Assert.AreEqual(nameof(IAsyncRelayCommand.IsCancellationRequested), args[3].PropertyName);
 
         command.Cancel();
 
-        Assert.AreEqual(args.Count, 6);
-        Assert.AreEqual(args[4].PropertyName, nameof(IAsyncRelayCommand.CanBeCanceled));
-        Assert.AreEqual(args[5].PropertyName, nameof(IAsyncRelayCommand.IsCancellationRequested));
+        Assert.AreEqual(6, args.Count);
+        Assert.AreEqual(nameof(IAsyncRelayCommand.CanBeCanceled), args[4].PropertyName);
+        Assert.AreEqual(nameof(IAsyncRelayCommand.IsCancellationRequested), args[5].PropertyName);
 
         Assert.IsTrue(command.IsCancellationRequested);
 
@@ -250,8 +250,8 @@ public class Test_AsyncRelayCommandOfT
 
         command.NotifyCanExecuteChanged();
 
-        Assert.AreSame(args.Item1, command);
-        Assert.AreSame(args.Item2, EventArgs.Empty);
+        Assert.AreSame(command, args.Item1);
+        Assert.AreSame(EventArgs.Empty, args.Item2);
 
         Assert.IsNull(command.ExecutionTask);
         Assert.IsFalse(command.IsRunning);
@@ -259,7 +259,7 @@ public class Test_AsyncRelayCommandOfT
         Task task = command.ExecuteAsync((object)"42");
 
         Assert.IsNotNull(command.ExecutionTask);
-        Assert.AreSame(command.ExecutionTask, task);
+        Assert.AreSame(task, command.ExecutionTask);
         Assert.IsTrue(command.IsRunning);
 
         // The command can't be executed now, as there's a pending operation

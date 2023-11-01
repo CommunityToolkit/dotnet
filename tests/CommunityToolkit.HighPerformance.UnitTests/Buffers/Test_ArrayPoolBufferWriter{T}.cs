@@ -52,7 +52,7 @@ public class Test_ArrayPoolBufferWriterOfT
 
         byte[] array = (byte[])arrayFieldInfo!.GetValue(writer)!;
 
-        Assert.AreEqual(array.Length, expected);
+        Assert.AreEqual(expected, array.Length);
     }
 
     [TestMethod]
@@ -60,9 +60,9 @@ public class Test_ArrayPoolBufferWriterOfT
     {
         ArrayPoolBufferWriter<byte>? writer = new();
 
-        Assert.AreEqual(writer.Capacity, 256);
-        Assert.AreEqual(writer.FreeCapacity, 256);
-        Assert.AreEqual(writer.WrittenCount, 0);
+        Assert.AreEqual(256, writer.Capacity);
+        Assert.AreEqual(256, writer.FreeCapacity);
+        Assert.AreEqual(0, writer.WrittenCount);
         Assert.IsTrue(writer.WrittenMemory.IsEmpty);
         Assert.IsTrue(writer.WrittenSpan.IsEmpty);
 
@@ -72,11 +72,11 @@ public class Test_ArrayPoolBufferWriterOfT
 
         writer.Advance(43);
 
-        Assert.AreEqual(writer.Capacity, 256);
-        Assert.AreEqual(writer.FreeCapacity, 256 - 43);
-        Assert.AreEqual(writer.WrittenCount, 43);
-        Assert.AreEqual(writer.WrittenMemory.Length, 43);
-        Assert.AreEqual(writer.WrittenSpan.Length, 43);
+        Assert.AreEqual(256, writer.Capacity);
+        Assert.AreEqual(256 - 43, writer.FreeCapacity);
+        Assert.AreEqual(43, writer.WrittenCount);
+        Assert.AreEqual(43, writer.WrittenMemory.Length);
+        Assert.AreEqual(43, writer.WrittenSpan.Length);
 
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => writer.Advance(-1));
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => writer.GetMemory(-1));
@@ -99,11 +99,11 @@ public class Test_ArrayPoolBufferWriterOfT
 
         using (ArrayPoolBufferWriter<byte>? writer = new(pool))
         {
-            Assert.AreEqual(pool.RentedArrays.Count, 1);
+            Assert.AreEqual(1, pool.RentedArrays.Count);
 
-            Assert.AreEqual(writer.Capacity, 256);
-            Assert.AreEqual(writer.FreeCapacity, 256);
-            Assert.AreEqual(writer.WrittenCount, 0);
+            Assert.AreEqual(256, writer.Capacity);
+            Assert.AreEqual(256, writer.FreeCapacity);
+            Assert.AreEqual(0, writer.WrittenCount);
             Assert.IsTrue(writer.WrittenMemory.IsEmpty);
             Assert.IsTrue(writer.WrittenSpan.IsEmpty);
 
@@ -113,11 +113,11 @@ public class Test_ArrayPoolBufferWriterOfT
 
             writer.Advance(43);
 
-            Assert.AreEqual(writer.Capacity, 256);
-            Assert.AreEqual(writer.FreeCapacity, 256 - 43);
-            Assert.AreEqual(writer.WrittenCount, 43);
-            Assert.AreEqual(writer.WrittenMemory.Length, 43);
-            Assert.AreEqual(writer.WrittenSpan.Length, 43);
+            Assert.AreEqual(256, writer.Capacity);
+            Assert.AreEqual(256 - 43, writer.FreeCapacity);
+            Assert.AreEqual(43, writer.WrittenCount);
+            Assert.AreEqual(43, writer.WrittenMemory.Length);
+            Assert.AreEqual(43, writer.WrittenSpan.Length);
 
             _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => writer.Advance(-1));
             _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => writer.GetMemory(-1));
@@ -133,7 +133,7 @@ public class Test_ArrayPoolBufferWriterOfT
             _ = Assert.ThrowsException<ObjectDisposedException>(() => writer.Advance(1));
         }
 
-        Assert.AreEqual(pool.RentedArrays.Count, 0);
+        Assert.AreEqual(0, pool.RentedArrays.Count);
     }
 
     [TestMethod]
@@ -158,12 +158,12 @@ public class Test_ArrayPoolBufferWriterOfT
 
         writer.Advance(4);
 
-        Assert.AreEqual(writer.WrittenCount, 4);
+        Assert.AreEqual(4, writer.WrittenCount);
         Assert.IsTrue(span.SequenceEqual(data));
 
         writer.Clear();
 
-        Assert.AreEqual(writer.WrittenCount, 0);
+        Assert.AreEqual(0, writer.WrittenCount);
         Assert.IsTrue(span.ToArray().All(b => b == 0));
     }
 
@@ -194,13 +194,13 @@ public class Test_ArrayPoolBufferWriterOfT
             writeStream.Write(guid);
         }
 
-        Assert.AreEqual(writer.WrittenCount, GuidSize);
+        Assert.AreEqual(GuidSize, writer.WrittenCount);
 
         // Here we get a readable stream instead, and read from it to ensure
         // the previous data was written correctly from the writeable stream.
         using (Stream stream = writer.WrittenMemory.AsStream())
         {
-            Assert.AreEqual(stream.Length, GuidSize);
+            Assert.AreEqual(GuidSize, stream.Length);
 
             byte[] result = new byte[GuidSize];
 
@@ -234,13 +234,13 @@ public class Test_ArrayPoolBufferWriterOfT
 
         Assert.IsNotNull(segment.Array);
         Assert.IsTrue(segment.Array.Length >= bufferWriter.WrittenSpan.Length);
-        Assert.AreEqual(segment.Offset, 0);
-        Assert.AreEqual(segment.Count, bufferWriter.WrittenSpan.Length);
+        Assert.AreEqual(0, segment.Offset);
+        Assert.AreEqual(bufferWriter.WrittenSpan.Length, segment.Count);
 
         _ = MemoryMarshal.TryGetArray(bufferWriter.WrittenMemory, out ArraySegment<int> writtenSegment);
 
         // The array is the same one as the one from the written span
-        Assert.AreSame(segment.Array, writtenSegment.Array);
+        Assert.AreSame(writtenSegment.Array, segment.Array);
 
         bufferWriter.Dispose();
 

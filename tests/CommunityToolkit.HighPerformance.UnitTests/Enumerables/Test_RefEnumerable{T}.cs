@@ -32,7 +32,7 @@ public class Test_RefEnumerable
 
         int[] result = enumerable.ToArray();
 
-        CollectionAssert.AreEqual(result, values);
+        CollectionAssert.AreEqual(values, result);
     }
 
     [TestMethod]
@@ -64,7 +64,7 @@ public class Test_RefEnumerable
 
         for (int i = 0; i < enumerable.Length; i++)
         {
-            Assert.AreEqual(enumerable[i], values[i]);
+            Assert.AreEqual(values[i], enumerable[i]);
         }
     }
 

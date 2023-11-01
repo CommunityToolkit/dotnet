@@ -356,7 +356,7 @@ public class Test_ConditionalWeakTable2
         {
             object current = cwt.GetValue(keys[i], _ => values[i]);
 
-            Assert.AreSame(current, values[i]);
+            Assert.AreSame(values[i], current);
         }
 
         int count = 0;
@@ -365,8 +365,8 @@ public class Test_ConditionalWeakTable2
         {
             while (enumerator.MoveNext())
             {
-                Assert.AreSame(enumerator.GetKey(), keys[count]);
-                Assert.AreSame(enumerator.GetValue(), values[count]);
+                Assert.AreSame(keys[count], enumerator.GetKey());
+                Assert.AreSame(values[count], enumerator.GetValue());
 
                 count++;
             }

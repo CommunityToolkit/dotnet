@@ -36,13 +36,13 @@ public partial class Test_IRecipientGenerator
 
         _ = messenger.Send(messageA, 42);
 
-        Assert.AreSame(recipient.A, messageA);
+        Assert.AreSame(messageA, recipient.A);
         Assert.IsNull(recipient.B);
 
         _ = messenger.Send(messageB, 42);
 
-        Assert.AreSame(recipient.A, messageA);
-        Assert.AreSame(recipient.B, messageB);
+        Assert.AreSame(messageA, recipient.A);
+        Assert.AreSame(messageB, recipient.B);
     }
 
     [TestMethod]

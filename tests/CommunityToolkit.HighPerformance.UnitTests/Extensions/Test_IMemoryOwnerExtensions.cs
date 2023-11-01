@@ -19,8 +19,8 @@ public class Test_IMemoryOwnerExtensions
         Stream stream = buffer.AsStream();
 
         Assert.IsNotNull(stream);
-        Assert.AreEqual(buffer.Length, 0);
-        Assert.AreEqual(stream.Length, 0);
+        Assert.AreEqual(0, buffer.Length);
+        Assert.AreEqual(0, stream.Length);
         Assert.IsTrue(stream.CanWrite);
     }
 
@@ -32,7 +32,7 @@ public class Test_IMemoryOwnerExtensions
         Stream stream = buffer.AsStream();
 
         Assert.IsNotNull(stream);
-        Assert.AreEqual(stream.Length, buffer.Length);
+        Assert.AreEqual(buffer.Length, stream.Length);
         Assert.IsTrue(stream.CanWrite);
     }
 
@@ -50,13 +50,13 @@ public class Test_IMemoryOwnerExtensions
         Stream stream = buffer.AsStream();
 
         Assert.IsNotNull(stream);
-        Assert.AreEqual(stream.Length, buffer.Length);
+        Assert.AreEqual(buffer.Length, stream.Length);
         Assert.IsTrue(stream.CanWrite);
 
         // Validate that creating the stream doesn't alter the underlying buffer
         for (int i = 0; i < buffer.Length; i++)
         {
-            Assert.AreEqual(buffer.Span[i], unchecked((byte)(i & byte.MaxValue)));
+            Assert.AreEqual(unchecked((byte)(i & byte.MaxValue)), buffer.Span[i]);
         }
     }
 }

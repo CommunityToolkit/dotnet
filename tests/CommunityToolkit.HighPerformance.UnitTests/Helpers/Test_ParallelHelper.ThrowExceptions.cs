@@ -33,7 +33,7 @@ public partial class Test_ParallelHelper
                     normalParams.All(p => p.ParameterType == typeof(int))
                 select normalParams[2].Name).Single();
 
-            Assert.AreEqual(e.ParamName, name);
+            Assert.AreEqual(name, e.ParamName);
 
             return;
         }
@@ -63,7 +63,7 @@ public partial class Test_ParallelHelper
                     normalParams.All(p => p.ParameterType == typeof(int))
                 select normalParams[0].Name).Single();
 
-            Assert.AreEqual(e.ParamName, name);
+            Assert.AreEqual(name, e.ParamName);
 
             return;
         }
@@ -93,7 +93,7 @@ public partial class Test_ParallelHelper
                     normalParams.All(p => p.ParameterType == typeof(int))
                 select normalParams[0].Name).Single();
 
-            Assert.AreEqual(e.ParamName, name);
+            Assert.AreEqual(name, e.ParamName);
 
             return;
         }
@@ -123,7 +123,7 @@ public partial class Test_ParallelHelper
                     normalParams.All(p => p.ParameterType == typeof(int))
                 select normalParams[2].Name).Single();
 
-            Assert.AreEqual(e.ParamName, name);
+            Assert.AreEqual(name, e.ParamName);
 
             return;
         }

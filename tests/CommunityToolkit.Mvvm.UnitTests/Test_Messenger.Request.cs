@@ -38,8 +38,8 @@ partial class Test_Messenger
 
         int result = messenger.Send<NumberRequestMessage>();
 
-        Assert.AreSame(test, recipient);
-        Assert.AreEqual(result, 42);
+        Assert.AreSame(recipient, test);
+        Assert.AreEqual(42, result);
     }
 
     [TestMethod]
@@ -104,7 +104,7 @@ partial class Test_Messenger
 
         int result = await messenger.Send<AsyncNumberRequestMessage>();
 
-        Assert.AreEqual(result, 42);
+        Assert.AreEqual(42, result);
 
         GC.KeepAlive(recipient);
     }
@@ -137,7 +137,7 @@ partial class Test_Messenger
 
         int result = await messenger.Send<AsyncNumberRequestMessage>();
 
-        Assert.AreEqual(result, 42);
+        Assert.AreEqual(42, result);
 
         GC.KeepAlive(recipient);
     }
@@ -199,7 +199,7 @@ partial class Test_Messenger
 
         IReadOnlyCollection<int>? results = messenger.Send<NumbersCollectionRequestMessage>().Responses;
 
-        Assert.AreEqual(results.Count, 0);
+        Assert.AreEqual(0, results.Count);
 
         GC.KeepAlive(recipient);
     }
@@ -246,11 +246,11 @@ partial class Test_Messenger
             responses.Add(response);
         }
 
-        Assert.AreSame(r1, recipient1);
-        Assert.AreSame(r2, recipient2);
-        Assert.AreSame(r3, recipient3);
+        Assert.AreSame(recipient1, r1);
+        Assert.AreSame(recipient2, r2);
+        Assert.AreSame(recipient3, r3);
 
-        CollectionAssert.AreEquivalent(responses, new[] { 1, 2, 3 });
+        CollectionAssert.AreEquivalent(new[] { 1, 2, 3 }, responses);
     }
 
     public class NumbersCollectionRequestMessage : CollectionRequestMessage<int>
@@ -273,7 +273,7 @@ partial class Test_Messenger
 
         IReadOnlyCollection<int>? results = await messenger.Send<AsyncNumbersCollectionRequestMessage>().GetResponsesAsync();
 
-        Assert.AreEqual(results.Count, 0);
+        Assert.AreEqual(0, results.Count);
 
         GC.KeepAlive(recipient);
     }
@@ -308,7 +308,7 @@ partial class Test_Messenger
 
         IReadOnlyCollection<int>? responses = await messenger.Send<AsyncNumbersCollectionRequestMessage>().GetResponsesAsync();
 
-        CollectionAssert.AreEquivalent(responses.ToArray(), new[] { 1, 2, 3, 3 });
+        CollectionAssert.AreEquivalent(new[] { 1, 2, 3, 3 }, responses.ToArray());
 
         GC.KeepAlive(recipient1);
         GC.KeepAlive(recipient2);
@@ -351,7 +351,7 @@ partial class Test_Messenger
             responses.Add(response);
         }
 
-        CollectionAssert.AreEquivalent(responses, new[] { 1, 2, 3, 3 });
+        CollectionAssert.AreEquivalent(new[] { 1, 2, 3, 3 }, responses);
 
         GC.KeepAlive(recipient1);
         GC.KeepAlive(recipient2);

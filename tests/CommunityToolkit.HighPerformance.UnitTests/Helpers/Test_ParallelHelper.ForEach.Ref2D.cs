@@ -37,13 +37,13 @@ public partial class Test_ParallelHelper
 
         Memory2D<int> memory = data.AsMemory2D(row, column, height, width);
 
-        Assert.AreEqual(memory.Length, height * width);
-        Assert.AreEqual(memory.Height, height);
-        Assert.AreEqual(memory.Width, width);
+        Assert.AreEqual(height * width, memory.Length);
+        Assert.AreEqual(height, memory.Height);
+        Assert.AreEqual(width, memory.Width);
 
         // Do the same computation in parallel, then compare the two arrays
         ParallelHelper.ForEach(memory, new Multiplier(397));
 
-        CollectionAssert.AreEqual(data, copy);
+        CollectionAssert.AreEqual(copy, data);
     }
 }

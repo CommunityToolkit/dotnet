@@ -32,19 +32,19 @@ public partial class Test_ObservableRecipientAttribute
         model.Name = "No";
 
         Assert.IsTrue(model.HasErrors);
-        Assert.AreEqual(args.Count, 2);
-        Assert.AreEqual(args[0].PropertyName, nameof(Person.Name));
-        Assert.AreEqual(args[1].PropertyName, nameof(INotifyDataErrorInfo.HasErrors));
+        Assert.AreEqual(2, args.Count);
+        Assert.AreEqual(nameof(Person.Name), args[0].PropertyName);
+        Assert.AreEqual(nameof(INotifyDataErrorInfo.HasErrors), args[1].PropertyName);
 
         model.Name = "Valid";
 
         Assert.IsFalse(model.HasErrors);
-        Assert.AreEqual(args.Count, 4);
-        Assert.AreEqual(args[2].PropertyName, nameof(Person.Name));
-        Assert.AreEqual(args[3].PropertyName, nameof(INotifyDataErrorInfo.HasErrors));
+        Assert.AreEqual(4, args.Count);
+        Assert.AreEqual(nameof(Person.Name), args[2].PropertyName);
+        Assert.AreEqual(nameof(INotifyDataErrorInfo.HasErrors), args[3].PropertyName);
 
         Assert.IsNotNull(typeof(Person).GetProperty("Messenger", BindingFlags.Instance | BindingFlags.NonPublic));
-        Assert.AreEqual(typeof(Person).GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic).Length, 0);
+        Assert.AreEqual(0, typeof(Person).GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic).Length);
     }
 
     [ObservableRecipient]
@@ -78,7 +78,7 @@ public partial class Test_ObservableRecipientAttribute
     {
         ConstructorInfo[]? ctors = typeof(AbstractPerson).GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic);
 
-        Assert.AreEqual(ctors.Length, 2);
+        Assert.AreEqual(2, ctors.Length);
         Assert.IsTrue(ctors.All(static ctor => ctor.IsFamily));
     }
 
@@ -92,7 +92,7 @@ public partial class Test_ObservableRecipientAttribute
     {
         ConstructorInfo[]? ctors = typeof(NonAbstractPerson).GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
-        Assert.AreEqual(ctors.Length, 2);
+        Assert.AreEqual(2, ctors.Length);
         Assert.IsTrue(ctors.All(static ctor => ctor.IsPublic));
     }
 

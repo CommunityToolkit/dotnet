@@ -61,13 +61,13 @@ public class Test_MemoryExtensions
         Memory<byte> m2 = new byte[13];
         Memory<float> mc2 = m2.Cast<byte, float>();
 
-        Assert.AreEqual(mc2.Length, 3);
+        Assert.AreEqual(3, mc2.Length);
 
         // 16 - 5 = 11 ---> 11 / sizeof(int) = 2
         Memory<byte> m3 = new byte[16].AsMemory(5);
         Memory<float> mc3 = m3.Cast<byte, float>();
 
-        Assert.AreEqual(mc3.Length, 2);
+        Assert.AreEqual(2, mc3.Length);
     }
 
     [TestMethod]
@@ -77,7 +77,7 @@ public class Test_MemoryExtensions
         Memory<byte> memoryOfBytes = new byte[128];
         Memory<float> memoryOfFloats = memoryOfBytes.Cast<byte, float>();
 
-        Assert.AreEqual(memoryOfFloats.Length, 128 / sizeof(float));
+        Assert.AreEqual(128 / sizeof(float), memoryOfFloats.Length);
 
         Span<byte> spanOfBytes = memoryOfBytes.Span;
         Span<float> spanOfFloats = memoryOfFloats.Span;
@@ -99,7 +99,7 @@ public class Test_MemoryExtensions
         Memory<float> memoryOfFloats = new float[128];
         Memory<byte> memoryOfBytes = memoryOfFloats.Cast<float, byte>();
 
-        Assert.AreEqual(memoryOfBytes.Length, 128 * sizeof(float));
+        Assert.AreEqual(128 * sizeof(float), memoryOfBytes.Length);
 
         Span<float> spanOfFloats = memoryOfFloats.Span;
         Span<byte> spanOfBytes = memoryOfBytes.Span;
@@ -119,7 +119,7 @@ public class Test_MemoryExtensions
         Memory<float> memoryOfFloats = new float[128];
         Memory<short> memoryOfShorts = memoryOfFloats.Cast<float, short>();
 
-        Assert.AreEqual(memoryOfShorts.Length, 128 * sizeof(float) / sizeof(short));
+        Assert.AreEqual(128 * sizeof(float) / sizeof(short), memoryOfShorts.Length);
 
         Span<float> spanOfFloats = memoryOfFloats.Span;
         Span<short> spanOfShorts = memoryOfShorts.Span;
@@ -148,9 +148,9 @@ public class Test_MemoryExtensions
         // Here we get the array from the final memory and check that it does exist and
         // the associated parameters match the ones we'd expect here (same length, offset of 0).
         Assert.IsTrue(MemoryMarshal.TryGetArray(memoryBack, out ArraySegment<byte> segment));
-        Assert.AreSame(segment.Array!, data);
-        Assert.AreEqual(segment.Offset, 0);
-        Assert.AreEqual(segment.Count, data.Length);
+        Assert.AreSame(data, segment.Array!);
+        Assert.AreEqual(0, segment.Offset);
+        Assert.AreEqual(data.Length, segment.Count);
 
         Assert.IsTrue(memoryOfBytes.Equals(memoryBack));
 
@@ -174,12 +174,12 @@ public class Test_MemoryExtensions
         Memory<byte> m2 = new byte[20].AsMemory().Slice(4, 13);
         Memory<float> mc2 = m2.Cast<byte, float>();
 
-        Assert.AreEqual(mc2.Length, 3);
+        Assert.AreEqual(3, mc2.Length);
 
         Memory<byte> m3 = new byte[16].AsMemory().Slice(5);
         Memory<float> mc3 = m3.Cast<byte, float>();
 
-        Assert.AreEqual(mc3.Length, 2);
+        Assert.AreEqual(2, mc3.Length);
     }
 
     [TestMethod]
@@ -190,7 +190,7 @@ public class Test_MemoryExtensions
         Memory<byte> memoryOfBytes = new byte[512].AsMemory().Slice(128, 128);
         Memory<float> memoryOfFloats = memoryOfBytes.Cast<byte, float>();
 
-        Assert.AreEqual(memoryOfFloats.Length, 128 / sizeof(float));
+        Assert.AreEqual(128 / sizeof(float), memoryOfFloats.Length);
 
         Span<byte> spanOfBytes = memoryOfBytes.Span;
         Span<float> spanOfFloats = memoryOfFloats.Span;
@@ -208,7 +208,7 @@ public class Test_MemoryExtensions
         Memory<float> memoryOfFloats = new float[512].AsMemory().Slice(128, 128);
         Memory<byte> memoryOfBytes = memoryOfFloats.Cast<float, byte>();
 
-        Assert.AreEqual(memoryOfBytes.Length, 128 * sizeof(float));
+        Assert.AreEqual(128 * sizeof(float), memoryOfBytes.Length);
 
         Span<float> spanOfFloats = memoryOfFloats.Span;
         Span<byte> spanOfBytes = memoryOfBytes.Span;
@@ -227,7 +227,7 @@ public class Test_MemoryExtensions
         Memory<float> memoryOfFloats = new float[512].AsMemory().Slice(128, 128);
         Memory<short> memoryOfShorts = memoryOfFloats.Cast<float, short>();
 
-        Assert.AreEqual(memoryOfShorts.Length, 128 * sizeof(float) / sizeof(short));
+        Assert.AreEqual(128 * sizeof(float) / sizeof(short), memoryOfShorts.Length);
 
         Span<float> spanOfFloats = memoryOfFloats.Span;
         Span<short> spanOfShorts = memoryOfShorts.Span;
@@ -251,9 +251,9 @@ public class Test_MemoryExtensions
 
         // Here we now also have to validate the starting offset from the extracted array
         Assert.IsTrue(MemoryMarshal.TryGetArray(memoryBack, out ArraySegment<byte> segment));
-        Assert.AreSame(segment.Array!, data);
-        Assert.AreEqual(segment.Offset, 128);
-        Assert.AreEqual(segment.Count, 128);
+        Assert.AreSame(data, segment.Array!);
+        Assert.AreEqual(128, segment.Offset);
+        Assert.AreEqual(128, segment.Count);
 
         Assert.IsTrue(memoryOfBytes.Equals(memoryBack));
 
@@ -273,7 +273,7 @@ public class Test_MemoryExtensions
         Memory<byte> memoryOfBytes = new ArrayMemoryManager<byte>(128);
         Memory<float> memoryOfFloats = memoryOfBytes.Cast<byte, float>();
 
-        Assert.AreEqual(memoryOfFloats.Length, 128 / sizeof(float));
+        Assert.AreEqual(128 / sizeof(float), memoryOfFloats.Length);
 
         Span<byte> spanOfBytes = memoryOfBytes.Span;
         Span<float> spanOfFloats = memoryOfFloats.Span;
@@ -291,7 +291,7 @@ public class Test_MemoryExtensions
         Memory<float> memoryOfFloats = new ArrayMemoryManager<float>(128);
         Memory<byte> memoryOfBytes = memoryOfFloats.Cast<float, byte>();
 
-        Assert.AreEqual(memoryOfBytes.Length, 128 * sizeof(float));
+        Assert.AreEqual(128 * sizeof(float), memoryOfBytes.Length);
 
         Span<float> spanOfFloats = memoryOfFloats.Span;
         Span<byte> spanOfBytes = memoryOfBytes.Span;
@@ -309,7 +309,7 @@ public class Test_MemoryExtensions
         Memory<float> memoryOfFloats = new ArrayMemoryManager<float>(128);
         Memory<short> memoryOfShorts = memoryOfFloats.Cast<float, short>();
 
-        Assert.AreEqual(memoryOfShorts.Length, 128 * sizeof(float) / sizeof(short));
+        Assert.AreEqual(128 * sizeof(float) / sizeof(short), memoryOfShorts.Length);
 
         Span<float> spanOfFloats = memoryOfFloats.Span;
         Span<short> spanOfShorts = memoryOfShorts.Span;
@@ -334,9 +334,9 @@ public class Test_MemoryExtensions
         // Here we expect to get back the original memory manager, due to the same optimization we
         // checked for when using an array. We need to check they're the same, and the other parameters.
         Assert.IsTrue(MemoryMarshal.TryGetMemoryManager<byte, ArrayMemoryManager<byte>>(memoryBack, out ArrayMemoryManager<byte>? manager, out int start, out int length));
-        Assert.AreSame(manager!, data);
-        Assert.AreEqual(start, 0);
-        Assert.AreEqual(length, 128);
+        Assert.AreSame(data, manager!);
+        Assert.AreEqual(0, start);
+        Assert.AreEqual(128, length);
 
         Assert.IsTrue(memoryOfBytes.Equals(memoryBack));
 
@@ -353,7 +353,7 @@ public class Test_MemoryExtensions
         Memory<byte> memoryOfBytes = new ArrayMemoryManager<byte>(512).Memory.Slice(128, 128);
         Memory<float> memoryOfFloats = memoryOfBytes.Cast<byte, float>();
 
-        Assert.AreEqual(memoryOfFloats.Length, 128 / sizeof(float));
+        Assert.AreEqual(128 / sizeof(float), memoryOfFloats.Length);
 
         Span<byte> spanOfBytes = memoryOfBytes.Span;
         Span<float> spanOfFloats = memoryOfFloats.Span;
@@ -371,7 +371,7 @@ public class Test_MemoryExtensions
         Memory<float> memoryOfFloats = new ArrayMemoryManager<float>(512).Memory.Slice(128, 128);
         Memory<byte> memoryOfBytes = memoryOfFloats.Cast<float, byte>();
 
-        Assert.AreEqual(memoryOfBytes.Length, 128 * sizeof(float));
+        Assert.AreEqual(128 * sizeof(float), memoryOfBytes.Length);
 
         Span<float> spanOfFloats = memoryOfFloats.Span;
         Span<byte> spanOfBytes = memoryOfBytes.Span;
@@ -389,7 +389,7 @@ public class Test_MemoryExtensions
         Memory<float> memoryOfFloats = new ArrayMemoryManager<float>(512).Memory.Slice(128, 128);
         Memory<short> memoryOfShorts = memoryOfFloats.Cast<float, short>();
 
-        Assert.AreEqual(memoryOfShorts.Length, 128 * sizeof(float) / sizeof(short));
+        Assert.AreEqual(128 * sizeof(float) / sizeof(short), memoryOfShorts.Length);
 
         Span<float> spanOfFloats = memoryOfFloats.Span;
         Span<short> spanOfShorts = memoryOfShorts.Span;
@@ -413,9 +413,9 @@ public class Test_MemoryExtensions
 
         // Here we also need to validate that the offset was maintained
         Assert.IsTrue(MemoryMarshal.TryGetMemoryManager<byte, ArrayMemoryManager<byte>>(memoryBack, out ArrayMemoryManager<byte>? manager, out int start, out int length));
-        Assert.AreSame(manager!, data);
-        Assert.AreEqual(start, 128);
-        Assert.AreEqual(length, 128);
+        Assert.AreSame(data, manager!);
+        Assert.AreEqual(128, start);
+        Assert.AreEqual(128, length);
 
         Assert.IsTrue(memoryOfBytes.Equals(memoryBack));
 
@@ -494,9 +494,9 @@ public class Test_MemoryExtensions
 
         // Get the original string back (to validate the optimization too) and check the params
         Assert.IsTrue(MemoryMarshal.TryGetString(memoryOfChars, out string? text, out int start, out int length));
-        Assert.AreSame(text!, data);
-        Assert.AreEqual(start, 0);
-        Assert.AreEqual(length, data.Length);
+        Assert.AreSame(data, text!);
+        Assert.AreEqual(0, start);
+        Assert.AreEqual(data.Length, length);
 
         Assert.IsTrue(memoryOfChars.Equals(memoryBack));
 
@@ -553,7 +553,7 @@ public class Test_MemoryExtensions
         Stream stream = memory.AsStream();
 
         Assert.IsNotNull(stream);
-        Assert.AreEqual(stream.Length, memory.Length);
+        Assert.AreEqual(memory.Length, stream.Length);
         Assert.IsTrue(stream.CanWrite);
     }
 
@@ -565,7 +565,7 @@ public class Test_MemoryExtensions
         Stream stream = memory.AsStream();
 
         Assert.IsNotNull(stream);
-        Assert.AreEqual(stream.Length, memory.Length);
+        Assert.AreEqual(memory.Length, stream.Length);
         Assert.IsTrue(stream.CanWrite);
     }
 

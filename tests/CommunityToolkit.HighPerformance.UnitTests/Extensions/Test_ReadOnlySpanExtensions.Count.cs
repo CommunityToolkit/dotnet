@@ -89,7 +89,7 @@ public partial class Test_ReadOnlySpanExtensions
             int result = data.Count(value);
             int expected = CountWithForeach(data, value);
 
-            Assert.AreEqual(result, expected, $"Failed {typeof(Int)} test with count {count}: got {result} instead of {expected}");
+            Assert.AreEqual(expected, result, $"Failed {typeof(Int)} test with count {count}: got {result} instead of {expected}");
         }
     }
 
@@ -181,7 +181,7 @@ public partial class Test_ReadOnlySpanExtensions
             int result = data.GetSpan().Count(value);
             int expected = CountWithForeach(data.GetSpan(), value);
 
-            Assert.AreEqual(result, expected, $"Failed {typeof(T)} test with count {count}: got {result} instead of {expected}");
+            Assert.AreEqual(expected, result, $"Failed {typeof(T)} test with count {count}: got {result} instead of {expected}");
         }
     }
 

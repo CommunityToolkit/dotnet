@@ -32,9 +32,9 @@ public partial class Test_ParallelHelper
         // Create a memory wrapping the random array with the given parameters
         ReadOnlyMemory2D<int> memory = data.AsMemory2D(row, column, height, width);
 
-        Assert.AreEqual(memory.Length, height * width);
-        Assert.AreEqual(memory.Height, height);
-        Assert.AreEqual(memory.Width, width);
+        Assert.AreEqual(height * width, memory.Length);
+        Assert.AreEqual(height, memory.Height);
+        Assert.AreEqual(width, memory.Width);
 
         int sum = 0;
 
@@ -50,7 +50,7 @@ public partial class Test_ParallelHelper
             expected += n;
         }
 
-        Assert.AreEqual(sum, expected, $"The sum doesn't match, was {sum} instead of {expected}");
+        Assert.AreEqual(expected, sum, $"The sum doesn't match, was {sum} instead of {expected}");
     }
 
     /// <summary>

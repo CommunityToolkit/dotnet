@@ -41,8 +41,8 @@ public class Test_AsyncRelayCommand
 
         command.NotifyCanExecuteChanged();
 
-        Assert.AreSame(args.Item1, command);
-        Assert.AreSame(args.Item2, EventArgs.Empty);
+        Assert.AreSame(command, args.Item1);
+        Assert.AreSame(EventArgs.Empty, args.Item2);
 
         Assert.IsNull(command.ExecutionTask);
         Assert.IsFalse(command.IsRunning);
@@ -50,20 +50,20 @@ public class Test_AsyncRelayCommand
         Task task = command.ExecuteAsync(null);
 
         Assert.IsNotNull(command.ExecutionTask);
-        Assert.AreSame(command.ExecutionTask, task);
+        Assert.AreSame(task, command.ExecutionTask);
         Assert.IsTrue(command.IsRunning);
 
         await task;
 
         Assert.IsFalse(command.IsRunning);
 
-        Assert.AreEqual(ticks, 1);
+        Assert.AreEqual(1, ticks);
 
         command.Execute(new object());
 
         await command.ExecutionTask!;
 
-        Assert.AreEqual(ticks, 2);
+        Assert.AreEqual(2, ticks);
     }
 
     [TestMethod]
@@ -86,11 +86,11 @@ public class Test_AsyncRelayCommand
 
         command.Execute(null);
 
-        Assert.AreEqual(ticks, 1);
+        Assert.AreEqual(1, ticks);
 
         command.Execute(new object());
 
-        Assert.AreEqual(ticks, 2);
+        Assert.AreEqual(2, ticks);
     }
 
     [TestMethod]
@@ -115,11 +115,11 @@ public class Test_AsyncRelayCommand
 
         // It is the caller's responsibility to ensure that CanExecute is true
         // before calling Execute. This check verifies the logic is still called.
-        Assert.AreEqual(ticks, 1);
+        Assert.AreEqual(1, ticks);
 
         command.Execute(new object());
 
-        Assert.AreEqual(ticks, 2);
+        Assert.AreEqual(2, ticks);
     }
 
     [TestMethod]
@@ -154,19 +154,19 @@ public class Test_AsyncRelayCommand
         Assert.IsFalse(command.IsCancellationRequested);
 
         // Validate the various event args for all the properties that were updated when executing the command
-        Assert.AreEqual(args.Count, 4);
-        Assert.AreEqual(args[0].PropertyName, nameof(IAsyncRelayCommand.ExecutionTask));
-        Assert.AreEqual(args[1].PropertyName, nameof(IAsyncRelayCommand.IsRunning));
-        Assert.AreEqual(args[2].PropertyName, nameof(IAsyncRelayCommand.CanBeCanceled));
-        Assert.AreEqual(args[3].PropertyName, nameof(IAsyncRelayCommand.IsCancellationRequested));
+        Assert.AreEqual(4, args.Count);
+        Assert.AreEqual(nameof(IAsyncRelayCommand.ExecutionTask), args[0].PropertyName);
+        Assert.AreEqual(nameof(IAsyncRelayCommand.IsRunning), args[1].PropertyName);
+        Assert.AreEqual(nameof(IAsyncRelayCommand.CanBeCanceled), args[2].PropertyName);
+        Assert.AreEqual(nameof(IAsyncRelayCommand.IsCancellationRequested), args[3].PropertyName);
 
         command.Cancel();
 
         // Verify that these two properties raised notifications correctly when canceling the command too.
         // We need to ensure all command properties support notifications so that users can bind to them.
-        Assert.AreEqual(args.Count, 6);
-        Assert.AreEqual(args[4].PropertyName, nameof(IAsyncRelayCommand.CanBeCanceled));
-        Assert.AreEqual(args[5].PropertyName, nameof(IAsyncRelayCommand.IsCancellationRequested));
+        Assert.AreEqual(6, args.Count);
+        Assert.AreEqual(nameof(IAsyncRelayCommand.CanBeCanceled), args[4].PropertyName);
+        Assert.AreEqual(nameof(IAsyncRelayCommand.IsCancellationRequested), args[5].PropertyName);
 
         Assert.IsTrue(command.IsCancellationRequested);
 
@@ -205,8 +205,8 @@ public class Test_AsyncRelayCommand
 
         command.NotifyCanExecuteChanged();
 
-        Assert.AreSame(args.Item1, command);
-        Assert.AreSame(args.Item2, EventArgs.Empty);
+        Assert.AreSame(command, args.Item1);
+        Assert.AreSame(EventArgs.Empty, args.Item2);
 
         args = default;
 
@@ -216,8 +216,8 @@ public class Test_AsyncRelayCommand
         Task task = command.ExecuteAsync(null);
 
         Assert.IsNotNull(command.ExecutionTask);
-        Assert.AreSame(command.ExecutionTask, task);
-        Assert.AreSame(command.ExecutionTask, cancellationTokenSources[0].Task);
+        Assert.AreSame(task, command.ExecutionTask);
+        Assert.AreSame(cancellationTokenSources[0].Task, command.ExecutionTask);
         Assert.IsTrue(command.IsRunning);
 
         // The command can still be executed now
@@ -230,8 +230,8 @@ public class Test_AsyncRelayCommand
         Task newTask = command.ExecuteAsync(null);
 
         // A new task was returned
-        Assert.AreSame(command.ExecutionTask, newTask);
-        Assert.AreSame(command.ExecutionTask, cancellationTokenSources[1].Task);
+        Assert.AreSame(newTask, command.ExecutionTask);
+        Assert.AreSame(cancellationTokenSources[1].Task, command.ExecutionTask);
 
         cancellationTokenSources[0].SetResult(null);
         cancellationTokenSources[1].SetResult(null);
@@ -279,8 +279,8 @@ public class Test_AsyncRelayCommand
 
         command.NotifyCanExecuteChanged();
 
-        Assert.AreSame(args.Item1, command);
-        Assert.AreSame(args.Item2, EventArgs.Empty);
+        Assert.AreSame(command, args.Item1);
+        Assert.AreSame(EventArgs.Empty, args.Item2);
 
         args = default;
 
@@ -290,13 +290,13 @@ public class Test_AsyncRelayCommand
         Task task = command.ExecuteAsync(null);
 
         // CanExecute is raised upon execution
-        Assert.AreSame(args.Item1, command);
-        Assert.AreSame(args.Item2, EventArgs.Empty);
+        Assert.AreSame(command, args.Item1);
+        Assert.AreSame(EventArgs.Empty, args.Item2);
 
         args = default;
 
         Assert.IsNotNull(command.ExecutionTask);
-        Assert.AreSame(command.ExecutionTask, task);
+        Assert.AreSame(task, command.ExecutionTask);
         Assert.IsTrue(command.IsRunning);
 
         // The command can't be executed now, as there's a pending operation
@@ -317,8 +317,8 @@ public class Test_AsyncRelayCommand
         Assert.IsFalse(command.IsRunning);
 
         // CanExecute is raised automatically when command execution completes, if concurrent executions are disabled
-        Assert.AreSame(args.Item1, command);
-        Assert.AreSame(args.Item2, EventArgs.Empty);
+        Assert.AreSame(command, args.Item1);
+        Assert.AreSame(EventArgs.Empty, args.Item2);
     }
 
     [TestMethod]

@@ -12,12 +12,12 @@ public class Test_ValueTypeExtensions
     [TestMethod]
     public void Test_ValueTypeExtensions_ToHexString()
     {
-        Assert.AreEqual(((byte)0).ToHexString(), "0x00");
-        Assert.AreEqual(((byte)127).ToHexString(), "0x7F");
-        Assert.AreEqual(((byte)255).ToHexString(), "0xFF");
-        Assert.AreEqual(((ushort)6458).ToHexString(), "0x193A");
-        Assert.AreEqual(6458.ToHexString(), "0x0000193A");
-        Assert.AreEqual((-1).ToHexString(), "0xFFFFFFFF");
-        Assert.AreEqual(true.ToHexString(), "0x01");
+        Assert.AreEqual("0x00", ((byte)0).ToHexString());
+        Assert.AreEqual("0x7F", ((byte)127).ToHexString());
+        Assert.AreEqual("0xFF", ((byte)255).ToHexString());
+        Assert.AreEqual("0x193A", ((ushort)6458).ToHexString());
+        Assert.AreEqual("0x0000193A", 6458.ToHexString());
+        Assert.AreEqual("0xFFFFFFFF", (-1).ToHexString());
+        Assert.AreEqual("0x01", true.ToHexString());
     }
 }

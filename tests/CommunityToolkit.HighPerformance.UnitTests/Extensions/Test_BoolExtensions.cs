@@ -31,7 +31,7 @@ public class Test_BoolExtensions
     [DataRow(false, 0)]
     public void Test_BoolExtensions_ToBitwiseMask32(bool value, int result)
     {
-        Assert.AreEqual(value.ToBitwiseMask32(), result);
+        Assert.AreEqual(result, value.ToBitwiseMask32());
     }
 
     [TestMethod]
@@ -39,6 +39,6 @@ public class Test_BoolExtensions
     [DataRow(false, 0)]
     public void Test_BoolExtensions_ToBitwiseMask64(bool value, long result)
     {
-        Assert.AreEqual(value.ToBitwiseMask64(), result);
+        Assert.AreEqual(result, value.ToBitwiseMask64());
     }
 }

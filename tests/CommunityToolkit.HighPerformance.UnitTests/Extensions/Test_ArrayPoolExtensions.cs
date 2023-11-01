@@ -41,7 +41,7 @@ public class Test_ArrayPoolExtensions
 
         ArrayPool<int>.Shared.Resize(ref array, array.Length);
 
-        Assert.AreSame(array, backup);
+        Assert.AreSame(backup, array);
     }
 
     [TestMethod]
@@ -54,7 +54,7 @@ public class Test_ArrayPoolExtensions
 
         ArrayPool<int>.Shared.Resize(ref array, 32);
 
-        Assert.AreNotSame(array, backup);
+        Assert.AreNotSame(backup, array);
         Assert.IsTrue(array.Length >= 32);
         Assert.IsTrue(array.AsSpan(0, 16).ToArray().All(i => i == 7));
     }
@@ -69,7 +69,7 @@ public class Test_ArrayPoolExtensions
 
         ArrayPool<int>.Shared.Resize(ref array, 16);
 
-        Assert.AreNotSame(array, backup);
+        Assert.AreNotSame(backup, array);
         Assert.IsTrue(array.Length >= 16);
         Assert.IsTrue(array.AsSpan(0, 16).ToArray().All(i => i == 7));
     }
@@ -84,7 +84,7 @@ public class Test_ArrayPoolExtensions
 
         ArrayPool<int>.Shared.Resize(ref array, 0, true);
 
-        Assert.AreNotSame(array, backup);
+        Assert.AreNotSame(backup, array);
         Assert.IsTrue(backup.AsSpan(0, 16).ToArray().All(i => i == 0));
     }
 

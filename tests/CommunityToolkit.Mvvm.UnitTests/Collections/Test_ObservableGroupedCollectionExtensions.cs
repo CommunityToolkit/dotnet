@@ -25,7 +25,7 @@ public class Test_ObservableGroupedCollectionExtensions
 
         ObservableGroup<string, int> result = groupedCollection.FirstGroupByKey("B");
 
-        Assert.AreSame(result, target);
+        Assert.AreSame(target, result);
     }
 
     [TestMethod]
@@ -52,7 +52,7 @@ public class Test_ObservableGroupedCollectionExtensions
 
         ObservableGroup<string, int>? result = groupedCollection.FirstGroupByKeyOrDefault("B");
 
-        Assert.AreSame(result, target);
+        Assert.AreSame(target, result);
     }
 
     [TestMethod]
@@ -78,7 +78,7 @@ public class Test_ObservableGroupedCollectionExtensions
 
         int result = groupedCollection.FirstGroupByKey("B")[2];
 
-        Assert.AreEqual(result, 12);
+        Assert.AreEqual(12, result);
     }
 
     [TestMethod]
@@ -107,7 +107,7 @@ public class Test_ObservableGroupedCollectionExtensions
 
         int result = groupedCollection.FirstGroupByKey("B")[2];
 
-        Assert.AreEqual(result, 12);
+        Assert.AreEqual(12, result);
     }
 
     [TestMethod]
@@ -118,8 +118,8 @@ public class Test_ObservableGroupedCollectionExtensions
         ObservableGroup<string, int> addedGroup = groupedCollection.AddGroup("new key", new[] { 23 });
 
         Assert.IsNotNull(addedGroup);
-        Assert.AreEqual(addedGroup.Key, "new key");
-        CollectionAssert.AreEqual(addedGroup, new[] { 23 });
+        Assert.AreEqual("new key", addedGroup.Key);
+        CollectionAssert.AreEqual(new[] { 23 }, addedGroup);
         CollectionAssert.AreEqual(groupedCollection, new[] { addedGroup });
     }
 
@@ -131,8 +131,8 @@ public class Test_ObservableGroupedCollectionExtensions
         ObservableGroup<string, int> addedGroup = groupedCollection.AddGroup("new key", new[] { 23, 10, 42 });
 
         Assert.IsNotNull(addedGroup);
-        Assert.AreEqual(addedGroup.Key, "new key");
-        CollectionAssert.AreEqual(addedGroup, new[] { 23, 10, 42 });
+        Assert.AreEqual("new key", addedGroup.Key);
+        CollectionAssert.AreEqual(new[] { 23, 10, 42 }, addedGroup);
         CollectionAssert.AreEqual(groupedCollection, new[] { addedGroup });
     }
 
@@ -144,8 +144,8 @@ public class Test_ObservableGroupedCollectionExtensions
         ObservableGroup<string, int> addedGroup = groupedCollection.AddGroup("new key", new[] { 23, 10, 42 });
 
         Assert.IsNotNull(addedGroup);
-        Assert.AreEqual(addedGroup.Key, "new key");
-        CollectionAssert.AreEqual(addedGroup, new[] { 23, 10, 42 });
+        Assert.AreEqual("new key", addedGroup.Key);
+        CollectionAssert.AreEqual(new[] { 23, 10, 42 }, addedGroup);
         CollectionAssert.AreEqual(groupedCollection, new[] { addedGroup });
     }
 
@@ -189,8 +189,8 @@ public class Test_ObservableGroupedCollectionExtensions
         ObservableGroup<string, int> addedGroup = groupedCollection.AddItem("new key", 23);
 
         Assert.IsNotNull(addedGroup);
-        Assert.AreEqual(addedGroup.Key, "new key");
-        CollectionAssert.AreEqual(addedGroup, new[] { 23 });
+        Assert.AreEqual("new key", addedGroup.Key);
+        CollectionAssert.AreEqual(new[] { 23 }, addedGroup);
         CollectionAssert.AreEqual(groupedCollection, new[] { addedGroup });
     }
 
@@ -207,20 +207,20 @@ public class Test_ObservableGroupedCollectionExtensions
 
         ObservableGroup<string, int> addedGroup = groupedCollection.AddItem("B", 23);
 
-        Assert.AreSame(addedGroup, targetGroup);
-        Assert.AreEqual(addedGroup.Key, "B");
-        CollectionAssert.AreEqual(addedGroup, new[] { 4, 5, 6, 23 });
+        Assert.AreSame(targetGroup, addedGroup);
+        Assert.AreEqual("B", addedGroup.Key);
+        CollectionAssert.AreEqual(new[] { 4, 5, 6, 23 }, addedGroup);
 
-        Assert.AreEqual(groupedCollection.Count, 3);
+        Assert.AreEqual(3, groupedCollection.Count);
 
-        Assert.AreEqual(groupedCollection[0].Key, "A");
-        CollectionAssert.AreEqual(groupedCollection[0], new[] { 1, 2, 3 });
+        Assert.AreEqual("A", groupedCollection[0].Key);
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, groupedCollection[0]);
 
-        Assert.AreEqual(groupedCollection[1].Key, "B");
-        CollectionAssert.AreEqual(groupedCollection[1], new[] { 4, 5, 6, 23 });
+        Assert.AreEqual("B", groupedCollection[1].Key);
+        CollectionAssert.AreEqual(new[] { 4, 5, 6, 23 }, groupedCollection[1]);
 
-        Assert.AreEqual(groupedCollection[2].Key, "C");
-        CollectionAssert.AreEqual(groupedCollection[2], new[] { 7, 8 });
+        Assert.AreEqual("C", groupedCollection[2].Key);
+        CollectionAssert.AreEqual(new[] { 7, 8 }, groupedCollection[2]);
     }
 
     [TestMethod]
@@ -237,23 +237,23 @@ public class Test_ObservableGroupedCollectionExtensions
 
         ObservableGroup<string, int> addedGroup = groupedCollection.AddItem("B", 23);
 
-        Assert.AreSame(addedGroup, targetGroup);
-        Assert.AreEqual(addedGroup.Key, "B");
-        CollectionAssert.AreEqual(addedGroup, new[] { 4, 5, 6, 23 });
+        Assert.AreSame(targetGroup, addedGroup);
+        Assert.AreEqual("B", addedGroup.Key);
+        CollectionAssert.AreEqual(new[] { 4, 5, 6, 23 }, addedGroup);
 
-        Assert.AreEqual(groupedCollection.Count, 4);
+        Assert.AreEqual(4, groupedCollection.Count);
 
-        Assert.AreEqual(groupedCollection[0].Key, "A");
-        CollectionAssert.AreEqual(groupedCollection[0], new[] { 1, 2, 3 });
+        Assert.AreEqual("A", groupedCollection[0].Key);
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, groupedCollection[0]);
 
-        Assert.AreEqual(groupedCollection[1].Key, "B");
-        CollectionAssert.AreEqual(groupedCollection[1], new[] { 4, 5, 6, 23 });
+        Assert.AreEqual("B", groupedCollection[1].Key);
+        CollectionAssert.AreEqual(new[] { 4, 5, 6, 23 }, groupedCollection[1]);
 
-        Assert.AreEqual(groupedCollection[2].Key, "B");
-        CollectionAssert.AreEqual(groupedCollection[2], new[] { 7, 8, 9 });
+        Assert.AreEqual("B", groupedCollection[2].Key);
+        CollectionAssert.AreEqual(new[] { 7, 8, 9 }, groupedCollection[2]);
 
-        Assert.AreEqual(groupedCollection[3].Key, "C");
-        CollectionAssert.AreEqual(groupedCollection[3], new[] { 10, 11 });
+        Assert.AreEqual("C", groupedCollection[3].Key);
+        CollectionAssert.AreEqual(new[] { 10, 11 }, groupedCollection[3]);
     }
 
     [TestMethod]
@@ -325,9 +325,9 @@ public class Test_ObservableGroupedCollectionExtensions
 
         groupedCollection.RemoveGroup("I do not exist");
 
-        Assert.AreEqual(groupedCollection.Count, 1);
-        Assert.AreEqual(groupedCollection[0].Key, "A");
-        CollectionAssert.AreEqual(groupedCollection[0], new[] { 1, 2, 3 });
+        Assert.AreEqual(1, groupedCollection.Count);
+        Assert.AreEqual("A", groupedCollection[0].Key);
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, groupedCollection[0]);
     }
 
     [TestMethod]
@@ -340,9 +340,9 @@ public class Test_ObservableGroupedCollectionExtensions
 
         groupedCollection.RemoveGroup("B");
 
-        Assert.AreEqual(groupedCollection.Count, 1);
-        Assert.AreEqual(groupedCollection[0].Key, "A");
-        CollectionAssert.AreEqual(groupedCollection[0], new[] { 1, 2, 3 });
+        Assert.AreEqual(1, groupedCollection.Count);
+        Assert.AreEqual("A", groupedCollection[0].Key);
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, groupedCollection[0]);
     }
 
     [TestMethod]
@@ -356,13 +356,13 @@ public class Test_ObservableGroupedCollectionExtensions
 
         groupedCollection.RemoveGroup("B");
 
-        Assert.AreEqual(groupedCollection.Count, 2);
+        Assert.AreEqual(2, groupedCollection.Count);
 
-        Assert.AreEqual(groupedCollection[0].Key, "A");
-        CollectionAssert.AreEqual(groupedCollection[0], new[] { 1, 2, 3 });
+        Assert.AreEqual("A", groupedCollection[0].Key);
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, groupedCollection[0]);
 
-        Assert.AreEqual(groupedCollection[1].Key, "B");
-        CollectionAssert.AreEqual(groupedCollection[1], new[] { 7, 8 });
+        Assert.AreEqual("B", groupedCollection[1].Key);
+        CollectionAssert.AreEqual(new[] { 7, 8 }, groupedCollection[1]);
     }
 
     [TestMethod]
@@ -377,13 +377,13 @@ public class Test_ObservableGroupedCollectionExtensions
 
         groupedCollection.RemoveItem("I do not exist", 8, removeGroupIfEmpty);
 
-        Assert.AreEqual(groupedCollection.Count, 2);
+        Assert.AreEqual(2, groupedCollection.Count);
 
-        Assert.AreEqual(groupedCollection[0].Key, "A");
-        CollectionAssert.AreEqual(groupedCollection[0], new[] { 1, 2, 3 });
+        Assert.AreEqual("A", groupedCollection[0].Key);
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, groupedCollection[0]);
 
-        Assert.AreEqual(groupedCollection[1].Key, "B");
-        CollectionAssert.AreEqual(groupedCollection[1], new[] { 4, 5, 6 });
+        Assert.AreEqual("B", groupedCollection[1].Key);
+        CollectionAssert.AreEqual(new[] { 4, 5, 6 }, groupedCollection[1]);
     }
 
     [TestMethod]
@@ -398,13 +398,13 @@ public class Test_ObservableGroupedCollectionExtensions
 
         groupedCollection.RemoveItem("B", 8, removeGroupIfEmpty);
 
-        Assert.AreEqual(groupedCollection.Count, 2);
+        Assert.AreEqual(2, groupedCollection.Count);
 
-        Assert.AreEqual(groupedCollection[0].Key, "A");
-        CollectionAssert.AreEqual(groupedCollection[0], new[] { 1, 2, 3 });
+        Assert.AreEqual("A", groupedCollection[0].Key);
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, groupedCollection[0]);
 
-        Assert.AreEqual(groupedCollection[1].Key, "B");
-        CollectionAssert.AreEqual(groupedCollection[1], new[] { 4, 5, 6 });
+        Assert.AreEqual("B", groupedCollection[1].Key);
+        CollectionAssert.AreEqual(new[] { 4, 5, 6 }, groupedCollection[1]);
     }
 
     [TestMethod]
@@ -419,13 +419,13 @@ public class Test_ObservableGroupedCollectionExtensions
 
         groupedCollection.RemoveItem("B", 5, removeGroupIfEmpty);
 
-        Assert.AreEqual(groupedCollection.Count, 2);
+        Assert.AreEqual(2, groupedCollection.Count);
 
-        Assert.AreEqual(groupedCollection[0].Key, "A");
-        CollectionAssert.AreEqual(groupedCollection[0], new[] { 1, 2, 3 });
+        Assert.AreEqual("A", groupedCollection[0].Key);
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, groupedCollection[0]);
 
-        Assert.AreEqual(groupedCollection[1].Key, "B");
-        CollectionAssert.AreEqual(groupedCollection[1], new[] { 4, 6 });
+        Assert.AreEqual("B", groupedCollection[1].Key);
+        CollectionAssert.AreEqual(new[] { 4, 6 }, groupedCollection[1]);
     }
 
     [TestMethod]
@@ -440,15 +440,15 @@ public class Test_ObservableGroupedCollectionExtensions
 
         groupedCollection.RemoveItem("B", 4, removeGroupIfEmpty);
 
-        Assert.AreEqual(groupedCollection.Count, expectGroupRemoved ? 1 : 2);
+        Assert.AreEqual(expectGroupRemoved ? 1 : 2, groupedCollection.Count);
 
-        Assert.AreEqual(groupedCollection[0].Key, "A");
-        CollectionAssert.AreEqual(groupedCollection[0], new[] { 1, 2, 3 });
+        Assert.AreEqual("A", groupedCollection[0].Key);
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, groupedCollection[0]);
 
         if (!expectGroupRemoved)
         {
-            Assert.AreEqual(groupedCollection[1].Key, "B");
-            Assert.AreEqual(groupedCollection[1].Count, 0);
+            Assert.AreEqual("B", groupedCollection[1].Key);
+            Assert.AreEqual(0, groupedCollection[1].Count);
         }
     }
 }

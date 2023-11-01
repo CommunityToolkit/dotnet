@@ -49,7 +49,7 @@ public class Test_ObservableRecipient
         IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
         SomeRecipient<int>? viewmodel = new(messenger);
 
-        Assert.AreSame(viewmodel.CurrentMessenger, messenger);
+        Assert.AreSame(messenger, viewmodel.CurrentMessenger);
     }
 
     [TestMethod]
@@ -57,7 +57,7 @@ public class Test_ObservableRecipient
     {
         SomeRecipient<int>? viewmodel = new();
 
-        Assert.AreSame(viewmodel.CurrentMessenger, WeakReferenceMessenger.Default);
+        Assert.AreSame(WeakReferenceMessenger.Default, viewmodel.CurrentMessenger);
     }
 
     [TestMethod]
@@ -68,7 +68,7 @@ public class Test_ObservableRecipient
         IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
         SomeRecipient<int>? viewmodel = new(messenger);
 
-        Assert.AreSame(viewmodel.CurrentMessenger, messenger);
+        Assert.AreSame(messenger, viewmodel.CurrentMessenger);
     }
 
     [TestMethod]
@@ -86,10 +86,10 @@ public class Test_ObservableRecipient
         viewmodel.Data = 42;
 
         Assert.IsNotNull(message);
-        Assert.AreSame(message.Sender, viewmodel);
-        Assert.AreEqual(message.OldValue, 0);
-        Assert.AreEqual(message.NewValue, 42);
-        Assert.AreEqual(message.PropertyName, nameof(SomeRecipient<int>.Data));
+        Assert.AreSame(viewmodel, message.Sender);
+        Assert.AreEqual(0, message.OldValue);
+        Assert.AreEqual(42, message.NewValue);
+        Assert.AreEqual(nameof(SomeRecipient<int>.Data), message.PropertyName);
     }
 
     [TestMethod]

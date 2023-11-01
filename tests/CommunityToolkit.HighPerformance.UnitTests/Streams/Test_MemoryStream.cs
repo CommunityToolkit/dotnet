@@ -23,8 +23,8 @@ public partial class Test_MemoryStream
         Assert.IsTrue(stream.CanRead);
         Assert.IsTrue(stream.CanSeek);
         Assert.IsTrue(stream.CanWrite);
-        Assert.AreEqual(stream.Length, memory.Length);
-        Assert.AreEqual(stream.Position, 0);
+        Assert.AreEqual(memory.Length, stream.Length);
+        Assert.AreEqual(0, stream.Position);
 
         stream.Dispose();
 
@@ -40,11 +40,11 @@ public partial class Test_MemoryStream
     {
         Stream stream = new byte[100].AsMemory().AsStream();
 
-        Assert.AreEqual(stream.Position, 0);
+        Assert.AreEqual(0, stream.Position);
 
         stream.Position = 42;
 
-        Assert.AreEqual(stream.Position, 42);
+        Assert.AreEqual(42, stream.Position);
 
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Position = -1);
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Position = 120);
@@ -54,7 +54,7 @@ public partial class Test_MemoryStream
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Seek(-1, SeekOrigin.Begin));
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Seek(120, SeekOrigin.Begin));
 
-        Assert.AreEqual(stream.Position, 0);
+        Assert.AreEqual(0, stream.Position);
 
         _ = stream.Seek(-1, SeekOrigin.End);
 
@@ -70,7 +70,7 @@ public partial class Test_MemoryStream
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Seek(-64, SeekOrigin.Current));
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Seek(80, SeekOrigin.Current));
 
-        Assert.AreEqual(stream.Position, 32);
+        Assert.AreEqual(32, stream.Position);
     }
 
     // See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/3536
@@ -87,24 +87,24 @@ public partial class Test_MemoryStream
         {
             int read = stream.Read(temp, 0, 1);
 
-            Assert.AreEqual(read, 1);
-            Assert.AreEqual(stream.Position, i + 1);
+            Assert.AreEqual(1, read);
+            Assert.AreEqual(i + 1, stream.Position);
         }
 
-        Assert.AreEqual(stream.Position, array.Length);
+        Assert.AreEqual(array.Length, stream.Position);
 
         // These should not throw, seeking to the end is valid
         stream.Position = stream.Position;
-        Assert.AreEqual(stream.Position, array.Length);
+        Assert.AreEqual(array.Length, stream.Position);
 
         _ = stream.Seek(array.Length, SeekOrigin.Begin);
-        Assert.AreEqual(stream.Position, array.Length);
+        Assert.AreEqual(array.Length, stream.Position);
 
         _ = stream.Seek(0, SeekOrigin.Current);
-        Assert.AreEqual(stream.Position, array.Length);
+        Assert.AreEqual(array.Length, stream.Position);
 
         _ = stream.Seek(0, SeekOrigin.End);
-        Assert.AreEqual(stream.Position, array.Length);
+        Assert.AreEqual(array.Length, stream.Position);
     }
 
     [TestMethod]
@@ -116,7 +116,7 @@ public partial class Test_MemoryStream
 
         stream.Write(data, 0, data.Length);
 
-        Assert.AreEqual(stream.Position, data.Length);
+        Assert.AreEqual(data.Length, stream.Position);
 
         stream.Position = 0;
 
@@ -124,8 +124,8 @@ public partial class Test_MemoryStream
 
         int bytesRead = stream.Read(result, 0, result.Length);
 
-        Assert.AreEqual(bytesRead, result.Length);
-        Assert.AreEqual(stream.Position, data.Length);
+        Assert.AreEqual(result.Length, bytesRead);
+        Assert.AreEqual(data.Length, stream.Position);
         Assert.IsTrue(data.AsSpan().SequenceEqual(result));
 
         _ = Assert.ThrowsException<ArgumentNullException>(() => stream.Write(null!, 0, 10));
@@ -148,7 +148,7 @@ public partial class Test_MemoryStream
 
         await stream.WriteAsync(data, 0, data.Length);
 
-        Assert.AreEqual(stream.Position, data.Length);
+        Assert.AreEqual(data.Length, stream.Position);
 
         stream.Position = 0;
 
@@ -156,8 +156,8 @@ public partial class Test_MemoryStream
 
         int bytesRead = await stream.ReadAsync(result, 0, result.Length);
 
-        Assert.AreEqual(bytesRead, result.Length);
-        Assert.AreEqual(stream.Position, data.Length);
+        Assert.AreEqual(result.Length, bytesRead);
+        Assert.AreEqual(data.Length, stream.Position);
         Assert.IsTrue(data.AsSpan().SequenceEqual(result));
 
         _ = await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => stream.WriteAsync(null!, 0, 10));
@@ -180,12 +180,12 @@ public partial class Test_MemoryStream
 
         foreach (HighPerformance.Enumerables.ReadOnlySpanEnumerable<byte>.Item item in data.Enumerate())
         {
-            Assert.AreEqual(stream.Position, item.Index);
+            Assert.AreEqual(item.Index, stream.Position);
 
             stream.WriteByte(item.Value);
         }
 
-        Assert.AreEqual(stream.Position, data.Length);
+        Assert.AreEqual(data.Length, stream.Position);
 
         stream.Position = 0;
 
@@ -196,14 +196,14 @@ public partial class Test_MemoryStream
             value = checked((byte)stream.ReadByte());
         }
 
-        Assert.AreEqual(stream.Position, data.Length);
+        Assert.AreEqual(data.Length, stream.Position);
         Assert.IsTrue(data.SequenceEqual(result));
 
         _ = Assert.ThrowsException<ArgumentException>(() => stream.WriteByte(128));
 
         int exitCode = stream.ReadByte();
 
-        Assert.AreEqual(exitCode, -1);
+        Assert.AreEqual(-1, exitCode);
     }
 
     [TestMethod]
@@ -217,7 +217,7 @@ public partial class Test_MemoryStream
         // Stream class doesn't have Spam<T> or Memory<T> public APIs there.
         stream.Write(data.Span);
 
-        Assert.AreEqual(stream.Position, data.Length);
+        Assert.AreEqual(data.Length, stream.Position);
 
         stream.Position = 0;
 
@@ -225,8 +225,8 @@ public partial class Test_MemoryStream
 
         int bytesRead = stream.Read(result);
 
-        Assert.AreEqual(bytesRead, result.Length);
-        Assert.AreEqual(stream.Position, data.Length);
+        Assert.AreEqual(result.Length, bytesRead);
+        Assert.AreEqual(data.Length, stream.Position);
         Assert.IsTrue(data.Span.SequenceEqual(result));
     }
 
@@ -239,7 +239,7 @@ public partial class Test_MemoryStream
 
         await stream.WriteAsync(data);
 
-        Assert.AreEqual(stream.Position, data.Length);
+        Assert.AreEqual(data.Length, stream.Position);
 
         stream.Position = 0;
 
@@ -247,8 +247,8 @@ public partial class Test_MemoryStream
 
         int bytesRead = await stream.ReadAsync(result);
 
-        Assert.AreEqual(bytesRead, result.Length);
-        Assert.AreEqual(stream.Position, data.Length);
+        Assert.AreEqual(result.Length, bytesRead);
+        Assert.AreEqual(data.Length, stream.Position);
         Assert.IsTrue(data.Span.SequenceEqual(result.Span));
     }
 
@@ -261,7 +261,7 @@ public partial class Test_MemoryStream
 
         source.Write(data.Span);
 
-        Assert.AreEqual(source.Position, data.Length);
+        Assert.AreEqual(data.Length, source.Position);
 
         source.Position = 0;
 
@@ -277,8 +277,8 @@ public partial class Test_MemoryStream
 
         int bytesRead = destination.Read(result.Span);
 
-        Assert.AreEqual(bytesRead, result.Length);
-        Assert.AreEqual(destination.Position, data.Length);
+        Assert.AreEqual(result.Length, bytesRead);
+        Assert.AreEqual(data.Length, destination.Position);
         Assert.IsTrue(data.Span.SequenceEqual(result.Span));
     }
 
@@ -291,7 +291,7 @@ public partial class Test_MemoryStream
 
         await source.WriteAsync(data);
 
-        Assert.AreEqual(source.Position, data.Length);
+        Assert.AreEqual(data.Length, source.Position);
 
         source.Position = 0;
 
@@ -307,8 +307,8 @@ public partial class Test_MemoryStream
 
         int bytesRead = await destination.ReadAsync(result);
 
-        Assert.AreEqual(bytesRead, result.Length);
-        Assert.AreEqual(destination.Position, data.Length);
+        Assert.AreEqual(result.Length, bytesRead);
+        Assert.AreEqual(data.Length, destination.Position);
         Assert.IsTrue(data.Span.SequenceEqual(result.Span));
     }
 

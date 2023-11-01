@@ -27,27 +27,27 @@ public partial class Test_RelayCommandAttribute
 
         model.IncrementCounterCommand.Execute(null);
 
-        Assert.AreEqual(model.Counter, 1);
+        Assert.AreEqual(1, model.Counter);
 
         model.IncrementCounterWithValueCommand.Execute(5);
 
-        Assert.AreEqual(model.Counter, 6);
+        Assert.AreEqual(6, model.Counter);
 
         await model.DelayAndIncrementCounterCommand.ExecuteAsync(null);
 
-        Assert.AreEqual(model.Counter, 7);
+        Assert.AreEqual(7, model.Counter);
 
         await model.DelayAndIncrementCounterWithTokenCommand.ExecuteAsync(null);
 
-        Assert.AreEqual(model.Counter, 8);
+        Assert.AreEqual(8, model.Counter);
 
         await model.DelayAndIncrementCounterWithValueCommand.ExecuteAsync(5);
 
-        Assert.AreEqual(model.Counter, 13);
+        Assert.AreEqual(13, model.Counter);
 
         await model.DelayAndIncrementCounterWithValueAndTokenCommand.ExecuteAsync(5);
 
-        Assert.AreEqual(model.Counter, 18);
+        Assert.AreEqual(18, model.Counter);
 
         List<Task> tasks = new();
 
@@ -62,7 +62,7 @@ public partial class Test_RelayCommandAttribute
         // All values should already be in the list, as commands are executed
         // concurrently. Each invocation should still be pending here, but the
         // values are added to the list before starting the delay.
-        CollectionAssert.AreEqual(model.Values, Enumerable.Range(0, 10).ToArray());
+        CollectionAssert.AreEqual(Enumerable.Range(0, 10).ToArray(), model.Values);
 
         await Task.WhenAll(tasks);
 
@@ -84,7 +84,7 @@ public partial class Test_RelayCommandAttribute
         Assert.AreEqual(1, tasks.Count);
 
         // Only the first item should have been added
-        CollectionAssert.AreEqual(model.Values, new[] { 0 });
+        CollectionAssert.AreEqual(new[] { 0 }, model.Values);
 
         model.ResetTcs();
         model.Values.Clear();
@@ -102,7 +102,7 @@ public partial class Test_RelayCommandAttribute
 
         Assert.AreEqual(10, tasks.Count);
 
-        CollectionAssert.AreEqual(model.Values, Enumerable.Range(0, 10).ToArray());
+        CollectionAssert.AreEqual(Enumerable.Range(0, 10).ToArray(), model.Values);
 
         model.Values.Clear();
         tasks.Clear();
@@ -118,7 +118,7 @@ public partial class Test_RelayCommandAttribute
         Assert.AreEqual(1, tasks.Count);
 
         // Same as above, only the first one is added
-        CollectionAssert.AreEqual(model.Values, new[] { 0 });
+        CollectionAssert.AreEqual(new[] { 0 }, model.Values);
 
         model.Values.Clear();
         tasks.Clear();
@@ -131,7 +131,7 @@ public partial class Test_RelayCommandAttribute
 
         Assert.AreEqual(10, tasks.Count);
 
-        CollectionAssert.AreEqual(model.Values, Enumerable.Range(0, 10).ToArray());
+        CollectionAssert.AreEqual(Enumerable.Range(0, 10).ToArray(), model.Values);
     }
 
     [TestMethod]
@@ -143,7 +143,7 @@ public partial class Test_RelayCommandAttribute
 
         model.IncrementCounter_NoParameters_PropertyCommand.Execute(null);
 
-        Assert.AreEqual(model.Counter, 1);
+        Assert.AreEqual(1, model.Counter);
 
         model.Flag = false;
 
@@ -152,7 +152,7 @@ public partial class Test_RelayCommandAttribute
         // This and all test above also verify the logic is unconditionally invoked if CanExecute is ignored
         model.IncrementCounter_NoParameters_PropertyCommand.Execute(null);
 
-        Assert.AreEqual(model.Counter, 2);
+        Assert.AreEqual(2, model.Counter);
     }
 
     [TestMethod]
@@ -164,7 +164,7 @@ public partial class Test_RelayCommandAttribute
 
         model.IncrementCounter_NoParameters_GeneratedPropertyCommand.Execute(null);
 
-        Assert.AreEqual(model.Counter, 1);
+        Assert.AreEqual(1, model.Counter);
 
         model.SetGeneratedFlag(false);
 
@@ -172,7 +172,7 @@ public partial class Test_RelayCommandAttribute
 
         model.IncrementCounter_NoParameters_GeneratedPropertyCommand.Execute(null);
 
-        Assert.AreEqual(model.Counter, 2);
+        Assert.AreEqual(2, model.Counter);
     }
 
     [TestMethod]
@@ -184,7 +184,7 @@ public partial class Test_RelayCommandAttribute
 
         model.IncrementCounter_WithParameter_PropertyCommand.Execute(null);
 
-        Assert.AreEqual(model.Counter, 1);
+        Assert.AreEqual(1, model.Counter);
 
         model.Flag = false;
 
@@ -192,7 +192,7 @@ public partial class Test_RelayCommandAttribute
 
         model.IncrementCounter_WithParameter_PropertyCommand.Execute(null);
 
-        Assert.AreEqual(model.Counter, 2);
+        Assert.AreEqual(2, model.Counter);
     }
 
     [TestMethod]
@@ -204,7 +204,7 @@ public partial class Test_RelayCommandAttribute
 
         model.IncrementCounter_WithParameter_GeneratedPropertyCommand.Execute(null);
 
-        Assert.AreEqual(model.Counter, 1);
+        Assert.AreEqual(1, model.Counter);
 
         model.SetGeneratedFlag(false);
 
@@ -212,7 +212,7 @@ public partial class Test_RelayCommandAttribute
 
         model.IncrementCounter_WithParameter_GeneratedPropertyCommand.Execute(null);
 
-        Assert.AreEqual(model.Counter, 2);
+        Assert.AreEqual(2, model.Counter);
     }
 
     [TestMethod]
@@ -224,7 +224,7 @@ public partial class Test_RelayCommandAttribute
 
         model.IncrementCounter_NoParameters_MethodWithNoParametersCommand.Execute(null);
 
-        Assert.AreEqual(model.Counter, 1);
+        Assert.AreEqual(1, model.Counter);
 
         model.Flag = false;
 
@@ -232,7 +232,7 @@ public partial class Test_RelayCommandAttribute
 
         model.IncrementCounter_WithParameter_PropertyCommand.Execute(null);
 
-        Assert.AreEqual(model.Counter, 2);
+        Assert.AreEqual(2, model.Counter);
     }
 
     [TestMethod]
@@ -244,7 +244,7 @@ public partial class Test_RelayCommandAttribute
 
         model.IncrementCounter_WithParameters_MethodWithNoParametersCommand.Execute(null);
 
-        Assert.AreEqual(model.Counter, 1);
+        Assert.AreEqual(1, model.Counter);
 
         model.Flag = false;
 
@@ -252,7 +252,7 @@ public partial class Test_RelayCommandAttribute
 
         model.IncrementCounter_WithParameters_MethodWithNoParametersCommand.Execute(null);
 
-        Assert.AreEqual(model.Counter, 2);
+        Assert.AreEqual(2, model.Counter);
     }
 
     [TestMethod]
@@ -262,13 +262,13 @@ public partial class Test_RelayCommandAttribute
 
         model.IncrementCounter_WithParameters_MethodWithMatchingParameterCommand.Execute(new User { Name = nameof(CanExecuteViewModel) });
 
-        Assert.AreEqual(model.Counter, 1);
+        Assert.AreEqual(1, model.Counter);
 
         Assert.IsFalse(model.IncrementCounter_WithParameters_MethodWithMatchingParameterCommand.CanExecute(new User()));
 
         model.IncrementCounter_WithParameters_MethodWithMatchingParameterCommand.Execute(new User());
 
-        Assert.AreEqual(model.Counter, 2);
+        Assert.AreEqual(2, model.Counter);
     }
 
     [TestMethod]
@@ -280,7 +280,7 @@ public partial class Test_RelayCommandAttribute
 
         await model.IncrementCounter_Async_NoParameters_PropertyCommand.ExecuteAsync(null);
 
-        Assert.AreEqual(model.Counter, 1);
+        Assert.AreEqual(1, model.Counter);
 
         model.Flag = false;
 
@@ -288,7 +288,7 @@ public partial class Test_RelayCommandAttribute
 
         await model.IncrementCounter_Async_NoParameters_PropertyCommand.ExecuteAsync(null);
 
-        Assert.AreEqual(model.Counter, 2);
+        Assert.AreEqual(2, model.Counter);
     }
 
     [TestMethod]
@@ -300,7 +300,7 @@ public partial class Test_RelayCommandAttribute
 
         await model.IncrementCounter_Async_WithParameter_PropertyCommand.ExecuteAsync(null);
 
-        Assert.AreEqual(model.Counter, 1);
+        Assert.AreEqual(1, model.Counter);
 
         model.Flag = false;
 
@@ -308,7 +308,7 @@ public partial class Test_RelayCommandAttribute
 
         await model.IncrementCounter_Async_WithParameter_PropertyCommand.ExecuteAsync(null);
 
-        Assert.AreEqual(model.Counter, 2);
+        Assert.AreEqual(2, model.Counter);
     }
 
     [TestMethod]
@@ -320,7 +320,7 @@ public partial class Test_RelayCommandAttribute
 
         await model.IncrementCounter_Async_NoParameters_MethodWithNoParametersCommand.ExecuteAsync(null);
 
-        Assert.AreEqual(model.Counter, 1);
+        Assert.AreEqual(1, model.Counter);
 
         model.Flag = false;
 
@@ -328,7 +328,7 @@ public partial class Test_RelayCommandAttribute
 
         await model.IncrementCounter_Async_WithParameter_PropertyCommand.ExecuteAsync(null);
 
-        Assert.AreEqual(model.Counter, 2);
+        Assert.AreEqual(2, model.Counter);
     }
 
     [TestMethod]
@@ -340,7 +340,7 @@ public partial class Test_RelayCommandAttribute
 
         await model.IncrementCounter_Async_WithParameters_MethodWithNoParametersCommand.ExecuteAsync(null);
 
-        Assert.AreEqual(model.Counter, 1);
+        Assert.AreEqual(1, model.Counter);
 
         model.Flag = false;
 
@@ -348,7 +348,7 @@ public partial class Test_RelayCommandAttribute
 
         await model.IncrementCounter_Async_WithParameters_MethodWithNoParametersCommand.ExecuteAsync(null);
 
-        Assert.AreEqual(model.Counter, 2);
+        Assert.AreEqual(2, model.Counter);
     }
 
     [TestMethod]
@@ -358,13 +358,13 @@ public partial class Test_RelayCommandAttribute
 
         await model.IncrementCounter_Async_WithParameters_MethodWithMatchingParameterCommand.ExecuteAsync(new User { Name = nameof(CanExecuteViewModel) });
 
-        Assert.AreEqual(model.Counter, 1);
+        Assert.AreEqual(1, model.Counter);
 
         Assert.IsFalse(model.IncrementCounter_Async_WithParameters_MethodWithMatchingParameterCommand.CanExecute(new User()));
 
         await model.IncrementCounter_Async_WithParameters_MethodWithMatchingParameterCommand.ExecuteAsync(new User());
 
-        Assert.AreEqual(model.Counter, 2);
+        Assert.AreEqual(2, model.Counter);
     }
 
     [TestMethod]
@@ -575,22 +575,22 @@ public partial class Test_RelayCommandAttribute
 
         Assert.IsNotNull(fooField.GetCustomAttribute<RequiredAttribute>());
         Assert.IsNotNull(fooField.GetCustomAttribute<MinLengthAttribute>());
-        Assert.AreEqual(fooField.GetCustomAttribute<MinLengthAttribute>()!.Length, 1);
+        Assert.AreEqual(1, fooField.GetCustomAttribute<MinLengthAttribute>()!.Length);
         Assert.IsNotNull(fooField.GetCustomAttribute<MaxLengthAttribute>());
-        Assert.AreEqual(fooField.GetCustomAttribute<MaxLengthAttribute>()!.Length, 100);
+        Assert.AreEqual(100, fooField.GetCustomAttribute<MaxLengthAttribute>()!.Length);
 
         PropertyInfo fooProperty = typeof(MyViewModelWithExplicitFieldAndPropertyAttributes).GetProperty("FooCommand")!;
 
         Assert.IsNotNull(fooProperty.GetCustomAttribute<RequiredAttribute>());
         Assert.IsNotNull(fooProperty.GetCustomAttribute<MinLengthAttribute>());
-        Assert.AreEqual(fooProperty.GetCustomAttribute<MinLengthAttribute>()!.Length, 1);
+        Assert.AreEqual(1, fooProperty.GetCustomAttribute<MinLengthAttribute>()!.Length);
         Assert.IsNotNull(fooProperty.GetCustomAttribute<MaxLengthAttribute>());
-        Assert.AreEqual(fooProperty.GetCustomAttribute<MaxLengthAttribute>()!.Length, 100);
+        Assert.AreEqual(100, fooProperty.GetCustomAttribute<MaxLengthAttribute>()!.Length);
 
         PropertyInfo barProperty = typeof(MyViewModelWithExplicitFieldAndPropertyAttributes).GetProperty("BarCommand")!;
 
         Assert.IsNotNull(barProperty.GetCustomAttribute<JsonPropertyNameAttribute>());
-        Assert.AreEqual(barProperty.GetCustomAttribute<JsonPropertyNameAttribute>()!.Name, "bar");
+        Assert.AreEqual("bar", barProperty.GetCustomAttribute<JsonPropertyNameAttribute>()!.Name);
         Assert.IsNotNull(barProperty.GetCustomAttribute<XmlIgnoreAttribute>());
 
         PropertyInfo bazProperty = typeof(MyViewModelWithExplicitFieldAndPropertyAttributes).GetProperty("BazCommand")!;
@@ -601,21 +601,21 @@ public partial class Test_RelayCommandAttribute
         {
             Assert.IsNotNull(testAttribute);
             Assert.IsNull(testAttribute.O);
-            Assert.AreEqual(testAttribute.T, typeof(MyViewModelWithExplicitFieldAndPropertyAttributes));
-            Assert.AreEqual(testAttribute.Flag, true);
-            Assert.AreEqual(testAttribute.D, 6.28);
-            CollectionAssert.AreEqual(testAttribute.Names, new[] { "Bob", "Ross" });
+            Assert.AreEqual(typeof(MyViewModelWithExplicitFieldAndPropertyAttributes), testAttribute.T);
+            Assert.AreEqual(true, testAttribute.Flag);
+            Assert.AreEqual(6.28, testAttribute.D);
+            CollectionAssert.AreEqual(new[] { "Bob", "Ross" }, testAttribute.Names);
 
             object[]? nestedArray = (object[]?)testAttribute.NestedArray;
 
             Assert.IsNotNull(nestedArray);
-            Assert.AreEqual(nestedArray!.Length, 3);
-            Assert.AreEqual(nestedArray[0], 1);
-            Assert.AreEqual(nestedArray[1], "Hello");
+            Assert.AreEqual(3, nestedArray!.Length);
+            Assert.AreEqual(1, nestedArray[0]);
+            Assert.AreEqual("Hello", nestedArray[1]);
             Assert.IsTrue(nestedArray[2] is int[]);
-            CollectionAssert.AreEqual((int[])nestedArray[2], new[] { 2, 3, 4 });
+            CollectionAssert.AreEqual(new[] { 2, 3, 4 }, (int[])nestedArray[2]);
 
-            Assert.AreEqual(testAttribute.Animal, Test_ObservablePropertyAttribute.Animal.Llama);
+            Assert.AreEqual(Test_ObservablePropertyAttribute.Animal.Llama, testAttribute.Animal);
         }
 
         FieldInfo fooBarField = typeof(MyViewModelWithExplicitFieldAndPropertyAttributes).GetField("fooBarCommand", BindingFlags.Instance | BindingFlags.NonPublic)!;
@@ -638,25 +638,25 @@ public partial class Test_RelayCommandAttribute
 
         Assert.IsNotNull(testAttribute2);
         Assert.IsNull(testAttribute2.O);
-        Assert.AreEqual(testAttribute2.T, typeof(MyViewModelWithExplicitFieldAndPropertyAttributes));
-        Assert.AreEqual(testAttribute2.Flag, true);
-        Assert.AreEqual(testAttribute2.D, 6.28);
+        Assert.AreEqual(typeof(MyViewModelWithExplicitFieldAndPropertyAttributes), testAttribute2.T);
+        Assert.AreEqual(true, testAttribute2.Flag);
+        Assert.AreEqual(6.28, testAttribute2.D);
         Assert.IsNotNull(testAttribute2.Objects);
         Assert.IsTrue(testAttribute2.Objects is object[]);
-        Assert.AreEqual(((object[])testAttribute2.Objects).Length, 1);
-        Assert.AreEqual(((object[])testAttribute2.Objects)[0], "Test");
-        CollectionAssert.AreEqual(testAttribute2.Names, new[] { "Bob", "Ross" });
+        Assert.AreEqual(1, ((object[])testAttribute2.Objects).Length);
+        Assert.AreEqual("Test", ((object[])testAttribute2.Objects)[0]);
+        CollectionAssert.AreEqual(new[] { "Bob", "Ross" }, testAttribute2.Names);
 
         object[]? nestedArray2 = (object[]?)testAttribute2.NestedArray;
 
         Assert.IsNotNull(nestedArray2);
-        Assert.AreEqual(nestedArray2!.Length, 4);
-        Assert.AreEqual(nestedArray2[0], 1);
-        Assert.AreEqual(nestedArray2[1], "Hello");
-        Assert.AreEqual(nestedArray2[2], 42);
+        Assert.AreEqual(4, nestedArray2!.Length);
+        Assert.AreEqual(1, nestedArray2[0]);
+        Assert.AreEqual("Hello", nestedArray2[1]);
+        Assert.AreEqual(42, nestedArray2[2]);
         Assert.IsNull(nestedArray2[3]);
 
-        Assert.AreEqual(testAttribute2.Animal, (Test_ObservablePropertyAttribute.Animal)67);
+        Assert.AreEqual((Test_ObservablePropertyAttribute.Animal)67, testAttribute2.Animal);
     }
 
     // See https://github.com/CommunityToolkit/dotnet/issues/632
@@ -674,24 +674,24 @@ public partial class Test_RelayCommandAttribute
 
         Assert.IsNotNull(bazField.GetCustomAttribute<RequiredAttribute>());
         Assert.IsNotNull(bazField.GetCustomAttribute<MinLengthAttribute>());
-        Assert.AreEqual(bazField.GetCustomAttribute<MinLengthAttribute>()!.Length, 1);
+        Assert.AreEqual(1, bazField.GetCustomAttribute<MinLengthAttribute>()!.Length);
 
         PropertyInfo bazProperty = typeof(ModelWithPartialCommandMethods).GetProperty("BazCommand")!;
 
         Assert.IsNotNull(bazProperty.GetCustomAttribute<MinLengthAttribute>());
-        Assert.AreEqual(bazProperty.GetCustomAttribute<MinLengthAttribute>()!.Length, 2);
+        Assert.AreEqual(2, bazProperty.GetCustomAttribute<MinLengthAttribute>()!.Length);
         Assert.IsNotNull(bazProperty.GetCustomAttribute<XmlIgnoreAttribute>());
 
         FieldInfo fooBarField = typeof(ModelWithPartialCommandMethods).GetField("fooBarCommand", BindingFlags.Instance | BindingFlags.NonPublic)!;
 
         Assert.IsNotNull(fooBarField.GetCustomAttribute<RequiredAttribute>());
         Assert.IsNotNull(fooBarField.GetCustomAttribute<MinLengthAttribute>());
-        Assert.AreEqual(fooBarField.GetCustomAttribute<MinLengthAttribute>()!.Length, 1);
+        Assert.AreEqual(1, fooBarField.GetCustomAttribute<MinLengthAttribute>()!.Length);
 
         PropertyInfo fooBarProperty = typeof(ModelWithPartialCommandMethods).GetProperty("FooBarCommand")!;
 
         Assert.IsNotNull(fooBarProperty.GetCustomAttribute<MinLengthAttribute>());
-        Assert.AreEqual(fooBarProperty.GetCustomAttribute<MinLengthAttribute>()!.Length, 2);
+        Assert.AreEqual(2, fooBarProperty.GetCustomAttribute<MinLengthAttribute>()!.Length);
         Assert.IsNotNull(fooBarProperty.GetCustomAttribute<XmlIgnoreAttribute>());
     }
 
