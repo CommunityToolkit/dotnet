@@ -49,7 +49,7 @@ public static class IBufferWriterExtensions
         where T : unmanaged
     {
         int length = sizeof(T);
-        Span<byte> span = writer.GetSpan(1);
+        Span<byte> span = writer.GetSpan(length);
 
         if (span.Length < length)
         {
