@@ -48,10 +48,9 @@ public static class IBufferWriterExtensions
     public static unsafe void Write<T>(this IBufferWriter<byte> writer, T value)
         where T : unmanaged
     {
-        int length = sizeof(T);
-        Span<byte> span = writer.GetSpan(1);
+        Span<byte> span = writer.GetSpan(sizeof(T));
 
-        if (span.Length < length)
+        if (span.Length < sizeof(T))
         {
             ThrowArgumentExceptionForEndOfBuffer();
         }
@@ -60,7 +59,7 @@ public static class IBufferWriterExtensions
 
         Unsafe.WriteUnaligned(ref r0, value);
 
-        writer.Advance(length);
+        writer.Advance(sizeof(T));
     }
 
     /// <summary>

@@ -118,4 +118,22 @@ public class Test_IBufferWriterExtensions
 
         Assert.IsTrue(span.SequenceEqual(buffer.AsSpan()));
     }
+
+    // See https://github.com/CommunityToolkit/dotnet/issues/798
+    [TestMethod]
+    public void Test_IBufferWriterExtensions_WriteExceedingFreeCapacity()
+    {
+        ArrayPoolBufferWriter<byte> writer = new();
+
+        // Leave only one byte of free capacity
+        int count = writer.Capacity - 1;
+        
+        for (int i = 0; i < count; i++)
+        {
+            writer.Write<byte>(0);
+        }
+
+        // Write 4 bytes
+        writer.Write(1);
+    }
 }
