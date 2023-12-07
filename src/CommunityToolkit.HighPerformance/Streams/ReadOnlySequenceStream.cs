@@ -24,7 +24,7 @@ internal sealed partial class ReadOnlySequenceStream : Stream
     /// <summary>
     /// The current position within <see cref="source"/>.
     /// </summary>
-    private int position;
+    private long position;
 
     /// <summary>
     /// Indicates whether or not the current instance has been disposed
@@ -90,7 +90,7 @@ internal sealed partial class ReadOnlySequenceStream : Stream
             MemoryStream.ValidateDisposed(this.disposed);
             MemoryStream.ValidatePosition(value, this.source.Length);
 
-            this.position = unchecked((int)value);
+            this.position = value;
         }
     }
 
@@ -123,9 +123,9 @@ internal sealed partial class ReadOnlySequenceStream : Stream
 
             if (this.source.IsSingleSegment)
             {
-                ReadOnlyMemory<byte> buffer = this.source.First.Slice(this.position);
+                ReadOnlyMemory<byte> buffer = this.source.First.Slice(unchecked((int)this.position));
 
-                this.position = (int)this.source.Length;
+                this.position = this.source.Length;
 
                 return destination.WriteAsync(buffer, cancellationToken).AsTask();
             }
@@ -134,7 +134,7 @@ internal sealed partial class ReadOnlySequenceStream : Stream
             {
                 ReadOnlySequence<byte> sequence = this.source.Slice(this.position);
 
-                this.position = (int)this.source.Length;
+                this.position = this.source.Length;
 
                 foreach (ReadOnlyMemory<byte> segment in sequence)
                 {
@@ -220,7 +220,7 @@ internal sealed partial class ReadOnlySequenceStream : Stream
 
         MemoryStream.ValidatePosition(index, this.source.Length);
 
-        this.position = unchecked((int)index);
+        this.position = index;
 
         return index;
     }
@@ -253,6 +253,7 @@ internal sealed partial class ReadOnlySequenceStream : Stream
             segment.Span.Slice(0, bytesToCopy).CopyTo(destination);
 
             destination = destination.Slice(bytesToCopy);
+
             bytesCopied += bytesToCopy;
 
             this.position += bytesToCopy;
