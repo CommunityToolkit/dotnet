@@ -61,7 +61,7 @@ internal sealed partial class ReadOnlySequenceStream : Stream
     public sealed override bool CanWrite
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => !this.disposed;
+        get => false;
     }
 
     /// <inheritdoc/>
