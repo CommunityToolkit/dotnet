@@ -27,7 +27,7 @@ public partial class Test_ReadOnlySequenceStream
 
         Assert.IsTrue(stream.CanRead);
         Assert.IsTrue(stream.CanSeek);
-        Assert.IsTrue(stream.CanWrite);
+        Assert.IsFalse(stream.CanWrite);
         Assert.AreEqual(stream.Length, sequence.Length);
         Assert.AreEqual(stream.Position, 0);
 
