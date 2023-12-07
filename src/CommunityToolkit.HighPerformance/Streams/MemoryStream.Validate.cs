@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.CompilerServices;
 
@@ -25,13 +26,27 @@ partial class MemoryStream
     }
 
     /// <summary>
+    /// Validates the <see cref="Stream.Position"/> argument (it needs to be in the [0, length]) range.
+    /// </summary>
+    /// <param name="position">The new <see cref="Stream.Position"/> value being set.</param>
+    /// <param name="length">The maximum length of the target <see cref="Stream"/>.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ValidatePosition(long position, long length)
+    {
+        if ((ulong)position > (ulong)length)
+        {
+            ThrowArgumentOutOfRangeExceptionForPosition();
+        }
+    }
+
+    /// <summary>
     /// Validates the <see cref="Stream.Read(byte[],int,int)"/> or <see cref="Stream.Write(byte[],int,int)"/> arguments.
     /// </summary>
     /// <param name="buffer">The target array.</param>
     /// <param name="offset">The offset within <paramref name="buffer"/>.</param>
     /// <param name="count">The number of elements to process within <paramref name="buffer"/>.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ValidateBuffer(byte[]? buffer, int offset, int count)
+    public static void ValidateBuffer([NotNull] byte[]? buffer, int offset, int count)
     {
         if (buffer is null)
         {
