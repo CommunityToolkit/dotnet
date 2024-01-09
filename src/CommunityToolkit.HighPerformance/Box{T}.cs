@@ -63,6 +63,8 @@ public sealed class Box<T>
         throw new InvalidOperationException("The CommunityToolkit.HighPerformance.Box<T> constructor should never be used.");
     }
 
+    internal readonly T value; // used for fast unboxing
+
     /// <summary>
     /// Returns a <see cref="Box{T}"/> reference from the input <see cref="object"/> instance.
     /// </summary>
@@ -121,9 +123,7 @@ public sealed class Box<T>
     /// <param name="box">The input <see cref="Box{T}"/> instance.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static implicit operator T(Box<T> box)
-    {
-        return (T)(object)box;
-    }
+        => box.value;
 
     /// <summary>
     /// Implicitly creates a new <see cref="Box{T}"/> instance from a given <typeparamref name="T"/> value.
@@ -216,6 +216,6 @@ public static class BoxExtensions
         // manually tracking the offset to the boxed data would be both
         // more error prone, and it would still introduce some overhead,
         // this doesn't really matter in this case anyway.
-        return ref Unsafe.Unbox<T>(box);
+        return ref Unsafe.AsRef(box.value);
     }
 }

@@ -54,6 +54,19 @@ public class Test_BoxOfT
         Test(a, b);
     }
 
+    [TestMethod]
+    public void TestBoxOfT_Invalid()
+    {
+        Box<int>? box;
+
+        object obj = (long)124;
+        bool success = Box<int>.TryGetFrom(obj, out box);
+        Assert.IsFalse(success);
+        Assert.IsNull(box);
+
+        _ = Assert.ThrowsException<InvalidCastException>(() => Box<int>.GetFrom(obj));
+    }
+
     /// <summary>
     /// Tests the <see cref="Box{T}"/> type for a given pair of values.
     /// </summary>
@@ -64,34 +77,41 @@ public class Test_BoxOfT
         where T : struct, IEquatable<T>
     {
         Box<T>? box = value;
-
-        Assert.AreEqual(box.GetReference(), value);
-        Assert.AreEqual(box.ToString(), value.ToString());
-        Assert.AreEqual(box.GetHashCode(), value.GetHashCode());
+        Assert.IsNotNull(box);
+        Assert.AreEqual(value, box.GetReference());
+        Assert.AreEqual(value.ToString(), box.ToString());
+        Assert.AreEqual(value.GetHashCode(), box.GetHashCode());
+        Assert.AreEqual(value, (T)box);
 
         object obj = value;
-
         bool success = Box<T>.TryGetFrom(obj, out box);
-
         Assert.IsTrue(success);
-        Assert.IsTrue(ReferenceEquals(obj, box));
-        Assert.IsNotNull(box);
-        Assert.AreEqual(box.GetReference(), value);
-        Assert.AreEqual(box.ToString(), value.ToString());
-        Assert.AreEqual(box.GetHashCode(), value.GetHashCode());
+        Assert.AreSame(obj, box);
+        Assert.AreEqual(value, box.GetReference());
+        Assert.AreEqual(value.ToString(), box.ToString());
+        Assert.AreEqual(value.GetHashCode(), box.GetHashCode());
+        Assert.AreEqual(value, (T)box);
+
+        box = Box<T>.GetFrom(obj);
+        Assert.AreSame(obj, box);
+        Assert.AreEqual(value, box.GetReference());
+        Assert.AreEqual(value.ToString(), box.ToString());
+        Assert.AreEqual(value.GetHashCode(), box.GetHashCode());
+        Assert.AreEqual(value, (T)box);
 
         box = Box<T>.DangerousGetFrom(obj);
-
-        Assert.IsTrue(ReferenceEquals(obj, box));
-        Assert.AreEqual(box.GetReference(), value);
-        Assert.AreEqual(box.ToString(), value.ToString());
-        Assert.AreEqual(box.GetHashCode(), value.GetHashCode());
+        Assert.AreSame(obj, box);
+        Assert.AreEqual(value, box.GetReference());
+        Assert.AreEqual(value.ToString(), box.ToString());
+        Assert.AreEqual(value.GetHashCode(), box.GetHashCode());
+        Assert.AreEqual(value, (T)box);
 
         box.GetReference() = test;
-
-        Assert.AreEqual(box.GetReference(), test);
-        Assert.AreEqual(box.ToString(), test.ToString());
-        Assert.AreEqual(box.GetHashCode(), test.GetHashCode());
-        Assert.AreEqual(obj, test);
+        Assert.AreSame(obj, box);
+        Assert.AreEqual(test, box.GetReference());
+        Assert.AreEqual(test.ToString(), box.ToString());
+        Assert.AreEqual(test.GetHashCode(), box.GetHashCode());
+        Assert.AreEqual(test, (T)box);
+        Assert.AreEqual(test, obj);
     }
 }
