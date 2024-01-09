@@ -159,19 +159,19 @@ public sealed class Box<T>
         // an object reference is used instead, the call would be forwarded
         // to those same methods anyway, since the method table for an object
         // representing a T instance is the one of type T anyway.
-        return this.GetReference().ToString()!;
+        return this.value.ToString();
     }
 
     /// <inheritdoc/>
     public override bool Equals(object? obj)
     {
-        return Equals(this, obj);
+        return this.value.Equals(obj);
     }
 
     /// <inheritdoc/>
     public override int GetHashCode()
     {
-        return this.GetReference().GetHashCode();
+        return this.value.GetHashCode();
     }
 
     /// <summary>

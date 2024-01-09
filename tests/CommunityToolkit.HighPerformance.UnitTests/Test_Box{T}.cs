@@ -58,14 +58,17 @@ public class Test_BoxOfT
     [TestMethod]
     public void TestBoxOfT_Invalid()
     {
-        Box<int>? box;
+        long value = 0x0123_4567_89AB_CDEF;
+        object obj = value;
 
-        object obj = (long)124;
-        bool success = Box<int>.TryGetFrom(obj, out box);
+        bool success = Box<int>.TryGetFrom(obj, out Box<int>? box);
         Assert.IsFalse(success);
         Assert.IsNull(box);
 
         _ = Assert.ThrowsException<InvalidCastException>(() => Box<int>.GetFrom(obj));
+
+        box = Box<int>.DangerousGetFrom(obj);
+        Assert.AreEqual<int>(Unsafe.As<long, int>(ref value), box);
     }
 
     /// <summary>
