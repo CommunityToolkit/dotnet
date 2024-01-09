@@ -108,14 +108,8 @@ public class Test_BoxOfT
         Assert.AreEqual(value, (T)box);
 
         // Testing that unboxing uses a fast process without unnecessary type-checking
-        unsafe
-        {
-            if (typeof(T) != typeof(byte) && sizeof(T) >= sizeof(byte))
-            {
-                _ = (byte)Unsafe.As<Box<T>, Box<byte>>(ref box);
-                _ = Unsafe.As<Box<T>, Box<byte>>(ref box).GetReference();
-            }
-        }
+        _ = (ValueTuple)Unsafe.As<Box<T>, Box<ValueTuple>>(ref box);
+        _ = Unsafe.As<Box<T>, Box<ValueTuple>>(ref box).GetReference();
 
         box.GetReference() = test;
         Assert.AreSame(obj, box);
