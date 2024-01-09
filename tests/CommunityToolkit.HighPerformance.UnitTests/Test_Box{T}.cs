@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Runtime.CompilerServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommunityToolkit.HighPerformance.UnitTests;
@@ -105,6 +106,16 @@ public class Test_BoxOfT
         Assert.AreEqual(value.ToString(), box.ToString());
         Assert.AreEqual(value.GetHashCode(), box.GetHashCode());
         Assert.AreEqual(value, (T)box);
+
+        // Testing that unboxing uses a fast process without unnecessary type-checking
+        unsafe
+        {
+            if (typeof(T) != typeof(byte) && sizeof(T) >= sizeof(byte))
+            {
+                _ = (byte)Unsafe.As<Box<T>, Box<byte>>(ref box);
+                _ = Unsafe.As<Box<T>, Box<byte>>(ref box).GetReference();
+            }
+        }
 
         box.GetReference() = test;
         Assert.AreSame(obj, box);
