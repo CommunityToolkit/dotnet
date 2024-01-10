@@ -218,4 +218,35 @@ public static class BoxExtensions
         // this doesn't really matter in this case anyway.
         return ref Unsafe.Unbox<T>(box);
     }
+
+    /// <summary>
+    /// Gets a <typeparamref name="T"/> value from a <see cref="Box{T}"/> instance.
+    /// </summary>
+    /// <typeparam name="T">The type of value to retrieve.</typeparam>
+    /// <param name="box">The input <see cref="Box{T}"/> instance.</param>
+    /// <returns>The <typeparamref name="T"/> boxed value within <paramref name="box"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T GetValue<T>(this Box<T> box)
+        where T : struct
+    {
+        // The reason why this method is an extension and is not part of
+        // the Box<T> type itself is that Box<T> is really just a mask
+        // used over object references, but it is never actually instantiated.
+        // Because of this, the method table of the objects in the heap will
+        // be the one of type T created by the runtime, and not the one of
+        // the Box<T> type. To avoid potential issues when invoking this method
+        // on different runtimes, which might handle that scenario differently,
+        // we use an extension method, which is just syntactic sugar for a static
+        // method belonging to another class. This isn't technically necessary,
+        // but it's just an extra precaution since the syntax for users remains
+        // exactly the same anyway. Here we just call the Unsafe.Unbox<T>(object)
+        // API, which is hidden away for users of the type for simplicity.
+        // Note that this API will always actually involve a conditional
+        // branch, which is introduced by the JIT compiler to validate the
+        // object instance being unboxed. But since the alternative of
+        // manually tracking the offset to the boxed data would be both
+        // more error prone, and it would still introduce some overhead,
+        // this doesn't really matter in this case anyway.
+        return box;
+    }
 }

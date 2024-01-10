@@ -66,6 +66,7 @@ public class Test_BoxOfT
         Box<T>? box = value;
 
         Assert.AreEqual(box.GetReference(), value);
+        Assert.AreEqual(value, box.GetValue());
         Assert.AreEqual(box.ToString(), value.ToString());
         Assert.AreEqual(box.GetHashCode(), value.GetHashCode());
 
@@ -77,6 +78,7 @@ public class Test_BoxOfT
         Assert.IsTrue(ReferenceEquals(obj, box));
         Assert.IsNotNull(box);
         Assert.AreEqual(box.GetReference(), value);
+        Assert.AreEqual(value, box.GetValue());
         Assert.AreEqual(box.ToString(), value.ToString());
         Assert.AreEqual(box.GetHashCode(), value.GetHashCode());
 
@@ -84,12 +86,14 @@ public class Test_BoxOfT
 
         Assert.IsTrue(ReferenceEquals(obj, box));
         Assert.AreEqual(box.GetReference(), value);
+        Assert.AreEqual(value, box.GetValue());
         Assert.AreEqual(box.ToString(), value.ToString());
         Assert.AreEqual(box.GetHashCode(), value.GetHashCode());
 
         box.GetReference() = test;
 
         Assert.AreEqual(box.GetReference(), test);
+        Assert.AreEqual(test, box.GetValue());
         Assert.AreEqual(box.ToString(), test.ToString());
         Assert.AreEqual(box.GetHashCode(), test.GetHashCode());
         Assert.AreEqual(obj, test);
