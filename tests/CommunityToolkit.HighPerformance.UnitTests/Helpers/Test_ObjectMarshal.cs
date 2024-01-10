@@ -13,7 +13,7 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Extensions;
 public class Test_ObjectMarshal
 {
     [TestMethod]
-    public void Test_DangerousGetObjectDataByteOffset()
+    public void Test_ObjectMarshal_DangerousGetObjectDataByteOffset()
     {
         TestClass? a = new() { Number = 42, Character = 'a', Text = "Hello" };
 
@@ -44,7 +44,7 @@ public class Test_ObjectMarshal
     }
 
     [TestMethod]
-    public void Test_BoxOfT_PrimitiveTypes()
+    public void Test_ObjectMarshal_Unbox_PrimitiveTypes()
     {
         Test(true);
         Test(false);
@@ -57,7 +57,7 @@ public class Test_ObjectMarshal
     }
 
     [TestMethod]
-    public void Test_BoxOfT_OtherTypes()
+    public void Test_ObjectMarshal_Unbox_OtherTypes()
     {
         Test(DateTime.Now);
         Test(Guid.NewGuid());
@@ -70,7 +70,7 @@ public class Test_ObjectMarshal
         public string Text;
 
         /// <inheritdoc/>
-        public bool Equals(TestStruct other)
+        public readonly bool Equals(TestStruct other)
         {
             return
                 this.Number == other.Number &&
@@ -80,7 +80,7 @@ public class Test_ObjectMarshal
     }
 
     [TestMethod]
-    public void TestBoxOfT_CustomStruct()
+    public void Test_ObjectMarshal_Unbox_CustomStruct()
     {
         TestStruct a = new() { Number = 42, Character = 'a', Text = "Hello" };
         TestStruct b = new() { Number = 38293, Character = 'z', Text = "World" };
@@ -100,17 +100,24 @@ public class Test_ObjectMarshal
         object obj = value;
 
         bool success = obj.TryUnbox(out T result);
-
         Assert.IsTrue(success);
         Assert.AreEqual(value, result);
 
-        success = obj.TryUnbox(out decimal test);
-
+        success = obj.TryUnbox(out ValueTuple<decimal> test);
         Assert.IsFalse(success);
-        Assert.AreEqual(test, default);
+        Assert.AreEqual(default, test);
 
         result = ObjectMarshal.DangerousUnbox<T>(obj);
-
         Assert.AreEqual(value, result);
+
+        _ = Assert.ThrowsException<InvalidCastException>(() => 
+            ObjectMarshal.DangerousUnbox<ValueTuple<decimal>>(obj));
+
+        result = default;
+        result = ObjectMarshal.DangerousUnboxNoTypeChecking<T>(obj);
+        Assert.AreEqual(value, result);
+
+        // No InvalidCastException
+        ValueTuple emptyTuple = ObjectMarshal.DangerousUnboxNoTypeChecking<ValueTuple>(obj);
     }
 }

@@ -115,7 +115,7 @@ public static class ObjectMarshal
     {
         if (obj.GetType() == typeof(T))
         {
-            value = Unsafe.Unbox<T>(obj);
+            value = Box<T>.DangerousGetFrom(obj);
 
             return true;
         }
@@ -137,5 +137,22 @@ public static class ObjectMarshal
         where T : struct
     {
         return ref Unsafe.Unbox<T>(obj);
+    }
+
+    /// <summary>
+    /// Unboxes a <typeparamref name="T"/> value from an input <see cref="object"/> instance.
+    /// </summary>
+    /// <typeparam name="T">The type of value to unbox.</typeparam>
+    /// <param name="obj">The input <see cref="object"/> instance, representing a boxed <typeparamref name="T"/> value.</param>
+    /// <returns>The <typeparamref name="T"/> value boxed in <paramref name="obj"/>.</returns>
+    /// <remarks>
+    /// This method doesn't check the actual type of <paramref name="obj"/>, so it is responsibility of the caller
+    /// to ensure it actually represents a boxed <typeparamref name="T"/> value and not some other instance.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ref T DangerousUnboxNoTypeChecking<T>(object obj)
+        where T : struct
+    {
+        return ref Box<T>.DangerousGetFrom(obj).GetReference();
     }
 }

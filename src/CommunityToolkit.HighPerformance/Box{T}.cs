@@ -63,7 +63,9 @@ public sealed class Box<T>
         throw new InvalidOperationException("The CommunityToolkit.HighPerformance.Box<T> constructor should never be used.");
     }
 
+#pragma warning disable CS0649 // Field 'Box<T>.value' is never assigned to, and will always have its default value
     internal readonly T value; // used for fast unboxing
+#pragma warning restore CS0649 // Field 'Box<T>.value' is never assigned to, and will always have its default value
 
     /// <summary>
     /// Returns a <see cref="Box{T}"/> reference from the input <see cref="object"/> instance.
@@ -159,7 +161,7 @@ public sealed class Box<T>
         // an object reference is used instead, the call would be forwarded
         // to those same methods anyway, since the method table for an object
         // representing a T instance is the one of type T anyway.
-        return this.value.ToString();
+        return this.value.ToString()!;
     }
 
     /// <inheritdoc/>
