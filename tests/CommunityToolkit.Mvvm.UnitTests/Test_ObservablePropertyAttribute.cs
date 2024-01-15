@@ -500,13 +500,13 @@ public partial class Test_ObservablePropertyAttribute
     {
         ViewModelWithImplementedUpdateMethodAndAdditionalValidation model = new();
 
-        // The actual validation is performed inside the model itself.
-        // This test validates that the order with which methods/events are generated is:
-        //   - On<PROPERTY_NAME>Changing(value);
-        //   - OnPropertyChanging();
-        //   - field = value;
-        //   - On<PROPERTY_NAME>Changed(value);
-        //   - OnPropertyChanged();
+            // The actual validation is performed inside the model itself.
+            // This test validates that the order with which methods/events are generated is:
+            //   - On<PROPERTY_NAME>Changing(value);
+            //   - OnPropertyChanging();
+            //   - field = value;
+            //   - On<PROPERTY_NAME>Changed(value);
+            //   - OnPropertyChanged();
         model.Name = "B";
 
         Assert.AreEqual("B", model.Name);
@@ -1049,8 +1049,8 @@ public partial class Test_ObservablePropertyAttribute
         List<string> changingArgs = new();
         List<string> changedArgs = new();
 
-        model.PropertyChanging += (s, e) => changingArgs.Add(e.PropertyName);
-        model.PropertyChanged += (s, e) => changedArgs.Add(e.PropertyName);
+        model.PropertyChanging += (s, e) => changingArgs.Add(e.PropertyName!);
+        model.PropertyChanged += (s, e) => changedArgs.Add(e.PropertyName!);
 
         model.Name = "Bob";
 
@@ -1066,7 +1066,7 @@ public partial class Test_ObservablePropertyAttribute
 
         List<string> changedArgs = new();
 
-        model.PropertyChanged += (s, e) => changedArgs.Add(e.PropertyName);
+        model.PropertyChanged += (s, e) => changedArgs.Add(e.PropertyName!);
 
         model.Name = "Alice";
 

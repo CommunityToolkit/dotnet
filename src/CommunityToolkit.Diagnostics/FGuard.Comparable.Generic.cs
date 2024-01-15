@@ -4,11 +4,12 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace CommunityToolkit.Diagnostics;
 
 /// <inheritdoc/>
-partial class Guard
+partial class FGuard
 {
     /// <summary>
     /// Asserts that the input value is <see langword="default"/>.
@@ -16,17 +17,14 @@ partial class Guard
     /// <typeparam name="T">The type of <see langword="struct"/> value type being tested.</typeparam>
     /// <param name="value">The input value to test.</param>
     /// <param name="name">The name of the input parameter being tested.</param>
+    /// <returns>The <paramref name="value"/> that is <see langword="default"/>(<typeparamref name="T"/>).</returns>
     /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is not <see langword="default"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsDefault<T>(T value, [CallerArgumentExpression(nameof(value))] string name = "")
+    public static T IsDefault<T>(T value, [CallerArgumentExpression(nameof(value))] string name = "")
         where T : struct, IEquatable<T>
     {
-        if (value.Equals(default))
-        {
-            return;
-        }
-
-        ThrowHelper.ThrowArgumentExceptionForIsDefault(value, name);
+        Guard.IsDefault(value, name);
+        return value;
     }
 
     /// <summary>
@@ -35,17 +33,14 @@ partial class Guard
     /// <typeparam name="T">The type of <see langword="struct"/> value type being tested.</typeparam>
     /// <param name="value">The input value to test.</param>
     /// <param name="name">The name of the input parameter being tested.</param>
+    /// <returns>The <paramref name="value"/> that is not <see langword="default"/>(<typeparamref name="T"/>).</returns>
     /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is <see langword="default"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsNotDefault<T>(T value, [CallerArgumentExpression(nameof(value))] string name = "")
+    public static T IsNotDefault<T>(T value, [CallerArgumentExpression(nameof(value))] string name = "")
         where T : struct, IEquatable<T>
     {
-        if (!value.Equals(default))
-        {
-            return;
-        }
-
-        ThrowHelper.ThrowArgumentExceptionForIsNotDefault<T>(name);
+        Guard.IsNotDefault(value, name);
+        return value;
     }
 
     /// <summary>
@@ -55,18 +50,16 @@ partial class Guard
     /// <param name="value">The input <typeparamref name="T"/> value to test.</param>
     /// <param name="target">The target <typeparamref name="T"/> value to test for.</param>
     /// <param name="name">The name of the input parameter being tested.</param>
+    /// <returns>The <paramref name="value"/> that is equal to the <paramref name="target"/>.</returns>
     /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is != <paramref name="target"/>.</exception>
     /// <remarks>The method is generic to avoid boxing the parameters, if they are value types.</remarks>
+    /// <seealso cref="IEquatable{T}"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsEqualTo<T>(T value, T target, [CallerArgumentExpression(nameof(value))] string name = "")
+    public static T IsEqualTo<T>(T value, T target, [CallerArgumentExpression(nameof(value))] string name = "")
         where T : notnull, IEquatable<T>
     {
-        if (value.Equals(target))
-        {
-            return;
-        }
-
-        ThrowHelper.ThrowArgumentExceptionForIsEqualTo(value, target, name);
+        Guard.IsEqualTo(value, target, name);
+        return value;
     }
 
     /// <summary>
@@ -76,18 +69,16 @@ partial class Guard
     /// <param name="value">The input <typeparamref name="T"/> value to test.</param>
     /// <param name="target">The target <typeparamref name="T"/> value to test for.</param>
     /// <param name="name">The name of the input parameter being tested.</param>
+    /// <returns>The <paramref name="value"/> that is not equal to the <paramref name="target"/>.</returns>
     /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is == <paramref name="target"/>.</exception>
     /// <remarks>The method is generic to avoid boxing the parameters, if they are value types.</remarks>
+    /// <seealso cref="IEquatable{T}"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsNotEqualTo<T>(T value, T target, [CallerArgumentExpression(nameof(value))] string name = "")
+    public static T IsNotEqualTo<T>(T value, T target, [CallerArgumentExpression(nameof(value))] string name = "")
         where T : notnull, IEquatable<T>
     {
-        if (!value.Equals(target))
-        {
-            return;
-        }
-
-        ThrowHelper.ThrowArgumentExceptionForIsNotEqualTo(value, target, name);
+        Guard.IsNotEqualTo(value, target, name);
+        return value;
     }
 
     /// <summary>
@@ -97,111 +88,14 @@ partial class Guard
     /// <param name="value">The input <typeparamref name="T"/> value to test.</param>
     /// <param name="target">The target <typeparamref name="T"/> value to test for.</param>
     /// <param name="name">The name of the input parameter being tested.</param>
+    /// <returns>The <paramref name="value"/> that is bitwise match to the <paramref name="target"/>.</returns>
     /// <exception cref="ArgumentException">Thrown if <paramref name="value"/> is not a bitwise match for <paramref name="target"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static unsafe void IsBitwiseEqualTo<T>(T value, T target, [CallerArgumentExpression(nameof(value))] string name = "")
+    public static unsafe T IsBitwiseEqualTo<T>(T value, T target, [CallerArgumentExpression(nameof(value))] string name = "")
         where T : unmanaged
     {
-        // Include some fast paths if the input type is of size 1, 2, 4, 8, or 16.
-        // In those cases, just reinterpret the bytes as values of an integer type,
-        // and compare them directly, which is much faster than having a loop over each byte.
-        // The conditional branches below are known at compile time by the JIT compiler,
-        // so that only the right one will actually be translated into native code.
-        if (sizeof(T) == 1)
-        {
-            byte valueByte = Unsafe.As<T, byte>(ref value);
-            byte targetByte = Unsafe.As<T, byte>(ref target);
-
-            if (valueByte == targetByte)
-            {
-                return;
-            }
-
-            ThrowHelper.ThrowArgumentExceptionForBitwiseEqualTo(value, target, name);
-        }
-        else if (sizeof(T) == 2)
-        {
-            ushort valueUShort = Unsafe.As<T, ushort>(ref value);
-            ushort targetUShort = Unsafe.As<T, ushort>(ref target);
-
-            if (valueUShort == targetUShort)
-            {
-                return;
-            }
-
-            ThrowHelper.ThrowArgumentExceptionForBitwiseEqualTo(value, target, name);
-        }
-        else if (sizeof(T) == 4)
-        {
-            uint valueUInt = Unsafe.As<T, uint>(ref value);
-            uint targetUInt = Unsafe.As<T, uint>(ref target);
-
-            if (valueUInt == targetUInt)
-            {
-                return;
-            }
-
-            ThrowHelper.ThrowArgumentExceptionForBitwiseEqualTo(value, target, name);
-        }
-        else if (sizeof(T) == 8)
-        {
-            ulong valueULong = Unsafe.As<T, ulong>(ref value);
-            ulong targetULong = Unsafe.As<T, ulong>(ref target);
-
-            if (Bit64Compare(ref valueULong, ref targetULong))
-            {
-                return;
-            }
-
-            ThrowHelper.ThrowArgumentExceptionForBitwiseEqualTo(value, target, name);
-        }
-        else if (sizeof(T) == 16)
-        {
-            ulong valueULong0 = Unsafe.As<T, ulong>(ref value);
-            ulong targetULong0 = Unsafe.As<T, ulong>(ref target);
-
-            if (Bit64Compare(ref valueULong0, ref targetULong0))
-            {
-                ulong valueULong1 = Unsafe.Add(ref Unsafe.As<T, ulong>(ref value), 1);
-                ulong targetULong1 = Unsafe.Add(ref Unsafe.As<T, ulong>(ref target), 1);
-
-                if (Bit64Compare(ref valueULong1, ref targetULong1))
-                {
-                    return;
-                }
-            }
-
-            ThrowHelper.ThrowArgumentExceptionForBitwiseEqualTo(value, target, name);
-        }
-        else
-        {
-            Span<byte> valueBytes = new(Unsafe.AsPointer(ref value), sizeof(T));
-            Span<byte> targetBytes = new(Unsafe.AsPointer(ref target), sizeof(T));
-
-            if (valueBytes.SequenceEqual(targetBytes))
-            {
-                return;
-            }
-
-            ThrowHelper.ThrowArgumentExceptionForBitwiseEqualTo(value, target, name);
-        }
-    }
-
-    // Compares 64 bits of data from two given memory locations for bitwise equality
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static unsafe bool Bit64Compare(ref ulong left, ref ulong right)
-    {
-        // Handles 32 bit case, because using ulong is inefficient
-        if (sizeof(IntPtr) == 4)
-        {
-            ref int r0 = ref Unsafe.As<ulong, int>(ref left);
-            ref int r1 = ref Unsafe.As<ulong, int>(ref right);
-
-            return r0 == r1 &&
-                   Unsafe.Add(ref r0, 1) == Unsafe.Add(ref r1, 1);
-        }
-
-        return left == right;
+        Guard.IsBitwiseEqualTo(value, target, name);
+        return value;
     }
 
     /// <summary>
@@ -211,18 +105,16 @@ partial class Guard
     /// <param name="value">The input <typeparamref name="T"/> value to test.</param>
     /// <param name="maximum">The exclusive maximum <typeparamref name="T"/> value that is accepted.</param>
     /// <param name="name">The name of the input parameter being tested.</param>
+    /// <returns>The <paramref name="value"/> that less than the <paramref name="maximum"/>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is >= <paramref name="maximum"/>.</exception>
     /// <remarks>The method is generic to avoid boxing the parameters, if they are value types.</remarks>
+    /// <seealso cref="IComparable{T}"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsLessThan<T>(T value, T maximum, [CallerArgumentExpression(nameof(value))] string name = "")
+    public static T IsLessThan<T>(T value, T maximum, [CallerArgumentExpression(nameof(value))] string name = "")
         where T : notnull, IComparable<T>
     {
-        if (value.CompareTo(maximum) < 0)
-        {
-            return;
-        }
-
-        ThrowHelper.ThrowArgumentOutOfRangeExceptionForIsLessThan(value, maximum, name);
+        Guard.IsLessThan(value, maximum, name);
+        return value;
     }
 
     /// <summary>
@@ -232,18 +124,16 @@ partial class Guard
     /// <param name="value">The input <typeparamref name="T"/> value to test.</param>
     /// <param name="maximum">The inclusive maximum <typeparamref name="T"/> value that is accepted.</param>
     /// <param name="name">The name of the input parameter being tested.</param>
+    /// <returns>The <paramref name="value"/> that less than or equal to the <paramref name="maximum"/>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is > <paramref name="maximum"/>.</exception>
     /// <remarks>The method is generic to avoid boxing the parameters, if they are value types.</remarks>
+    /// <seealso cref="IComparable{T}"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsLessThanOrEqualTo<T>(T value, T maximum, [CallerArgumentExpression(nameof(value))] string name = "")
+    public static T IsLessThanOrEqualTo<T>(T value, T maximum, [CallerArgumentExpression(nameof(value))] string name = "")
         where T : notnull, IComparable<T>
     {
-        if (value.CompareTo(maximum) <= 0)
-        {
-            return;
-        }
-
-        ThrowHelper.ThrowArgumentOutOfRangeExceptionForIsLessThanOrEqualTo(value, maximum, name);
+        Guard.IsLessThanOrEqualTo(value, maximum, name);
+        return value;
     }
 
     /// <summary>
@@ -253,18 +143,16 @@ partial class Guard
     /// <param name="value">The input <typeparamref name="T"/> value to test.</param>
     /// <param name="minimum">The exclusive minimum <typeparamref name="T"/> value that is accepted.</param>
     /// <param name="name">The name of the input parameter being tested.</param>
+    /// <returns>The <paramref name="value"/> that greater than the <paramref name="minimum"/>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is &lt;= <paramref name="minimum"/>.</exception>
     /// <remarks>The method is generic to avoid boxing the parameters, if they are value types.</remarks>
+    /// <seealso cref="IComparable{T}"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsGreaterThan<T>(T value, T minimum, [CallerArgumentExpression(nameof(value))] string name = "")
+    public static T IsGreaterThan<T>(T value, T minimum, [CallerArgumentExpression(nameof(value))] string name = "")
         where T : notnull, IComparable<T>
     {
-        if (value.CompareTo(minimum) > 0)
-        {
-            return;
-        }
-
-        ThrowHelper.ThrowArgumentOutOfRangeExceptionForIsGreaterThan(value, minimum, name);
+        Guard.IsGreaterThan(value, minimum, name);
+        return value;
     }
 
     /// <summary>
@@ -274,18 +162,16 @@ partial class Guard
     /// <param name="value">The input <typeparamref name="T"/> value to test.</param>
     /// <param name="minimum">The inclusive minimum <typeparamref name="T"/> value that is accepted.</param>
     /// <param name="name">The name of the input parameter being tested.</param>
+    /// <returns>The <paramref name="value"/> that greater than or equal to the <paramref name="minimum"/>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is &lt; <paramref name="minimum"/>.</exception>
     /// <remarks>The method is generic to avoid boxing the parameters, if they are value types.</remarks>
+    /// <seealso cref="IComparable{T}"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsGreaterThanOrEqualTo<T>(T value, T minimum, [CallerArgumentExpression(nameof(value))] string name = "")
+    public static T IsGreaterThanOrEqualTo<T>(T value, T minimum, [CallerArgumentExpression(nameof(value))] string name = "")
         where T : notnull, IComparable<T>
     {
-        if (value.CompareTo(minimum) >= 0)
-        {
-            return;
-        }
-
-        ThrowHelper.ThrowArgumentOutOfRangeExceptionForIsGreaterThanOrEqualTo(value, minimum, name);
+        Guard.IsGreaterThanOrEqualTo(value, minimum, name);
+        return value;
     }
 
     /// <summary>
@@ -296,21 +182,19 @@ partial class Guard
     /// <param name="minimum">The inclusive minimum <typeparamref name="T"/> value that is accepted.</param>
     /// <param name="maximum">The exclusive maximum <typeparamref name="T"/> value that is accepted.</param>
     /// <param name="name">The name of the input parameter being tested.</param>
+    /// <returns>The <paramref name="value"/> that is >= <paramref name="minimum"/> and &lt; the <paramref name="maximum"/>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is &lt; <paramref name="minimum"/> or >= <paramref name="maximum"/>.</exception>
     /// <remarks>
     /// This API asserts the equivalent of "<paramref name="value"/> in [<paramref name="minimum"/>, <paramref name="maximum"/>)", using arithmetic notation.
     /// The method is generic to avoid boxing the parameters, if they are value types.
     /// </remarks>
+    /// <seealso cref="IComparable{T}"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsInRange<T>(T value, T minimum, T maximum, [CallerArgumentExpression(nameof(value))] string name = "")
+    public static T IsInRange<T>(T value, T minimum, T maximum, [CallerArgumentExpression(nameof(value))] string name = "")
         where T : notnull, IComparable<T>
     {
-        if (value.CompareTo(minimum) >= 0 && value.CompareTo(maximum) < 0)
-        {
-            return;
-        }
-
-        ThrowHelper.ThrowArgumentOutOfRangeExceptionForIsInRange(value, minimum, maximum, name);
+        Guard.IsInRange(value, minimum, maximum, name);
+        return value;
     }
 
     /// <summary>
@@ -321,21 +205,19 @@ partial class Guard
     /// <param name="minimum">The inclusive minimum <typeparamref name="T"/> value that is accepted.</param>
     /// <param name="maximum">The exclusive maximum <typeparamref name="T"/> value that is accepted.</param>
     /// <param name="name">The name of the input parameter being tested.</param>
+    /// <returns>The <paramref name="value"/> that is &lt; <paramref name="minimum"/> or >= the <paramref name="maximum"/>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is >= <paramref name="minimum"/> and &lt; <paramref name="maximum"/>.</exception>
     /// <remarks>
     /// This API asserts the equivalent of "<paramref name="value"/> not in [<paramref name="minimum"/>, <paramref name="maximum"/>)", using arithmetic notation.
     /// The method is generic to avoid boxing the parameters, if they are value types.
     /// </remarks>
+    /// <seealso cref="IComparable{T}"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsNotInRange<T>(T value, T minimum, T maximum, [CallerArgumentExpression(nameof(value))] string name = "")
+    public static T IsNotInRange<T>(T value, T minimum, T maximum, [CallerArgumentExpression(nameof(value))] string name = "")
         where T : notnull, IComparable<T>
     {
-        if (value.CompareTo(minimum) < 0 || value.CompareTo(maximum) >= 0)
-        {
-            return;
-        }
-
-        ThrowHelper.ThrowArgumentOutOfRangeExceptionForIsNotInRange(value, minimum, maximum, name);
+        Guard.IsNotInRange(value, minimum, maximum, name);
+        return value;
     }
 
     /// <summary>
@@ -346,21 +228,19 @@ partial class Guard
     /// <param name="minimum">The exclusive minimum <typeparamref name="T"/> value that is accepted.</param>
     /// <param name="maximum">The exclusive maximum <typeparamref name="T"/> value that is accepted.</param>
     /// <param name="name">The name of the input parameter being tested.</param>
+    /// <returns>The <paramref name="value"/> that is > the <paramref name="minimum"/> and &lt; the <paramref name="maximum"/>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is &lt;= <paramref name="minimum"/> or >= <paramref name="maximum"/>.</exception>
     /// <remarks>
     /// This API asserts the equivalent of "<paramref name="value"/> in (<paramref name="minimum"/>, <paramref name="maximum"/>)", using arithmetic notation.
     /// The method is generic to avoid boxing the parameters, if they are value types.
     /// </remarks>
+    /// <seealso cref="IComparable{T}"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsBetween<T>(T value, T minimum, T maximum, [CallerArgumentExpression(nameof(value))] string name = "")
+    public static T IsBetween<T>(T value, T minimum, T maximum, [CallerArgumentExpression(nameof(value))] string name = "")
         where T : notnull, IComparable<T>
     {
-        if (value.CompareTo(minimum) > 0 && value.CompareTo(maximum) < 0)
-        {
-            return;
-        }
-
-        ThrowHelper.ThrowArgumentOutOfRangeExceptionForIsBetween(value, minimum, maximum, name);
+        Guard.IsBetween(value, minimum, maximum, name);
+        return value;
     }
 
     /// <summary>
@@ -371,21 +251,19 @@ partial class Guard
     /// <param name="minimum">The exclusive minimum <typeparamref name="T"/> value that is accepted.</param>
     /// <param name="maximum">The exclusive maximum <typeparamref name="T"/> value that is accepted.</param>
     /// <param name="name">The name of the input parameter being tested.</param>
+    /// <returns>The <paramref name="value"/> that is &lt;= the <paramref name="minimum"/> or >= the <paramref name="maximum"/>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is > <paramref name="minimum"/> and &lt; <paramref name="maximum"/>.</exception>
     /// <remarks>
     /// This API asserts the equivalent of "<paramref name="value"/> not in (<paramref name="minimum"/>, <paramref name="maximum"/>)", using arithmetic notation.
     /// The method is generic to avoid boxing the parameters, if they are value types.
     /// </remarks>
+    /// <seealso cref="IComparable{T}"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsNotBetween<T>(T value, T minimum, T maximum, [CallerArgumentExpression(nameof(value))] string name = "")
+    public static T IsNotBetween<T>(T value, T minimum, T maximum, [CallerArgumentExpression(nameof(value))] string name = "")
         where T : notnull, IComparable<T>
     {
-        if (value.CompareTo(minimum) <= 0 || value.CompareTo(maximum) >= 0)
-        {
-            return;
-        }
-
-        ThrowHelper.ThrowArgumentOutOfRangeExceptionForIsNotBetween(value, minimum, maximum, name);
+        Guard.IsNotBetween(value, minimum, maximum, name);
+        return value;
     }
 
     /// <summary>
@@ -396,21 +274,19 @@ partial class Guard
     /// <param name="minimum">The inclusive minimum <typeparamref name="T"/> value that is accepted.</param>
     /// <param name="maximum">The inclusive maximum <typeparamref name="T"/> value that is accepted.</param>
     /// <param name="name">The name of the input parameter being tested.</param>
+    /// <returns>The <paramref name="value"/> that is >= the <paramref name="minimum"/> and &lt;= the <paramref name="maximum"/>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is &lt; <paramref name="minimum"/> or > <paramref name="maximum"/>.</exception>
     /// <remarks>
     /// This API asserts the equivalent of "<paramref name="value"/> in [<paramref name="minimum"/>, <paramref name="maximum"/>]", using arithmetic notation.
     /// The method is generic to avoid boxing the parameters, if they are value types.
     /// </remarks>
+    /// <seealso cref="IComparable{T}"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsBetweenOrEqualTo<T>(T value, T minimum, T maximum, [CallerArgumentExpression(nameof(value))] string name = "")
+    public static T IsBetweenOrEqualTo<T>(T value, T minimum, T maximum, [CallerArgumentExpression(nameof(value))] string name = "")
         where T : notnull, IComparable<T>
     {
-        if (value.CompareTo(minimum) >= 0 && value.CompareTo(maximum) <= 0)
-        {
-            return;
-        }
-
-        ThrowHelper.ThrowArgumentOutOfRangeExceptionForIsBetweenOrEqualTo(value, minimum, maximum, name);
+        Guard.IsBetweenOrEqualTo(value, minimum, maximum, name);
+        return value;
     }
 
     /// <summary>
@@ -421,20 +297,18 @@ partial class Guard
     /// <param name="minimum">The inclusive minimum <typeparamref name="T"/> value that is accepted.</param>
     /// <param name="maximum">The inclusive maximum <typeparamref name="T"/> value that is accepted.</param>
     /// <param name="name">The name of the input parameter being tested.</param>
+    /// <returns>The <paramref name="value"/> that is &lt; the <paramref name="minimum"/> or > the <paramref name="maximum"/>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="value"/> is >= <paramref name="minimum"/> and &lt;= <paramref name="maximum"/>.</exception>
     /// <remarks>
     /// This API asserts the equivalent of "<paramref name="value"/> not in [<paramref name="minimum"/>, <paramref name="maximum"/>]", using arithmetic notation.
     /// The method is generic to avoid boxing the parameters, if they are value types.
     /// </remarks>
+    /// <seealso cref="IComparable{T}"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void IsNotBetweenOrEqualTo<T>(T value, T minimum, T maximum, [CallerArgumentExpression(nameof(value))] string name = "")
+    public static T IsNotBetweenOrEqualTo<T>(T value, T minimum, T maximum, [CallerArgumentExpression(nameof(value))] string name = "")
         where T : notnull, IComparable<T>
     {
-        if (value.CompareTo(minimum) < 0 || value.CompareTo(maximum) > 0)
-        {
-            return;
-        }
-
-        ThrowHelper.ThrowArgumentOutOfRangeExceptionForIsNotBetweenOrEqualTo(value, minimum, maximum, name);
+        Guard.IsNotBetweenOrEqualTo(value, minimum, maximum, name);
+        return value;
     }
 }

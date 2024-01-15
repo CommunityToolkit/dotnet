@@ -10,219 +10,383 @@ namespace CommunityToolkit.Diagnostics.UnitTests;
 [TestClass]
 public partial class Test_Guard
 {
+    [TestCategory("Guard")]
     [TestMethod]
-    public void Test_Guard_IsNull_Ok()
+    public void Test_Guard_IsNull()
     {
-        Guard.IsNull<object>(null, nameof(Test_Guard_IsNull_Ok));
-        Guard.IsNull<int>(null, nameof(Test_Guard_IsNull_Ok));
-
-        static void Test<T>(T? obj)
+        static void TestIsNull<T>(T? obj)
         {
-            Guard.IsNull(obj, nameof(Test_Guard_IsNull_Ok));
+            Guard.IsNull(obj, $"Guard<{typeof(T)}>.IsNull({obj?.ToString() ?? "null"})");
+            Assert.IsNull(FGuard.IsNull(obj, $"FGuard<{typeof(T)}>.IsNull({obj?.ToString() ?? "null"})"));
         }
 
-        Test<string>(null);
-        Test<int?>(null);
-    }
+        TestIsNull<object>(null);
+        TestIsNull<object?>(null);
+        TestIsNull<int?>(null);
+        TestIsNull<string>(null);
+        TestIsNull<string?>(null);
 
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void Test_Guard_IsNull_ClassFail()
-    {
-        Guard.IsNull(new object(), nameof(Test_Guard_IsNull_ClassFail));
-    }
-
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void Test_Guard_IsNull_StructFail()
-    {
-        Guard.IsNull(7, nameof(Test_Guard_IsNull_StructFail));
-    }
-
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void Test_Guard_IsNull_GenericClassFail()
-    {
-        static void Test<T>(T? obj)
+        static void TestIsNull_Fail<T>(T? obj)
         {
-            Guard.IsNull(obj, nameof(Test_Guard_IsNull_GenericClassFail));
+            _ = Assert.ThrowsException<ArgumentException>(() => Guard.IsNull(obj, $"Guard<{typeof(T)}>.IsNull({obj?.ToString() ?? "null"}) Fail"));
+            _ = Assert.ThrowsException<ArgumentException>(() => FGuard.IsNull(obj, $"FGuard<{typeof(T)}>.IsNull({obj?.ToString() ?? "null"}) Fail"));
         }
 
-        Test("Hi!");
+        TestIsNull_Fail(new object());
+        TestIsNull_Fail(7);
+        TestIsNull_Fail<int?>(7);
+        TestIsNull_Fail("Hello");
     }
 
+    [TestCategory("Guard")]
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void Test_Guard_IsNull_GenericStructFail()
+    public void Test_Guard_IsNotNull()
     {
-        static void Test<T>(T? obj)
+        static void TestIsNotNull<T>(T? obj)
         {
-            Guard.IsNull(obj, nameof(Test_Guard_IsNull_GenericStructFail));
+            Guard.IsNotNull(obj, $"Guard<{typeof(T)}>.IsNotNull({obj?.ToString() ?? "null"})");
+            if (obj is ValueType)
+            {
+                Assert.AreEqual(obj, FGuard.IsNotNull(obj, $"FGuard<{typeof(T)}>.IsNotNull({obj?.ToString() ?? "null"})"));
+            }
+            else
+            {
+                Assert.AreSame(obj, FGuard.IsNotNull(obj, $"FGuard<{typeof(T)}>.IsNotNull({obj?.ToString() ?? "null"})"));
+            }
         }
 
-        Test(42);
-    }
+        TestIsNotNull(new object());
+        TestIsNotNull(7);
+        TestIsNotNull<int?>(7);
+        TestIsNotNull("Hello");
 
-    [TestMethod]
-    public void Test_Guard_IsNotNull_Ok()
-    {
-        Guard.IsNotNull(new object(), nameof(Test_Guard_IsNotNull_Ok));
-        Guard.IsNotNull(7, nameof(Test_Guard_IsNotNull_Ok));
-
-        static void Test<T>(T? obj)
+        static void TestIsNotNull_Fail<T>(T? obj)
         {
-            Guard.IsNotNull(obj, nameof(Test_Guard_IsNotNull_Ok));
+            _ = Assert.ThrowsException<ArgumentNullException>(() => Guard.IsNotNull(obj, $"Guard<{typeof(T)}>.IsNotNull({obj?.ToString() ?? "null"}) Fail"));
+            _ = Assert.ThrowsException<ArgumentNullException>(() => FGuard.IsNotNull(obj, $"FGuard<{typeof(T)}>.IsNotNull({obj?.ToString() ?? "null"}) Fail"));
         }
 
-        Test("Hi!");
-        Test(42);
-        Test<int?>(42);
+        TestIsNotNull_Fail<object>(null);
+        TestIsNotNull_Fail<object?>(null);
+        TestIsNotNull_Fail<int?>(null);
+        TestIsNotNull_Fail<string>(null);
+        TestIsNotNull_Fail<string?>(null);
+    }
+
+    [TestCategory("Guard")]
+    [TestMethod]
+    public void Test_Guard_IsOfType()
+    {
+        Guard.IsOfType<string>("Hello", "Guard.IsOfType<string>");
+        Assert.AreSame("Hello", FGuard.IsOfType<string>("Hello", "FGuard.IsOfType<string>"));
+        Guard.IsOfType<int>(7, "Guard.IsOfType<int>");
+        Assert.AreEqual(7, FGuard.IsOfType<int>(7, "FGuard.IsOfType<int>"));
+        //Assert.AreEqual(7, FGuard.IsBoxed<int>(7, "FGuard.IsBoxed<int>"));
+
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.IsOfType<string>(7, "Guard.IsOfType<string> Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.IsOfType<string>(7, "FGuard.IsOfType<string> Fail"));
+        //_ = Assert.ThrowsException<ArgumentException>(() => FGuard.IsBoxed<long>(7, "FGuard.IsBoxed<long> Fail"));
+
+        Guard.IsOfType("Hello", typeof(string), "Guard.IsOfType(typeof(string))");
+        Assert.AreSame("Hello", FGuard.IsOfType("Hello", typeof(string), "FGuard.IsOfType(typeof(string))"));
+        Guard.IsOfType(7, typeof(int), "Guard.IsOfType(typeof(int))");
+        Assert.AreEqual(7, FGuard.IsOfType(7, typeof(int), "FGuard.IsOfType(typeof(int))"));
+
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.IsOfType(7, typeof(string), "Guard.IsOfType(typeof(string)) Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.IsOfType(7, typeof(string), "FGuard.IsOfType(typeof(string)) Fail"));
+    }
+
+    [TestCategory("Guard")]
+    [TestMethod]
+    public void Test_Guard_IsAssignableToType()
+    {
+        Guard.IsAssignableToType<string>("Hello", "Guard.IsAssignableToType<string>");
+        Assert.AreSame("Hello", FGuard.IsAssignableToType<string>("Hello", "FGuard.IsAssignableToType<string>"));
+
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.IsAssignableToType<string>(7, "Guard.IsAssignableToType<string> Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.IsAssignableToType<string>(7, "FGuard.IsAssignableToType<string> Fail"));
+
+        Guard.IsAssignableToType("Hello", typeof(string), "Guard.IsAssignableToType(typeof(string))");
+        Assert.AreSame("Hello", FGuard.IsAssignableToType("Hello", typeof(string), "FGuard.IsAssignableToType(typeof(string))"));
+
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.IsAssignableToType(7, typeof(string), "Guard.IsAssignableToType(typeof(string)) Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.IsAssignableToType(7, typeof(string), "FGuard.IsAssignableToType(typeof(string)) Fail"));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
-    public void Test_Guard_IsNotNull_ClassFail()
+    public void Test_Guard_IsNotAssignableToType()
     {
-        Guard.IsNotNull<object>(null, nameof(Test_Guard_IsNotNull_ClassFail));
+        Guard.IsNotAssignableToType<int>("Hello", "Guard.IsNotAssignableToType<int>");
+        Assert.AreSame("Hello", FGuard.IsNotAssignableToType<int>("Hello", "FGuard.IsNotAssignableToType<int>"));
+
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.IsNotAssignableToType<string>("Hello", "Guard.IsNotAssignableToType<string> Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.IsNotAssignableToType<string>("Hello", "FGuard.IsNotAssignableToType<string> Fail"));
+
+        Guard.IsNotAssignableToType("Hello", typeof(int), "Guard.IsNotAssignableToType(typeof(int))");
+        Assert.AreSame("Hello", FGuard.IsNotAssignableToType("Hello", typeof(int), "FGuard.IsNotAssignableToType(typeof(int))"));
+
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.IsNotAssignableToType<string>("Hello", "Guard.IsNotAssignableToType<string> Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.IsNotAssignableToType<string>("Hello", "FGuard.IsNotAssignableToType<string> Fail"));
     }
 
+    [TestCategory("Guard")]
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
-    public void Test_Guard_IsNotNull_StructFail()
+    public void Test_Guard_IsNullOrEmpty()
     {
-        Guard.IsNotNull<int>(null, nameof(Test_Guard_IsNotNull_StructFail));
+        Guard.IsNullOrEmpty(null, "Guard.IsNullOrEmpty(null)");
+        Assert.IsNull(FGuard.IsNullOrEmpty(null, "FGuard.IsNullOrEmpty(null)"));
+        Guard.IsNullOrEmpty(string.Empty, "Guard.IsNullOrEmpty(empty)");
+        Assert.AreSame(string.Empty, FGuard.IsNullOrEmpty(string.Empty, "FGuard.IsNullOrEmpty(empty)"));
+
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.IsNullOrEmpty("Hello", "Guard.IsNullOrEmpty Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.IsNullOrEmpty("Hello", "FGuard.IsNullOrEmpty Fail"));
     }
 
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
-    public void Test_Guard_IsNotNull_GenericClassFail()
-    {
-        static void Test<T>(T? obj)
-        {
-            Guard.IsNotNull(obj, nameof(Test_Guard_IsNotNull_GenericClassFail));
-        }
-
-        Test<string>(null);
-    }
-
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
-    public void Test_Guard_IsNotNull_GenericStructFail()
-    {
-        static void Test<T>(T? obj)
-        {
-            Guard.IsNotNull(obj, nameof(Test_Guard_IsNotNull_GenericClassFail));
-        }
-
-        Test<int?>(null);
-    }
-
-    [TestMethod]
-    public void Test_Guard_IsOfT_Ok()
-    {
-        Guard.IsOfType<string>("Hello", nameof(Test_Guard_IsOfT_Ok));
-        Guard.IsOfType<int>(7, nameof(Test_Guard_IsOfT_Ok));
-    }
-
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void Test_Guard_IsOfT_Fail()
-    {
-        Guard.IsOfType<string>(7, nameof(Test_Guard_IsOfT_Fail));
-    }
-
-    [TestMethod]
-    public void Test_Guard_IsOfType_Ok()
-    {
-        Guard.IsOfType("Hello", typeof(string), nameof(Test_Guard_IsOfType_Ok));
-        Guard.IsOfType(7, typeof(int), nameof(Test_Guard_IsOfType_Ok));
-    }
-
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void Test_Guard_IsOfType_Fail()
-    {
-        Guard.IsOfType(7, typeof(string), nameof(Test_Guard_IsOfType_Fail));
-    }
-
-    [TestMethod]
-    public void Test_Guard_IsAssignableToT_Ok()
-    {
-        Guard.IsAssignableToType<string>("Hello", nameof(Test_Guard_IsAssignableToT_Ok));
-    }
-
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void Test_Guard_IsAssignableToT_Fail()
-    {
-        Guard.IsAssignableToType<string>(7, nameof(Test_Guard_IsAssignableToT_Fail));
-    }
-
-    [TestMethod]
-    public void Test_Guard_IsAssignableToType_Ok()
-    {
-        Guard.IsAssignableToType("Hello", typeof(string), nameof(Test_Guard_IsAssignableToType_Ok));
-    }
-
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void Test_Guard_IsAssignableToType_Fail()
-    {
-        Guard.IsAssignableToType(7, typeof(string), nameof(Test_Guard_IsAssignableToType_Fail));
-    }
-
-    [TestMethod]
-    public void Test_Guard_IsNullOrEmpty_Ok()
-    {
-        Guard.IsNullOrEmpty(null, nameof(Test_Guard_IsNullOrEmpty_Ok));
-        Guard.IsNullOrEmpty(string.Empty, nameof(Test_Guard_IsNullOrEmpty_Ok));
-    }
-
-    [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void Test_Guard_IsNullOrEmpty_Fail()
-    {
-        Guard.IsNullOrEmpty("Hello", nameof(Test_Guard_IsNullOrEmpty_Fail));
-    }
-
+    [TestCategory("Guard")]
     [TestMethod]
     public void Test_Guard_IsNotNullOrEmpty_Ok()
     {
-        Guard.IsNotNullOrEmpty("Hello", nameof(Test_Guard_IsNotNullOrEmpty_Ok));
+        Guard.IsNotNullOrEmpty("Hello", "Guard.IsNotNullOrEmpty");
+        Assert.AreSame("Hello", FGuard.IsNotNullOrEmpty("Hello", "FGuard.IsNotNullOrEmpty"));
+
+        _ = Assert.ThrowsException<ArgumentNullException>(() => Guard.IsNotNullOrEmpty(null, "Guard.IsNotNullOrEmpty(null) Fail"));
+        _ = Assert.ThrowsException<ArgumentNullException>(() => FGuard.IsNotNullOrEmpty(null, "FGuard.IsNotNullOrEmpty(null) Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.IsNotNullOrEmpty(string.Empty, "Guard.IsNotNullOrEmpty(empty) Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.IsNotNullOrEmpty(string.Empty, "FGuard.IsNotNullOrEmpty(empty) Fail"));
     }
 
+    [TestCategory("Guard")]
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
-    public void Test_Guard_IsNotNullOrEmpty_Null()
+    public void Test_Guard_IsNullOrWhiteSpace_Ok()
     {
-        Guard.IsNotNullOrEmpty(null, nameof(Test_Guard_IsNotNullOrEmpty_Null));
+        Guard.IsNullOrWhiteSpace(null, "Guard.IsNullOrWhiteSpace(null)");
+        Assert.IsNull(FGuard.IsNullOrWhiteSpace(null, "FGuard.IsNullOrWhiteSpace(null)"));
+        Guard.IsNullOrWhiteSpace(" \t ", "Guard.IsNullOrWhiteSpace(WhiteSpace)");
+        Assert.AreSame(" \t ", FGuard.IsNullOrWhiteSpace(" \t ", "FGuard.IsNullOrWhiteSpace(WhiteSpace)"));
+
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.IsNullOrWhiteSpace("Hello", "Guard.IsNullOrWhiteSpace Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.IsNullOrWhiteSpace("Hello", "FGuard.IsNullOrWhiteSpace Fail"));
     }
 
+    [TestCategory("Guard")]
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void Test_Guard_IsNotNullOrEmpty_Empty()
+    public void Test_Guard_IsNotNullOrWhiteSpace()
     {
-        Guard.IsNotNullOrEmpty(string.Empty, nameof(Test_Guard_IsNotNullOrEmpty_Empty));
+        Guard.IsNotNullOrWhiteSpace("Hello", "Guard.IsNotNullOrWhiteSpace");
+        Assert.AreSame("Hello", FGuard.IsNotNullOrWhiteSpace("Hello", "FGuard.IsNotNullOrWhiteSpace"));
+
+        _ = Assert.ThrowsException<ArgumentNullException>(() => Guard.IsNotNullOrWhiteSpace(null, "Guard.IsNotNullOrWhiteSpace(null) Fail"));
+        _ = Assert.ThrowsException<ArgumentNullException>(() => FGuard.IsNotNullOrWhiteSpace(null, "FGuard.IsNotNullOrWhiteSpace(null) Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.IsNotNullOrWhiteSpace(" \t ", "Guard.IsNotNullOrWhiteSpace(WhiteSpace) Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.IsNotNullOrWhiteSpace(" \t ", "FGuard.IsNotNullOrWhiteSpace(WhiteSpace) Fail"));
     }
 
+    [TestCategory("Guard")]
     [TestMethod]
-    public void Test_Guard_IsNotNullOrWhiteSpace_Ok()
+    public void Test_Guard_IsEmpty()
     {
-        Guard.IsNotNullOrWhiteSpace("Hello", nameof(Test_Guard_IsNotNullOrWhiteSpace_Ok));
+        Guard.IsEmpty(string.Empty, "Guard.IsEmpty");
+        Assert.AreSame(string.Empty, FGuard.IsEmpty(string.Empty, "FGuard.IsEmpty"));
+
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.IsEmpty("Hello", "Guard.IsEmpty Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.IsEmpty("Hello", "FGuard.IsEmpty Fail"));
     }
 
+    [TestCategory("Guard")]
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
-    public void Test_Guard_IsNotNullOrWhiteSpace_Null()
+    public void Test_Guard_IsNotEmpty()
     {
-        Guard.IsNotNullOrWhiteSpace(null, nameof(Test_Guard_IsNotNullOrWhiteSpace_Null));
+        Guard.IsNotEmpty("Hello", "Guard.IsNotEmpty");
+        Assert.AreSame("Hello", FGuard.IsNotEmpty("Hello", "FGuard.IsNotEmpty"));
+
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.IsNotEmpty(string.Empty, "Guard.IsNotEmpty Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.IsNotEmpty(string.Empty, "FGuard.IsNotEmpty Fail"));
     }
 
+    [TestCategory("Guard")]
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void Test_Guard_IsNotNullOrWhiteSpace_Empty()
+    public void Test_Guard_IsWhiteSpace()
     {
-        Guard.IsNotNullOrWhiteSpace("  ", nameof(Test_Guard_IsNotNullOrWhiteSpace_Empty));
+        Guard.IsWhiteSpace(" \t ", "Guard.IsWhiteSpace");
+        Assert.AreSame(" \t ", FGuard.IsWhiteSpace(" \t ", "FGuard.IsWhiteSpace"));
+
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.IsWhiteSpace("Hello", "Guard.IsWhiteSpace Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.IsWhiteSpace("Hello", "FGuard.IsWhiteSpace Fail"));
+    }
+
+    [TestCategory("Guard")]
+    [TestMethod]
+    public void Test_Guard_IsNotWhiteSpace()
+    {
+        Guard.IsNotWhiteSpace("Hello", "Guard.IsNotWhiteSpace");
+        Assert.AreSame("Hello", FGuard.IsNotWhiteSpace("Hello", "FGuard.IsNotWhiteSpace"));
+
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.IsNotWhiteSpace(" \t ", "Guard.IsNotWhiteSpace Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.IsNotWhiteSpace(" \t ", "FGuard.IsNotWhiteSpace Fail"));
+    }
+
+    [TestCategory("Guard")]
+    [TestMethod]
+    public void Test_Guard_HasSizeEqualTo()
+    {
+        Guard.HasSizeEqualTo("Hello", 5, "Guard.HasSizeEqualTo(int)");
+        Assert.AreSame("Hello", FGuard.HasSizeEqualTo("Hello", 5, "FGuard.HasSizeEqualTo(int)"));
+
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.HasSizeEqualTo("Hello", 4, "Guard.HasSizeEqualTo(4) Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.HasSizeEqualTo("Hello", 4, "FGuard.HasSizeEqualTo(4) Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.HasSizeEqualTo("Hello", 6, "Guard.HasSizeEqualTo(6) Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.HasSizeEqualTo("Hello", 6, "FGuard.HasSizeEqualTo(6) Fail"));
+
+        Guard.HasSizeEqualTo("Hello", " Hi! ", "Guard.HasSizeEqualTo(string)");
+        Assert.AreSame("Hello", FGuard.HasSizeEqualTo("Hello", " Hi! ", "FGuard.HasSizeEqualTo(string)"));
+
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.HasSizeEqualTo("Hello", " Hi ", "Guard.HasSizeEqualTo( Hi ) Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.HasSizeEqualTo("Hello", " Hi ", "FGuard.HasSizeEqualTo( Hi ) Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.HasSizeEqualTo("Hello", "Hello!", "Guard.HasSizeEqualTo(Hello!) Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.HasSizeEqualTo("Hello", "Hello!", "FGuard.HasSizeEqualTo(Hello!) Fail"));
+    }
+
+    [TestCategory("Guard")]
+    [TestMethod]
+    public void Test_Guard_HasSizeNotEqualTo()
+    {
+        Guard.HasSizeNotEqualTo("Hello", 4, "Guard.HasSizeNotEqualTo(4)");
+        Assert.AreSame("Hello", FGuard.HasSizeNotEqualTo("Hello", 4, "FGuard.HasSizeNotEqualTo(4)"));
+        Guard.HasSizeNotEqualTo("Hello", 6, "Guard.HasSizeNotEqualTo(6)");
+        Assert.AreSame("Hello", FGuard.HasSizeNotEqualTo("Hello", 6, "FGuard.HasSizeNotEqualTo(6)"));
+
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.HasSizeNotEqualTo("Hello", 5, "Guard.HasSizeNotEqualTo Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.HasSizeNotEqualTo("Hello", 5, "FGuard.HasSizeNotEqualTo Fail"));
+    }
+
+    [TestCategory("Guard")]
+    [TestMethod]
+    public void Test_Guard_HasSizeGreaterThan()
+    {
+        Guard.HasSizeGreaterThan("Hello", int.MinValue, "Guard.HasSizeGreaterThan(MinValue)");
+        Assert.AreSame("Hello", FGuard.HasSizeGreaterThan("Hello", int.MinValue, "FGuard.HasSizeGreaterThan(MinValue)"));
+        Guard.HasSizeGreaterThan("Hello", -1, "Guard.HasSizeGreaterThan(-1)");
+        Assert.AreSame("Hello", FGuard.HasSizeGreaterThan("Hello", -1, "FGuard.HasSizeGreaterThan(-1)"));
+        Guard.HasSizeGreaterThan("Hello", 3, "Guard.HasSizeGreaterThan(3)");
+        Assert.AreSame("Hello", FGuard.HasSizeGreaterThan("Hello", 3, "FGuard.HasSizeGreaterThan(3)"));
+        Guard.HasSizeGreaterThan("Hello", 4, "Guard.HasSizeGreaterThan(4)");
+        Assert.AreSame("Hello", FGuard.HasSizeGreaterThan("Hello", 4, "FGuard.HasSizeGreaterThan(4)"));
+
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.HasSizeGreaterThan("Hello", 5, "Guard.HasSizeGreaterThan(5) Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.HasSizeGreaterThan("Hello", 5, "FGuard.HasSizeGreaterThan(5) Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.HasSizeGreaterThan("Hello", 6, "Guard.HasSizeGreaterThan(6) Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.HasSizeGreaterThan("Hello", 6, "FGuard.HasSizeGreaterThan(6) Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.HasSizeGreaterThan("Hello", int.MaxValue, "Guard.HasSizeGreaterThan(MaxValue) Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.HasSizeGreaterThan("Hello", int.MaxValue, "FGuard.HasSizeGreaterThan(MaxValue) Fail"));
+    }
+
+    [TestCategory("Guard")]
+    [TestMethod]
+    public void Test_Guard_HasSizeGreaterThanOrEqualTo()
+    {
+        Guard.HasSizeGreaterThanOrEqualTo("Hello", int.MinValue, "Guard.HasSizeGreaterThanOrEqualTo");
+        Assert.AreSame("Hello", FGuard.HasSizeGreaterThanOrEqualTo("Hello", int.MinValue, "FGuard.HasSizeGreaterThanOrEqualTo"));
+        Guard.HasSizeGreaterThanOrEqualTo("Hello", -1, "Guard.HasSizeGreaterThanOrEqualTo");
+        Assert.AreSame("Hello", FGuard.HasSizeGreaterThanOrEqualTo("Hello", -1, "FGuard.HasSizeGreaterThanOrEqualTo"));
+        Guard.HasSizeGreaterThanOrEqualTo("Hello", 4, "Guard.HasSizeGreaterThanOrEqualTo");
+        Assert.AreSame("Hello", FGuard.HasSizeGreaterThanOrEqualTo("Hello", 4, "FGuard.HasSizeGreaterThanOrEqualTo"));
+        Guard.HasSizeGreaterThanOrEqualTo("Hello", 5, "Guard.HasSizeGreaterThanOrEqualTo");
+        Assert.AreSame("Hello", FGuard.HasSizeGreaterThanOrEqualTo("Hello", 5, "FGuard.HasSizeGreaterThanOrEqualTo"));
+
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.HasSizeGreaterThanOrEqualTo("Hello", 6, "Guard.HasSizeGreaterThanOrEqualTo Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.HasSizeGreaterThanOrEqualTo("Hello", 6, "FGuard.HasSizeGreaterThanOrEqualTo Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.HasSizeGreaterThanOrEqualTo("Hello", 7, "Guard.HasSizeGreaterThanOrEqualTo Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.HasSizeGreaterThanOrEqualTo("Hello", 7, "FGuard.HasSizeGreaterThanOrEqualTo Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.HasSizeGreaterThanOrEqualTo("Hello", int.MaxValue, "Guard.HasSizeGreaterThanOrEqualTo Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.HasSizeGreaterThanOrEqualTo("Hello", int.MaxValue, "FGuard.HasSizeGreaterThanOrEqualTo Fail"));
+    }
+
+    [TestCategory("Guard")]
+    [TestMethod]
+    public void Test_Guard_HasSizeLessThan()
+    {
+        Guard.HasSizeLessThan("Hello", 6, "Guard.HasSizeLessThan");
+        Assert.AreSame("Hello", FGuard.HasSizeLessThan("Hello", 6, "FGuard.HasSizeLessThan"));
+        Guard.HasSizeLessThan("Hello", 7, "Guard.HasSizeLessThan");
+        Assert.AreSame("Hello", FGuard.HasSizeLessThan("Hello", 7, "FGuard.HasSizeLessThan"));
+        Guard.HasSizeLessThan("Hello", int.MaxValue, "Guard.HasSizeLessThan");
+        Assert.AreSame("Hello", FGuard.HasSizeLessThan("Hello", int.MaxValue, "FGuard.HasSizeLessThan"));
+
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.HasSizeLessThan("Hello", 5, "Guard.HasSizeLessThan Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.HasSizeLessThan("Hello", 5, "FGuard.HasSizeLessThan Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.HasSizeLessThan("Hello", 4, "Guard.HasSizeLessThan Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.HasSizeLessThan("Hello", 4, "FGuard.HasSizeLessThan Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.HasSizeLessThan("Hello", -1, "Guard.HasSizeLessThan Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.HasSizeLessThan("Hello", -1, "FGuard.HasSizeLessThan Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.HasSizeLessThan("Hello", int.MinValue, "Guard.HasSizeLessThan Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.HasSizeLessThan("Hello", int.MinValue, "FGuard.HasSizeLessThan Fail"));
+    }
+
+    [TestCategory("Guard")]
+    [TestMethod]
+    public void Test_Guard_HasSizeLessThanOrEqualTo()
+    {
+        Guard.HasSizeLessThanOrEqualTo("Hello", 5, "Guard.HasSizeLessThanOrEqualTo(int)");
+        Assert.AreSame("Hello", FGuard.HasSizeLessThanOrEqualTo("Hello", 5, "FGuard.HasSizeLessThanOrEqualTo(int)"));
+        Guard.HasSizeLessThanOrEqualTo("Hello", 6, "Guard.HasSizeLessThanOrEqualTo(int)");
+        Assert.AreSame("Hello", FGuard.HasSizeLessThanOrEqualTo("Hello", 6, "FGuard.HasSizeLessThanOrEqualTo(int)"));
+        Guard.HasSizeLessThanOrEqualTo("Hello", int.MaxValue, "Guard.HasSizeLessThanOrEqualTo(int)");
+        Assert.AreSame("Hello", FGuard.HasSizeLessThanOrEqualTo("Hello", int.MaxValue, "FGuard.HasSizeLessThanOrEqualTo(int)"));
+
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.HasSizeLessThanOrEqualTo("Hello", 4, "Guard.HasSizeLessThanOrEqualTo(int) Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.HasSizeLessThanOrEqualTo("Hello", 4, "FGuard.HasSizeLessThanOrEqualTo(int) Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.HasSizeLessThanOrEqualTo("Hello", 3, "Guard.HasSizeLessThanOrEqualTo(int) Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.HasSizeLessThanOrEqualTo("Hello", 3, "FGuard.HasSizeLessThanOrEqualTo(int) Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.HasSizeLessThanOrEqualTo("Hello", -1, "Guard.HasSizeLessThanOrEqualTo(int) Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.HasSizeLessThanOrEqualTo("Hello", -1, "FGuard.HasSizeLessThanOrEqualTo(int) Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.HasSizeLessThanOrEqualTo("Hello", int.MinValue, "Guard.HasSizeLessThanOrEqualTo(int) Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.HasSizeLessThanOrEqualTo("Hello", int.MinValue, "FGuard.HasSizeLessThanOrEqualTo(int) Fail"));
+
+        Guard.HasSizeLessThanOrEqualTo("Hello", " Hi! ", "Guard.HasSizeLessThanOrEqualTo(string)");
+        Assert.AreSame("Hello", FGuard.HasSizeLessThanOrEqualTo("Hello", " Hi! ", "FGuard.HasSizeLessThanOrEqualTo(string)"));
+        Guard.HasSizeLessThanOrEqualTo("Hello", "Hello!", "Guard.HasSizeLessThanOrEqualTo(string)");
+        Assert.AreSame("Hello", FGuard.HasSizeLessThanOrEqualTo("Hello", "Hello!", "FGuard.HasSizeLessThanOrEqualTo(string)"));
+
+        _ = Assert.ThrowsException<ArgumentException>(() => Guard.HasSizeLessThanOrEqualTo("Hello", " Hi ", "Guard.HasSizeLessThanOrEqualTo(string) Fail"));
+        _ = Assert.ThrowsException<ArgumentException>(() => FGuard.HasSizeLessThanOrEqualTo("Hello", " Hi ", "FGuard.HasSizeLessThanOrEqualTo(string) Fail"));
+    }
+
+    [TestCategory("Guard")]
+    [TestMethod]
+    public void Test_Guard_IsInRangeFor()
+    {
+        Guard.IsInRangeFor(0, "Hello", "Guard.IsInRangeFor(0)");
+        Assert.AreEqual(0, FGuard.IsInRangeFor(0, "Hello", "FGuard.IsInRangeFor(0)"));
+        Guard.IsInRangeFor(4, "Hello", "Guard.IsInRangeFor(4)");
+        Assert.AreEqual(4, FGuard.IsInRangeFor(4, "Hello", "FGuard.IsInRangeFor(4)"));
+
+        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => Guard.IsInRangeFor(int.MinValue, "Hello", "Guard.IsInRangeFor(MinValue) Fail"));
+        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => FGuard.IsInRangeFor(int.MinValue, "Hello", "FGuard.IsInRangeFor(MinValue) Fail"));
+        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => Guard.IsInRangeFor(-1, "Hello", "Guard.IsInRangeFor(-1) Fail"));
+        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => FGuard.IsInRangeFor(-1, "Hello", "FGuard.IsInRangeFor(-1) Fail"));
+        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => Guard.IsInRangeFor(5, "Hello", "Guard.IsInRangeFor(5) Fail"));
+        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => FGuard.IsInRangeFor(5, "Hello", "FGuard.IsInRangeFor(5) Fail"));
+        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => Guard.IsInRangeFor(int.MaxValue, "Hello", "Guard.IsInRangeFor(MaxValue) Fail"));
+        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => FGuard.IsInRangeFor(int.MaxValue, "Hello", "FGuard.IsInRangeFor(MaxValue) Fail"));
+    }
+
+    [TestCategory("Guard")]
+    [TestMethod]
+    public void Test_Guard_IsNotInRangeFor()
+    {
+        Guard.IsNotInRangeFor(int.MinValue, "Hello", "Guard.IsNotInRangeFor(MinValue)");
+        Assert.AreEqual(int.MinValue, FGuard.IsNotInRangeFor(int.MinValue, "Hello", "FGuard.IsNotInRangeFor(MinValue)"));
+        Guard.IsNotInRangeFor(-1, "Hello", "Guard.IsNotInRangeFor(-1)");
+        Assert.AreEqual(-1, FGuard.IsNotInRangeFor(-1, "Hello", "FGuard.IsNotInRangeFor(-1)"));
+        Guard.IsNotInRangeFor(5, "Hello", "Guard.IsNotInRangeFor(5)");
+        Assert.AreEqual(5, FGuard.IsNotInRangeFor(5, "Hello", "FGuard.IsNotInRangeFor(5)"));
+        Guard.IsNotInRangeFor(int.MaxValue, "Hello", "Guard.IsNotInRangeFor(MaxValue)");
+        Assert.AreEqual(int.MaxValue, FGuard.IsNotInRangeFor(int.MaxValue, "Hello", "FGuard.IsNotInRangeFor(MaxValue)"));
+
+        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => Guard.IsNotInRangeFor(0, "Hello", "Guard.IsNotInRangeFor(0) Fail"));
+        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => Assert.AreEqual(0, FGuard.IsNotInRangeFor(0, "Hello", "FGuard.IsNotInRangeFor(0) Fail")));
+        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => Guard.IsNotInRangeFor(4, "Hello", "Guard.IsNotInRangeFor(4) Fail"));
+        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => Assert.AreEqual(4, FGuard.IsNotInRangeFor(4, "Hello", "FGuard.IsNotInRangeFor(4) Fail")));
     }
 
     [TestMethod]
@@ -756,26 +920,6 @@ public partial class Test_Guard
         catch (ArgumentNullException e)
         {
             Assert.AreEqual(e.ParamName, nameof(thisStringShouldNotBeNull));
-
-            return;
-        }
-
-        Assert.Fail();
-    }
-
-    [TestCategory("Guard")]
-    [TestMethod]
-    public void Test_Guard_CallerArgumentExpression_2()
-    {
-        int thisIndexIsOutOfRange = 42;
-
-        try
-        {
-            Guard.IsInRangeFor(thisIndexIsOutOfRange, "Hello world");
-        }
-        catch (ArgumentOutOfRangeException e)
-        {
-            Assert.AreEqual(e.ParamName, nameof(thisIndexIsOutOfRange));
 
             return;
         }
