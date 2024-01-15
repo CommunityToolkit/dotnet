@@ -125,7 +125,10 @@ public sealed class Box<T>
     /// <param name="box">The input <see cref="Box{T}"/> instance.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static implicit operator T(Box<T> box)
-        => box.value;
+    {
+        return box.value;
+    }
+        
 
     /// <summary>
     /// Implicitly creates a new <see cref="Box{T}"/> instance from a given <typeparamref name="T"/> value.
