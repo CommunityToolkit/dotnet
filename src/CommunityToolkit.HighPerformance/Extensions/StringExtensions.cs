@@ -27,7 +27,7 @@ public static class StringExtensions
     public static ref char DangerousGetReference(this string text)
     {
 #if NET6_0_OR_GREATER
-        return ref Unsafe.AsRef(text.GetPinnableReference());
+        return ref Unsafe.AsRef(in text.GetPinnableReference());
 #else
         return ref MemoryMarshal.GetReference(text.AsSpan());
 #endif
@@ -44,7 +44,7 @@ public static class StringExtensions
     public static ref char DangerousGetReferenceAt(this string text, int i)
     {
 #if NET6_0_OR_GREATER
-        ref char r0 = ref Unsafe.AsRef(text.GetPinnableReference());
+        ref char r0 = ref Unsafe.AsRef(in text.GetPinnableReference());
 #else
         ref char r0 = ref MemoryMarshal.GetReference(text.AsSpan());
 #endif

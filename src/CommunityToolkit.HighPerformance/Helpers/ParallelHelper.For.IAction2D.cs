@@ -257,7 +257,7 @@ partial class ParallelHelper
             {
                 for (int x = left; x < right; x++)
                 {
-                    Unsafe.AsRef(action).Invoke(y, x);
+                    Unsafe.AsRef(in action).Invoke(y, x);
                 }
             }
 
@@ -319,7 +319,7 @@ partial class ParallelHelper
             {
                 for (int x = this.startX; x < this.endX; x++)
                 {
-                    Unsafe.AsRef(this.action).Invoke(y, x);
+                    Unsafe.AsRef(in this.action).Invoke(y, x);
                 }
             }
         }
