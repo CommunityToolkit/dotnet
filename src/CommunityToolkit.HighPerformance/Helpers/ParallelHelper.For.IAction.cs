@@ -172,7 +172,7 @@ public static partial class ParallelHelper
         {
             for (int i = start; i < end; i++)
             {
-                Unsafe.AsRef(action).Invoke(i);
+                Unsafe.AsRef(in action).Invoke(i);
             }
 
             return;
@@ -225,7 +225,7 @@ public static partial class ParallelHelper
 
             for (int j = low; j < stop; j++)
             {
-                Unsafe.AsRef(this.action).Invoke(j);
+                Unsafe.AsRef(in this.action).Invoke(j);
             }
         }
     }

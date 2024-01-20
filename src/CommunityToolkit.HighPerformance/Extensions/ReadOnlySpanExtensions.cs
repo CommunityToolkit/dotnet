@@ -213,7 +213,7 @@ public static class ReadOnlySpanExtensions
     public static unsafe int IndexOf<T>(this ReadOnlySpan<T> span, in T value)
     {
         ref T r0 = ref MemoryMarshal.GetReference(span);
-        ref T r1 = ref Unsafe.AsRef(value);
+        ref T r1 = ref Unsafe.AsRef(in value);
         IntPtr byteOffset = Unsafe.ByteOffset(ref r0, ref r1);
 
         nint elementOffset = byteOffset / (nint)(uint)sizeof(T);

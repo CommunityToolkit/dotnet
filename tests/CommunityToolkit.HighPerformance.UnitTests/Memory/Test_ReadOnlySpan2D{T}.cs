@@ -550,10 +550,10 @@ public class Test_ReadOnlySpan2DT
         ReadOnlySpan<int> span = span2d.GetRowSpan(1);
 
         Assert.IsTrue(Unsafe.AreSame(
-            ref Unsafe.AsRef(span[0]),
+            ref Unsafe.AsRef(in span[0]),
             ref array[1, 0]));
         Assert.IsTrue(Unsafe.AreSame(
-            ref Unsafe.AsRef(span[2]),
+            ref Unsafe.AsRef(in span[2]),
             ref array[1, 2]));
 
         _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).GetRowSpan(-1));
@@ -783,7 +783,7 @@ public class Test_ReadOnlySpan2DT
         int i = 0;
         foreach (ref readonly int value in new ReadOnlySpan2D<int>(array).GetRow(1))
         {
-            Assert.IsTrue(Unsafe.AreSame(ref Unsafe.AsRef(value), ref array[1, i++]));
+            Assert.IsTrue(Unsafe.AreSame(ref Unsafe.AsRef(in value), ref array[1, i++]));
         }
 
         ReadOnlyRefEnumerable<int> enumerable = new ReadOnlySpan2D<int>(array).GetRow(1);
@@ -815,7 +815,7 @@ public class Test_ReadOnlySpan2DT
         int i = 0;
         foreach (ref readonly int value in new ReadOnlySpan2D<int>(array, 2, 3, 0).GetRow(1))
         {
-            Assert.IsTrue(Unsafe.AreSame(ref Unsafe.AsRef(value), ref array[3 + i++]));
+            Assert.IsTrue(Unsafe.AreSame(ref Unsafe.AsRef(in value), ref array[3 + i++]));
         }
 
         ReadOnlyRefEnumerable<int> enumerable = new ReadOnlySpan2D<int>(array, 2, 3, 0).GetRow(1);
@@ -841,7 +841,7 @@ public class Test_ReadOnlySpan2DT
         int i = 0;
         foreach (ref readonly int value in new ReadOnlySpan2D<int>(array).GetColumn(1))
         {
-            Assert.IsTrue(Unsafe.AreSame(ref Unsafe.AsRef(value), ref array[i++, 1]));
+            Assert.IsTrue(Unsafe.AreSame(ref Unsafe.AsRef(in value), ref array[i++, 1]));
         }
 
         ReadOnlyRefEnumerable<int> enumerable = new ReadOnlySpan2D<int>(array).GetColumn(2);
@@ -871,7 +871,7 @@ public class Test_ReadOnlySpan2DT
         int i = 0;
         foreach (ref readonly int value in new ReadOnlySpan2D<int>(array, 2, 3, 0).GetColumn(1))
         {
-            Assert.IsTrue(Unsafe.AreSame(ref Unsafe.AsRef(value), ref array[(i++ * 3) + 1]));
+            Assert.IsTrue(Unsafe.AreSame(ref Unsafe.AsRef(in value), ref array[(i++ * 3) + 1]));
         }
 
         ReadOnlyRefEnumerable<int> enumerable = new ReadOnlySpan2D<int>(array, 2, 3, 0).GetColumn(2);

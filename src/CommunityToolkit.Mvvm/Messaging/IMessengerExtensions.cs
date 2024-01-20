@@ -90,6 +90,10 @@ public static partial class IMessengerExtensions
         "This method requires the generated CommunityToolkit.Mvvm.Messaging.__Internals.__IMessengerExtensions type not to be removed to use the fast path. " +
         "If this type is removed by the linker, or if the target recipient was created dynamically and was missed by the source generator, a slower fallback " +
         "path using a compiled LINQ expression will be used. This will have more overhead in the first invocation of this method for any given recipient type.")]
+    [RequiresDynamicCode(
+        "This method requires the generated CommunityToolkit.Mvvm.Messaging.__Internals.__IMessengerExtensions type not to be removed to use the fast path. " +
+        "If that is present, the method is AOT safe, as the only methods being invoked to register the messages will be the ones produced by the source generator. " +
+        "If it isn't, this method will need to dynamically create the generic methods to register messages, which might not be available at runtime.")]
     public static void RegisterAll(this IMessenger messenger, object recipient)
     {
         ArgumentNullException.ThrowIfNull(messenger);
@@ -113,7 +117,7 @@ public static partial class IMessengerExtensions
         // Try to get the cached delegate, if the generator has run correctly
         Action<IMessenger, object>? registrationAction = DiscoveredRecipients.RegistrationMethods.GetValue(
             recipient.GetType(),
-            [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")] static (t) => LoadRegistrationMethodsForType(t));
+            LoadRegistrationMethodsForType);
 
         if (registrationAction is not null)
         {
@@ -144,6 +148,7 @@ public static partial class IMessengerExtensions
         "This method requires the generated CommunityToolkit.Mvvm.Messaging.__Internals.__IMessengerExtensions type not to be removed to use the fast path. " +
         "If this type is removed by the linker, or if the target recipient was created dynamically and was missed by the source generator, a slower fallback " +
         "path using a compiled LINQ expression will be used. This will have more overhead in the first invocation of this method for any given recipient type.")]
+    [RequiresDynamicCode("The generic methods to register messages might not be available at runtime.")]
     public static void RegisterAll<TToken>(this IMessenger messenger, object recipient, TToken token)
         where TToken : IEquatable<TToken>
     {
@@ -156,6 +161,7 @@ public static partial class IMessengerExtensions
         // target recipient type, and just invoke it to get the delegate to cache and use later.
         // In this case we also need to create a generic instantiation of the target method first.
         [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")]
+        [RequiresDynamicCode("The generic methods to register messages might not be available at runtime.")]
         static Action<IMessenger, object, TToken> LoadRegistrationMethodsForType(Type recipientType)
         {
             if (recipientType.Assembly.GetType("CommunityToolkit.Mvvm.Messaging.__Internals.__IMessengerExtensions") is Type extensionsType &&
@@ -173,6 +179,7 @@ public static partial class IMessengerExtensions
         // This method is only invoked once per recipient type and token type, so we're not
         // worried about making it super efficient, and we can use the LINQ code for clarity.
         // The LINQ codegen bloat is not really important for the same reason.
+        [RequiresDynamicCode("The generic methods to register messages might not be available at runtime.")]
         static Action<IMessenger, object, TToken> LoadRegistrationMethodsForTypeFallback(Type recipientType)
         {
             // Get the collection of validation methods
@@ -231,7 +238,7 @@ public static partial class IMessengerExtensions
         // For more info on this, see the related issue at https://github.com/dotnet/roslyn/issues/5835.
         Action<IMessenger, object, TToken> registrationAction = DiscoveredRecipients<TToken>.RegistrationMethods.GetValue(
             recipient.GetType(),
-            [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")] static (t) => LoadRegistrationMethodsForType(t));
+            LoadRegistrationMethodsForType);
 
         // Invoke the cached delegate to actually execute the message registration
         registrationAction(messenger, recipient, token);

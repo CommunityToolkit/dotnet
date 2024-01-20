@@ -1046,8 +1046,8 @@ public partial class Test_ObservablePropertyAttribute
     {
         ModelWithDependentPropertyAndPropertyChanging model = new();
 
-        List<string> changingArgs = new();
-        List<string> changedArgs = new();
+        List<string?> changingArgs = new();
+        List<string?> changedArgs = new();
 
         model.PropertyChanging += (s, e) => changingArgs.Add(e.PropertyName);
         model.PropertyChanged += (s, e) => changedArgs.Add(e.PropertyName);
@@ -1064,7 +1064,7 @@ public partial class Test_ObservablePropertyAttribute
     {
         ModelWithDependentPropertyAndNoPropertyChanging model = new();
 
-        List<string> changedArgs = new();
+        List<string?> changedArgs = new();
 
         model.PropertyChanged += (s, e) => changedArgs.Add(e.PropertyName);
 
