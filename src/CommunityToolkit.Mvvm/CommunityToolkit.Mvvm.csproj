@@ -55,6 +55,7 @@
       System.Diagnostics.CodeAnalysis.NotNullAttribute;
       System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute;
       System.Diagnostics.CodeAnalysis.NotNullWhenAttribute;
+      System.Diagnostics.CodeAnalysis.RequiresDynamicCodeAttribute;
       System.Diagnostics.CodeAnalysis.RequiresUnreferencedCodeAttribute;
       System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessageAttribute;
       System.Runtime.CompilerServices.CallerArgumentExpressionAttribute;
