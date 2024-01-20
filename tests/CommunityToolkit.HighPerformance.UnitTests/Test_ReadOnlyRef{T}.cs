@@ -18,7 +18,7 @@ public class Test_ReadOnlyRefOfT
         int value = 1;
         ReadOnlyRef<int> reference = new(value);
 
-        Assert.IsTrue(Unsafe.AreSame(ref value, ref Unsafe.AsRef(reference.Value)));
+        Assert.IsTrue(Unsafe.AreSame(ref value, ref Unsafe.AsRef(in reference.Value)));
     }
 }
 

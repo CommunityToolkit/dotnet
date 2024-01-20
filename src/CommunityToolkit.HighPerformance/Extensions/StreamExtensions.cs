@@ -275,7 +275,7 @@ public static class StreamExtensions
         where T : unmanaged
     {
 #if NETSTANDARD2_1_OR_GREATER
-        ref T r0 = ref Unsafe.AsRef(value);
+        ref T r0 = ref Unsafe.AsRef(in value);
         ref byte r1 = ref Unsafe.As<T, byte>(ref r0);
         int length = sizeof(T);
 

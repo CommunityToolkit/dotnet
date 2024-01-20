@@ -298,7 +298,7 @@ public class Test_ReadOnlyMemory2DT
 #else
         Assert.IsTrue(success);
         Assert.AreEqual(memory.Length, array.Length);
-        Assert.IsTrue(Unsafe.AreSame(ref array[0, 0], ref Unsafe.AsRef(memory.Span[0])));
+        Assert.IsTrue(Unsafe.AreSame(ref array[0, 0], ref Unsafe.AsRef(in memory.Span[0])));
 #endif
     }
 

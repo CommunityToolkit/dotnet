@@ -25,7 +25,7 @@ public partial class Test_ReadOnlySpanExtensions
         ReadOnlySpan<int> data = owner.GetSpan();
 
         ref int r0 = ref data.DangerousGetReference();
-        ref int r1 = ref Unsafe.AsRef(data[0]);
+        ref int r1 = ref Unsafe.AsRef(in data[0]);
 
         Assert.IsTrue(Unsafe.AreSame(ref r0, ref r1));
     }
@@ -51,7 +51,7 @@ public partial class Test_ReadOnlySpanExtensions
         ReadOnlySpan<int> data = owner.GetSpan();
 
         ref int r0 = ref data.DangerousGetReferenceAt(5);
-        ref int r1 = ref Unsafe.AsRef(data[5]);
+        ref int r1 = ref Unsafe.AsRef(in data[5]);
 
         Assert.IsTrue(Unsafe.AreSame(ref r0, ref r1));
     }
@@ -79,13 +79,13 @@ public partial class Test_ReadOnlySpanExtensions
             0, 0, 0, 0, 0, 0, 1, 0, 1
         };
 
-        ref byte ri = ref Unsafe.AsRef(table.DangerousGetLookupReferenceAt(i));
+        ref byte ri = ref Unsafe.AsRef(in table.DangerousGetLookupReferenceAt(i));
 
         bool isInRange = (uint)i < (uint)table.Length;
 
         if (isInRange)
         {
-            Assert.IsTrue(Unsafe.AreSame(ref ri, ref Unsafe.AsRef(table[i])));
+            Assert.IsTrue(Unsafe.AreSame(ref ri, ref Unsafe.AsRef(in table[i])));
         }
         else
         {
@@ -186,7 +186,7 @@ public partial class Test_ReadOnlySpanExtensions
 
         foreach (HighPerformance.Enumerables.ReadOnlySpanEnumerable<int>.Item item in data.Enumerate())
         {
-            Assert.IsTrue(Unsafe.AreSame(ref Unsafe.AsRef(data[i]), ref Unsafe.AsRef(item.Value)));
+            Assert.IsTrue(Unsafe.AreSame(ref Unsafe.AsRef(in data[i]), ref Unsafe.AsRef(in item.Value)));
             Assert.AreEqual(i, item.Index);
 
             i++;
