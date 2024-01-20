@@ -34,6 +34,10 @@ jobs:
 
   # Test solution #
 
+    # Run .NET 8 unit tests
+  - script: dotnet test --no-build -c $(Build.Configuration) -f net8.0 -l "trx;LogFileName=VSTestResults_net8.0.trx"
+    displayName: Run .NET 8 unit tests
+
   # Run .NET 7 unit tests
   - script: dotnet test --no-build -c $(Build.Configuration) -f net7.0 -l "trx;LogFileName=VSTestResults_net7.0.trx"
     displayName: Run .NET 7 unit tests
