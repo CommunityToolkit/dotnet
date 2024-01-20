@@ -25,7 +25,7 @@
   </Choose>
 
   <ItemGroup>
-    <PackageReference Include="Nerdbank.GitVersioning" Version="3.6.128" PrivateAssets="All" />
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.6.133" PrivateAssets="All" />
   </ItemGroup>
 
   <Choose>
@@ -39,7 +39,7 @@
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
       </PropertyGroup>
       <ItemGroup>
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
       </ItemGroup>
     </When>
   </Choose>
