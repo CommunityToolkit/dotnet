@@ -64,6 +64,12 @@ public abstract class ObservableRecipient : ObservableObject
             "If this type is removed by the linker, or if the target recipient was created dynamically and was missed by the source generator, a slower fallback " +
             "path using a compiled LINQ expression will be used. This will have more overhead in the first invocation of this method for any given recipient type. " +
             "Alternatively, OnActivated() can be manually overwritten, and registration can be done individually for each required message for this recipient.")]
+        [RequiresDynamicCode(
+            "When this property is set to true, the OnActivated() method will be invoked, which will register all necessary message handlers for this recipient. " +
+            "This method requires the generated CommunityToolkit.Mvvm.Messaging.__Internals.__IMessengerExtensions type not to be removed to use the fast path. " +
+            "If that is present, the method is AOT safe, as the only methods being invoked to register the messages will be the ones produced by the source generator. " +
+            "If it isn't, this method will need to dynamically create the generic methods to register messages, which might not be available at runtime. " +
+            "Alternatively, OnActivated() can be manually overwritten, and registration can be done individually for each required message for this recipient.")]
         set
         {
             if (SetProperty(ref this.isActive, value, true))
@@ -95,6 +101,11 @@ public abstract class ObservableRecipient : ObservableObject
         "This method requires the generated CommunityToolkit.Mvvm.Messaging.__Internals.__IMessengerExtensions type not to be removed to use the fast path. " +
         "If this type is removed by the linker, or if the target recipient was created dynamically and was missed by the source generator, a slower fallback " +
         "path using a compiled LINQ expression will be used. This will have more overhead in the first invocation of this method for any given recipient type. " +
+        "Alternatively, OnActivated() can be manually overwritten, and registration can be done individually for each required message for this recipient.")]
+    [RequiresDynamicCode(
+        "This method requires the generated CommunityToolkit.Mvvm.Messaging.__Internals.__IMessengerExtensions type not to be removed to use the fast path. " +
+        "If that is present, the method is AOT safe, as the only methods being invoked to register the messages will be the ones produced by the source generator. " +
+        "If it isn't, this method will need to dynamically create the generic methods to register messages, which might not be available at runtime. " +
         "Alternatively, OnActivated() can be manually overwritten, and registration can be done individually for each required message for this recipient.")]
     protected virtual void OnActivated()
     {
