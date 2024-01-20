@@ -48,7 +48,7 @@ public static class NullableExtensions
     /// <typeparam name="T">The type of the underlying value.</typeparam>
     /// <param name="value">The <see cref="Nullable{T}"/>.</param>
     /// <returns>A reference to the value of the input <see cref="Nullable{T}"/> instance, or a <see langword="null"/> <typeparamref name="T"/> reference.</returns>
-    /// <remarks>The returned reference can be tested for <see langword="null"/> using <see cref="Unsafe.IsNullRef{T}(ref T)"/>.</remarks>
+    /// <remarks>The returned reference can be tested for <see langword="null"/> using <see cref="Unsafe.IsNullRef"/>.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe ref T DangerousGetValueOrNullReference<T>(ref this T? value)
         where T : struct
