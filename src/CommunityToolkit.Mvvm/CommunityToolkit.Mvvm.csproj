@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0;net8.0</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -65,7 +65,7 @@
 
   <ItemGroup Label="Package">
 
-    <!-- Include the custom .targets file to check the source generator (.NET 6 is not needed as it guarantees Roslyn 4.x) -->
+    <!-- Include the custom .targets file to check the source generator (.NET 6 and 8 are not needed as they guarantee Roslyn 4.x) -->
     <None Include="CommunityToolkit.Mvvm.targets" PackagePath="buildTransitive\netstandard2.0" Pack="true" />
     <None Include="CommunityToolkit.Mvvm.targets" PackagePath="buildTransitive\netstandard2.1" Pack="true" />
     <None Include="CommunityToolkit.Mvvm.targets" PackagePath="build\netstandard2.0" Pack="true" />
