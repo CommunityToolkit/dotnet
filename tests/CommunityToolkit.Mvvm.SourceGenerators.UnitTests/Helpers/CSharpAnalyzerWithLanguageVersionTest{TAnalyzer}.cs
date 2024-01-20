@@ -50,7 +50,9 @@ internal sealed class CSharpAnalyzerWithLanguageVersionTest<TAnalyzer> : CSharpA
     {
         CSharpAnalyzerWithLanguageVersionTest<TAnalyzer> test = new(languageVersion) { TestCode = source };
 
-#if NET6_0_OR_GREATER
+#if NET8_0_OR_GREATER
+        test.TestState.ReferenceAssemblies = ReferenceAssemblies.Net.Net80;
+#elif NET6_0_OR_GREATER
         test.TestState.ReferenceAssemblies = ReferenceAssemblies.Net.Net60;
 #else
         test.TestState.ReferenceAssemblies = ReferenceAssemblies.NetFramework.Net472.Default;
