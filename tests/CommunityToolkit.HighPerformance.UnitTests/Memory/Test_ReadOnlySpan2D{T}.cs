@@ -1014,4 +1014,62 @@ public class Test_ReadOnlySpan2DT
 
         CollectionAssert.AreEqual(result, row);
     }
+
+    #if NET6_0_OR_GREATER
+    [TestMethod]
+    public void Test_ReadOnlySpan2DT_FromMemoryManager_Indexing()
+    {
+        const int w = 10, h = 10, l = w * h;
+        byte[] b = new byte[l];
+        short[] s = new short[l];
+        for (int i = 0; i < l; ++i)
+        {
+            b[i] = (byte)i;
+            s[i] = (short)i;
+        }
+        Memory2DTester<byte> byteTester = new Memory2DTester<byte>(w,h,b);
+        Span2D<byte> byteSpan2DFromArray = byteTester.GetMemory2DFromArray().Span;
+        Assert.AreEqual(11, byteSpan2DFromArray[0, 0]);
+        Span2D<byte> byteSpan2DFromMm = byteTester.GetMemory2DFromMM().Span;
+        Assert.AreEqual(11, byteSpan2DFromMm[0, 0]);
+
+        Memory2DTester<short> shortTester = new Memory2DTester<short>(w,h,s);
+        Span2D<short> shortSpan2DFromMm = shortTester.GetMemory2DFromMM().Span;
+        Span2D<short> shortSpan2DFromArray = shortTester.GetMemory2DFromArray().Span;
+        Assert.AreEqual(11, shortSpan2DFromArray[0, 0]);
+        Assert.AreEqual(11, shortSpan2DFromMm[0, 0]);
+    }
+    #endif
 }
+
+
+#if NET6_0_OR_GREATER
+public class Memory2DTester<T> : System.Buffers.MemoryManager<T> where T : unmanaged
+{
+    public Memory2DTester(int w, int h, T[] data)
+    {
+        if (w < 2 || h < 2)
+            throw new ArgumentException("w and h must be at least 2");
+        this.Width = w;
+        this.Height = h;
+        this._data = data;
+    }
+    
+    public int Width;
+    public int Height;
+    private readonly T[] _data;
+    protected override void Dispose(bool disposing) { }
+    
+    public Memory2D<T> GetMemory2DFromMM() =>
+        new(this, (this.Width + 1), this.Height - 1, this.Width - 1, 1);
+
+    public Memory2D<T> GetMemory2DFromArray() =>
+        new(this._data, this.Width + 1, this.Height - 1, this.Width - 1, 1);
+
+    public override Span<T> GetSpan() => new(this._data);
+
+    public override System.Buffers.MemoryHandle Pin(int elementIndex = 0) => default;
+
+    public override void Unpin(){}
+}
+#endif
