@@ -378,7 +378,7 @@ public readonly struct Memory2D<T> : IEquatable<Memory2D<T>>
         }
 
         this.instance = memoryManager;
-        this.offset = (nint)(uint)offset;
+        this.offset = (nint)(uint)offset * (nint)(uint)Unsafe.SizeOf<T>();
         this.height = height;
         this.width = width;
         this.pitch = pitch;
@@ -477,7 +477,7 @@ public readonly struct Memory2D<T> : IEquatable<Memory2D<T>>
         else if (MemoryMarshal.TryGetMemoryManager<T, MemoryManager<T>>(memory, out MemoryManager<T>? memoryManager, out int memoryManagerStart, out _))
         {
             this.instance = memoryManager;
-            this.offset = (nint)(uint)(memoryManagerStart + offset);
+            this.offset = (nint)(uint)(memoryManagerStart + offset) * (nint)(uint)Unsafe.SizeOf<T>();
         }
         else
         {
