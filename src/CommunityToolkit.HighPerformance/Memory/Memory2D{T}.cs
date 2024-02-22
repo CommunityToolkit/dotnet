@@ -338,7 +338,7 @@ public readonly struct Memory2D<T> : IEquatable<Memory2D<T>>
     /// <exception cref="ArgumentException">
     /// Thrown when the requested area is outside of bounds for <paramref name="memoryManager"/>.
     /// </exception>
-    public Memory2D(MemoryManager<T> memoryManager, int offset, int height, int width, int pitch)
+    public unsafe Memory2D(MemoryManager<T> memoryManager, int offset, int height, int width, int pitch)
     {
         int length = memoryManager.GetSpan().Length;
 
@@ -378,7 +378,7 @@ public readonly struct Memory2D<T> : IEquatable<Memory2D<T>>
         }
 
         this.instance = memoryManager;
-        this.offset = (nint)(uint)offset;
+        this.offset = (nint)(uint)offset * (nint)(uint)sizeof(T);
         this.height = height;
         this.width = width;
         this.pitch = pitch;
@@ -413,7 +413,7 @@ public readonly struct Memory2D<T> : IEquatable<Memory2D<T>>
     /// <exception cref="ArgumentException">
     /// Thrown when the requested area is outside of bounds for <paramref name="memory"/>.
     /// </exception>
-    internal Memory2D(Memory<T> memory, int offset, int height, int width, int pitch)
+    internal unsafe Memory2D(Memory<T> memory, int offset, int height, int width, int pitch)
     {
         if ((uint)offset > (uint)memory.Length)
         {
@@ -477,7 +477,7 @@ public readonly struct Memory2D<T> : IEquatable<Memory2D<T>>
         else if (MemoryMarshal.TryGetMemoryManager<T, MemoryManager<T>>(memory, out MemoryManager<T>? memoryManager, out int memoryManagerStart, out _))
         {
             this.instance = memoryManager;
-            this.offset = (nint)(uint)(memoryManagerStart + offset);
+            this.offset = (nint)(uint)(memoryManagerStart + offset) * (nint)(uint)sizeof(T);
         }
         else
         {

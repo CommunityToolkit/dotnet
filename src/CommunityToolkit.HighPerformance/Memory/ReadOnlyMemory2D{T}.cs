@@ -358,7 +358,7 @@ public readonly struct ReadOnlyMemory2D<T> : IEquatable<ReadOnlyMemory2D<T>>
     /// <exception cref="ArgumentException">
     /// Thrown when the requested area is outside of bounds for <paramref name="memoryManager"/>.
     /// </exception>
-    public ReadOnlyMemory2D(MemoryManager<T> memoryManager, int offset, int height, int width, int pitch)
+    public unsafe ReadOnlyMemory2D(MemoryManager<T> memoryManager, int offset, int height, int width, int pitch)
     {
         int length = memoryManager.GetSpan().Length;
 
@@ -398,7 +398,7 @@ public readonly struct ReadOnlyMemory2D<T> : IEquatable<ReadOnlyMemory2D<T>>
         }
 
         this.instance = memoryManager;
-        this.offset = (nint)(uint)offset;
+        this.offset = (nint)(uint)offset * (nint)(uint)sizeof(T);
         this.height = height;
         this.width = width;
         this.pitch = pitch;
@@ -433,7 +433,7 @@ public readonly struct ReadOnlyMemory2D<T> : IEquatable<ReadOnlyMemory2D<T>>
     /// <exception cref="ArgumentException">
     /// Thrown when the requested area is outside of bounds for <paramref name="memory"/>.
     /// </exception>
-    internal ReadOnlyMemory2D(ReadOnlyMemory<T> memory, int offset, int height, int width, int pitch)
+    internal unsafe ReadOnlyMemory2D(ReadOnlyMemory<T> memory, int offset, int height, int width, int pitch)
     {
         if ((uint)offset > (uint)memory.Length)
         {
@@ -489,7 +489,7 @@ public readonly struct ReadOnlyMemory2D<T> : IEquatable<ReadOnlyMemory2D<T>>
         else if (MemoryMarshal.TryGetMemoryManager(memory, out MemoryManager<T>? memoryManager, out int memoryManagerStart, out _))
         {
             this.instance = memoryManager;
-            this.offset = (nint)(uint)(memoryManagerStart + offset);
+            this.offset = (nint)(uint)(memoryManagerStart + offset) * (nint)(uint)sizeof(T);
         }
         else
         {
