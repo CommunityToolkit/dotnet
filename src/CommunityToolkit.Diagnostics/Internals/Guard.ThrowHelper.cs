@@ -60,7 +60,7 @@ partial class Guard
         [DoesNotReturn]
         public static void ThrowArgumentNullExceptionForIsNotNull<T>(string name)
         {
-            throw new ArgumentNullException(name, $"Parameter {AssertString(name)} ({typeof(T).ToTypeString()}) must be not null).");
+            throw new ArgumentNullException(name, $"Parameter {AssertString(name)} ({typeof(T).ToTypeString()}) must be not null.");
         }
 
         /// <summary>
