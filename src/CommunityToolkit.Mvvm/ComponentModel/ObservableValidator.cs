@@ -123,6 +123,7 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     }
 
     /// <inheritdoc/>
+    [Display(AutoGenerateField = false)]
     public bool HasErrors => this.totalErrors > 0;
 
     /// <summary>
