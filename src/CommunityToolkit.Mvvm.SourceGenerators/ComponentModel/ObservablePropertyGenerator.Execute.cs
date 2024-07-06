@@ -117,6 +117,7 @@ partial class ObservablePropertyGenerator
             bool hasOrInheritsClassLevelNotifyPropertyChangedRecipients = false;
             bool hasOrInheritsClassLevelNotifyDataErrorInfo = false;
             bool hasAnyValidationAttributes = false;
+            bool usePrivateKeywordOnSetAccessor = false;
             bool isOldPropertyValueDirectlyReferenced = IsOldPropertyValueDirectlyReferenced(fieldSymbol, propertyName);
 
             token.ThrowIfCancellationRequested();
@@ -175,6 +176,14 @@ partial class ObservablePropertyGenerator
                 if (TryGetNotifyDataErrorInfo(fieldSymbol, attributeData, in builder, hasOrInheritsClassLevelNotifyDataErrorInfo, out isValidationTargetValid))
                 {
                     notifyDataErrorInfo = isValidationTargetValid;
+
+                    continue;
+                }
+
+                // Check whether the generated setter should be private
+                if (SetterShouldBePrivate(attributeData))
+                {
+                    usePrivateKeywordOnSetAccessor = true;
 
                     continue;
                 }
@@ -312,6 +321,7 @@ partial class ObservablePropertyGenerator
                 notifyDataErrorInfo,
                 isOldPropertyValueDirectlyReferenced,
                 isReferenceTypeOrUnconstraindTypeParameter,
+                usePrivateKeywordOnSetAccessor,
                 includeMemberNotNullOnSetAccessor,
                 forwardedAttributes.ToImmutable());
 
@@ -688,6 +698,16 @@ partial class ObservablePropertyGenerator
         }
 
         /// <summary>
+        /// Checks whether the generated setter should be private.
+        /// </summary>
+        /// <param name="attributeData">The <see cref="AttributeData"/> instance for fieldSymbol.</param>
+        /// <returns>Whether or not the generated setter should be private.</returns>
+        private static bool SetterShouldBePrivate(AttributeData attributeData)
+        {
+            return attributeData.AttributeClass?.HasFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.WithPrivateSetterAttribute") == true;
+        }
+
+        /// <summary>
         /// Checks whether the generated code has to directly reference the old property value.
         /// </summary>
         /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
@@ -1001,6 +1021,14 @@ partial class ObservablePropertyGenerator
             //     <BODY>
             // }
             AccessorDeclarationSyntax setAccessor = AccessorDeclaration(SyntaxKind.SetAccessorDeclaration).WithBody(Block(setterIfStatement));
+
+            // Add the private keyword if needed:
+            //
+            // private <SET_ACCESSOR>
+            if (propertyInfo.UsePrivateKeywordOnSetAccessor)
+            {
+                setAccessor = setAccessor.AddModifiers(Token(SyntaxKind.PrivateKeyword));
+            }
 
             // Add the [MemberNotNull] attribute if needed:
             //
