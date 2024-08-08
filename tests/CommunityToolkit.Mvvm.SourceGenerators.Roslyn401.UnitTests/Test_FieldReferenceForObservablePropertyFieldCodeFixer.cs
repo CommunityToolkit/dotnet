@@ -9,11 +9,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CSharpCodeFixTest = Microsoft.CodeAnalysis.CSharp.Testing.CSharpCodeFixTest<
     CommunityToolkit.Mvvm.SourceGenerators.FieldReferenceForObservablePropertyFieldAnalyzer,
     CommunityToolkit.Mvvm.CodeFixers.FieldReferenceForObservablePropertyFieldCodeFixer,
-    Microsoft.CodeAnalysis.Testing.Verifiers.MSTestVerifier>;
+    Microsoft.CodeAnalysis.Testing.DefaultVerifier>;
 using CSharpCodeFixVerifier = Microsoft.CodeAnalysis.CSharp.Testing.CSharpCodeFixVerifier<
     CommunityToolkit.Mvvm.SourceGenerators.FieldReferenceForObservablePropertyFieldAnalyzer,
     CommunityToolkit.Mvvm.CodeFixers.FieldReferenceForObservablePropertyFieldCodeFixer,
-    Microsoft.CodeAnalysis.Testing.Verifiers.MSTestVerifier>;
+    Microsoft.CodeAnalysis.Testing.DefaultVerifier>;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators.Roslyn401.UnitTests;
 
