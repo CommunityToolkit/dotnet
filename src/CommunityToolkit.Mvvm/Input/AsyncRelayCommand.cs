@@ -20,7 +20,7 @@ namespace CommunityToolkit.Mvvm.Input;
 /// action, and providing an <see cref="ExecutionTask"/> property that notifies changes when
 /// <see cref="ExecuteAsync"/> is invoked and when the returned <see cref="Task"/> completes.
 /// </summary>
-public sealed class AsyncRelayCommand : IAsyncRelayCommand, ICancellationAwareCommand
+public sealed partial class AsyncRelayCommand : IAsyncRelayCommand, ICancellationAwareCommand
 {
     /// <summary>
     /// The cached <see cref="PropertyChangedEventArgs"/> for <see cref="ExecutionTask"/>.

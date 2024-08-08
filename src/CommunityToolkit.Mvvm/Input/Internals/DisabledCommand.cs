@@ -10,7 +10,7 @@ namespace CommunityToolkit.Mvvm.Input.Internals;
 /// <summary>
 /// A reusable <see cref="ICommand"/> instance that is always disabled.
 /// </summary>
-internal sealed class DisabledCommand : ICommand
+internal sealed partial class DisabledCommand : ICommand
 {
     /// <inheritdoc/>
     public event EventHandler? CanExecuteChanged

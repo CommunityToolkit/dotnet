@@ -41,7 +41,7 @@ namespace CommunityToolkit.Mvvm.DependencyInjection;
 /// Ioc.Default.GetService&lt;ILogger&gt;().Log("Hello world!");
 /// </code>
 /// </summary>
-public sealed class Ioc : IServiceProvider
+public sealed partial class Ioc : IServiceProvider
 {
     /// <summary>
     /// Gets the default <see cref="Ioc"/> instance.
