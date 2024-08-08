@@ -11,7 +11,7 @@ namespace CommunityToolkit.Mvvm.Input.Internals;
 /// <summary>
 /// A <see cref="ICommand"/> implementation wrapping <see cref="IAsyncRelayCommand"/> to support cancellation.
 /// </summary>
-internal sealed class CancelCommand : ICommand
+internal sealed partial class CancelCommand : ICommand
 {
     /// <summary>
     /// The wrapped <see cref="IAsyncRelayCommand"/> instance.

@@ -15,7 +15,7 @@ namespace CommunityToolkit.Mvvm.Collections;
 /// </summary>
 /// <typeparam name="TKey">The type of the group keys.</typeparam>
 /// <typeparam name="TElement">The type of elements in the collection.</typeparam>
-public sealed class ObservableGroupedCollection<TKey, TElement> : ObservableCollection<ObservableGroup<TKey, TElement>>, ILookup<TKey, TElement>
+public sealed partial class ObservableGroupedCollection<TKey, TElement> : ObservableCollection<ObservableGroup<TKey, TElement>>, ILookup<TKey, TElement>
     where TKey : notnull
 {
     /// <summary>

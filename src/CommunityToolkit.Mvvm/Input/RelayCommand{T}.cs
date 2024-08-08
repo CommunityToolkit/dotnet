@@ -18,7 +18,7 @@ namespace CommunityToolkit.Mvvm.Input;
 /// in the <see cref="Execute(T)"/> and <see cref="CanExecute(T)"/> callback methods.
 /// </summary>
 /// <typeparam name="T">The type of parameter being passed as input to the callbacks.</typeparam>
-public sealed class RelayCommand<T> : IRelayCommand<T>
+public sealed partial class RelayCommand<T> : IRelayCommand<T>
 {
     /// <summary>
     /// The <see cref="Action"/> to invoke when <see cref="Execute(T)"/> is used.
