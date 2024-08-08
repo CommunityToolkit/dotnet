@@ -8,7 +8,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Testing.Verifiers;
 using Microsoft.CodeAnalysis.Testing;
 using Microsoft.CodeAnalysis;
 #if NET472
@@ -21,7 +20,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.UnitTests.Helpers;
 /// A custom <see cref="CSharpAnalyzerTest{TAnalyzer, TVerifier}"/> that uses a specific C# language version to parse code.
 /// </summary>
 /// <typeparam name="TAnalyzer">The type of the analyzer to test.</typeparam>
-internal sealed class CSharpAnalyzerWithLanguageVersionTest<TAnalyzer> : CSharpAnalyzerTest<TAnalyzer, MSTestVerifier>
+internal sealed class CSharpAnalyzerWithLanguageVersionTest<TAnalyzer> : CSharpAnalyzerTest<TAnalyzer, DefaultVerifier>
     where TAnalyzer : DiagnosticAnalyzer, new()
 {
     /// <summary>
