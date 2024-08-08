@@ -11,6 +11,12 @@
   <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0-windows10.0.17763.0'))">
     <WindowsSdkPackageVersion>10.0.17763.37-preview</WindowsSdkPackageVersion>
 
+    <!--
+      We're only referencing CsWinRT for the source generators, we don't need to read any WinRT metadata.
+      CsWinRT is in projection mode by default, so we want to disable it (or it'd need the Windows SDK).
+    -->
+    <CsWinRTGenerateProjection>false</CsWinRTGenerateProjection>
+
     <!-- Enable AOT warnings for types implementing projected WinRT interfaces mapped to built-in types (eg. 'INotifyPropertyChanged') -->
     <CsWinRTAotWarningLevel>2</CsWinRTAotWarningLevel>
   </PropertyGroup>
