@@ -18,7 +18,7 @@ public class Test_StringExtensions
         string text = "Hello, world!";
 
         ref char r0 = ref text.DangerousGetReference();
-        ref char r1 = ref Unsafe.AsRef(text.AsSpan()[0]);
+        ref char r1 = ref Unsafe.AsRef(in text.AsSpan()[0]);
 
         Assert.IsTrue(Unsafe.AreSame(ref r0, ref r1));
     }
@@ -40,7 +40,7 @@ public class Test_StringExtensions
         string text = "Hello, world!";
 
         ref char r0 = ref text.DangerousGetReferenceAt(5);
-        ref char r1 = ref Unsafe.AsRef(text.AsSpan()[5]);
+        ref char r1 = ref Unsafe.AsRef(in text.AsSpan()[5]);
 
         Assert.IsTrue(Unsafe.AreSame(ref r0, ref r1));
     }

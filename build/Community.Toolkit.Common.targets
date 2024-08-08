@@ -1,7 +1,6 @@
 <Project>
 
   <PropertyGroup>
-    <!-- TODO: Dynamically generate Title if one wasn't set -->
     <Title Condition="'$(Title)' == ''">$(Product) Asset</Title>
   </PropertyGroup>
 

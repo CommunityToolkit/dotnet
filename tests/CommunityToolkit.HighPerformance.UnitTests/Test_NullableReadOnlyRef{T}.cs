@@ -20,7 +20,7 @@ public class Test_NullableReadOnlyRefOfT
         NullableReadOnlyRef<int> reference = new(value);
 
         Assert.IsTrue(reference.HasValue);
-        Assert.IsTrue(Unsafe.AreSame(ref value, ref Unsafe.AsRef(reference.Value)));
+        Assert.IsTrue(Unsafe.AreSame(ref value, ref Unsafe.AsRef(in reference.Value)));
     }
 
     [TestMethod]
@@ -50,7 +50,7 @@ public class Test_NullableReadOnlyRefOfT
         NullableReadOnlyRef<int> nullableRef = reference;
 
         Assert.IsTrue(nullableRef.HasValue);
-        Assert.IsTrue(Unsafe.AreSame(ref reference.Value, ref Unsafe.AsRef(nullableRef.Value)));
+        Assert.IsTrue(Unsafe.AreSame(ref reference.Value, ref Unsafe.AsRef(in nullableRef.Value)));
     }
 
     [TestMethod]
@@ -61,7 +61,7 @@ public class Test_NullableReadOnlyRefOfT
         NullableReadOnlyRef<int> nullableRef = reference;
 
         Assert.IsTrue(nullableRef.HasValue);
-        Assert.IsTrue(Unsafe.AreSame(ref Unsafe.AsRef(reference.Value), ref Unsafe.AsRef(nullableRef.Value)));
+        Assert.IsTrue(Unsafe.AreSame(ref Unsafe.AsRef(in reference.Value), ref Unsafe.AsRef(in nullableRef.Value)));
     }
 
     [TestMethod]
@@ -72,7 +72,7 @@ public class Test_NullableReadOnlyRefOfT
         NullableReadOnlyRef<int> nullableRef = reference;
 
         Assert.IsTrue(nullableRef.HasValue);
-        Assert.IsTrue(Unsafe.AreSame(ref reference.Value, ref Unsafe.AsRef(nullableRef.Value)));
+        Assert.IsTrue(Unsafe.AreSame(ref reference.Value, ref Unsafe.AsRef(in nullableRef.Value)));
     }
 
     [TestMethod]

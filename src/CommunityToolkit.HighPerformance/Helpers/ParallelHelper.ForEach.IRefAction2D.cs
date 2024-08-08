@@ -151,7 +151,7 @@ partial class ParallelHelper
 
                 while (Unsafe.IsAddressLessThan(ref rStart, ref rEnd))
                 {
-                    Unsafe.AsRef(this.action).Invoke(ref rStart);
+                    Unsafe.AsRef(in this.action).Invoke(ref rStart);
 
                     rStart = ref Unsafe.Add(ref rStart, 1);
                 }

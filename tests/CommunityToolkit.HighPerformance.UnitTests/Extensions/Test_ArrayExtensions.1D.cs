@@ -23,8 +23,8 @@ public partial class Test_ArrayExtensions
         // item if we use "DangerousGetReferenceAt". So all these tests just invoke the API and then
         // compare the returned reference against an existing baseline (like the built-in array indexer)
         // to ensure that the two are the same. These are all managed references, so no need for pinning.
-        ref string r0 = ref Unsafe.AsRef(tokens.DangerousGetReference());
-        ref string r1 = ref Unsafe.AsRef(tokens[0]);
+        ref string r0 = ref Unsafe.AsRef(in tokens.DangerousGetReference());
+        ref string r1 = ref Unsafe.AsRef(in tokens[0]);
 
         Assert.IsTrue(Unsafe.AreSame(ref r0, ref r1));
     }
@@ -34,8 +34,8 @@ public partial class Test_ArrayExtensions
     {
         string[] tokens = "aa,bb,cc,dd,ee,ff,gg,hh,ii".Split(',');
 
-        ref string r0 = ref Unsafe.AsRef(tokens.DangerousGetReference());
-        ref string r1 = ref Unsafe.AsRef(tokens.DangerousGetReferenceAt(0));
+        ref string r0 = ref Unsafe.AsRef(in tokens.DangerousGetReference());
+        ref string r1 = ref Unsafe.AsRef(in tokens.DangerousGetReferenceAt(0));
 
         Assert.IsTrue(Unsafe.AreSame(ref r0, ref r1));
     }
@@ -45,8 +45,8 @@ public partial class Test_ArrayExtensions
     {
         string[] tokens = "aa,bb,cc,dd,ee,ff,gg,hh,ii".Split(',');
 
-        ref string r0 = ref Unsafe.AsRef(tokens.DangerousGetReferenceAt(5));
-        ref string r1 = ref Unsafe.AsRef(tokens[5]);
+        ref string r0 = ref Unsafe.AsRef(in tokens.DangerousGetReferenceAt(5));
+        ref string r1 = ref Unsafe.AsRef(in tokens[5]);
 
         Assert.IsTrue(Unsafe.AreSame(ref r0, ref r1));
     }
