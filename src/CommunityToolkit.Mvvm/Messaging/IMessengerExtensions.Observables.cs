@@ -4,6 +4,14 @@
 
 using System;
 
+// This file has two types which implement interfaces that can be projected to WInRT, ie.
+// 'Observable<TMessage>.Recipient' and 'Observable<TMessage, TToken>.Recipient', which
+// implement 'IDisposable' (which is projected to 'IClosable'). These types are not meant
+// to be used in interop scenarios (including in eg. bindings), as they're only meant to
+// be used by code behind interacting with System.Reactive APIs. As such, we skip marking
+// them partial, as we don't need CCW vtables to be generated for them.
+#pragma warning disable CsWinRT1028
+
 namespace CommunityToolkit.Mvvm.Messaging;
 
 /// <inheritdoc/>
