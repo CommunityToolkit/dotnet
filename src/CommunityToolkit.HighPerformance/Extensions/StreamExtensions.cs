@@ -169,7 +169,7 @@ public static class StreamExtensions
     /// <param name="stream">The destination <see cref="Stream"/> to write data to.</param>
     /// <param name="buffer">The source <see cref="Span{T}"/> to read data from.</param>
 #if NETSTANDARD2_1_OR_GREATER
-    [Obsolete("This API is only available for binary compatibility, but Stream.Read should be used instead.")]
+    [Obsolete("This API is only available for binary compatibility, but Stream.Write should be used instead.")]
     [EditorBrowsable(EditorBrowsableState.Never)]
 #endif
     public static void Write(this Stream stream, ReadOnlySpan<byte> buffer)
