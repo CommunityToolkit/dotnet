@@ -1,7 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0;net8.0;net8.0-windows10.0.17763.0</TargetFrameworks>
+  </PropertyGroup>
+
+  <!--
+    Windows-only properties (supporting AOT in WinRT scenarios requires actually using the Windows TFM,
+    because we need the source generators in CsWinRT to generate the supporting interop code for AOT).
+  -->
+  <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0-windows10.0.17763.0'))">
+    <WindowsSdkPackageVersion>10.0.17763.37-preview</WindowsSdkPackageVersion>
+
+    <!-- Enable AOT warnings for types implementing projected WinRT interfaces mapped to built-in types (eg. 'INotifyPropertyChanged') -->
+    <CsWinRTAotWarningLevel>2</CsWinRTAotWarningLevel>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -32,6 +43,11 @@
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+  </ItemGroup>
+
+  <!-- Reference CsWinRT when targeting Windows, to get the latest source generators -->
+  <ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0-windows10.0.17763.0'))">
+    <PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.1.0-prerelease.240801.1" PrivateAssets="all" />
   </ItemGroup>
 
   <!-- Reference the various multi-targeted versions of the source generator project (one per Roslyn version), and the code fixer -->
@@ -87,5 +103,4 @@
     <None Include="..\CommunityToolkit.Mvvm.CodeFixers\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.CodeFixers.dll" PackagePath="analyzers\dotnet\roslyn4.0\cs" Pack="true" Visible="false" />
     <None Include="..\CommunityToolkit.Mvvm.CodeFixers\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.CodeFixers.dll" PackagePath="analyzers\dotnet\roslyn4.3\cs" Pack="true" Visible="false" />
   </ItemGroup>
-
 </Project>
