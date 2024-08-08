@@ -53,7 +53,7 @@ public class Test_AsyncVoidReturningRelayCommandMethodCodeFixer
         {
             TestCode = original,
             FixedCode = @fixed,
-            ReferenceAssemblies = ReferenceAssemblies.Net.Net60
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80
         };
 
         test.TestState.AdditionalReferences.Add(typeof(RelayCommand).Assembly);
@@ -98,7 +98,7 @@ public class Test_AsyncVoidReturningRelayCommandMethodCodeFixer
         {
             TestCode = original,
             FixedCode = @fixed,
-            ReferenceAssemblies = ReferenceAssemblies.Net.Net60
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80
         };
 
         test.TestState.AdditionalReferences.Add(typeof(RelayCommand).Assembly);

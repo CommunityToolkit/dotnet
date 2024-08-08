@@ -48,7 +48,7 @@ public class ClassUsingAttributeInsteadOfInheritanceCodeFixer
         {
             TestCode = original,
             FixedCode = @fixed,
-            ReferenceAssemblies = ReferenceAssemblies.Net.Net60
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80
         };
 
         test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
@@ -97,7 +97,7 @@ public class ClassUsingAttributeInsteadOfInheritanceCodeFixer
         {
             TestCode = original,
             FixedCode = @fixed,
-            ReferenceAssemblies = ReferenceAssemblies.Net.Net60
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80
         };
 
         test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
@@ -150,7 +150,7 @@ public class ClassUsingAttributeInsteadOfInheritanceCodeFixer
         {
             TestCode = original,
             FixedCode = @fixed,
-            ReferenceAssemblies = ReferenceAssemblies.Net.Net60
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80
         };
 
         test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
@@ -203,7 +203,7 @@ public class ClassUsingAttributeInsteadOfInheritanceCodeFixer
         {
             TestCode = original,
             FixedCode = @fixed,
-            ReferenceAssemblies = ReferenceAssemblies.Net.Net60
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80
         };
 
         test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
@@ -260,7 +260,7 @@ public class ClassUsingAttributeInsteadOfInheritanceCodeFixer
         {
             TestCode = original,
             FixedCode = @fixed,
-            ReferenceAssemblies = ReferenceAssemblies.Net.Net60
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80
         };
 
         test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
@@ -312,7 +312,7 @@ public class ClassUsingAttributeInsteadOfInheritanceCodeFixer
         {
             TestCode = original,
             FixedCode = @fixed,
-            ReferenceAssemblies = ReferenceAssemblies.Net.Net60
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80
         };
 
         test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
