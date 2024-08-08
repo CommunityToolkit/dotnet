@@ -3,6 +3,9 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+#if NET6_0_OR_GREATER
+using System.Buffers;
+#endif
 using System.Runtime.CompilerServices;
 using CommunityToolkit.HighPerformance.Enumerables;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -1014,4 +1017,96 @@ public class Test_ReadOnlySpan2DT
 
         CollectionAssert.AreEqual(result, row);
     }
+
+#if NET6_0_OR_GREATER
+    [TestMethod]
+    public void Test_ReadOnlySpan2DT_FromMemoryManager_Indexing()
+    {
+        const int w = 10;
+        const int h = 10;
+        const int l = w * h;
+
+        byte[] b = new byte[l];
+        short[] s = new short[l];
+
+        for (int i = 0; i < l; ++i)
+        {
+            b[i] = (byte)i;
+            s[i] = (short)i;
+        }
+
+        Memory2DTester<byte> byteTester = new(w, h, b);
+        Span2D<byte> byteSpan2DFromArray = byteTester.GetMemory2DFromArray().Span;
+
+        Assert.AreEqual(11, byteSpan2DFromArray[0, 0]);
+
+        Span2D<byte> byteSpan2DFromMemoryManager = byteTester.GetMemory2DFromMemoryManager().Span;
+
+        Assert.AreEqual(11, byteSpan2DFromMemoryManager[0, 0]);
+
+        Memory2DTester<short> shortTester = new(w, h, s);
+        Span2D<short> shortSpan2DFromArray = shortTester.GetMemory2DFromArray().Span;
+        Span2D<short> shortSpan2DFromMemoryManager = shortTester.GetMemory2DFromMemoryManager().Span;
+
+        Assert.AreEqual(11, shortSpan2DFromArray[0, 0]);
+        Assert.AreEqual(11, shortSpan2DFromMemoryManager[0, 0]);
+    }
+#endif
 }
+
+#if NET6_0_OR_GREATER
+public sealed class Memory2DTester<T> : MemoryManager<T>
+    where T : unmanaged
+{
+    private readonly T[] data;
+
+    public Memory2DTester(int w, int h, T[] data)
+    {
+        if (w < 2 || h < 2)
+        {
+            throw new ArgumentException("The 'w' and 'h' arguments must be at least 2.");
+        }
+
+        this.data = data;
+
+        Width = w;
+        Height = h;
+    }
+
+    public int Width { get; }
+
+    public int Height { get; }
+    
+    public Memory2D<T> GetMemory2DFromMemoryManager()
+    {
+        return new(this, Width + 1, Height - 1, Width - 1, 1);
+    }
+
+    public Memory2D<T> GetMemory2DFromArray()
+    {
+        return new(this.data, Width + 1, Height - 1, Width - 1, 1);
+    }
+
+    /// <inheritdoc/>
+    public override Span<T> GetSpan()
+    {
+        return new(this.data);
+    }
+
+    /// <inheritdoc/>
+    public override MemoryHandle Pin(int elementIndex = 0)
+    {
+        return default;
+    }
+
+    /// <inheritdoc/>
+    public override void Unpin()
+    {
+    }
+
+    /// <inheritdoc/>
+    protected override void Dispose(bool disposing)
+    {
+    }
+}
+#endif
