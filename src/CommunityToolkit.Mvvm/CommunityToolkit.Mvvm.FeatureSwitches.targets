@@ -1,3 +1,20 @@
 <Project>
 
+  <!-- Default values for all feature switches -->
+  <PropertyGroup>
+    <MvvmToolkitEnableINotifyPropertyChangingSupport Condition="'$(MvvmToolkitEnableINotifyPropertyChangingSupport)' == ''">true</MvvmToolkitEnableINotifyPropertyChangingSupport>
+  </PropertyGroup>
+
+  <!--
+    Configuration for the feature switches (to support IL trimming).
+    See the 'ILLink.Substitutions.xml' file for more details on that.
+  -->
+  <ItemGroup>
+
+    <!-- MVVMTOOLKIT_ENABLE_INOTIFYPROPERTYCHANGING_SUPPORT switch -->
+    <RuntimeHostConfigurationOption Include="MVVMTOOLKIT_ENABLE_INOTIFYPROPERTYCHANGING_SUPPORT"
+                                    Value="$(MvvmToolkitEnableINotifyPropertyChangingSupport)"
+                                    Trim="true" />
+  </ItemGroup>
+
 </Project>
