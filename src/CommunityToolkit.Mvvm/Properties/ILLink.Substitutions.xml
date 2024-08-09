@@ -1,0 +1,10 @@
+<linker>
+  <assembly fullname="CommunityToolkit.Mvvm">
+    <type fullname="CommunityToolkit.Mvvm.FeatureSwitches">
+
+      <!-- MVVMTOOLKIT_ENABLE_INOTIFYPROPERTYCHANGING_SUPPORT switch -->
+      <method signature="System.Boolean get_EnableINotifyPropertyChangingSupport()" body="stub" value="false" feature="MVVMTOOLKIT_ENABLE_INOTIFYPROPERTYCHANGING_SUPPORT" featurevalue="false"/>
+      <method signature="System.Boolean get_EnableINotifyPropertyChangingSupport()" body="stub" value="true" feature="MVVMTOOLKIT_ENABLE_INOTIFYPROPERTYCHANGING_SUPPORT" featurevalue="true"/>
+    </type>
+  </assembly>
+</linker>
