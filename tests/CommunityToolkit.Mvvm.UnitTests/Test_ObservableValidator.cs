@@ -607,7 +607,20 @@ public class Test_ObservableValidator
         Assert.IsFalse(model.HasErrors);
         Assert.IsTrue(events.Count == 1);
 
-        Assert.IsTrue(events.Any(e => e.PropertyName == nameof(DerivedModelWithValidatableProperties.Name)));    }
+        Assert.IsTrue(events.Any(e => e.PropertyName == nameof(DerivedModelWithValidatableProperties.Name)));
+    }
+
+    // See https://github.com/CommunityToolkit/dotnet/issues/881
+    [TestMethod]
+    public void Test_ObservableValidator_HasErrors_IncludeNonAutogenerateAttribute()
+    {
+        DerivedModelWithValidatableProperties model = new();
+
+        DisplayAttribute? displayAttribute = model.GetType().GetProperty(nameof(ObservableValidator.HasErrors))?.GetCustomAttribute<DisplayAttribute>();
+
+        Assert.IsNotNull(displayAttribute);
+        Assert.IsFalse(displayAttribute.AutoGenerateField);
+    }
 
     public class Person : ObservableValidator
     {
