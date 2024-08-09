@@ -53,7 +53,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{CD16E790
 		build\Update-Headers.ps1 = build\Update-Headers.ps1
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration", "Configuration", "{6640D447-C28D-4DBB-91F4-3ADCE0CA64AD}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FeatureSwitches", "FeatureSwitches", "{6640D447-C28D-4DBB-91F4-3ADCE0CA64AD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.DisableINotifyPropertyChanging.UnitTests", "tests\CommunityToolkit.Mvvm.DisableINotifyPropertyChanging.UnitTests\CommunityToolkit.Mvvm.DisableINotifyPropertyChanging.UnitTests.csproj", "{9E09DA49-4389-4ECE-8B68-EBDB1221DA90}"
 EndProject
@@ -81,7 +81,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.Exter
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.ExternalAssembly.Roslyn431", "tests\CommunityToolkit.Mvvm.ExternalAssembly.Roslyn431\CommunityToolkit.Mvvm.ExternalAssembly.Roslyn431.csproj", "{4FCD501C-1BB5-465C-AD19-356DAB6600C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunityToolkit.Mvvm.CodeFixers", "src\CommunityToolkit.Mvvm.CodeFixers\CommunityToolkit.Mvvm.CodeFixers.csproj", "{E79DCA2A-4C59-499F-85BD-F45215ED6B72}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.CodeFixers", "src\CommunityToolkit.Mvvm.CodeFixers\CommunityToolkit.Mvvm.CodeFixers.csproj", "{E79DCA2A-4C59-499F-85BD-F45215ED6B72}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
