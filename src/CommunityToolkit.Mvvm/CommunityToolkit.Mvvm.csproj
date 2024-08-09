@@ -17,6 +17,9 @@
     -->
     <CsWinRTGenerateProjection>false</CsWinRTGenerateProjection>
 
+    <!-- We'll never have any IIDs to patch in this library -->
+    <CsWinRTIIDOptimizerOptOut>true</CsWinRTIIDOptimizerOptOut>
+
     <!-- Enable AOT warnings for types implementing projected WinRT interfaces mapped to built-in types (eg. 'INotifyPropertyChanged') -->
     <CsWinRTAotWarningLevel>2</CsWinRTAotWarningLevel>
   </PropertyGroup>
