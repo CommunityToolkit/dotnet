@@ -6,8 +6,8 @@
     <_CommunityToolkitMvvmSourceGeneratorsTargets>$(MSBuildThisFileDirectory)CommunityToolkit.Mvvm.SourceGenerators.targets</_CommunityToolkitMvvmSourceGeneratorsTargets>
   </PropertyGroup>
 
-  <!-- Import all available .targets (NuGet only auto-imports the one whose name matches the package name) -->
-  <Import Project="$(_CommunityToolkitMvvmFeatureSwitchesTargets)" Condition="Exists('$(_CommunityToolkitMvvmFeatureSwitchesTargets)')"/>
-  <Import Project="$(_CommunityToolkitMvvmSourceGeneratorsTargets)" Condition="Exists('$(_CommunityToolkitMvvmSourceGeneratorsTargets)')"/>
+  <!-- Import all available .targets -->
+  <Import Project="$(_CommunityToolkitMvvmFeatureSwitchesTargets)" />
+  <Import Project="$(_CommunityToolkitMvvmSourceGeneratorsTargets)" />
 
 </Project>
