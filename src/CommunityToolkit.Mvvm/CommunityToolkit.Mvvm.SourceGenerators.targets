@@ -1,0 +1,149 @@
+<Project>
+
+  <!-- Get the analyzer from the CommunityToolkit.Mvvm NuGet package -->
+  <Target Name="MVVMToolkitGatherAnalyzers">
+    <ItemGroup>
+      <MVVMToolkitAnalyzer Include="@(Analyzer)" Condition="'%(Analyzer.NuGetPackageId)' == 'CommunityToolkit.Mvvm'" />
+    </ItemGroup>
+  </Target>
+
+  <!-- Remove the analyzer if Roslyn is missing -->
+  <Target Name="MVVMToolkitRemoveAnalyzersForRosynNotFound"
+          Condition="'$(CSharpCoreTargetsPath)' == ''"
+          AfterTargets="ResolvePackageDependenciesForBuild;ResolveNuGetPackageAssets"
+          DependsOnTargets="MVVMToolkitGatherAnalyzers">
+
+    <!-- If no Roslyn assembly could be found, just remove the analyzer without emitting a warning -->
+    <ItemGroup>
+      <Analyzer Remove="@(MVVMToolkitAnalyzer)"/>
+    </ItemGroup>
+  </Target>
+
+  <!-- Remove the analyzer if using Roslyn 3.x (incremental generators require Roslyn 4.x) -->
+  <Target Name="MVVMToolkitRemoveAnalyzersForRoslyn3"
+          Condition="'$(CSharpCoreTargetsPath)' != ''"
+          AfterTargets="ResolvePackageDependenciesForBuild;ResolveNuGetPackageAssets"
+          DependsOnTargets="MVVMToolkitGatherAnalyzers">
+
+    <!--
+      Use the CSharpCoreTargetsPath property to find the version of the compiler we are using. This is the same mechanism
+      MSBuild uses to find the compiler. We could check the assembly version for any compiler assembly (since they all have
+      the same version) but Microsoft.Build.Tasks.CodeAnalysis.dll is where MSBuild loads the compiler tasks from so if
+      someone is getting creative with msbuild tasks/targets this is the "most correct" assembly to check.
+    -->
+    <GetAssemblyIdentity AssemblyFiles="$([System.IO.Path]::Combine(`$([System.IO.Path]::GetDirectoryName($(CSharpCoreTargetsPath)))`,`Microsoft.Build.Tasks.CodeAnalysis.dll`))">
+      <Output TaskParameter="Assemblies" ItemName="MVVMToolkitCurrentCompilerAssemblyIdentity"/>
+    </GetAssemblyIdentity>
+
+    <PropertyGroup>
+
+      <!-- Transform the resulting item from GetAssemblyIdentity into a property representing its assembly version -->
+      <MVVMToolkitCurrentCompilerVersion>@(MVVMToolkitCurrentCompilerAssemblyIdentity->'%(Version)')</MVVMToolkitCurrentCompilerVersion>
+
+      <!-- The CurrentCompilerVersionIsNotNewEnough property can now be defined based on the Roslyn assembly version -->
+      <MVVMToolkitCurrentCompilerVersionIsNotNewEnough Condition="$([MSBuild]::VersionLessThan($(MVVMToolkitCurrentCompilerVersion), 4.0))">true</MVVMToolkitCurrentCompilerVersionIsNotNewEnough>
+    </PropertyGroup>
+
+    <!-- If the Roslyn version is < 4.0, disable the source generators -->
+    <ItemGroup Condition ="'$(MVVMToolkitCurrentCompilerVersionIsNotNewEnough)' == 'true'">
+      <Analyzer Remove="@(MVVMToolkitAnalyzer)"/>
+    </ItemGroup>
+
+    <!-- 
+      If the source generators are disabled, also emit a warning. This would've been produced by MSBuild itself as well, but
+      emitting this manually lets us customize the message to inform developers as to why exactly the generators have been
+      disabled, and that the rest of the MVVM Toolkit will still keep working as intended, just without additional features.
+    -->
+    <Warning Condition ="'$(MVVMToolkitCurrentCompilerVersionIsNotNewEnough)' == 'true'"
+             Code="MVVMTKCFG0001"
+             HelpLink="https://aka.ms/mvvmtoolkit/errors/mvvmtkcfg0001"
+             Text="The MVVM Toolkit source generators have been disabled on the current configuration, as they need Roslyn 4.x in order to work. The MVVM Toolkit will work just fine, but features relying on the source generators will not be available."/>
+  
+    <PropertyGroup>
+
+      <!--
+        Setup the checks for the MVVMToolkitRemoveDuplicateAnalyzersWhenRoslynComponentVersioningIsNotSupported target below.
+        These are done here so that the following target can run only if it's sure this one has run, which is a necessary
+        condition to ensure all dependent MSBuild properties defined here will also be available there whenever needed.
+      -->
+      <MVVMToolkitIsManualRoslynMultiTargetingLogicNeeded Condition="'$(MVVMToolkitCurrentCompilerVersionIsNotNewEnough)' != 'true' AND '$(SupportsRoslynComponentVersioning)' != 'true'">true</MVVMToolkitIsManualRoslynMultiTargetingLogicNeeded>
+    </PropertyGroup>
+  </Target>
+
+  <!--
+    Manually remove duplicate analyzers if Roslyn component versioning is not supported (ie. if a legacy .csproj project is used).
+    This target is only run if Roslyn 4.0 or greater is present, as otherwise all analyzers would have already been removed anyway.
+    Additionally, skip this target if MVVMToolkitRemoveAnalyzersForRoslyn3 has been skipped (ie. if $(CSharpCoreTargetsPath) is not
+    defined, which will be the case on VB.NET projects). In these cases, MVVMToolkitRemoveAnalyzersForRosynNotFound will run at the
+    end and will remove all source generators (as they're only supported in C# projects), so there's nothing left to do here.
+  -->
+  <Target Name="MVVMToolkitRemoveDuplicateAnalyzersWhenRoslynComponentVersioningIsNotSupported"
+          Condition="'$(MVVMToolkitIsManualRoslynMultiTargetingLogicNeeded)' == 'true'"
+          AfterTargets="MVVMToolkitRemoveAnalyzersForRoslyn3">
+
+    <!--
+      This switch manually implements Roslyn component versioning. That is, it checks the current version of Roslyn and
+      removes and removes all analyzers except the highest version that is supported. The fallback is just Roslyn 4.0.
+    -->
+    <PropertyGroup>
+      <MVVMToolkitSelectedRoslynAnalyzerDirectoryName Condition="$([MSBuild]::VersionGreaterThanOrEquals($(MVVMToolkitCurrentCompilerVersion), 4.3))">roslyn4.3</MVVMToolkitSelectedRoslynAnalyzerDirectoryName>
+      <MVVMToolkitSelectedRoslynAnalyzerDirectoryName Condition="'$(MVVMToolkitSelectedRoslynAnalyzerDirectoryName)' == ''">roslyn4.0</MVVMToolkitSelectedRoslynAnalyzerDirectoryName>
+    </PropertyGroup>
+    <ItemGroup>
+      
+      <!--
+        This condition is a bit convoluted, but it's essentially just selecting all analyzers from the NuGet package that don't have the target Roslyn directory name in their full path.
+        For instance, if Roslyn 4.3 is the highest supported version, the target directory name will be "roslyn 4.3", and this condition will filter out all analyzers with a path such
+        as: "C:\...\.nuget\...\CommunityToolkit.Mvvm\analyzers\roslyn4.0\cs\CommunityToolkit.Mvvm". The [System.String]::Concat trick is used to achieve two things: we can't directly
+        invoke a property function (ie. Contains in this case) on a metadata item, so we need an intermediate string to invoke it on. We could also use [System.String]::new, but using
+        Concat is more efficient as it'll just skip the allocation entirely if one of the two inputs is an empty string, which is the case here.
+      -->
+      <Analyzer Remove="@(MVVMToolkitAnalyzer)" Condition="!$([System.String]::Concat('', '%(MVVMToolkitAnalyzer.FullPath)').Contains('$(MVVMToolkitSelectedRoslynAnalyzerDirectoryName)'))"/>
+    </ItemGroup>
+  </Target>
+
+  <!--
+    Inform the user if packages.config is used (as the analyzers and the source generators
+    won't work at all). Since packages.config can only be used with legacy-style projects,
+    the entire package can be skipped if an SDK-style project is used.
+  -->
+  <Target Name="MVVMToolkitWarnForPackagesConfigUse"
+          AfterTargets="ResolvePackageDependenciesForBuild;ResolveNuGetPackageAssets"
+          Condition="'$(UsingMicrosoftNetSDK)' != 'true'">
+    
+    <!--
+      Check whether packages are being restored via packages.config, by reading the associated MSBuild property.
+      This happens when either the project style is using packages.config, or when explicitly requested.
+      See https://learn.microsoft.com/nuget/reference/msbuild-targets#restoring-packagereference-and-packagesconfig-projects-with-msbuild.
+    -->
+    <PropertyGroup>
+      <MVVMToolkitIsTargetProjectUsingPackagesConfig Condition ="'$(RestorePackagesConfig)' == 'true' OR '$(RestoreProjectStyle)' == 'PackagesConfig'">true</MVVMToolkitIsTargetProjectUsingPackagesConfig>
+    </PropertyGroup>
+
+    <!--
+      If no packages.config properties are set, also try to manually find the packages.config file.
+      This will be in the @(None) elements, if present. Doing so makes sure this works in builds as
+      well, since the implicit targets populating the properties above only run when restoring.
+      Since the packages.config file will always be in the root of the project, if present, we will
+      match with the full item spec (see https://learn.microsoft.com/nuget/reference/packages-config).
+    -->
+    <FindInList ItemSpecToFind="packages.config"
+                List="@(None)"
+                MatchFileNameOnly="false"
+                Condition="'$(MVVMToolkitIsTargetProjectUsingPackagesConfig)' != 'true'">
+      <Output TaskParameter="ItemFound" PropertyName="MVVMToolkitPackagesConfigFile"/>
+    </FindInList>
+
+    <!-- Make sure to update the MSBuild property if the above task did find something -->
+    <PropertyGroup>
+      <MVVMToolkitIsTargetProjectUsingPackagesConfig Condition ="'$(MVVMToolkitPackagesConfigFile)' == 'packages.config'">true</MVVMToolkitIsTargetProjectUsingPackagesConfig>
+    </PropertyGroup>
+
+    <!-- Emit a warning in case packages.config is used -->
+    <Warning Condition ="'$(MVVMToolkitIsTargetProjectUsingPackagesConfig)' == 'true'"
+             Code="MVVMTKCFG0002"
+             HelpLink="https://aka.ms/mvvmtoolkit/errors/mvvmtkcfg0002"
+             Text="The MVVM Toolkit source generators might not be loaded correctly, as the current project is using the packages.config setup to restore NuGet packages. Source generators require PackageReference to be used (either in a legacy-style or SDK-style .csproj project, both are supported as long as PackageReference is used)."/>
+  </Target>
+
+</Project>

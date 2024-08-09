@@ -91,11 +91,41 @@
 
   <ItemGroup Label="Package">
 
-    <!-- Include the custom .targets file to check the source generator (.NET 6 and 8 are not needed as they guarantee Roslyn 4.x) -->
-    <None Include="CommunityToolkit.Mvvm.targets" PackagePath="buildTransitive\netstandard2.0" Pack="true" />
-    <None Include="CommunityToolkit.Mvvm.targets" PackagePath="buildTransitive\netstandard2.1" Pack="true" />
+    <!-- .NET Standard 2.0 only needs the Roslyn validation .targets -->
+    <None Include="CommunityToolkit.Mvvm.SourceGenerators.targets" PackagePath="buildTransitive\netstandard2.0" Pack="true" />
+    <None Include="CommunityToolkit.Mvvm.targets" PackagePath="buildTransitive\netstandard2.0" Pack="true" />    
+    <None Include="CommunityToolkit.Mvvm.SourceGenerators.targets" PackagePath="build\netstandard2.0" Pack="true" />
     <None Include="CommunityToolkit.Mvvm.targets" PackagePath="build\netstandard2.0" Pack="true" />
+
+    <!-- .NET Standard 2.0 does the same -->
+    <None Include="CommunityToolkit.Mvvm.SourceGenerators.targets" PackagePath="buildTransitive\netstandard2.1" Pack="true" />
+    <None Include="CommunityToolkit.Mvvm.targets" PackagePath="buildTransitive\netstandard2.1" Pack="true" />
+    <None Include="CommunityToolkit.Mvvm.SourceGenerators.targets" PackagePath="build\netstandard2.1" Pack="true" />
     <None Include="CommunityToolkit.Mvvm.targets" PackagePath="build\netstandard2.1" Pack="true" />
+    
+    <!-- .NET 6 also supports feature switches -->
+    <None Include="CommunityToolkit.Mvvm.FeatureSwitches.targets" PackagePath="buildTransitive\net6.0" Pack="true" />
+    <None Include="CommunityToolkit.Mvvm.SourceGenerators.targets" PackagePath="buildTransitive\net6.0" Pack="true" />
+    <None Include="CommunityToolkit.Mvvm.targets" PackagePath="buildTransitive\net6.0" Pack="true" />
+    <None Include="CommunityToolkit.Mvvm.FeatureSwitches.targets" PackagePath="build\net6.0" Pack="true" />
+    <None Include="CommunityToolkit.Mvvm.SourceGenerators.targets" PackagePath="build\net6.0" Pack="true" />
+    <None Include="CommunityToolkit.Mvvm.targets" PackagePath="build\net6.0" Pack="true" />
+
+    <!-- .NET 8 does the same as .NET 6 -->
+    <None Include="CommunityToolkit.Mvvm.FeatureSwitches.targets" PackagePath="buildTransitive\net8.0" Pack="true" />
+    <None Include="CommunityToolkit.Mvvm.SourceGenerators.targets" PackagePath="buildTransitive\net8.0" Pack="true" />
+    <None Include="CommunityToolkit.Mvvm.targets" PackagePath="buildTransitive\net8.0" Pack="true" />
+    <None Include="CommunityToolkit.Mvvm.FeatureSwitches.targets" PackagePath="build\net8.0" Pack="true" />
+    <None Include="CommunityToolkit.Mvvm.SourceGenerators.targets" PackagePath="build\net8.0" Pack="true" />
+    <None Include="CommunityToolkit.Mvvm.targets" PackagePath="build\net8.0" Pack="true" />
+    
+    <!-- .NET 8 on Windows is the same as .NET 8 with respect to .targets -->
+    <None Include="CommunityToolkit.Mvvm.FeatureSwitches.targets" PackagePath="buildTransitive\net8.0-windows10.0.17763.0" Pack="true" />
+    <None Include="CommunityToolkit.Mvvm.SourceGenerators.targets" PackagePath="buildTransitive\net8.0-windows10.0.17763.0" Pack="true" />
+    <None Include="CommunityToolkit.Mvvm.targets" PackagePath="buildTransitive\net8.0-windows10.0.17763.0" Pack="true" />
+    <None Include="CommunityToolkit.Mvvm.FeatureSwitches.targets" PackagePath="build\net8.0-windows10.0.17763.0" Pack="true" />
+    <None Include="CommunityToolkit.Mvvm.SourceGenerators.targets" PackagePath="build\net8.0-windows10.0.17763.0" Pack="true" />
+    <None Include="CommunityToolkit.Mvvm.targets" PackagePath="build\net8.0-windows10.0.17763.0" Pack="true" />
 
     <!--
       Pack the source generator to the right package folders (each matching the target Roslyn version).
@@ -112,4 +142,5 @@
     <None Include="..\CommunityToolkit.Mvvm.CodeFixers\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.CodeFixers.dll" PackagePath="analyzers\dotnet\roslyn4.0\cs" Pack="true" Visible="false" />
     <None Include="..\CommunityToolkit.Mvvm.CodeFixers\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.CodeFixers.dll" PackagePath="analyzers\dotnet\roslyn4.3\cs" Pack="true" Visible="false" />
   </ItemGroup>
+
 </Project>
