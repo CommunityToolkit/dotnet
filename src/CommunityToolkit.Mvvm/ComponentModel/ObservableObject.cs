@@ -57,6 +57,12 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
     {
         ArgumentNullException.ThrowIfNull(e);
 
+        // When support is disabled, just do nothing
+        if (!FeatureSwitches.EnableINotifyPropertyChangingSupport)
+        {
+            return;
+        }
+
         PropertyChanging?.Invoke(this, e);
     }
 
@@ -75,7 +81,8 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     protected void OnPropertyChanging([CallerMemberName] string? propertyName = null)
     {
-        if (Configuration.IsINotifyPropertyChangingDisabled)
+        // When support is disabled, avoid instantiating the event args entirely
+        if (!FeatureSwitches.EnableINotifyPropertyChangingSupport)
         {
             return;
         }
