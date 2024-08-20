@@ -25,8 +25,7 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
     {
         // Gather info for all annotated fields
         IncrementalValuesProvider<(HierarchyInfo Hierarchy, Result<PropertyInfo?> Info)> propertyInfoWithErrors =
-            context.SyntaxProvider
-            .ForAttributeWithMetadataName(
+            context.ForAttributeWithMetadataNameAndOptions(
                 "CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute",
                 static (node, _) => node is VariableDeclaratorSyntax { Parent: VariableDeclarationSyntax { Parent: FieldDeclarationSyntax { Parent: ClassDeclarationSyntax or RecordDeclarationSyntax, AttributeLists.Count: > 0 } } },
                 static (context, token) =>
@@ -44,7 +43,14 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
 
                     token.ThrowIfCancellationRequested();
 
-                    _ = Execute.TryGetInfo(fieldDeclaration, fieldSymbol, context.SemanticModel, token, out PropertyInfo? propertyInfo, out ImmutableArray<DiagnosticInfo> diagnostics);
+                    _ = Execute.TryGetInfo(
+                        fieldDeclaration,
+                        fieldSymbol,
+                        context.SemanticModel,
+                        context.GlobalOptions,
+                        token,
+                        out PropertyInfo? propertyInfo,
+                        out ImmutableArray<DiagnosticInfo> diagnostics);
 
                     token.ThrowIfCancellationRequested();
 

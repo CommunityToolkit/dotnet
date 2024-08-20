@@ -16,6 +16,7 @@ using CommunityToolkit.Mvvm.SourceGenerators.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Diagnostics;
 using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -35,6 +36,7 @@ partial class ObservablePropertyGenerator
         /// <param name="fieldSyntax">The <see cref="FieldDeclarationSyntax"/> instance to process.</param>
         /// <param name="fieldSymbol">The input <see cref="IFieldSymbol"/> instance to process.</param>
         /// <param name="semanticModel">The <see cref="SemanticModel"/> instance for the current run.</param>
+        /// <param name="options">The options in use for the generator.</param>
         /// <param name="token">The cancellation token for the current operation.</param>
         /// <param name="propertyInfo">The resulting <see cref="PropertyInfo"/> value, if successfully retrieved.</param>
         /// <param name="diagnostics">The resulting diagnostics from the processing operation.</param>
@@ -43,6 +45,7 @@ partial class ObservablePropertyGenerator
             FieldDeclarationSyntax fieldSyntax,
             IFieldSymbol fieldSymbol,
             SemanticModel semanticModel,
+            AnalyzerConfigOptions options,
             CancellationToken token,
             [NotNullWhen(true)] out PropertyInfo? propertyInfo,
             out ImmutableArray<DiagnosticInfo> diagnostics)
@@ -63,6 +66,11 @@ partial class ObservablePropertyGenerator
 
                 return false;
             }
+
+            token.ThrowIfCancellationRequested();
+
+            // Override the property changing support if explicitly disabled
+            shouldInvokeOnPropertyChanging &= GetEnableINotifyPropertyChangingSupport(options);
 
             token.ThrowIfCancellationRequested();
 
@@ -317,6 +325,27 @@ partial class ObservablePropertyGenerator
 
             diagnostics = builder.ToImmutable();
 
+            return true;
+        }
+
+        /// <summary>
+        /// Gets the value for the "MvvmToolkitEnableINotifyPropertyChangingSupport" property.
+        /// </summary>
+        /// <param name="options">The options in use for the generator.</param>
+        /// <returns>The value for the "MvvmToolkitEnableINotifyPropertyChangingSupport" property.</returns>
+        public static bool GetEnableINotifyPropertyChangingSupport(AnalyzerConfigOptions options)
+        {
+            if (options.TryGetValue("build_property.MvvmToolkitEnableINotifyPropertyChangingSupport", out string? propertyValue))
+            {
+                if (bool.TryParse(propertyValue, out bool enableINotifyPropertyChangingSupport))
+                {
+                    return enableINotifyPropertyChangingSupport;
+                }
+            }
+
+            // This setting is enabled by default, for backwards compatibility.
+            // Note that this path should never be reached, as the default
+            // value is also set in a .targets file bundled in the package.
             return true;
         }
 
