@@ -14,7 +14,7 @@ public class Test_DisableINotifyPropertyChanging
 {
     static Test_DisableINotifyPropertyChanging()
     {
-        AppContext.SetSwitch("MVVMTOOLKIT_DISABLE_INOTIFYPROPERTYCHANGING", true);
+        AppContext.SetSwitch("MVVMTOOLKIT_ENABLE_INOTIFYPROPERTYCHANGING_SUPPORT", false);
     }
 
     [TestMethod]
