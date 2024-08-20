@@ -55,6 +55,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\CompilationExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\DiagnosticsExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\INamedTypeSymbolExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\GeneratorAttributeSyntaxContextWithOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\IncrementalGeneratorInitializationContextExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\IncrementalValuesProviderExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\MethodDeclarationSyntaxExtensions.cs" />
