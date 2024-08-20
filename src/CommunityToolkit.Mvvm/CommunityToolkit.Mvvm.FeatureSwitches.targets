@@ -6,6 +6,14 @@
   </PropertyGroup>
 
   <!--
+    Make the properties visible to the source generators as well, to allow
+    them to emit optimized codegen ahead of time depending on their values.
+  -->
+  <ItemGroup>
+    <CompilerVisibleProperty Include="MvvmToolkitEnableINotifyPropertyChangingSupport" />
+  </ItemGroup>
+
+  <!--
     Configuration for the feature switches (to support IL trimming).
     See the 'ILLink.Substitutions.xml' file for more details on that.
     We only include these on .NET 6 and above (no .xml file otherwise).
