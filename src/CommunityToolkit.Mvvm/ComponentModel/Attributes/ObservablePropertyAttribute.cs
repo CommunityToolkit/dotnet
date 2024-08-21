@@ -49,9 +49,24 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// The generated properties will automatically use the <c>UpperCamelCase</c> format for their names,
 /// which will be derived from the field names. The generator can also recognize fields using either
 /// the <c>_lowerCamel</c> or <c>m_lowerCamel</c> naming scheme. Otherwise, the first character in the
-/// source field name will be converted to uppercase (eg. <c>isEnabled</c> to <c>IsEnabled</c>).
+/// source field name will be converted to uppercase (eg. <c>isEnabled</c> to <c>IsEnabled</c>). For
+/// custom property names use the <see cref="ObservablePropertyAttribute(string)"/>
 /// </remarks>
 [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
 public sealed class ObservablePropertyAttribute : Attribute
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ObservablePropertyAttribute"/> class.
+    /// </summary>
+    public ObservablePropertyAttribute()
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ObservablePropertyAttribute"/> class.
+    /// </summary>
+    /// <param name="name">Generated property name.</param>
+    public ObservablePropertyAttribute(string name)
+    {
+    }
 }

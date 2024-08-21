@@ -38,12 +38,14 @@ partial class ObservablePropertyGenerator
         /// <param name="token">The cancellation token for the current operation.</param>
         /// <param name="propertyInfo">The resulting <see cref="PropertyInfo"/> value, if successfully retrieved.</param>
         /// <param name="diagnostics">The resulting diagnostics from the processing operation.</param>
+        /// <param name="PropertyName">Generated property name. If empty, the property name will be generated from the field name.</param>
         /// <returns>The resulting <see cref="PropertyInfo"/> instance for <paramref name="fieldSymbol"/>, if successful.</returns>
         public static bool TryGetInfo(
             FieldDeclarationSyntax fieldSyntax,
             IFieldSymbol fieldSymbol,
             SemanticModel semanticModel,
             CancellationToken token,
+            string PropertyName,
             [NotNullWhen(true)] out PropertyInfo? propertyInfo,
             out ImmutableArray<DiagnosticInfo> diagnostics)
         {
@@ -69,7 +71,8 @@ partial class ObservablePropertyGenerator
             // Get the property type and name
             string typeNameWithNullabilityAnnotations = fieldSymbol.Type.GetFullyQualifiedNameWithNullabilityAnnotations();
             string fieldName = fieldSymbol.Name;
-            string propertyName = GetGeneratedPropertyName(fieldSymbol);
+            // Generate if not specified
+            string propertyName = string.IsNullOrEmpty(PropertyName) ? GetGeneratedPropertyName(fieldSymbol) : PropertyName;
 
             // Check for name collisions
             if (fieldName == propertyName)

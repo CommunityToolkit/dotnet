@@ -44,7 +44,9 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
 
                     token.ThrowIfCancellationRequested();
 
-                    _ = Execute.TryGetInfo(fieldDeclaration, fieldSymbol, context.SemanticModel, token, out PropertyInfo? propertyInfo, out ImmutableArray<DiagnosticInfo> diagnostics);
+                    string propertyName = context.Attributes.FirstOrDefault()?.GetConstructorArguments<string>().FirstOrDefault() ?? string.Empty;;
+
+                    _ = Execute.TryGetInfo(fieldDeclaration, fieldSymbol, context.SemanticModel, token, propertyName, out PropertyInfo? propertyInfo, out ImmutableArray<DiagnosticInfo> diagnostics);
 
                     token.ThrowIfCancellationRequested();
 

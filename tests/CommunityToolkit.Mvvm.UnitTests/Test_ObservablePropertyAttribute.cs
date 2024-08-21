@@ -1101,6 +1101,22 @@ public partial class Test_ObservablePropertyAttribute
             .Value);
     }
 
+    // See https://github.com/CommunityToolkit/dotnet/issues/795
+    [TestMethod]
+    public void Test_ObservableProperty_ModelWithPropertyNames()
+    {
+        ModelWithPropertyNames model = new();
+
+        List<string?> propertyNames = new();
+
+        model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
+
+        CollectionAssert.AreEqual(new[]
+        {
+            nameof(model.fieldProp),
+        }, propertyNames);
+    }
+
     public abstract partial class BaseViewModel : ObservableObject
     {
         public string? Content { get; set; }
@@ -1796,5 +1812,12 @@ public partial class Test_ObservablePropertyAttribute
         private string? name;
 
         public string? FullName => "";
+    }
+
+    public partial class ModelWithPropertyNames : ObservableObject
+    {
+        // Inherited property
+        [ObservableProperty("fieldProp")]
+        private string? m_field;
     }
 }
