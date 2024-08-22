@@ -20,6 +20,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 /// <param name="IsOldPropertyValueDirectlyReferenced">Whether the old property value is being directly referenced.</param>
 /// <param name="IsReferenceTypeOrUnconstraindTypeParameter">Indicates whether the property is of a reference type or an unconstrained type parameter.</param>
 /// <param name="IncludeMemberNotNullOnSetAccessor">Indicates whether to include nullability annotations on the setter.</param>
+/// <param name="IncludeRequiresUnreferencedCodeOnSetAccessor">Indicates whether to annotate the setter as requiring unreferenced code.</param>
 /// <param name="ForwardedAttributes">The sequence of forwarded attributes for the generated property.</param>
 internal sealed record PropertyInfo(
     string TypeNameWithNullabilityAnnotations,
@@ -33,4 +34,5 @@ internal sealed record PropertyInfo(
     bool IsOldPropertyValueDirectlyReferenced,
     bool IsReferenceTypeOrUnconstraindTypeParameter,
     bool IncludeMemberNotNullOnSetAccessor,
+    bool IncludeRequiresUnreferencedCodeOnSetAccessor,
     EquatableArray<AttributeInfo> ForwardedAttributes);
