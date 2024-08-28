@@ -31,7 +31,6 @@ body:
     required: true
   attributes:
      label: Steps to reproduce
-     render: text
      description: Provide steps to reproduce the issue, or let us know why it can't be reproduced (e.g. more complex setup, environment, dependencies, etc...). If you want to insert a code snippet, make sure to properly format it (add 3 backticks ` at the start and end of your code, followed by the language in use, eg. "csharp") and to remove leading whitespace in each line (if you're pasting code from another IDE where it was indented).
      placeholder: |
         Example repro steps:
