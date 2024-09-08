@@ -4,10 +4,12 @@
   <PropertyGroup>
     <_CommunityToolkitMvvmFeatureSwitchesTargets>$(MSBuildThisFileDirectory)CommunityToolkit.Mvvm.FeatureSwitches.targets</_CommunityToolkitMvvmFeatureSwitchesTargets>
     <_CommunityToolkitMvvmSourceGeneratorsTargets>$(MSBuildThisFileDirectory)CommunityToolkit.Mvvm.SourceGenerators.targets</_CommunityToolkitMvvmSourceGeneratorsTargets>
+    <_CommunityToolkitMvvmWindowsSdkTargets>$(MSBuildThisFileDirectory)CommunityToolkit.Mvvm.WindowsSdk.targets</_CommunityToolkitMvvmWindowsSdkTargets>
   </PropertyGroup>
 
   <!-- Import all available .targets -->
   <Import Project="$(_CommunityToolkitMvvmFeatureSwitchesTargets)" />
   <Import Project="$(_CommunityToolkitMvvmSourceGeneratorsTargets)" />
+  <Import Project="$(_CommunityToolkitMvvmWindowsSdkTargets)" />
 
 </Project>
