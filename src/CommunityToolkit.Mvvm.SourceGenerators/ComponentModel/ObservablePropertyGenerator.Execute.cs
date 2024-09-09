@@ -216,10 +216,10 @@ partial class ObservablePropertyGenerator
             // Gather explicit forwarded attributes info
             foreach (AttributeListSyntax attributeList in fieldSyntax.AttributeLists)
             {
-                // Only look for attribute lists explicitly targeting the (generated) property. Roslyn will normally emit a
-                // CS0657 warning (invalid target), but that is automatically suppressed by a dedicated diagnostic suppressor
-                // that recognizes uses of this target specifically to support [ObservableProperty].
-                if (attributeList.Target?.Identifier is not SyntaxToken(SyntaxKind.PropertyKeyword))
+                // Only look for attribute lists explicitly targeting the (generated) property or one of its accessors. Roslyn will
+                // normally emit a CS0657 warning (invalid target), but that is automatically suppressed by a dedicated diagnostic
+                // suppressor that recognizes uses of this target specifically to support [ObservableProperty].
+                if (attributeList.Target?.Identifier is not SyntaxToken(SyntaxKind.PropertyKeyword or SyntaxKind.GetKeyword or SyntaxKind.SetKeyword) targetIdentifier)
                 {
                     continue;
                 }
@@ -256,7 +256,7 @@ partial class ObservablePropertyGenerator
                     IEnumerable<AttributeArgumentSyntax> attributeArguments = attribute.ArgumentList?.Arguments ?? Enumerable.Empty<AttributeArgumentSyntax>();
 
                     // Try to extract the forwarded attribute
-                    if (!AttributeInfo.TryCreate(attributeTypeSymbol, semanticModel, attributeArguments, token, out AttributeInfo? attributeInfo))
+                    if (!AttributeInfo.TryCreate(attributeTypeSymbol, semanticModel, attributeArguments, targetIdentifier.Kind(), token, out AttributeInfo? attributeInfo))
                     {
                         builder.Add(
                             InvalidPropertyTargetedAttributeExpressionOnObservablePropertyField,
@@ -1025,11 +1025,22 @@ partial class ObservablePropertyGenerator
                             Argument(IdentifierName("value")))),
                     Block(setterStatements.AsEnumerable()));
 
-            // Prepare the forwarded attributes, if any
-            ImmutableArray<AttributeListSyntax> forwardedAttributes =
+            // Prepare the forwarded attributes, if any, for all targets
+            AttributeListSyntax[] forwardedPropertyAttributes =
                 propertyInfo.ForwardedAttributes
+                .Where(static a => a.AttributeTarget is SyntaxKind.PropertyKeyword)
                 .Select(static a => AttributeList(SingletonSeparatedList(a.GetSyntax())))
-                .ToImmutableArray();
+                .ToArray();
+            AttributeListSyntax[] forwardedGetAccessorAttributes =
+                propertyInfo.ForwardedAttributes
+                .Where(static a => a.AttributeTarget is SyntaxKind.GetKeyword)
+                .Select(static a => AttributeList(SingletonSeparatedList(a.GetSyntax())))
+                .ToArray();
+            AttributeListSyntax[] forwardedSetAccessorAttributes =
+                propertyInfo.ForwardedAttributes
+                .Where(static a => a.AttributeTarget is SyntaxKind.SetKeyword)
+                .Select(static a => AttributeList(SingletonSeparatedList(a.GetSyntax())))
+                .ToArray();
 
             // Prepare the setter for the generated property:
             //
@@ -1065,6 +1076,9 @@ partial class ObservablePropertyGenerator
                             AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("The type of the current instance cannot be statically discovered.")))))));
             }
 
+            // Also add any forwarded attributes
+            setAccessor = setAccessor.AddAttributeLists(forwardedSetAccessorAttributes);
+
             // Construct the generated property as follows:
             //
             // /// <inheritdoc cref="<FIELD_NAME>"/>
@@ -1073,6 +1087,7 @@ partial class ObservablePropertyGenerator
             // <FORWARDED_ATTRIBUTES>
             // public <FIELD_TYPE><NULLABLE_ANNOTATION?> <PROPERTY_NAME>
             // {
+            //     <FORWARDED_ATTRIBUTES>
             //     get => <FIELD_NAME>;
             //     <SET_ACCESSOR>
             // }
@@ -1086,12 +1101,13 @@ partial class ObservablePropertyGenerator
                             AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservablePropertyGenerator).Assembly.GetName().Version.ToString()))))))
                     .WithOpenBracketToken(Token(TriviaList(Comment($"/// <inheritdoc cref=\"{getterFieldIdentifierName}\"/>")), SyntaxKind.OpenBracketToken, TriviaList())),
                     AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage")))))
-                .AddAttributeLists(forwardedAttributes.ToArray())
+                .AddAttributeLists(forwardedPropertyAttributes)
                 .AddModifiers(Token(SyntaxKind.PublicKeyword))
                 .AddAccessorListAccessors(
                     AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
                     .WithExpressionBody(ArrowExpressionClause(getterFieldExpression))
-                    .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)),
+                    .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
+                    .AddAttributeLists(forwardedGetAccessorAttributes),
                     setAccessor);
         }
 
