@@ -48,7 +48,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\FieldReferenceForObservablePropertyFieldAnalyzer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\UnsupportedCSharpLanguageVersionAnalyzer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Suppressors\RelayCommandAttributeWithFieldOrPropertyTargetDiagnosticSuppressor.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Suppressors\ObservablePropertyAttributeWithPropertyTargetDiagnosticSuppressor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Suppressors\ObservablePropertyAttributeWithSupportedTargetDiagnosticSuppressor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\DiagnosticDescriptors.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\SuppressionDescriptors.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\AttributeDataExtensions.cs" />
