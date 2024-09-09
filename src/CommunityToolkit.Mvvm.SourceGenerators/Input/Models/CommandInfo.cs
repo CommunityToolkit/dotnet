@@ -23,8 +23,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
 /// <param name="AllowConcurrentExecutions">Whether or not concurrent executions have been enabled.</param>
 /// <param name="FlowExceptionsToTaskScheduler">Whether or not exceptions should flow to the task scheduler.</param>
 /// <param name="IncludeCancelCommand">Whether or not to also generate a cancel command.</param>
-/// <param name="ForwardedFieldAttributes">The sequence of forwarded attributes for the generated field.</param>
-/// <param name="ForwardedPropertyAttributes">The sequence of forwarded attributes for the generated property.</param>
+/// <param name="ForwardedAttributes">The sequence of forwarded attributes for the generated members.</param>
 internal sealed record CommandInfo(
     string MethodName,
     string FieldName,
@@ -39,5 +38,4 @@ internal sealed record CommandInfo(
     bool AllowConcurrentExecutions,
     bool FlowExceptionsToTaskScheduler,
     bool IncludeCancelCommand,
-    EquatableArray<AttributeInfo> ForwardedFieldAttributes,
-    EquatableArray<AttributeInfo> ForwardedPropertyAttributes);
+    EquatableArray<AttributeInfo> ForwardedAttributes);

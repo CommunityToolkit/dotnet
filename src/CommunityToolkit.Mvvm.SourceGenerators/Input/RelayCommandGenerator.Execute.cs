@@ -141,8 +141,7 @@ partial class RelayCommandGenerator
                 semanticModel,
                 token,
                 in builder,
-                out ImmutableArray<AttributeInfo> fieldAttributes,
-                out ImmutableArray<AttributeInfo> propertyAttributes);
+                out ImmutableArray<AttributeInfo> forwardedAttributes);
 
             token.ThrowIfCancellationRequested();
 
@@ -160,8 +159,7 @@ partial class RelayCommandGenerator
                 allowConcurrentExecutions,
                 flowExceptionsToTaskScheduler,
                 generateCancelCommand,
-                fieldAttributes,
-                propertyAttributes);
+                forwardedAttributes);
 
             diagnostics = builder.ToImmutable();
 
@@ -196,16 +194,18 @@ partial class RelayCommandGenerator
                 : $"{commandInfo.DelegateType}<{string.Join(", ", commandInfo.DelegateTypeArguments)}>";
 
             // Prepare the forwarded field attributes, if any
-            ImmutableArray<AttributeListSyntax> forwardedFieldAttributes =
-                commandInfo.ForwardedFieldAttributes
+            AttributeListSyntax[] forwardedFieldAttributes =
+                commandInfo.ForwardedAttributes
+                .Where(static a => a.AttributeTarget is SyntaxKind.FieldKeyword)
                 .Select(static a => AttributeList(SingletonSeparatedList(a.GetSyntax())))
-                .ToImmutableArray();
+                .ToArray();
 
             // Also prepare any forwarded property attributes
-            ImmutableArray<AttributeListSyntax> forwardedPropertyAttributes =
-                commandInfo.ForwardedPropertyAttributes
+            AttributeListSyntax[] forwardedPropertyAttributes =
+                commandInfo.ForwardedAttributes
+                .Where(static a => a.AttributeTarget is SyntaxKind.PropertyKeyword)
                 .Select(static a => AttributeList(SingletonSeparatedList(a.GetSyntax())))
-                .ToImmutableArray();
+                .ToArray();
 
             // Construct the generated field as follows:
             //
@@ -225,7 +225,7 @@ partial class RelayCommandGenerator
                             AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(RelayCommandGenerator).FullName))),
                             AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(RelayCommandGenerator).Assembly.GetName().Version.ToString()))))))
                     .WithOpenBracketToken(Token(TriviaList(Comment($"/// <summary>The backing field for <see cref=\"{commandInfo.PropertyName}\"/>.</summary>")), SyntaxKind.OpenBracketToken, TriviaList())))
-                .AddAttributeLists(forwardedFieldAttributes.ToArray());
+                .AddAttributeLists(forwardedFieldAttributes);
 
             // Prepares the argument to pass the underlying method to invoke
             using ImmutableArrayBuilder<ArgumentSyntax> commandCreationArguments = ImmutableArrayBuilder<ArgumentSyntax>.Rent();
@@ -332,7 +332,7 @@ partial class RelayCommandGenerator
                         SyntaxKind.OpenBracketToken,
                         TriviaList())),
                     AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage")))))
-                .AddAttributeLists(forwardedPropertyAttributes.ToArray())
+                .AddAttributeLists(forwardedPropertyAttributes)
                 .WithExpressionBody(
                     ArrowExpressionClause(
                         AssignmentExpression(
@@ -972,26 +972,22 @@ partial class RelayCommandGenerator
         /// <param name="semanticModel">The <see cref="SemanticModel"/> instance for the current run.</param>
         /// <param name="token">The cancellation token for the current operation.</param>
         /// <param name="diagnostics">The current collection of gathered diagnostics.</param>
-        /// <param name="fieldAttributes">The resulting field attributes to forward.</param>
-        /// <param name="propertyAttributes">The resulting property attributes to forward.</param>
+        /// <param name="forwardedAttributes">The resulting attributes to forward.</param>
         private static void GatherForwardedAttributes(
             IMethodSymbol methodSymbol,
             SemanticModel semanticModel,
             CancellationToken token,
             in ImmutableArrayBuilder<DiagnosticInfo> diagnostics,
-            out ImmutableArray<AttributeInfo> fieldAttributes,
-            out ImmutableArray<AttributeInfo> propertyAttributes)
+            out ImmutableArray<AttributeInfo> forwardedAttributes)
         {
-            using ImmutableArrayBuilder<AttributeInfo> fieldAttributesInfo = ImmutableArrayBuilder<AttributeInfo>.Rent();
-            using ImmutableArrayBuilder<AttributeInfo> propertyAttributesInfo = ImmutableArrayBuilder<AttributeInfo>.Rent();
+            using ImmutableArrayBuilder<AttributeInfo> forwardedAttributesInfo = ImmutableArrayBuilder<AttributeInfo>.Rent();
 
             static void GatherForwardedAttributes(
                 IMethodSymbol methodSymbol,
                 SemanticModel semanticModel,
                 CancellationToken token,
                 in ImmutableArrayBuilder<DiagnosticInfo> diagnostics,
-                in ImmutableArrayBuilder<AttributeInfo> fieldAttributesInfo,
-                in ImmutableArrayBuilder<AttributeInfo> propertyAttributesInfo)
+                in ImmutableArrayBuilder<AttributeInfo> forwardedAttributesInfo)
             {
                 // Get the single syntax reference for the input method symbol (there should be only one)
                 if (methodSymbol.DeclaringSyntaxReferences is not [SyntaxReference syntaxReference])
@@ -1009,7 +1005,7 @@ partial class RelayCommandGenerator
                 foreach (AttributeListSyntax attributeList in methodDeclaration.AttributeLists)
                 {
                     // Same as in the [ObservableProperty] generator, except we're also looking for fields here
-                    if (attributeList.Target?.Identifier is not SyntaxToken(SyntaxKind.PropertyKeyword or SyntaxKind.FieldKeyword))
+                    if (attributeList.Target?.Identifier is not SyntaxToken(SyntaxKind.PropertyKeyword or SyntaxKind.FieldKeyword) targetIdentifier)
                     {
                         continue;
                     }
@@ -1033,7 +1029,7 @@ partial class RelayCommandGenerator
                         IEnumerable<AttributeArgumentSyntax> attributeArguments = attribute.ArgumentList?.Arguments ?? Enumerable.Empty<AttributeArgumentSyntax>();
 
                         // Try to extract the forwarded attribute
-                        if (!AttributeInfo.TryCreate(attributeTypeSymbol, semanticModel, attributeArguments, token, out AttributeInfo? attributeInfo))
+                        if (!AttributeInfo.TryCreate(attributeTypeSymbol, semanticModel, attributeArguments, targetIdentifier.Kind(), token, out AttributeInfo? attributeInfo))
                         {
                             diagnostics.Add(
                                 InvalidFieldOrPropertyTargetedAttributeExpressionOnRelayCommandMethod,
@@ -1044,15 +1040,8 @@ partial class RelayCommandGenerator
                             continue;
                         }
 
-                        // Add the new attribute info to the right builder
-                        if (attributeList.Target?.Identifier is SyntaxToken(SyntaxKind.FieldKeyword))
-                        {
-                            fieldAttributesInfo.Add(attributeInfo);
-                        }
-                        else
-                        {
-                            propertyAttributesInfo.Add(attributeInfo);
-                        }
+                        // Add the new attribute info to the builder
+                        forwardedAttributesInfo.Add(attributeInfo);
                     }
                 }
             }
@@ -1064,17 +1053,16 @@ partial class RelayCommandGenerator
                 IMethodSymbol partialImplementation = methodSymbol.PartialImplementationPart ?? methodSymbol;
 
                 // We always give priority to the partial definition, to ensure a predictable and testable ordering
-                GatherForwardedAttributes(partialDefinition, semanticModel, token, in diagnostics, in fieldAttributesInfo, in propertyAttributesInfo);
-                GatherForwardedAttributes(partialImplementation, semanticModel, token, in diagnostics, in fieldAttributesInfo, in propertyAttributesInfo);
+                GatherForwardedAttributes(partialDefinition, semanticModel, token, in diagnostics, in forwardedAttributesInfo);
+                GatherForwardedAttributes(partialImplementation, semanticModel, token, in diagnostics, in forwardedAttributesInfo);
             }
             else
             {
                 // If the method is not a partial definition/implementation, just gather attributes from the method with no modifications
-                GatherForwardedAttributes(methodSymbol, semanticModel, token, in diagnostics, in fieldAttributesInfo, in propertyAttributesInfo);
+                GatherForwardedAttributes(methodSymbol, semanticModel, token, in diagnostics, in forwardedAttributesInfo);
             }
 
-            fieldAttributes = fieldAttributesInfo.ToImmutable();
-            propertyAttributes = propertyAttributesInfo.ToImmutable();
+            forwardedAttributes = forwardedAttributesInfo.ToImmutable();
         }
     }
 }
