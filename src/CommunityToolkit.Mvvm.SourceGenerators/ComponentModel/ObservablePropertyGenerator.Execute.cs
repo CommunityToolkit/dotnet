@@ -834,9 +834,6 @@ partial class ObservablePropertyGenerator
         {
             using ImmutableArrayBuilder<StatementSyntax> setterStatements = ImmutableArrayBuilder<StatementSyntax>.Rent();
 
-            // Get the property type syntax
-            TypeSyntax propertyType = IdentifierName(propertyInfo.TypeNameWithNullabilityAnnotations);
-
             string getterFieldIdentifierName;
             ExpressionSyntax getterFieldExpression;
             ExpressionSyntax setterFieldExpression;
@@ -872,7 +869,7 @@ partial class ObservablePropertyGenerator
                 // <PROPERTY_TYPE> __oldValue = <FIELD_EXPRESSIONS>;
                 setterStatements.Add(
                     LocalDeclarationStatement(
-                        VariableDeclaration(propertyType)
+                        VariableDeclaration(GetMaybeNullPropertyType(propertyInfo))
                         .AddVariables(
                             VariableDeclarator(Identifier("__oldValue"))
                             .WithInitializer(EqualsValueClause(setterFieldExpression)))));
@@ -1001,6 +998,9 @@ partial class ObservablePropertyGenerator
                             Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(propertyInfo.PropertyName))))));
             }
 
+            // Get the property type syntax
+            TypeSyntax propertyType = IdentifierName(propertyInfo.TypeNameWithNullabilityAnnotations);
+
             // Generate the inner setter block as follows:
             //
             // if (!global::System.Collections.Generic.EqualityComparer<<PROPERTY_TYPE>>.Default.Equals(<FIELD_EXPRESSION>, value))
@@ -1128,17 +1128,8 @@ partial class ObservablePropertyGenerator
                         Comment($"/// <remarks>This method is invoked right before the value of <see cref=\"{propertyInfo.PropertyName}\"/> is changed.</remarks>")), SyntaxKind.OpenBracketToken, TriviaList())))
                 .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
 
-            // Prepare the nullable type for the previous property value. This is needed because if the type is a reference
-            // type, the previous value might be null even if the property type is not nullable, as the first invocation would
-            // happen when the property is first set to some value that is not null (but the backing field would still be so).
-            // As a cheap way to check whether we need to add nullable, we can simply check whether the type name with nullability
-            // annotations ends with a '?'. If it doesn't and the type is a reference type, we add it. Otherwise, we keep it.
-            TypeSyntax oldValueTypeSyntax = propertyInfo.IsReferenceTypeOrUnconstraindTypeParameter switch
-            {
-                true when !propertyInfo.TypeNameWithNullabilityAnnotations.EndsWith("?")
-                    => IdentifierName($"{propertyInfo.TypeNameWithNullabilityAnnotations}?"),
-                _ => parameterType
-            };
+            // Get the type for the 'oldValue' parameter (which can be null on first invocation) 
+            TypeSyntax oldValueTypeSyntax = GetMaybeNullPropertyType(propertyInfo);
 
             // Construct the generated method as follows:
             //
@@ -1222,6 +1213,26 @@ partial class ObservablePropertyGenerator
                 onPropertyChanging2Declaration,
                 onPropertyChangedDeclaration,
                 onPropertyChanged2Declaration);
+        }
+
+        /// <summary>
+        /// Gets the <see cref="TypeSyntax"/> for the type of a given property, when it can possibly be <see langword="null"/>.
+        /// </summary>
+        /// <param name="propertyInfo">The input <see cref="PropertyInfo"/> instance to process.</param>
+        /// <returns>The type of a given property, when it can possibly be <see langword="null"/></returns>
+        private static TypeSyntax GetMaybeNullPropertyType(PropertyInfo propertyInfo)
+        {
+            // Prepare the nullable type for the previous property value. This is needed because if the type is a reference
+            // type, the previous value might be null even if the property type is not nullable, as the first invocation would
+            // happen when the property is first set to some value that is not null (but the backing field would still be so).
+            // As a cheap way to check whether we need to add nullable, we can simply check whether the type name with nullability
+            // annotations ends with a '?'. If it doesn't and the type is a reference type, we add it. Otherwise, we keep it.
+            return propertyInfo.IsReferenceTypeOrUnconstraindTypeParameter switch
+            {
+                true when !propertyInfo.TypeNameWithNullabilityAnnotations.EndsWith("?")
+                    => IdentifierName($"{propertyInfo.TypeNameWithNullabilityAnnotations}?"),
+                _ => IdentifierName(propertyInfo.TypeNameWithNullabilityAnnotations)
+            };
         }
 
         /// <summary>
