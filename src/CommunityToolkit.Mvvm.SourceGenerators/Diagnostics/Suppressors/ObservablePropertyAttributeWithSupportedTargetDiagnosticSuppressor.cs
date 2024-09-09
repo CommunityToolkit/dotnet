@@ -14,7 +14,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators;
 
 /// <summary>
 /// <para>
-/// A diagnostic suppressor to suppress CS0657 warnings for fields with [ObservableProperty] using a [property:] attribute list.
+/// A diagnostic suppressor to suppress CS0657 warnings for fields with [ObservableProperty] using a [property:] attribute list (or [set:] or [get:]).
 /// </para>
 /// <para>
 /// That is, this diagnostic suppressor will suppress the following diagnostic:
@@ -29,10 +29,10 @@ namespace CommunityToolkit.Mvvm.SourceGenerators;
 /// </para>
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public sealed class ObservablePropertyAttributeWithPropertyTargetDiagnosticSuppressor : DiagnosticSuppressor
+public sealed class ObservablePropertyAttributeWithSupportedTargetDiagnosticSuppressor : DiagnosticSuppressor
 {
     /// <inheritdoc/>
-    public override ImmutableArray<SuppressionDescriptor> SupportedSuppressions => ImmutableArray.Create(PropertyAttributeListForObservablePropertyField);
+    public override ImmutableArray<SuppressionDescriptor> SupportedSuppressions => ImmutableArray.Create(PropertyAttributeListForObservablePropertyField, PropertyAttributeListForObservablePropertyFieldAccessors);
 
     /// <inheritdoc/>
     public override void ReportSuppressions(SuppressionAnalysisContext context)
@@ -43,7 +43,7 @@ public sealed class ObservablePropertyAttributeWithPropertyTargetDiagnosticSuppr
 
             // Check that the target is effectively [property:] over a field declaration with at least one variable, which is the only case we are interested in
             if (syntaxNode is AttributeTargetSpecifierSyntax { Parent.Parent: FieldDeclarationSyntax { Declaration.Variables.Count: > 0 } fieldDeclaration } attributeTarget &&
-                attributeTarget.Identifier.IsKind(SyntaxKind.PropertyKeyword))
+                (attributeTarget.Identifier.IsKind(SyntaxKind.PropertyKeyword) || attributeTarget.Identifier.IsKind(SyntaxKind.GetKeyword) || attributeTarget.Identifier.IsKind(SyntaxKind.SetKeyword)))
             {
                 SemanticModel semanticModel = context.GetSemanticModel(syntaxNode.SyntaxTree);
 
