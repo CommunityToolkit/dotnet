@@ -21,8 +21,20 @@
   <Target Name="MvvmToolkitVerifyWindowsSdkPackageVersion" DependsOnTargets="ResolveAssemblyReferences">
     <PropertyGroup>
 
-      <!-- The minimum build version for the Windows SDK package -->
-      <_MvvmToolkitWindowsSdkPackageMinBuild>41</_MvvmToolkitWindowsSdkPackageMinBuild>
+      <!--
+        The minimum build versions for the Windows SDK package. We keep track of up to 3 different versions:
+          - The minimum Windows SDK package for which we don't want to emit a build error.
+          - The recommended Windows SDK package for UWP projects using the .NET 9 SDK (with UWP XAML projections).
+          - The recommended Windows SDK package for WindowsAppSDK projects (ie. without UWP XAML projections). 
+      -->
+      <_MvvmToolkitWindowsSdkPackageMinBuild>38</_MvvmToolkitWindowsSdkPackageMinBuild>
+      <_MvvmToolkitWindowsSdkPackageRecommendedUwpBuild>39</_MvvmToolkitWindowsSdkPackageRecommendedUwpBuild>
+      <_MvvmToolkitWindowsSdkPackageRecommendedWindowsAppSDKBuild>41</_MvvmToolkitWindowsSdkPackageRecommendedWindowsAppSDKBuild>
+
+      <!-- Switch on the recommended one based on configuration -->
+      <_MvvmToolkitWindowsSdkPackageRecommendedBuild>$(_MvvmToolkitWindowsSdkPackageMinBuild)</_MvvmToolkitWindowsSdkPackageRecommendedBuild>
+      <_MvvmToolkitWindowsSdkPackageRecommendedBuild Condition="'$(UseUwp)' == 'true'">$(_MvvmToolkitWindowsSdkPackageRecommendedUwpBuild)</_MvvmToolkitWindowsSdkPackageRecommendedBuild>
+      <_MvvmToolkitWindowsSdkPackageRecommendedBuild Condition="'$(UseUwp)' != 'true'">$(_MvvmToolkitWindowsSdkPackageRecommendedWindowsAppSDKBuild)</_MvvmToolkitWindowsSdkPackageRecommendedBuild>
     </PropertyGroup>
     <ItemGroup>
         
@@ -30,6 +42,7 @@
       <_MvvmToolkitWindowsSdkPackage Include="$(WindowsSdkPackageVersion)" Condition="'$(WindowsSdkPackageVersion)' != ''">
         <Referenced>$(WindowsSdkPackageVersion)</Referenced>
         <Required>10.0.$([System.Version]::Parse("$(WindowsSdkPackageVersion.Split('-')[0])").Build).$(_MvvmToolkitWindowsSdkPackageMinBuild)</Required>
+        <Recommended>10.0.$([System.Version]::Parse("$(WindowsSdkPackageVersion.Split('-')[0])").Build).$(_MvvmToolkitWindowsSdkPackageRecommendedBuild)</Recommended>
       </_MvvmToolkitWindowsSdkPackage>
         
       <!-- Otherwise, validate against the framework reference package -->
@@ -38,6 +51,7 @@
         Condition="'$(WindowsSdkPackageVersion)' == '' AND '@(ResolvedFrameworkReference)' != '' AND '%(Identity)' == 'Microsoft.Windows.SDK.NET.Ref'">
         <Referenced>%(ResolvedFrameworkReference.TargetingPackVersion)</Referenced>
         <Required>10.0.$([System.Version]::Parse("%(ResolvedFrameworkReference.TargetingPackVersion)").Build).$(_MvvmToolkitWindowsSdkPackageMinBuild)</Required>
+        <Recommended>10.0.$([System.Version]::Parse("%(ResolvedFrameworkReference.TargetingPackVersion)").Build).$(_MvvmToolkitWindowsSdkPackageRecommendedBuild)</Recommended>
       </_MvvmToolkitWindowsSdkPackage>
         
       <!-- Check whether the referenced Windows SDK package is compatible -->
@@ -47,8 +61,9 @@
     </ItemGroup>
     <PropertyGroup>
         
-      <!-- Extract the required Windows SDK package version (to show if the one in use is not compatible) -->
+      <!-- Extract the required and recommended Windows SDK package version (to show if the one in use is not compatible) -->
       <_MvvmToolkitWindowsSdkPackageRequired>@(_MvvmToolkitWindowsSdkPackage->'%(Required)')</_MvvmToolkitWindowsSdkPackageRequired>
+      <_MvvmToolkitWindowsSdkPackageRecommended>@(_MvvmToolkitWindowsSdkPackage->'%(Recommended)')</_MvvmToolkitWindowsSdkPackageRecommended>
     </PropertyGroup>
 
     <!-- Emit an error if the Windows SDK package version isn't valid -->
@@ -56,7 +71,7 @@
       Condition="'@(_MvvmToolkitCompatibleWindowsSdkPackages)' == ''"
       Code="MVVMTKCFG0003"
       HelpLink="https://aka.ms/mvvmtoolkit/errors/mvvmtkcfg0003"
-      Text="This version of the MVVM Toolkit requires 'Microsoft.Windows.SDK.NET.Ref' version '$(_MvvmToolkitWindowsSdkPackageRequired)' or later. Please update to .NET SDK 8.0.109, 8.0.305 or 8.0.402 (or later). Alternatively, use a temporary 'Microsoft.Windows.SDK.NET.Ref' reference, which can be done by setting the 'WindowsSdkPackageVersion' property in your .csproj file to '$(_MvvmToolkitWindowsSdkPackageRequired)'." />
+      Text="This version of the MVVM Toolkit requires 'Microsoft.Windows.SDK.NET.Ref' version '$(_MvvmToolkitWindowsSdkPackageRequired)' or later. Please update to .NET SDK 8.0.109, 8.0.305 or 8.0.402 (or later). Alternatively, use a temporary 'Microsoft.Windows.SDK.NET.Ref' reference, which can be done by setting the 'WindowsSdkPackageVersion' property in your .csproj file. For your project configuration, it is recommended to set the package version to '$(_MvvmToolkitWindowsSdkPackageRecommended)'." />
   </Target>
 
 </Project>
