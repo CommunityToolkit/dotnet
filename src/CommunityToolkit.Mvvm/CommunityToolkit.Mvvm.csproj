@@ -99,9 +99,11 @@
     <!-- Include the custom .targets files (shared across TFMs) -->
     <None Include="CommunityToolkit.Mvvm.FeatureSwitches.targets" PackagePath="build" Pack="true" />
     <None Include="CommunityToolkit.Mvvm.SourceGenerators.targets" PackagePath="build" Pack="true" />
+    <None Include="CommunityToolkit.Mvvm.WindowsSdk.targets" PackagePath="build" Pack="true" />
     <None Include="CommunityToolkit.Mvvm.targets" PackagePath="build" Pack="true" />
     <None Include="CommunityToolkit.Mvvm.FeatureSwitches.targets" PackagePath="buildTransitive" Pack="true" />
     <None Include="CommunityToolkit.Mvvm.SourceGenerators.targets" PackagePath="buildTransitive" Pack="true" />
+    <None Include="CommunityToolkit.Mvvm.WindowsSdk.targets" PackagePath="buildTransitive" Pack="true" />
     <None Include="CommunityToolkit.Mvvm.targets" PackagePath="buildTransitive" Pack="true" />
 
     <!--
