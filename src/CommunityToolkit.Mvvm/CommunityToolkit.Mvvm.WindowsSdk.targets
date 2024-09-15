@@ -45,10 +45,21 @@
         <Recommended>10.0.$([System.Version]::Parse("$(WindowsSdkPackageVersion.Split('-')[0])").Build).$(_MvvmToolkitWindowsSdkPackageRecommendedBuild)</Recommended>
       </_MvvmToolkitWindowsSdkPackage>
         
-      <!-- Otherwise, validate against the framework reference package -->
+      <!--
+        Otherwise, validate against the framework reference package. We need to check for two different item specs:
+          - "Microsoft.Windows.SDK.NET.Ref": this is the default name for the framework reference for the Windows
+            SDK projections, used on .NET 8 and lower. It includes all Windows APIs, except for XAML.
+          - "Microsoft.Windows.SDK.NET.Ref.Windows": this is the same as bove, except it's the framework reference
+            name that is added by the .NET 9 SDK for projects targeting .NET 8 and above. This specifically includes
+            the "Windows" profile, which only references non-XAML APIs. This change was done for the UWP support for
+            .NET 9, which requires the .NET SDK to also be able to reference XAML types. Those will use a different
+            item spec (ie. "Microsoft.Windows.SDK.NET.Ref.Xaml"). We only need to check the base "Windows" reference.
+      -->
       <_MvvmToolkitWindowsSdkPackage
         Include="@(ResolvedFrameworkReference)"
-        Condition="'$(WindowsSdkPackageVersion)' == '' AND '@(ResolvedFrameworkReference)' != '' AND '%(Identity)' == 'Microsoft.Windows.SDK.NET.Ref'">
+        Condition="'$(WindowsSdkPackageVersion)' == '' AND
+                   '@(ResolvedFrameworkReference)' != '' AND
+                   ('%(Identity)' == 'Microsoft.Windows.SDK.NET.Ref' OR '%(Identity)' == 'Microsoft.Windows.SDK.NET.Ref.Windows')">
         <Referenced>%(ResolvedFrameworkReference.TargetingPackVersion)</Referenced>
         <Required>10.0.$([System.Version]::Parse("%(ResolvedFrameworkReference.TargetingPackVersion)").Build).$(_MvvmToolkitWindowsSdkPackageMinBuild)</Required>
         <Recommended>10.0.$([System.Version]::Parse("%(ResolvedFrameworkReference.TargetingPackVersion)").Build).$(_MvvmToolkitWindowsSdkPackageRecommendedBuild)</Recommended>
