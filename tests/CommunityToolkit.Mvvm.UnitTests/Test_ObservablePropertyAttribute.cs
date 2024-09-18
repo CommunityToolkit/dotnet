@@ -1797,4 +1797,30 @@ public partial class Test_ObservablePropertyAttribute
 
         public string? FullName => "";
     }
+
+#if NET6_0_OR_GREATER
+    // See https://github.com/CommunityToolkit/dotnet/issues/939
+    public partial class ModelWithSecondaryPropertySetFromGeneratedSetter_DoesNotWarn : ObservableObject
+    {
+        [ObservableProperty]
+        [set: MemberNotNull(nameof(B))]
+        private string a;
+
+        // This type validates forwarding attributes on generated accessors. In particular, there should
+        // be no nullability warning on this constructor (CS8618), thanks to 'MemberNotNullAttribute("B")'
+        // being forwarded to the generated setter in the generated property (see linked issue).
+        public ModelWithSecondaryPropertySetFromGeneratedSetter_DoesNotWarn()
+        {
+            A = "";
+        }
+
+        public string B { get; private set; }
+
+        [MemberNotNull(nameof(B))]
+        partial void OnAChanged(string? oldValue, string newValue)
+        {
+            B = "";
+        }
+    }
+#endif
 }

@@ -9,6 +9,7 @@ using System.Threading;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -17,10 +18,12 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 /// <summary>
 /// A model representing an attribute declaration.
 /// </summary>
+/// <param name="AttributeTarget">Indicates the target of the attribute.</param>
 /// <param name="TypeName">The type name of the attribute.</param>
 /// <param name="ConstructorArgumentInfo">The <see cref="TypedConstantInfo"/> values for all constructor arguments for the attribute.</param>
 /// <param name="NamedArgumentInfo">The <see cref="TypedConstantInfo"/> values for all named arguments for the attribute.</param>
 internal sealed record AttributeInfo(
+    SyntaxKind AttributeTarget,
     string TypeName,
     EquatableArray<TypedConstantInfo> ConstructorArgumentInfo,
     EquatableArray<(string Name, TypedConstantInfo Value)> NamedArgumentInfo)
@@ -50,6 +53,7 @@ internal sealed record AttributeInfo(
         }
 
         return new(
+            SyntaxKind.PropertyKeyword,
             typeName,
             constructorArguments.ToImmutable(),
             namedArguments.ToImmutable());
@@ -61,6 +65,7 @@ internal sealed record AttributeInfo(
     /// <param name="typeSymbol">The symbol for the attribute type.</param>
     /// <param name="semanticModel">The <see cref="SemanticModel"/> instance for the current run.</param>
     /// <param name="arguments">The sequence of <see cref="AttributeArgumentSyntax"/> instances to process.</param>
+    /// <param name="syntaxKind">The kind of target for the attribute.</param>
     /// <param name="token">The cancellation token for the current operation.</param>
     /// <param name="info">The resulting <see cref="AttributeInfo"/> instance, if available</param>
     /// <returns>Whether a resulting <see cref="AttributeInfo"/> instance could be created.</returns>
@@ -68,6 +73,7 @@ internal sealed record AttributeInfo(
         INamedTypeSymbol typeSymbol,
         SemanticModel semanticModel,
         IEnumerable<AttributeArgumentSyntax> arguments,
+        SyntaxKind syntaxKind,
         CancellationToken token,
         [NotNullWhen(true)] out AttributeInfo? info)
     {
@@ -105,6 +111,7 @@ internal sealed record AttributeInfo(
         }
 
         info = new AttributeInfo(
+            syntaxKind,
             typeName,
             constructorArguments.ToImmutable(),
             namedArguments.ToImmutable());
