@@ -83,6 +83,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.Exter
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.CodeFixers", "src\CommunityToolkit.Mvvm.CodeFixers\CommunityToolkit.Mvvm.CodeFixers.csproj", "{E79DCA2A-4C59-499F-85BD-F45215ED6B72}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunityToolkit.Mvvm.SourceGenerators.Roslyn4110", "src\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4110\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4110.csproj", "{FCC13AD5-CEB8-4CC1-8250-89B616D126F2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -457,6 +459,26 @@ Global
 		{E79DCA2A-4C59-499F-85BD-F45215ED6B72}.Release|x64.Build.0 = Release|Any CPU
 		{E79DCA2A-4C59-499F-85BD-F45215ED6B72}.Release|x86.ActiveCfg = Release|Any CPU
 		{E79DCA2A-4C59-499F-85BD-F45215ED6B72}.Release|x86.Build.0 = Release|Any CPU
+		{FCC13AD5-CEB8-4CC1-8250-89B616D126F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCC13AD5-CEB8-4CC1-8250-89B616D126F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCC13AD5-CEB8-4CC1-8250-89B616D126F2}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{FCC13AD5-CEB8-4CC1-8250-89B616D126F2}.Debug|ARM.Build.0 = Debug|Any CPU
+		{FCC13AD5-CEB8-4CC1-8250-89B616D126F2}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{FCC13AD5-CEB8-4CC1-8250-89B616D126F2}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{FCC13AD5-CEB8-4CC1-8250-89B616D126F2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FCC13AD5-CEB8-4CC1-8250-89B616D126F2}.Debug|x64.Build.0 = Debug|Any CPU
+		{FCC13AD5-CEB8-4CC1-8250-89B616D126F2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FCC13AD5-CEB8-4CC1-8250-89B616D126F2}.Debug|x86.Build.0 = Debug|Any CPU
+		{FCC13AD5-CEB8-4CC1-8250-89B616D126F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCC13AD5-CEB8-4CC1-8250-89B616D126F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCC13AD5-CEB8-4CC1-8250-89B616D126F2}.Release|ARM.ActiveCfg = Release|Any CPU
+		{FCC13AD5-CEB8-4CC1-8250-89B616D126F2}.Release|ARM.Build.0 = Release|Any CPU
+		{FCC13AD5-CEB8-4CC1-8250-89B616D126F2}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{FCC13AD5-CEB8-4CC1-8250-89B616D126F2}.Release|ARM64.Build.0 = Release|Any CPU
+		{FCC13AD5-CEB8-4CC1-8250-89B616D126F2}.Release|x64.ActiveCfg = Release|Any CPU
+		{FCC13AD5-CEB8-4CC1-8250-89B616D126F2}.Release|x64.Build.0 = Release|Any CPU
+		{FCC13AD5-CEB8-4CC1-8250-89B616D126F2}.Release|x86.ActiveCfg = Release|Any CPU
+		{FCC13AD5-CEB8-4CC1-8250-89B616D126F2}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -495,6 +517,7 @@ Global
 		tests\CommunityToolkit.Mvvm.ExternalAssembly\CommunityToolkit.Mvvm.ExternalAssembly.projitems*{ecfe93aa-4b98-4292-b3fa-9430d513b4f9}*SharedItemsImports = 5
 		tests\CommunityToolkit.Mvvm.SourceGenerators.UnitTests\CommunityToolkit.Mvvm.SourceGenerators.UnitTests.projitems*{f3799252-7a66-4533-89d8-b3c312052d95}*SharedItemsImports = 5
 		tests\CommunityToolkit.Mvvm.SourceGenerators.UnitTests\CommunityToolkit.Mvvm.SourceGenerators.UnitTests.projitems*{fb59ce88-7732-4a63-b5bd-ac5681b7da1a}*SharedItemsImports = 13
+		src\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.projitems*{fcc13ad5-ceb8-4cc1-8250-89b616d126f2}*SharedItemsImports = 5
 		tests\CommunityToolkit.Mvvm.SourceGenerators.UnitTests\CommunityToolkit.Mvvm.SourceGenerators.UnitTests.projitems*{fe3ea695-ea0f-4e5f-9257-e059aaa23b10}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal
