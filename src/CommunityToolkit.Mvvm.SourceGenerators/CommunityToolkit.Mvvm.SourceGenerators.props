@@ -16,20 +16,22 @@
   -->
   <PropertyGroup>
 
-    <!-- Set the assembly name to always be the same, regardless of the Roslyn version being targeted (cut the trailing ".RoslynXYZ" suffix) -->
-    <AssemblyName>$(MSBuildProjectName.Substring(0, $([MSBuild]::Subtract($(MSBuildProjectName.Length), 10))))</AssemblyName>
+    <!-- Set the assembly name to always be the same, regardless of the Roslyn version being targeted (cut the trailing ".RoslynXYZW" suffix) -->
+    <AssemblyName>$(MSBuildProjectName.Substring(0, $([MSBuild]::Subtract($(MSBuildProjectName.Length), 11))))</AssemblyName>
 
     <!--
       Get the Roslyn version to use from the name of the project importing this .props file.
       All projects will use the "<PROJECT_NAME>.Roslyn<MAJOR><MINOR><PATCH>.csproj" naming scheme.
+      Note that "<MINOR>" always uses two digits, not just one.
     -->
-    <MvvmToolkitSourceGeneratorRoslynMajorVersion>$(MSBuildProjectName.Substring($([MSBuild]::Subtract($(MSBuildProjectName.Length), 3)), 1))</MvvmToolkitSourceGeneratorRoslynMajorVersion>
-    <MvvmToolkitSourceGeneratorRoslynMinorVersion>$(MSBuildProjectName.Substring($([MSBuild]::Subtract($(MSBuildProjectName.Length), 2)), 1))</MvvmToolkitSourceGeneratorRoslynMinorVersion>
+    <MvvmToolkitSourceGeneratorRoslynMajorVersion>$(MSBuildProjectName.Substring($([MSBuild]::Subtract($(MSBuildProjectName.Length), 4)), 1))</MvvmToolkitSourceGeneratorRoslynMajorVersion>
+    <MvvmToolkitSourceGeneratorRoslynMinorVersion>$(MSBuildProjectName.Substring($([MSBuild]::Subtract($(MSBuildProjectName.Length), 3)), 2))</MvvmToolkitSourceGeneratorRoslynMinorVersion>
     <MvvmToolkitSourceGeneratorRoslynPatchVersion>$(MSBuildProjectName.Substring($([MSBuild]::Subtract($(MSBuildProjectName.Length), 1)), 1))</MvvmToolkitSourceGeneratorRoslynPatchVersion>
     <MvvmToolkitSourceGeneratorRoslynVersion>$(MvvmToolkitSourceGeneratorRoslynMajorVersion).$(MvvmToolkitSourceGeneratorRoslynMinorVersion).$(MvvmToolkitSourceGeneratorRoslynPatchVersion)</MvvmToolkitSourceGeneratorRoslynVersion>
 
     <!-- Also define "ROSLYN_<MAJOR>_<MINOR>_OR_GREATER" build constants, so the generator code can multi-target whenever needed and add any required polyfills -->
     <DefineConstants Condition="$([MSBuild]::VersionGreaterThanOrEquals($(MvvmToolkitSourceGeneratorRoslynVersion), 4.3.1))">$(DefineConstants);ROSLYN_4_3_1_OR_GREATER</DefineConstants>
+    <DefineConstants Condition="$([MSBuild]::VersionGreaterThanOrEquals($(MvvmToolkitSourceGeneratorRoslynVersion), 4.11.0))">$(DefineConstants);ROSLYN_4_11_0_OR_GREATER</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

@@ -36,7 +36,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{88C6FFBE-3
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Diagnostics", "src\CommunityToolkit.Diagnostics\CommunityToolkit.Diagnostics.csproj", "{76F89522-CA28-458D-801D-947AB033A758}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.SourceGenerators.Roslyn401", "src\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401.csproj", "{E24D1146-5AD8-498F-A518-4890D8BF4937}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.SourceGenerators.Roslyn4001", "src\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4001\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4001.csproj", "{E24D1146-5AD8-498F-A518-4890D8BF4937}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Diagnostics.UnitTests", "tests\CommunityToolkit.Diagnostics.UnitTests\CommunityToolkit.Diagnostics.UnitTests.csproj", "{35E48D4D-6433-4B70-98A9-BA544921EE04}"
 EndProject
@@ -61,25 +61,25 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.Inter
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CommunityToolkit.Mvvm.SourceGenerators", "src\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.shproj", "{5E7F1212-A54B-40CA-98C5-1FF5CD1A1638}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.SourceGenerators.Roslyn431", "src\CommunityToolkit.Mvvm.SourceGenerators.Roslyn431\CommunityToolkit.Mvvm.SourceGenerators.Roslyn431.csproj", "{DF455C40-B18E-4890-8758-7CCCB5CA7052}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.SourceGenerators.Roslyn4031", "src\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4031\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4031.csproj", "{DF455C40-B18E-4890-8758-7CCCB5CA7052}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CommunityToolkit.Mvvm.UnitTests", "tests\CommunityToolkit.Mvvm.UnitTests\CommunityToolkit.Mvvm.UnitTests.shproj", "{B8DCD82E-B53B-4249-AD4E-F9B99ACB9334}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.Roslyn401.UnitTests", "tests\CommunityToolkit.Mvvm.Roslyn401.UnitTests\CommunityToolkit.Mvvm.Roslyn401.UnitTests.csproj", "{AD9C3223-8E37-4FD4-A0D4-A45119551D3A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.Roslyn4001.UnitTests", "tests\CommunityToolkit.Mvvm.Roslyn4001.UnitTests\CommunityToolkit.Mvvm.Roslyn4001.UnitTests.csproj", "{AD9C3223-8E37-4FD4-A0D4-A45119551D3A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.Roslyn431.UnitTests", "tests\CommunityToolkit.Mvvm.Roslyn431.UnitTests\CommunityToolkit.Mvvm.Roslyn431.UnitTests.csproj", "{5B44F7F1-DCA2-4776-924E-A266F7BBF753}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.Roslyn4031.UnitTests", "tests\CommunityToolkit.Mvvm.Roslyn4031.UnitTests\CommunityToolkit.Mvvm.Roslyn4031.UnitTests.csproj", "{5B44F7F1-DCA2-4776-924E-A266F7BBF753}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CommunityToolkit.Mvvm.SourceGenerators.UnitTests", "tests\CommunityToolkit.Mvvm.SourceGenerators.UnitTests\CommunityToolkit.Mvvm.SourceGenerators.UnitTests.shproj", "{FB59CE88-7732-4A63-B5BD-AC5681B7DA1A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.SourceGenerators.Roslyn401.UnitTests", "tests\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401.UnitTests\CommunityToolkit.Mvvm.SourceGenerators.Roslyn401.UnitTests.csproj", "{F3799252-7A66-4533-89D8-B3C312052D95}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.SourceGenerators.Roslyn4001.UnitTests", "tests\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4001.UnitTests\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4001.UnitTests.csproj", "{F3799252-7A66-4533-89D8-B3C312052D95}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.SourceGenerators.Roslyn431.UnitTests", "tests\CommunityToolkit.Mvvm.SourceGenerators.Roslyn431.UnitTests\CommunityToolkit.Mvvm.SourceGenerators.Roslyn431.UnitTests.csproj", "{FE3EA695-EA0F-4E5F-9257-E059AAA23B10}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.SourceGenerators.Roslyn4031.UnitTests", "tests\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4031.UnitTests\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4031.UnitTests.csproj", "{FE3EA695-EA0F-4E5F-9257-E059AAA23B10}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CommunityToolkit.Mvvm.ExternalAssembly", "tests\CommunityToolkit.Mvvm.ExternalAssembly\CommunityToolkit.Mvvm.ExternalAssembly.shproj", "{E827A9CD-405F-43E4-84C7-68CC7E845CDC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.ExternalAssembly.Roslyn401", "tests\CommunityToolkit.Mvvm.ExternalAssembly.Roslyn401\CommunityToolkit.Mvvm.ExternalAssembly.Roslyn401.csproj", "{ECFE93AA-4B98-4292-B3FA-9430D513B4F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.ExternalAssembly.Roslyn4001", "tests\CommunityToolkit.Mvvm.ExternalAssembly.Roslyn4001\CommunityToolkit.Mvvm.ExternalAssembly.Roslyn4001.csproj", "{ECFE93AA-4B98-4292-B3FA-9430D513B4F9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.ExternalAssembly.Roslyn431", "tests\CommunityToolkit.Mvvm.ExternalAssembly.Roslyn431\CommunityToolkit.Mvvm.ExternalAssembly.Roslyn431.csproj", "{4FCD501C-1BB5-465C-AD19-356DAB6600C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.ExternalAssembly.Roslyn4031", "tests\CommunityToolkit.Mvvm.ExternalAssembly.Roslyn4031\CommunityToolkit.Mvvm.ExternalAssembly.Roslyn4031.csproj", "{4FCD501C-1BB5-465C-AD19-356DAB6600C6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.CodeFixers", "src\CommunityToolkit.Mvvm.CodeFixers\CommunityToolkit.Mvvm.CodeFixers.csproj", "{E79DCA2A-4C59-499F-85BD-F45215ED6B72}"
 EndProject
