@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net472;net6.0;net7.0;net8.0</TargetFrameworks>
-    <DefineConstants>$(DefineConstants);ROSLYN_4_11_0_OR_GREATER</DefineConstants>
+    <DefineConstants>$(DefineConstants);ROSLYN_4_3_1_OR_GREATER;ROSLYN_4_11_0_OR_GREATER</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
