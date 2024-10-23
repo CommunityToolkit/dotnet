@@ -15,7 +15,7 @@ using CSharpCodeFixVerifier = Microsoft.CodeAnalysis.CSharp.Testing.CSharpCodeFi
     CommunityToolkit.Mvvm.CodeFixers.ClassUsingAttributeInsteadOfInheritanceCodeFixer,
     Microsoft.CodeAnalysis.Testing.DefaultVerifier>;
 
-namespace CommunityToolkit.Mvvm.SourceGenerators.Roslyn401.UnitTests;
+namespace CommunityToolkit.Mvvm.SourceGenerators.Roslyn4001.UnitTests;
 
 [TestClass]
 public class ClassUsingAttributeInsteadOfInheritanceCodeFixer
