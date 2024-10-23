@@ -55,7 +55,16 @@ public sealed class ObservablePropertyAttributeWithSupportedTargetDiagnosticSupp
                     semanticModel.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute") is INamedTypeSymbol observablePropertySymbol &&
                     fieldSymbol.HasAttributeWithType(observablePropertySymbol))
                 {
-                    context.ReportSuppression(Suppression.Create(PropertyAttributeListForObservablePropertyField, diagnostic));
+                    // Emit the right suppression based on the attribute modifier. For 'property:', Roslyn
+                    // will emit the 'CS0657' warning, whereas for 'get:' or 'set:', it will emit 'CS0658'.
+                    if (attributeTarget.Identifier.IsKind(SyntaxKind.PropertyKeyword))
+                    {
+                        context.ReportSuppression(Suppression.Create(PropertyAttributeListForObservablePropertyField, diagnostic));
+                    }
+                    else
+                    {
+                        context.ReportSuppression(Suppression.Create(PropertyAttributeListForObservablePropertyFieldAccessors, diagnostic));
+                    }
                 }
             }
         }
