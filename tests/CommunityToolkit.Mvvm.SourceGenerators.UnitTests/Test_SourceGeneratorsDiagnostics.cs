@@ -19,7 +19,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CommunityToolkit.Mvvm.SourceGenerators.UnitTests;
 
 [TestClass]
-public class Test_SourceGeneratorsDiagnostics
+public partial class Test_SourceGeneratorsDiagnostics
 {
     [TestMethod]
     public void DuplicateINotifyPropertyChangedInterfaceForINotifyPropertyChangedAttributeError_Explicit()
