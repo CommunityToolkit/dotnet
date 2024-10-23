@@ -30,12 +30,14 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
                 Execute.IsCandidatePropertyDeclaration,
                 static (context, token) =>
                 {
-                    if (!context.SemanticModel.Compilation.HasLanguageVersionAtLeastEqualTo(LanguageVersion.CSharp8))
+                    MemberDeclarationSyntax memberSyntax = Execute.GetCandidateMemberDeclaration(context.TargetNode);
+
+                    // Validate that the candidate is valid for the current compilation
+                    if (!Execute.IsCandidateValidForCompilation(memberSyntax, context.SemanticModel))
                     {
                         return default;
                     }
 
-                    FieldDeclarationSyntax fieldDeclaration = (FieldDeclarationSyntax)context.TargetNode.Parent!.Parent!;
                     IFieldSymbol fieldSymbol = (IFieldSymbol)context.TargetSymbol;
 
                     // Get the hierarchy info for the target symbol, and try to gather the property info
@@ -44,7 +46,7 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
                     token.ThrowIfCancellationRequested();
 
                     _ = Execute.TryGetInfo(
-                        fieldDeclaration,
+                        memberSyntax,
                         fieldSymbol,
                         context.SemanticModel,
                         context.GlobalOptions,

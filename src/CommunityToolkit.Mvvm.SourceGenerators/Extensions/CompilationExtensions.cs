@@ -28,6 +28,16 @@ internal static class CompilationExtensions
     }
 
     /// <summary>
+    /// Checks whether a given compilation (assumed to be for C#) is using the preview language version.
+    /// </summary>
+    /// <param name="compilation">The <see cref="Compilation"/> to consider for analysis.</param>
+    /// <returns>Whether <paramref name="compilation"/> is using the preview language version.</returns>
+    public static bool IsLanguageVersionPreview(this Compilation compilation)
+    {
+        return ((CSharpCompilation)compilation).LanguageVersion == LanguageVersion.Preview;
+    }
+
+    /// <summary>
     /// <para>
     /// Checks whether or not a type with a specified metadata name is accessible from a given <see cref="Compilation"/> instance.
     /// </para>
