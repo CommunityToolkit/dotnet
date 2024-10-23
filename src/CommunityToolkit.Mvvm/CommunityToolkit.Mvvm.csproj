@@ -68,6 +68,7 @@
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4001\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4001.csproj" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4031\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4031.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4110\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4110.csproj" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\CommunityToolkit.Mvvm.CodeFixers\CommunityToolkit.Mvvm.CodeFixers.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
@@ -118,8 +119,10 @@
     -->
     <None Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4001\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.SourceGenerators.dll" PackagePath="analyzers\dotnet\roslyn4.0\cs" Pack="true" Visible="false" />
     <None Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4031\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.SourceGenerators.dll" PackagePath="analyzers\dotnet\roslyn4.3\cs" Pack="true" Visible="false" />
+    <None Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4110\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.SourceGenerators.dll" PackagePath="analyzers\dotnet\roslyn4.11\cs" Pack="true" Visible="false" />
     <None Include="..\CommunityToolkit.Mvvm.CodeFixers\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.CodeFixers.dll" PackagePath="analyzers\dotnet\roslyn4.0\cs" Pack="true" Visible="false" />
     <None Include="..\CommunityToolkit.Mvvm.CodeFixers\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.CodeFixers.dll" PackagePath="analyzers\dotnet\roslyn4.3\cs" Pack="true" Visible="false" />
+    <None Include="..\CommunityToolkit.Mvvm.CodeFixers\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.CodeFixers.dll" PackagePath="analyzers\dotnet\roslyn4.11\cs" Pack="true" Visible="false" />
   </ItemGroup>
 
 </Project>
