@@ -27,7 +27,7 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
         IncrementalValuesProvider<(HierarchyInfo Hierarchy, Result<PropertyInfo?> Info)> propertyInfoWithErrors =
             context.ForAttributeWithMetadataNameAndOptions(
                 "CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute",
-                static (node, _) => node is VariableDeclaratorSyntax { Parent: VariableDeclarationSyntax { Parent: FieldDeclarationSyntax { Parent: ClassDeclarationSyntax or RecordDeclarationSyntax, AttributeLists.Count: > 0 } } },
+                Execute.IsCandidatePropertyDeclaration,
                 static (context, token) =>
                 {
                     if (!context.SemanticModel.Compilation.HasLanguageVersionAtLeastEqualTo(LanguageVersion.CSharp8))

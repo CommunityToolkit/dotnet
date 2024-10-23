@@ -31,6 +31,66 @@ partial class ObservablePropertyGenerator
     internal static class Execute
     {
         /// <summary>
+        /// Checks whether an input syntax node is a candidate property declaration for the generator.
+        /// </summary>
+        /// <param name="node">The input syntax node to check.</param>
+        /// <param name="token">The <see cref="CancellationToken"/> used to cancel the operation, if needed.</param>
+        /// <returns>Whether <paramref name="node"/> is a candidate property declaration.</returns>
+        public static bool IsCandidatePropertyDeclaration(SyntaxNode node, CancellationToken token)
+        {
+            // Matches a valid field declaration, for legacy support
+            static bool IsCandidateField(SyntaxNode node)
+            {
+                return node is VariableDeclaratorSyntax {
+                    Parent: VariableDeclarationSyntax {
+                        Parent: FieldDeclarationSyntax {
+                            Parent: ClassDeclarationSyntax or RecordDeclarationSyntax, AttributeLists.Count: > 0 } } };
+            }
+
+#if ROSLYN_4_11_0_OR_GREATER
+            // Matches a valid partial property declaration
+            static bool IsCandidateProperty(SyntaxNode node)
+            {
+                // The node must be a property declaration with two accessors
+                if (node is not PropertyDeclarationSyntax { AccessorList.Accessors: { Count: 2 } accessors } property)
+                {
+                    return false;
+                }
+
+                // The property must be partial (we'll check that it's a declaration from its symbol)
+                if (!property.Modifiers.Any(SyntaxKind.PartialKeyword))
+                {
+                    return false;
+                }
+
+                // The accessors must be a get and a set (with any accessibility)
+                if (accessors[0].Kind() is not (SyntaxKind.GetAccessorDeclaration or SyntaxKind.SetAccessorDeclaration) ||
+                    accessors[1].Kind() is not (SyntaxKind.GetAccessorDeclaration or SyntaxKind.SetAccessorDeclaration))
+                {
+                    return false;
+                }
+
+                return true;
+            }
+
+            // We only support matching properties on Roslyn 4.11 and greater
+            if (!IsCandidateField(node) && !IsCandidateProperty(node))
+            {
+                return false;
+            }
+#else
+            // Otherwise, we only support matching fields
+            if (!IsCandidateField(node))
+            {
+                return false;
+            }
+#endif
+
+            // The property must be in a type with a base type (as it must derive from ObservableObject)
+            return node.Parent?.IsTypeDeclarationWithOrPotentiallyWithBaseTypes<ClassDeclarationSyntax>() == true;
+        }
+
+        /// <summary>
         /// Processes a given field.
         /// </summary>
         /// <param name="fieldSyntax">The <see cref="FieldDeclarationSyntax"/> instance to process.</param>
@@ -797,6 +857,60 @@ partial class ObservablePropertyGenerator
                 isReferenceTypeOrUnconstraindTypeParameter &&
                 fieldSymbol.Type.NullableAnnotation != NullableAnnotation.Annotated &&
                 semanticModel.Compilation.HasAccessibleTypeWithMetadataName("System.Diagnostics.CodeAnalysis.MemberNotNullAttribute");
+        }
+
+        /// <summary>
+        /// Tries to get the accessibility of the property and accessors, if possible.
+        /// </summary>
+        /// <param name="node">The input <see cref="PropertyDeclarationSyntax"/> node.</param>
+        /// <param name="symbol">The input <see cref="IPropertySymbol"/> instance.</param>
+        /// <param name="declaredAccessibility">The accessibility of the property, if available.</param>
+        /// <param name="getterAccessibility">The accessibility of the <see langword="get"/> accessor, if available.</param>
+        /// <param name="setterAccessibility">The accessibility of the <see langword="set"/> accessor, if available.</param>
+        /// <returns>Whether the property was valid and the accessibilities could be retrieved.</returns>
+        private static bool TryGetAccessibilityModifiers(
+            PropertyDeclarationSyntax node,
+            IPropertySymbol symbol,
+            out Accessibility declaredAccessibility,
+            out Accessibility getterAccessibility,
+            out Accessibility setterAccessibility)
+        {
+            declaredAccessibility = Accessibility.NotApplicable;
+            getterAccessibility = Accessibility.NotApplicable;
+            setterAccessibility = Accessibility.NotApplicable;
+
+            // Ensure that we have a getter and a setter, and that the setter is not init-only
+            if (symbol is not { GetMethod: { } getMethod, SetMethod: { IsInitOnly: false } setMethod })
+            {
+                return false;
+            }
+
+            // Track the property accessibility if explicitly set
+            if (node.Modifiers.Count > 0)
+            {
+                declaredAccessibility = symbol.DeclaredAccessibility;
+            }
+
+            // Track the accessors accessibility, if explicitly set
+            foreach (AccessorDeclarationSyntax accessor in node.AccessorList?.Accessors ?? [])
+            {
+                if (accessor.Modifiers.Count == 0)
+                {
+                    continue;
+                }
+
+                switch (accessor.Kind())
+                {
+                    case SyntaxKind.GetAccessorDeclaration:
+                        getterAccessibility = getMethod.DeclaredAccessibility;
+                        break;
+                    case SyntaxKind.SetAccessorDeclaration:
+                        setterAccessibility = setMethod.DeclaredAccessibility;
+                        break;
+                }
+            }
+
+            return true;
         }
 
         /// <summary>
