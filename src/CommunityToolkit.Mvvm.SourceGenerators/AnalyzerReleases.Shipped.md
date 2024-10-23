@@ -75,3 +75,11 @@ MVVMTK0039 | CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator | Warn
 Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
 MVVMTK0040 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Error | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0040
+
+## Release 8.4.0
+
+### New Rules
+
+Rule ID | Category | Severity | Notes
+--------|----------|----------|-------
+MVVMTK0041 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Error | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0041

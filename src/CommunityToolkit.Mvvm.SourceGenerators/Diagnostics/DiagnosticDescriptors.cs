@@ -674,4 +674,20 @@ internal static class DiagnosticDescriptors
         isEnabledByDefault: true,
         description: "The backing fields of auto-properties cannot be annotated with [ObservableProperty] (the attribute can only be used directly on fields, and the generator will then handle generating the corresponding property).",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0040");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> for a CanvasEffect property with invalid accessors.
+    /// <para>
+    /// Format: <c>"Using [ObservableProperty] on partial properties requires the C# language version to be set to 'preview', as support for the 'field' keyword is needed by the source generators to emit valid code (add <LangVersion>preview</LangVersion> to your .csproj/.props file)"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor CSharpLanguageVersionIsNotPreviewForObservableProperty = new(
+        id: "MVVMTK0041",
+        title: "C# language version is not 'preview'",
+        messageFormat: """Using [ObservableProperty] on partial properties requires the C# language version to be set to 'preview', as support for the 'field' keyword is needed by the source generators to emit valid code (add <LangVersion>preview</LangVersion> to your .csproj/.props file)""",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "The C# language version must be set to 'preview' when using [ObservableProperty] on partial properties for the source generators to emit valid code (the <LangVersion>preview</LangVersion> option must be set in the .csproj/.props file).",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0041");
 }
