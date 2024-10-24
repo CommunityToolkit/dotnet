@@ -4,12 +4,14 @@
 
 using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 
 /// <summary>
 /// A model representing an generated property
 /// </summary>
+/// <param name="AnnotatedMemberKind">The syntax kind of the annotated member that triggered this property generation.</param>
 /// <param name="TypeNameWithNullabilityAnnotations">The type name for the generated property, including nullability annotations.</param>
 /// <param name="FieldName">The field name.</param>
 /// <param name="PropertyName">The generated property name.</param>
@@ -27,6 +29,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 /// <param name="IncludeRequiresUnreferencedCodeOnSetAccessor">Indicates whether to annotate the setter as requiring unreferenced code.</param>
 /// <param name="ForwardedAttributes">The sequence of forwarded attributes for the generated property.</param>
 internal sealed record PropertyInfo(
+    SyntaxKind AnnotatedMemberKind,
     string TypeNameWithNullabilityAnnotations,
     string FieldName,
     string PropertyName,

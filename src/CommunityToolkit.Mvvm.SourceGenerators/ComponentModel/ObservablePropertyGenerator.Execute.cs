@@ -411,6 +411,7 @@ partial class ObservablePropertyGenerator
             token.ThrowIfCancellationRequested();
 
             propertyInfo = new PropertyInfo(
+                memberSyntax.Kind(),
                 typeNameWithNullabilityAnnotations,
                 fieldName,
                 propertyName,
@@ -1092,11 +1093,17 @@ partial class ObservablePropertyGenerator
             ExpressionSyntax getterFieldExpression;
             ExpressionSyntax setterFieldExpression;
 
-            // In case the backing field is exactly named "value", we need to add the "this." prefix to ensure that comparisons and assignments
-            // with it in the generated setter body are executed correctly and without conflicts with the implicit value parameter.
-            if (propertyInfo.FieldName == "value")
+            // If the annotated member is a partial property, we always use the 'field' keyword
+            if (propertyInfo.AnnotatedMemberKind is SyntaxKind.PropertyDeclaration)
             {
-                // We only need to add "this." when referencing the field in the setter (getter and XML docs are not ambiguous)
+                getterFieldIdentifierName = "field";
+                getterFieldExpression = setterFieldExpression = IdentifierName(getterFieldIdentifierName);
+            }    
+            else if (propertyInfo.FieldName == "value")
+            {
+                // In case the backing field is exactly named "value", we need to add the "this." prefix to ensure that comparisons and assignments
+                // with it in the generated setter body are executed correctly and without conflicts with the implicit value parameter. We only need
+                // to add "this." when referencing the field in the setter (getter and XML docs are not ambiguous)
                 getterFieldIdentifierName = "value";
                 getterFieldExpression = IdentifierName(getterFieldIdentifierName);
                 setterFieldExpression = MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, ThisExpression(), (IdentifierNameSyntax)getterFieldExpression);
@@ -1115,6 +1122,13 @@ partial class ObservablePropertyGenerator
                 getterFieldIdentifierName = propertyInfo.FieldName;
                 getterFieldExpression = setterFieldExpression = IdentifierName(getterFieldIdentifierName);
             }
+
+            // Prepare the XML docs:
+            //   - For partial properties, always just inherit from the partial declaration
+            //   - For fields, inherit from them
+            string xmlSummary = propertyInfo.AnnotatedMemberKind is SyntaxKind.PropertyDeclaration
+                ? "/// <inheritdoc/>"
+                : $"/// <inheritdoc cref=\"{getterFieldIdentifierName}\"/>";
 
             if (propertyInfo.NotifyPropertyChangedRecipients || propertyInfo.IsOldPropertyValueDirectlyReferenced)
             {
@@ -1336,13 +1350,18 @@ partial class ObservablePropertyGenerator
             // Also add any forwarded attributes
             setAccessor = setAccessor.AddAttributeLists(forwardedSetAccessorAttributes);
 
+            // Prepare the modifiers for the property
+            SyntaxTokenList propertyModifiers = propertyInfo.AnnotatedMemberKind is SyntaxKind.PropertyDeclaration
+                ? propertyInfo.PropertyAccessibility.ToSyntaxTokenList().Add(Token(SyntaxKind.PartialKeyword))
+                : propertyInfo.PropertyAccessibility.ToSyntaxTokenList();
+
             // Construct the generated property as follows:
             //
-            // /// <inheritdoc cref="<FIELD_NAME>"/>
+            // <XML_SUMMARY>
             // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
             // [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
             // <FORWARDED_ATTRIBUTES>
-            // <PROPERTY_ACCESSIBILITY> <FIELD_TYPE><NULLABLE_ANNOTATION?> <PROPERTY_NAME>
+            // <PROPERTY_MODIFIERS> <FIELD_TYPE><NULLABLE_ANNOTATION?> <PROPERTY_NAME>
             // {
             //     <FORWARDED_ATTRIBUTES>
             //     <GETTER_ACCESSIBILITY> get => <FIELD_NAME>;
@@ -1356,10 +1375,10 @@ partial class ObservablePropertyGenerator
                         .AddArgumentListArguments(
                             AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservablePropertyGenerator).FullName))),
                             AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(ObservablePropertyGenerator).Assembly.GetName().Version.ToString()))))))
-                    .WithOpenBracketToken(Token(TriviaList(Comment($"/// <inheritdoc cref=\"{getterFieldIdentifierName}\"/>")), SyntaxKind.OpenBracketToken, TriviaList())),
+                    .WithOpenBracketToken(Token(TriviaList(Comment(xmlSummary)), SyntaxKind.OpenBracketToken, TriviaList())),
                     AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage")))))
                 .AddAttributeLists(forwardedPropertyAttributes)
-                .WithModifiers(propertyInfo.PropertyAccessibility.ToSyntaxTokenList())
+                .WithModifiers(propertyModifiers)
                 .AddAccessorListAccessors(
                     AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
                     .WithModifiers(propertyInfo.GetterAccessibility.ToSyntaxTokenList())
