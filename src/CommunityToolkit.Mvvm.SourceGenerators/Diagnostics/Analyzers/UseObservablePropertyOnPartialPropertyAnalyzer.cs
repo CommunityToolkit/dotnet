@@ -13,13 +13,13 @@ using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescri
 namespace CommunityToolkit.Mvvm.SourceGenerators;
 
 /// <summary>
-/// A diagnostic analyzer that generates errors when a property using <c>[ObservableProperty]</c> on a partial property is in a project with the C# language version not set to preview.
+/// A diagnostic analyzer that generates a suggestion whenever <c>[ObservableProperty]</c> is used on a field when a partial property could be used instead.
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public sealed class RequiresCSharpLanguageVersionPreviewAnalyzer : DiagnosticAnalyzer
+public sealed class UseObservablePropertyOnPartialPropertyAnalyzer : DiagnosticAnalyzer
 {
     /// <inheritdoc/>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = [CSharpLanguageVersionIsNotPreviewForObservableProperty];
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(UseObservablePropertyOnPartialProperty);
 
     /// <inheritdoc/>
     public override void Initialize(AnalysisContext context)
@@ -29,8 +29,9 @@ public sealed class RequiresCSharpLanguageVersionPreviewAnalyzer : DiagnosticAna
 
         context.RegisterCompilationStartAction(static context =>
         {
-            // If the language version is set to preview, we'll never emit diagnostics
-            if (context.Compilation.IsLanguageVersionPreview())
+            // Using [ObservableProperty] on partial properties is only supported when using C# preview.
+            // As such, if that is not the case, return immediately, as no diagnostic should be produced.
+            if (!context.Compilation.IsLanguageVersionPreview())
             {
                 return;
             }
@@ -43,21 +44,25 @@ public sealed class RequiresCSharpLanguageVersionPreviewAnalyzer : DiagnosticAna
 
             context.RegisterSymbolAction(context =>
             {
-                // We only want to target partial property definitions (also include non-partial ones for diagnostics)
-                if (context.Symbol is not IPropertySymbol { PartialDefinitionPart: null })
+                // We're intentionally only looking for fields here
+                if (context.Symbol is not IFieldSymbol fieldSymbol)
                 {
                     return;
                 }
 
-                // If the property is using [ObservableProperty], emit the diagnostic
-                if (context.Symbol.TryGetAttributeWithType(observablePropertySymbol, out AttributeData? observablePropertyAttribute))
+                // Check that we are in fact using [ObservableProperty]
+                if (!fieldSymbol.TryGetAttributeWithType(observablePropertySymbol, out AttributeData? observablePropertyAttribute))
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(
-                        CSharpLanguageVersionIsNotPreviewForObservableProperty,
-                        observablePropertyAttribute.GetLocation(),
-                        context.Symbol));
+                    return;
                 }
-            }, SymbolKind.Property);
+
+                // Emit the diagnostic for this field to suggest changing to a partial property instead
+                context.ReportDiagnostic(Diagnostic.Create(
+                    UseObservablePropertyOnPartialProperty,
+                    observablePropertyAttribute.GetLocation(),
+                    fieldSymbol.ContainingType,
+                    fieldSymbol));
+            }, SymbolKind.Field);
         });
     }
 }

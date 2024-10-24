@@ -83,3 +83,4 @@ MVVMTK0040 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator 
 Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
 MVVMTK0041 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Error | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0041
+MVVMTK0042 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Info | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0041
