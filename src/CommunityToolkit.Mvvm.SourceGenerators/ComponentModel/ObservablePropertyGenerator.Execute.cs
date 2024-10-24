@@ -394,10 +394,29 @@ partial class ObservablePropertyGenerator
 
             token.ThrowIfCancellationRequested();
 
+            // Retrieve the accessibility values for all components
+            if (!TryGetAccessibilityModifiers(
+                memberSyntax,
+                memberSymbol,
+                out Accessibility propertyAccessibility,
+                out Accessibility getterAccessibility,
+                out Accessibility setterAccessibility))
+            {
+                propertyInfo = null;
+                diagnostics = builder.ToImmutable();
+
+                return false;
+            }
+
+            token.ThrowIfCancellationRequested();
+
             propertyInfo = new PropertyInfo(
                 typeNameWithNullabilityAnnotations,
                 fieldName,
                 propertyName,
+                propertyAccessibility,
+                getterAccessibility,
+                setterAccessibility,
                 effectivePropertyChangingNames,
                 effectivePropertyChangedNames,
                 notifiedCommandNames.ToImmutable(),
@@ -963,38 +982,56 @@ partial class ObservablePropertyGenerator
 
         /// <summary>
         /// Tries to get the accessibility of the property and accessors, if possible.
+        /// If the target member is not a property, it will use the defaults.
         /// </summary>
-        /// <param name="node">The input <see cref="PropertyDeclarationSyntax"/> node.</param>
-        /// <param name="symbol">The input <see cref="IPropertySymbol"/> instance.</param>
-        /// <param name="declaredAccessibility">The accessibility of the property, if available.</param>
+        /// <param name="memberSyntax">The <see cref="MemberDeclarationSyntax"/> instance to process.</param>
+        /// <param name="memberSymbol">The input <see cref="ISymbol"/> instance to process.</param>
+        /// <param name="propertyAccessibility">The accessibility of the property, if available.</param>
         /// <param name="getterAccessibility">The accessibility of the <see langword="get"/> accessor, if available.</param>
         /// <param name="setterAccessibility">The accessibility of the <see langword="set"/> accessor, if available.</param>
         /// <returns>Whether the property was valid and the accessibilities could be retrieved.</returns>
         private static bool TryGetAccessibilityModifiers(
-            PropertyDeclarationSyntax node,
-            IPropertySymbol symbol,
-            out Accessibility declaredAccessibility,
+            MemberDeclarationSyntax memberSyntax,
+            ISymbol memberSymbol,
+            out Accessibility propertyAccessibility,
             out Accessibility getterAccessibility,
             out Accessibility setterAccessibility)
         {
-            declaredAccessibility = Accessibility.NotApplicable;
+            // For legacy support for fields, all accessibilities are public.
+            // To customize the accessibility, partial properties should be used.
+            if (memberSyntax.IsKind(SyntaxKind.FieldDeclaration))
+            {
+                propertyAccessibility = Accessibility.Public;
+                getterAccessibility = Accessibility.Public;
+                setterAccessibility = Accessibility.Public;
+
+                return true;
+            }
+
+            propertyAccessibility = Accessibility.NotApplicable;
             getterAccessibility = Accessibility.NotApplicable;
             setterAccessibility = Accessibility.NotApplicable;
 
             // Ensure that we have a getter and a setter, and that the setter is not init-only
-            if (symbol is not { GetMethod: { } getMethod, SetMethod: { IsInitOnly: false } setMethod })
+            if (memberSymbol is not IPropertySymbol { GetMethod: { } getMethod, SetMethod: { IsInitOnly: false } setMethod })
+            {
+                return false;
+            }
+
+            // At this point the node is definitely a property, just do a sanity check
+            if (memberSyntax is not PropertyDeclarationSyntax propertySyntax)
             {
                 return false;
             }
 
             // Track the property accessibility if explicitly set
-            if (node.Modifiers.Count > 0)
+            if (propertySyntax.Modifiers.Count > 0)
             {
-                declaredAccessibility = symbol.DeclaredAccessibility;
+                propertyAccessibility = memberSymbol.DeclaredAccessibility;
             }
 
             // Track the accessors accessibility, if explicitly set
-            foreach (AccessorDeclarationSyntax accessor in node.AccessorList?.Accessors ?? [])
+            foreach (AccessorDeclarationSyntax accessor in propertySyntax.AccessorList?.Accessors ?? [])
             {
                 if (accessor.Modifiers.Count == 0)
                 {
