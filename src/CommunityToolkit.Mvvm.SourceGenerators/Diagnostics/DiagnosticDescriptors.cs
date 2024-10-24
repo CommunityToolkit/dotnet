@@ -711,4 +711,20 @@ internal static class DiagnosticDescriptors
         isEnabledByDefault: true,
         description: "Fields using [ObservableProperty] can be converted to partial properties instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well).",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0042");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[ObservableProperty]</c> is applied to a property with an invalid declaration.
+    /// <para>
+    /// Format: <c>"The property {0}.{1} cannot be used to generate an observable property, as its declaration is not valid (it must be a partial property with a getter and a setter that is not init-only)"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor InvalidPropertyDeclarationForObservableProperty = new DiagnosticDescriptor(
+        id: "MVVMTK0043",
+        title: "Invalid property declaration for [ObservableProperty]",
+        messageFormat: "The property {0}.{1} cannot be used to generate an observable property, as its declaration is not valid (it must be a partial property with a getter and a setter that is not init-only)",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "Properties annotated with [ObservableProperty] must be partial properties with a getter and a setter that is not init-only.",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0043");
 }
