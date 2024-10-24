@@ -52,6 +52,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Suppressors\ObservablePropertyAttributeWithSupportedTargetDiagnosticSuppressor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\DiagnosticDescriptors.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\SuppressionDescriptors.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\AccessibilityExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\AttributeDataExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\CompilationExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\DiagnosticsExtensions.cs" />

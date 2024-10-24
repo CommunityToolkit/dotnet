@@ -997,13 +997,14 @@ partial class ObservablePropertyGenerator
             out Accessibility getterAccessibility,
             out Accessibility setterAccessibility)
         {
-            // For legacy support for fields, all accessibilities are public.
-            // To customize the accessibility, partial properties should be used.
+            // For legacy support for fields, the property that is generated is public, and neither
+            // accessors will have any accessibility modifiers. To customize the accessibility,
+            // partial properties should be used instead.
             if (memberSyntax.IsKind(SyntaxKind.FieldDeclaration))
             {
                 propertyAccessibility = Accessibility.Public;
-                getterAccessibility = Accessibility.Public;
-                setterAccessibility = Accessibility.Public;
+                getterAccessibility = Accessibility.NotApplicable;
+                setterAccessibility = Accessibility.NotApplicable;
 
                 return true;
             }
@@ -1297,11 +1298,14 @@ partial class ObservablePropertyGenerator
 
             // Prepare the setter for the generated property:
             //
-            // set
+            // <SETTER_ACCESSIBILITY> set
             // {
             //     <BODY>
             // }
-            AccessorDeclarationSyntax setAccessor = AccessorDeclaration(SyntaxKind.SetAccessorDeclaration).WithBody(Block(setterIfStatement));
+            AccessorDeclarationSyntax setAccessor =
+                AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+                .WithModifiers(propertyInfo.SetterAccessibility.ToSyntaxTokenList())
+                .WithBody(Block(setterIfStatement));
 
             // Add the [MemberNotNull] attribute if needed:
             //
@@ -1338,10 +1342,10 @@ partial class ObservablePropertyGenerator
             // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
             // [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
             // <FORWARDED_ATTRIBUTES>
-            // public <FIELD_TYPE><NULLABLE_ANNOTATION?> <PROPERTY_NAME>
+            // <PROPERTY_ACCESSIBILITY> <FIELD_TYPE><NULLABLE_ANNOTATION?> <PROPERTY_NAME>
             // {
             //     <FORWARDED_ATTRIBUTES>
-            //     get => <FIELD_NAME>;
+            //     <GETTER_ACCESSIBILITY> get => <FIELD_NAME>;
             //     <SET_ACCESSOR>
             // }
             return
@@ -1355,9 +1359,10 @@ partial class ObservablePropertyGenerator
                     .WithOpenBracketToken(Token(TriviaList(Comment($"/// <inheritdoc cref=\"{getterFieldIdentifierName}\"/>")), SyntaxKind.OpenBracketToken, TriviaList())),
                     AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage")))))
                 .AddAttributeLists(forwardedPropertyAttributes)
-                .AddModifiers(Token(SyntaxKind.PublicKeyword))
+                .WithModifiers(propertyInfo.PropertyAccessibility.ToSyntaxTokenList())
                 .AddAccessorListAccessors(
                     AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+                    .WithModifiers(propertyInfo.GetterAccessibility.ToSyntaxTokenList())
                     .WithExpressionBody(ArrowExpressionClause(getterFieldExpression))
                     .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
                     .AddAttributeLists(forwardedGetAccessorAttributes),
