@@ -38,16 +38,14 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
                         return default;
                     }
 
-                    IFieldSymbol fieldSymbol = (IFieldSymbol)context.TargetSymbol;
-
                     // Get the hierarchy info for the target symbol, and try to gather the property info
-                    HierarchyInfo hierarchy = HierarchyInfo.From(fieldSymbol.ContainingType);
+                    HierarchyInfo hierarchy = HierarchyInfo.From(context.TargetSymbol.ContainingType);
 
                     token.ThrowIfCancellationRequested();
 
                     _ = Execute.TryGetInfo(
                         memberSyntax,
-                        fieldSymbol,
+                        context.TargetSymbol,
                         context.SemanticModel,
                         context.GlobalOptions,
                         token,
