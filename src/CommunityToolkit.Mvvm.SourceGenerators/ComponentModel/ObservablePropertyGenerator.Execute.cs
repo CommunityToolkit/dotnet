@@ -1027,7 +1027,7 @@ partial class ObservablePropertyGenerator
             }
 
             // Track the property accessibility if explicitly set
-            if (propertySyntax.Modifiers.Count > 0)
+            if (propertySyntax.Modifiers.ContainsAnyAccessibilityModifiers())
             {
                 propertyAccessibility = memberSymbol.DeclaredAccessibility;
             }
@@ -1035,7 +1035,7 @@ partial class ObservablePropertyGenerator
             // Track the accessors accessibility, if explicitly set
             foreach (AccessorDeclarationSyntax accessor in propertySyntax.AccessorList?.Accessors ?? [])
             {
-                if (accessor.Modifiers.Count == 0)
+                if (!accessor.Modifiers.ContainsAnyAccessibilityModifiers())
                 {
                     continue;
                 }
