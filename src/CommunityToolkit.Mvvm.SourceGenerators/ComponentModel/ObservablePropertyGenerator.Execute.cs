@@ -856,6 +856,18 @@ partial class ObservablePropertyGenerator
             // If this is true, it means the field storage can potentially be in a null state (even if not annotated).
             isReferenceTypeOrUnconstraindTypeParameter = !GetPropertyType(memberSymbol).IsValueType;
 
+            // Special case if the target member is a partial property. In this case, the type should always match the
+            // declared type of the property declaration, and there is no need for the attribute on the setter. This
+            // is because assigning the property in the constructor will directly assign to the backing field, and not
+            // doing so from the constructor will cause Roslyn to emit a warning. Additionally, Roslyn can always see
+            // that the backing field is being assigned from the setter, so the attribute is just never needed here.
+            if (memberSymbol.Kind is SymbolKind.Property)
+            {
+                includeMemberNotNullOnSetAccessor = false;
+
+                return;
+            }
+
             // This is used to avoid nullability warnings when setting the property from a constructor, in case the field
             // was marked as not nullable. Nullability annotations are assumed to always be enabled to make the logic simpler.
             // Consider this example:
@@ -1141,7 +1153,7 @@ partial class ObservablePropertyGenerator
                 // <PROPERTY_TYPE> __oldValue = <FIELD_EXPRESSIONS>;
                 setterStatements.Add(
                     LocalDeclarationStatement(
-                        VariableDeclaration(GetMaybeNullPropertyType(propertyInfo))
+                        VariableDeclaration(GetPropertyTypeForOldValue(propertyInfo))
                         .AddVariables(
                             VariableDeclarator(Identifier("__oldValue"))
                             .WithInitializer(EqualsValueClause(setterFieldExpression)))));
@@ -1426,7 +1438,7 @@ partial class ObservablePropertyGenerator
                 .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
 
             // Get the type for the 'oldValue' parameter (which can be null on first invocation) 
-            TypeSyntax oldValueTypeSyntax = GetMaybeNullPropertyType(propertyInfo);
+            TypeSyntax oldValueTypeSyntax = GetPropertyTypeForOldValue(propertyInfo);
 
             // Construct the generated method as follows:
             //
@@ -1534,8 +1546,15 @@ partial class ObservablePropertyGenerator
         /// </summary>
         /// <param name="propertyInfo">The input <see cref="PropertyInfo"/> instance to process.</param>
         /// <returns>The type of a given property, when it can possibly be <see langword="null"/></returns>
-        private static TypeSyntax GetMaybeNullPropertyType(PropertyInfo propertyInfo)
+        private static TypeSyntax GetPropertyTypeForOldValue(PropertyInfo propertyInfo)
         {
+            // For partial properties, the old value always matches the exact property type.
+            // See additional notes for this in the 'GetNullabilityInfo' method above.
+            if (propertyInfo.AnnotatedMemberKind is SyntaxKind.PropertyDeclaration)
+            {
+                return IdentifierName(propertyInfo.TypeNameWithNullabilityAnnotations);
+            }
+
             // Prepare the nullable type for the previous property value. This is needed because if the type is a reference
             // type, the previous value might be null even if the property type is not nullable, as the first invocation would
             // happen when the property is first set to some value that is not null (but the backing field would still be so).
