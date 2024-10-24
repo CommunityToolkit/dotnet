@@ -35,6 +35,11 @@ internal static class DiagnosticDescriptors
     public const string AsyncVoidReturningRelayCommandMethodId = "MVVMTK0039";
 
     /// <summary>
+    /// The diagnostic id for <see cref="UseObservablePropertyOnPartialProperty"/>.
+    /// </summary>
+    public const string UseObservablePropertyOnPartialPropertyId = "MVVMTK0042";
+
+    /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a duplicate declaration of <see cref="INotifyPropertyChanged"/> would happen.
     /// <para>
     /// Format: <c>"Cannot apply [INotifyPropertyChangedAttribute] to type {0}, as it already declares the INotifyPropertyChanged interface"</c>.
@@ -690,4 +695,20 @@ internal static class DiagnosticDescriptors
         isEnabledByDefault: true,
         description: "The C# language version must be set to 'preview' when using [ObservableProperty] on partial properties for the source generators to emit valid code (the <LangVersion>preview</LangVersion> option must be set in the .csproj/.props file).",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0041");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> for a CanvasEffect property with invalid accessors.
+    /// <para>
+    /// Format: <c>"The field {0}.{1} using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor UseObservablePropertyOnPartialProperty = new(
+        id: UseObservablePropertyOnPartialPropertyId,
+        title: "Prefer using [ObservableProperty] on partial properties",
+        messageFormat: """The field {0}.{1} using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)""",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Info,
+        isEnabledByDefault: true,
+        description: "Fields using [ObservableProperty] can be converted to partial properties instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well).",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0042");
 }
