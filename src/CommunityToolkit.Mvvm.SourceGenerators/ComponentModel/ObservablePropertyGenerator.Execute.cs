@@ -306,34 +306,17 @@ partial class ObservablePropertyGenerator
                     continue;
                 }
 
-                // The following checks only apply to fields, not properties. That is, attributes
-                // on partial properties are never forwarded, as they are already on the member.
-                if (memberSyntax.IsKind(SyntaxKind.PropertyDeclaration))
-                {
-                    continue;
-                }
-
                 // Track the current attribute for forwarding if it is a validation attribute
                 if (attributeData.AttributeClass?.InheritsFromFullyQualifiedMetadataName("System.ComponentModel.DataAnnotations.ValidationAttribute") == true)
                 {
                     hasAnyValidationAttributes = true;
 
-                    forwardedAttributes.Add(AttributeInfo.Create(attributeData));
-                }
-
-                // Also track the current attribute for forwarding if it is of any of the following types:
-                //   - Display attributes (System.ComponentModel.DataAnnotations.DisplayAttribute)
-                //   - UI hint attributes(System.ComponentModel.DataAnnotations.UIHintAttribute)
-                //   - Scaffold column attributes (System.ComponentModel.DataAnnotations.ScaffoldColumnAttribute)
-                //   - Editable attributes (System.ComponentModel.DataAnnotations.EditableAttribute)
-                //   - Key attributes (System.ComponentModel.DataAnnotations.KeyAttribute)
-                if (attributeData.AttributeClass?.HasOrInheritsFromFullyQualifiedMetadataName("System.ComponentModel.DataAnnotations.UIHintAttribute") == true ||
-                    attributeData.AttributeClass?.HasOrInheritsFromFullyQualifiedMetadataName("System.ComponentModel.DataAnnotations.ScaffoldColumnAttribute") == true ||
-                    attributeData.AttributeClass?.HasFullyQualifiedMetadataName("System.ComponentModel.DataAnnotations.DisplayAttribute") == true ||
-                    attributeData.AttributeClass?.HasFullyQualifiedMetadataName("System.ComponentModel.DataAnnotations.EditableAttribute") == true ||
-                    attributeData.AttributeClass?.HasFullyQualifiedMetadataName("System.ComponentModel.DataAnnotations.KeyAttribute") == true)
-                {
-                    forwardedAttributes.Add(AttributeInfo.Create(attributeData));
+                    // Only forward the attribute if the target is a field.
+                    // Otherwise, the attribute is already applied correctly.
+                    if (memberSyntax.IsKind(SyntaxKind.FieldDeclaration))
+                    {
+                        forwardedAttributes.Add(AttributeInfo.Create(attributeData));
+                    }
                 }
             }
 
@@ -920,6 +903,27 @@ partial class ObservablePropertyGenerator
             if (memberSyntax.IsKind(SyntaxKind.PropertyDeclaration))
             {
                 return;
+            }
+
+            // Also track the current attribute for forwarding if it is of any of the following types:
+            //   - Display attributes (System.ComponentModel.DataAnnotations.DisplayAttribute)
+            //   - UI hint attributes(System.ComponentModel.DataAnnotations.UIHintAttribute)
+            //   - Scaffold column attributes (System.ComponentModel.DataAnnotations.ScaffoldColumnAttribute)
+            //   - Editable attributes (System.ComponentModel.DataAnnotations.EditableAttribute)
+            //   - Key attributes (System.ComponentModel.DataAnnotations.KeyAttribute)
+            //
+            // All of these have special handling and are always forwarded when a field is being targeted.
+            // That is because these attributes really only mean anything when used on generated properties.
+            foreach (AttributeData attributeData in memberSymbol.GetAttributes())
+            {
+                if (attributeData.AttributeClass?.HasOrInheritsFromFullyQualifiedMetadataName("System.ComponentModel.DataAnnotations.UIHintAttribute") == true ||
+                    attributeData.AttributeClass?.HasOrInheritsFromFullyQualifiedMetadataName("System.ComponentModel.DataAnnotations.ScaffoldColumnAttribute") == true ||
+                    attributeData.AttributeClass?.HasFullyQualifiedMetadataName("System.ComponentModel.DataAnnotations.DisplayAttribute") == true ||
+                    attributeData.AttributeClass?.HasFullyQualifiedMetadataName("System.ComponentModel.DataAnnotations.EditableAttribute") == true ||
+                    attributeData.AttributeClass?.HasFullyQualifiedMetadataName("System.ComponentModel.DataAnnotations.KeyAttribute") == true)
+                {
+                    forwardedAttributes.Add(AttributeInfo.Create(attributeData));
+                }
             }
 
             // Gather explicit forwarded attributes info
