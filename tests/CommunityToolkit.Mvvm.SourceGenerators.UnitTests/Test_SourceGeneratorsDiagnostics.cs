@@ -1886,7 +1886,21 @@ public partial class Test_SourceGeneratorsDiagnostics
     /// <typeparam name="TAnalyzer">The type of the analyzer to test.</typeparam>
     /// <param name="markdownSource">The input source to process with diagnostic annotations.</param>
     /// <param name="languageVersion">The language version to use to parse code and run tests.</param>
-    private static async Task VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<TAnalyzer>(string markdownSource, LanguageVersion languageVersion)
+    internal static async Task VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<TAnalyzer>(string markdownSource, LanguageVersion languageVersion)
+        where TAnalyzer : DiagnosticAnalyzer, new()
+    {
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<TAnalyzer>(markdownSource, languageVersion, [], []);
+    }
+
+    /// <summary>
+    /// Verifies the diagnostic errors for a given analyzer, and that all available source generators can run successfully with the input source (including subsequent compilation).
+    /// </summary>
+    /// <typeparam name="TAnalyzer">The type of the analyzer to test.</typeparam>
+    /// <param name="markdownSource">The input source to process with diagnostic annotations.</param>
+    /// <param name="languageVersion">The language version to use to parse code and run tests.</param>
+    /// <param name="generatorDiagnosticsIds">The diagnostic ids to expect for the input source code.</param>
+    /// <param name="ignoredDiagnosticIds">The list of diagnostic ids to ignore in the final compilation.</param>
+    internal static async Task VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<TAnalyzer>(string markdownSource, LanguageVersion languageVersion, string[] generatorDiagnosticsIds, string[] ignoredDiagnosticIds)
         where TAnalyzer : DiagnosticAnalyzer, new()
     {
         await CSharpAnalyzerWithLanguageVersionTest<TAnalyzer>.VerifyAnalyzerAsync(markdownSource, languageVersion);
@@ -1905,7 +1919,7 @@ public partial class Test_SourceGeneratorsDiagnostics
         // Transform diagnostic annotations back to normal C# (eg. "{|MVVMTK0008:Foo()|}" ---> "Foo()")
         string source = Regex.Replace(markdownSource, @"{\|((?:,?\w+)+):(.+)\|}", m => m.Groups[2].Value);
 
-        VerifyGeneratedDiagnostics(CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(languageVersion)), generators, Array.Empty<string>());
+        VerifyGeneratedDiagnostics(CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(languageVersion)), generators, generatorDiagnosticsIds, ignoredDiagnosticIds);
     }
 
     /// <summary>
@@ -1914,12 +1928,12 @@ public partial class Test_SourceGeneratorsDiagnostics
     /// <typeparam name="TGenerator">The generator type to use.</typeparam>
     /// <param name="source">The input source to process.</param>
     /// <param name="diagnosticsIds">The diagnostic ids to expect for the input source code.</param>
-    private static void VerifyGeneratedDiagnostics<TGenerator>(string source, params string[] diagnosticsIds)
+    internal static void VerifyGeneratedDiagnostics<TGenerator>(string source, params string[] diagnosticsIds)
         where TGenerator : class, IIncrementalGenerator, new()
     {
         IIncrementalGenerator generator = new TGenerator();
 
-        VerifyGeneratedDiagnostics(CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp8)), new[] { generator }, diagnosticsIds);
+        VerifyGeneratedDiagnostics(CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp8)), new[] { generator }, diagnosticsIds, []);
     }
 
     /// <summary>
@@ -1928,7 +1942,8 @@ public partial class Test_SourceGeneratorsDiagnostics
     /// <param name="syntaxTree">The input source tree to process.</param>
     /// <param name="generators">The generators to apply to the input syntax tree.</param>
     /// <param name="generatorDiagnosticsIds">The diagnostic ids to expect for the input source code.</param>
-    private static void VerifyGeneratedDiagnostics(SyntaxTree syntaxTree, IIncrementalGenerator[] generators, string[] generatorDiagnosticsIds)
+    /// <param name="ignoredDiagnosticIds">The list of diagnostic ids to ignore in the final compilation.</param>
+    internal static void VerifyGeneratedDiagnostics(SyntaxTree syntaxTree, IIncrementalGenerator[] generators, string[] generatorDiagnosticsIds, string[] ignoredDiagnosticIds)
     {
         // Ensure CommunityToolkit.Mvvm and System.ComponentModel.DataAnnotations are loaded
         Type observableObjectType = typeof(ObservableObject);
@@ -1944,7 +1959,7 @@ public partial class Test_SourceGeneratorsDiagnostics
         // Create a syntax tree with the input source
         CSharpCompilation compilation = CSharpCompilation.Create(
             "original",
-            new SyntaxTree[] { syntaxTree },
+            [syntaxTree],
             references,
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
@@ -1963,7 +1978,10 @@ public partial class Test_SourceGeneratorsDiagnostics
             // Compute diagnostics for the final compiled output (just include errors)
             List<Diagnostic> outputCompilationDiagnostics = outputCompilation.GetDiagnostics().Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error).ToList();
 
-            Assert.IsTrue(outputCompilationDiagnostics.Count == 0, $"resultingIds: {string.Join(", ", outputCompilationDiagnostics)}");
+            // Filtered diagnostics
+            List<Diagnostic> filteredDiagnostics = outputCompilationDiagnostics.Where(diagnostic => !ignoredDiagnosticIds.Contains(diagnostic.Id)).ToList();
+
+            Assert.IsTrue(filteredDiagnostics.Count == 0, $"resultingIds: {string.Join(", ", filteredDiagnostics)}");
         }
 
         GC.KeepAlive(observableObjectType);
