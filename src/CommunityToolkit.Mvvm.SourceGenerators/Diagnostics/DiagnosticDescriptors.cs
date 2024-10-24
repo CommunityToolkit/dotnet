@@ -727,4 +727,20 @@ internal static class DiagnosticDescriptors
         isEnabledByDefault: true,
         description: "Properties annotated with [ObservableProperty] must be partial properties with a getter and a setter that is not init-only.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0043");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[ObservableProperty]</c> is applied to a property when an unsupported version of Roslyn is used.
+    /// <para>
+    /// Format: <c>"The property {0}.{1} cannot be used to generate an observable property, as the current Roslyn version being used is not high enough (remove [ObservableProperty] or target a field instead, or upgrade to at least Visual Studio 2022 version 17.12 and the .NET 9 SDK)"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor UnsupportedRoslynVersionForObservablePartialPropertySupport = new DiagnosticDescriptor(
+        id: "MVVMTK0044",
+        title: "Unsupported Roslyn version for using [ObservableProperty] on partial properties",
+        messageFormat: "The property {0}.{1} cannot be used to generate an observable property, as the current Roslyn version being used is not high enough (remove [ObservableProperty] or target a field instead, or upgrade to at least Visual Studio 2022 version 17.12 and the .NET 9 SDK)",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "Using [ObservableProperty] with (partial) properties requires a higher version of Roslyn (remove [ObservableProperty] or target a field instead, or upgrade to at least Visual Studio 2022 version 17.12 and the .NET 9 SDK).",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0044");
 }
