@@ -55,41 +55,9 @@ partial class ObservablePropertyGenerator
             }
 
 #if ROSLYN_4_11_0_OR_GREATER
-            // Matches a valid partial property declaration
-            static bool IsCandidateProperty(SyntaxNode node, out TypeDeclarationSyntax? containingTypeNode)
-            {
-                // The node must be a property declaration with two accessors
-                if (node is not PropertyDeclarationSyntax { AccessorList.Accessors: { Count: 2 } accessors, AttributeLists.Count: > 0 } property)
-                {
-                    containingTypeNode = null;
-
-                    return false;
-                }
-
-                // The property must be partial (we'll check that it's a declaration from its symbol)
-                if (!property.Modifiers.Any(SyntaxKind.PartialKeyword))
-                {
-                    containingTypeNode = null;
-
-                    return false;
-                }
-
-                // The accessors must be a get and a set (with any accessibility)
-                if (accessors[0].Kind() is not (SyntaxKind.GetAccessorDeclaration or SyntaxKind.SetAccessorDeclaration) ||
-                    accessors[1].Kind() is not (SyntaxKind.GetAccessorDeclaration or SyntaxKind.SetAccessorDeclaration))
-                {
-                    containingTypeNode = null;
-
-                    return false;
-                }
-
-                containingTypeNode = (TypeDeclarationSyntax?)property.Parent;
-
-                return true;
-            }
-
             // We only support matching properties on Roslyn 4.11 and greater
-            if (!IsCandidateField(node, out TypeDeclarationSyntax? parentNode) && !IsCandidateProperty(node, out parentNode))
+            if (!IsCandidateField(node, out TypeDeclarationSyntax? parentNode) &&
+                !InvalidPropertyLevelObservablePropertyAttributeAnalyzer.IsValidCandidateProperty(node, out parentNode))
             {
                 return false;
             }
