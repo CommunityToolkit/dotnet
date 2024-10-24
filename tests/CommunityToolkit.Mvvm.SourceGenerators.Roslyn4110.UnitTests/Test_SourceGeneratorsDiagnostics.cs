@@ -21,7 +21,7 @@ partial class Test_SourceGeneratorsDiagnostics
                 public partial class SampleViewModel : ObservableObject
                 {            
                     [{|MVVMTK0041:ObservableProperty|}]            
-                    public string Bar { get; set; }
+                    public string Name { get; set; }
                 }
             }
             """;
@@ -40,7 +40,7 @@ partial class Test_SourceGeneratorsDiagnostics
                 public partial class SampleViewModel : ObservableObject
                 {            
                     [ObservableProperty]            
-                    public string Bar { get; set; }
+                    public string Name { get; set; }
                 }
             }
             """;
@@ -97,11 +97,144 @@ partial class Test_SourceGeneratorsDiagnostics
                 public partial class SampleViewModel : ObservableObject
                 {            
                     [ObservableProperty]            
-                    public string Bar { get; set; }
+                    public string Name { get; set; }
                 }
             }
             """;
 
         await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<UseObservablePropertyOnPartialPropertyAnalyzer>(source, LanguageVersion.Preview);
+    }
+
+    [TestMethod]
+    public async Task InvalidPropertyLevelObservablePropertyAttributeAnalyzer_OnValidPropertyDeclaration_DoesNotWarn1()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {            
+                    [ObservableProperty]            
+                    public partial string {|CS9248:Name|} { get; set; }
+                }
+            }
+            """;
+
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<InvalidPropertyLevelObservablePropertyAttributeAnalyzer>(source, LanguageVersion.Preview, [], ["CS0103", "CS9248"]);
+    }
+
+    [TestMethod]
+    public async Task InvalidPropertyLevelObservablePropertyAttributeAnalyzer_OnValidPropertyDeclaration_DoesNotWarn2()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {            
+                    [ObservableProperty]            
+                    internal partial string {|CS9248:Name|} { get; private set; }
+                }
+            }
+            """;
+
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<InvalidPropertyLevelObservablePropertyAttributeAnalyzer>(source, LanguageVersion.Preview, [], ["CS0103", "CS9248"]);
+    }
+
+    [TestMethod]
+    public async Task InvalidPropertyLevelObservablePropertyAttributeAnalyzer_OnValidPropertyDeclaration_DoesNotWarn3()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {            
+                    [ObservableProperty]            
+                    protected internal partial string {|CS9248:Name|} { get; private protected set; }
+                }
+            }
+            """;
+
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<InvalidPropertyLevelObservablePropertyAttributeAnalyzer>(source, LanguageVersion.Preview, [], ["CS0103", "CS9248"]);
+    }
+
+    [TestMethod]
+    public async Task InvalidPropertyLevelObservablePropertyAttributeAnalyzer_OnNonPartialProperty_Warns()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {            
+                    [{|MVVMTK0043:ObservableProperty|}]            
+                    public string Name { get; set; }
+                }
+            }
+            """;
+
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<InvalidPropertyLevelObservablePropertyAttributeAnalyzer>(source, LanguageVersion.Preview, [], ["CS9248"]);
+    }
+
+    [TestMethod]
+    public async Task InvalidPropertyLevelObservablePropertyAttributeAnalyzer_OnReadOnlyProperty_Warns()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {            
+                    [{|MVVMTK0043:ObservableProperty|}]            
+                    public partial string {|CS9248:Name|} { get; }
+                }
+            }
+            """;
+
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<InvalidPropertyLevelObservablePropertyAttributeAnalyzer>(source, LanguageVersion.Preview, [], ["CS9248"]);
+    }
+
+    [TestMethod]
+    public async Task InvalidPropertyLevelObservablePropertyAttributeAnalyzer_OnWriteOnlyProperty_Warns()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {            
+                    [{|MVVMTK0043:ObservableProperty|}]            
+                    public partial string {|CS9248:Name|} { set; }
+                }
+            }
+            """;
+
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<InvalidPropertyLevelObservablePropertyAttributeAnalyzer>(source, LanguageVersion.Preview, [], ["CS9248"]);
+    }
+
+    [TestMethod]
+    public async Task InvalidPropertyLevelObservablePropertyAttributeAnalyzer_OnInitOnlyProperty_Warns()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {            
+                    [{|MVVMTK0043:ObservableProperty|}]            
+                    public partial string {|CS9248:Name|} { get; init; }
+                }
+            }
+            """;
+
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<InvalidPropertyLevelObservablePropertyAttributeAnalyzer>(source, LanguageVersion.Preview, [], ["CS9248"]);
     }
 }

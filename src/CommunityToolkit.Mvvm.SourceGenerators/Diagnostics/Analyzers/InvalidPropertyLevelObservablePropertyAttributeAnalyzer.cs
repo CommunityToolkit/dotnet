@@ -2,15 +2,13 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#if ROSLYN_4_11_0_OR_GREATER
+
 using System.Collections.Immutable;
-#if ROSLYN_4_11_0_OR_GREATER
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
-#endif
 using Microsoft.CodeAnalysis;
-#if ROSLYN_4_11_0_OR_GREATER
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-#endif
 using Microsoft.CodeAnalysis.Diagnostics;
 using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
 
@@ -31,7 +29,6 @@ public sealed class InvalidPropertyLevelObservablePropertyAttributeAnalyzer : Di
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
         context.EnableConcurrentExecution();
 
-#if ROSLYN_4_11_0_OR_GREATER
         context.RegisterCompilationStartAction(static context =>
         {
             // Get the symbol for [ObservableProperty]
@@ -77,10 +74,8 @@ public sealed class InvalidPropertyLevelObservablePropertyAttributeAnalyzer : Di
                 }
             }, SymbolKind.Property);
         });
-#endif
     }
 
-#if ROSLYN_4_11_0_OR_GREATER
     /// <summary>
     /// Checks whether a given property declaration has valid syntax.
     /// </summary>
@@ -118,5 +113,6 @@ public sealed class InvalidPropertyLevelObservablePropertyAttributeAnalyzer : Di
 
         return true;
     }
-#endif
 }
+
+#endif
