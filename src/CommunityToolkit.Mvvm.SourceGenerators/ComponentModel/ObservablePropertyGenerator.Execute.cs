@@ -198,8 +198,8 @@ partial class ObservablePropertyGenerator
             string fieldName = memberSymbol.Name;
             string propertyName = GetGeneratedPropertyName(memberSymbol);
 
-            // Check for name collisions
-            if (fieldName == propertyName)
+            // Check for name collisions (only for fields)
+            if (fieldName == propertyName && memberSyntax.IsKind(SyntaxKind.FieldDeclaration))
             {
                 builder.Add(
                     ObservablePropertyNameCollisionError,
@@ -252,7 +252,7 @@ partial class ObservablePropertyGenerator
             GetNullabilityInfo(
                 memberSymbol,
                 semanticModel,
-                out bool isReferenceTypeOrUnconstraindTypeParameter,
+                out bool isReferenceTypeOrUnconstrainedTypeParameter,
                 out bool includeMemberNotNullOnSetAccessor);
 
             token.ThrowIfCancellationRequested();
@@ -423,7 +423,7 @@ partial class ObservablePropertyGenerator
                 notifyRecipients,
                 notifyDataErrorInfo,
                 isOldPropertyValueDirectlyReferenced,
-                isReferenceTypeOrUnconstraindTypeParameter,
+                isReferenceTypeOrUnconstrainedTypeParameter,
                 includeMemberNotNullOnSetAccessor,
                 includeRequiresUnreferencedCodeOnSetAccessor,
                 forwardedAttributes.ToImmutable());
@@ -1518,7 +1518,7 @@ partial class ObservablePropertyGenerator
             // happen when the property is first set to some value that is not null (but the backing field would still be so).
             // As a cheap way to check whether we need to add nullable, we can simply check whether the type name with nullability
             // annotations ends with a '?'. If it doesn't and the type is a reference type, we add it. Otherwise, we keep it.
-            return propertyInfo.IsReferenceTypeOrUnconstraindTypeParameter switch
+            return propertyInfo.IsReferenceTypeOrUnconstrainedTypeParameter switch
             {
                 true when !propertyInfo.TypeNameWithNullabilityAnnotations.EndsWith("?")
                     => IdentifierName($"{propertyInfo.TypeNameWithNullabilityAnnotations}?"),
