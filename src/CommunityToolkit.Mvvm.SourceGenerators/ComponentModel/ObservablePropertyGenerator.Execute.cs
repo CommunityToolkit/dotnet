@@ -339,71 +339,15 @@ partial class ObservablePropertyGenerator
 
             token.ThrowIfCancellationRequested();
 
-            // Gather explicit forwarded attributes info
-            foreach (AttributeListSyntax attributeList in memberSyntax.AttributeLists)
-            {
-                // For properties, we never need to forward any attributes with explicit targets either, because
-                // they can already "just work" when used with 'field'. As for 'get' and 'set', they can just be
-                // added directly to the partial declarations of the property accessors.
-                if (memberSyntax.IsKind(SyntaxKind.PropertyDeclaration))
-                {
-                    continue;
-                }
-
-                // Only look for attribute lists explicitly targeting the (generated) property or one of its accessors. Roslyn will
-                // normally emit a CS0657 warning (invalid target), but that is automatically suppressed by a dedicated diagnostic
-                // suppressor that recognizes uses of this target specifically to support [ObservableProperty].
-                if (attributeList.Target?.Identifier is not SyntaxToken(SyntaxKind.PropertyKeyword or SyntaxKind.GetKeyword or SyntaxKind.SetKeyword) targetIdentifier)
-                {
-                    continue;
-                }
-
-                token.ThrowIfCancellationRequested();
-
-                foreach (AttributeSyntax attribute in attributeList.Attributes)
-                {
-                    // Roslyn ignores attributes in an attribute list with an invalid target, so we can't get the AttributeData as usual.
-                    // To reconstruct all necessary attribute info to generate the serialized model, we use the following steps:
-                    //   - We try to get the attribute symbol from the semantic model, for the current attribute syntax. In case this is not
-                    //     available (in theory it shouldn't, but it can be), we try to get it from the candidate symbols list for the node.
-                    //     If there are no candidates or more than one, we just issue a diagnostic and stop processing the current attribute.
-                    //     The returned symbols might be method symbols (constructor attribute) so in that case we can get the declaring type.
-                    //   - We then go over each attribute argument expression and get the operation for it. This will still be available even
-                    //     though the rest of the attribute is not validated nor bound at all. From the operation we can still retrieve all
-                    //     constant values to build the AttributeInfo model. After all, attributes only support constant values, typeof(T)
-                    //     expressions, or arrays of either these two types, or of other arrays with the same rules, recursively.
-                    //   - From the syntax, we can also determine the identifier names for named attribute arguments, if any.
-                    // There is no need to validate anything here: the attribute will be forwarded as is, and then Roslyn will validate on the
-                    // generated property. Users will get the same validation they'd have had directly over the field. The only drawback is the
-                    // lack of IntelliSense when constructing attributes over the field, but this is the best we can do from this end anyway.
-                    if (!semanticModel.GetSymbolInfo(attribute, token).TryGetAttributeTypeSymbol(out INamedTypeSymbol? attributeTypeSymbol))
-                    {
-                        builder.Add(
-                            InvalidPropertyTargetedAttributeOnObservablePropertyField,
-                            attribute,
-                            memberSymbol,
-                            attribute.Name);
-
-                        continue;
-                    }
-
-                    IEnumerable<AttributeArgumentSyntax> attributeArguments = attribute.ArgumentList?.Arguments ?? Enumerable.Empty<AttributeArgumentSyntax>();
-
-                    // Try to extract the forwarded attribute
-                    if (!AttributeInfo.TryCreate(attributeTypeSymbol, semanticModel, attributeArguments, targetIdentifier.Kind(), token, out AttributeInfo? attributeInfo))
-                    {
-                        builder.Add(
-                            InvalidPropertyTargetedAttributeExpressionOnObservablePropertyField,
-                            attribute,
-                            memberSymbol,
-                            attribute.Name);
-
-                        continue;
-                    }
-
-                    forwardedAttributes.Add(attributeInfo);
-                }
-            }
+            // Also gather any forwarded attributes on the annotated member, if it is a field.
+            // This method will not do anything for properties, as those don't support this.
+            GatherLegacyForwardedAttributes(
+                memberSyntax,
+                memberSymbol,
+                semanticModel,
+                in forwardedAttributes,
+                in builder,
+                token);
 
             token.ThrowIfCancellationRequested();
 
@@ -931,6 +875,90 @@ partial class ObservablePropertyGenerator
                 isReferenceTypeOrUnconstraindTypeParameter &&
                 GetPropertyType(memberSymbol).NullableAnnotation != NullableAnnotation.Annotated &&
                 semanticModel.Compilation.HasAccessibleTypeWithMetadataName("System.Diagnostics.CodeAnalysis.MemberNotNullAttribute");
+        }
+
+        /// <summary>
+        /// Gathers all forwarded attributes from the given member syntax.
+        /// </summary>
+        /// <param name="memberSyntax">The <see cref="MemberDeclarationSyntax"/> instance to process.</param>
+        /// <param name="memberSymbol">The input <see cref="ISymbol"/> instance to process.</param>
+        /// <param name="semanticModel">The <see cref="SemanticModel"/> instance for the current run.</param>
+        /// <param name="forwardedAttributes">The collection of forwarded attributes to add new ones to.</param>
+        /// <param name="diagnostics">The current collection of gathered diagnostics.</param>
+        /// <param name="token">The cancellation token for the current operation.</param>
+        private static void GatherLegacyForwardedAttributes(
+            MemberDeclarationSyntax memberSyntax,
+            ISymbol memberSymbol,
+            SemanticModel semanticModel,
+            in ImmutableArrayBuilder<AttributeInfo> forwardedAttributes,
+            in ImmutableArrayBuilder<DiagnosticInfo> diagnostics,
+            CancellationToken token)
+        {
+            // For properties, we never need to forward any attributes with explicit targets either, because
+            // they can already "just work" when used with 'field'. As for 'get' and 'set', they can just be
+            // added directly to the partial declarations of the property accessors.
+            if (memberSyntax.IsKind(SyntaxKind.PropertyDeclaration))
+            {
+                return;
+            }
+
+            // Gather explicit forwarded attributes info
+            foreach (AttributeListSyntax attributeList in memberSyntax.AttributeLists)
+            {
+                // Only look for attribute lists explicitly targeting the (generated) property or one of its accessors. Roslyn will
+                // normally emit a CS0657 warning (invalid target), but that is automatically suppressed by a dedicated diagnostic
+                // suppressor that recognizes uses of this target specifically to support [ObservableProperty].
+                if (attributeList.Target?.Identifier is not SyntaxToken(SyntaxKind.PropertyKeyword or SyntaxKind.GetKeyword or SyntaxKind.SetKeyword) targetIdentifier)
+                {
+                    continue;
+                }
+
+                token.ThrowIfCancellationRequested();
+
+                foreach (AttributeSyntax attribute in attributeList.Attributes)
+                {
+                    // Roslyn ignores attributes in an attribute list with an invalid target, so we can't get the AttributeData as usual.
+                    // To reconstruct all necessary attribute info to generate the serialized model, we use the following steps:
+                    //   - We try to get the attribute symbol from the semantic model, for the current attribute syntax. In case this is not
+                    //     available (in theory it shouldn't, but it can be), we try to get it from the candidate symbols list for the node.
+                    //     If there are no candidates or more than one, we just issue a diagnostic and stop processing the current attribute.
+                    //     The returned symbols might be method symbols (constructor attribute) so in that case we can get the declaring type.
+                    //   - We then go over each attribute argument expression and get the operation for it. This will still be available even
+                    //     though the rest of the attribute is not validated nor bound at all. From the operation we can still retrieve all
+                    //     constant values to build the AttributeInfo model. After all, attributes only support constant values, typeof(T)
+                    //     expressions, or arrays of either these two types, or of other arrays with the same rules, recursively.
+                    //   - From the syntax, we can also determine the identifier names for named attribute arguments, if any.
+                    // There is no need to validate anything here: the attribute will be forwarded as is, and then Roslyn will validate on the
+                    // generated property. Users will get the same validation they'd have had directly over the field. The only drawback is the
+                    // lack of IntelliSense when constructing attributes over the field, but this is the best we can do from this end anyway.
+                    if (!semanticModel.GetSymbolInfo(attribute, token).TryGetAttributeTypeSymbol(out INamedTypeSymbol? attributeTypeSymbol))
+                    {
+                        diagnostics.Add(
+                            InvalidPropertyTargetedAttributeOnObservablePropertyField,
+                            attribute,
+                            memberSymbol,
+                            attribute.Name);
+
+                        continue;
+                    }
+
+                    IEnumerable<AttributeArgumentSyntax> attributeArguments = attribute.ArgumentList?.Arguments ?? Enumerable.Empty<AttributeArgumentSyntax>();
+
+                    // Try to extract the forwarded attribute
+                    if (!AttributeInfo.TryCreate(attributeTypeSymbol, semanticModel, attributeArguments, targetIdentifier.Kind(), token, out AttributeInfo? attributeInfo))
+                    {
+                        diagnostics.Add(
+                            InvalidPropertyTargetedAttributeExpressionOnObservablePropertyField,
+                            attribute,
+                            memberSymbol,
+                            attribute.Name);
+
+                        continue;
+                    }
+
+                    forwardedAttributes.Add(attributeInfo);
+                }
+            }
         }
 
         /// <summary>
