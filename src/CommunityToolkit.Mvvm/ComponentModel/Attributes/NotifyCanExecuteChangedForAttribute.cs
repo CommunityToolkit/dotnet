@@ -12,8 +12,8 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// An attribute that can be used to support <see cref="IRelayCommand"/> properties in generated properties. When this attribute is
 /// used, the generated property setter will also call <see cref="IRelayCommand.NotifyCanExecuteChanged"/> for the properties specified
 /// in the attribute data, causing the validation logic for the command to be executed again. This can be useful to keep the code compact
-/// when there are one or more dependent commands that should also be notified when a property is updated. If this attribute is used in
-/// a field without <see cref="ObservablePropertyAttribute"/>, it is ignored (just like <see cref="NotifyPropertyChangedForAttribute"/>).
+/// when there are one or more dependent commands that should also be notified when a property is updated. If this attribute is used on
+/// a property without <see cref="ObservablePropertyAttribute"/>, it is ignored (just like <see cref="NotifyPropertyChangedForAttribute"/>).
 /// <para>
 /// In order to use this attribute, the target property has to implement the <see cref="IRelayCommand"/> interface.
 /// </para>
@@ -24,7 +24,7 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// {
 ///     [ObservableProperty]
 ///     [NotifyCanExecuteChangedFor(nameof(GreetUserCommand))]
-///     private string name;
+///     public partial string Name { get; set; }
 ///
 ///     public IRelayCommand GreetUserCommand { get; }
 /// }
@@ -34,12 +34,12 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// <code>
 /// partial class MyViewModel
 /// {
-///     public string Name
+///     public partial string Name
 ///     {
-///         get => name;
+///         get => field;
 ///         set
 ///         {
-///             if (SetProperty(ref name, value))
+///             if (SetProperty(ref field, value))
 ///             {
 ///                 GreetUserCommand.NotifyCanExecuteChanged();
 ///             }
@@ -48,7 +48,10 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// }
 /// </code>
 /// </summary>
-[AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = false)]
+/// <remarks>
+/// Just like <see cref="ObservablePropertyAttribute"/>, this attribute can also be used on fields as well.
+/// </remarks>
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true, Inherited = false)]
 public sealed class NotifyCanExecuteChangedForAttribute : Attribute
 {
     /// <summary>
