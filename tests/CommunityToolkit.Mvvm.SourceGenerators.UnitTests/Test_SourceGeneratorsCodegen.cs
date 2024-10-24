@@ -16,7 +16,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CommunityToolkit.Mvvm.SourceGenerators.UnitTests;
 
 [TestClass]
-public class Test_SourceGeneratorsCodegen
+public partial class Test_SourceGeneratorsCodegen
 {
     [TestMethod]
     public void ObservablePropertyWithNonNullableReferenceType_EmitsMemberNotNullAttribute()
