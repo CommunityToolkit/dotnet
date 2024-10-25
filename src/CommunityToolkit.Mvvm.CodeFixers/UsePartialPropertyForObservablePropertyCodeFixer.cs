@@ -252,6 +252,12 @@ public sealed class UsePartialPropertyForObservablePropertyCodeFixer : CodeFixPr
                 .AddAttributeLists(setterAttributes)
                 .WithAdditionalAnnotations(Formatter.Annotation));
 
+        // If the field has an initializer, preserve that on the property
+        if (fieldDeclaration.Declaration.Variables[0].Initializer is { } fieldInitializer)
+        {
+            propertyDeclaration = propertyDeclaration.WithInitializer(fieldInitializer).WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+        }
+
         // Create an editor to perform all mutations. This allows to keep track of multiple
         // replacements for nodes on the same original tree, which otherwise wouldn't work.
         SyntaxEditor editor = new(root, document.Project.Solution.Workspace);
