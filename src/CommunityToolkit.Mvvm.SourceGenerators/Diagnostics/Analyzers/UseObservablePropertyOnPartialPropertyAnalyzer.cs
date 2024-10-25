@@ -60,6 +60,9 @@ public sealed class UseObservablePropertyOnPartialPropertyAnalyzer : DiagnosticA
                 context.ReportDiagnostic(Diagnostic.Create(
                     UseObservablePropertyOnPartialProperty,
                     observablePropertyAttribute.GetLocation(),
+                    ImmutableDictionary.Create<string, string?>()
+                        .Add(FieldReferenceForObservablePropertyFieldAnalyzer.FieldNameKey, fieldSymbol.Name)
+                        .Add(FieldReferenceForObservablePropertyFieldAnalyzer.PropertyNameKey, ObservablePropertyGenerator.Execute.GetGeneratedPropertyName(fieldSymbol)),
                     fieldSymbol.ContainingType,
                     fieldSymbol));
             }, SymbolKind.Field);

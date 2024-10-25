@@ -9,6 +9,7 @@
     <Import_RootNamespace>CommunityToolkit.Mvvm.SourceGenerators.UnitTests</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\CSharpCodeFixWithLanguageVersionTest{TAnalyzer,TCodeFix,TVerifier}.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\CSharpAnalyzerWithLanguageVersionTest{TAnalyzer}.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Test_SourceGeneratorsCodegen.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Test_SourceGeneratorsDiagnostics.cs" />
