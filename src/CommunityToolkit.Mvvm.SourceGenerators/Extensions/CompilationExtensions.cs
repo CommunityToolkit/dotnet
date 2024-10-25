@@ -118,6 +118,9 @@ internal static class CompilationExtensions
     {
         ImmutableDictionary<T, INamedTypeSymbol>.Builder builder = ImmutableDictionary.CreateBuilder<T, INamedTypeSymbol>();
 
+        // Ensure we always use the right comparer for values, when needed
+        builder.ValueComparer = SymbolEqualityComparer.Default;
+
         foreach (KeyValuePair<T, string> pair in typeNames)
         {
             if (compilation.GetTypeByMetadataName(pair.Value) is not INamedTypeSymbol attributeSymbol)

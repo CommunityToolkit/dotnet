@@ -19,7 +19,7 @@ internal static class SymbolInfoExtensions
     /// <param name="typeSymbol">The resulting attribute type symbol, if correctly resolved.</param>
     /// <returns>Whether <paramref name="symbolInfo"/> is resolved to a symbol.</returns>
     /// <remarks>
-    /// This can be used to ensure users haven't eg. spelled names incorrecty or missed a using directive. Normally, code would just
+    /// This can be used to ensure users haven't eg. spelled names incorrectly or missed a using directive. Normally, code would just
     /// not compile if that was the case, but that doesn't apply for attributes using invalid targets. In that case, Roslyn will ignore
     /// any errors, meaning the generator has to validate the type symbols are correctly resolved on its own.
     /// </remarks>
