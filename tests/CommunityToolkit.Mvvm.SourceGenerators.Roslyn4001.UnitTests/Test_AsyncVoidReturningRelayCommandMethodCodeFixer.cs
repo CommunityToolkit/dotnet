@@ -15,7 +15,7 @@ using CSharpCodeFixVerifier = Microsoft.CodeAnalysis.CSharp.Testing.CSharpCodeFi
     CommunityToolkit.Mvvm.CodeFixers.AsyncVoidReturningRelayCommandMethodCodeFixer,
     Microsoft.CodeAnalysis.Testing.DefaultVerifier>;
 
-namespace CommunityToolkit.Mvvm.SourceGenerators.Roslyn4001.UnitTests;
+namespace CommunityToolkit.Mvvm.SourceGenerators.UnitTests;
 
 [TestClass]
 public class Test_AsyncVoidReturningRelayCommandMethodCodeFixer
