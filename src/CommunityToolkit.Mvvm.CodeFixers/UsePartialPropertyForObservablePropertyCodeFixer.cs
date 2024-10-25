@@ -15,6 +15,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.Text;
 using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -213,7 +214,7 @@ public sealed class UsePartialPropertyForObservablePropertyCodeFixer : CodeFixPr
             fieldDeclaration
             .AttributeLists
             .Where(list => list.Target?.Identifier.Kind() is SyntaxKind.GetKeyword)
-            .Select(list => list.WithTarget(null))
+            .Select(list => list.WithTarget(null).WithAdditionalAnnotations(Formatter.Annotation))
             .ToArray();
 
         // Also do the same for the setters
@@ -221,7 +222,7 @@ public sealed class UsePartialPropertyForObservablePropertyCodeFixer : CodeFixPr
             fieldDeclaration
             .AttributeLists
             .Where(list => list.Target?.Identifier.Kind() is SyntaxKind.SetKeyword)
-            .Select(list => list.WithTarget(null))
+            .Select(list => list.WithTarget(null).WithAdditionalAnnotations(Formatter.Annotation))
             .ToArray();
 
         // Create the following property declaration:
@@ -239,13 +240,16 @@ public sealed class UsePartialPropertyForObservablePropertyCodeFixer : CodeFixPr
             PropertyDeclaration(fieldDeclaration.Declaration.Type, Identifier(propertyName))
             .AddModifiers(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.PartialKeyword))
             .AddAttributeLists(propertyAttributes.ToArray())
+            .WithAdditionalAnnotations(Formatter.Annotation)
             .AddAccessorListAccessors(
                 AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
                 .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
-                .AddAttributeLists(getterAttributes),
+                .AddAttributeLists(getterAttributes)
+                .WithAdditionalAnnotations(Formatter.Annotation),
                 AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
                 .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
-                .AddAttributeLists(setterAttributes));
+                .AddAttributeLists(setterAttributes)
+                .WithAdditionalAnnotations(Formatter.Annotation));
 
         SyntaxTree updatedTree = root.ReplaceNode(fieldDeclaration, propertyDeclaration).SyntaxTree;
 
