@@ -137,6 +137,17 @@ partial class ObservablePropertyGenerator
             [NotNullWhen(true)] out PropertyInfo? propertyInfo,
             out ImmutableArray<DiagnosticInfo> diagnostics)
         {
+            // Special case for downlevel: if a field has the 'partial' modifier, ignore it.
+            // This is because older compilers might parse a partial property as a field.
+            // In that case, we ignore it here and rely on Roslyn producing a build error.
+            if (memberSyntax.IsKind(SyntaxKind.FieldDeclaration) && memberSyntax.Modifiers.Any(SyntaxKind.PartialKeyword))
+            {
+                propertyInfo = null;
+                diagnostics = ImmutableArray<DiagnosticInfo>.Empty;
+
+                return false;
+            }
+
             using ImmutableArrayBuilder<DiagnosticInfo> builder = ImmutableArrayBuilder<DiagnosticInfo>.Rent();
 
             // Validate the target type
