@@ -15,6 +15,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Editing;
 using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.Text;
 using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
@@ -251,8 +252,37 @@ public sealed class UsePartialPropertyForObservablePropertyCodeFixer : CodeFixPr
                 .AddAttributeLists(setterAttributes)
                 .WithAdditionalAnnotations(Formatter.Annotation));
 
-        SyntaxTree updatedTree = root.ReplaceNode(fieldDeclaration, propertyDeclaration).SyntaxTree;
+        // Create an editor to perform all mutations. This allows to keep track of multiple
+        // replacements for nodes on the same original tree, which otherwise wouldn't work.
+        SyntaxEditor editor = new(root, document.Project.Solution.Workspace);
 
-        return document.WithSyntaxRoot(await updatedTree.GetRootAsync(cancellationToken).ConfigureAwait(false));
+        editor.ReplaceNode(fieldDeclaration, propertyDeclaration);
+
+        // Get the field declaration from the target diagnostic (we only support individual fields, with a single declaration)
+        foreach (SyntaxNode descendantNode in root.DescendantNodes())
+        {
+            // We only care about identifier nodes
+            if (descendantNode is not IdentifierNameSyntax identifierSyntax)
+            {
+                continue;
+            }
+
+            // Pre-filter to only match the field name we just replaced
+            if (identifierSyntax.Identifier.Text != fieldName)
+            {
+                continue;
+            }
+
+            // Make sure the identifier actually refers to the field being replaced
+            if (semanticModel.GetSymbolInfo(identifierSyntax, cancellationToken).Symbol is not IFieldSymbol fieldSymbol)
+            {
+                continue;
+            }
+
+            // Replace the field reference with a reference to the new property
+            editor.ReplaceNode(identifierSyntax, IdentifierName(propertyName));
+        }
+
+        return document.WithSyntaxRoot(editor.GetChangedRoot());
     }
 }
