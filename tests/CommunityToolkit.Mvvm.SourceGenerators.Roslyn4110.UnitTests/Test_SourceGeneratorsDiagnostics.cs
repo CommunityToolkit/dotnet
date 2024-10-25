@@ -222,6 +222,7 @@ partial class Test_SourceGeneratorsDiagnostics
     [TestMethod]
     public async Task InvalidPropertyLevelObservablePropertyAttributeAnalyzer_OnInitOnlyProperty_Warns()
     {
+#if NET6_0_OR_GREATER
         const string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
             
@@ -234,7 +235,21 @@ partial class Test_SourceGeneratorsDiagnostics
                 }
             }
             """;
+#else
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {            
+                    [{|MVVMTK0043:ObservableProperty|}]
+                    public partial string {|CS9248:Name|} { get; {|CS0518:init|}; }
+                }
+            }
+            """;
+#endif
 
-        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<InvalidPropertyLevelObservablePropertyAttributeAnalyzer>(source, LanguageVersion.Preview, [], ["CS9248"]);
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<InvalidPropertyLevelObservablePropertyAttributeAnalyzer>(source, LanguageVersion.Preview, [], ["CS0518", "CS9248"]);
     }
 }

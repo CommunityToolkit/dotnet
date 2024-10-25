@@ -1917,7 +1917,7 @@ public partial class Test_SourceGeneratorsDiagnostics
         };
 
         // Transform diagnostic annotations back to normal C# (eg. "{|MVVMTK0008:Foo()|}" ---> "Foo()")
-        string source = Regex.Replace(markdownSource, @"{\|((?:,?\w+)+):(.+)\|}", m => m.Groups[2].Value);
+        string source = Regex.Replace(markdownSource, @"{\|((?:,?\w+)+):(.+?)\|}", m => m.Groups[2].Value);
 
         VerifyGeneratedDiagnostics(CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(languageVersion)), generators, generatorDiagnosticsIds, ignoredDiagnosticIds);
     }
