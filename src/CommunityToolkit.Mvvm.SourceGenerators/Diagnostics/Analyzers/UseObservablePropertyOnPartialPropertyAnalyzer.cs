@@ -56,6 +56,15 @@ public sealed class UseObservablePropertyOnPartialPropertyAnalyzer : DiagnosticA
                     return;
                 }
 
+                // It's not really meant to be used this way, but technically speaking the generator also supports
+                // static fields. So for those users leveraging that (for whatever reason), make sure to skip those.
+                // Partial properties using [ObservableProperty] cannot be static, and we never want the code fixer
+                // to prompt the user, run, and then result in code that will fail to compile.
+                if (fieldSymbol.IsStatic)
+                {
+                    return;
+                }
+
                 // Emit the diagnostic for this field to suggest changing to a partial property instead
                 context.ReportDiagnostic(Diagnostic.Create(
                     UseObservablePropertyOnPartialProperty,

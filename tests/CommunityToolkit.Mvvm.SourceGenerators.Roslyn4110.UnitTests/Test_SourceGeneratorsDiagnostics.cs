@@ -252,4 +252,23 @@ partial class Test_SourceGeneratorsDiagnostics
 
         await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<InvalidPropertyLevelObservablePropertyAttributeAnalyzer>(source, LanguageVersion.Preview, [], ["CS0518", "CS9248"]);
     }
+
+    [TestMethod]
+    public async Task UseObservablePropertyOnPartialPropertyAnalyzer_LanguageVersionIsPreview_OnStaticField_DoesNotWarn()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {            
+                    [ObservableProperty]            
+                    private static string name;
+                }
+            }
+            """;
+
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<UseObservablePropertyOnPartialPropertyAnalyzer>(source, LanguageVersion.Preview);
+    }
 }
