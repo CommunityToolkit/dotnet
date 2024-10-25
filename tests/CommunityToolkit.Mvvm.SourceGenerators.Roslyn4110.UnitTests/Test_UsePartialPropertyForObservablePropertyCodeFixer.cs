@@ -499,4 +499,155 @@ public class Test_UsePartialPropertyForObservablePropertyCodeFixer
 
         await test.RunAsync();
     }
+
+    [TestMethod]
+    public async Task SimpleField_WithInitializer1()
+    {
+        string original = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            partial class C : ObservableObject
+            {
+                [ObservableProperty]
+                private int i = 42;
+            }
+            """;
+
+        string @fixed = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            partial class C : ObservableObject
+            {
+                [ObservableProperty]
+                public partial int I { get; set; } = 42;
+            }
+            """;
+
+        CSharpCodeFixTest test = new(LanguageVersion.Preview)
+        {
+            TestCode = original,
+            FixedCode = @fixed,
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
+        };
+
+        test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
+        test.ExpectedDiagnostics.AddRange(new[]
+        {
+            // /0/Test0.cs(5,6): info MVVMTK0042: The field C.C.i using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(5, 6, 5, 24).WithArguments("C", "C.i"),
+        });
+
+        test.FixedState.ExpectedDiagnostics.AddRange(new[]
+        {
+            // /0/Test0.cs(6,24): error CS9248: Partial property 'C.I' must have an implementation part.
+            DiagnosticResult.CompilerError("CS9248").WithSpan(6, 24, 6, 25).WithArguments("C.I"),
+
+            // /0/Test0.cs(6,24): error CS8050: Only auto-implemented properties can have initializers.
+            DiagnosticResult.CompilerError("CS8050").WithSpan(6, 24, 6, 25),
+        });
+
+        await test.RunAsync();
+    }
+
+    [TestMethod]
+    public async Task SimpleField_WithInitializer2()
+    {
+        string original = """
+            using System.Collections.Generic;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            partial class C : ObservableObject
+            {
+                [ObservableProperty]
+                private ICollection<string> items = ["A", "B", "C"];
+            }
+            """;
+
+        string @fixed = """
+            using System.Collections.Generic;
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            partial class C : ObservableObject
+            {
+                [ObservableProperty]
+                public partial ICollection<string> Items { get; set; } = ["A", "B", "C"];
+            }
+            """;
+
+        CSharpCodeFixTest test = new(LanguageVersion.Preview)
+        {
+            TestCode = original,
+            FixedCode = @fixed,
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
+        };
+
+        test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
+        test.ExpectedDiagnostics.AddRange(new[]
+        {
+            // /0/Test0.cs(6,6): info MVVMTK0042: The field C.C.items using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(6, 6, 6, 24).WithArguments("C", "C.items"),
+        });
+
+        test.FixedState.ExpectedDiagnostics.AddRange(new[]
+        {
+            // /0/Test0.cs(7,40): error CS8050: Only auto-implemented properties can have initializers.
+            DiagnosticResult.CompilerError("CS8050").WithSpan(7, 40, 7, 45),
+
+            // /0/Test0.cs(7,40): error CS9248: Partial property 'C.Items' must have an implementation part.
+            DiagnosticResult.CompilerError("CS9248").WithSpan(7, 40, 7, 45).WithArguments("C.Items"),
+        });
+
+        await test.RunAsync();
+    }
+
+    [TestMethod]
+    public async Task SimpleField_WithInitializer3()
+    {
+        string original = """
+            using System.Collections.Generic;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            partial class C : ObservableObject
+            {
+                [ObservableProperty]
+                private ICollection<string> items = new List<string> { "A", "B", "C" };
+            }
+            """;
+
+        string @fixed = """
+            using System.Collections.Generic;
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            partial class C : ObservableObject
+            {
+                [ObservableProperty]
+                public partial ICollection<string> Items { get; set; } = new List<string> { "A", "B", "C" };
+            }
+            """;
+
+        CSharpCodeFixTest test = new(LanguageVersion.Preview)
+        {
+            TestCode = original,
+            FixedCode = @fixed,
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
+        };
+
+        test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
+        test.ExpectedDiagnostics.AddRange(new[]
+        {
+            // /0/Test0.cs(6,6): info MVVMTK0042: The field C.C.items using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(6, 6, 6, 24).WithArguments("C", "C.items"),
+        });
+
+        test.FixedState.ExpectedDiagnostics.AddRange(new[]
+        {
+            // /0/Test0.cs(7,40): error CS8050: Only auto-implemented properties can have initializers.
+            DiagnosticResult.CompilerError("CS8050").WithSpan(7, 40, 7, 45),
+
+            // /0/Test0.cs(7,40): error CS9248: Partial property 'C.Items' must have an implementation part.
+            DiagnosticResult.CompilerError("CS9248").WithSpan(7, 40, 7, 45).WithArguments("C.Items"),
+        });
+
+        await test.RunAsync();
+    }
 }
