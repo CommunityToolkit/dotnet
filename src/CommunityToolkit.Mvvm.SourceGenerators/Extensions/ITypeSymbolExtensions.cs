@@ -2,10 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
-using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 using Microsoft.CodeAnalysis;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 
@@ -248,5 +249,24 @@ internal static class ITypeSymbolExtensions
         }
 
         BuildFrom(symbol, in builder);
+    }
+
+    /// <summary>
+    /// Checks whether a given <see cref="ITypeSymbol"/> implements at least one members of the specified interface.
+    /// </summary>
+    /// <param name="symbol">The input <see cref="ITypeSymbol"/> instance.</param>
+    /// <param name="fullyQualifiedName">The fully qualified name of the interface.</param>
+    /// <returns>Whether at least a single interface member is implemented.</returns>
+    public static bool ImplementsInterfaceMember(this ITypeSymbol symbol, string fullyQualifiedName)
+    {
+        INamedTypeSymbol? interfaceSymbol = symbol.AllInterfaces.FirstOrDefault(x => x.HasFullyQualifiedMetadataName(fullyQualifiedName));
+        if (interfaceSymbol == null)
+        {
+            return false;
+        }
+
+        IEnumerable<ISymbol> interfaceMembers = interfaceSymbol.GetAllMembers();
+
+        return interfaceMembers.Any(x => symbol.FindImplementationForInterfaceMember(x) != null);
     }
 }

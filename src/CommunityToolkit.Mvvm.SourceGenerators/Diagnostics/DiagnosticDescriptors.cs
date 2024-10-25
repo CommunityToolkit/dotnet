@@ -35,51 +35,51 @@ internal static class DiagnosticDescriptors
     public const string AsyncVoidReturningRelayCommandMethodId = "MVVMTK0039";
 
     /// <summary>
-    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a duplicate declaration of <see cref="INotifyPropertyChanged"/> would happen.
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a duplicate implementation of <see cref="INotifyPropertyChanged"/> would happen.
     /// <para>
-    /// Format: <c>"Cannot apply [INotifyPropertyChangedAttribute] to type {0}, as it already declares the INotifyPropertyChanged interface"</c>.
+    /// Format: <c>"Cannot apply [INotifyPropertyChangedAttribute] to type {0}, as it already implements the INotifyPropertyChanged interface"</c>.
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor DuplicateINotifyPropertyChangedInterfaceForINotifyPropertyChangedAttributeError = new DiagnosticDescriptor(
         id: "MVVMTK0001",
         title: $"Duplicate {nameof(INotifyPropertyChanged)} definition",
-        messageFormat: $"Cannot apply [INotifyPropertyChanged] to type {{0}}, as it already declares the {nameof(INotifyPropertyChanged)} interface",
+        messageFormat: $"Cannot apply [INotifyPropertyChanged] to type {{0}}, as it already implements the {nameof(INotifyPropertyChanged)} interface",
         category: typeof(INotifyPropertyChangedGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: $"Cannot apply [INotifyPropertyChanged] to a type that already declares the {nameof(INotifyPropertyChanged)} interface.",
+        description: $"Cannot apply [INotifyPropertyChanged] to a type that already implements the {nameof(INotifyPropertyChanged)} interface.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0001");
 
     /// <summary>
-    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a duplicate declaration of <see cref="INotifyPropertyChanged"/> would happen.
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a duplicate implementation of <see cref="INotifyPropertyChanged"/> would happen.
     /// <para>
-    /// Format: <c>"Cannot apply [ObservableObjectAttribute] to type {0}, as it already declares the INotifyPropertyChanged interface"</c>.
+    /// Format: <c>"Cannot apply [ObservableObjectAttribute] to type {0}, as it already implement the INotifyPropertyChanged interface"</c>.
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor DuplicateINotifyPropertyChangedInterfaceForObservableObjectAttributeError = new DiagnosticDescriptor(
         id: "MVVMTK0002",
         title: $"Duplicate {nameof(INotifyPropertyChanged)} definition",
-        messageFormat: $"Cannot apply [ObservableObject] to type {{0}}, as it already declares the {nameof(INotifyPropertyChanged)} interface",
+        messageFormat: $"Cannot apply [ObservableObject] to type {{0}}, as it already implements the {nameof(INotifyPropertyChanged)} interface",
         category: typeof(ObservableObjectGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: $"Cannot apply [ObservableObject] to a type that already declares the {nameof(INotifyPropertyChanged)} interface.",
+        description: $"Cannot apply [ObservableObject] to a type that already implements the {nameof(INotifyPropertyChanged)} interface.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0002");
 
     /// <summary>
-    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a duplicate declaration of <see cref="INotifyPropertyChanging"/> would happen.
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a duplicate implementation of <see cref="INotifyPropertyChanging"/> would happen.
     /// <para>
-    /// Format: <c>"Cannot apply [ObservableObjectAttribute] to type {0}, as it already declares the INotifyPropertyChanging interface"</c>.
+    /// Format: <c>"Cannot apply [ObservableObjectAttribute] to type {0}, as it already implements the INotifyPropertyChanging interface"</c>.
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor DuplicateINotifyPropertyChangingInterfaceForObservableObjectAttributeError = new DiagnosticDescriptor(
         id: "MVVMTK0003",
         title: $"Duplicate {nameof(INotifyPropertyChanging)} definition",
-        messageFormat: $"Cannot apply [ObservableObject] to type {{0}}, as it already declares the {nameof(INotifyPropertyChanging)} interface",
+        messageFormat: $"Cannot apply [ObservableObject] to type {{0}}, as it already implements the {nameof(INotifyPropertyChanging)} interface",
         category: typeof(ObservableObjectGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: $"Cannot apply [ObservableObject] to a type that already declares the {nameof(INotifyPropertyChanging)} interface.",
+        description: $"Cannot apply [ObservableObject] to a type that already implements the {nameof(INotifyPropertyChanging)} interface.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0003");
 
     /// <summary>
