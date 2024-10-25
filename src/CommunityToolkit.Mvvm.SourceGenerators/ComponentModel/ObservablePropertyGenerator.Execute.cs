@@ -143,8 +143,9 @@ partial class ObservablePropertyGenerator
             if (!IsTargetTypeValid(memberSymbol, out bool shouldInvokeOnPropertyChanging))
             {
                 builder.Add(
-                    InvalidContainingTypeForObservablePropertyFieldError,
+                    InvalidContainingTypeForObservablePropertyMemberError,
                     memberSymbol,
+                    memberSyntax.Kind().ToFieldOrPropertyKeyword(),
                     memberSymbol.ContainingType,
                     memberSymbol.Name);
 
@@ -309,6 +310,7 @@ partial class ObservablePropertyGenerator
                 builder.Add(
                     MissingObservableValidatorInheritanceForValidationAttributeError,
                     memberSymbol,
+                    memberSyntax.Kind().ToFieldOrPropertyKeyword(),
                     memberSymbol.ContainingType,
                     memberSymbol.Name,
                     forwardedAttributes.Count);
@@ -320,6 +322,7 @@ partial class ObservablePropertyGenerator
                 builder.Add(
                     MissingValidationAttributesForNotifyDataErrorInfoError,
                     memberSymbol,
+                    memberSymbol.Kind.ToFieldOrPropertyKeyword(),
                     memberSymbol.ContainingType,
                     memberSymbol.Name);
             }
@@ -659,8 +662,9 @@ partial class ObservablePropertyGenerator
                 if (hasOrInheritsClassLevelNotifyPropertyChangedRecipients)
                 {
                     diagnostics.Add(
-                        UnnecessaryNotifyPropertyChangedRecipientsAttributeOnFieldWarning,
+                        UnnecessaryNotifyPropertyChangedRecipientsAttributeOnMemberWarning,
                         memberSymbol,
+                        memberSymbol.Kind.ToFieldOrPropertyKeyword(),
                         memberSymbol.ContainingType,
                         memberSymbol.Name);
                 }
@@ -676,7 +680,7 @@ partial class ObservablePropertyGenerator
 
                 // Otherwise just emit the diagnostic and then ignore the attribute
                 diagnostics.Add(
-                    InvalidContainingTypeForNotifyPropertyChangedRecipientsFieldError,
+                    InvalidContainingTypeForNotifyPropertyChangedRecipientsMemberError,
                     memberSymbol,
                     memberSymbol.ContainingType,
                     memberSymbol.Name);
@@ -742,8 +746,9 @@ partial class ObservablePropertyGenerator
                 if (hasOrInheritsClassLevelNotifyDataErrorInfo)
                 {
                     diagnostics.Add(
-                        UnnecessaryNotifyDataErrorInfoAttributeOnFieldWarning,
+                        UnnecessaryNotifyDataErrorInfoAttributeOnMemberWarning,
                         memberSymbol,
+                        memberSymbol.Kind.ToFieldOrPropertyKeyword(),
                         memberSymbol.ContainingType,
                         memberSymbol.Name);
                 }
@@ -760,6 +765,7 @@ partial class ObservablePropertyGenerator
                 diagnostics.Add(
                     MissingObservableValidatorInheritanceForNotifyDataErrorInfoError,
                     memberSymbol,
+                    memberSymbol.Kind.ToFieldOrPropertyKeyword(),
                     memberSymbol.ContainingType,
                     memberSymbol.Name);
 

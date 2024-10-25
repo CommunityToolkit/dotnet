@@ -40,7 +40,7 @@ public sealed class FieldWithOrphanedDependentObservablePropertyAttributesAnalyz
         context.EnableConcurrentExecution();
 
         // Defer the registration so it can be skipped if C# 8.0 or more is not available.
-        // That is because in that case source generators are not supported at all anyaway.
+        // That is because in that case source generators are not supported at all anyway.
         context.RegisterCompilationStartAction(static context =>
         {
             if (!context.Compilation.HasLanguageVersionAtLeastEqualTo(LanguageVersion.CSharp8))
@@ -72,7 +72,7 @@ public sealed class FieldWithOrphanedDependentObservablePropertyAttributesAnalyz
 
                 foreach (AttributeData dependentAttribute in attributes)
                 {
-                    // Go over each attribute on the target symbol, anche check if any of them matches one of the trigger attributes.
+                    // Go over each attribute on the target symbol, and check if any of them matches one of the trigger attributes.
                     // The logic here is the same as the one in UnsupportedCSharpLanguageVersionAnalyzer.
                     if (dependentAttribute.AttributeClass is { Name: string attributeName } dependentAttributeClass &&
                         typeSymbols.TryGetValue(attributeName, out INamedTypeSymbol? dependentAttributeSymbol) &&
@@ -89,13 +89,18 @@ public sealed class FieldWithOrphanedDependentObservablePropertyAttributesAnalyz
                             }
                         }
 
-                        context.ReportDiagnostic(Diagnostic.Create(FieldWithOrphanedDependentObservablePropertyAttributesError, context.Symbol.Locations.FirstOrDefault(), context.Symbol.ContainingType, context.Symbol.Name));
+                        context.ReportDiagnostic(Diagnostic.Create(
+                            FieldWithOrphanedDependentObservablePropertyAttributesError,
+                            context.Symbol.Locations.FirstOrDefault(),
+                            context.Symbol.Kind.ToFieldOrPropertyKeyword(),
+                            context.Symbol.ContainingType,
+                            context.Symbol.Name));
 
                         // Just like in UnsupportedCSharpLanguageVersionAnalyzer, stop if a diagnostic has been emitted for the current symbol
                         return;
                     }
                 }
-            }, SymbolKind.Field);
+            }, SymbolKind.Field, SymbolKind.Property);
         });
     }
 }
