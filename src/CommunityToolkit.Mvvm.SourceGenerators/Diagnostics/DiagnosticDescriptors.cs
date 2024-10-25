@@ -122,17 +122,17 @@ internal static class DiagnosticDescriptors
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when the target type doesn't inherit from the <c>ObservableValidator</c> class.
     /// <para>
-    /// Format: <c>"The field {0}.{1} cannot be used to generate an observable property, as it has {2} validation attribute(s) but is declared in a type that doesn't inherit from ObservableValidator"</c>.
+    /// Format: <c>"The {0} {1}.{2} cannot be used to generate an observable property, as it has {3} validation attribute(s) but is declared in a type that doesn't inherit from ObservableValidator"</c>.
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor MissingObservableValidatorInheritanceForValidationAttributeError = new DiagnosticDescriptor(
         id: "MVVMTK0006",
         title: "Missing ObservableValidator inheritance",
-        messageFormat: "The field {0}.{1} cannot be used to generate an observable property, as it has {2} validation attribute(s) but is declared in a type that doesn't inherit from ObservableValidator",
+        messageFormat: "The {0} {1}.{2} cannot be used to generate an observable property, as it has {3} validation attribute(s) but is declared in a type that doesn't inherit from ObservableValidator",
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Cannot apply [ObservableProperty] to fields with validation attributes if they are declared in a type that doesn't inherit from ObservableValidator.",
+        description: "Cannot apply [ObservableProperty] to fields or properties with validation attributes if they are declared in a type that doesn't inherit from ObservableValidator.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0006");
 
     /// <summary>
@@ -325,35 +325,35 @@ internal static class DiagnosticDescriptors
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0018");
 
     /// <summary>
-    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[ObservableProperty]</c> is applied to a field in an invalid type.
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[ObservableProperty]</c> is applied to a field or property in an invalid type.
     /// <para>
-    /// Format: <c>"The field {0}.{1} cannot be used to generate an observable property, as its containing type doesn't inherit from ObservableObject, nor does it use [ObservableObject] or [INotifyPropertyChanged]"</c>.
+    /// Format: <c>"The {0} {1}.{2} cannot be used to generate an observable property, as its containing type doesn't inherit from ObservableObject, nor does it use [ObservableObject] or [INotifyPropertyChanged]"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor InvalidContainingTypeForObservablePropertyFieldError = new DiagnosticDescriptor(
+    public static readonly DiagnosticDescriptor InvalidContainingTypeForObservablePropertyMemberError = new DiagnosticDescriptor(
         id: "MVVMTK0019",
-        title: "Invalid containing type for [ObservableProperty] field",
-        messageFormat: "The field {0}.{1} cannot be used to generate an observable property, as its containing type doesn't inherit from ObservableObject, nor does it use [ObservableObject] or [INotifyPropertyChanged]",
+        title: "Invalid containing type for [ObservableProperty] field or property",
+        messageFormat: "The {0} {1}.{2} cannot be used to generate an observable property, as its containing type doesn't inherit from ObservableObject, nor does it use [ObservableObject] or [INotifyPropertyChanged]",
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Fields annotated with [ObservableProperty] must be contained in a type that inherits from ObservableObject or that is annotated with [ObservableObject] or [INotifyPropertyChanged] (including base types).",
+        description: "Fields and properties annotated with [ObservableProperty] must be contained in a type that inherits from ObservableObject or that is annotated with [ObservableObject] or [INotifyPropertyChanged] (including base types).",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0019");
 
     /// <summary>
-    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[ObservableProperty]</c> is applied to a field in an invalid type.
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[ObservableProperty]</c> is applied to a field or property in an invalid type.
     /// <para>
-    /// Format: <c>"The field {0}.{1} needs to be annotated with [ObservableProperty] in order to enable using [NotifyPropertyChangedFor], [NotifyCanExecuteChangedFor], [NotifyPropertyChangedRecipients] and [NotifyDataErrorInfo]"</c>.
+    /// Format: <c>"The {0} {1}.{2} needs to be annotated with [ObservableProperty] in order to enable using [NotifyPropertyChangedFor], [NotifyCanExecuteChangedFor], [NotifyPropertyChangedRecipients] and [NotifyDataErrorInfo]"</c>.
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor FieldWithOrphanedDependentObservablePropertyAttributesError = new DiagnosticDescriptor(
         id: "MVVMTK0020",
         title: "Invalid use of attributes dependent on [ObservableProperty]",
-        messageFormat: "The field {0}.{1} needs to be annotated with [ObservableProperty] in order to enable using [NotifyPropertyChangedFor], [NotifyCanExecuteChangedFor], [NotifyPropertyChangedRecipients] and [NotifyDataErrorInfo]",
+        messageFormat: "The {0} {1}.{2} needs to be annotated with [ObservableProperty] in order to enable using [NotifyPropertyChangedFor], [NotifyCanExecuteChangedFor], [NotifyPropertyChangedRecipients] and [NotifyDataErrorInfo]",
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Fields not annotated with [ObservableProperty] cannot use [NotifyPropertyChangedFor], [NotifyCanExecuteChangedFor], [NotifyPropertyChangedRecipients] and [NotifyDataErrorInfo].",
+        description: "Fields and properties not annotated with [ObservableProperty] cannot use [NotifyPropertyChangedFor], [NotifyCanExecuteChangedFor], [NotifyPropertyChangedRecipients] and [NotifyDataErrorInfo].",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0020");
 
     /// <summary>
@@ -373,19 +373,19 @@ internal static class DiagnosticDescriptors
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0021");
 
     /// <summary>
-    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[NotifyPropertyChangedRecipients]</c> is applied to a field in an invalid type.
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[NotifyPropertyChangedRecipients]</c> is applied to a field or property in an invalid type.
     /// <para>
-    /// Format: <c>"The field {0}.{1} cannot be annotated with [NotifyPropertyChangedRecipients], as its containing type doesn't inherit from ObservableRecipient, nor does it use [ObservableRecipient]"</c>.
+    /// Format: <c>"The {0} {1}.{2} cannot be annotated with [NotifyPropertyChangedRecipients], as its containing type doesn't inherit from ObservableRecipient, nor does it use [ObservableRecipient]"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor InvalidContainingTypeForNotifyPropertyChangedRecipientsFieldError = new DiagnosticDescriptor(
+    public static readonly DiagnosticDescriptor InvalidContainingTypeForNotifyPropertyChangedRecipientsMemberError = new DiagnosticDescriptor(
         id: "MVVMTK0022",
-        title: "Invalid containing type for [ObservableProperty] field",
-        messageFormat: "The field {0}.{1} cannot be annotated with [NotifyPropertyChangedRecipients], as its containing type doesn't inherit from ObservableRecipient, nor does it use [ObservableRecipient]",
+        title: "Invalid containing type for [ObservableProperty] field or property",
+        messageFormat: "The {0} {1}.{2} cannot be annotated with [NotifyPropertyChangedRecipients], as its containing type doesn't inherit from ObservableRecipient, nor does it use [ObservableRecipient]",
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Fields annotated with [NotifyPropertyChangedRecipients] must be contained in a type that inherits from ObservableRecipient or that is annotated with [ObservableRecipient] (including base types).",
+        description: "Fields and properties annotated with [NotifyPropertyChangedRecipients] must be contained in a type that inherits from ObservableRecipient or that is annotated with [ObservableRecipient] (including base types).",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0022");
 
     /// <summary>
@@ -423,33 +423,33 @@ internal static class DiagnosticDescriptors
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when the target type doesn't inherit from the <c>ObservableValidator</c> class.
     /// <para>
-    /// Format: <c>"The field {0}.{1} cannot be annotated with [NotifyDataErrorInfo], as it is declared in a type that doesn't inherit from ObservableValidator"</c>.
+    /// Format: <c>"The {0} {1}.{2} cannot be annotated with [NotifyDataErrorInfo], as it is declared in a type that doesn't inherit from ObservableValidator"</c>.
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor MissingObservableValidatorInheritanceForNotifyDataErrorInfoError = new DiagnosticDescriptor(
         id: "MVVMTK0025",
         title: "Missing ObservableValidator inheritance",
-        messageFormat: "The field {0}.{1} cannot be annotated with [NotifyDataErrorInfo], as it is declared in a type that doesn't inherit from ObservableValidator",
+        messageFormat: "The {0} {1}.{2} cannot be annotated with [NotifyDataErrorInfo], as it is declared in a type that doesn't inherit from ObservableValidator",
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Cannot apply [NotifyDataErrorInfo] to fields that are declared in a type that doesn't inherit from ObservableValidator.",
+        description: "Cannot apply [NotifyDataErrorInfo] to fields and properties that are declared in a type that doesn't inherit from ObservableValidator.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0025");
 
     /// <summary>
-    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when the target field uses [NotifyDataErrorInfo] but has no validation attributes.
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when the target field or property uses [NotifyDataErrorInfo] but has no validation attributes.
     /// <para>
-    /// Format: <c>"The field {0}.{1} cannot be annotated with [NotifyDataErrorInfo], as it doesn't have any validation attributes to use during validation"</c>.
+    /// Format: <c>"The {0} {1}.{2} cannot be annotated with [NotifyDataErrorInfo], as it doesn't have any validation attributes to use during validation"</c>.
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor MissingValidationAttributesForNotifyDataErrorInfoError = new DiagnosticDescriptor(
         id: "MVVMTK0026",
         title: "Missing validation attributes",
-        messageFormat: "The field {0}.{1} cannot be annotated with [NotifyDataErrorInfo], as it doesn't have any validation attributes to use during validation",
+        messageFormat: "The {0} {1}.{2} cannot be annotated with [NotifyDataErrorInfo], as it doesn't have any validation attributes to use during validation",
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Cannot apply [NotifyDataErrorInfo] to fields that don't have any validation attributes to use during validation.",
+        description: "Cannot apply [NotifyDataErrorInfo] to fields and properties that don't have any validation attributes to use during validation.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0026");
 
     /// <summary>
@@ -485,35 +485,35 @@ internal static class DiagnosticDescriptors
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0028");
 
     /// <summary>
-    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[NotifyPropertyChangedRecipients]</c> is applied to a field in a class with <c>[NotifyPropertyChangedRecipients]</c> used at the class-level.
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[NotifyPropertyChangedRecipients]</c> is applied to a field or property in a class with <c>[NotifyPropertyChangedRecipients]</c> used at the class-level.
     /// <para>
-    /// Format: <c>"The field {0}.{1} is annotated with [NotifyPropertyChangedRecipients], but that is not needed since its containing type already uses or inherits [NotifyPropertyChangedRecipients] at the class-level"</c>.
+    /// Format: <c>"The {0} {1}.{2} is annotated with [NotifyPropertyChangedRecipients], but that is not needed since its containing type already uses or inherits [NotifyPropertyChangedRecipients] at the class-level"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor UnnecessaryNotifyPropertyChangedRecipientsAttributeOnFieldWarning = new DiagnosticDescriptor(
+    public static readonly DiagnosticDescriptor UnnecessaryNotifyPropertyChangedRecipientsAttributeOnMemberWarning = new DiagnosticDescriptor(
         id: "MVVMTK0029",
-        title: "Unnecessary [NotifyPropertyChangedRecipients] field annotation",
-        messageFormat: "The field {0}.{1} is annotated with [NotifyPropertyChangedRecipients], but that is not needed since its containing type already uses or inherits [NotifyPropertyChangedRecipients] at the class-level",
+        title: "Unnecessary [NotifyPropertyChangedRecipients] field or property annotation",
+        messageFormat: "The {0} {1}.{2} is annotated with [NotifyPropertyChangedRecipients], but that is not needed since its containing type already uses or inherits [NotifyPropertyChangedRecipients] at the class-level",
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
-        description: "Annotating a field with [NotifyPropertyChangedRecipients] is not necessary if the containing type has or inherits [NotifyPropertyChangedRecipients] at the class-level.",
+        description: "Annotating a field or property with [NotifyPropertyChangedRecipients] is not necessary if the containing type has or inherits [NotifyPropertyChangedRecipients] at the class-level.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0029");
 
     /// <summary>
-    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[NotifyDataErrorInfo]</c> is applied to a field in a class with <c>[NotifyDataErrorInfo]</c> used at the class-level.
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[NotifyDataErrorInfo]</c> is applied to a field or property in a class with <c>[NotifyDataErrorInfo]</c> used at the class-level.
     /// <para>
-    /// Format: <c>"The field {0}.{1} is annotated with [NotifyDataErrorInfo], but that is not needed since its containing type already uses or inherits [NotifyDataErrorInfo] at the class-level"</c>.
+    /// Format: <c>"The {0} {1}.{2} is annotated with [NotifyDataErrorInfo], but that is not needed since its containing type already uses or inherits [NotifyDataErrorInfo] at the class-level"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor UnnecessaryNotifyDataErrorInfoAttributeOnFieldWarning = new DiagnosticDescriptor(
+    public static readonly DiagnosticDescriptor UnnecessaryNotifyDataErrorInfoAttributeOnMemberWarning = new DiagnosticDescriptor(
         id: "MVVMTK0030",
-        title: "Unnecessary [NotifyDataErrorInfo] field annotation",
-        messageFormat: "The field {0}.{1} is annotated with [NotifyDataErrorInfo], but that is not needed since its containing type already uses or inherits [NotifyDataErrorInfo] at the class-level",
+        title: "Unnecessary [NotifyDataErrorInfo] field or property annotation",
+        messageFormat: "The {0} {1}.{2} is annotated with [NotifyDataErrorInfo], but that is not needed since its containing type already uses or inherits [NotifyDataErrorInfo] at the class-level",
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
-        description: "Annotating a field with [NotifyDataErrorInfo] is not necessary if the containing type has or inherits [NotifyDataErrorInfo] at the class-level.",
+        description: "Annotating a field or property with [NotifyDataErrorInfo] is not necessary if the containing type has or inherits [NotifyDataErrorInfo] at the class-level.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0030");
 
     /// <summary>

@@ -69,6 +69,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\SourceProductionContextExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\ITypeSymbolExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\MemberDeclarationSyntaxExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\SymbolKindExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\SyntaxKindExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\SyntaxTokenListExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\SyntaxTokenExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\SyntaxNodeExtensions.cs" />
