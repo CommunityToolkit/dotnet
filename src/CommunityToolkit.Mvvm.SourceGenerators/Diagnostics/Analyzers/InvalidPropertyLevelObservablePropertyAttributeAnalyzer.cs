@@ -2,8 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#if ROSLYN_4_11_0_OR_GREATER
-
 using System.Collections.Immutable;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using Microsoft.CodeAnalysis;
@@ -26,7 +24,7 @@ public sealed class InvalidPropertyLevelObservablePropertyAttributeAnalyzer : Di
     /// <inheritdoc/>
     public override void Initialize(AnalysisContext context)
     {
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
+        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         context.EnableConcurrentExecution();
 
         context.RegisterCompilationStartAction(static context =>
@@ -39,13 +37,6 @@ public sealed class InvalidPropertyLevelObservablePropertyAttributeAnalyzer : Di
 
             context.RegisterSymbolAction(context =>
             {
-                // Don't analyze generated symbols, we only want to warn those
-                // that users have actually written on their own in source code.
-                if (context.IsGeneratedCode)
-                {
-                    return;
-                }
-
                 // We're intentionally only looking for properties here
                 if (context.Symbol is not IPropertySymbol propertySymbol)
                 {
@@ -114,5 +105,3 @@ public sealed class InvalidPropertyLevelObservablePropertyAttributeAnalyzer : Di
         return true;
     }
 }
-
-#endif

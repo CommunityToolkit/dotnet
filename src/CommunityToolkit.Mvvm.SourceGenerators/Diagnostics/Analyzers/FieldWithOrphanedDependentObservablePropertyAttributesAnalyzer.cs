@@ -36,7 +36,7 @@ public sealed class FieldWithOrphanedDependentObservablePropertyAttributesAnalyz
     /// <inheritdoc/>
     public override void Initialize(AnalysisContext context)
     {
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
+        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         context.EnableConcurrentExecution();
 
         // Defer the registration so it can be skipped if C# 8.0 or more is not available.

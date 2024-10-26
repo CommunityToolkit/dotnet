@@ -41,7 +41,7 @@ public sealed class UnsupportedCSharpLanguageVersionAnalyzer : DiagnosticAnalyze
     /// <inheritdoc/>
     public override void Initialize(AnalysisContext context)
     {
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
+        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         context.EnableConcurrentExecution();
 
         // Defer the callback registration to when the compilation starts, so we can execute more
