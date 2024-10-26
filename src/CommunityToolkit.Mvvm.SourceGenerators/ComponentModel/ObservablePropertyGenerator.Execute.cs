@@ -54,20 +54,12 @@ partial class ObservablePropertyGenerator
                 return true;
             }
 
-#if ROSLYN_4_11_0_OR_GREATER
-            // We only support matching properties on Roslyn 4.11 and greater
+            // Check that the target is a valid field or partial property
             if (!IsCandidateField(node, out TypeDeclarationSyntax? parentNode) &&
                 !InvalidPropertyLevelObservablePropertyAttributeAnalyzer.IsValidCandidateProperty(node, out parentNode))
             {
                 return false;
             }
-#else
-            // Otherwise, we only support matching fields
-            if (!IsCandidateField(node, out TypeDeclarationSyntax? parentNode))
-            {
-                return false;
-            }
-#endif
 
             // The candidate member must be in a type with a base type (as it must derive from ObservableObject)
             return parentNode?.IsTypeDeclarationWithOrPotentiallyWithBaseTypes<ClassDeclarationSyntax>() == true;
