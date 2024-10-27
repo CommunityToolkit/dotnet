@@ -166,12 +166,6 @@ partial class ObservablePropertyGenerator
             // Check for name collisions (only for fields)
             if (fieldName == propertyName && memberSyntax.IsKind(SyntaxKind.FieldDeclaration))
             {
-                builder.Add(
-                    ObservablePropertyNameCollisionError,
-                    memberSymbol,
-                    memberSymbol.ContainingType,
-                    memberSymbol.Name);
-
                 propertyInfo = null;
                 diagnostics = builder.ToImmutable();
 
