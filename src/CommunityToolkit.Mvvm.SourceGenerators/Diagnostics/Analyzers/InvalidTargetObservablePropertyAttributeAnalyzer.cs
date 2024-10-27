@@ -46,7 +46,7 @@ public sealed class InvalidTargetObservablePropertyAttributeAnalyzer : Diagnosti
                 }
 
                 // Ensure we do have the [ObservableProperty] attribute
-                if (!context.Symbol.TryGetAttributeWithType(observablePropertySymbol, out AttributeData? attributeDataobservablePropertyAttribute))
+                if (!context.Symbol.HasAttributeWithType(observablePropertySymbol))
                 {
                     return;
                 }

@@ -664,7 +664,7 @@ public partial class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void NameCollisionForGeneratedObservableProperty()
+    public async Task NameCollisionForGeneratedObservableProperty_PascalCaseField_Warns()
     {
         string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -674,12 +674,51 @@ public partial class Test_SourceGeneratorsDiagnostics
                 public partial class SampleViewModel : ObservableObject
                 {
                     [ObservableProperty]
-                    private string Name;
+                    private string {|MVVMTK0014:Name|};
                 }
             }
             """;
 
-        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0014");
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<PropertyNameCollisionObservablePropertyAttributeAnalyzer>(source, LanguageVersion.CSharp8);
+    }
+
+    [TestMethod]
+    public async Task NameCollisionForGeneratedObservableProperty_CamelCaseField_DoesNotWarn()
+    {
+        string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    private string name;
+                }
+            }
+            """;
+
+        // Using C# 9 here because the generated code will emit [MemberNotNull] on the property setter, which requires C# 9
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<PropertyNameCollisionObservablePropertyAttributeAnalyzer>(source, LanguageVersion.CSharp9);
+    }
+
+    [TestMethod]
+    public async Task NameCollisionForGeneratedObservableProperty_PascalCaseProperty_DoesNotWarn()
+    {
+        string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    private string Name { get; set; }
+                }
+            }
+            """;
+
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<PropertyNameCollisionObservablePropertyAttributeAnalyzer>(source, LanguageVersion.CSharp8);
     }
 
     [TestMethod]
