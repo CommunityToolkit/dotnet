@@ -1306,7 +1306,7 @@ public partial class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void InvalidObservablePropertyError_Object()
+    public async Task InvalidObservablePropertyError_Object()
     {
         string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -1316,16 +1316,35 @@ public partial class Test_SourceGeneratorsDiagnostics
                 public partial class MyViewModel : ObservableObject
                 {
                     [ObservableProperty]
-                    public object property;
+                    public object {|MVVMTK0024:property|};
                 }
             }
             """;
 
-        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0024");
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<InvalidGeneratedPropertyObservablePropertyAttributeAnalyzer>(source, LanguageVersion.CSharp9);
     }
 
     [TestMethod]
-    public void InvalidObservablePropertyError_PropertyChangingEventArgs()
+    public async Task InvalidObservablePropertyError_Object_WithProperty()
+    {
+        string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class MyViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    public object {|MVVMTK0024:Property|} { get; set; }
+                }
+            }
+            """;
+
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<InvalidGeneratedPropertyObservablePropertyAttributeAnalyzer>(source, LanguageVersion.Preview);
+    }
+
+    [TestMethod]
+    public async Task InvalidObservablePropertyError_PropertyChangingEventArgs()
     {
         string source = """
             using System.ComponentModel;
@@ -1336,16 +1355,16 @@ public partial class Test_SourceGeneratorsDiagnostics
                 public partial class MyViewModel : ObservableObject
                 {
                     [ObservableProperty]
-                    public PropertyChangingEventArgs property;
+                    public PropertyChangingEventArgs {|MVVMTK0024:property|};
                 }
             }
             """;
 
-        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0024");
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<InvalidGeneratedPropertyObservablePropertyAttributeAnalyzer>(source, LanguageVersion.CSharp9);
     }
 
     [TestMethod]
-    public void InvalidObservablePropertyError_PropertyChangedEventArgs()
+    public async Task InvalidObservablePropertyError_PropertyChangedEventArgs()
     {
         string source = """
             using System.ComponentModel;
@@ -1356,16 +1375,16 @@ public partial class Test_SourceGeneratorsDiagnostics
                 public partial class MyViewModel : ObservableObject
                 {
                     [ObservableProperty]
-                    public PropertyChangedEventArgs property;
+                    public PropertyChangedEventArgs {|MVVMTK0024:property|};
                 }
             }
             """;
 
-        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0024");
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<InvalidGeneratedPropertyObservablePropertyAttributeAnalyzer>(source, LanguageVersion.CSharp9);
     }
 
     [TestMethod]
-    public void InvalidObservablePropertyError_CustomTypeDerivedFromPropertyChangedEventArgs()
+    public async Task InvalidObservablePropertyError_CustomTypeDerivedFromPropertyChangedEventArgs()
     {
         string source = """
             using System.ComponentModel;
@@ -1384,12 +1403,12 @@ public partial class Test_SourceGeneratorsDiagnostics
                 public partial class MyViewModel : ObservableObject
                 {
                     [ObservableProperty]
-                    public MyPropertyChangedEventArgs property;
+                    public MyPropertyChangedEventArgs {|MVVMTK0024:property|};
                 }
             }
             """;
 
-        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0024");
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<InvalidGeneratedPropertyObservablePropertyAttributeAnalyzer>(source, LanguageVersion.CSharp9);
     }
 
     [TestMethod]
