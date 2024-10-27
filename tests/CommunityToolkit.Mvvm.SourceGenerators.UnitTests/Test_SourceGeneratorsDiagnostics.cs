@@ -1006,9 +1006,10 @@ public partial class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public void InvalidContainingTypeForObservablePropertyFieldError()
+    public async Task InvalidContainingTypeForObservableProperty_OnField_Warns()
     {
         string source = """
+            using System.ComponentModel;
             using CommunityToolkit.Mvvm.ComponentModel;
 
             namespace MyApp
@@ -1016,14 +1017,74 @@ public partial class Test_SourceGeneratorsDiagnostics
                 public partial class MyViewModel : INotifyPropertyChanged
                 {
                     [ObservableProperty]
-                    public int number;
+                    public int {|MVVMTK0019:number|};
 
                     public event PropertyChangedEventHandler PropertyChanged;
                 }
             }
             """;
 
-        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0019");
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<InvalidTargetObservablePropertyAttributeAnalyzer>(source, LanguageVersion.CSharp8);
+    }
+
+    [TestMethod]
+    public async Task InvalidContainingTypeForObservableProperty_OnField_InValidType_DoesNotWarn()
+    {
+        string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class MyViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    public int number;
+                }
+            }
+            """;
+
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<InvalidTargetObservablePropertyAttributeAnalyzer>(source, LanguageVersion.CSharp8);
+    }
+
+    [TestMethod]
+    public async Task InvalidContainingTypeForObservableProperty_OnPartialProperty_Warns()
+    {
+        string source = """
+            using System.ComponentModel;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class MyViewModel : INotifyPropertyChanged
+                {
+                    [ObservableProperty]
+                    public int {|MVVMTK0019:Number|} { get; set; }
+
+                    public event PropertyChangedEventHandler PropertyChanged;
+                }
+            }
+            """;
+
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<InvalidTargetObservablePropertyAttributeAnalyzer>(source, LanguageVersion.CSharp8);
+    }
+
+    [TestMethod]
+    public async Task InvalidContainingTypeForObservableProperty_OnPartialProperty_InValidType_DoesNotWarn()
+    {
+        string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp
+            {
+                public partial class MyViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    public int Number { get; set; }
+                }
+            }
+            """;
+
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<InvalidTargetObservablePropertyAttributeAnalyzer>(source, LanguageVersion.CSharp8);
     }
 
     [TestMethod]
