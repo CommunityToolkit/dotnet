@@ -180,12 +180,6 @@ partial class ObservablePropertyGenerator
             // Check for special cases that are explicitly not allowed
             if (IsGeneratedPropertyInvalid(propertyName, GetPropertyType(memberSymbol)))
             {
-                builder.Add(
-                    InvalidObservablePropertyError,
-                    memberSymbol,
-                    memberSymbol.ContainingType,
-                    memberSymbol.Name);
-
                 propertyInfo = null;
                 diagnostics = builder.ToImmutable();
 
@@ -427,7 +421,7 @@ partial class ObservablePropertyGenerator
         /// <param name="propertyName">The property name.</param>
         /// <param name="propertyType">The property type.</param>
         /// <returns>Whether the generated property is invalid.</returns>
-        private static bool IsGeneratedPropertyInvalid(string propertyName, ITypeSymbol propertyType)
+        public static bool IsGeneratedPropertyInvalid(string propertyName, ITypeSymbol propertyType)
         {
             // If the generated property name is called "Property" and the type is either object or it is PropertyChangedEventArgs or
             // PropertyChangingEventArgs (or a type derived from either of those two types), consider it invalid. This is needed because
@@ -1493,7 +1487,7 @@ partial class ObservablePropertyGenerator
         /// </summary>
         /// <param name="memberSymbol">The input <see cref="ISymbol"/> instance to process.</param>
         /// <returns>The type of <paramref name="memberSymbol"/>.</returns>
-        private static ITypeSymbol GetPropertyType(ISymbol memberSymbol)
+        public static ITypeSymbol GetPropertyType(ISymbol memberSymbol)
         {
             // Check if the member is a property first
             if (memberSymbol is IPropertySymbol propertySymbol)
