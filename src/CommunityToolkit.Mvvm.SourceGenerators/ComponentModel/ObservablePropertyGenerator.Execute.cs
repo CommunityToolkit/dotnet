@@ -145,13 +145,6 @@ partial class ObservablePropertyGenerator
             // Validate the target type
             if (!IsTargetTypeValid(memberSymbol, out bool shouldInvokeOnPropertyChanging))
             {
-                builder.Add(
-                    InvalidContainingTypeForObservablePropertyMemberError,
-                    memberSymbol,
-                    memberSyntax.Kind().ToFieldOrPropertyKeyword(),
-                    memberSymbol.ContainingType,
-                    memberSymbol.Name);
-
                 propertyInfo = null;
                 diagnostics = builder.ToImmutable();
 
