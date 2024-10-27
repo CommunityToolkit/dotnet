@@ -29,7 +29,7 @@ internal sealed class CSharpAnalyzerWithLanguageVersionTest<TAnalyzer> : CSharpA
     private readonly LanguageVersion languageVersion;
 
     /// <summary>
-    /// Creates a new <see cref="CSharpAnalyzerWithLanguageVersionTest{TAnalyzer}"/> instance with the specified paramaters.
+    /// Creates a new <see cref="CSharpAnalyzerWithLanguageVersionTest{TAnalyzer}"/> instance with the specified parameters.
     /// </summary>
     /// <param name="languageVersion">The C# language version to use to parse code.</param>
     private CSharpAnalyzerWithLanguageVersionTest(LanguageVersion languageVersion)

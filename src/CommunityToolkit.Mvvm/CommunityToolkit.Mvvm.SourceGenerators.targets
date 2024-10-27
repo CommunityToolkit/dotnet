@@ -86,6 +86,7 @@
       removes and removes all analyzers except the highest version that is supported. The fallback is just Roslyn 4.0.
     -->
     <PropertyGroup>
+      <MVVMToolkitSelectedRoslynAnalyzerDirectoryName Condition="$([MSBuild]::VersionGreaterThanOrEquals($(MVVMToolkitCurrentCompilerVersion), 4.11))">roslyn4.11</MVVMToolkitSelectedRoslynAnalyzerDirectoryName>
       <MVVMToolkitSelectedRoslynAnalyzerDirectoryName Condition="$([MSBuild]::VersionGreaterThanOrEquals($(MVVMToolkitCurrentCompilerVersion), 4.3))">roslyn4.3</MVVMToolkitSelectedRoslynAnalyzerDirectoryName>
       <MVVMToolkitSelectedRoslynAnalyzerDirectoryName Condition="'$(MVVMToolkitSelectedRoslynAnalyzerDirectoryName)' == ''">roslyn4.0</MVVMToolkitSelectedRoslynAnalyzerDirectoryName>
     </PropertyGroup>

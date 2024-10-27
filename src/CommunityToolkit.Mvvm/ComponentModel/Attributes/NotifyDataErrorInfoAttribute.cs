@@ -8,7 +8,7 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 
 /// <summary>
 /// An attribute that can be used to support <see cref="ObservablePropertyAttribute"/> in generated properties, when applied to
-/// fields contained in a type that is inheriting from <see cref="ObservableValidator"/> and using any validation attributes.
+/// partial properties contained in a type that is inheriting from <see cref="ObservableValidator"/> and using any validation attributes.
 /// When this attribute is used, the generated property setter will also call <see cref="ObservableValidator.ValidateProperty(object?, string)"/>.
 /// This allows generated properties to opt-in into validation behavior without having to fallback into a full explicit observable property.
 /// <para>
@@ -20,7 +20,7 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 ///     [NotifyDataErrorInfo]
 ///     [Required]
 ///     [MinLength(2)]
-///     private string username;
+///     public partial string Username { get; set; }
 /// }
 /// </code>
 /// </para>
@@ -28,17 +28,23 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// <code>
 /// partial class MyViewModel
 /// {
-///     [Required]
-///     [MinLength(2)]
-///     public string Username
+///     public partial string Username
 ///     {
-///         get => username;
-///         set => SetProperty(ref username, value, validate: true);
+///         get => field;
+///         set => SetProperty(ref field, value, validate: true);
 ///     }
 /// }
 /// </code>
 /// </summary>
-[AttributeUsage(AttributeTargets.Field | AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+/// <remarks>
+/// <para>
+/// This attribute can also be used on a class, which will enable the validation on all generated properties contained in it.
+/// </para>
+/// <para>
+/// Just like <see cref="ObservablePropertyAttribute"/>, this attribute can also be used on fields as well.
+/// </para>
+/// </remarks>
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
 public sealed class NotifyDataErrorInfoAttribute : Attribute
 {
 }

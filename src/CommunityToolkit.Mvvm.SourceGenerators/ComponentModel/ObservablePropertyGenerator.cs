@@ -27,25 +27,25 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
         IncrementalValuesProvider<(HierarchyInfo Hierarchy, Result<PropertyInfo?> Info)> propertyInfoWithErrors =
             context.ForAttributeWithMetadataNameAndOptions(
                 "CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute",
-                static (node, _) => node is VariableDeclaratorSyntax { Parent: VariableDeclarationSyntax { Parent: FieldDeclarationSyntax { Parent: ClassDeclarationSyntax or RecordDeclarationSyntax, AttributeLists.Count: > 0 } } },
+                Execute.IsCandidatePropertyDeclaration,
                 static (context, token) =>
                 {
-                    if (!context.SemanticModel.Compilation.HasLanguageVersionAtLeastEqualTo(LanguageVersion.CSharp8))
+                    MemberDeclarationSyntax memberSyntax = Execute.GetCandidateMemberDeclaration(context.TargetNode);
+
+                    // Validate that the candidate is valid for the current compilation
+                    if (!Execute.IsCandidateValidForCompilation(memberSyntax, context.SemanticModel))
                     {
                         return default;
                     }
 
-                    FieldDeclarationSyntax fieldDeclaration = (FieldDeclarationSyntax)context.TargetNode.Parent!.Parent!;
-                    IFieldSymbol fieldSymbol = (IFieldSymbol)context.TargetSymbol;
-
                     // Get the hierarchy info for the target symbol, and try to gather the property info
-                    HierarchyInfo hierarchy = HierarchyInfo.From(fieldSymbol.ContainingType);
+                    HierarchyInfo hierarchy = HierarchyInfo.From(context.TargetSymbol.ContainingType);
 
                     token.ThrowIfCancellationRequested();
 
                     _ = Execute.TryGetInfo(
-                        fieldDeclaration,
-                        fieldSymbol,
+                        memberSyntax,
+                        context.TargetSymbol,
                         context.SemanticModel,
                         context.GlobalOptions,
                         token,

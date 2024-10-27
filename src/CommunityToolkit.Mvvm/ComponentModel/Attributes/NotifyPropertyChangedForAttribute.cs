@@ -13,7 +13,7 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// used, the generated property setter will also call <see cref="ObservableObject.OnPropertyChanged(string?)"/> (or the equivalent
 /// method in the target class) for the properties specified in the attribute data. This can be useful to keep the code compact when
 /// there are one or more dependent properties that should also be reported as updated when the value of the annotated observable
-/// property is changed. If this attribute is used in a field without <see cref="ObservablePropertyAttribute"/>, it is ignored.
+/// property is changed. If this attribute is used on a property without <see cref="ObservablePropertyAttribute"/>, it is ignored.
 /// <para>
 /// In order to use this attribute, the containing type has to implement the <see cref="INotifyPropertyChanged"/> interface
 /// and expose a method with the same signature as <see cref="ObservableObject.OnPropertyChanged(string?)"/>. If the containing
@@ -27,11 +27,11 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// {
 ///     [ObservableProperty]
 ///     [NotifyPropertyChangedFor(nameof(FullName))]
-///     private string name;
+///     public partial string Name { get; set; }
 ///
 ///     [ObservableProperty]
 ///     [NotifyPropertyChangedFor(nameof(FullName))]
-///     private string surname;
+///     public partial string Surname { get; set; }
 ///
 ///     public string FullName => $"{Name} {Surname}";
 /// }
@@ -41,17 +41,17 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// <code>
 /// partial class MyViewModel
 /// {
-///     public string Name
+///     public partial string Name
 ///     {
-///         get => name;
+///         get => field;
 ///         set
 ///         {
-///             if (!EqualityComparer&lt;string&gt;.Default.Equals(name, value))
+///             if (!EqualityComparer&lt;string&gt;.Default.Equals(field, value))
 ///             {
 ///                 OnPropertyChanging(nameof(Name));
 ///                 OnPropertyChanged(nameof(FullName));
 ///                 
-///                 name = value;
+///                 field = value;
 ///                 
 ///                 OnPropertyChanged(nameof(Name));
 ///                 OnPropertyChanged(nameof(FullName));
@@ -59,17 +59,17 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 ///         }
 ///     }
 ///
-///     public string Surname
+///     public partial string Surname
 ///     {
-///         get => surname;
+///         get => field;
 ///         set
 ///         {
-///             if (!EqualityComparer&lt;string&gt;.Default.Equals(name, value))
+///             if (!EqualityComparer&lt;string&gt;.Default.Equals(field, value))
 ///             {
 ///                 OnPropertyChanging(nameof(Surname));
 ///                 OnPropertyChanged(nameof(FullName));
 ///                 
-///                 surname = value;
+///                 field = value;
 ///                 
 ///                 OnPropertyChanged(nameof(Surname));
 ///                 OnPropertyChanged(nameof(FullName));
@@ -79,7 +79,10 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// }
 /// </code>
 /// </summary>
-[AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = false)]
+/// <remarks>
+/// Just like <see cref="ObservablePropertyAttribute"/>, this attribute can also be used on fields as well.
+/// </remarks>
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true, Inherited = false)]
 public sealed class NotifyPropertyChangedForAttribute : Attribute
 {
     /// <summary>
