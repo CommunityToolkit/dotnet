@@ -20,7 +20,7 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// partial class MyViewModel : ObservableObject
 /// {
 ///     [ObservableProperty]
-///     public partial string name { get; set; }
+///     public partial string Name { get; set; }
 ///
 ///     [ObservableProperty]
 ///     public partial bool IsEnabled { get; set; }

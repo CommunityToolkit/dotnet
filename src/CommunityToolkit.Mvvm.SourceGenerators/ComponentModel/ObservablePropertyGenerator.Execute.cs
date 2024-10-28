@@ -348,6 +348,11 @@ partial class ObservablePropertyGenerator
 
             token.ThrowIfCancellationRequested();
 
+            // Check whether the property should be required
+            bool isRequired = GetIsRequiredProperty(memberSymbol);
+
+            token.ThrowIfCancellationRequested();
+
             propertyInfo = new PropertyInfo(
                 memberSyntax.Kind(),
                 typeNameWithNullabilityAnnotations,
@@ -361,6 +366,7 @@ partial class ObservablePropertyGenerator
                 notifiedCommandNames.ToImmutable(),
                 notifyRecipients,
                 notifyDataErrorInfo,
+                isRequired,
                 isOldPropertyValueDirectlyReferenced,
                 isReferenceTypeOrUnconstrainedTypeParameter,
                 includeMemberNotNullOnSetAccessor,
@@ -1029,6 +1035,20 @@ partial class ObservablePropertyGenerator
         }
 
         /// <summary>
+        /// Checks whether an input member is a required property.
+        /// </summary>
+        /// <param name="memberSymbol">The input <see cref="ISymbol"/> instance to process.</param>
+        /// <returns>Whether <paramref name="memberSymbol"/> is a required property.</returns>
+        private static bool GetIsRequiredProperty(ISymbol memberSymbol)
+        {
+#if ROSLYN_4_3_1_OR_GREATER
+            return memberSymbol is IPropertySymbol { IsRequired: true };
+#else
+            return false;
+#endif
+        }
+
+        /// <summary>
         /// Gets a <see cref="CompilationUnitSyntax"/> instance with the cached args for property changing notifications.
         /// </summary>
         /// <param name="names">The sequence of property names to cache args for.</param>
@@ -1324,11 +1344,6 @@ partial class ObservablePropertyGenerator
             // Also add any forwarded attributes
             setAccessor = setAccessor.AddAttributeLists(forwardedSetAccessorAttributes);
 
-            // Prepare the modifiers for the property
-            SyntaxTokenList propertyModifiers = propertyInfo.AnnotatedMemberKind is SyntaxKind.PropertyDeclaration
-                ? propertyInfo.PropertyAccessibility.ToSyntaxTokenList().Add(Token(SyntaxKind.PartialKeyword))
-                : propertyInfo.PropertyAccessibility.ToSyntaxTokenList();
-
             // Construct the generated property as follows:
             //
             // <XML_SUMMARY>
@@ -1352,7 +1367,7 @@ partial class ObservablePropertyGenerator
                     .WithOpenBracketToken(Token(TriviaList(Comment(xmlSummary)), SyntaxKind.OpenBracketToken, TriviaList())),
                     AttributeList(SingletonSeparatedList(Attribute(IdentifierName("global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage")))))
                 .AddAttributeLists(forwardedPropertyAttributes)
-                .WithModifiers(propertyModifiers)
+                .WithModifiers(GetPropertyModifiers(propertyInfo))
                 .AddAccessorListAccessors(
                     AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
                     .WithModifiers(propertyInfo.GetterAccessibility.ToSyntaxTokenList())
@@ -1360,6 +1375,32 @@ partial class ObservablePropertyGenerator
                     .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
                     .AddAttributeLists(forwardedGetAccessorAttributes),
                     setAccessor);
+        }
+
+        /// <summary>
+        /// Gets all modifiers that need to be added to a generated property.
+        /// </summary>
+        /// <param name="propertyInfo">The input <see cref="PropertyInfo"/> instance to process.</param>
+        /// <returns>The list of necessary modifiers for <paramref name="propertyInfo"/>.</returns>
+        private static SyntaxTokenList GetPropertyModifiers(PropertyInfo propertyInfo)
+        {
+            SyntaxTokenList propertyModifiers = propertyInfo.PropertyAccessibility.ToSyntaxTokenList();
+
+#if ROSLYN_4_3_1_OR_GREATER
+            // Add the 'required' modifier if the original member also had it
+            if (propertyInfo.IsRequired)
+            {
+                propertyModifiers = propertyModifiers.Add(Token(SyntaxKind.RequiredKeyword));
+            }
+#endif
+
+            // Add the 'partial' modifier if the original member is a partial property
+            if (propertyInfo.AnnotatedMemberKind is SyntaxKind.PropertyDeclaration)
+            {
+                propertyModifiers = propertyModifiers.Add(Token(SyntaxKind.PartialKeyword));
+            }
+
+            return propertyModifiers;
         }
 
         /// <summary>
