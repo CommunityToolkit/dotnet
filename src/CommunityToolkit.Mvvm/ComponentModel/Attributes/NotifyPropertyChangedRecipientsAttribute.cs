@@ -7,7 +7,7 @@ using System;
 namespace CommunityToolkit.Mvvm.ComponentModel;
 
 /// <summary>
-/// An attribute that can be used to support <see cref="ObservablePropertyAttribute"/> in generated properties, when applied to fields
+/// An attribute that can be used to support <see cref="ObservablePropertyAttribute"/> in generated properties, when applied to fields and properties
 /// contained in a type that is either inheriting from <see cref="ObservableRecipient"/>, or annotated with <see cref="ObservableRecipientAttribute"/>.
 /// When this attribute is used, the generated property setter will also call <see cref="ObservableRecipient.Broadcast{T}(T, T, string?)"/>.
 /// This allows generated properties to opt-in into broadcasting behavior without having to fallback into a full explicit observable property.
@@ -18,7 +18,7 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// {
 ///     [ObservableProperty]
 ///     [NotifyPropertyChangedRecipients]
-///     private string username;
+///     public partial string Username;
 /// }
 /// </code>
 /// </para>
@@ -27,10 +27,10 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// <code>
 /// partial class MyViewModel
 /// {
-///     public string Username
+///     public partial string Username
 ///     {
-///         get => username;
-///         set => SetProperty(ref username, value, broadcast: true);
+///         get => field;
+///         set => SetProperty(ref field, value, broadcast: true);
 ///     }
 /// }
 /// </code>
@@ -39,7 +39,10 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// This attribute can also be added to a class, and if so it will affect all generated properties in that type and inherited types.
 /// </para>
 /// </summary>
-[AttributeUsage(AttributeTargets.Field | AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+/// <remarks>
+/// Just like <see cref="ObservablePropertyAttribute"/>, this attribute can also be used on fields as well.
+/// </remarks>
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
 public sealed class NotifyPropertyChangedRecipientsAttribute : Attribute
 {
 }
