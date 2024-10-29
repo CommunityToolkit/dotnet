@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>a2ebda90-b720-430d-83f5-c6bcc355232c</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>CommunityToolkit.Mvvm.CodeFixers</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AsyncVoidReturningRelayCommandMethodCodeFixer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ClassUsingAttributeInsteadOfInheritanceCodeFixer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FieldReferenceForObservablePropertyFieldCodeFixer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UsePartialPropertyForObservablePropertyCodeFixer.cs" />
+  </ItemGroup>
+</Project>
