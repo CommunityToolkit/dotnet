@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#if ROSLYN_4_11_0_OR_GREATER
+
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Composition;
@@ -260,7 +262,7 @@ public sealed class UsePartialPropertyForObservablePropertyCodeFixer : CodeFixPr
 
         // Create an editor to perform all mutations. This allows to keep track of multiple
         // replacements for nodes on the same original tree, which otherwise wouldn't work.
-        SyntaxEditor editor = new(root, document.Project.Solution.Workspace);
+        SyntaxEditor editor = new(root, document.Project.Solution.Workspace.Services);
 
         editor.ReplaceNode(fieldDeclaration, propertyDeclaration);
 
@@ -292,3 +294,5 @@ public sealed class UsePartialPropertyForObservablePropertyCodeFixer : CodeFixPr
         return document.WithSyntaxRoot(editor.GetChangedRoot());
     }
 }
+
+#endif

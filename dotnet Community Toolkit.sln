@@ -89,6 +89,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunityToolkit.Mvvm.Sourc
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CommunityToolkit.Mvvm.CodeFixers", "src\CommunityToolkit.Mvvm.CodeFixers\CommunityToolkit.Mvvm.CodeFixers.shproj", "{A2EBDA90-B720-430D-83F5-C6BCC355232C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunityToolkit.Mvvm.CodeFixers.Roslyn4110", "src\CommunityToolkit.Mvvm.CodeFixers.Roslyn4110\CommunityToolkit.Mvvm.CodeFixers.Roslyn4110.csproj", "{98572004-D29A-486E-8053-6D409557CE44}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -503,6 +505,26 @@ Global
 		{C342302D-A263-42D6-B8EE-01DEF8192690}.Release|x64.Build.0 = Release|Any CPU
 		{C342302D-A263-42D6-B8EE-01DEF8192690}.Release|x86.ActiveCfg = Release|Any CPU
 		{C342302D-A263-42D6-B8EE-01DEF8192690}.Release|x86.Build.0 = Release|Any CPU
+		{98572004-D29A-486E-8053-6D409557CE44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98572004-D29A-486E-8053-6D409557CE44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98572004-D29A-486E-8053-6D409557CE44}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{98572004-D29A-486E-8053-6D409557CE44}.Debug|ARM.Build.0 = Debug|Any CPU
+		{98572004-D29A-486E-8053-6D409557CE44}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{98572004-D29A-486E-8053-6D409557CE44}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{98572004-D29A-486E-8053-6D409557CE44}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{98572004-D29A-486E-8053-6D409557CE44}.Debug|x64.Build.0 = Debug|Any CPU
+		{98572004-D29A-486E-8053-6D409557CE44}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{98572004-D29A-486E-8053-6D409557CE44}.Debug|x86.Build.0 = Debug|Any CPU
+		{98572004-D29A-486E-8053-6D409557CE44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98572004-D29A-486E-8053-6D409557CE44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98572004-D29A-486E-8053-6D409557CE44}.Release|ARM.ActiveCfg = Release|Any CPU
+		{98572004-D29A-486E-8053-6D409557CE44}.Release|ARM.Build.0 = Release|Any CPU
+		{98572004-D29A-486E-8053-6D409557CE44}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{98572004-D29A-486E-8053-6D409557CE44}.Release|ARM64.Build.0 = Release|Any CPU
+		{98572004-D29A-486E-8053-6D409557CE44}.Release|x64.ActiveCfg = Release|Any CPU
+		{98572004-D29A-486E-8053-6D409557CE44}.Release|x64.Build.0 = Release|Any CPU
+		{98572004-D29A-486E-8053-6D409557CE44}.Release|x86.ActiveCfg = Release|Any CPU
+		{98572004-D29A-486E-8053-6D409557CE44}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -534,6 +556,7 @@ Global
 		tests\CommunityToolkit.Mvvm.ExternalAssembly\CommunityToolkit.Mvvm.ExternalAssembly.projitems*{4fcd501c-1bb5-465c-ad19-356dab6600c6}*SharedItemsImports = 5
 		tests\CommunityToolkit.Mvvm.UnitTests\CommunityToolkit.Mvvm.UnitTests.projitems*{5b44f7f1-dca2-4776-924e-a266f7bbf753}*SharedItemsImports = 5
 		src\CommunityToolkit.Mvvm.SourceGenerators\CommunityToolkit.Mvvm.SourceGenerators.projitems*{5e7f1212-a54b-40ca-98c5-1ff5cd1a1638}*SharedItemsImports = 13
+		src\CommunityToolkit.Mvvm.CodeFixers\CommunityToolkit.Mvvm.CodeFixers.projitems*{98572004-d29a-486e-8053-6d409557ce44}*SharedItemsImports = 5
 		src\CommunityToolkit.Mvvm.CodeFixers\CommunityToolkit.Mvvm.CodeFixers.projitems*{a2ebda90-b720-430d-83f5-c6bcc355232c}*SharedItemsImports = 13
 		tests\CommunityToolkit.Mvvm.UnitTests\CommunityToolkit.Mvvm.UnitTests.projitems*{ad9c3223-8e37-4fd4-a0d4-a45119551d3a}*SharedItemsImports = 5
 		tests\CommunityToolkit.Mvvm.UnitTests\CommunityToolkit.Mvvm.UnitTests.projitems*{b8dcd82e-b53b-4249-ad4e-f9b99acb9334}*SharedItemsImports = 13
