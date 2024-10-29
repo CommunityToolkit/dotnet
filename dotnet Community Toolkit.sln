@@ -81,7 +81,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.Exter
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.ExternalAssembly.Roslyn4031", "tests\CommunityToolkit.Mvvm.ExternalAssembly.Roslyn4031\CommunityToolkit.Mvvm.ExternalAssembly.Roslyn4031.csproj", "{4FCD501C-1BB5-465C-AD19-356DAB6600C6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.CodeFixers", "src\CommunityToolkit.Mvvm.CodeFixers\CommunityToolkit.Mvvm.CodeFixers.csproj", "{E79DCA2A-4C59-499F-85BD-F45215ED6B72}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.CodeFixers.Roslyn4001", "src\CommunityToolkit.Mvvm.CodeFixers.Roslyn4001\CommunityToolkit.Mvvm.CodeFixers.Roslyn4001.csproj", "{E79DCA2A-4C59-499F-85BD-F45215ED6B72}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunityToolkit.Mvvm.SourceGenerators.Roslyn4110", "src\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4110\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4110.csproj", "{FCC13AD5-CEB8-4CC1-8250-89B616D126F2}"
 EndProject
