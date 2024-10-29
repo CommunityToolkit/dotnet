@@ -697,4 +697,74 @@ public class Test_UsePartialPropertyForObservablePropertyCodeFixer
 
         await test.RunAsync();
     }
+
+    [TestMethod]
+    public async Task SimpleFieldWithSomeReferences_WithSomeThisExpressions()
+    {
+        string original = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            partial class C : ObservableObject
+            {
+                [ObservableProperty]
+                private int i;
+
+                public void M()
+                {
+                    i = 42;
+                    this.i = 42;
+                }
+
+                public int N() => i;
+
+                public int P() => this.i + Q(i) + Q(this.i);
+
+                private int Q(int i) => this.i + i;
+            }
+            """;
+
+        string @fixed = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            partial class C : ObservableObject
+            {
+                [ObservableProperty]
+                public partial int I { get; set; }
+            
+                public void M()
+                {
+                    I = 42;
+                    I = 42;
+                }
+            
+                public int N() => I;
+            
+                public int P() => I + Q(I) + Q(I);
+            
+                private int Q(int i) => I + i;
+            }
+            """;
+
+        CSharpCodeFixTest test = new(LanguageVersion.Preview)
+        {
+            TestCode = original,
+            FixedCode = @fixed,
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
+        };
+
+        test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
+        test.ExpectedDiagnostics.AddRange(new[]
+        {
+            // /0/Test0.cs(5,6): info MVVMTK0042: The field C.C.i using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(5, 6, 5, 24).WithArguments("C", "C.i"),
+        });
+
+        test.FixedState.ExpectedDiagnostics.AddRange(new[]
+        {
+            // /0/Test0.cs(6,24): error CS9248: Partial property 'C.I' must have an implementation part.
+            DiagnosticResult.CompilerError("CS9248").WithSpan(6, 24, 6, 25).WithArguments("C.I"),
+        });
+
+        await test.RunAsync();
+    }
 }
