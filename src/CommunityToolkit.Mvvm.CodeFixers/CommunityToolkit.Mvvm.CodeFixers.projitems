@@ -14,4 +14,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)FieldReferenceForObservablePropertyFieldCodeFixer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UsePartialPropertyForObservablePropertyCodeFixer.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)CommunityToolkit.Mvvm.CodeFixers.props" />
+  </ItemGroup>
 </Project>
