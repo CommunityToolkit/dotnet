@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#if ROSLYN_4_11_0_OR_GREATER
+
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Composition;
@@ -229,7 +231,7 @@ public sealed class UsePartialPropertyForObservablePropertyCodeFixer : CodeFixPr
         // Create the following property declaration:
         //
         // <PROPERTY_ATTRIBUTES>
-        // public partial <PROPERTY_TYPE> <PROPERTY_NAME>
+        // <PROPERTY_MODIFIERS> <PROPERTY_TYPE> <PROPERTY_NAME>
         // {
         //     <GETTER_ATTRIBUTES>
         //     get;
@@ -239,7 +241,7 @@ public sealed class UsePartialPropertyForObservablePropertyCodeFixer : CodeFixPr
         // }
         PropertyDeclarationSyntax propertyDeclaration =
             PropertyDeclaration(fieldDeclaration.Declaration.Type, Identifier(propertyName))
-            .AddModifiers(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.PartialKeyword))
+            .WithModifiers(GetPropertyModifiers(fieldDeclaration))
             .AddAttributeLists(propertyAttributes.ToArray())
             .WithAdditionalAnnotations(Formatter.Annotation)
             .AddAccessorListAccessors(
@@ -260,7 +262,7 @@ public sealed class UsePartialPropertyForObservablePropertyCodeFixer : CodeFixPr
 
         // Create an editor to perform all mutations. This allows to keep track of multiple
         // replacements for nodes on the same original tree, which otherwise wouldn't work.
-        SyntaxEditor editor = new(root, document.Project.Solution.Workspace);
+        SyntaxEditor editor = new(root, document.Project.Solution.Workspace.Services);
 
         editor.ReplaceNode(fieldDeclaration, propertyDeclaration);
 
@@ -291,4 +293,25 @@ public sealed class UsePartialPropertyForObservablePropertyCodeFixer : CodeFixPr
 
         return document.WithSyntaxRoot(editor.GetChangedRoot());
     }
+
+    /// <summary>
+    /// Gets all modifiers that need to be added to a generated property.
+    /// </summary>
+    /// <param name="fieldDeclaration">The <see cref="FieldDeclarationSyntax"/> for the field being updated.</param>
+    /// <returns>The list of necessary modifiers for <paramref name="fieldDeclaration"/>.</returns>
+    private static SyntaxTokenList GetPropertyModifiers(FieldDeclarationSyntax fieldDeclaration)
+    {
+        SyntaxTokenList propertyModifiers = TokenList(Token(SyntaxKind.PublicKeyword));
+
+        // Add the 'required' modifier if the field also had it
+        if (fieldDeclaration.Modifiers.Any(SyntaxKind.RequiredKeyword))
+        {
+            propertyModifiers = propertyModifiers.Add(Token(SyntaxKind.RequiredKeyword));
+        }
+
+        // Always add 'partial' last
+        return propertyModifiers.Add(Token(SyntaxKind.PartialKeyword));
+    }
 }
+
+#endif
