@@ -650,4 +650,51 @@ public class Test_UsePartialPropertyForObservablePropertyCodeFixer
 
         await test.RunAsync();
     }
+
+    // See https://github.com/CommunityToolkit/dotnet/issues/971
+    [TestMethod]
+    public async Task SimpleField_WithNoReferences_WithRequiredModifier()
+    {
+        string original = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            partial class C : ObservableObject
+            {
+                [ObservableProperty]
+                internal required string foo;
+            }
+            """;
+
+        string @fixed = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            partial class C : ObservableObject
+            {
+                [ObservableProperty]
+                public required partial string Foo { get; set; }
+            }
+            """;
+
+        CSharpCodeFixTest test = new(LanguageVersion.Preview)
+        {
+            TestCode = original,
+            FixedCode = @fixed,
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
+        };
+
+        test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
+        test.ExpectedDiagnostics.AddRange(new[]
+        {
+            // /0/Test0.cs(5,6): info MVVMTK0042: The field C.C.foo using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(5, 6, 5, 24).WithArguments("C", "C.foo"),
+        });
+
+        test.FixedState.ExpectedDiagnostics.AddRange(new[]
+        {
+            // /0/Test0.cs(6,36): error CS9248: Partial property 'C.Foo' must have an implementation part.
+            DiagnosticResult.CompilerError("CS9248").WithSpan(6, 36, 6, 39).WithArguments("C.Foo"),
+        });
+
+        await test.RunAsync();
+    }
 }
