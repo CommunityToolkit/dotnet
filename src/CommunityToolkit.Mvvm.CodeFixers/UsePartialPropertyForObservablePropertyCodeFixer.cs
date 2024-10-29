@@ -287,8 +287,16 @@ public sealed class UsePartialPropertyForObservablePropertyCodeFixer : CodeFixPr
                 continue;
             }
 
-            // Replace the field reference with a reference to the new property
-            editor.ReplaceNode(identifierSyntax, IdentifierName(propertyName));
+            // Special case for 'this.<FIELD_NAME>' accesses: we want to drop the 'this.' prefix
+            if (identifierSyntax.Parent is MemberAccessExpressionSyntax { Expression: ThisExpressionSyntax } thisExpressionSyntax)
+            {
+                editor.ReplaceNode(thisExpressionSyntax, IdentifierName(propertyName));
+            }
+            else
+            {
+                // Replace the field reference with a reference to the new property
+                editor.ReplaceNode(identifierSyntax, IdentifierName(propertyName));
+            }
         }
 
         return document.WithSyntaxRoot(editor.GetChangedRoot());
