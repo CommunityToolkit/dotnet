@@ -435,7 +435,7 @@ public static partial class IMessengerExtensions
     /// <typeparam name="TToken">The type of token to identify what channel to use to send the message.</typeparam>
     /// <param name="messenger">The <see cref="IMessenger"/> instance to use to send the message.</param>
     /// <param name="token">The token indicating what channel to use.</param>
-    /// <returns>The message that has been sen.</returns>
+    /// <returns>The message that has been sent.</returns>
     /// <remarks>
     /// This method will automatically create a new <typeparamref name="TMessage"/> instance
     /// just like <see cref="Send{TMessage}(IMessenger)"/>, and then send it to the right recipients.

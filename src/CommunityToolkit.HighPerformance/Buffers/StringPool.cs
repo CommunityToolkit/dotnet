@@ -85,7 +85,7 @@ public sealed class StringPool
         // that we consider acceptable, and pick the best results produced.
         // The ratio between maps influences the number of objects being allocated,
         // as well as the multithreading performance when locking on maps.
-        // We still want to contraint this number to avoid situations where we
+        // We still want to constraint this number to avoid situations where we
         // have a way too high number of maps compared to total size.
         FindFactors(minimumSize, 2, out uint x2, out uint y2);
         FindFactors(minimumSize, 3, out uint x3, out uint y3);
@@ -113,7 +113,7 @@ public sealed class StringPool
 
         // We preallocate the maps in advance, since each bucket only contains the
         // array field, which is not preinitialized, so the allocations are minimal.
-        // This lets us lock on each individual maps when retrieving a string instance.
+        // This lets us lock on each individual map when retrieving a string instance.
         foreach (ref FixedSizePriorityMap map in span)
         {
             map = new FixedSizePriorityMap((int)y2);
