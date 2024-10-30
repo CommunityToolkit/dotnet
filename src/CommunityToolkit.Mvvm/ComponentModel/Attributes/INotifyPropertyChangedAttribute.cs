@@ -28,7 +28,7 @@ public sealed class INotifyPropertyChangedAttribute : Attribute
 {
     /// <summary>
     /// Gets or sets a value indicating whether or not to also generate all the additional helper methods that are found
-    /// in <see cref="ObservableObject"/> as well (eg. <see cref="ObservableObject.SetProperty{T}(ref T, T, string?)"/>.
+    /// in <see cref="ObservableObject"/> as well (eg. <see cref="ObservableObject.SetProperty{T}(ref T, T, string?)"/>).
     /// If set to <see langword="false"/>, only the <see cref="INotifyPropertyChanged.PropertyChanged"/> event and
     /// the two <see cref="ObservableObject.OnPropertyChanged(PropertyChangedEventArgs)"/> overloads will be generated.
     /// The default value is <see langword="true"/>.
