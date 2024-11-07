@@ -750,7 +750,7 @@ internal static class DiagnosticDescriptors
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0044");
 
     /// <summary>
-    /// Gets a <see cref="DiagnosticDescriptor"/> for a CanvasEffect property with invalid accessors.
+    /// Gets a <see cref="DiagnosticDescriptor"/> for when <c>[ObservableProperty]</c> is used on a field in WinRT scenarios.
     /// <para>
     /// Format: <c>"The field {0}.{1} using [ObservableProperty] will generate code that is not AOT compatible in WinRT scenarios (such as UWP XAML and WinUI 3 apps), and a partial property should be used instead (as it allows the CsWinRT generators to correctly produce the necessary WinRT marshalling code)"</c>.
     /// </para>
@@ -764,4 +764,20 @@ internal static class DiagnosticDescriptors
         isEnabledByDefault: true,
         description: "Fields using [ObservableProperty] will generate code that is not AOT compatible in WinRT scenarios (such as UWP XAML and WinUI 3 apps), and partial properties should be used instead (as they allow the CsWinRT generators to correctly produce the necessary WinRT marshalling code).",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0045");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> for when <c>[RelayCommand]</c> is used on a method in types where <c>[GeneratedBindableCustomProperty]</c> is used.
+    /// <para>
+    /// Format: <c>"The method {0} using [RelayCommand] within a type also using [GeneratedBindableCustomProperty], which is not supported, and a manually declared command property should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated command property that is produced by the MVVM Toolkit generator)"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor WinRTRelayCommandIsNotGeneratedBindableCustomPropertyCompatible = new(
+        id: "MVVMTK0046",
+        title: "Using [RelayCommand] is not compatible with [GeneratedBindableCustomProperty]",
+        messageFormat: """The method {0} using [RelayCommand] within a type also using [GeneratedBindableCustomProperty], which is not supported, and a manually declared command property should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated command property that is produced by the MVVM Toolkit generator)""",
+        category: typeof(RelayCommandGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description: "Using [RelayCommand] on methods within a type also using [GeneratedBindableCustomProperty] is not supported, and a manually declared command property should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated command property that is produced by the MVVM Toolkit generator).",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0046");
 }
