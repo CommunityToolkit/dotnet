@@ -57,7 +57,9 @@ public sealed class UsePartialPropertyForObservablePropertyCodeFixer : CodeFixPr
     });
 
     /// <inheritdoc/>
-    public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(UseObservablePropertyOnPartialPropertyId);
+    public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
+        UseObservablePropertyOnPartialPropertyId,
+        WinRTObservablePropertyOnFieldsIsNotAotCompatibleId);
 
     /// <inheritdoc/>
     public override FixAllProvider? GetFixAllProvider()
@@ -73,6 +75,14 @@ public sealed class UsePartialPropertyForObservablePropertyCodeFixer : CodeFixPr
 
         // This code fixer needs the semantic model, so check that first
         if (!context.Document.SupportsSemanticModel)
+        {
+            return;
+        }
+
+        SemanticModel semanticModel = (await context.Document.GetSemanticModelAsync(context.CancellationToken).ConfigureAwait(false))!;
+
+        // If the language is not preview, we cannot apply this code fix (as it would generate invalid C# code)
+        if (!semanticModel.Compilation.IsLanguageVersionPreview())
         {
             return;
         }
@@ -101,7 +111,7 @@ public sealed class UsePartialPropertyForObservablePropertyCodeFixer : CodeFixPr
             context.RegisterCodeFix(
                 CodeAction.Create(
                     title: "Use a partial property",
-                    createChangedDocument: token => ConvertToPartialProperty(context.Document, root, fieldDeclaration, fieldName, propertyName, context.CancellationToken),
+                    createChangedDocument: token => ConvertToPartialProperty(context.Document, root, fieldDeclaration, semanticModel, fieldName, propertyName, context.CancellationToken),
                     equivalenceKey: "Use a partial property"),
                 diagnostic);
         }
@@ -113,6 +123,7 @@ public sealed class UsePartialPropertyForObservablePropertyCodeFixer : CodeFixPr
     /// <param name="document">The original document being fixed.</param>
     /// <param name="root">The original tree root belonging to the current document.</param>
     /// <param name="fieldDeclaration">The <see cref="FieldDeclarationSyntax"/> for the field being updated.</param>
+    /// <param name="semanticModel">The semantic model for <paramref name="document"/>.</param>
     /// <param name="fieldName">The name of the annotated field.</param>
     /// <param name="propertyName">The name of the generated property.</param>
     /// <param name="cancellationToken">The cancellation token for the operation.</param>
@@ -121,11 +132,12 @@ public sealed class UsePartialPropertyForObservablePropertyCodeFixer : CodeFixPr
         Document document,
         SyntaxNode root,
         FieldDeclarationSyntax fieldDeclaration,
+        SemanticModel semanticModel,
         string fieldName,
         string propertyName,
         CancellationToken cancellationToken)
     {
-        SemanticModel semanticModel = (await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false))!;
+        await Task.CompletedTask;
 
         // Try to get all necessary type symbols to process the attributes
         if (!semanticModel.Compilation.TryBuildNamedTypeSymbolMap(MvvmToolkitAttributeNamesToFullyQualifiedNamesMap, out ImmutableDictionary<string, INamedTypeSymbol>? toolkitTypeSymbols) ||

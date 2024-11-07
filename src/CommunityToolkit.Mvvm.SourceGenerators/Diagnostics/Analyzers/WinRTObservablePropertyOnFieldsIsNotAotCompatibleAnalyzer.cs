@@ -41,8 +41,6 @@ public sealed class WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer : 
                 return;
             }
 
-            bool isLanguageVersionPreview = context.Compilation.IsLanguageVersionPreview();
-
             context.RegisterSymbolAction(context =>
             {
                 // Ensure we do have a valid field
@@ -54,28 +52,14 @@ public sealed class WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer : 
                 // Emit a diagnostic if the field is using the [ObservableProperty] attribute
                 if (fieldSymbol.TryGetAttributeWithType(observablePropertySymbol, out AttributeData? observablePropertyAttribute))
                 {
-                    // If the C# version is preview, we can include the necessary information to trigger the
-                    // code fixer. If that is not the case, we shouldn't do that, to avoid the code fixer
-                    // changing the code to invalid C# (as without the preview version, it wouldn't compile).
-                    if (isLanguageVersionPreview)
-                    {
-                        context.ReportDiagnostic(Diagnostic.Create(
-                            WinRTObservablePropertyOnFieldsIsNotAotCompatible,
-                            observablePropertyAttribute.GetLocation(),
-                            ImmutableDictionary.Create<string, string?>()
-                                .Add(FieldReferenceForObservablePropertyFieldAnalyzer.FieldNameKey, fieldSymbol.Name)
-                                .Add(FieldReferenceForObservablePropertyFieldAnalyzer.PropertyNameKey, ObservablePropertyGenerator.Execute.GetGeneratedPropertyName(fieldSymbol)),
-                            fieldSymbol.ContainingType,
-                            fieldSymbol.Name));
-                    }
-                    else
-                    {
-                        context.ReportDiagnostic(Diagnostic.Create(
-                            WinRTObservablePropertyOnFieldsIsNotAotCompatible,
-                            observablePropertyAttribute.GetLocation(),
-                            fieldSymbol.ContainingType,
-                            fieldSymbol.Name));
-                    }
+                    context.ReportDiagnostic(Diagnostic.Create(
+                        WinRTObservablePropertyOnFieldsIsNotAotCompatible,
+                        observablePropertyAttribute.GetLocation(),
+                        ImmutableDictionary.Create<string, string?>()
+                            .Add(FieldReferenceForObservablePropertyFieldAnalyzer.FieldNameKey, fieldSymbol.Name)
+                            .Add(FieldReferenceForObservablePropertyFieldAnalyzer.PropertyNameKey, ObservablePropertyGenerator.Execute.GetGeneratedPropertyName(fieldSymbol)),
+                        fieldSymbol.ContainingType,
+                        fieldSymbol.Name));
                 }
             }, SymbolKind.Field);
         });
