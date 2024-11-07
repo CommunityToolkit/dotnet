@@ -29,6 +29,28 @@ internal static class INamedTypeSymbolExtensions
     }
 
     /// <summary>
+    /// Gets all member symbols from a given <see cref="INamedTypeSymbol"/> instance, including inherited ones, only if they are declared in source.
+    /// </summary>
+    /// <param name="symbol">The input <see cref="INamedTypeSymbol"/> instance.</param>
+    /// <returns>A sequence of all member symbols for <paramref name="symbol"/>.</returns>
+    public static IEnumerable<ISymbol> GetAllMembersFromSameAssembly(this INamedTypeSymbol symbol)
+    {
+        for (INamedTypeSymbol? currentSymbol = symbol; currentSymbol is { SpecialType: not SpecialType.System_Object }; currentSymbol = currentSymbol.BaseType)
+        {
+            // Stop early when we reach a base type from another assembly
+            if (!SymbolEqualityComparer.Default.Equals(currentSymbol.ContainingAssembly, symbol.ContainingAssembly))
+            {
+                yield break;
+            }   
+
+            foreach (ISymbol memberSymbol in currentSymbol.GetMembers())
+            {
+                yield return memberSymbol;
+            }
+        }
+    }
+
+    /// <summary>
     /// Gets all member symbols from a given <see cref="INamedTypeSymbol"/> instance, including inherited ones.
     /// </summary>
     /// <param name="symbol">The input <see cref="INamedTypeSymbol"/> instance.</param>
