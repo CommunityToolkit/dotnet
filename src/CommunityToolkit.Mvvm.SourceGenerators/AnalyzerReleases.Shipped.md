@@ -85,4 +85,5 @@ Rule ID | Category | Severity | Notes
 MVVMTK0041 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Error | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0041
 MVVMTK0042 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Info | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0042
 MVVMTK0043| CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Error | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0043
-MVVMTK0044| CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Error | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0043
+MVVMTK0044| CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Error | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0044
+MVVMTK0045| CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Warning | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0045

@@ -41,6 +41,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\TransitiveMembersGenerator.Execute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\AsyncVoidReturningRelayCommandMethodAnalyzer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\InvalidGeneratedPropertyObservablePropertyAttributeAnalyzer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\PropertyNameCollisionObservablePropertyAttributeAnalyzer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\InvalidTargetObservablePropertyAttributeAnalyzer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\InvalidClassLevelNotifyDataErrorInfoAttributeAnalyzer.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Suppressors\ObservablePropertyAttributeWithSupportedTargetDiagnosticSuppressor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\DiagnosticDescriptors.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\SuppressionDescriptors.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\AnalyzerConfigOptionsExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\AccessibilityExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\AttributeDataExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\CompilationExtensions.cs" />

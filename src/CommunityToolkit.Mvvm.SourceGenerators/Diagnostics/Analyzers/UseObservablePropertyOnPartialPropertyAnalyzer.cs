@@ -36,6 +36,12 @@ public sealed class UseObservablePropertyOnPartialPropertyAnalyzer : DiagnosticA
                 return;
             }
 
+            // If CsWinRT is in AOT-optimization mode, disable this analyzer, as the WinRT one will produce a warning instead
+            if (context.Options.AnalyzerConfigOptionsProvider.GlobalOptions.IsCsWinRTAotOptimizerEnabled(context.Compilation))
+            {
+                return;
+            }
+
             // Get the symbol for [ObservableProperty]
             if (context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute") is not INamedTypeSymbol observablePropertySymbol)
             {

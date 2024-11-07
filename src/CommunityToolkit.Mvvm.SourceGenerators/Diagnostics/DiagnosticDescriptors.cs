@@ -40,6 +40,11 @@ internal static class DiagnosticDescriptors
     public const string UseObservablePropertyOnPartialPropertyId = "MVVMTK0042";
 
     /// <summary>
+    /// The diagnostic id for <see cref="WinRTObservablePropertyOnFieldsIsNotAotCompatible"/>.
+    /// </summary>
+    public const string WinRTObservablePropertyOnFieldsIsNotAotCompatibleId = "MVVMTK0045";
+
+    /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a duplicate declaration of <see cref="INotifyPropertyChanged"/> would happen.
     /// <para>
     /// Format: <c>"Cannot apply [INotifyPropertyChangedAttribute] to type {0}, as it already declares the INotifyPropertyChanged interface"</c>.
@@ -681,7 +686,7 @@ internal static class DiagnosticDescriptors
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0040");
 
     /// <summary>
-    /// Gets a <see cref="DiagnosticDescriptor"/> for a CanvasEffect property with invalid accessors.
+    /// Gets a <see cref="DiagnosticDescriptor"/> for the C# language version not being sufficient for <c>[ObservableProperty]</c> on partial properties.
     /// <para>
     /// Format: <c>"Using [ObservableProperty] on partial properties requires the C# language version to be set to 'preview', as support for the 'field' keyword is needed by the source generators to emit valid code (add <LangVersion>preview</LangVersion> to your .csproj/.props file)"</c>.
     /// </para>
@@ -697,7 +702,7 @@ internal static class DiagnosticDescriptors
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0041");
 
     /// <summary>
-    /// Gets a <see cref="DiagnosticDescriptor"/> for a CanvasEffect property with invalid accessors.
+    /// Gets a <see cref="DiagnosticDescriptor"/> for when <c>[ObservableProperty]</c> on a field should be converted to a partial property.
     /// <para>
     /// Format: <c>"The field {0}.{1} using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)"</c>.
     /// </para>
@@ -743,4 +748,20 @@ internal static class DiagnosticDescriptors
         isEnabledByDefault: true,
         description: "Using [ObservableProperty] with (partial) properties requires a higher version of Roslyn (remove [ObservableProperty] or target a field instead, or upgrade to at least Visual Studio 2022 version 17.12 and the .NET 9 SDK).",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0044");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> for a CanvasEffect property with invalid accessors.
+    /// <para>
+    /// Format: <c>"The field {0}.{1} using [ObservableProperty] will generate code that is not AOT compatible in WinRT scenarios (such as UWP XAML and WinUI 3 apps), and a partial property should be used instead (as it allows the CsWinRT generators to correctly produce the necessary WinRT marshalling code)"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor WinRTObservablePropertyOnFieldsIsNotAotCompatible = new(
+        id: WinRTObservablePropertyOnFieldsIsNotAotCompatibleId,
+        title: "Using [ObservableProperty] on fields is not AOT compatible for WinRT",
+        messageFormat: """The field {0}.{1} using [ObservableProperty] will generate code that is not AOT compatible in WinRT scenarios (such as UWP XAML and WinUI 3 apps), and a partial property should be used instead (as it allows the CsWinRT generators to correctly produce the necessary WinRT marshalling code)""",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description: "Fields using [ObservableProperty] will generate code that is not AOT compatible in WinRT scenarios (such as UWP XAML and WinUI 3 apps), and partial properties should be used instead (as they allow the CsWinRT generators to correctly produce the necessary WinRT marshalling code).",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0045");
 }
