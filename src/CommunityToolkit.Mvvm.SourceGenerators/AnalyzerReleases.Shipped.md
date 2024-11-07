@@ -87,3 +87,4 @@ MVVMTK0042 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator 
 MVVMTK0043| CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Error | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0043
 MVVMTK0044| CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Error | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0044
 MVVMTK0045| CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Warning | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0045
+MVVMTK0046 | CommunityToolkit.Mvvm.SourceGenerators.RelayCommandGenerator | Warning | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0046
