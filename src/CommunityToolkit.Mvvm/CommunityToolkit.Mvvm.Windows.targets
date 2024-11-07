@@ -1,0 +1,17 @@
+<Project>
+
+  <!-- Allows the generators and analyzers to determine whether the current project is targeting Windows on modern .NET -->
+  <PropertyGroup>
+    <_MvvmToolkitIsUsingWindowsRuntimePack>false</_MvvmToolkitIsUsingWindowsRuntimePack>
+    <_MvvmToolkitIsUsingWindowsRuntimePack Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0-windows10.0.17763.0'))">true</_MvvmToolkitIsUsingWindowsRuntimePack>
+  </PropertyGroup>
+
+  <!-- MSBuild properties that generators and analyzers need access to -->
+  <ItemGroup>
+    <CompilerVisibleProperty Include="_MvvmToolkitIsUsingWindowsRuntimePack" />
+    <CompilerVisibleProperty Include="CsWinRTComponent" />
+    <CompilerVisibleProperty Include="CsWinRTAotOptimizerEnabled" />
+    <CompilerVisibleProperty Include="CsWinRTAotWarningLevel" />
+  </ItemGroup>
+
+</Project>
