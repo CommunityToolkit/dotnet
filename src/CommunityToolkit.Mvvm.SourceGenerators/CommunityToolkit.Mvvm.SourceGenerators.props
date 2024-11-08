@@ -4,6 +4,15 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+
+    <!--
+      While this project does not produce a .dll that consuming projects execute at runtime, we still want to
+      include debugging information, to make it easier to debug the generator themselves in case of issues.
+      Rather than using portable .pdb files, we just embed them, to ensure debuggers will load them correctly.
+      Using portable .pdb-s results in Visual Studio not automatically loading them when attaching a debugger
+      to the Roslyn code analysis process to try to debug the generators, forcing to pick the path manually.
+    -->
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
 
   <!--
