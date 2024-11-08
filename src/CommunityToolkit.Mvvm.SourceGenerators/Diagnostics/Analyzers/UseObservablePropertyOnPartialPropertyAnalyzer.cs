@@ -79,7 +79,7 @@ public sealed class UseObservablePropertyOnPartialPropertyAnalyzer : DiagnosticA
                         .Add(FieldReferenceForObservablePropertyFieldAnalyzer.FieldNameKey, fieldSymbol.Name)
                         .Add(FieldReferenceForObservablePropertyFieldAnalyzer.PropertyNameKey, ObservablePropertyGenerator.Execute.GetGeneratedPropertyName(fieldSymbol)),
                     fieldSymbol.ContainingType,
-                    fieldSymbol));
+                    fieldSymbol.Name));
             }, SymbolKind.Field);
         });
     }
