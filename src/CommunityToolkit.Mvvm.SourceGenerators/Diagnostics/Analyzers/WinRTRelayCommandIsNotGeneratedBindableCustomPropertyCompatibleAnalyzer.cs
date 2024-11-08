@@ -33,7 +33,7 @@ public sealed class WinRTRelayCommandIsNotGeneratedBindableCustomPropertyCompati
                 return;
             }
 
-            // Get the symbol for [RelayCommand] and [GeneratedBindableCustomProperty]
+            // Get the symbols for [RelayCommand] and [GeneratedBindableCustomProperty]
             if (context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Input.RelayCommandAttribute") is not INamedTypeSymbol relayCommandSymbol ||
                 context.Compilation.GetTypeByMetadataName("WinRT.GeneratedBindableCustomPropertyAttribute") is not INamedTypeSymbol generatedBindableCustomPropertySymbol)
             {
