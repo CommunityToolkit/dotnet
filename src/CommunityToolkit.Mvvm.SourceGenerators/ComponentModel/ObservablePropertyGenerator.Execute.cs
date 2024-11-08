@@ -153,8 +153,9 @@ partial class ObservablePropertyGenerator
 
             token.ThrowIfCancellationRequested();
 
-            // Override the property changing support if explicitly disabled
-            shouldInvokeOnPropertyChanging &= GetEnableINotifyPropertyChangingSupport(options);
+            // Override the property changing support if explicitly disabled.
+            // This setting is enabled by default, for backwards compatibility.
+            shouldInvokeOnPropertyChanging &= options.GetMSBuildBooleanPropertyValue("MvvmToolkitEnableINotifyPropertyChangingSupport", defaultValue: true);
 
             token.ThrowIfCancellationRequested();
 
@@ -375,27 +376,6 @@ partial class ObservablePropertyGenerator
 
             diagnostics = builder.ToImmutable();
 
-            return true;
-        }
-
-        /// <summary>
-        /// Gets the value for the "MvvmToolkitEnableINotifyPropertyChangingSupport" property.
-        /// </summary>
-        /// <param name="options">The options in use for the generator.</param>
-        /// <returns>The value for the "MvvmToolkitEnableINotifyPropertyChangingSupport" property.</returns>
-        public static bool GetEnableINotifyPropertyChangingSupport(AnalyzerConfigOptions options)
-        {
-            if (options.TryGetValue("build_property.MvvmToolkitEnableINotifyPropertyChangingSupport", out string? propertyValue))
-            {
-                if (bool.TryParse(propertyValue, out bool enableINotifyPropertyChangingSupport))
-                {
-                    return enableINotifyPropertyChangingSupport;
-                }
-            }
-
-            // This setting is enabled by default, for backwards compatibility.
-            // Note that this path should never be reached, as the default
-            // value is also set in a .targets file bundled in the package.
             return true;
         }
 

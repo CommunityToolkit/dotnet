@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.SourceGenerators.UnitTests.Helpers;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -270,5 +271,461 @@ partial class Test_SourceGeneratorsDiagnostics
             """;
 
         await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<UseObservablePropertyOnPartialPropertyAnalyzer>(source, LanguageVersion.Preview);
+    }
+
+    [TestMethod]
+    public async Task UseObservablePropertyOnPartialPropertyAnalyzer_CsWinRTAotOptimizerEnabled_Auto_DoesNotWarn()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {            
+                    [ObservableProperty]            
+                    private static string name;
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<UseObservablePropertyOnPartialPropertyAnalyzer>.VerifyAnalyzerAsync(
+            source,
+            LanguageVersion.Preview,
+            editorconfig: [("_MvvmToolkitIsUsingWindowsRuntimePack", true), ("CsWinRTAotOptimizerEnabled", "auto")]);
+    }
+
+    [TestMethod]
+    public async Task WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer_NotTargetingWindows_DoesNotWarn()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {            
+                    [ObservableProperty]            
+                    private string name;
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer>.VerifyAnalyzerAsync(
+            source,
+            LanguageVersion.CSharp12,
+            editorconfig: []);
+    }
+
+    [TestMethod]
+    public async Task WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer_TargetingWindows_CsWinRTAotOptimizerEnabled_OptIn_DoesNotWarn()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {            
+                    [ObservableProperty]            
+                    private string name;
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer>.VerifyAnalyzerAsync(
+            source,
+            LanguageVersion.CSharp12,
+            editorconfig: [("_MvvmToolkitIsUsingWindowsRuntimePack", true)]);
+    }
+
+    [TestMethod]
+    public async Task WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer_TargetingWindows_CsWinRTAotOptimizerEnabled_False_DoesNotWarn()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {            
+                    [ObservableProperty]            
+                    private string name;
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer>.VerifyAnalyzerAsync(
+            source,
+            LanguageVersion.CSharp12,
+            editorconfig: [("_MvvmToolkitIsUsingWindowsRuntimePack", true), ("CsWinRTAotOptimizerEnabled", "false")]);
+    }
+
+    [TestMethod]
+    public async Task WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer_TargetingWindows_CsWinRTAotOptimizerEnabled_Auto_Warns()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {            
+                    [{|MVVMTK0045:ObservableProperty|}]            
+                    private string name;
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer>.VerifyAnalyzerAsync(
+            source,
+            LanguageVersion.Preview,
+            editorconfig: [("_MvvmToolkitIsUsingWindowsRuntimePack", true), ("CsWinRTAotOptimizerEnabled", "auto")]);
+    }
+
+    [TestMethod]
+    public async Task WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer_TargetingWindows_CsWinRTAotOptimizerEnabled_True_NoXaml_Level1_DoesNotWarn()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {            
+                    [ObservableProperty]            
+                    private string name;
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer>.VerifyAnalyzerAsync(
+            source,
+            LanguageVersion.Preview,
+            editorconfig: [("_MvvmToolkitIsUsingWindowsRuntimePack", true), ("CsWinRTAotOptimizerEnabled", "true"), ("CsWinRTAotWarningLevel", 1)]);
+    }
+
+    [TestMethod]
+    public async Task WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer_TargetingWindows_CsWinRTAotOptimizerEnabled_True_NoXaml_Level2_Warns()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {            
+                    [{|MVVMTK0045:ObservableProperty|}]            
+                    private string name;
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer>.VerifyAnalyzerAsync(
+            source,
+            LanguageVersion.Preview,
+            editorconfig: [("_MvvmToolkitIsUsingWindowsRuntimePack", true), ("CsWinRTAotOptimizerEnabled", "true"), ("CsWinRTAotWarningLevel", 2)]);
+    }
+
+    [TestMethod]
+    public async Task WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer_TargetingWindows_CsWinRTAotOptimizerEnabled_True_NoXaml_1_Component_Warns()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {            
+                    [{|MVVMTK0045:ObservableProperty|}]            
+                    private string name;
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer>.VerifyAnalyzerAsync(
+            source,
+            LanguageVersion.Preview,
+            editorconfig: [("_MvvmToolkitIsUsingWindowsRuntimePack", true), ("CsWinRTAotOptimizerEnabled", "true"), ("CsWinRTAotWarningLevel", 1), ("CsWinRTComponent", true)]);
+    }
+
+    [TestMethod]
+    public async Task WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer_TargetingWindows_CsWinRTAotOptimizerEnabled_True_UwpXaml_Level1_Warns()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {            
+                    [{|MVVMTK0045:ObservableProperty|}]            
+                    private string name;
+                }
+            }
+
+            namespace Windows.UI.Xaml.Controls
+            {
+                public class Button;
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer>.VerifyAnalyzerAsync(
+            source,
+            LanguageVersion.Preview,
+            editorconfig: [("_MvvmToolkitIsUsingWindowsRuntimePack", true), ("CsWinRTAotOptimizerEnabled", "true"), ("CsWinRTAotWarningLevel", 1)]);
+    }
+
+    [TestMethod]
+    public async Task WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer_TargetingWindows_CsWinRTAotOptimizerEnabled_True_WinUIXaml_Level1_Warns()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {            
+                    [{|MVVMTK0045:ObservableProperty|}]            
+                    private string name;
+                }
+            }
+
+            namespace Microsoft.UI.Xaml.Controls
+            {
+                public class Button;
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer>.VerifyAnalyzerAsync(
+            source,
+            LanguageVersion.Preview,
+            editorconfig: [("_MvvmToolkitIsUsingWindowsRuntimePack", true), ("CsWinRTAotOptimizerEnabled", "true"), ("CsWinRTAotWarningLevel", 1)]);
+    }
+
+    [TestMethod]
+    public async Task WinRTRelayCommandIsNotGeneratedBindableCustomPropertyCompatibleAnalyzer_NotTargetingWindows_DoesNotWarn()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.Input;
+            
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {            
+                    [RelayCommand]
+                    private void DoStuff()
+                    {
+                    }
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<WinRTRelayCommandIsNotGeneratedBindableCustomPropertyCompatibleAnalyzer>.VerifyAnalyzerAsync(
+            source,
+            LanguageVersion.CSharp12,
+            editorconfig: []);
+    }
+
+    [TestMethod]
+    public async Task WinRTRelayCommandIsNotGeneratedBindableCustomPropertyCompatibleAnalyzer_TargetingWindows_DoesNotWarn()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.Input;
+            
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {            
+                    [RelayCommand]
+                    private void DoStuff()
+                    {
+                    }
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<WinRTRelayCommandIsNotGeneratedBindableCustomPropertyCompatibleAnalyzer>.VerifyAnalyzerAsync(
+            source,
+            LanguageVersion.CSharp12,
+            editorconfig: [("_MvvmToolkitIsUsingWindowsRuntimePack", true)]);
+    }
+
+    [TestMethod]
+    public async Task WinRTRelayCommandIsNotGeneratedBindableCustomPropertyCompatibleAnalyzer_TargetingWindows_Bindable_Warns()
+    {
+        const string source = """
+            using System;
+            using CommunityToolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.Input;
+            using WinRT;
+            
+            namespace MyApp
+            {
+                [GeneratedBindableCustomProperty]
+                public partial class SampleViewModel : ObservableObject
+                {            
+                    [{|MVVMTK0046:RelayCommand|}]
+                    private void DoStuff()
+                    {
+                    }
+                }
+            }
+
+            namespace WinRT
+            {
+                public class GeneratedBindableCustomPropertyAttribute : Attribute;
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<WinRTRelayCommandIsNotGeneratedBindableCustomPropertyCompatibleAnalyzer>.VerifyAnalyzerAsync(
+            source,
+            LanguageVersion.CSharp12,
+            editorconfig: [("_MvvmToolkitIsUsingWindowsRuntimePack", true)]);
+    }
+
+    [TestMethod]
+    public async Task WinRTGeneratedBindableCustomPropertyWithBasesMemberAnalyzer_NotTargetingWindows_DoesNotWarn()
+    {
+        const string source = """
+            using System;
+            using CommunityToolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.Input;
+            using WinRT;
+            
+            namespace MyApp
+            {
+                [GeneratedBindableCustomProperty]
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    private string name;
+
+                    [RelayCommand]
+                    private void DoStuff()
+                    {
+                    }
+                }
+            }
+
+            namespace WinRT
+            {
+                public class GeneratedBindableCustomPropertyAttribute : Attribute;
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<WinRTGeneratedBindableCustomPropertyWithBasesMemberAnalyzer>.VerifyAnalyzerAsync(
+            source,
+            LanguageVersion.CSharp12,
+            editorconfig: []);
+    }
+
+    [TestMethod]
+    public async Task WinRTGeneratedBindableCustomPropertyWithBasesMemberAnalyzer_TargetingWindows_DoesNotWarn()
+    {
+        const string source = """
+            using System;
+            using CommunityToolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.Input;
+            using WinRT;
+            
+            namespace MyApp
+            {
+                [GeneratedBindableCustomProperty]
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    private string name;
+
+                    [RelayCommand]
+                    private void DoStuff()
+                    {
+                    }
+                }
+            }
+
+            namespace WinRT
+            {
+                public class GeneratedBindableCustomPropertyAttribute : Attribute;
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<WinRTGeneratedBindableCustomPropertyWithBasesMemberAnalyzer>.VerifyAnalyzerAsync(
+            source,
+            LanguageVersion.CSharp12,
+            editorconfig: [("_MvvmToolkitIsUsingWindowsRuntimePack", true)]);
+    }
+
+    [TestMethod]
+    public async Task WinRTGeneratedBindableCustomPropertyWithBasesMemberAnalyzer_TargetingWindows_BaseType_Field_Warns()
+    {
+        const string source = """
+            using System;
+            using CommunityToolkit.Mvvm.ComponentModel;
+            using WinRT;
+            
+            namespace MyApp
+            {
+                [{|MVVMTK0047:GeneratedBindableCustomProperty|}]
+                public partial class SampleViewModel : BaseViewModel
+                {                    
+                }
+
+                public partial class BaseViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    private string name;
+                }
+            }
+
+            namespace WinRT
+            {
+                public class GeneratedBindableCustomPropertyAttribute : Attribute;
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<WinRTGeneratedBindableCustomPropertyWithBasesMemberAnalyzer>.VerifyAnalyzerAsync(
+            source,
+            LanguageVersion.CSharp12,
+            editorconfig: [("_MvvmToolkitIsUsingWindowsRuntimePack", true)]);
+    }
+
+    [TestMethod]
+    public async Task WinRTGeneratedBindableCustomPropertyWithBasesMemberAnalyzer_TargetingWindows_BaseType_Method_Warns()
+    {
+        const string source = """
+            using System;
+            using CommunityToolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.Input;
+            using WinRT;
+            
+            namespace MyApp
+            {
+                [{|MVVMTK0048:GeneratedBindableCustomProperty|}]
+                public partial class SampleViewModel : BaseViewModel
+                {                    
+                }
+
+                public partial class BaseViewModel : ObservableObject
+                {            
+                    [RelayCommand]
+                    private void DoStuff()
+                    {
+                    }
+                }
+            }
+
+            namespace WinRT
+            {
+                public class GeneratedBindableCustomPropertyAttribute : Attribute;
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<WinRTGeneratedBindableCustomPropertyWithBasesMemberAnalyzer>.VerifyAnalyzerAsync(
+            source,
+            LanguageVersion.CSharp12,
+            editorconfig: [("_MvvmToolkitIsUsingWindowsRuntimePack", true)]);
     }
 }

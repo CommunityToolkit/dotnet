@@ -40,6 +40,11 @@ internal static class DiagnosticDescriptors
     public const string UseObservablePropertyOnPartialPropertyId = "MVVMTK0042";
 
     /// <summary>
+    /// The diagnostic id for <see cref="WinRTObservablePropertyOnFieldsIsNotAotCompatible"/>.
+    /// </summary>
+    public const string WinRTObservablePropertyOnFieldsIsNotAotCompatibleId = "MVVMTK0045";
+
+    /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a duplicate declaration of <see cref="INotifyPropertyChanged"/> would happen.
     /// <para>
     /// Format: <c>"Cannot apply [INotifyPropertyChangedAttribute] to type {0}, as it already declares the INotifyPropertyChanged interface"</c>.
@@ -681,7 +686,7 @@ internal static class DiagnosticDescriptors
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0040");
 
     /// <summary>
-    /// Gets a <see cref="DiagnosticDescriptor"/> for a CanvasEffect property with invalid accessors.
+    /// Gets a <see cref="DiagnosticDescriptor"/> for the C# language version not being sufficient for <c>[ObservableProperty]</c> on partial properties.
     /// <para>
     /// Format: <c>"Using [ObservableProperty] on partial properties requires the C# language version to be set to 'preview', as support for the 'field' keyword is needed by the source generators to emit valid code (add <LangVersion>preview</LangVersion> to your .csproj/.props file)"</c>.
     /// </para>
@@ -697,7 +702,7 @@ internal static class DiagnosticDescriptors
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0041");
 
     /// <summary>
-    /// Gets a <see cref="DiagnosticDescriptor"/> for a CanvasEffect property with invalid accessors.
+    /// Gets a <see cref="DiagnosticDescriptor"/> for when <c>[ObservableProperty]</c> on a field should be converted to a partial property.
     /// <para>
     /// Format: <c>"The field {0}.{1} using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)"</c>.
     /// </para>
@@ -743,4 +748,68 @@ internal static class DiagnosticDescriptors
         isEnabledByDefault: true,
         description: "Using [ObservableProperty] with (partial) properties requires a higher version of Roslyn (remove [ObservableProperty] or target a field instead, or upgrade to at least Visual Studio 2022 version 17.12 and the .NET 9 SDK).",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0044");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> for when <c>[ObservableProperty]</c> is used on a field in WinRT scenarios.
+    /// <para>
+    /// Format: <c>"The field {0}.{1} using [ObservableProperty] will generate code that is not AOT compatible in WinRT scenarios (such as UWP XAML and WinUI 3 apps), and a partial property should be used instead (as it allows the CsWinRT generators to correctly produce the necessary WinRT marshalling code)"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor WinRTObservablePropertyOnFieldsIsNotAotCompatible = new(
+        id: WinRTObservablePropertyOnFieldsIsNotAotCompatibleId,
+        title: "Using [ObservableProperty] on fields is not AOT compatible for WinRT",
+        messageFormat: """The field {0}.{1} using [ObservableProperty] will generate code that is not AOT compatible in WinRT scenarios (such as UWP XAML and WinUI 3 apps), and a partial property should be used instead (as it allows the CsWinRT generators to correctly produce the necessary WinRT marshalling code)""",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description: "Fields using [ObservableProperty] will generate code that is not AOT compatible in WinRT scenarios (such as UWP XAML and WinUI 3 apps), and partial properties should be used instead (as they allow the CsWinRT generators to correctly produce the necessary WinRT marshalling code).",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0045");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> for when <c>[RelayCommand]</c> is used on a method in types where <c>[GeneratedBindableCustomProperty]</c> is used.
+    /// <para>
+    /// Format: <c>"The method {0} using [RelayCommand] within a type also using [GeneratedBindableCustomProperty], which is not supported, and a manually declared command property should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated command property that is produced by the MVVM Toolkit generator)"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor WinRTRelayCommandIsNotGeneratedBindableCustomPropertyCompatible = new(
+        id: "MVVMTK0046",
+        title: "Using [RelayCommand] is not compatible with [GeneratedBindableCustomProperty]",
+        messageFormat: """The method {0} using [RelayCommand] within a type also using [GeneratedBindableCustomProperty], which is not supported, and a manually declared command property should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated command property that is produced by the MVVM Toolkit generator)""",
+        category: typeof(RelayCommandGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description: "Using [RelayCommand] on methods within a type also using [GeneratedBindableCustomProperty] is not supported, and a manually declared command property should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated command property that is produced by the MVVM Toolkit generator).",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0046");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> for when <c>[GeneratedBindableCustomProperty]</c> is used on a type that also uses <c>[ObservableProperty]</c> on any declared or inherited fields.
+    /// <para>
+    /// Format: <c>"The type {0} using [GeneratedBindableCustomProperty] is also using [ObservableProperty] on its declared (or inherited) field {1}.{2}: combining the two generators is not supported, and partial properties should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated property that is produced by the MVVM Toolkit generator)"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor WinRTGeneratedBindableCustomPropertyWithBaseObservablePropertyOnField = new(
+        id: "MVVMTK0047",
+        title: "Using [GeneratedBindableCustomProperty] is not compatible with [ObservableProperty] on fields",
+        messageFormat: """The type {0} using [GeneratedBindableCustomProperty] is also using [RelayCommand] on its declared (or inherited) method {1}: combining the two generators is not supported, and a manually declared command property should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated property that is produced by the MVVM Toolkit generator)""",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description: "Using [GeneratedBindableCustomProperty] on types that also use [ObservableProperty] on any declared (or inherited) fields is not supported, and partial properties should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated property that is produced by the MVVM Toolkit generator).",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0047");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> for when <c>[GeneratedBindableCustomProperty]</c> is used on a type that also uses <c>[RelayCommand]</c> on any declared or inherited methods.
+    /// <para>
+    /// Format: <c>"The type {0} using [GeneratedBindableCustomProperty] is also using [RelayCommand] on its inherited method {1}: combining the two generators is not supported, and a manually declared command property should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated property that is produced by the MVVM Toolkit generator)"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor WinRTGeneratedBindableCustomPropertyWithBaseRelayCommand = new(
+        id: "MVVMTK0048",
+        title: "Using [GeneratedBindableCustomProperty] is not compatible with [RelayCommand]",
+        messageFormat: """The type {0} using [GeneratedBindableCustomProperty] is also using [RelayCommand] on its inherited method {1}: combining the two generators is not supported, and a manually declared command property should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated property that is produced by the MVVM Toolkit generator)""",
+        category: typeof(RelayCommandGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description: "Using [GeneratedBindableCustomProperty] on types that also use [RelayCommand] on any inherited methods is not supported, and a manually declared command property should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated property that is produced by the MVVM Toolkit generator).",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0048");
 }

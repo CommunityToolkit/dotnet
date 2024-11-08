@@ -2,6 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -10,6 +13,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Testing;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Text;
 #if NET472
 using System.ComponentModel.DataAnnotations;
 #endif
@@ -59,7 +63,51 @@ internal sealed class CSharpAnalyzerWithLanguageVersionTest<TAnalyzer> : CSharpA
 #endif
         test.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(typeof(ObservableObject).Assembly.Location));
 
+        test.SolutionTransforms.Add((solution, projectId) =>
+            solution.AddAnalyzerConfigDocument(DocumentId.CreateNewId(projectId),
+                "UseMarshalType.editorconfig",
+                SourceText.From("""
+                    is_global = true
+                    build_property.LibraryImportGenerator_UseMarshalType = true
+                    """,
+                    Encoding.UTF8),
+                filePath: "/UseMarshalType.editorconfig"));
+
         test.ExpectedDiagnostics.AddRange(expected);
+
+        return test.RunAsync(CancellationToken.None);
+    }
+
+    /// <inheritdoc cref="AnalyzerVerifier{TAnalyzer, TTest, TVerifier}.VerifyAnalyzerAsync"/>
+    /// <param name="languageVersion">The language version to use to run the test.</param>
+    public static Task VerifyAnalyzerAsync(string source, LanguageVersion languageVersion, (string PropertyName, object PropertyValue)[] editorconfig)
+    {
+        CSharpAnalyzerWithLanguageVersionTest<TAnalyzer> test = new(languageVersion) { TestCode = source };
+
+#if NET8_0_OR_GREATER
+        test.TestState.ReferenceAssemblies = ReferenceAssemblies.Net.Net80;
+#elif NET6_0_OR_GREATER
+        test.TestState.ReferenceAssemblies = ReferenceAssemblies.Net.Net60;
+#else
+        test.TestState.ReferenceAssemblies = ReferenceAssemblies.NetFramework.Net472.Default;
+        test.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(typeof(RequiredAttribute).Assembly.Location));
+#endif
+        test.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(typeof(ObservableObject).Assembly.Location));
+
+        // Add any editorconfig properties, if present
+        if (editorconfig.Length > 0)
+        {
+            test.SolutionTransforms.Add((solution, projectId) =>
+                solution.AddAnalyzerConfigDocument(
+                    DocumentId.CreateNewId(projectId),
+                    "MvvmToolkitAnalyzers.editorconfig",
+                    SourceText.From($"""
+                        is_global = true
+                        {string.Join(Environment.NewLine, editorconfig.Select(static p => $"build_property.{p.PropertyName} = {p.PropertyValue}"))}
+                        """,
+                        Encoding.UTF8),
+                filePath: "/MvvmToolkitAnalyzers.editorconfig"));
+        }
 
         return test.RunAsync(CancellationToken.None);
     }
