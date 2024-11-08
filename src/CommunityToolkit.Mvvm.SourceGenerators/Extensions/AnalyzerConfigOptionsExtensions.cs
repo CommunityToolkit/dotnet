@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
@@ -38,7 +39,7 @@ internal static class AnalyzerConfigOptionsExtensions
             return false;
         }
 
-        if (options.TryGetValue("build_property.CsWinRTAotOptimizerEnabled", out string? csWinRTAotOptimizerEnabled))
+        if (options.TryGetMSBuildStringPropertyValue("CsWinRTAotOptimizerEnabled", out string? csWinRTAotOptimizerEnabled))
         {
             // If the generators are in opt-in mode, we will not show warnings
             if (string.Equals(csWinRTAotOptimizerEnabled, "OptIn", StringComparison.OrdinalIgnoreCase))
@@ -81,7 +82,7 @@ internal static class AnalyzerConfigOptionsExtensions
     /// <returns>The value of the target MSBuild property.</returns>
     public static bool GetMSBuildBooleanPropertyValue(this AnalyzerConfigOptions options, string propertyName, bool defaultValue = false)
     {
-        if (options.TryGetValue($"build_property.{propertyName}", out string? propertyValue))
+        if (options.TryGetMSBuildStringPropertyValue(propertyName, out string? propertyValue))
         {
             if (bool.TryParse(propertyValue, out bool booleanPropertyValue))
             {
@@ -101,7 +102,7 @@ internal static class AnalyzerConfigOptionsExtensions
     /// <returns>The value of the target MSBuild property.</returns>
     public static int GetMSBuildInt32PropertyValue(this AnalyzerConfigOptions options, string propertyName, int defaultValue = 0)
     {
-        if (options.TryGetValue($"build_property.{propertyName}", out string? propertyValue))
+        if (options.TryGetMSBuildStringPropertyValue(propertyName, out string? propertyValue))
         {
             if (int.TryParse(propertyValue, out int int32PropertyValue))
             {
@@ -110,5 +111,17 @@ internal static class AnalyzerConfigOptionsExtensions
         }
 
         return defaultValue;
+    }
+
+    /// <summary>
+    /// Tries to get a <see cref="string"/> value of a given MSBuild property from an input <see cref="AnalyzerConfigOptions"/> instance.
+    /// </summary>
+    /// <param name="options">The input <see cref="AnalyzerConfigOptions"/> instance.</param>
+    /// <param name="propertyName">The name of the target MSBuild property.</param>
+    /// <param name="propertyValue">The resulting property value.</param>
+    /// <returns>Whether the property value was retrieved..</returns>
+    public static bool TryGetMSBuildStringPropertyValue(this AnalyzerConfigOptions options, string propertyName, [NotNullWhen(true)] out string? propertyValue)
+    {
+        return options.TryGetValue($"build_property.{propertyName}", out propertyValue);
     }
 }
