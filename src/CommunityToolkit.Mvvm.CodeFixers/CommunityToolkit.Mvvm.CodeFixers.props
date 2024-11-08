@@ -4,6 +4,9 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+
+    <!-- Embed the .pdb file (see notes in the MVVM Toolkit generator projects) -->
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
 
   <!-- Simplified version of the same props as the source generators -->
