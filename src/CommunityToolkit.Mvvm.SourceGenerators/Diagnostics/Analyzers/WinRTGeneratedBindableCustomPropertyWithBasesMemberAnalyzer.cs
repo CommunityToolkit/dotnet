@@ -61,7 +61,7 @@ public sealed class WinRTGeneratedBindableCustomPropertyWithBasesMemberAnalyzer 
                 }
 
                 // Warn on all [ObservableProperty] fields
-                foreach (IFieldSymbol fieldSymbol in FindObservablePropertyFields(typeSymbol, relayCommandSymbol))
+                foreach (IFieldSymbol fieldSymbol in FindObservablePropertyFields(typeSymbol, observablePropertySymbol))
                 {
                     context.ReportDiagnostic(Diagnostic.Create(
                         WinRTGeneratedBindableCustomPropertyWithBaseObservablePropertyOnField,
@@ -94,7 +94,7 @@ public sealed class WinRTGeneratedBindableCustomPropertyWithBasesMemberAnalyzer 
     {
         // Check whether the base type (if any) is from the same assembly, and stop if it isn't. We do not
         // want to include methods from the same type, as those will already be caught by another analyzer.
-        if (!SymbolEqualityComparer.Default.Equals(typeSymbol.ContainingAssembly, typeSymbol.BaseType))
+        if (!SymbolEqualityComparer.Default.Equals(typeSymbol.ContainingAssembly, typeSymbol.BaseType?.ContainingAssembly))
         {
             yield break;
         }
@@ -117,7 +117,13 @@ public sealed class WinRTGeneratedBindableCustomPropertyWithBasesMemberAnalyzer 
     /// <returns>All <see cref="IFieldSymbol"/> instances for matching members.</returns>
     private static IEnumerable<IFieldSymbol> FindObservablePropertyFields(INamedTypeSymbol typeSymbol, INamedTypeSymbol observablePropertySymbol)
     {
-        foreach (ISymbol memberSymbol in typeSymbol.GetAllMembersFromSameAssembly())
+        // Skip the base type if not from the same assembly, same as above
+        if (!SymbolEqualityComparer.Default.Equals(typeSymbol.ContainingAssembly, typeSymbol.BaseType?.ContainingAssembly))
+        {
+            yield break;
+        }
+
+        foreach (ISymbol memberSymbol in typeSymbol.BaseType.GetAllMembersFromSameAssembly())
         {
             if (memberSymbol is IFieldSymbol fieldSymbol &&
                 fieldSymbol.HasAttributeWithType(observablePropertySymbol))
