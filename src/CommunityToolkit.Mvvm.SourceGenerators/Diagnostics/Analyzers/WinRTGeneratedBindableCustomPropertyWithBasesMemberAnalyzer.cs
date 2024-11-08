@@ -38,7 +38,7 @@ public sealed class WinRTGeneratedBindableCustomPropertyWithBasesMemberAnalyzer 
                 return;
             }
 
-            // Get the symbol for [ObservableProperty], [RelayCommand] and [GeneratedBindableCustomProperty]
+            // Get the symbols for [ObservableProperty], [RelayCommand] and [GeneratedBindableCustomProperty]
             if (context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute") is not INamedTypeSymbol observablePropertySymbol ||
                 context.Compilation.GetTypeByMetadataName("CommunityToolkit.Mvvm.Input.RelayCommandAttribute") is not INamedTypeSymbol relayCommandSymbol ||
                 context.Compilation.GetTypeByMetadataName("WinRT.GeneratedBindableCustomPropertyAttribute") is not INamedTypeSymbol generatedBindableCustomPropertySymbol)
