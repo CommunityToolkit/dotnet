@@ -1999,6 +1999,91 @@ public partial class Test_SourceGeneratorsDiagnostics
         await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<AutoPropertyWithFieldTargetedObservablePropertyAttributeAnalyzer>(source, LanguageVersion.CSharp9);
     }
 
+    [TestMethod]
+    public async Task WinRTRelayCommandIsNotGeneratedBindableCustomPropertyCompatibleAnalyzer_NotTargetingWindows_DoesNotWarn()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.Input;
+            
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {            
+                    [RelayCommand]
+                    private void DoStuff()
+                    {
+                    }
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<WinRTRelayCommandIsNotGeneratedBindableCustomPropertyCompatibleAnalyzer>.VerifyAnalyzerAsync(
+            source,
+            LanguageVersion.CSharp10,
+            editorconfig: []);
+    }
+
+    [TestMethod]
+    public async Task WinRTRelayCommandIsNotGeneratedBindableCustomPropertyCompatibleAnalyzer_TargetingWindows_DoesNotWarn()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.Input;
+            
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {            
+                    [RelayCommand]
+                    private void DoStuff()
+                    {
+                    }
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<WinRTRelayCommandIsNotGeneratedBindableCustomPropertyCompatibleAnalyzer>.VerifyAnalyzerAsync(
+            source,
+            LanguageVersion.CSharp10,
+            editorconfig: [("_MvvmToolkitIsUsingWindowsRuntimePack", true)]);
+    }
+
+    [TestMethod]
+    public async Task WinRTRelayCommandIsNotGeneratedBindableCustomPropertyCompatibleAnalyzer_TargetingWindows_Bindable_Warns()
+    {
+        const string source = """
+            using System;
+            using CommunityToolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.Input;
+            using WinRT;
+            
+            namespace MyApp
+            {
+                [GeneratedBindableCustomProperty]
+                public partial class SampleViewModel : ObservableObject
+                {            
+                    [{|MVVMTK0046:RelayCommand|}]
+                    private void DoStuff()
+                    {
+                    }
+                }
+            }
+
+            namespace WinRT
+            {
+                public class GeneratedBindableCustomPropertyAttribute : Attribute
+                {
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<WinRTRelayCommandIsNotGeneratedBindableCustomPropertyCompatibleAnalyzer>.VerifyAnalyzerAsync(
+            source,
+            LanguageVersion.CSharp10,
+            editorconfig: [("_MvvmToolkitIsUsingWindowsRuntimePack", true)]);
+    }
+
     /// <summary>
     /// Verifies the diagnostic errors for a given analyzer, and that all available source generators can run successfully with the input source (including subsequent compilation).
     /// </summary>
