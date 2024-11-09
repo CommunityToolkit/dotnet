@@ -812,4 +812,36 @@ internal static class DiagnosticDescriptors
         isEnabledByDefault: true,
         description: "Using [GeneratedBindableCustomProperty] on types that also use [RelayCommand] on any inherited methods is not supported, and a manually declared command property should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated property that is produced by the MVVM Toolkit generator).",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0048");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[INotifyPropertyChanged]</c> is used on a type in WinRT scenarios.
+    /// <para>
+    /// Format: <c>"The type {0} is using the [INotifyPropertyChanged] attribute, with is not AOT compatible in WinRT scenarios (such as UWP XAML and WinUI 3 apps), and it should derive from ObservableObject or manually implement INotifyPropertyChanged instead (as it allows the CsWinRT generators to correctly produce the necessary WinRT marshalling code)"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor WinRTUsingINotifyPropertyChangedAttribute = new DiagnosticDescriptor(
+        id: "MVVMTK0049",
+        title: "Using [INotifyPropertyChanged] is not AOT compatible for WinRT",
+        messageFormat: "The type {0} is using the [INotifyPropertyChanged] attribute, with is not AOT compatible in WinRT scenarios (such as UWP XAML and WinUI 3 apps), and it should derive from ObservableObject or manually implement INotifyPropertyChanged instead (as it allows the CsWinRT generators to correctly produce the necessary WinRT marshalling code)",
+        category: typeof(INotifyPropertyChangedGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description: "Using the [INotifyPropertyChanged] attribute on types is not AOT compatible in WinRT scenarios (such as UWP XAML and WinUI 3 apps), and they should derive from ObservableObject or manually implement INotifyPropertyChanged instead (as it allows the CsWinRT generators to correctly produce the necessary WinRT marshalling code).",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0049");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[ObservableObject]</c> is used on a type in WinRT scenarios.
+    /// <para>
+    /// Format: <c>"The type {0} is using the [ObservableObject] attribute, with is not AOT compatible in WinRT scenarios (such as UWP XAML and WinUI 3 apps), and it should derive from ObservableObject instead (as it allows the CsWinRT generators to correctly produce the necessary WinRT marshalling code)"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor WinRTUsingObservableObjectAttribute = new DiagnosticDescriptor(
+        id: "MVVMTK0050",
+        title: "Using [ObservableObject] is not AOT compatible for WinRT",
+        messageFormat: "The type {0} is using the [ObservableObject] attribute, with is not AOT compatible in WinRT scenarios (such as UWP XAML and WinUI 3 apps), and it should derive from ObservableObject instead (as it allows the CsWinRT generators to correctly produce the necessary WinRT marshalling code)",
+        category: typeof(ObservableObjectGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description: "Using the [ObservableObject] attribute on types is not AOT compatible in WinRT scenarios (such as UWP XAML and WinUI 3 apps), and they should derive from ObservableObject instead (as it allows the CsWinRT generators to correctly produce the necessary WinRT marshalling code).",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0050");
 }

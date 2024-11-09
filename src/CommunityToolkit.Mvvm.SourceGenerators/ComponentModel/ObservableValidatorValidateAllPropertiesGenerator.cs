@@ -12,7 +12,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace CommunityToolkit.Mvvm.SourceGenerators;
 
 /// <summary>
-/// A source generator for message registration without relying on compiled LINQ expressions.
+/// A source generator for property validation without relying on compiled LINQ expressions.
 /// </summary>
 [Generator(LanguageNames.CSharp)]
 public sealed partial class ObservableValidatorValidateAllPropertiesGenerator : IIncrementalGenerator
