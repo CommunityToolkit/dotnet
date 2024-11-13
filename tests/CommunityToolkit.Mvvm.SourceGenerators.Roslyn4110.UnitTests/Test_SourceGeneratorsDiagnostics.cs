@@ -78,8 +78,8 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [{|MVVMTK0042:ObservableProperty|}]            
-                    private string name;
+                    [ObservableProperty]            
+                    private string {|MVVMTK0042:name|};
                 }
             }
             """;
@@ -371,8 +371,8 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [{|MVVMTK0045:ObservableProperty|}]            
-                    private string name;
+                    [ObservableProperty]            
+                    private string {|MVVMTK0045:name|};
                 }
             }
             """;
@@ -415,8 +415,8 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [{|MVVMTK0045:ObservableProperty|}]            
-                    private string name;
+                    [ObservableProperty]            
+                    private string {|MVVMTK0045:name|};
                 }
             }
             """;
@@ -437,8 +437,8 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [{|MVVMTK0045:ObservableProperty|}]            
-                    private string name;
+                    [ObservableProperty]            
+                    private string {|MVVMTK0045:name|};
                 }
             }
             """;
@@ -459,8 +459,8 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [{|MVVMTK0045:ObservableProperty|}]            
-                    private string name;
+                    [ObservableProperty]            
+                    private string {|MVVMTK0045:name|};
                 }
             }
 
@@ -486,8 +486,8 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [{|MVVMTK0045:ObservableProperty|}]            
-                    private string name;
+                    [ObservableProperty]            
+                    private string {|MVVMTK0045:name|};
                 }
             }
 
@@ -585,8 +585,8 @@ partial class Test_SourceGeneratorsDiagnostics
             
             namespace MyApp
             {
-                [{|MVVMTK0047:GeneratedBindableCustomProperty|}]
-                public partial class SampleViewModel : BaseViewModel
+                [GeneratedBindableCustomProperty]
+                public partial class {|MVVMTK0047:SampleViewModel|} : BaseViewModel
                 {                    
                 }
 
@@ -620,8 +620,8 @@ partial class Test_SourceGeneratorsDiagnostics
             
             namespace MyApp
             {
-                [{|MVVMTK0048:GeneratedBindableCustomProperty|}]
-                public partial class SampleViewModel : BaseViewModel
+                [GeneratedBindableCustomProperty]
+                public partial class {|MVVMTK0048:SampleViewModel|} : BaseViewModel
                 {                    
                 }
 

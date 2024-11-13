@@ -21,8 +21,8 @@ public class Test_UnsupportedRoslynVersionForPartialPropertyAnalyzer
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [{|MVVMTK0044:ObservableProperty|}]            
-                    public string Bar { get; set; }
+                    [ObservableProperty]            
+                    public string {|MVVMTK0044:Bar|} { get; set; }
                 }
             }
             """;
