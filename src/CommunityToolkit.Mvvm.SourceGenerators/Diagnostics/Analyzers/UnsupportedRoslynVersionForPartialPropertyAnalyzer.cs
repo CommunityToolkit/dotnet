@@ -5,6 +5,7 @@
 #if !ROSLYN_4_11_0_OR_GREATER
 
 using System.Collections.Immutable;
+using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -44,11 +45,11 @@ public sealed class UnsupportedRoslynVersionForPartialPropertyAnalyzer : Diagnos
                 }
 
                 // If the property has [ObservableProperty], emit an error in all cases
-                if (propertySymbol.TryGetAttributeWithType(observablePropertySymbol, out AttributeData? observablePropertyAttribute))
+                if (propertySymbol.HasAttributeWithType(observablePropertySymbol))
                 {
                     context.ReportDiagnostic(Diagnostic.Create(
                         UnsupportedRoslynVersionForObservablePartialPropertySupport,
-                        observablePropertyAttribute.GetLocation(),
+                        propertySymbol.Locations.FirstOrDefault(),
                         propertySymbol.ContainingType,
                         propertySymbol));
                 }

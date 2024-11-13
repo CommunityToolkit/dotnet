@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections.Immutable;
+using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -49,7 +50,7 @@ public sealed class WinRTRelayCommandIsNotGeneratedBindableCustomPropertyCompati
                 }
 
                 // If the method is not using [RelayCommand], we can skip it
-                if (!methodSymbol.TryGetAttributeWithType(relayCommandSymbol, out AttributeData? relayCommandAttribute))
+                if (!methodSymbol.HasAttributeWithType(relayCommandSymbol))
                 {
                     return;
                 }
@@ -59,7 +60,7 @@ public sealed class WinRTRelayCommandIsNotGeneratedBindableCustomPropertyCompati
                 {
                     context.ReportDiagnostic(Diagnostic.Create(
                         WinRTRelayCommandIsNotGeneratedBindableCustomPropertyCompatible,
-                        relayCommandAttribute.GetLocation(),
+                        methodSymbol.Locations.FirstOrDefault(),
                         methodSymbol));
                 }
             }, SymbolKind.Method);

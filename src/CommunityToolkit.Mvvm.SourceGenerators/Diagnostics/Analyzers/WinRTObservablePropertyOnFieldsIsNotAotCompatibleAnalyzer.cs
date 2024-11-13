@@ -5,6 +5,7 @@
 #if ROSLYN_4_11_0_OR_GREATER
 
 using System.Collections.Immutable;
+using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -50,11 +51,11 @@ public sealed class WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer : 
                 }
 
                 // Emit a diagnostic if the field is using the [ObservableProperty] attribute
-                if (fieldSymbol.TryGetAttributeWithType(observablePropertySymbol, out AttributeData? observablePropertyAttribute))
+                if (fieldSymbol.HasAttributeWithType(observablePropertySymbol))
                 {
                     context.ReportDiagnostic(Diagnostic.Create(
                         WinRTObservablePropertyOnFieldsIsNotAotCompatible,
-                        observablePropertyAttribute.GetLocation(),
+                        fieldSymbol.Locations.FirstOrDefault(),
                         ImmutableDictionary.Create<string, string?>()
                             .Add(FieldReferenceForObservablePropertyFieldAnalyzer.FieldNameKey, fieldSymbol.Name)
                             .Add(FieldReferenceForObservablePropertyFieldAnalyzer.PropertyNameKey, ObservablePropertyGenerator.Execute.GetGeneratedPropertyName(fieldSymbol)),

@@ -54,8 +54,8 @@ public class Test_UsePartialPropertyForObservablePropertyCodeFixer
         test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
         test.ExpectedDiagnostics.AddRange(new[]
         {
-            // /0/Test0.cs(5,6): info MVVMTK0042: The field C.i using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
-            CSharpCodeFixVerifier.Diagnostic().WithSpan(5, 6, 5, 24).WithArguments("C", "i"),
+            // /0/Test0.cs(6,17): info MVVMTK0042: The field C.i using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(6, 17, 6, 18).WithArguments("C", "i"),
         });
 
         test.FixedState.ExpectedDiagnostics.AddRange(new[]
@@ -102,8 +102,8 @@ public class Test_UsePartialPropertyForObservablePropertyCodeFixer
         test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
         test.ExpectedDiagnostics.AddRange(new[]
         {
-            // /0/Test0.cs(5,6): info MVVMTK0042: The field C.i using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
-            CSharpCodeFixVerifier.Diagnostic().WithSpan(5, 6, 5, 24).WithArguments("C", "i"),
+            // /0/Test0.cs(7,17): info MVVMTK0042: The field C.i using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(7, 17, 7, 18).WithArguments("C", "i"),
         });
 
         test.FixedState.ExpectedDiagnostics.AddRange(new[]
@@ -152,8 +152,8 @@ public class Test_UsePartialPropertyForObservablePropertyCodeFixer
         test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
         test.ExpectedDiagnostics.AddRange(new[]
         {
-            // /0/Test0.cs(5,6): info MVVMTK0042: The field C.i using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
-            CSharpCodeFixVerifier.Diagnostic().WithSpan(5, 6, 5, 24).WithArguments("C", "i"),
+            // /0/Test0.cs(8,17): info MVVMTK0042: The field C.i using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(8, 17, 8, 18).WithArguments("C", "i"),
         });
 
         test.FixedState.ExpectedDiagnostics.AddRange(new[]
@@ -204,8 +204,8 @@ public class Test_UsePartialPropertyForObservablePropertyCodeFixer
         test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
         test.ExpectedDiagnostics.AddRange(new[]
         {
-            // /0/Test0.cs(6,6): info MVVMTK0042: The field C.i using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
-            CSharpCodeFixVerifier.Diagnostic().WithSpan(6, 6, 6, 24).WithArguments("C", "i"),
+            // /0/Test0.cs(9,17): info MVVMTK0042: The field C.i using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(9, 17, 9, 18).WithArguments("C", "i"),
         });
 
         test.FixedState.ExpectedDiagnostics.AddRange(new[]
@@ -275,8 +275,8 @@ public class Test_UsePartialPropertyForObservablePropertyCodeFixer
         test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
         test.ExpectedDiagnostics.AddRange(new[]
         {
-            // /0/Test0.cs(7,6): info MVVMTK0042: The field C.i using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
-            CSharpCodeFixVerifier.Diagnostic().WithSpan(7, 6, 7, 24).WithArguments("C", "i"),
+            // /0/Test0.cs(15,17): info MVVMTK0042: The field C.i using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(15, 17, 15, 18).WithArguments("C", "i"),
         });
 
         test.FixedState.ExpectedDiagnostics.AddRange(new[]
@@ -323,8 +323,8 @@ public class Test_UsePartialPropertyForObservablePropertyCodeFixer
         test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
         test.ExpectedDiagnostics.AddRange(new[]
         {
-            // /0/Test0.cs(6,6): info MVVMTK0042: The field C.i using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
-            CSharpCodeFixVerifier.Diagnostic().WithSpan(6, 6, 6, 24).WithArguments("C", "i"),
+            // /0/Test0.cs(7,17): info MVVMTK0042: The field C.i using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(7, 17, 7, 18).WithArguments("C", "i"),
         });
 
         test.FixedState.ExpectedDiagnostics.AddRange(new[]
@@ -373,8 +373,8 @@ public class Test_UsePartialPropertyForObservablePropertyCodeFixer
         test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
         test.ExpectedDiagnostics.AddRange(new[]
         {
-            // /0/Test0.cs(7,6): info MVVMTK0042: The field C.i using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
-            CSharpCodeFixVerifier.Diagnostic().WithSpan(7, 6, 7, 24).WithArguments("C", "i"),
+            // /0/Test0.cs(8,17): info MVVMTK0042: The field C.i using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(8, 17, 8, 18).WithArguments("C", "i"),
         });
 
         test.FixedState.ExpectedDiagnostics.AddRange(new[]
@@ -427,8 +427,8 @@ public class Test_UsePartialPropertyForObservablePropertyCodeFixer
         test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
         test.ExpectedDiagnostics.AddRange(new[]
         {
-            // /0/Test0.cs(9,6): info MVVMTK0042: The field C.i using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
-            CSharpCodeFixVerifier.Diagnostic().WithSpan(9, 6, 9, 24).WithArguments("C", "i"),
+            // /0/Test0.cs(10,17): info MVVMTK0042: The field C.i using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(10, 17, 10, 18).WithArguments("C", "i"),
         });
 
         test.FixedState.ExpectedDiagnostics.AddRange(new[]
@@ -487,8 +487,8 @@ public class Test_UsePartialPropertyForObservablePropertyCodeFixer
         test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
         test.ExpectedDiagnostics.AddRange(new[]
         {
-            // /0/Test0.cs(5,6): info MVVMTK0042: The field C.i using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
-            CSharpCodeFixVerifier.Diagnostic().WithSpan(5, 6, 5, 24).WithArguments("C", "i"),
+            // /0/Test0.cs(6,17): info MVVMTK0042: The field C.i using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(6, 17, 6, 18).WithArguments("C", "i"),
         });
 
         test.FixedState.ExpectedDiagnostics.AddRange(new[]
@@ -533,8 +533,8 @@ public class Test_UsePartialPropertyForObservablePropertyCodeFixer
         test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
         test.ExpectedDiagnostics.AddRange(new[]
         {
-            // /0/Test0.cs(5,6): info MVVMTK0042: The field C.i using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
-            CSharpCodeFixVerifier.Diagnostic().WithSpan(5, 6, 5, 24).WithArguments("C", "i"),
+            // /0/Test0.cs(6,17): info MVVMTK0042: The field C.i using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(6, 17, 6, 18).WithArguments("C", "i"),
         });
 
         test.FixedState.ExpectedDiagnostics.AddRange(new[]
@@ -584,8 +584,8 @@ public class Test_UsePartialPropertyForObservablePropertyCodeFixer
         test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
         test.ExpectedDiagnostics.AddRange(new[]
         {
-            // /0/Test0.cs(6,6): info MVVMTK0042: The field C.items using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
-            CSharpCodeFixVerifier.Diagnostic().WithSpan(6, 6, 6, 24).WithArguments("C", "items"),
+            // /0/Test0.cs(7,33): info MVVMTK0042: The field C.items using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(7, 33, 7, 38).WithArguments("C", "items"),
         });
 
         test.FixedState.ExpectedDiagnostics.AddRange(new[]
@@ -635,8 +635,8 @@ public class Test_UsePartialPropertyForObservablePropertyCodeFixer
         test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
         test.ExpectedDiagnostics.AddRange(new[]
         {
-            // /0/Test0.cs(6,6): info MVVMTK0042: The field C.items using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
-            CSharpCodeFixVerifier.Diagnostic().WithSpan(6, 6, 6, 24).WithArguments("C", "items"),
+            // /0/Test0.cs(7,33): info MVVMTK0042: The field C.items using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(7, 33, 7, 38).WithArguments("C", "items"),
         });
 
         test.FixedState.ExpectedDiagnostics.AddRange(new[]
@@ -685,8 +685,8 @@ public class Test_UsePartialPropertyForObservablePropertyCodeFixer
         test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
         test.ExpectedDiagnostics.AddRange(new[]
         {
-            // /0/Test0.cs(5,6): info MVVMTK0042: The field C.foo using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
-            CSharpCodeFixVerifier.Diagnostic().WithSpan(5, 6, 5, 24).WithArguments("C", "foo"),
+            // /0/Test0.cs(6,30): info MVVMTK0042: The field C.foo using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(6, 30, 6, 33).WithArguments("C", "foo"),
         });
 
         test.FixedState.ExpectedDiagnostics.AddRange(new[]
@@ -755,8 +755,8 @@ public class Test_UsePartialPropertyForObservablePropertyCodeFixer
         test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
         test.ExpectedDiagnostics.AddRange(new[]
         {
-            // /0/Test0.cs(5,6): info MVVMTK0042: The field C.i using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
-            CSharpCodeFixVerifier.Diagnostic().WithSpan(5, 6, 5, 24).WithArguments("C", "i"),
+            // /0/Test0.cs(6,17): info MVVMTK0042: The field C.i using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(6, 17, 6, 18).WithArguments("C", "i"),
         });
 
         test.FixedState.ExpectedDiagnostics.AddRange(new[]
