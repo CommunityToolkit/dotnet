@@ -4,6 +4,9 @@
 
 using System;
 using System.ComponentModel;
+#if NET8_0_OR_GREATER
+using System.Runtime.CompilerServices;
+#endif
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,8 +19,11 @@ namespace CommunityToolkit.Common.Deferred;
 /// </summary>
 public class EventDeferral : IDisposable
 {
-    // TODO: If/when .NET 6 is base, we can upgrade to non-generic version
+#if NET8_0_OR_GREATER
+    private readonly TaskCompletionSource taskCompletionSource = new();
+#else
     private readonly TaskCompletionSource<object?> taskCompletionSource = new();
+#endif
 
     internal EventDeferral()
     {
@@ -26,7 +32,14 @@ public class EventDeferral : IDisposable
     /// <summary>
     /// Call when finished with the Deferral.
     /// </summary>
-    public void Complete() => this.taskCompletionSource.TrySetResult(null);
+    public void Complete()
+    {
+#if NET8_0_OR_GREATER
+        this.taskCompletionSource.TrySetResult();
+#else
+        this.taskCompletionSource.TrySetResult(null);
+#endif
+    }
 
     /// <summary>
     /// Waits for the <see cref="EventDeferral"/> to be completed by the event handler.
@@ -38,9 +51,19 @@ public class EventDeferral : IDisposable
     [Obsolete("This is an internal only method to be used by EventHandler extension classes, public callers should call GetDeferral() instead on the DeferredEventArgs.")]
     public async Task WaitForCompletion(CancellationToken cancellationToken)
     {
-        using (cancellationToken.Register(() => this.taskCompletionSource.TrySetCanceled()))
+        using (cancellationToken.Register(
+#if NET8_0_OR_GREATER
+            callback: static obj => Unsafe.As<EventDeferral>(obj!).taskCompletionSource.TrySetCanceled(),
+#else
+            callback: static obj => ((EventDeferral)obj).taskCompletionSource.TrySetCanceled(),
+#endif
+            state: this))
         {
+#if NET8_0_OR_GREATER
+            await this.taskCompletionSource.Task;
+#else
             _ = await this.taskCompletionSource.Task;
+#endif
         }
     }
 
