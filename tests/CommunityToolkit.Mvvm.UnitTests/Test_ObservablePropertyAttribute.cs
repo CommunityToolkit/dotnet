@@ -709,12 +709,8 @@ public partial class Test_ObservablePropertyAttribute
         NullabilityInfo rightInfo2 = rightInnerInfo.GenericTypeArguments[2];
 
         Assert.AreEqual(typeof(object), rightInfo2.Type);
-        //Assert.AreEqual(NullabilityState.NotNull, rightInfo2.ReadState);
-        //Assert.AreEqual(NullabilityState.NotNull, rightInfo2.WriteState);
-
-        // The commented out lines are to work around a bug in the NullabilityInfo API in .NET 6.
-        // This has been fixed for .NET 7: https://github.com/dotnet/runtime/pull/63556. The test
-        // cases above can be uncommented when the .NET 7 target (or a more recent version) is added.
+        Assert.AreEqual(NullabilityState.NotNull, rightInfo2.ReadState);
+        Assert.AreEqual(NullabilityState.NotNull, rightInfo2.WriteState);
     }
 #endif
 

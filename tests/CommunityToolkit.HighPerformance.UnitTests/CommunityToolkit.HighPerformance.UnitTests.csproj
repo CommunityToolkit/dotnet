@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net472;net6.0;net7.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>net472;net7.0;net8.0</TargetFrameworks>
     <EnablePreviewFeatures>true</EnablePreviewFeatures>
     <NoWarn>$(NoWarn);CA2252</NoWarn>
   </PropertyGroup>

@@ -16,9 +16,9 @@
   <!--
     Configuration for the feature switches (to support IL trimming).
     See the 'ILLink.Substitutions.xml' file for more details on that.
-    We only include these on .NET 6 and above (no .xml file otherwise).
+    We only include these on .NET 8 and above (no .xml file otherwise).
   -->
-  <ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">
+  <ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
 
     <!-- MVVMTOOLKIT_ENABLE_INOTIFYPROPERTYCHANGING_SUPPORT switch -->
     <RuntimeHostConfigurationOption Include="MVVMTOOLKIT_ENABLE_INOTIFYPROPERTYCHANGING_SUPPORT"

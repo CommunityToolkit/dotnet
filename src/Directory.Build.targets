@@ -7,14 +7,6 @@
     <DefineConstants>NETSTANDARD2_1_OR_GREATER</DefineConstants>
   </PropertyGroup>
 
-  <!-- Configure trimming for projects on .NET 6 and above -->
-  <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">
-    <IsTrimmable>true</IsTrimmable>
-    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
-    <EnableAotAnalyzer>true</EnableAotAnalyzer>
-    <EnableSingleFileAnalyzer>true</EnableSingleFileAnalyzer>
-  </PropertyGroup>
-
   <!-- Set the AOT property directly on .NET 8 and above -->
   <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
     <IsAotCompatible>true</IsAotCompatible>
