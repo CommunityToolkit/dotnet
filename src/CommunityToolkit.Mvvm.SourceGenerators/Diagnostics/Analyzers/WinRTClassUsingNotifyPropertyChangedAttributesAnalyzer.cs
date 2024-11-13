@@ -4,7 +4,6 @@
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -79,7 +78,7 @@ public sealed class WinRTClassUsingNotifyPropertyChangedAttributesAnalyzer : Dia
                     {
                         context.ReportDiagnostic(Diagnostic.Create(
                             GeneratorAttributeNamesToDiagnosticsMap[attributeClass.Name],
-                            context.Symbol.Locations.FirstOrDefault(),
+                            context.Symbol.GetLocationFromAttributeDataOrDefault(attribute),
                             context.Symbol));
                     }
                 }

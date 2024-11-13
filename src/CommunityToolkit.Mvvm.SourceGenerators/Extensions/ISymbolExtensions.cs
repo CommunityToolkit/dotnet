@@ -175,4 +175,31 @@ internal static class ISymbolExtensions
             accessibility == Accessibility.Public ||
             accessibility == Accessibility.Internal && symbol.ContainingAssembly.GivesAccessTo(assembly);
     }
+
+    /// <summary>
+    /// Gets the location of a given symbol that is in the same syntax tree of a specified attribute, or the first one.
+    /// </summary>
+    /// <param name="symbol">The input <see cref="ISymbol"/> instance to check.</param>
+    /// <param name="attributeData">The target <see cref="AttributeData"/> instance.</param>
+    /// <returns>The best <see cref="Location"/> match.</returns>
+    public static Location? GetLocationFromAttributeDataOrDefault(this ISymbol symbol, AttributeData attributeData)
+    {
+        Location? firstLocation = null;
+
+        // Get the syntax tree where the attribute application is located. We use
+        // it to try to find the symbol location that belongs to the same file.
+        SyntaxTree? attributeTree = attributeData.ApplicationSyntaxReference?.SyntaxTree;
+
+        foreach (Location location in symbol.Locations)
+        {
+            if (location.SourceTree == attributeTree)
+            {
+                return location;
+            }
+
+            firstLocation ??= location;
+        }
+
+        return firstLocation;
+    }
 }
