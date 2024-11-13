@@ -3,14 +3,9 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-
-// This file has two types which implement interfaces that can be projected to WInRT, ie.
-// 'Observable<TMessage>.Recipient' and 'Observable<TMessage, TToken>.Recipient', which
-// implement 'IDisposable' (which is projected to 'IClosable'). These types are not meant
-// to be used in interop scenarios (including in eg. bindings), as they're only meant to
-// be used by code behind interacting with System.Reactive APIs. As such, we skip marking
-// them partial, as we don't need CCW vtables to be generated for them.
-#pragma warning disable CsWinRT1028
+#if WINDOWS
+using WinRT;
+#endif
 
 namespace CommunityToolkit.Mvvm.Messaging;
 
@@ -81,6 +76,9 @@ partial class IMessengerExtensions
         /// <summary>
         /// An <see cref="IRecipient{TMessage}"/> implementation for <see cref="Observable{TMessage}"/>.
         /// </summary>
+#if WINDOWS
+        [WinRTExposedType(typeof(WinRTManagedOnlyTypeDetails))]
+#endif
         private sealed class Recipient : IRecipient<TMessage>, IDisposable
         {
             /// <summary>
@@ -159,6 +157,9 @@ partial class IMessengerExtensions
         /// <summary>
         /// An <see cref="IRecipient{TMessage}"/> implementation for <see cref="Observable{TMessage, TToken}"/>.
         /// </summary>
+#if WINDOWS
+        [WinRTExposedType(typeof(WinRTManagedOnlyTypeDetails))]
+#endif
         private sealed class Recipient : IRecipient<TMessage>, IDisposable
         {
             /// <summary>

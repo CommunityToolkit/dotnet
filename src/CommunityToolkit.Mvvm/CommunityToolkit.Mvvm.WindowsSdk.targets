@@ -27,9 +27,9 @@
           - The recommended Windows SDK package for UWP projects using the .NET 9 SDK (with UWP XAML projections).
           - The recommended Windows SDK package for WindowsAppSDK projects (ie. without UWP XAML projections). 
       -->
-      <_MvvmToolkitWindowsSdkPackageMinBuild>38</_MvvmToolkitWindowsSdkPackageMinBuild>
-      <_MvvmToolkitWindowsSdkPackageRecommendedUwpBuild>39</_MvvmToolkitWindowsSdkPackageRecommendedUwpBuild>
-      <_MvvmToolkitWindowsSdkPackageRecommendedWindowsAppSDKBuild>41</_MvvmToolkitWindowsSdkPackageRecommendedWindowsAppSDKBuild>
+      <_MvvmToolkitWindowsSdkPackageMinBuild>55</_MvvmToolkitWindowsSdkPackageMinBuild>
+      <_MvvmToolkitWindowsSdkPackageRecommendedUwpBuild>56</_MvvmToolkitWindowsSdkPackageRecommendedUwpBuild>
+      <_MvvmToolkitWindowsSdkPackageRecommendedWindowsAppSDKBuild>57</_MvvmToolkitWindowsSdkPackageRecommendedWindowsAppSDKBuild>
 
       <!-- Switch on the recommended one based on configuration -->
       <_MvvmToolkitWindowsSdkPackageRecommendedBuild>$(_MvvmToolkitWindowsSdkPackageMinBuild)</_MvvmToolkitWindowsSdkPackageRecommendedBuild>
