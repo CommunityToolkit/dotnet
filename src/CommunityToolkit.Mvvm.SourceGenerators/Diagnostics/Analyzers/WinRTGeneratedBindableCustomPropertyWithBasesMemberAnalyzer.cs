@@ -6,7 +6,6 @@
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -56,7 +55,7 @@ public sealed class WinRTGeneratedBindableCustomPropertyWithBasesMemberAnalyzer 
                 }
 
                 // We only care about it if it's using [GeneratedBindableCustomProperty]
-                if (!typeSymbol.HasAttributeWithType(generatedBindableCustomPropertySymbol))
+                if (!typeSymbol.TryGetAttributeWithType(generatedBindableCustomPropertySymbol, out AttributeData? generatedBindableCustomPropertyAttribute))
                 {
                     return;
                 }
@@ -66,7 +65,7 @@ public sealed class WinRTGeneratedBindableCustomPropertyWithBasesMemberAnalyzer 
                 {
                     context.ReportDiagnostic(Diagnostic.Create(
                         WinRTGeneratedBindableCustomPropertyWithBaseObservablePropertyOnField,
-                        typeSymbol.Locations.FirstOrDefault(),
+                        typeSymbol.GetLocationFromAttributeDataOrDefault(generatedBindableCustomPropertyAttribute),
                         typeSymbol,
                         fieldSymbol.ContainingType,
                         fieldSymbol.Name));
@@ -77,7 +76,7 @@ public sealed class WinRTGeneratedBindableCustomPropertyWithBasesMemberAnalyzer 
                 {
                     context.ReportDiagnostic(Diagnostic.Create(
                         WinRTGeneratedBindableCustomPropertyWithBaseRelayCommand,
-                        typeSymbol.Locations.FirstOrDefault(),
+                        typeSymbol.GetLocationFromAttributeDataOrDefault(generatedBindableCustomPropertyAttribute),
                         typeSymbol,
                         methodSymbol));
                 }
