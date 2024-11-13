@@ -35,7 +35,7 @@ public static class NullableExtensions
     public static ref T DangerousGetValueOrDefaultReference<T>(this ref T? value)
         where T : struct
     {
-#if NET7_0_OR_GREATER
+#if NET8_0_OR_GREATER
         return ref Unsafe.AsRef(in Nullable.GetValueRefOrDefaultRef(in value));
 #else
         return ref Unsafe.As<T?, RawNullableData<T>>(ref value).Value;
@@ -53,7 +53,7 @@ public static class NullableExtensions
     public static unsafe ref T DangerousGetValueOrNullReference<T>(ref this T? value)
         where T : struct
     {
-#if NET7_0_OR_GREATER
+#if NET8_0_OR_GREATER
         ref T resultRef = ref *(T*)null;
 
         // This pattern ensures that the resulting code ends up having a single return, and a single
@@ -84,7 +84,7 @@ public static class NullableExtensions
 #endif
     }
 
-#if !NET7_0_OR_GREATER
+#if !NET8_0_OR_GREATER
     /// <summary>
     /// Mapping type that reflects the internal layout of the <see cref="Nullable{T}"/> type.
     /// See https://github.com/dotnet/runtime/blob/master/src/libraries/System.Private.CoreLib/src/System/Nullable.cs.
