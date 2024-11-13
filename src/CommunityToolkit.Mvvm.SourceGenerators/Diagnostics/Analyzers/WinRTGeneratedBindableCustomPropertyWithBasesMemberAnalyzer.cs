@@ -65,7 +65,7 @@ public sealed class WinRTGeneratedBindableCustomPropertyWithBasesMemberAnalyzer 
                 {
                     context.ReportDiagnostic(Diagnostic.Create(
                         WinRTGeneratedBindableCustomPropertyWithBaseObservablePropertyOnField,
-                        generatedBindableCustomPropertyAttribute.GetLocation(),
+                        typeSymbol.GetLocationFromAttributeDataOrDefault(generatedBindableCustomPropertyAttribute),
                         typeSymbol,
                         fieldSymbol.ContainingType,
                         fieldSymbol.Name));
@@ -76,7 +76,7 @@ public sealed class WinRTGeneratedBindableCustomPropertyWithBasesMemberAnalyzer 
                 {
                     context.ReportDiagnostic(Diagnostic.Create(
                         WinRTGeneratedBindableCustomPropertyWithBaseRelayCommand,
-                        generatedBindableCustomPropertyAttribute.GetLocation(),
+                        typeSymbol.GetLocationFromAttributeDataOrDefault(generatedBindableCustomPropertyAttribute),
                         typeSymbol,
                         methodSymbol));
                 }

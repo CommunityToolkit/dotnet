@@ -59,7 +59,7 @@ public sealed class WinRTRelayCommandIsNotGeneratedBindableCustomPropertyCompati
                 {
                     context.ReportDiagnostic(Diagnostic.Create(
                         WinRTRelayCommandIsNotGeneratedBindableCustomPropertyCompatible,
-                        relayCommandAttribute.GetLocation(),
+                        methodSymbol.GetLocationFromAttributeDataOrDefault(relayCommandAttribute),
                         methodSymbol));
                 }
             }, SymbolKind.Method);

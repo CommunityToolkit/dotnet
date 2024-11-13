@@ -4,7 +4,6 @@
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -76,7 +75,7 @@ public sealed class UnsupportedCSharpLanguageVersionAnalyzer : DiagnosticAnalyze
                         typeSymbols.TryGetValue(attributeName, out INamedTypeSymbol? attributeSymbol) &&
                         SymbolEqualityComparer.Default.Equals(attributeClass, attributeSymbol))
                     {
-                        context.ReportDiagnostic(Diagnostic.Create(UnsupportedCSharpLanguageVersionError, context.Symbol.Locations.FirstOrDefault()));
+                        context.ReportDiagnostic(Diagnostic.Create(UnsupportedCSharpLanguageVersionError, context.Symbol.GetLocationFromAttributeDataOrDefault(attribute)));
 
                         // If we created a diagnostic for this symbol, we can stop. Even if there's multiple attributes, no need for repeated errors
                         return;

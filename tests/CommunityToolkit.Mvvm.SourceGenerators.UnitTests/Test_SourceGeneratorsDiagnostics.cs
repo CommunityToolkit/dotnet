@@ -2063,8 +2063,8 @@ public partial class Test_SourceGeneratorsDiagnostics
                 [GeneratedBindableCustomProperty]
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [{|MVVMTK0046:RelayCommand|}]
-                    private void DoStuff()
+                    [RelayCommand]
+                    private void {|MVVMTK0046:DoStuff|}()
                     {
                     }
                 }
