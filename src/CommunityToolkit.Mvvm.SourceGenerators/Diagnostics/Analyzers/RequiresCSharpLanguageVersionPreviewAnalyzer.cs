@@ -7,6 +7,8 @@
 using System.Collections.Immutable;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
 
@@ -44,9 +46,23 @@ public sealed class RequiresCSharpLanguageVersionPreviewAnalyzer : DiagnosticAna
             context.RegisterSymbolAction(context =>
             {
                 // We only want to target partial property definitions (also include non-partial ones for diagnostics)
-                if (context.Symbol is not IPropertySymbol { PartialDefinitionPart: null })
+                if (context.Symbol is not IPropertySymbol { PartialDefinitionPart: null } partialProperty)
                 {
                     return;
+                }
+
+                // Make sure to skip the warning if the property is not actually partial
+                if (partialProperty.DeclaringSyntaxReferences is [var syntaxReference])
+                {
+                    // Make sure we can find the syntax node, and that it's a property declaration
+                    if (syntaxReference.GetSyntax(context.CancellationToken) is PropertyDeclarationSyntax propertyDeclarationSyntax)
+                    {
+                        // If the property is not partial, ignore it, as we'll already have a warning from the other analyzer here
+                        if (!propertyDeclarationSyntax.Modifiers.Any(SyntaxKind.PartialKeyword))
+                        {
+                            return;
+                        }
+                    }
                 }
 
                 // If the property is using [ObservableProperty], emit the diagnostic
