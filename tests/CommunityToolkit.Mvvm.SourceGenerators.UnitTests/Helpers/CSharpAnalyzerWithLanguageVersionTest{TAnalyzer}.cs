@@ -63,16 +63,6 @@ internal sealed class CSharpAnalyzerWithLanguageVersionTest<TAnalyzer> : CSharpA
 #endif
         test.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(typeof(ObservableObject).Assembly.Location));
 
-        test.SolutionTransforms.Add((solution, projectId) =>
-            solution.AddAnalyzerConfigDocument(DocumentId.CreateNewId(projectId),
-                "UseMarshalType.editorconfig",
-                SourceText.From("""
-                    is_global = true
-                    build_property.LibraryImportGenerator_UseMarshalType = true
-                    """,
-                    Encoding.UTF8),
-                filePath: "/UseMarshalType.editorconfig"));
-
         test.ExpectedDiagnostics.AddRange(expected);
 
         return test.RunAsync(CancellationToken.None);
