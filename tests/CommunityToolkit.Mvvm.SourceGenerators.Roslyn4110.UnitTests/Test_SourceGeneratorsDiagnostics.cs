@@ -5,6 +5,7 @@
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.SourceGenerators.UnitTests.Helpers;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators.UnitTests;
@@ -20,14 +21,38 @@ partial class Test_SourceGeneratorsDiagnostics
             namespace MyApp
             {
                 public partial class SampleViewModel : ObservableObject
-                {            
-                    [{|MVVMTK0041:ObservableProperty|}]            
+                {
+                    [{|MVVMTK0041:ObservableProperty|}]
                     public string Name { get; set; }
                 }
             }
             """;
 
         await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<RequiresCSharpLanguageVersionPreviewAnalyzer>(source, LanguageVersion.CSharp12);
+    }
+
+    [TestMethod]
+    public async Task RequireCSharpLanguageVersionPreviewAnalyzer_LanguageVersionIsNotPreview_UsingPartial_Warns()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [{|MVVMTK0041:ObservableProperty|}]
+                    public partial string Name { get; set; }
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<RequiresCSharpLanguageVersionPreviewAnalyzer>.VerifyAnalyzerAsync(
+            source,
+            LanguageVersion.Preview,
+
+            // /0/Test0.cs(8,31): error CS9248: Partial property 'SampleViewModel.Name' must have an implementation part.
+            DiagnosticResult.CompilerError("CS9248").WithSpan(8, 31, 8, 35).WithArguments("MyApp.SampleViewModel.Name"));
     }
 
     [TestMethod]
@@ -39,14 +64,38 @@ partial class Test_SourceGeneratorsDiagnostics
             namespace MyApp
             {
                 public partial class SampleViewModel : ObservableObject
-                {            
-                    [ObservableProperty]            
+                {
+                    [ObservableProperty]
                     public string Name { get; set; }
                 }
             }
             """;
 
         await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<RequiresCSharpLanguageVersionPreviewAnalyzer>(source, languageVersion: LanguageVersion.Preview);
+    }
+
+    [TestMethod]
+    public async Task RequireCSharpLanguageVersionPreviewAnalyzer_LanguageVersionIsPreview_UsingPartial_DoesNotWarn()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    public partial string Name { get; set; }
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<RequiresCSharpLanguageVersionPreviewAnalyzer>.VerifyAnalyzerAsync(
+            source,
+            LanguageVersion.Preview,
+
+            // /0/Test0.cs(8,31): error CS9248: Partial property 'SampleViewModel.Name' must have an implementation part.
+            DiagnosticResult.CompilerError("CS9248").WithSpan(8, 31, 8, 35).WithArguments("MyApp.SampleViewModel.Name"));
     }
 
     [TestMethod]
