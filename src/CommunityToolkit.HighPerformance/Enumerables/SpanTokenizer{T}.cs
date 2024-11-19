@@ -73,7 +73,10 @@ public ref struct SpanTokenizer<T>
         {
             this.start = newEnd;
 
-            int index = this.span.Slice(newEnd).IndexOf(this.separator);
+            // Here we're inside the 'CommunityToolkit.HighPerformance.Enumerables' namespace, so the
+            // 'MemoryExtensions' type from the .NET Community Toolkit would be bound instead. Because
+            // want the one from the BCL (to search by value), we can use its fully qualified name.
+            int index = System.MemoryExtensions.IndexOf(this.span.Slice(newEnd), this.separator);
 
             // Extract the current subsequence
             if (index >= 0)
