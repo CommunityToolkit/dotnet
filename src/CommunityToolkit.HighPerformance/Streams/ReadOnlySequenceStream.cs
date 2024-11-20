@@ -298,11 +298,6 @@ internal sealed partial class ReadOnlySequenceStream : Stream
     /// <inheritdoc/>
     protected override void Dispose(bool disposing)
     {
-        if (this.disposed)
-        {
-            return;
-        }
-
         this.disposed = true;
     }
 }
