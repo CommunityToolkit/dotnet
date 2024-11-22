@@ -790,7 +790,7 @@ internal static class DiagnosticDescriptors
     public static readonly DiagnosticDescriptor WinRTGeneratedBindableCustomPropertyWithBaseObservablePropertyOnField = new(
         id: "MVVMTK0047",
         title: "Using [GeneratedBindableCustomProperty] is not compatible with [ObservableProperty] on fields",
-        messageFormat: """The type {0} using [GeneratedBindableCustomProperty] is also using [RelayCommand] on its declared (or inherited) method {1}: combining the two generators is not supported, and a manually declared command property should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated property that is produced by the MVVM Toolkit generator)""",
+        messageFormat: """The type {0} using [GeneratedBindableCustomProperty] is also using [ObservableProperty] on its declared (or inherited) field {1}.{2}: combining the two generators is not supported, and partial properties should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated property that is produced by the MVVM Toolkit generator)""",
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
