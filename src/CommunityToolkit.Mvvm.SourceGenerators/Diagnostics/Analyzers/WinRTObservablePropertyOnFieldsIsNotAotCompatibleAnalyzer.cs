@@ -6,6 +6,7 @@
 
 using System.Collections.Immutable;
 using System.Linq;
+using System.Threading;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -20,7 +21,9 @@ namespace CommunityToolkit.Mvvm.SourceGenerators;
 public sealed class WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer : DiagnosticAnalyzer
 {
     /// <inheritdoc/>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(WinRTObservablePropertyOnFieldsIsNotAotCompatible);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
+        WinRTObservablePropertyOnFieldsIsNotAotCompatible,
+        WinRTObservablePropertyOnFieldsIsNotAotCompatibleCompilationEndInfo);
 
     /// <inheritdoc/>
     public override void Initialize(AnalysisContext context)
@@ -42,6 +45,9 @@ public sealed class WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer : 
                 return;
             }
 
+            // Track whether we produced any diagnostics, for the compilation end scenario
+            AttributeData? firstObservablePropertyAttribute = null;
+
             context.RegisterSymbolAction(context =>
             {
                 // Ensure we do have a valid field
@@ -51,7 +57,7 @@ public sealed class WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer : 
                 }
 
                 // Emit a diagnostic if the field is using the [ObservableProperty] attribute
-                if (fieldSymbol.HasAttributeWithType(observablePropertySymbol))
+                if (fieldSymbol.TryGetAttributeWithType(observablePropertySymbol, out AttributeData? observablePropertyAttribute))
                 {
                     context.ReportDiagnostic(Diagnostic.Create(
                         WinRTObservablePropertyOnFieldsIsNotAotCompatible,
@@ -61,8 +67,32 @@ public sealed class WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer : 
                             .Add(FieldReferenceForObservablePropertyFieldAnalyzer.PropertyNameKey, ObservablePropertyGenerator.Execute.GetGeneratedPropertyName(fieldSymbol)),
                         fieldSymbol.ContainingType,
                         fieldSymbol.Name));
+
+                    // Notify that we did produce at least one diagnostic. Note: callbacks can run in parallel, so the order
+                    // is not guaranteed. As such, there's no point in using an interlocked compare exchange operation here,
+                    // since we couldn't rely on the value being written actually being the "first" occurrence anyway.
+                    // So we can just do a normal volatile read for better performance.
+                    Volatile.Write(ref firstObservablePropertyAttribute, observablePropertyAttribute);
                 }
             }, SymbolKind.Field);
+
+            // If C# preview is already in use, we can stop here. The last diagnostic is only needed when partial properties
+            // cannot be used, to inform developers that they'll need to bump the language version to enable the code fixer.
+            if (context.Compilation.IsLanguageVersionPreview())
+            {
+                return;
+            }
+
+            context.RegisterCompilationEndAction(context =>
+            {
+                // If we have produced at least one diagnostic, also emit the info message
+                if (Volatile.Read(ref firstObservablePropertyAttribute) is { } observablePropertyAttribute)
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(
+                        WinRTObservablePropertyOnFieldsIsNotAotCompatibleCompilationEndInfo,
+                        observablePropertyAttribute.GetLocation()));
+                }
+            });
         });
     }
 }

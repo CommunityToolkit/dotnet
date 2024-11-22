@@ -435,6 +435,28 @@ partial class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
+    public async Task WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer_TargetingWindows_CsWinRTAotOptimizerEnabled_Auto_NotCSharpPreview_Warns_WithCompilationWarning()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {            
+                    [{|MVVMTK0051:ObservableProperty|}]            
+                    private string {|MVVMTK0045:name|};
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer>.VerifyAnalyzerAsync(
+            source,
+            LanguageVersion.CSharp12,
+            editorconfig: [("_MvvmToolkitIsUsingWindowsRuntimePack", true), ("CsWinRTAotOptimizerEnabled", "auto")]);
+    }
+
+    [TestMethod]
     public async Task WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer_TargetingWindows_CsWinRTAotOptimizerEnabled_True_NoXaml_Level1_DoesNotWarn()
     {
         const string source = """
