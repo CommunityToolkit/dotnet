@@ -98,7 +98,7 @@ partial class ObservablePropertyGenerator
         public static MemberDeclarationSyntax GetCandidateMemberDeclaration(SyntaxNode node)
         {
             // If the node is a property declaration, just return it directly. Note that we don't have
-            // to check whether we're using Roslyn 4.11 here, as if that's not the case all of these
+            // to check whether we're using Roslyn 4.12 here, as if that's not the case all of these
             // syntax nodes would already have pre-filtered well before this method could run at all.
             if (node is PropertyDeclarationSyntax propertySyntax)
             {
