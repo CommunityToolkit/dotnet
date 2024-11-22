@@ -83,13 +83,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.Exter
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunityToolkit.Mvvm.CodeFixers.Roslyn4001", "src\CommunityToolkit.Mvvm.CodeFixers.Roslyn4001\CommunityToolkit.Mvvm.CodeFixers.Roslyn4001.csproj", "{E79DCA2A-4C59-499F-85BD-F45215ED6B72}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunityToolkit.Mvvm.SourceGenerators.Roslyn4110", "src\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4110\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4110.csproj", "{FCC13AD5-CEB8-4CC1-8250-89B616D126F2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunityToolkit.Mvvm.SourceGenerators.Roslyn4120", "src\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4120\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4120.csproj", "{FCC13AD5-CEB8-4CC1-8250-89B616D126F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunityToolkit.Mvvm.SourceGenerators.Roslyn4110.UnitTests", "tests\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4110.UnitTests\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4110.UnitTests.csproj", "{C342302D-A263-42D6-B8EE-01DEF8192690}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunityToolkit.Mvvm.SourceGenerators.Roslyn4120.UnitTests", "tests\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4120.UnitTests\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4120.UnitTests.csproj", "{C342302D-A263-42D6-B8EE-01DEF8192690}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CommunityToolkit.Mvvm.CodeFixers", "src\CommunityToolkit.Mvvm.CodeFixers\CommunityToolkit.Mvvm.CodeFixers.shproj", "{A2EBDA90-B720-430D-83F5-C6BCC355232C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunityToolkit.Mvvm.CodeFixers.Roslyn4110", "src\CommunityToolkit.Mvvm.CodeFixers.Roslyn4110\CommunityToolkit.Mvvm.CodeFixers.Roslyn4110.csproj", "{98572004-D29A-486E-8053-6D409557CE44}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunityToolkit.Mvvm.CodeFixers.Roslyn4120", "src\CommunityToolkit.Mvvm.CodeFixers.Roslyn4120\CommunityToolkit.Mvvm.CodeFixers.Roslyn4120.csproj", "{98572004-D29A-486E-8053-6D409557CE44}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
