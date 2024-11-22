@@ -46,7 +46,7 @@ public sealed class WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer : 
             }
 
             // Track whether we produced any diagnostics, for the compilation end scenario
-            bool hasProducedAnyDiagnostics = false;
+            AttributeData? firstObservablePropertyAttribute = null;
 
             context.RegisterSymbolAction(context =>
             {
@@ -57,7 +57,7 @@ public sealed class WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer : 
                 }
 
                 // Emit a diagnostic if the field is using the [ObservableProperty] attribute
-                if (fieldSymbol.HasAttributeWithType(observablePropertySymbol))
+                if (fieldSymbol.TryGetAttributeWithType(observablePropertySymbol, out AttributeData? observablePropertyAttribute))
                 {
                     context.ReportDiagnostic(Diagnostic.Create(
                         WinRTObservablePropertyOnFieldsIsNotAotCompatible,
@@ -69,7 +69,7 @@ public sealed class WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer : 
                         fieldSymbol.Name));
 
                     // Notify that we did produce at least one diagnostic
-                    Volatile.Write(ref hasProducedAnyDiagnostics, true);
+                    _ = Interlocked.CompareExchange(ref firstObservablePropertyAttribute, observablePropertyAttribute, null);
                 }
             }, SymbolKind.Field);
 
@@ -83,9 +83,11 @@ public sealed class WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer : 
             context.RegisterCompilationEndAction(context =>
             {
                 // If we have produced at least one diagnostic, also emit the info message
-                if (Volatile.Read(ref hasProducedAnyDiagnostics))
+                if (Volatile.Read(ref firstObservablePropertyAttribute) is { } observablePropertyAttribute)
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(WinRTObservablePropertyOnFieldsIsNotAotCompatibleCompilationEndInfo, location: null));
+                    context.ReportDiagnostic(Diagnostic.Create(
+                        WinRTObservablePropertyOnFieldsIsNotAotCompatibleCompilationEndInfo,
+                        observablePropertyAttribute.GetLocation()));
                 }
             });
         });
