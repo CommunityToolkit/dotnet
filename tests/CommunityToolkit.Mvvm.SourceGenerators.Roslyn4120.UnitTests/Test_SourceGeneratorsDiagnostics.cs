@@ -32,7 +32,7 @@ partial class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public async Task RequireCSharpLanguageVersionPreviewAnalyzer_LanguageVersionIsNotPreview_Partial_Warns()
+    public async Task RequireCSharpLanguageVersionPreviewAnalyzer_LanguageVersionIsNotPreview_CSharp12_Partial_Warns()
     {
         const string source = """
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -51,8 +51,32 @@ partial class Test_SourceGeneratorsDiagnostics
             source,
             LanguageVersion.CSharp12,
 
-            // /0/Test0.cs(8,31): error CS8703: The modifier 'partial' is not valid for this item in C# 12.0. Please use language version 'preview' or greater.
-            DiagnosticResult.CompilerError("CS8703").WithSpan(8, 31, 8, 35).WithArguments("partial", "12.0", "preview"),
+            // /0/Test0.cs(8,31): error CS8703: The modifier 'partial' is not valid for this item in C# 12.0. Please use language version '13.0' or greater.
+            DiagnosticResult.CompilerError("CS8703").WithSpan(8, 31, 8, 35).WithArguments("partial", "12.0", "13.0"),
+            // /0/Test0.cs(8,31): error CS9248: Partial property 'SampleViewModel.Name' must have an implementation part.
+            DiagnosticResult.CompilerError("CS9248").WithSpan(8, 31, 8, 35).WithArguments("MyApp.SampleViewModel.Name"));
+    }
+
+    [TestMethod]
+    public async Task RequireCSharpLanguageVersionPreviewAnalyzer_LanguageVersionIsNotPreview_CSharp13_Partial_Warns()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {            
+                    [{|MVVMTK0041:ObservableProperty|}]            
+                    public partial string Name { get; set; }
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<RequiresCSharpLanguageVersionPreviewAnalyzer>.VerifyAnalyzerAsync(
+            source,
+            LanguageVersion.CSharp13,
+
             // /0/Test0.cs(8,31): error CS9248: Partial property 'SampleViewModel.Name' must have an implementation part.
             DiagnosticResult.CompilerError("CS9248").WithSpan(8, 31, 8, 35).WithArguments("MyApp.SampleViewModel.Name"));
     }
