@@ -68,8 +68,11 @@ public sealed class WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer : 
                         fieldSymbol.ContainingType,
                         fieldSymbol.Name));
 
-                    // Notify that we did produce at least one diagnostic
-                    _ = Interlocked.CompareExchange(ref firstObservablePropertyAttribute, observablePropertyAttribute, null);
+                    // Notify that we did produce at least one diagnostic. Note: callbacks can run in parallel, so the order
+                    // is not guaranteed. As such, there's no point in using an interlocked compare exchange operation here,
+                    // since we couldn't rely on the value being written actually being the "first" occurrence anyway.
+                    // So we can just do a normal volatile read for better performance.
+                    Volatile.Write(ref firstObservablePropertyAttribute, observablePropertyAttribute);
                 }
             }, SymbolKind.Field);
 
