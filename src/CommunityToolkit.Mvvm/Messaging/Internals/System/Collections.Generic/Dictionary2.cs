@@ -298,7 +298,7 @@ internal class Dictionary2<TKey, TValue> : IDictionary2<TKey, TValue>
             while ((uint)this.index < (uint)this.count)
             {
                 // We need to preemptively increment the current index so that we still correctly keep track
-                // of the current position in the dictionary even if the users doesn't access any of the
+                // of the current position in the dictionary even if the users don't access any of the
                 // available properties in the enumerator. As this is a possibility, we can't rely on one of
                 // them to increment the index before MoveNext is invoked again. We ditch the standard enumerator
                 // API surface here to expose the Key/Value properties directly and minimize the memory copies.

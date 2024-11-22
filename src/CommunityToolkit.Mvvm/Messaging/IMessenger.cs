@@ -15,7 +15,7 @@ namespace CommunityToolkit.Mvvm.Messaging;
 /// <code>
 /// public sealed class LoginCompletedMessage { }
 /// </code>
-/// Then, register your a recipient for this message:
+/// Then, register a recipient for this message:
 /// <code>
 /// Messenger.Default.Register&lt;MyRecipientType, LoginCompletedMessage&gt;(this, (r, m) =>
 /// {

@@ -181,7 +181,7 @@ partial class ObservableValidatorValidateAllPropertiesGenerator
             // full runtime type safety (as a safe cast is used to validate the input argument), and with less reflection needed.
             // Note that we're deliberately creating a new delegate instance here and not using code that could see the C# compiler
             // create a static class to cache a reusable delegate, because each generated method will only be called at most once,
-            // as the returned delegate will be cached by the MVVM Toolkit itself. So this ensures the the produced code is minimal,
+            // as the returned delegate will be cached by the MVVM Toolkit itself. So this ensures the produced code is minimal,
             // and that there will be no unnecessary static fields and objects being created and possibly never collected.
             // This code will produce a syntax tree as follows:
             //
