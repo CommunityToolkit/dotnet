@@ -844,4 +844,21 @@ internal static class DiagnosticDescriptors
         isEnabledByDefault: true,
         description: "Using the [ObservableObject] attribute on types is not AOT compatible in WinRT scenarios (such as UWP XAML and WinUI 3 apps), and they should derive from ObservableObject instead (as it allows the CsWinRT generators to correctly produce the necessary WinRT marshalling code).",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0050");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> for when <c>[ObservableProperty]</c> is used on a field in WinRT scenarios.
+    /// <para>
+    /// Format: <c>"This project produced one or more 'MVVMTK0045' warnings due to [ObservableProperty] being used on fields, which is not AOT compatible in WinRT scenarios, but it can't enable partial properties and the associated code fixer because 'LangVersion' is not set to 'preview' (setting 'LangVersion=preview' is required to use [ObservableProperty] on partial properties and address these warnings)"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor WinRTObservablePropertyOnFieldsIsNotAotCompatibleCompilationEndInfo = new(
+        id: "MVVMTK0051",
+        title: "Using [ObservableProperty] with WinRT and AOT requires 'LangVersion=preview'",
+        messageFormat: """This project produced one or more 'MVVMTK0045' warnings due to [ObservableProperty] being used on fields, which is not AOT compatible in WinRT scenarios, but it can't enable partial properties and the associated code fixer because 'LangVersion' is not set to 'preview' (setting 'LangVersion=preview' is required to use [ObservableProperty] on partial properties and address these warnings)""",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Info,
+        isEnabledByDefault: true,
+        description: "Project producing one or more 'MVVMTK0045' warnings due to [ObservableProperty] being used on fields, which is not AOT compatible in WinRT scenarios, should set 'LangVersion' to 'preview' to enable partial properties and the associated code fixer because (setting 'LangVersion=preview' is required to use [ObservableProperty] on partial properties and address these warnings).",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0051",
+        customTags: WellKnownDiagnosticTags.CompilationEnd);
 }

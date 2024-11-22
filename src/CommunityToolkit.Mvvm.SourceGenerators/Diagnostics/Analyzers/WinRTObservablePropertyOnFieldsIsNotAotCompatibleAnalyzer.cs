@@ -6,6 +6,7 @@
 
 using System.Collections.Immutable;
 using System.Linq;
+using System.Threading;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -20,7 +21,9 @@ namespace CommunityToolkit.Mvvm.SourceGenerators;
 public sealed class WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer : DiagnosticAnalyzer
 {
     /// <inheritdoc/>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(WinRTObservablePropertyOnFieldsIsNotAotCompatible);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
+        WinRTObservablePropertyOnFieldsIsNotAotCompatible,
+        WinRTObservablePropertyOnFieldsIsNotAotCompatibleCompilationEndInfo);
 
     /// <inheritdoc/>
     public override void Initialize(AnalysisContext context)
@@ -42,6 +45,9 @@ public sealed class WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer : 
                 return;
             }
 
+            // Track whether we produced any diagnostics, for the compilation end scenario
+            bool hasProducedAnyDiagnostics = false;
+
             context.RegisterSymbolAction(context =>
             {
                 // Ensure we do have a valid field
@@ -61,8 +67,27 @@ public sealed class WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer : 
                             .Add(FieldReferenceForObservablePropertyFieldAnalyzer.PropertyNameKey, ObservablePropertyGenerator.Execute.GetGeneratedPropertyName(fieldSymbol)),
                         fieldSymbol.ContainingType,
                         fieldSymbol.Name));
+
+                    // Notify that we did produce at least one diagnostic
+                    Volatile.Write(ref hasProducedAnyDiagnostics, true);
                 }
             }, SymbolKind.Field);
+
+            // If C# preview is already in use, we can stop here. The last diagnostic is only needed when partial properties
+            // cannot be used, to inform developers that they'll need to bump the language version to enable the code fixer.
+            if (context.Compilation.IsLanguageVersionPreview())
+            {
+                return;
+            }
+
+            context.RegisterCompilationEndAction(context =>
+            {
+                // If we have produced at least one diagnostic, also emit the info message
+                if (Volatile.Read(ref hasProducedAnyDiagnostics))
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(WinRTObservablePropertyOnFieldsIsNotAotCompatibleCompilationEndInfo, location: null));
+                }
+            });
         });
     }
 }
