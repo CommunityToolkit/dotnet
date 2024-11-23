@@ -634,8 +634,7 @@ internal static class DiagnosticDescriptors
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "All attributes targeting the generated property for a field annotated with [ObservableProperty] must be using valid expressions.",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0037");
+        description: "All attributes targeting the generated property for a field annotated with [ObservableProperty] must be using valid expressions.");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a method with <c>[RelayCommand]</c> is using an invalid attribute targeting the field or property.
@@ -650,8 +649,7 @@ internal static class DiagnosticDescriptors
         category: typeof(RelayCommandGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "All attributes targeting the generated field or property for a method annotated with [RelayCommand] must be using valid expressions.",
-        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0038");
+        description: "All attributes targeting the generated field or property for a method annotated with [RelayCommand] must be using valid expressions.");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a method with <c>[RelayCommand]</c> is async void.
@@ -858,7 +856,7 @@ internal static class DiagnosticDescriptors
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Info,
         isEnabledByDefault: true,
-        description: "Project producing one or more 'MVVMTK0045' warnings due to [ObservableProperty] being used on fields, which is not AOT compatible in WinRT scenarios, should set 'LangVersion' to 'preview' to enable partial properties and the associated code fixer because (setting 'LangVersion=preview' is required to use [ObservableProperty] on partial properties and address these warnings).",
+        description: "This project producing one or more 'MVVMTK0045' warnings due to [ObservableProperty] being used on fields, which is not AOT compatible in WinRT scenarios, should set 'LangVersion' to 'preview' to enable partial properties and the associated code fixer (setting 'LangVersion=preview' is required to use [ObservableProperty] on partial properties and address these warnings).",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0051",
         customTags: WellKnownDiagnosticTags.CompilationEnd);
 }
