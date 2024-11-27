@@ -100,13 +100,6 @@ public sealed class UsePartialPropertyForObservablePropertyCodeFixer : CodeFixPr
         if (root!.FindNode(diagnosticSpan).FirstAncestorOrSelf<FieldDeclarationSyntax>() is { Declaration.Variables: [{ Identifier.Text: string identifierName }] } fieldDeclaration &&
             identifierName == fieldName)
         {
-            // We only support fields with up to one attribute per attribute list.
-            // This is so we can easily check one attribute when updating targets.
-            if (fieldDeclaration.AttributeLists.Any(static list => list.Attributes.Count > 1))
-            {
-                return;
-            }
-
             // Register the code fix to update the class declaration to inherit from ObservableObject instead
             context.RegisterCodeFix(
                 CodeAction.Create(
@@ -194,33 +187,108 @@ public sealed class UsePartialPropertyForObservablePropertyCodeFixer : CodeFixPr
                 continue;
             }
 
-            // Make sure we can retrieve the symbol for the attribute type.
-            // We are guaranteed to always find a single attribute in the list.
-            if (!semanticModel.GetSymbolInfo(attributeListSyntax.Attributes[0], cancellationToken).TryGetAttributeTypeSymbol(out INamedTypeSymbol? attributeSymbol))
+            if (attributeListSyntax.Attributes.Count == 1)
             {
-                return document;
+                // Make sure we can retrieve the symbol for the attribute type
+                if (!semanticModel.GetSymbolInfo(attributeListSyntax.Attributes[0], cancellationToken).TryGetAttributeTypeSymbol(out INamedTypeSymbol? attributeSymbol))
+                {
+                    return document;
+                }
+
+                // Case 3
+                if (toolkitTypeSymbols.ContainsValue(attributeSymbol))
+                {
+                    propertyAttributes[i] = attributeListSyntax.WithTarget(null);
+
+                    continue;
+                }
+
+                // Case 4
+                if (annotationTypeSymbols.ContainsValue(attributeSymbol) || attributeSymbol.InheritsFromType(validationAttributeSymbol))
+                {
+                    continue;
+                }
+
+                // Case 5
+                if (attributeListSyntax.Target is null)
+                {
+                    propertyAttributes[i] = attributeListSyntax.WithTarget(AttributeTargetSpecifier(Token(SyntaxKind.FieldKeyword)));
+
+                    continue;
+                }
             }
-
-            // Case 3
-            if (toolkitTypeSymbols.ContainsValue(attributeSymbol))
+            else
             {
-                propertyAttributes[i] = attributeListSyntax.WithTarget(null);
+                // If we have multiple attributes in the current list, we need additional logic here.
+                // We could have any number of attributes here, so we split them into three buckets:
+                //   - MVVM Toolkit attributes: these should be moved over with no target
+                //   - Data annotation or validation attributes: these should be moved over with the same target
+                //   - Any other attributes: these should be moved over with the 'field' target
+                List<AttributeSyntax> mvvmToolkitAttributes = [];
+                List<AttributeSyntax> annotationOrValidationAttributes = [];
+                List<AttributeSyntax> fieldAttributes = [];
 
-                continue;
-            }
+                foreach (AttributeSyntax attributeSyntax in attributeListSyntax.Attributes)
+                {
+                    // Like for the single attribute case, make sure we can get the symbol for the attribute
+                    if (!semanticModel.GetSymbolInfo(attributeSyntax, cancellationToken).TryGetAttributeTypeSymbol(out INamedTypeSymbol? attributeSymbol))
+                    {
+                        return document;
+                    }
 
-            // Case 4
-            if (annotationTypeSymbols.ContainsValue(attributeSymbol) || attributeSymbol.InheritsFromType(validationAttributeSymbol))
-            {
-                continue;
-            }
+                    bool isAnnotationOrValidationAttribute = annotationTypeSymbols.ContainsValue(attributeSymbol) || attributeSymbol.InheritsFromType(validationAttributeSymbol);
 
-            // Case 5
-            if (attributeListSyntax.Target is null)
-            {
-                propertyAttributes[i] = attributeListSyntax.WithTarget(AttributeTargetSpecifier(Token(SyntaxKind.FieldKeyword)));
+                    // Split the attributes into the buckets. Note that we have a special rule for annotation and validation
+                    // attributes when no target is specified. In that case, we will merge them with the MVVM Toolkit items.
+                    // This allows us to try to keep the attributes in the same attribute list, rather than splitting them.
+                    if (toolkitTypeSymbols.ContainsValue(attributeSymbol) || (isAnnotationOrValidationAttribute && attributeListSyntax.Target is null))
+                    {
+                        mvvmToolkitAttributes.Add(attributeSyntax);
+                    }
+                    else if (isAnnotationOrValidationAttribute)
+                    {
+                        annotationOrValidationAttributes.Add(attributeSyntax);
+                    }
+                    else
+                    {
+                        fieldAttributes.Add(attributeSyntax);
+                    }
+                }
 
-                continue;
+                // We need to start inserting the new lists right before the one we're currently
+                // processing. We'll be removing it when we're done, the buckets will replace it.
+                int insertionIndex = i;
+
+                // Helper to process and insert the new synthesized attribute lists into the target collection
+                void InsertAttributeListIfNeeded(List<AttributeSyntax> attributes, AttributeTargetSpecifierSyntax? attributeTarget)
+                {
+                    if (attributes is [])
+                    {
+                        return;
+                    }
+
+                    AttributeListSyntax attributeList = AttributeList(SeparatedList(attributes)).WithTarget(attributeTarget);
+
+                    // Only if this is the first non empty list we're adding, carry over the original trivia
+                    if (insertionIndex == i)
+                    {
+                        attributeList = attributeList.WithTriviaFrom(attributeListSyntax);
+                    }
+
+                    // Finally, insert the new list into the final tree
+                    propertyAttributes.Insert(insertionIndex++, attributeList);
+                }
+
+                InsertAttributeListIfNeeded(mvvmToolkitAttributes, attributeTarget: null);
+                InsertAttributeListIfNeeded(annotationOrValidationAttributes, attributeTarget: attributeListSyntax.Target);
+                InsertAttributeListIfNeeded(fieldAttributes, attributeTarget: AttributeTargetSpecifier(Token(SyntaxKind.FieldKeyword)));
+
+                // Remove the attribute list that we have just split into buckets
+                propertyAttributes.RemoveAt(insertionIndex);
+
+                // Move the current loop iteration to the last inserted item.
+                // We decrement by 1 because the new loop iteration will add 1.
+                i = insertionIndex - 1;
             }
         }
 
