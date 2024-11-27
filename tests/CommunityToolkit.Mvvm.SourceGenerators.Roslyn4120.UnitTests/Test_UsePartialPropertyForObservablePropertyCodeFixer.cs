@@ -767,4 +767,232 @@ public class Test_UsePartialPropertyForObservablePropertyCodeFixer
 
         await test.RunAsync();
     }
+
+    [TestMethod]
+    public async Task SimpleFields_WithMultipleAttributes_SingleProperty()
+    {
+        string original = """
+            using System;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            public partial class Class1 : ObservableObject
+            {
+                [ObservableProperty, NotifyPropertyChangedFor("Age")] private string name = String.Empty;
+            }
+            """;
+
+        string @fixed = """
+            using System;
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            public partial class Class1 : ObservableObject
+            {
+                [ObservableProperty, NotifyPropertyChangedFor("Age")]
+                public partial string Name { get; set; } = String.Empty;
+            }
+            """;
+
+        CSharpCodeFixTest test = new(LanguageVersion.Preview)
+        {
+            TestCode = original,
+            FixedCode = @fixed,
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
+        };
+
+        test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
+        test.ExpectedDiagnostics.AddRange(new[]
+        {
+            // /0/Test0.cs(6,74): info MVVMTK0042: The field Class1.name using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(6, 74, 6, 78).WithArguments("Class1", "name"),
+        });
+
+        test.FixedState.ExpectedDiagnostics.AddRange(new[]
+        {
+            // /0/Test0.cs(7,27): error CS8050: Only auto-implemented properties, or properties that use the 'field' keyword, can have initializers.
+            DiagnosticResult.CompilerError("CS8050").WithSpan(7, 27, 7, 31),
+
+            // /0/Test0.cs(7,27): error CS9248: Partial property 'Class1.Name' must have an implementation part.
+            DiagnosticResult.CompilerError("CS9248").WithSpan(7, 27, 7, 31).WithArguments("Class1.Name"),
+        });
+
+        await test.RunAsync();
+    }
+
+    // See https://github.com/CommunityToolkit/dotnet/issues/1007
+    [TestMethod]
+    public async Task SimpleFields_WithMultipleAttributes_WithNoBlankLines()
+    {
+        string original = """
+            using System;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            public partial class Class1 : ObservableObject
+            {
+                [ObservableProperty, NotifyPropertyChangedFor("Age")] private string name = String.Empty;
+                [ObservableProperty] private int age;
+            }
+            """;
+
+        string @fixed = """
+            using System;
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            public partial class Class1 : ObservableObject
+            {
+                [ObservableProperty, NotifyPropertyChangedFor("Age")]
+                public partial string Name { get; set; } = String.Empty;
+
+                [ObservableProperty]
+                public partial int Age { get; set; }
+            }
+            """;
+
+        CSharpCodeFixTest test = new(LanguageVersion.Preview)
+        {
+            TestCode = original,
+            FixedCode = @fixed,
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
+        };
+
+        test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
+        test.ExpectedDiagnostics.AddRange(new[]
+        {
+            // /0/Test0.cs(6,74): info MVVMTK0042: The field Class1.name using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(6, 74, 6, 78).WithArguments("Class1", "name"),
+            
+            // /0/Test0.cs(7,38): info MVVMTK0042: The field Class1.age using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(7, 38, 7, 41).WithArguments("Class1", "age"),
+        });
+
+        test.FixedState.ExpectedDiagnostics.AddRange(new[]
+        {
+            // /0/Test0.cs(7,27): error CS8050: Only auto-implemented properties, or properties that use the 'field' keyword, can have initializers.
+            DiagnosticResult.CompilerError("CS8050").WithSpan(7, 27, 7, 31),
+
+            // /0/Test0.cs(7,27): error CS9248: Partial property 'Class1.Name' must have an implementation part.
+            DiagnosticResult.CompilerError("CS9248").WithSpan(7, 27, 7, 31).WithArguments("Class1.Name"),
+
+            // /0/Test0.cs(10,24): error CS9248: Partial property 'Class1.Age' must have an implementation part.
+            DiagnosticResult.CompilerError("CS9248").WithSpan(10, 24, 10, 27).WithArguments("Class1.Age"),
+        });
+
+        await test.RunAsync();
+    }
+
+    [TestMethod]
+    public async Task SimpleFields_WithMultipleAttributes_WithMixedBuckets_1()
+    {
+        string original = """
+            using System;
+            using System.ComponentModel.DataAnnotations;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            public partial class Class1 : ObservableObject
+            {
+                // Leading trivia
+                [ObservableProperty, NotifyPropertyChangedFor("A"), Display]
+                [NotifyPropertyChangedFor("B")]
+                private string _name;
+            }
+            """;
+
+        string @fixed = """
+            using System;
+            using System.ComponentModel.DataAnnotations;
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            public partial class Class1 : ObservableObject
+            {
+                // Leading trivia
+                [ObservableProperty, NotifyPropertyChangedFor("A"), Display]
+                [NotifyPropertyChangedFor("B")]
+                public partial string Name { get; set; }
+            }
+            """;
+
+        CSharpCodeFixTest test = new(LanguageVersion.Preview)
+        {
+            TestCode = original,
+            FixedCode = @fixed,
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
+        };
+
+        test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
+        test.ExpectedDiagnostics.AddRange(new[]
+        {
+            // /0/Test0.cs(10,20): info MVVMTK0042: The field Class1._name using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(10, 20, 10, 25).WithArguments("Class1", "_name"),
+        });
+
+        test.FixedState.ExpectedDiagnostics.AddRange(new[]
+        {
+            // /0/Test0.cs(10,27): error CS9248: Partial property 'Class1.Name' must have an implementation part.
+            DiagnosticResult.CompilerError("CS9248").WithSpan(10, 27, 10, 31).WithArguments("Class1.Name"),
+        });
+
+        await test.RunAsync();
+    }
+
+    [TestMethod]
+    public async Task SimpleFields_WithMultipleAttributes_WithMixedBuckets_2()
+    {
+        string original = """
+            using System;
+            using System.ComponentModel.DataAnnotations;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            public partial class Class1 : ObservableObject
+            {
+                // Leading trivia
+                [NotifyPropertyChangedFor("B")]
+                [ObservableProperty, NotifyPropertyChangedFor("A"), Display, Test]
+                [NotifyPropertyChangedFor("C")]
+                [property: UIHint("name"), Test]
+                private string name;
+            }
+
+            public class TestAttribute : Attribute;
+            """;
+
+        string @fixed = """
+            using System;
+            using System.ComponentModel.DataAnnotations;
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            public partial class Class1 : ObservableObject
+            {
+                // Leading trivia
+                [NotifyPropertyChangedFor("B")]
+                [ObservableProperty, NotifyPropertyChangedFor("A"), Display]
+                [field: Test]
+                [NotifyPropertyChangedFor("C")]
+                [UIHint("name"), Test]
+                public partial string Name { get; set; }
+            }
+
+            public class TestAttribute : Attribute;
+            """;
+
+        CSharpCodeFixTest test = new(LanguageVersion.Preview)
+        {
+            TestCode = original,
+            FixedCode = @fixed,
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
+        };
+
+        test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
+        test.ExpectedDiagnostics.AddRange(new[]
+        {
+            // /0/Test0.cs(12,20): info MVVMTK0042: The field Class1.name using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(12, 20, 12, 24).WithArguments("Class1", "name"),
+        });
+
+        test.FixedState.ExpectedDiagnostics.AddRange(new[]
+        {
+            // /0/Test0.cs(13,27): error CS9248: Partial property 'Class1.Name' must have an implementation part.
+            DiagnosticResult.CompilerError("CS9248").WithSpan(13, 27, 13, 31).WithArguments("Class1.Name"),
+        });
+
+        await test.RunAsync();
+    }
 }
