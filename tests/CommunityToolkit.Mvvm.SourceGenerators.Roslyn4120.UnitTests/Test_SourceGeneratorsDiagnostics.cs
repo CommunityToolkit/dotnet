@@ -526,10 +526,14 @@ partial class Test_SourceGeneratorsDiagnostics
             }
             """;
 
-        await CSharpAnalyzerWithLanguageVersionTest<WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer>.VerifyAnalyzerAsync(
-            source,
-            LanguageVersion.CSharp12,
-            editorconfig: [("_MvvmToolkitIsUsingWindowsRuntimePack", true), ("CsWinRTAotOptimizerEnabled", "auto")]);
+        // This test is non deterministic, so run it 10 times to ensure the likelihood of it passing just by luck is almost 0
+        for (int i = 0; i < 10; i++)
+        {
+            await CSharpAnalyzerWithLanguageVersionTest<WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer>.VerifyAnalyzerAsync(
+                source,
+                LanguageVersion.CSharp12,
+                editorconfig: [("_MvvmToolkitIsUsingWindowsRuntimePack", true), ("CsWinRTAotOptimizerEnabled", "auto")]);
+        }
     }
 
     [TestMethod]
