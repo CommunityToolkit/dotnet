@@ -468,8 +468,60 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [{|MVVMTK0051:ObservableProperty|}]            
+                    [{|MVVMTK0051:ObservableProperty|}]
                     private string {|MVVMTK0045:name|};
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer>.VerifyAnalyzerAsync(
+            source,
+            LanguageVersion.CSharp12,
+            editorconfig: [("_MvvmToolkitIsUsingWindowsRuntimePack", true), ("CsWinRTAotOptimizerEnabled", "auto")]);
+    }
+
+    [TestMethod]
+    public async Task WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer_TargetingWindows_CsWinRTAotOptimizerEnabled_Auto_NotCSharpPreview_MultipleFields_Warns_WithCompilationWarning_ConsistentLocation()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {            
+                    [{|MVVMTK0051:ObservableProperty|}]
+                    private string {|MVVMTK0045:f1|};
+
+                    [ObservableProperty]
+                    private string {|MVVMTK0045:f2|};
+
+                    [ObservableProperty]
+                    private string {|MVVMTK0045:f3|};
+                }
+
+                public partial class OtherViewModel : ObservableObject
+                {            
+                    [ObservableProperty]
+                    private string {|MVVMTK0045:f1|};
+
+                    [ObservableProperty]
+                    private string {|MVVMTK0045:f2|};
+
+                    [ObservableProperty]
+                    private string {|MVVMTK0045:f3|};
+                }
+            }
+
+            namespace OtherNamespace
+            {
+                public partial class YetAnotherViewModel : ObservableObject
+                {            
+                    [ObservableProperty]
+                    private string {|MVVMTK0045:f1|};
+
+                    [ObservableProperty]
+                    private string {|MVVMTK0045:f2|};
                 }
             }
             """;
