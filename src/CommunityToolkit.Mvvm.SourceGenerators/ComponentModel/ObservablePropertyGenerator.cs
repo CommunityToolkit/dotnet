@@ -9,7 +9,6 @@ using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 using CommunityToolkit.Mvvm.SourceGenerators.Models;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators;
