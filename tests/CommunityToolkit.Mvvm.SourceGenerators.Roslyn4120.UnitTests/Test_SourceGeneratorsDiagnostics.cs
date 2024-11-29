@@ -468,7 +468,7 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [{|MVVMTK0051:ObservableProperty|}]            
+                    [{|MVVMTK0051:ObservableProperty|}]
                     private string {|MVVMTK0045:name|};
                 }
             }
@@ -478,6 +478,62 @@ partial class Test_SourceGeneratorsDiagnostics
             source,
             LanguageVersion.CSharp12,
             editorconfig: [("_MvvmToolkitIsUsingWindowsRuntimePack", true), ("CsWinRTAotOptimizerEnabled", "auto")]);
+    }
+
+    [TestMethod]
+    public async Task WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer_TargetingWindows_CsWinRTAotOptimizerEnabled_Auto_NotCSharpPreview_MultipleFields_Warns_WithCompilationWarning_ConsistentLocation()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {            
+                    [{|MVVMTK0051:ObservableProperty|}]
+                    private string {|MVVMTK0045:f1|};
+
+                    [ObservableProperty]
+                    private string {|MVVMTK0045:f2|};
+
+                    [ObservableProperty]
+                    private string {|MVVMTK0045:f3|};
+                }
+
+                public partial class OtherViewModel : ObservableObject
+                {            
+                    [ObservableProperty]
+                    private string {|MVVMTK0045:f1|};
+
+                    [ObservableProperty]
+                    private string {|MVVMTK0045:f2|};
+
+                    [ObservableProperty]
+                    private string {|MVVMTK0045:f3|};
+                }
+            }
+
+            namespace OtherNamespace
+            {
+                public partial class YetAnotherViewModel : ObservableObject
+                {            
+                    [ObservableProperty]
+                    private string {|MVVMTK0045:f1|};
+
+                    [ObservableProperty]
+                    private string {|MVVMTK0045:f2|};
+                }
+            }
+            """;
+
+        // This test is non deterministic, so run it 10 times to ensure the likelihood of it passing just by luck is almost 0
+        for (int i = 0; i < 10; i++)
+        {
+            await CSharpAnalyzerWithLanguageVersionTest<WinRTObservablePropertyOnFieldsIsNotAotCompatibleAnalyzer>.VerifyAnalyzerAsync(
+                source,
+                LanguageVersion.CSharp12,
+                editorconfig: [("_MvvmToolkitIsUsingWindowsRuntimePack", true), ("CsWinRTAotOptimizerEnabled", "auto")]);
+        }
     }
 
     [TestMethod]
