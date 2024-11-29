@@ -91,6 +91,14 @@ public sealed class InvalidPropertyLevelObservablePropertyAttributeAnalyzer : Di
             return false;
         }
 
+        // Static properties are not supported
+        if (property.Modifiers.Any(SyntaxKind.StaticKeyword))
+        {
+            containingTypeNode = null;
+
+            return false;
+        }
+
         // The accessors must be a get and a set (with any accessibility)
         if (accessors[0].Kind() is not (SyntaxKind.GetAccessorDeclaration or SyntaxKind.SetAccessorDeclaration) ||
             accessors[1].Kind() is not (SyntaxKind.GetAccessorDeclaration or SyntaxKind.SetAccessorDeclaration))
