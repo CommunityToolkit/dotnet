@@ -60,7 +60,7 @@ public sealed class InvalidPropertyLevelObservablePropertyAttributeAnalyzer : Di
                             InvalidPropertyDeclarationForObservableProperty,
                             observablePropertyAttribute.GetLocation(),
                             propertySymbol.ContainingType,
-                            propertySymbol));
+                            propertySymbol.Name));
                     }
                 }
             }, SymbolKind.Property);

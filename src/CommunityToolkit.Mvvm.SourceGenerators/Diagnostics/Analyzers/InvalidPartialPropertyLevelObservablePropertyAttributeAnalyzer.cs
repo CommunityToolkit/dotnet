@@ -69,7 +69,8 @@ public sealed class InvalidPartialPropertyLevelObservablePropertyAttributeAnalyz
                         context.ReportDiagnostic(Diagnostic.Create(
                             InvalidObservablePropertyDeclarationIsNotIncompletePartialDefinition,
                             observablePropertyAttribute.GetLocation(),
-                            context.Symbol));
+                            propertySymbol.ContainingType,
+                            propertySymbol.Name));
                     }
                 }
 
@@ -79,7 +80,8 @@ public sealed class InvalidPartialPropertyLevelObservablePropertyAttributeAnalyz
                     context.ReportDiagnostic(Diagnostic.Create(
                         InvalidObservablePropertyDeclarationReturnsByRef,
                         observablePropertyAttribute.GetLocation(),
-                        context.Symbol));
+                        propertySymbol.ContainingType,
+                        propertySymbol.Name));
                 }
 
                 // Emit an error if the property type is a ref struct
@@ -88,7 +90,8 @@ public sealed class InvalidPartialPropertyLevelObservablePropertyAttributeAnalyz
                     context.ReportDiagnostic(Diagnostic.Create(
                         InvalidObservablePropertyDeclarationReturnsRefLikeType,
                         observablePropertyAttribute.GetLocation(),
-                        context.Symbol));
+                        propertySymbol.ContainingType,
+                        propertySymbol.Name));
                 }
             }, SymbolKind.Property);
         });

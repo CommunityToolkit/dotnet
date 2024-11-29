@@ -51,7 +51,7 @@ public sealed class UnsupportedRoslynVersionForPartialPropertyAnalyzer : Diagnos
                         UnsupportedRoslynVersionForObservablePartialPropertySupport,
                         propertySymbol.Locations.FirstOrDefault(),
                         propertySymbol.ContainingType,
-                        propertySymbol));
+                        propertySymbol.Name));
                 }
             }, SymbolKind.Property);
         });
