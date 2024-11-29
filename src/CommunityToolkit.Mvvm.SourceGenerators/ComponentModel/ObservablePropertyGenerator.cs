@@ -38,6 +38,14 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
                         return default;
                     }
 
+                    // Validate the symbol as well before doing any work
+                    if (!Execute.IsCandidateSymbolValid(context.TargetSymbol))
+                    {
+                        return default;
+                    }
+
+                    token.ThrowIfCancellationRequested();
+
                     // Get the hierarchy info for the target symbol, and try to gather the property info
                     HierarchyInfo hierarchy = HierarchyInfo.From(context.TargetSymbol.ContainingType);
 
