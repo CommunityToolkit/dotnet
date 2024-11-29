@@ -718,17 +718,17 @@ internal static class DiagnosticDescriptors
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[ObservableProperty]</c> is applied to a property with an invalid declaration.
     /// <para>
-    /// Format: <c>"The property {0}.{1} cannot be used to generate an observable property, as its declaration is not valid (it must be a partial property with a getter and a setter that is not init-only)"</c>.
+    /// Format: <c>"The property {0}.{1} cannot be used to generate an observable property, as its declaration is not valid (it must be an instance (non static) partial property with a getter and a setter that is not init-only)"</c>.
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor InvalidPropertyDeclarationForObservableProperty = new DiagnosticDescriptor(
         id: "MVVMTK0043",
         title: "Invalid property declaration for [ObservableProperty]",
-        messageFormat: "The property {0}.{1} cannot be used to generate an observable property, as its declaration is not valid (it must be a partial property with a getter and a setter that is not init-only)",
+        messageFormat: "The property {0}.{1} cannot be used to generate an observable property, as its declaration is not valid (it must be an instance (non static) partial property with a getter and a setter that is not init-only)",
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Properties annotated with [ObservableProperty] must be partial properties with a getter and a setter that is not init-only.",
+        description: "Properties annotated with [ObservableProperty] must be instance (non static) partial properties with a getter and a setter that is not init-only.",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0043");
 
     /// <summary>
@@ -859,4 +859,52 @@ internal static class DiagnosticDescriptors
         description: "This project producing one or more 'MVVMTK0045' warnings due to [ObservableProperty] being used on fields, which is not AOT compatible in WinRT scenarios, should set 'LangVersion' to 'preview' to enable partial properties and the associated code fixer (setting 'LangVersion=preview' is required to use [ObservableProperty] on partial properties and address these warnings).",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0051",
         customTags: WellKnownDiagnosticTags.CompilationEnd);
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> for when <c>[ObservableProperty]</c> is used on a property that is not an incomplete partial definition.
+    /// <para>
+    /// Format: <c>"The property {0}.{1} is not an incomplete partial definition ([ObservableProperty] must be used on partial property definitions with no implementation part)"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor InvalidObservablePropertyDeclarationIsNotIncompletePartialDefinition = new(
+        id: "MVVMTK0052",
+        title: "Using [ObservableProperty] on an invalid property declaration (not incomplete partial definition)",
+        messageFormat: """The property {0}.{1} is not an incomplete partial definition ([ObservableProperty] must be used on partial property definitions with no implementation part)""",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "A property using [ObservableProperty] is not a partial implementation part ([ObservableProperty] must be used on partial property definitions with no implementation part).",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0052");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> for when <c>[ObservableProperty]</c> is used on a property that returns a ref value.
+    /// <para>
+    /// Format: <c>"The property {0}.{1} returns a ref value ([ObservableProperty] must be used on properties returning a type by value)"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor InvalidObservablePropertyDeclarationReturnsByRef = new(
+        id: "MVVMTK0053",
+        title: "Using [ObservableProperty] on a property that returns byref",
+        messageFormat: """The property {0}.{1} returns a ref value ([ObservableProperty] must be used on properties returning a type by value)""",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "A property using [ObservableProperty] returns a value by reference ([ObservableProperty] must be used on properties returning a type by value).",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0053");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> for when <c>[ObservableProperty]</c> is used on a property that returns a byref-like value.
+    /// <para>
+    /// Format: <c>"The property {0}.{1} returns a byref-like value ([ObservableProperty] must be used on properties of a non byref-like type)"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor InvalidObservablePropertyDeclarationReturnsRefLikeType = new(
+        id: "MVVMTK0054",
+        title: "Using [ObservableProperty] on a property that returns byref-like",
+        messageFormat: """The property {0}.{1} returns a byref-like value ([ObservableProperty] must be used on properties of a non byref-like type)""",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "A property using [ObservableProperty] returns a byref-like value ([ObservableProperty] must be used on properties of a non byref-like type).",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0054");
 }
