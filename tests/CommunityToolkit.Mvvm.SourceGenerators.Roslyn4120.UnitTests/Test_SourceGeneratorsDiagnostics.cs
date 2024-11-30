@@ -889,7 +889,6 @@ partial class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    [Ignore("The symbol callback is not being triggered correctly (see https://github.com/dotnet/roslyn/issues/76166)")]
     public async Task InvalidPartialPropertyLevelObservablePropertyAttributeAnalyzer_OnImplementedProperty_GeneratedByAnotherGenerator_Warns()
     {
         const string source = """
@@ -913,8 +912,7 @@ partial class Test_SourceGeneratorsDiagnostics
             }
             """;
 
-        // This test is having issues, let's invoke the analyzer directly to make it easier to narrow down the problem
-        await CSharpAnalyzerWithLanguageVersionTest<InvalidPartialPropertyLevelObservablePropertyAttributeAnalyzer>.VerifyAnalyzerAsync(source, LanguageVersion.Preview);
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<InvalidPartialPropertyLevelObservablePropertyAttributeAnalyzer>(source, LanguageVersion.Preview);
     }
 
     [TestMethod]
