@@ -27,7 +27,9 @@ public sealed class InvalidPartialPropertyLevelObservablePropertyAttributeAnalyz
     /// <inheritdoc/>
     public override void Initialize(AnalysisContext context)
     {
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+        // This generator is intentionally also analyzing generated code, because Roslyn will interpret properties
+        // that have '[GeneratedCode]' on them as being generated (and the same will apply to all partial parts).
+        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
         context.EnableConcurrentExecution();
 
         context.RegisterCompilationStartAction(static context =>
