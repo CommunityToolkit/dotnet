@@ -873,7 +873,7 @@ internal static class DiagnosticDescriptors
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "A property using [ObservableProperty] is not a partial implementation part ([ObservableProperty] must be used on partial property definitions with no implementation part).",
+        description: "A property using [ObservableProperty] is not an incomplete partial definition part ([ObservableProperty] must be used on partial property definitions with no implementation part).",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0052");
 
     /// <summary>
