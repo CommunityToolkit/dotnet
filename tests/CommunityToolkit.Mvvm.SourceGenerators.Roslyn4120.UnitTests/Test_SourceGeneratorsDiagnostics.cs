@@ -984,7 +984,6 @@ partial class Test_SourceGeneratorsDiagnostics
     public async Task InvalidPartialPropertyLevelObservablePropertyAttributeAnalyzer_ReturnsByRefLike_Warns()
     {
         const string source = """
-            using System;
             using CommunityToolkit.Mvvm.ComponentModel;
             
             namespace MyApp
@@ -992,8 +991,10 @@ partial class Test_SourceGeneratorsDiagnostics
                 public partial class SampleViewModel : ObservableObject
                 {
                     [{|MVVMTK0054:ObservableProperty|}]
-                    public partial Span<char> {|CS9248:Name|} { get; set; }
+                    public partial RefStruct {|CS9248:Name|} { get; set; }
                 }
+
+                public ref struct RefStruct;
             }
             """;
 
