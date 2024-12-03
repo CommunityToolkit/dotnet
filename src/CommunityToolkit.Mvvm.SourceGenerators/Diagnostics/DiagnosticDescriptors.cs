@@ -689,7 +689,7 @@ internal static class DiagnosticDescriptors
     /// Format: <c>"Using [ObservableProperty] on partial properties requires the C# language version to be set to 'preview', as support for the 'field' keyword is needed by the source generators to emit valid code (add <LangVersion>preview</LangVersion> to your .csproj/.props file)"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor CSharpLanguageVersionIsNotPreviewForObservableProperty = new(
+    public static readonly DiagnosticDescriptor CSharpLanguageVersionIsNotPreviewForObservableProperty = new DiagnosticDescriptor(
         id: "MVVMTK0041",
         title: "C# language version is not 'preview'",
         messageFormat: """Using [ObservableProperty] on partial properties requires the C# language version to be set to 'preview', as support for the 'field' keyword is needed by the source generators to emit valid code (add <LangVersion>preview</LangVersion> to your .csproj/.props file)""",
@@ -705,7 +705,7 @@ internal static class DiagnosticDescriptors
     /// Format: <c>"The field {0}.{1} using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor UseObservablePropertyOnPartialProperty = new(
+    public static readonly DiagnosticDescriptor UseObservablePropertyOnPartialProperty = new DiagnosticDescriptor(
         id: UseObservablePropertyOnPartialPropertyId,
         title: "Prefer using [ObservableProperty] on partial properties",
         messageFormat: """The field {0}.{1} using [ObservableProperty] can be converted to a partial property instead, which is recommended (doing so improves the developer experience and allows other generators and analyzers to correctly see the generated property as well)""",
@@ -753,7 +753,7 @@ internal static class DiagnosticDescriptors
     /// Format: <c>"The field {0}.{1} using [ObservableProperty] will generate code that is not AOT compatible in WinRT scenarios (such as UWP XAML and WinUI 3 apps), and a partial property should be used instead (as it allows the CsWinRT generators to correctly produce the necessary WinRT marshalling code)"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor WinRTObservablePropertyOnFieldsIsNotAotCompatible = new(
+    public static readonly DiagnosticDescriptor WinRTObservablePropertyOnFieldsIsNotAotCompatible = new DiagnosticDescriptor(
         id: WinRTObservablePropertyOnFieldsIsNotAotCompatibleId,
         title: "Using [ObservableProperty] on fields is not AOT compatible for WinRT",
         messageFormat: """The field {0}.{1} using [ObservableProperty] will generate code that is not AOT compatible in WinRT scenarios (such as UWP XAML and WinUI 3 apps), and a partial property should be used instead (as it allows the CsWinRT generators to correctly produce the necessary WinRT marshalling code)""",
@@ -769,7 +769,7 @@ internal static class DiagnosticDescriptors
     /// Format: <c>"The method {0} using [RelayCommand] within a type also using [GeneratedBindableCustomProperty], which is not supported, and a manually declared command property should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated command property that is produced by the MVVM Toolkit generator)"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor WinRTRelayCommandIsNotGeneratedBindableCustomPropertyCompatible = new(
+    public static readonly DiagnosticDescriptor WinRTRelayCommandIsNotGeneratedBindableCustomPropertyCompatible = new DiagnosticDescriptor(
         id: "MVVMTK0046",
         title: "Using [RelayCommand] is not compatible with [GeneratedBindableCustomProperty]",
         messageFormat: """The method {0} using [RelayCommand] within a type also using [GeneratedBindableCustomProperty], which is not supported, and a manually declared command property should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated command property that is produced by the MVVM Toolkit generator)""",
@@ -785,7 +785,7 @@ internal static class DiagnosticDescriptors
     /// Format: <c>"The type {0} using [GeneratedBindableCustomProperty] is also using [ObservableProperty] on its declared (or inherited) field {1}.{2}: combining the two generators is not supported, and partial properties should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated property that is produced by the MVVM Toolkit generator)"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor WinRTGeneratedBindableCustomPropertyWithBaseObservablePropertyOnField = new(
+    public static readonly DiagnosticDescriptor WinRTGeneratedBindableCustomPropertyWithBaseObservablePropertyOnField = new DiagnosticDescriptor(
         id: "MVVMTK0047",
         title: "Using [GeneratedBindableCustomProperty] is not compatible with [ObservableProperty] on fields",
         messageFormat: """The type {0} using [GeneratedBindableCustomProperty] is also using [ObservableProperty] on its declared (or inherited) field {1}.{2}: combining the two generators is not supported, and partial properties should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated property that is produced by the MVVM Toolkit generator)""",
@@ -801,7 +801,7 @@ internal static class DiagnosticDescriptors
     /// Format: <c>"The type {0} using [GeneratedBindableCustomProperty] is also using [RelayCommand] on its inherited method {1}: combining the two generators is not supported, and a manually declared command property should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated property that is produced by the MVVM Toolkit generator)"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor WinRTGeneratedBindableCustomPropertyWithBaseRelayCommand = new(
+    public static readonly DiagnosticDescriptor WinRTGeneratedBindableCustomPropertyWithBaseRelayCommand = new DiagnosticDescriptor(
         id: "MVVMTK0048",
         title: "Using [GeneratedBindableCustomProperty] is not compatible with [RelayCommand]",
         messageFormat: """The type {0} using [GeneratedBindableCustomProperty] is also using [RelayCommand] on its inherited method {1}: combining the two generators is not supported, and a manually declared command property should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated property that is produced by the MVVM Toolkit generator)""",
@@ -849,7 +849,7 @@ internal static class DiagnosticDescriptors
     /// Format: <c>"This project produced one or more 'MVVMTK0045' warnings due to [ObservableProperty] being used on fields, which is not AOT compatible in WinRT scenarios, but it can't enable partial properties and the associated code fixer because 'LangVersion' is not set to 'preview' (setting 'LangVersion=preview' is required to use [ObservableProperty] on partial properties and address these warnings)"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor WinRTObservablePropertyOnFieldsIsNotAotCompatibleCompilationEndInfo = new(
+    public static readonly DiagnosticDescriptor WinRTObservablePropertyOnFieldsIsNotAotCompatibleCompilationEndInfo = new DiagnosticDescriptor(
         id: "MVVMTK0051",
         title: "Using [ObservableProperty] with WinRT and AOT requires 'LangVersion=preview'",
         messageFormat: """This project produced one or more 'MVVMTK0045' warnings due to [ObservableProperty] being used on fields, which is not AOT compatible in WinRT scenarios, but it can't enable partial properties and the associated code fixer because 'LangVersion' is not set to 'preview' (setting 'LangVersion=preview' is required to use [ObservableProperty] on partial properties and address these warnings)""",
@@ -866,7 +866,7 @@ internal static class DiagnosticDescriptors
     /// Format: <c>"The property {0}.{1} is not an incomplete partial definition ([ObservableProperty] must be used on partial property definitions with no implementation part)"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor InvalidObservablePropertyDeclarationIsNotIncompletePartialDefinition = new(
+    public static readonly DiagnosticDescriptor InvalidObservablePropertyDeclarationIsNotIncompletePartialDefinition = new DiagnosticDescriptor(
         id: "MVVMTK0052",
         title: "Using [ObservableProperty] on an invalid property declaration (not incomplete partial definition)",
         messageFormat: """The property {0}.{1} is not an incomplete partial definition ([ObservableProperty] must be used on partial property definitions with no implementation part)""",
@@ -882,7 +882,7 @@ internal static class DiagnosticDescriptors
     /// Format: <c>"The property {0}.{1} returns a ref value ([ObservableProperty] must be used on properties returning a type by value)"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor InvalidObservablePropertyDeclarationReturnsByRef = new(
+    public static readonly DiagnosticDescriptor InvalidObservablePropertyDeclarationReturnsByRef = new DiagnosticDescriptor(
         id: "MVVMTK0053",
         title: "Using [ObservableProperty] on a property that returns byref",
         messageFormat: """The property {0}.{1} returns a ref value ([ObservableProperty] must be used on properties returning a type by value)""",
@@ -898,7 +898,7 @@ internal static class DiagnosticDescriptors
     /// Format: <c>"The property {0}.{1} returns a byref-like value ([ObservableProperty] must be used on properties of a non byref-like type)"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor InvalidObservablePropertyDeclarationReturnsRefLikeType = new(
+    public static readonly DiagnosticDescriptor InvalidObservablePropertyDeclarationReturnsRefLikeType = new DiagnosticDescriptor(
         id: "MVVMTK0054",
         title: "Using [ObservableProperty] on a property that returns byref-like",
         messageFormat: """The property {0}.{1} returns a byref-like value ([ObservableProperty] must be used on properties of a non byref-like type)""",
