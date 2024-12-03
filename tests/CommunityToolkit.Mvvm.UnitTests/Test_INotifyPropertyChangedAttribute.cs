@@ -105,6 +105,37 @@ public partial class Test_INotifyPropertyChangedAttribute
         private int y;
     }
 
+#if ROSLYN_4_12_0_OR_GREATER
+    [TestMethod]
+    public void Test_INotifyPropertyChanged_WithGeneratedPartialProperties()
+    {
+        Assert.IsTrue(typeof(INotifyPropertyChanged).IsAssignableFrom(typeof(SampleModelWithINPCAndObservablePartialProperties)));
+        Assert.IsFalse(typeof(INotifyPropertyChanging).IsAssignableFrom(typeof(SampleModelWithINPCAndObservablePartialProperties)));
+
+        SampleModelWithINPCAndObservablePartialProperties model = new();
+        List<PropertyChangedEventArgs> eventArgs = new();
+
+        model.PropertyChanged += (s, e) => eventArgs.Add(e);
+
+        model.X = 42;
+        model.Y = 66;
+
+        Assert.AreEqual(eventArgs.Count, 2);
+        Assert.AreEqual(eventArgs[0].PropertyName, nameof(SampleModelWithINPCAndObservablePartialProperties.X));
+        Assert.AreEqual(eventArgs[1].PropertyName, nameof(SampleModelWithINPCAndObservablePartialProperties.Y));
+    }
+
+    [INotifyPropertyChanged]
+    public partial class SampleModelWithINPCAndObservablePartialProperties
+    {
+        [ObservableProperty]
+        public partial int X { get; set; }
+
+        [ObservableProperty]
+        public partial int Y { get; set; }
+    }
+#endif
+
     [TestMethod]
     public void Test_INotifyPropertyChanged_WithGeneratedProperties_ExternalNetStandard20Assembly()
     {

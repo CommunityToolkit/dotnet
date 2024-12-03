@@ -60,7 +60,9 @@ public sealed class InvalidPropertyLevelObservablePropertyAttributeAnalyzer : Di
                             InvalidPropertyDeclarationForObservableProperty,
                             observablePropertyAttribute.GetLocation(),
                             propertySymbol.ContainingType,
-                            propertySymbol));
+                            propertySymbol.Name));
+
+                        return;
                     }
                 }
             }, SymbolKind.Property);
@@ -85,6 +87,14 @@ public sealed class InvalidPropertyLevelObservablePropertyAttributeAnalyzer : Di
 
         // The property must be partial (we'll check that it's a declaration from its symbol)
         if (!property.Modifiers.Any(SyntaxKind.PartialKeyword))
+        {
+            containingTypeNode = null;
+
+            return false;
+        }
+
+        // Static properties are not supported
+        if (property.Modifiers.Any(SyntaxKind.StaticKeyword))
         {
             containingTypeNode = null;
 

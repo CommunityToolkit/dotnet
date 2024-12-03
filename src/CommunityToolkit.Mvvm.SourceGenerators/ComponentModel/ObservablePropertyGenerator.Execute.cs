@@ -71,7 +71,7 @@ partial class ObservablePropertyGenerator
         /// <param name="node">The <see cref="MemberDeclarationSyntax"/> instance to process.</param>
         /// <param name="semanticModel">The <see cref="SemanticModel"/> instance for the current run.</param>
         /// <returns>Whether <paramref name="node"/> is valid.</returns>
-        public static bool IsCandidateValidForCompilation(SyntaxNode node, SemanticModel semanticModel)
+        public static bool IsCandidateValidForCompilation(MemberDeclarationSyntax node, SemanticModel semanticModel)
         {
             // At least C# 8 is always required
             if (!semanticModel.Compilation.HasLanguageVersionAtLeastEqualTo(LanguageVersion.CSharp8))
@@ -87,6 +87,35 @@ partial class ObservablePropertyGenerator
             }
 
             // All other cases are supported, the syntax filter is already validating that
+            return true;
+        }
+
+        /// <summary>
+        /// Performs additional checks before running the core generation logic.
+        /// </summary>
+        /// <param name="memberSymbol">The input <see cref="ISymbol"/> instance to process.</param>
+        /// <returns>Whether <paramref name="memberSymbol"/> is valid.</returns>
+        public static bool IsCandidateSymbolValid(ISymbol memberSymbol)
+        {
+#if ROSLYN_4_12_0_OR_GREATER
+            // We only need additional checks for properties (Roslyn already validates things for fields in our scenarios)
+            if (memberSymbol is IPropertySymbol propertySymbol)
+            {
+                // Ensure that the property declaration is a partial definition with no implementation
+                if (propertySymbol is not { IsPartialDefinition: true, PartialImplementationPart: null })
+                {
+                    return false;
+                }
+
+                // Also ignore all properties that have an invalid declaration
+                if (propertySymbol.ReturnsByRef || propertySymbol.ReturnsByRefReadonly || propertySymbol.Type.IsRefLikeType)
+                {
+                    return false;
+                }
+            }
+#endif
+
+            // We assume all other cases are supported (other failure cases will be detected later)
             return true;
         }
 
@@ -140,13 +169,11 @@ partial class ObservablePropertyGenerator
                 return false;
             }
 
-            using ImmutableArrayBuilder<DiagnosticInfo> builder = ImmutableArrayBuilder<DiagnosticInfo>.Rent();
-
             // Validate the target type
             if (!IsTargetTypeValid(memberSymbol, out bool shouldInvokeOnPropertyChanging))
             {
                 propertyInfo = null;
-                diagnostics = builder.ToImmutable();
+                diagnostics = ImmutableArray<DiagnosticInfo>.Empty;
 
                 return false;
             }
@@ -168,7 +195,7 @@ partial class ObservablePropertyGenerator
             if (fieldName == propertyName && memberSyntax.IsKind(SyntaxKind.FieldDeclaration))
             {
                 propertyInfo = null;
-                diagnostics = builder.ToImmutable();
+                diagnostics = ImmutableArray<DiagnosticInfo>.Empty;
 
                 // If the generated property would collide, skip generating it entirely. This makes sure that
                 // users only get the helpful diagnostic about the collision, and not the normal compiler error
@@ -182,7 +209,7 @@ partial class ObservablePropertyGenerator
             if (IsGeneratedPropertyInvalid(propertyName, GetPropertyType(memberSymbol)))
             {
                 propertyInfo = null;
-                diagnostics = builder.ToImmutable();
+                diagnostics = ImmutableArray<DiagnosticInfo>.Empty;
 
                 return false;
             }
@@ -231,6 +258,8 @@ partial class ObservablePropertyGenerator
             }
 
             token.ThrowIfCancellationRequested();
+
+            using ImmutableArrayBuilder<DiagnosticInfo> builder = ImmutableArrayBuilder<DiagnosticInfo>.Rent();
 
             // Gather attributes info
             foreach (AttributeData attributeData in memberSymbol.GetAttributes())

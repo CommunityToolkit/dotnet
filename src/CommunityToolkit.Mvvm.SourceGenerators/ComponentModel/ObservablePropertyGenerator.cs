@@ -9,7 +9,6 @@ using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 using CommunityToolkit.Mvvm.SourceGenerators.Models;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators;
@@ -37,6 +36,14 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
                     {
                         return default;
                     }
+
+                    // Validate the symbol as well before doing any work
+                    if (!Execute.IsCandidateSymbolValid(context.TargetSymbol))
+                    {
+                        return default;
+                    }
+
+                    token.ThrowIfCancellationRequested();
 
                     // Get the hierarchy info for the target symbol, and try to gather the property info
                     HierarchyInfo hierarchy = HierarchyInfo.From(context.TargetSymbol.ContainingType);
