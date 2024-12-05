@@ -28,8 +28,8 @@
           - The recommended Windows SDK package for WindowsAppSDK projects (ie. without UWP XAML projections). 
       -->
       <_MvvmToolkitWindowsSdkPackageMinBuild>38</_MvvmToolkitWindowsSdkPackageMinBuild>
-      <_MvvmToolkitWindowsSdkPackageRecommendedUwpBuild>39</_MvvmToolkitWindowsSdkPackageRecommendedUwpBuild>
-      <_MvvmToolkitWindowsSdkPackageRecommendedWindowsAppSDKBuild>41</_MvvmToolkitWindowsSdkPackageRecommendedWindowsAppSDKBuild>
+      <_MvvmToolkitWindowsSdkPackageRecommendedUwpBuild>54</_MvvmToolkitWindowsSdkPackageRecommendedUwpBuild>
+      <_MvvmToolkitWindowsSdkPackageRecommendedWindowsAppSDKBuild>53</_MvvmToolkitWindowsSdkPackageRecommendedWindowsAppSDKBuild>
 
       <!-- Switch on the recommended one based on configuration -->
       <_MvvmToolkitWindowsSdkPackageRecommendedBuild>$(_MvvmToolkitWindowsSdkPackageMinBuild)</_MvvmToolkitWindowsSdkPackageRecommendedBuild>
