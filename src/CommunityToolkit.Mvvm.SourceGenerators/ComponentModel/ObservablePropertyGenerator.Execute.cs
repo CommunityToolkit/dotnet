@@ -99,7 +99,7 @@ partial class ObservablePropertyGenerator
         public static bool IsCandidateSymbolValid(ISymbol memberSymbol)
         {
 #if ROSLYN_4_12_0_OR_GREATER
-            // We only need additional checks for properties (Roslyn already validates things for fields in our scenarios)
+            // We only need these additional checks for properties (Roslyn already validates things for fields in our scenarios)
             if (memberSymbol is IPropertySymbol propertySymbol)
             {
                 // Ensure that the property declaration is a partial definition with no implementation
@@ -115,6 +115,14 @@ partial class ObservablePropertyGenerator
                 }
             }
 #endif
+
+            // Pointer types are never allowed in either case
+            if (memberSymbol is
+                IPropertySymbol { Type.TypeKind: TypeKind.Pointer or TypeKind.FunctionPointer } or
+                IFieldSymbol { Type.TypeKind: TypeKind.Pointer or TypeKind.FunctionPointer })
+            {
+                return false;
+            }
 
             // We assume all other cases are supported (other failure cases will be detected later)
             return true;

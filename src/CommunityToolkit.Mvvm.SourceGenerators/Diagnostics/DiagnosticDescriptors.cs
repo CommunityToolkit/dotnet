@@ -907,4 +907,20 @@ internal static class DiagnosticDescriptors
         isEnabledByDefault: true,
         description: "A property using [ObservableProperty] returns a byref-like value ([ObservableProperty] must be used on properties of a non byref-like type).",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0054");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> for when <c>[ObservableProperty]</c> is used on a property that returns a pointer type.
+    /// <para>
+    /// Format: <c>"The property {0}.{1} returns a pointer or function pointer value ([ObservableProperty] must be used on properties of a non pointer-like type)"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor InvalidObservablePropertyDeclarationReturnsPointerLikeType = new DiagnosticDescriptor(
+        id: "MVVMTK0055",
+        title: "Using [ObservableProperty] on a property that returns pointer-like",
+        messageFormat: """The property {0}.{1} returns a pointer or function pointer value ([ObservableProperty] must be used on properties of a non pointer-like type)""",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "A property using [ObservableProperty] returns a pointer-like value ([ObservableProperty] must be used on properties of a non pointer-like type).",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0055");
 }

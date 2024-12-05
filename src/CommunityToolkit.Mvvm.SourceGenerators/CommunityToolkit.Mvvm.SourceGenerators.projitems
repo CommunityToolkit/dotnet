@@ -41,6 +41,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\TransitiveMembersGenerator.Execute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\AsyncVoidReturningRelayCommandMethodAnalyzer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\InvalidGeneratedPropertyObservablePropertyAttributeAnalyzer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\InvalidPointerTypeObservablePropertyAttributeAnalyzer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\InvalidPartialPropertyLevelObservablePropertyAttributeAnalyzer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\WinRTClassUsingNotifyPropertyChangedAttributesAnalyzer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\WinRTGeneratedBindableCustomPropertyWithBasesMemberAnalyzer.cs" />
