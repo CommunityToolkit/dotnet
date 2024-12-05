@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel;
@@ -362,6 +363,9 @@ partial class ObservablePropertyGenerator
 
             token.ThrowIfCancellationRequested();
 
+            // Get all additional modifiers for the member
+            ImmutableArray<SyntaxKind> propertyModifiers = GetPropertyModifiers(memberSyntax);
+
             // Retrieve the accessibility values for all components
             if (!TryGetAccessibilityModifiers(
                 memberSyntax,
@@ -388,6 +392,7 @@ partial class ObservablePropertyGenerator
                 typeNameWithNullabilityAnnotations,
                 fieldName,
                 propertyName,
+                propertyModifiers.AsUnderlyingType(),
                 propertyAccessibility,
                 getterAccessibility,
                 setterAccessibility,
@@ -396,7 +401,6 @@ partial class ObservablePropertyGenerator
                 notifiedCommandNames.ToImmutable(),
                 notifyRecipients,
                 notifyDataErrorInfo,
-                isRequired,
                 isOldPropertyValueDirectlyReferenced,
                 isReferenceTypeOrUnconstrainedTypeParameter,
                 includeMemberNotNullOnSetAccessor,
@@ -971,6 +975,45 @@ partial class ObservablePropertyGenerator
         }
 
         /// <summary>
+        /// Gathers all allowed property modifiers that should be forwarded to the generated property.
+        /// </summary>
+        /// <param name="memberSyntax">The <see cref="MemberDeclarationSyntax"/> instance to process.</param>
+        /// <returns>The returned set of property modifiers, if any.</returns>
+        private static ImmutableArray<SyntaxKind> GetPropertyModifiers(MemberDeclarationSyntax memberSyntax)
+        {
+            // Fields never need to carry additional modifiers along
+            if (memberSyntax.IsKind(SyntaxKind.FieldDeclaration))
+            {
+                return ImmutableArray<SyntaxKind>.Empty;
+            }
+
+            // We only allow a subset of all possible modifiers (aside from the accessibility modifiers)
+            ReadOnlySpan<SyntaxKind> candidateKinds =
+            [
+                SyntaxKind.NewKeyword,
+                SyntaxKind.VirtualKeyword,
+                SyntaxKind.SealedKeyword,
+                SyntaxKind.OverrideKeyword,
+#if ROSLYN_4_3_1_OR_GREATER
+                SyntaxKind.RequiredKeyword
+#endif
+            ];
+
+            using ImmutableArrayBuilder<SyntaxKind> builder = ImmutableArrayBuilder<SyntaxKind>.Rent();
+
+            // Track all modifiers from the allowed set on the input property declaration
+            foreach (SyntaxKind kind in candidateKinds)
+            {
+                if (memberSyntax.Modifiers.Any(kind))
+                {
+                    builder.Add(kind);
+                }
+            }
+
+            return builder.ToImmutable();
+        }
+
+        /// <summary>
         /// Tries to get the accessibility of the property and accessors, if possible.
         /// If the target member is not a property, it will use the defaults.
         /// </summary>
@@ -1395,13 +1438,11 @@ partial class ObservablePropertyGenerator
         {
             SyntaxTokenList propertyModifiers = propertyInfo.PropertyAccessibility.ToSyntaxTokenList();
 
-#if ROSLYN_4_3_1_OR_GREATER
-            // Add the 'required' modifier if the original member also had it
-            if (propertyInfo.IsRequired)
+            // Add all gathered modifiers
+            foreach (SyntaxKind modifier in propertyInfo.PropertyModifers.AsImmutableArray().FromUnderlyingType())
             {
-                propertyModifiers = propertyModifiers.Add(Token(SyntaxKind.RequiredKeyword));
+                propertyModifiers = propertyModifiers.Add(Token(modifier));
             }
-#endif
 
             // Add the 'partial' modifier if the original member is a partial property
             if (propertyInfo.AnnotatedMemberKind is SyntaxKind.PropertyDeclaration)
