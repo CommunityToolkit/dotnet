@@ -27,9 +27,6 @@
     <!-- Also define "ROSLYN_<MAJOR>_<MINOR>_OR_GREATER" build constants, so the generator code can multi-target whenever needed and add any required polyfills -->
     <DefineConstants Condition="$([MSBuild]::VersionGreaterThanOrEquals($(MvvmToolkitSourceGeneratorRoslynVersion), 4.3.1))">$(DefineConstants);ROSLYN_4_3_1_OR_GREATER</DefineConstants>
     <DefineConstants Condition="$([MSBuild]::VersionGreaterThanOrEquals($(MvvmToolkitSourceGeneratorRoslynVersion), 4.12.0))">$(DefineConstants);ROSLYN_4_12_0_OR_GREATER</DefineConstants>
-
-    <!-- Temporary fixup until Roslyn 4.12 ships to public NuGet -->
-    <MvvmToolkitSourceGeneratorRoslynVersion Condition="'$(MvvmToolkitSourceGeneratorRoslynVersion)' == '4.12.0'">4.12.0-3.final</MvvmToolkitSourceGeneratorRoslynVersion>
   </PropertyGroup>
 
   <ItemGroup>
