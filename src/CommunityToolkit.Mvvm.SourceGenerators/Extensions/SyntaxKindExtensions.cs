@@ -3,6 +3,8 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections.Immutable;
+using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis.CSharp;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators.Extensions;
@@ -12,6 +14,30 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 /// </summary>
 internal static class SyntaxKindExtensions
 {
+    /// <summary>
+    /// Converts an <see cref="ImmutableArray{T}"/> of <see cref="SyntaxKind"/> values to one of their underlying type.
+    /// </summary>
+    /// <param name="array">The input <see cref="ImmutableArray{T}"/> value.</param>
+    /// <returns>The resulting <see cref="ImmutableArray{T}"/> of <see cref="ushort"/> values.</returns>
+    public static ImmutableArray<ushort> AsUnderlyingType(this ImmutableArray<SyntaxKind> array)
+    {
+        ushort[]? underlyingArray = (ushort[]?)(object?)Unsafe.As<ImmutableArray<SyntaxKind>, SyntaxKind[]?>(ref array);
+
+        return Unsafe.As<ushort[]?, ImmutableArray<ushort>>(ref underlyingArray);
+    }
+
+    /// <summary>
+    /// Converts an <see cref="ImmutableArray{T}"/> of <see cref="ushort"/> values to one of their real type.
+    /// </summary>
+    /// <param name="array">The input <see cref="ImmutableArray{T}"/> value.</param>
+    /// <returns>The resulting <see cref="ImmutableArray{T}"/> of <see cref="SyntaxKind"/> values.</returns>
+    public static ImmutableArray<SyntaxKind> FromUnderlyingType(this ImmutableArray<ushort> array)
+    {
+        SyntaxKind[]? typedArray = (SyntaxKind[]?)(object?)Unsafe.As<ImmutableArray<ushort>, ushort[]?>(ref array);
+
+        return Unsafe.As<SyntaxKind[]?, ImmutableArray<SyntaxKind>>(ref typedArray);
+    }
+
     /// <summary>
     /// Converts a <see cref="SyntaxKind"/> value to either "field" or "property" based on the kind.
     /// </summary>
