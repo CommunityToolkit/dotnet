@@ -998,4 +998,61 @@ partial class Test_SourceGeneratorsDiagnostics
 
         await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<InvalidPartialPropertyLevelObservablePropertyAttributeAnalyzer>(source, LanguageVersion.Preview, [], ["CS9248"]);
     }
+
+    [TestMethod]
+    public async Task InvalidPointerTypeObservablePropertyAttributeAnalyzer_ReturnsValidType_DoesNotWarn()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    public partial string {|CS9248:Name|} { get; set; }
+                }
+            }
+            """;
+
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<InvalidPointerTypeObservablePropertyAttributeAnalyzer>(source, LanguageVersion.Preview, [], ["CS9248"]);
+    }
+
+    [TestMethod]
+    public async Task InvalidPointerTypeObservablePropertyAttributeAnalyzer_ReturnsPointerType_Warns()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp
+            {
+                public unsafe partial class SampleViewModel : ObservableObject
+                {
+                    [{|MVVMTK0055:ObservableProperty|}]
+                    public partial int* {|CS9248:Name|} { get; set; }
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<InvalidPointerTypeObservablePropertyAttributeAnalyzer>.VerifyAnalyzerAsync(source, LanguageVersion.Preview);
+    }
+
+    [TestMethod]
+    public async Task InvalidPointerTypeObservablePropertyAttributeAnalyzer_ReturnsFunctionPointerType_Warns()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp
+            {
+                public unsafe partial class SampleViewModel : ObservableObject
+                {
+                    [{|MVVMTK0055:ObservableProperty|}]
+                    public partial delegate* unmanaged[Stdcall]<int, void> {|CS9248:Name|} { get; set; }
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<InvalidPointerTypeObservablePropertyAttributeAnalyzer>.VerifyAnalyzerAsync(source, LanguageVersion.Preview);
+    }
 }

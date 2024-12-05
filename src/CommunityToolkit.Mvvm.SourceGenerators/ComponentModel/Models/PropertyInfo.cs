@@ -15,6 +15,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 /// <param name="TypeNameWithNullabilityAnnotations">The type name for the generated property, including nullability annotations.</param>
 /// <param name="FieldName">The field name.</param>
 /// <param name="PropertyName">The generated property name.</param>
+/// <param name="PropertyModifers">The list of additional modifiers for the property (they are <see cref="SyntaxKind"/> values).</param>
 /// <param name="PropertyAccessibility">The accessibility of the property.</param>
 /// <param name="GetterAccessibility">The accessibility of the <see langword="get"/> accessor.</param>
 /// <param name="SetterAccessibility">The accessibility of the <see langword="set"/> accessor.</param>
@@ -23,7 +24,6 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 /// <param name="NotifiedCommandNames">The sequence of commands to notify.</param>
 /// <param name="NotifyPropertyChangedRecipients">Whether or not the generated property also broadcasts changes.</param>
 /// <param name="NotifyDataErrorInfo">Whether or not the generated property also validates its value.</param>
-/// <param name="IsRequired">Whether or not the generated property should be marked as required.</param>
 /// <param name="IsOldPropertyValueDirectlyReferenced">Whether the old property value is being directly referenced.</param>
 /// <param name="IsReferenceTypeOrUnconstrainedTypeParameter">Indicates whether the property is of a reference type or an unconstrained type parameter.</param>
 /// <param name="IncludeMemberNotNullOnSetAccessor">Indicates whether to include nullability annotations on the setter.</param>
@@ -34,6 +34,7 @@ internal sealed record PropertyInfo(
     string TypeNameWithNullabilityAnnotations,
     string FieldName,
     string PropertyName,
+    EquatableArray<ushort> PropertyModifers,
     Accessibility PropertyAccessibility,
     Accessibility GetterAccessibility,
     Accessibility SetterAccessibility,
@@ -42,7 +43,6 @@ internal sealed record PropertyInfo(
     EquatableArray<string> NotifiedCommandNames,
     bool NotifyPropertyChangedRecipients,
     bool NotifyDataErrorInfo,
-    bool IsRequired,
     bool IsOldPropertyValueDirectlyReferenced,
     bool IsReferenceTypeOrUnconstrainedTypeParameter,
     bool IncludeMemberNotNullOnSetAccessor,
