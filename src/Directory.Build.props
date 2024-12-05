@@ -3,7 +3,7 @@
 
   <!-- Include PolySharp to generate polyfills for all projects (on their .NET Standard 2.x targets) -->
   <ItemGroup>
-    <PackageReference Include="PolySharp" Version="1.14.1">
+    <PackageReference Include="PolySharp" Version="1.15.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>build; analyzers</IncludeAssets>
     </PackageReference>

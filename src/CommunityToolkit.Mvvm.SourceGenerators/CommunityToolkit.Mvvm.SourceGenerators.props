@@ -44,9 +44,6 @@
 
     <!-- Disable the removed rules analyzer for older Roslyn versions (as we might not support all diagnostics) -->
     <NoWarn Condition="$([MSBuild]::VersionLessThan($(MvvmToolkitSourceGeneratorRoslynVersion), 4.12.0))">$(NoWarn);RS2003</NoWarn>
-
-    <!-- Temporary fixup until Roslyn 4.12 ships to public NuGet -->
-    <MvvmToolkitSourceGeneratorRoslynVersion Condition="'$(MvvmToolkitSourceGeneratorRoslynVersion)' == '4.12.0'">4.12.0-3.final</MvvmToolkitSourceGeneratorRoslynVersion>
   </PropertyGroup>
 
   <ItemGroup>
