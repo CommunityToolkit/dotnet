@@ -390,11 +390,6 @@ partial class ObservablePropertyGenerator
 
             token.ThrowIfCancellationRequested();
 
-            // Check whether the property should be required
-            bool isRequired = GetIsRequiredProperty(memberSymbol);
-
-            token.ThrowIfCancellationRequested();
-
             propertyInfo = new PropertyInfo(
                 memberSyntax.Kind(),
                 typeNameWithNullabilityAnnotations,
@@ -1092,20 +1087,6 @@ partial class ObservablePropertyGenerator
             }
 
             return true;
-        }
-
-        /// <summary>
-        /// Checks whether an input member is a required property.
-        /// </summary>
-        /// <param name="memberSymbol">The input <see cref="ISymbol"/> instance to process.</param>
-        /// <returns>Whether <paramref name="memberSymbol"/> is a required property.</returns>
-        private static bool GetIsRequiredProperty(ISymbol memberSymbol)
-        {
-#if ROSLYN_4_3_1_OR_GREATER
-            return memberSymbol is IPropertySymbol { IsRequired: true };
-#else
-            return false;
-#endif
         }
 
         /// <summary>
