@@ -748,6 +748,119 @@ partial class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
+    public async Task WinRTGeneratedBindableCustomPropertyWithBasesMemberAnalyzer_TargetingWindows_NotIncluded_DoesNotWarn()
+    {
+        const string source = """
+            using System;
+            using CommunityToolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.Input;
+            using WinRT;
+            
+            namespace MyApp
+            {
+                [GeneratedBindableCustomProperty(["Name"], [])]
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    private string name;
+
+                    [RelayCommand]
+                    private void DoStuff()
+                    {
+                    }
+                }
+            }
+
+            namespace WinRT
+            {
+                public class GeneratedBindableCustomPropertyAttribute(string[] a, string[] b) : Attribute
+                {
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<WinRTGeneratedBindableCustomPropertyWithBasesMemberAnalyzer>.VerifyAnalyzerAsync(
+            source,
+            LanguageVersion.CSharp12,
+            editorconfig: [("_MvvmToolkitIsUsingWindowsRuntimePack", true)]);
+    }
+
+    [TestMethod]
+    public async Task WinRTGeneratedBindableCustomPropertyWithBasesMemberAnalyzer_TargetingWindows_BaseType_Field_NotIncluded_DoesNotWarn()
+    {
+        const string source = """
+            using System;
+            using CommunityToolkit.Mvvm.ComponentModel;
+            using WinRT;
+            
+            namespace MyApp
+            {
+                [GeneratedBindableCustomProperty(["OtherName"], [])]
+                public partial class SampleViewModel : BaseViewModel
+                {                    
+                }
+
+                public partial class BaseViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    private string name;
+                }
+            }
+
+            namespace WinRT
+            {
+                public class GeneratedBindableCustomPropertyAttribute(string[] a, string[] b) : Attribute
+                {
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<WinRTGeneratedBindableCustomPropertyWithBasesMemberAnalyzer>.VerifyAnalyzerAsync(
+            source,
+            LanguageVersion.CSharp12,
+            editorconfig: [("_MvvmToolkitIsUsingWindowsRuntimePack", true)]);
+    }
+
+    [TestMethod]
+    public async Task WinRTGeneratedBindableCustomPropertyWithBasesMemberAnalyzer_TargetingWindows_BaseType_Method_NotIncluded_DoesNotWarn()
+    {
+        const string source = """
+            using System;
+            using CommunityToolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.Input;
+            using WinRT;
+            
+            namespace MyApp
+            {
+                [GeneratedBindableCustomProperty(["OtherMethod"], [])]
+                public partial class SampleViewModel : BaseViewModel
+                {                    
+                }
+
+                public partial class BaseViewModel : ObservableObject
+                {            
+                    [RelayCommand]
+                    private void DoStuff()
+                    {
+                    }
+                }
+            }
+
+            namespace WinRT
+            {
+                public class GeneratedBindableCustomPropertyAttribute(string[] a, string[] b) : Attribute
+                {
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<WinRTGeneratedBindableCustomPropertyWithBasesMemberAnalyzer>.VerifyAnalyzerAsync(
+            source,
+            LanguageVersion.CSharp12,
+            editorconfig: [("_MvvmToolkitIsUsingWindowsRuntimePack", true)]);
+    }
+
+    [TestMethod]
     public async Task WinRTGeneratedBindableCustomPropertyWithBasesMemberAnalyzer_TargetingWindows_BaseType_Field_Warns()
     {
         const string source = """
@@ -772,6 +885,42 @@ partial class Test_SourceGeneratorsDiagnostics
             namespace WinRT
             {
                 public class GeneratedBindableCustomPropertyAttribute : Attribute;
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<WinRTGeneratedBindableCustomPropertyWithBasesMemberAnalyzer>.VerifyAnalyzerAsync(
+            source,
+            LanguageVersion.CSharp12,
+            editorconfig: [("_MvvmToolkitIsUsingWindowsRuntimePack", true)]);
+    }
+
+    [TestMethod]
+    public async Task WinRTGeneratedBindableCustomPropertyWithBasesMemberAnalyzer_TargetingWindows_BaseType_Field_Included_Warns()
+    {
+        const string source = """
+            using System;
+            using CommunityToolkit.Mvvm.ComponentModel;
+            using WinRT;
+            
+            namespace MyApp
+            {
+                [GeneratedBindableCustomProperty(["Name"], [])]
+                public partial class {|MVVMTK0047:SampleViewModel|} : BaseViewModel
+                {                    
+                }
+
+                public partial class BaseViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    private string name;
+                }
+            }
+
+            namespace WinRT
+            {
+                public class GeneratedBindableCustomPropertyAttribute(string[] a, string[] b) : Attribute
+                {
+                }
             }
             """;
 
@@ -809,6 +958,45 @@ partial class Test_SourceGeneratorsDiagnostics
             namespace WinRT
             {
                 public class GeneratedBindableCustomPropertyAttribute : Attribute;
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<WinRTGeneratedBindableCustomPropertyWithBasesMemberAnalyzer>.VerifyAnalyzerAsync(
+            source,
+            LanguageVersion.CSharp12,
+            editorconfig: [("_MvvmToolkitIsUsingWindowsRuntimePack", true)]);
+    }
+
+    [TestMethod]
+    public async Task WinRTGeneratedBindableCustomPropertyWithBasesMemberAnalyzer_TargetingWindows_BaseType_Method_Included_Warns()
+    {
+        const string source = """
+            using System;
+            using CommunityToolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.Input;
+            using WinRT;
+            
+            namespace MyApp
+            {
+                [GeneratedBindableCustomProperty(["DoStuffCommand"], [])]
+                public partial class {|MVVMTK0048:SampleViewModel|} : BaseViewModel
+                {                    
+                }
+
+                public partial class BaseViewModel : ObservableObject
+                {            
+                    [RelayCommand]
+                    private void DoStuff()
+                    {
+                    }
+                }
+            }
+
+            namespace WinRT
+            {
+                public class GeneratedBindableCustomPropertyAttribute(string[] a, string[] b) : Attribute
+                {
+                }
             }
             """;
 
