@@ -766,49 +766,49 @@ internal static class DiagnosticDescriptors
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> for when <c>[RelayCommand]</c> is used on a method in types where <c>[GeneratedBindableCustomProperty]</c> is used.
     /// <para>
-    /// Format: <c>"The method {0} using [RelayCommand] within a type also using [GeneratedBindableCustomProperty], which is not supported, and a manually declared command property should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated command property that is produced by the MVVM Toolkit generator)"</c>.
+    /// Format: <c>"The method {0} using [RelayCommand] within a type also using [GeneratedBindableCustomProperty] and including the generated property, which is not supported, and a manually declared command property should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated command property that is produced by the MVVM Toolkit generator)"</c>.
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor WinRTRelayCommandIsNotGeneratedBindableCustomPropertyCompatible = new DiagnosticDescriptor(
         id: "MVVMTK0046",
         title: "Using [RelayCommand] is not compatible with [GeneratedBindableCustomProperty]",
-        messageFormat: """The method {0} using [RelayCommand] within a type also using [GeneratedBindableCustomProperty], which is not supported, and a manually declared command property should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated command property that is produced by the MVVM Toolkit generator)""",
+        messageFormat: """The method {0} using [RelayCommand] within a type also using [GeneratedBindableCustomProperty] and including the generated property, which is not supported, and a manually declared command property should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated command property that is produced by the MVVM Toolkit generator)""",
         category: typeof(RelayCommandGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
-        description: "Using [RelayCommand] on methods within a type also using [GeneratedBindableCustomProperty] is not supported, and a manually declared command property should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated command property that is produced by the MVVM Toolkit generator).",
+        description: "Using [RelayCommand] on methods within a type also using [GeneratedBindableCustomProperty] and including the generated property is not supported, and a manually declared command property should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated command property that is produced by the MVVM Toolkit generator).",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0046");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> for when <c>[GeneratedBindableCustomProperty]</c> is used on a type that also uses <c>[ObservableProperty]</c> on any declared or inherited fields.
     /// <para>
-    /// Format: <c>"The type {0} using [GeneratedBindableCustomProperty] is also using [ObservableProperty] on its declared (or inherited) field {1}.{2}: combining the two generators is not supported, and partial properties should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated property that is produced by the MVVM Toolkit generator)"</c>.
+    /// Format: <c>"The type {0} using [GeneratedBindableCustomProperty] is also using [ObservableProperty] on its declared (or inherited) field {1}.{2}, and including the generated property: combining the two generators is not supported, and partial properties should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated property that is produced by the MVVM Toolkit generator)"</c>.
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor WinRTGeneratedBindableCustomPropertyWithBaseObservablePropertyOnField = new DiagnosticDescriptor(
         id: "MVVMTK0047",
         title: "Using [GeneratedBindableCustomProperty] is not compatible with [ObservableProperty] on fields",
-        messageFormat: """The type {0} using [GeneratedBindableCustomProperty] is also using [ObservableProperty] on its declared (or inherited) field {1}.{2}: combining the two generators is not supported, and partial properties should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated property that is produced by the MVVM Toolkit generator)""",
+        messageFormat: """The type {0} using [GeneratedBindableCustomProperty] is also using [ObservableProperty] on its declared (or inherited) field {1}.{2}, and including the generated property: combining the two generators is not supported, and partial properties should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated property that is produced by the MVVM Toolkit generator)""",
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
-        description: "Using [GeneratedBindableCustomProperty] on types that also use [ObservableProperty] on any declared (or inherited) fields is not supported, and partial properties should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated property that is produced by the MVVM Toolkit generator).",
+        description: "Using [GeneratedBindableCustomProperty] on types that also use [ObservableProperty] on any declared (or inherited) fields and including the generated property is not supported, and partial properties should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated property that is produced by the MVVM Toolkit generator).",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0047");
 
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> for when <c>[GeneratedBindableCustomProperty]</c> is used on a type that also uses <c>[RelayCommand]</c> on any declared or inherited methods.
     /// <para>
-    /// Format: <c>"The type {0} using [GeneratedBindableCustomProperty] is also using [RelayCommand] on its inherited method {1}: combining the two generators is not supported, and a manually declared command property should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated property that is produced by the MVVM Toolkit generator)"</c>.
+    /// Format: <c>"The type {0} using [GeneratedBindableCustomProperty] is also using [RelayCommand] on its inherited method {1} and including the generated property: combining the two generators is not supported, and a manually declared command property should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated property that is produced by the MVVM Toolkit generator)"</c>.
     /// </para>
     /// </summary>
     public static readonly DiagnosticDescriptor WinRTGeneratedBindableCustomPropertyWithBaseRelayCommand = new DiagnosticDescriptor(
         id: "MVVMTK0048",
         title: "Using [GeneratedBindableCustomProperty] is not compatible with [RelayCommand]",
-        messageFormat: """The type {0} using [GeneratedBindableCustomProperty] is also using [RelayCommand] on its inherited method {1}: combining the two generators is not supported, and a manually declared command property should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated property that is produced by the MVVM Toolkit generator)""",
+        messageFormat: """The type {0} using [GeneratedBindableCustomProperty] is also using [RelayCommand] on its inherited method {1} and including the generated property: combining the two generators is not supported, and a manually declared command property should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated property that is produced by the MVVM Toolkit generator)""",
         category: typeof(RelayCommandGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
-        description: "Using [GeneratedBindableCustomProperty] on types that also use [RelayCommand] on any inherited methods is not supported, and a manually declared command property should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated property that is produced by the MVVM Toolkit generator).",
+        description: "Using [GeneratedBindableCustomProperty] on types that also use [RelayCommand] on any inherited methods and including the generated property is not supported, and a manually declared command property should be used instead (the [GeneratedBindableCustomProperty] generator cannot see the generated property that is produced by the MVVM Toolkit generator).",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0048");
 
     /// <summary>

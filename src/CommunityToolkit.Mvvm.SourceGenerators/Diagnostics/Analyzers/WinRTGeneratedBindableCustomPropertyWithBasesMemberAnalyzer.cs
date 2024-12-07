@@ -60,25 +60,35 @@ public sealed class WinRTGeneratedBindableCustomPropertyWithBasesMemberAnalyzer 
                     return;
                 }
 
-                // Warn on all [ObservableProperty] fields
+                // Warn on all [ObservableProperty] fields that would be included
                 foreach (IFieldSymbol fieldSymbol in FindObservablePropertyFields(typeSymbol, observablePropertySymbol))
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(
-                        WinRTGeneratedBindableCustomPropertyWithBaseObservablePropertyOnField,
-                        typeSymbol.GetLocationFromAttributeDataOrDefault(generatedBindableCustomPropertyAttribute),
-                        typeSymbol,
-                        fieldSymbol.ContainingType,
-                        fieldSymbol.Name));
+                    string propertyName = ObservablePropertyGenerator.Execute.GetGeneratedPropertyName(fieldSymbol);
+
+                    if (WinRTRelayCommandIsNotGeneratedBindableCustomPropertyCompatibleAnalyzer.DoesGeneratedBindableCustomPropertyAttributeIncludePropertyName(generatedBindableCustomPropertyAttribute, propertyName))
+                    {
+                        context.ReportDiagnostic(Diagnostic.Create(
+                            WinRTGeneratedBindableCustomPropertyWithBaseObservablePropertyOnField,
+                            typeSymbol.GetLocationFromAttributeDataOrDefault(generatedBindableCustomPropertyAttribute),
+                            typeSymbol,
+                            fieldSymbol.ContainingType,
+                            fieldSymbol.Name));
+                    }
                 }
 
-                // Warn on all [RelayCommand] methods
+                // Warn on all [RelayCommand] methods that would be included
                 foreach (IMethodSymbol methodSymbol in FindRelayCommandMethods(typeSymbol, relayCommandSymbol))
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(
-                        WinRTGeneratedBindableCustomPropertyWithBaseRelayCommand,
-                        typeSymbol.GetLocationFromAttributeDataOrDefault(generatedBindableCustomPropertyAttribute),
-                        typeSymbol,
-                        methodSymbol));
+                    (_, string propertyName) = RelayCommandGenerator.Execute.GetGeneratedFieldAndPropertyNames(methodSymbol);
+
+                    if (WinRTRelayCommandIsNotGeneratedBindableCustomPropertyCompatibleAnalyzer.DoesGeneratedBindableCustomPropertyAttributeIncludePropertyName(generatedBindableCustomPropertyAttribute, propertyName))
+                    {
+                        context.ReportDiagnostic(Diagnostic.Create(
+                            WinRTGeneratedBindableCustomPropertyWithBaseRelayCommand,
+                            typeSymbol.GetLocationFromAttributeDataOrDefault(generatedBindableCustomPropertyAttribute),
+                            typeSymbol,
+                            methodSymbol));
+                    }
                 }
             }, SymbolKind.NamedType);
         });
