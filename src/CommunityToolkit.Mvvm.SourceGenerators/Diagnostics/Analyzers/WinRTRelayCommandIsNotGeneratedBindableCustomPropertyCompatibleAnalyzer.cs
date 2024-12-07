@@ -54,9 +54,17 @@ public sealed class WinRTRelayCommandIsNotGeneratedBindableCustomPropertyCompati
                     return;
                 }
 
-                // If the containing type is using [GeneratedBindableCustomProperty], emit a warning
-                if (typeSymbol.HasAttributeWithType(generatedBindableCustomPropertySymbol))
+                // If the containing type is not using [GeneratedBindableCustomProperty], we can also skip it
+                if (!typeSymbol.TryGetAttributeWithType(generatedBindableCustomPropertySymbol, out AttributeData? generatedBindableCustomPropertyAttribute))
                 {
+                    return;
+                }
+
+                (_, string propertyName) = RelayCommandGenerator.Execute.GetGeneratedFieldAndPropertyNames(methodSymbol);
+
+                if (DoesGeneratedBindableCustomPropertyAttributeIncludePropertyName(generatedBindableCustomPropertyAttribute, propertyName))
+                {
+                    // Actually warn if the generated command would've been included by the generator
                     context.ReportDiagnostic(Diagnostic.Create(
                         WinRTRelayCommandIsNotGeneratedBindableCustomPropertyCompatible,
                         methodSymbol.GetLocationFromAttributeDataOrDefault(relayCommandAttribute),
@@ -64,5 +72,33 @@ public sealed class WinRTRelayCommandIsNotGeneratedBindableCustomPropertyCompati
                 }
             }, SymbolKind.Method);
         });
+    }
+
+    /// <summary>
+    /// Checks whether a generated property with a given name would be included by the [GeneratedBindableCustomProperty] generator.
+    /// </summary>
+    /// <param name="attributeData">The input <see cref="AttributeData"/> value for the [GeneratedBindableCustomProperty] attribute.</param>
+    /// <param name="propertyName">The target generated property name to check.</param>
+    /// <returns>Whether <paramref name="propertyName"/> would be included by the [GeneratedBindableCustomProperty] generator.</returns>
+    internal static bool DoesGeneratedBindableCustomPropertyAttributeIncludePropertyName(AttributeData attributeData, string propertyName)
+    {
+        // Make sure we have a valid list of property names to explicitly include.
+        // If that is not the case, we consider all properties as included by default.
+        if (attributeData.ConstructorArguments is not [{ IsNull: false, Kind: TypedConstantKind.Array, Type: IArrayTypeSymbol { ElementType.SpecialType: SpecialType.System_String }, Values: var names }, ..])
+        {
+            return true;
+        }
+
+        // Simply match the input collection of target property names
+        foreach (TypedConstant propertyValue in names)
+        {
+            if (propertyValue is { IsNull: false, Type.SpecialType: SpecialType.System_String, Value: string targetName } && targetName == propertyName)
+            {
+                return true;
+            }
+        }
+
+        // No matches, we can consider the property as not included
+        return false;
     }
 }
