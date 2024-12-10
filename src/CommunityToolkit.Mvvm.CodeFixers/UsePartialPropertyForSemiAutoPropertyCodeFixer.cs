@@ -69,11 +69,40 @@ public sealed class UsePartialPropertyForSemiAutoPropertyCodeFixer : CodeFixProv
     {
         await Task.CompletedTask;
 
+        // Prepare the [ObservableProperty] attribute, which is always inserted first
+        AttributeListSyntax observablePropertyAttributeList = AttributeList(SingletonSeparatedList(Attribute(IdentifierName("ObservableProperty"))));
+
+        // Start setting up the updated attribute lists
+        SyntaxList<AttributeListSyntax> attributeLists = propertyDeclaration.AttributeLists;
+
+        if (attributeLists is [AttributeListSyntax firstAttributeListSyntax, ..])
+        {
+            // Remove the trivia from the original first attribute
+            attributeLists = attributeLists.Replace(
+                nodeInList: firstAttributeListSyntax,
+                newNode: firstAttributeListSyntax.WithoutTrivia());
+
+            // If the property has at least an attribute list, move the trivia from it to the new attribute
+            observablePropertyAttributeList = observablePropertyAttributeList.WithTriviaFrom(firstAttributeListSyntax);
+
+            // Insert the new attribute
+            attributeLists = attributeLists.Insert(0, observablePropertyAttributeList);
+        }
+        else
+        {
+            // Otherwise (there are no attribute lists), transfer the trivia to the new (only) attribute list
+            observablePropertyAttributeList = observablePropertyAttributeList.WithTriviaFrom(propertyDeclaration);
+
+            // Save the new attribute list
+            attributeLists = attributeLists.Add(observablePropertyAttributeList);
+        }
+
         // Get a new property that is partial and with semicolon token accessors
         PropertyDeclarationSyntax updatedPropertyDeclaration =
             propertyDeclaration
             .AddModifiers(Token(SyntaxKind.PartialKeyword))
-            .AddAttributeLists(AttributeList(SingletonSeparatedList(Attribute(IdentifierName("ObservableProperty")))))
+            .WithoutTrivia()
+            .WithAttributeLists(attributeLists)
             .WithAdditionalAnnotations(Formatter.Annotation)
             .WithAccessorList(AccessorList(List(
             [
