@@ -1243,4 +1243,210 @@ partial class Test_SourceGeneratorsDiagnostics
 
         await CSharpAnalyzerWithLanguageVersionTest<InvalidPointerTypeObservablePropertyAttributeAnalyzer>.VerifyAnalyzerAsync(source, LanguageVersion.Preview);
     }
+
+    [TestMethod]
+    public async Task UseObservablePropertyOnSemiAutoPropertyAnalyzer_NormalProperty_DoesNotWarn()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp;
+
+            public partial class SampleViewModel : ObservableObject
+            {
+                public string Name { get; set; }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<UseObservablePropertyOnSemiAutoPropertyAnalyzer>.VerifyAnalyzerAsync(source, LanguageVersion.Preview);
+    }
+
+    [TestMethod]
+    public async Task UseObservablePropertyOnSemiAutoPropertyAnalyzer_SimilarProperty_NotObservableObject_DoesNotWarn()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp;
+
+            public partial class SampleViewModel : MyBaseViewModel
+            {
+                public string Name
+                {
+                    get => field;
+                    set => SetProperty(ref field, value);
+                }
+            }
+
+            public abstract class MyBaseViewModel
+            {
+                protected void SetProperty<T>(ref T location, T value, string propertyName = null)
+                {
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<UseObservablePropertyOnSemiAutoPropertyAnalyzer>.VerifyAnalyzerAsync(source, LanguageVersion.Preview);
+    }
+
+    [TestMethod]
+    public async Task UseObservablePropertyOnSemiAutoPropertyAnalyzer_NoGetter_DoesNotWarn()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp;
+
+            public partial class SampleViewModel : ObservableObject
+            {
+                public string Name
+                {
+                    set => SetProperty(ref field, value);
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<UseObservablePropertyOnSemiAutoPropertyAnalyzer>.VerifyAnalyzerAsync(source, LanguageVersion.Preview);
+    }
+
+    [TestMethod]
+    public async Task UseObservablePropertyOnSemiAutoPropertyAnalyzer_NoSetter_DoesNotWarn()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp;
+
+            public partial class SampleViewModel : ObservableObject
+            {
+                public string Name
+                {
+                    get => field;
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<UseObservablePropertyOnSemiAutoPropertyAnalyzer>.VerifyAnalyzerAsync(source, LanguageVersion.Preview);
+    }
+
+    [TestMethod]
+    public async Task UseObservablePropertyOnSemiAutoPropertyAnalyzer_OtherLocation_DoesNotWarn()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp;
+
+            public partial class SampleViewModel : ObservableObject
+            {
+                public string Name
+                {
+                    get => field;
+                    set
+                    {
+                        string test = field;
+
+                        SetProperty(ref test, value);
+                    }
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<UseObservablePropertyOnSemiAutoPropertyAnalyzer>.VerifyAnalyzerAsync(source, LanguageVersion.Preview);
+    }
+
+    [TestMethod]
+    public async Task UseObservablePropertyOnSemiAutoPropertyAnalyzer_OtherValue_DoesNotWarn()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp;
+
+            public partial class SampleViewModel : ObservableObject
+            {
+                public string Name
+                {
+                    get => field;
+                    set
+                    {
+                        string test = "Bob";
+
+                        SetProperty(ref field, test);
+                    }
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<UseObservablePropertyOnSemiAutoPropertyAnalyzer>.VerifyAnalyzerAsync(source, LanguageVersion.Preview);
+    }
+
+    [TestMethod]
+    public async Task UseObservablePropertyOnSemiAutoPropertyAnalyzer_ValidProperty_Warns()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp;
+
+            public partial class SampleViewModel : ObservableObject
+            {
+                public string {|MVVMTK0056:Name|}
+                {
+                    get => field;
+                    set => SetProperty(ref field, value);
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<UseObservablePropertyOnSemiAutoPropertyAnalyzer>.VerifyAnalyzerAsync(source, LanguageVersion.Preview);
+    }
+
+    [TestMethod]
+    public async Task UseObservablePropertyOnSemiAutoPropertyAnalyzer_ValidProperty_WithModifiers_Warns()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp;
+
+            public partial class SampleViewModel : ObservableObject
+            {
+                public new string {|MVVMTK0056:Name|}
+                {
+                    get => field;
+                    private set => SetProperty(ref field, value);
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<UseObservablePropertyOnSemiAutoPropertyAnalyzer>.VerifyAnalyzerAsync(source, LanguageVersion.Preview);
+    }
+
+    [TestMethod]
+    public async Task UseObservablePropertyOnSemiAutoPropertyAnalyzer_ValidProperty_WithBlocks_Warns()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp;
+
+            public partial class SampleViewModel : ObservableObject
+            {
+                public new string {|MVVMTK0056:Name|}
+                {
+                    get
+                    {
+                        return field;
+                    }
+                    private set
+                    {
+                        SetProperty(ref field, value);
+                    }
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<UseObservablePropertyOnSemiAutoPropertyAnalyzer>.VerifyAnalyzerAsync(source, LanguageVersion.Preview);
+    }
 }
