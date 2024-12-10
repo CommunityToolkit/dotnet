@@ -98,12 +98,11 @@ public sealed class UsePartialPropertyForSemiAutoPropertyCodeFixer : CodeFixProv
         // Find the parent type for the property
         TypeDeclarationSyntax typeDeclaration = propertyDeclaration.FirstAncestorOrSelf<TypeDeclarationSyntax>()!;
 
-        // Make sure it's partial
+        // Make sure it's partial (we create the updated node in the function to preserve the updated property declaration).
+        // If we created it separately and replaced it, the whole tree would also be replaced, and we'd lose the new property.
         if (!typeDeclaration.Modifiers.Any(SyntaxKind.PartialKeyword))
         {
-            TypeDeclarationSyntax updatedTypeDeclaration = typeDeclaration.AddModifiers(Token(SyntaxKind.PartialKeyword));
-
-            editor.ReplaceNode(typeDeclaration, updatedTypeDeclaration);
+            editor.ReplaceNode(typeDeclaration, static (node, generator) => generator.WithModifiers(node, generator.GetModifiers(node).WithPartial(true)));
         }
 
         return document.WithSyntaxRoot(editor.GetChangedRoot());
