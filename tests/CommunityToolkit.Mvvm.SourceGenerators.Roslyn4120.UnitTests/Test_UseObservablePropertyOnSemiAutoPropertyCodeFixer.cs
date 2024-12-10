@@ -260,8 +260,80 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
 
         test.FixedState.ExpectedDiagnostics.AddRange(new[]
         {
-            // /0/Test0.cs(8,27): error CS9248: Partial property 'SampleViewModel.Name' must have an implementation part.
-            DiagnosticResult.CompilerError("CS9248").WithSpan(8, 27, 8, 31).WithArguments("MyApp.SampleViewModel.Name"),
+            // /0/Test0.cs(8,27): error CS9248: Partial property 'SampleViewModel.FirstName' must have an implementation part.
+            DiagnosticResult.CompilerError("CS9248").WithSpan(8, 27, 8, 36).WithArguments("MyApp.SampleViewModel.FirstName"),
+
+            // /0/Test0.cs(11,27): error CS9248: Partial property 'SampleViewModel.LastName' must have an implementation part.
+            DiagnosticResult.CompilerError("CS9248").WithSpan(11, 27, 11, 35).WithArguments("MyApp.SampleViewModel.LastName"),
+        });
+
+        await test.RunAsync();
+    }
+
+    [TestMethod]
+    public async Task SimpleProperty_Multiple_OnlyTriggersOnFirstOne()
+    {
+        string original = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp;
+
+            public class SampleViewModel : ObservableObject
+            {
+                public string FirstName
+                {
+                    get => field;
+                    set => SetProperty(ref field, value);
+                }
+
+                private string _lastName;
+
+                public string LastName
+                {
+                    get => _lastName;
+                    set => SetProperty(ref _lastName, value);
+                }
+            }
+            """;
+
+        string @fixed = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp;
+
+            public partial class SampleViewModel : ObservableObject
+            {
+                [ObservableProperty]
+                public partial string FirstName { get; set; }
+
+                private string _lastName;
+
+                public string LastName
+                {
+                    get => _lastName;
+                    set => SetProperty(ref _lastName, value);
+                }
+            }
+            """;
+
+        CSharpCodeFixTest test = new(LanguageVersion.Preview)
+        {
+            TestCode = original,
+            FixedCode = @fixed,
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
+        };
+
+        test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
+        test.ExpectedDiagnostics.AddRange(new[]
+        {
+            // /0/Test0.cs(7,19): info MVVMTK0056: The semi-auto property MyApp.SampleViewModel.FirstName can be converted to a partial property using [ObservableProperty], which is recommended (doing so makes the code less verbose and results in more optimized code)
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(7, 19, 7, 28).WithArguments("MyApp.SampleViewModel", "FirstName"),
+        });
+
+        test.FixedState.ExpectedDiagnostics.AddRange(new[]
+        {
+            // /0/Test0.cs(8,27): error CS9248: Partial property 'SampleViewModel.FirstName' must have an implementation part.
+            DiagnosticResult.CompilerError("CS9248").WithSpan(8, 27, 8, 36).WithArguments("MyApp.SampleViewModel.FirstName"),
         });
 
         await test.RunAsync();
@@ -447,8 +519,11 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
 
         test.FixedState.ExpectedDiagnostics.AddRange(new[]
         {
-            // /0/Test0.cs(8,27): error CS9248: Partial property 'SampleViewModel.Name' must have an implementation part.
-            DiagnosticResult.CompilerError("CS9248").WithSpan(8, 27, 8, 31).WithArguments("MyApp.SampleViewModel.Name"),
+            // /0/Test0.cs(8,27): error CS9248: Partial property 'SampleViewModel.FirstName' must have an implementation part.
+            DiagnosticResult.CompilerError("CS9248").WithSpan(8, 27, 8, 36).WithArguments("MyApp.SampleViewModel.FirstName"),
+
+            // /0/Test0.cs(11,27): error CS9248: Partial property 'SampleViewModel.LastName' must have an implementation part.
+            DiagnosticResult.CompilerError("CS9248").WithSpan(11, 27, 11, 35).WithArguments("MyApp.SampleViewModel.LastName"),
         });
 
         await test.RunAsync();
@@ -616,6 +691,12 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
 
             // /0/Test0.cs(32,27): error CS9248: Partial property 'SampleViewModel.Prop5' must have an implementation part.
             DiagnosticResult.CompilerError("CS9248").WithSpan(32, 27, 32, 32).WithArguments("MyApp.SampleViewModel.Prop5"),
+
+            // /0/Test0.cs(36,27): error CS9248: Partial property 'SampleViewModel.Prop6' must have an implementation part.
+            DiagnosticResult.CompilerError("CS9248").WithSpan(36, 27, 36, 32).WithArguments("MyApp.SampleViewModel.Prop6"),
+
+            // /0/Test0.cs(39,27): error CS9248: Partial property 'SampleViewModel.Prop7' must have an implementation part.
+            DiagnosticResult.CompilerError("CS9248").WithSpan(39, 27, 39, 32).WithArguments("MyApp.SampleViewModel.Prop7"),
         });
 
         await test.RunAsync();
