@@ -116,8 +116,9 @@ public sealed class UsePartialPropertyForSemiAutoPropertyCodeFixer : CodeFixProv
                 .WithBody(null)
                 .WithExpressionBody(null)
                 .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
+                .WithTrailingTrivia(propertyDeclaration.AccessorList.Accessors[1].GetTrailingTrivia())
                 .WithAdditionalAnnotations(Formatter.Annotation)
-            ])));
+            ])).WithTrailingTrivia(propertyDeclaration.AccessorList.GetTrailingTrivia()));
 
         // Create an editor to perform all mutations
         SyntaxEditor editor = new(root, document.Project.Solution.Workspace.Services);
