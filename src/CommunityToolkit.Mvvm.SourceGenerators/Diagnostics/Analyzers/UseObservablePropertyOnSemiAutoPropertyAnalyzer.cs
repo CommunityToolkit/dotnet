@@ -212,7 +212,8 @@ public sealed class UseObservablePropertyOnSemiAutoPropertyAnalyzer : Diagnostic
                             context.ReportDiagnostic(Diagnostic.Create(
                                 UseObservablePropertyOnSemiAutoProperty,
                                 pair.Key.Locations.FirstOrDefault(),
-                                pair.Key));
+                                pair.Key.ContainingType,
+                                pair.Key.Name));
                         }
                     }
                 });
