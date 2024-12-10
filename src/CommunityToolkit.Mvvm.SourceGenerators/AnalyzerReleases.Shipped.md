@@ -97,3 +97,11 @@ MVVMTK0052 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator 
 MVVMTK0053 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Error | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0053
 MVVMTK0054 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Error | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0054
 MVVMTK0055 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Error | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0055
+
+## Release 8.4.1
+
+### New Rules
+
+Rule ID | Category | Severity | Notes
+--------|----------|----------|-------
+MVVMTK0056 | CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator | Info | See https://aka.ms/mvvmtoolkit/errors/mvvmtk0056
