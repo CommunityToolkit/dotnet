@@ -101,7 +101,7 @@ public sealed class UsePartialPropertyForSemiAutoPropertyCodeFixer : CodeFixProv
         PropertyDeclarationSyntax updatedPropertyDeclaration =
             propertyDeclaration
             .AddModifiers(Token(SyntaxKind.PartialKeyword))
-            .WithoutTrivia()
+            .WithoutLeadingTrivia()
             .WithAttributeLists(attributeLists)
             .WithAdditionalAnnotations(Formatter.Annotation)
             .WithAccessorList(AccessorList(List(

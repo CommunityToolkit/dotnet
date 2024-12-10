@@ -268,6 +268,75 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
     }
 
     [TestMethod]
+    public async Task SimpleProperty_Multiple_OnlyTriggersOnSecondOne()
+    {
+        string original = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp;
+
+            public class SampleViewModel : ObservableObject
+            {
+                private string _firstName;
+
+                public string FirstName
+                {
+                    get => _firstName;
+                    set => SetProperty(ref _firstName, value);
+                }
+
+                public string LastName
+                {
+                    get => field;
+                    set => SetProperty(ref field, value);
+                }
+            }
+            """;
+
+        string @fixed = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp;
+
+            public partial class SampleViewModel : ObservableObject
+            {
+                private string _firstName;
+
+                public string FirstName
+                {
+                    get => _firstName;
+                    set => SetProperty(ref _firstName, value);
+                }
+
+                [ObservableProperty]
+                public partial string LastName { get; set; }
+            }
+            """;
+
+        CSharpCodeFixTest test = new(LanguageVersion.Preview)
+        {
+            TestCode = original,
+            FixedCode = @fixed,
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
+        };
+
+        test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
+        test.ExpectedDiagnostics.AddRange(new[]
+        {
+            // /0/Test0.cs(15,19): info MVVMTK0056: The semi-auto property MyApp.SampleViewModel.LastName can be converted to a partial property using [ObservableProperty], which is recommended (doing so makes the code less verbose and results in more optimized code)
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(15, 19, 15, 27).WithArguments("MyApp.SampleViewModel", "LastName"),
+        });
+
+        test.FixedState.ExpectedDiagnostics.AddRange(new[]
+        {
+            // /0/Test0.cs(16,27): error CS9248: Partial property 'SampleViewModel.LastName' must have an implementation part.
+            DiagnosticResult.CompilerError("CS9248").WithSpan(16, 27, 16, 35).WithArguments("MyApp.SampleViewModel.LastName"),
+        });
+
+        await test.RunAsync();
+    }
+
+    [TestMethod]
     public async Task SimpleProperty_WithinPartialType()
     {
         string original = """
@@ -436,6 +505,19 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
                     get => field;
                     set => SetProperty(ref field, value);
                 }
+
+                [Test("Attribute without trivia")]
+                public string Prop6
+                {
+                    get => field;
+                    set => SetProperty(ref field, value);
+                }
+
+                public string Prop7
+                {
+                    get => field;
+                    set => SetProperty(ref field, value);
+                }
             }
 
             public class TestAttribute(string text) : Attribute;
@@ -474,6 +556,13 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
                 [ObservableProperty]
                 [Test("Yet another attribute")]
                 public partial string Prop5 { get; set; }
+
+                [ObservableProperty]
+                [Test("Attribute without trivia")]
+                public partial string Prop6 { get; set; }
+
+                [ObservableProperty]
+                public partial string Prop7 { get; set; }
             }
 
             public class TestAttribute(string text) : Attribute;
@@ -503,6 +592,12 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
 
             // /0/Test0.cs(43,19): info MVVMTK0056: The semi-auto property MyApp.SampleViewModel.Prop5 can be converted to a partial property using [ObservableProperty], which is recommended (doing so makes the code less verbose and results in more optimized code)
             CSharpCodeFixVerifier.Diagnostic().WithSpan(43, 19, 43, 24).WithArguments("MyApp.SampleViewModel", "Prop5"),
+
+            // /0/Test0.cs(50,19): info MVVMTK0056: The semi-auto property MyApp.SampleViewModel.Prop6 can be converted to a partial property using [ObservableProperty], which is recommended (doing so makes the code less verbose and results in more optimized code)
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(50, 19, 50, 24).WithArguments("MyApp.SampleViewModel", "Prop6"),
+
+            // /0/Test0.cs(56,19): info MVVMTK0056: The semi-auto property MyApp.SampleViewModel.Prop7 can be converted to a partial property using [ObservableProperty], which is recommended (doing so makes the code less verbose and results in more optimized code)
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(56, 19, 56, 24).WithArguments("MyApp.SampleViewModel", "Prop7"),
         });
 
         test.FixedState.ExpectedDiagnostics.AddRange(new[]
