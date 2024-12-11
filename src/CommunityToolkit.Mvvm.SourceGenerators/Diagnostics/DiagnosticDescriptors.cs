@@ -45,6 +45,11 @@ internal static class DiagnosticDescriptors
     public const string WinRTObservablePropertyOnFieldsIsNotAotCompatibleId = "MVVMTK0045";
 
     /// <summary>
+    /// The diagnostic id for <see cref="UseObservablePropertyOnSemiAutoProperty"/>.
+    /// </summary>
+    public const string UseObservablePropertyOnSemiAutoPropertyId = "MVVMTK0056";
+
+    /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a duplicate declaration of <see cref="INotifyPropertyChanged"/> would happen.
     /// <para>
     /// Format: <c>"Cannot apply [INotifyPropertyChangedAttribute] to type {0}, as it already declares the INotifyPropertyChanged interface"</c>.
@@ -923,4 +928,20 @@ internal static class DiagnosticDescriptors
         isEnabledByDefault: true,
         description: "A property using [ObservableProperty] returns a pointer-like value ([ObservableProperty] must be used on properties of a non pointer-like type).",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0055");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> for when a semi-auto property can be converted to use <c>[ObservableProperty]</c> instead.
+    /// <para>
+    /// Format: <c>"The semi-auto property {0}.{1} can be converted to a partial property using [ObservableProperty], which is recommended (doing so makes the code less verbose and results in more optimized code)"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor UseObservablePropertyOnSemiAutoProperty = new DiagnosticDescriptor(
+        id: UseObservablePropertyOnSemiAutoPropertyId,
+        title: "Prefer using [ObservableProperty] over semi-auto properties",
+        messageFormat: """The semi-auto property {0}.{1} can be converted to a partial property using [ObservableProperty], which is recommended (doing so makes the code less verbose and results in more optimized code)""",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Info,
+        isEnabledByDefault: true,
+        description: "Semi-auto properties should be converted to partial properties using [ObservableProperty] when possible, which is recommended (doing so makes the code less verbose and results in more optimized code).",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0056");
 }
