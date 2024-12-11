@@ -89,6 +89,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\EquatableArray{T}.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\HashCode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ImmutableArrayBuilder{T}.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\ObjectPool{T}.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Input\Models\CanExecuteExpressionType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Input\Models\CommandInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Input\RelayCommandGenerator.cs" />
