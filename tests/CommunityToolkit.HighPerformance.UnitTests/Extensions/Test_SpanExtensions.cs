@@ -69,6 +69,7 @@ public class Test_SpanExtensions
         Test<Guid>();
         Test<string>();
         Test<object>();
+        Test<char>();
         Test<IEnumerable<int>>();
     }
 
@@ -90,6 +91,7 @@ public class Test_SpanExtensions
         Test<Guid>();
         Test<string>();
         Test<object>();
+        Test<char>();
         Test<IEnumerable<int>>();
     }
 
@@ -127,6 +129,7 @@ public class Test_SpanExtensions
         Test<Guid>();
         Test<string>();
         Test<object>();
+        Test<char>();
         Test<IEnumerable<int>>();
     }
 
