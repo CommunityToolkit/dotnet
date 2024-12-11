@@ -75,6 +75,59 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
     }
 
     [TestMethod]
+    public async Task SimpleProperty_WithSemicolonTokenGetAccessor()
+    {
+        string original = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp;
+
+            public class SampleViewModel : ObservableObject
+            {
+                public string Name
+                {
+                    get;
+                    set => SetProperty(ref field, value);
+                }
+            }
+            """;
+
+        string @fixed = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp;
+
+            public partial class SampleViewModel : ObservableObject
+            {
+                [ObservableProperty]
+                public partial string Name { get; set; }
+            }
+            """;
+
+        CSharpCodeFixTest test = new(LanguageVersion.Preview)
+        {
+            TestCode = original,
+            FixedCode = @fixed,
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
+        };
+
+        test.TestState.AdditionalReferences.Add(typeof(ObservableObject).Assembly);
+        test.ExpectedDiagnostics.AddRange(new[]
+        {
+            // /0/Test0.cs(7,19): info MVVMTK0056: The semi-auto property MyApp.SampleViewModel.Name can be converted to a partial property using [ObservableProperty], which is recommended (doing so makes the code less verbose and results in more optimized code)
+            CSharpCodeFixVerifier.Diagnostic().WithSpan(7, 19, 7, 23).WithArguments("MyApp.SampleViewModel", "Name"),
+        });
+
+        test.FixedState.ExpectedDiagnostics.AddRange(new[]
+        {
+            // /0/Test0.cs(8,27): error CS9248: Partial property 'SampleViewModel.Name' must have an implementation part.
+            DiagnosticResult.CompilerError("CS9248").WithSpan(8, 27, 8, 31).WithArguments("MyApp.SampleViewModel.Name"),
+        });
+
+        await test.RunAsync();
+    }
+
+    [TestMethod]
     public async Task SimpleProperty_WithLeadingTrivia()
     {
         string original = """
