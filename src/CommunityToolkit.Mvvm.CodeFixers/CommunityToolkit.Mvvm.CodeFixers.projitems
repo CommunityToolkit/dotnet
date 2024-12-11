@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)AsyncVoidReturningRelayCommandMethodCodeFixer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ClassUsingAttributeInsteadOfInheritanceCodeFixer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FieldReferenceForObservablePropertyFieldCodeFixer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UsePartialPropertyForSemiAutoPropertyCodeFixer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UsePartialPropertyForObservablePropertyCodeFixer.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -100,7 +100,7 @@ public sealed class UsePartialPropertyForObservablePropertyCodeFixer : CodeFixPr
         if (root!.FindNode(diagnosticSpan).FirstAncestorOrSelf<FieldDeclarationSyntax>() is { Declaration.Variables: [{ Identifier.Text: string identifierName }] } fieldDeclaration &&
             identifierName == fieldName)
         {
-            // Register the code fix to update the class declaration to inherit from ObservableObject instead
+            // Register the code fix to convert the field declaration to a partial property
             context.RegisterCodeFix(
                 CodeAction.Create(
                     title: "Use a partial property",
