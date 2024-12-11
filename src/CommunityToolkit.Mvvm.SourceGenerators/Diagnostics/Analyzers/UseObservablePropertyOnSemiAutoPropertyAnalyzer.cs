@@ -10,6 +10,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
@@ -200,6 +201,35 @@ public sealed class UseObservablePropertyOnSemiAutoPropertyAnalyzer : Diagnostic
                         validFlags[1] = true;
                     }
                 });
+
+                // We also need to track getters which have no body, and we need syntax for that
+                context.RegisterSyntaxNodeAction(context =>
+                {
+                    // Let's just make sure we do have a property symbol
+                    if (context.ContainingSymbol is not IPropertySymbol { GetMethod: not null } propertySymbol)
+                    {
+                        return;
+                    }
+
+                    // Lookup the property to get its flags
+                    if (!propertyMap.TryGetValue(propertySymbol, out bool[]? validFlags))
+                    {
+                        return;
+                    }
+
+                    // We expect two accessors, skip if otherwise (the setter will be validated by the other callback)
+                    if (context.Node is not PropertyDeclarationSyntax { AccessorList.Accessors: [{ } firstAccessor, { } secondAccessor] })
+                    {
+                        return;
+                    }
+
+                    // Check that either of them is a semicolon token 'get;' accessor (it can be in either position)
+                    if (firstAccessor.IsKind(SyntaxKind.GetAccessorDeclaration) && firstAccessor.SemicolonToken.IsKind(SyntaxKind.SemicolonToken) ||
+                        secondAccessor.IsKind(SyntaxKind.GetAccessorDeclaration) && secondAccessor.SemicolonToken.IsKind(SyntaxKind.SemicolonToken))
+                    {
+                        validFlags[0] = true;
+                    }
+                }, SyntaxKind.PropertyDeclaration);
 
                 // Finally, we can consume this information when we finish processing the symbol
                 context.RegisterSymbolEndAction(context =>
