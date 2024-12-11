@@ -4,6 +4,7 @@
 
 #if ROSLYN_4_12_0_OR_GREATER
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
@@ -14,6 +15,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
+using Microsoft.CodeAnalysis.PooledObjects;
 using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescriptors;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators;
@@ -24,6 +26,22 @@ namespace CommunityToolkit.Mvvm.SourceGenerators;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class UseObservablePropertyOnSemiAutoPropertyAnalyzer : DiagnosticAnalyzer
 {
+    /// <summary>
+    /// The number of pooled flags per stack (ie. how many properties we expect on average per type).
+    /// </summary>
+    private const int NumberOfPooledFlagsPerStack = 20;
+
+    /// <summary>
+    /// Shared pool for <see cref="Dictionary{TKey, TValue}"/> instances.
+    /// </summary>
+    [SuppressMessage("MicrosoftCodeAnalysisPerformance", "RS1008", Justification = "This is a pool of (empty) dictionaries, it is not actually storing compilation data.")]
+    private static readonly ObjectPool<Dictionary<IPropertySymbol, bool[]>> PropertyMapPool = new(static () => new Dictionary<IPropertySymbol, bool[]>(SymbolEqualityComparer.Default));
+
+    /// <summary>
+    /// Shared pool for <see cref="Stack{T}"/>-s of flags, one per type being processed.
+    /// </summary>
+    private static readonly ObjectPool<Stack<bool[]>> PropertyFlagsStackPool = new(CreatePropertyFlagsStack);
+
     /// <inheritdoc/>
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(UseObservablePropertyOnSemiAutoProperty);
 
@@ -69,7 +87,8 @@ public sealed class UseObservablePropertyOnSemiAutoPropertyAnalyzer : Diagnostic
                     return;
                 }
 
-                Dictionary<IPropertySymbol, bool[]> propertyMap = new(SymbolEqualityComparer.Default);
+                Dictionary<IPropertySymbol, bool[]> propertyMap = PropertyMapPool.Allocate();
+                Stack<bool[]> propertyFlagsStack = PropertyFlagsStackPool.Allocate();
 
                 // Crawl all members to discover properties that might be of interest
                 foreach (ISymbol memberSymbol in typeSymbol.GetMembers())
@@ -97,8 +116,13 @@ public sealed class UseObservablePropertyOnSemiAutoPropertyAnalyzer : Diagnostic
                         continue;
                     }
 
+                    // Take an array from the stack or create a new one otherwise
+                    bool[] flags = propertyFlagsStack.Count > 0
+                        ? propertyFlagsStack.Pop()
+                        : new bool[2];
+
                     // Track the property for later
-                    propertyMap.Add(propertySymbol, new bool[2]);
+                    propertyMap.Add(propertySymbol, flags);
                 }
 
                 // We want to process both accessors, where we specifically need both the syntax
@@ -246,6 +270,24 @@ public sealed class UseObservablePropertyOnSemiAutoPropertyAnalyzer : Diagnostic
                                 pair.Key.Name));
                         }
                     }
+
+                    // Before clearing the dictionary, move back all values to the stack
+                    foreach (bool[] propertyFlags in propertyMap.Values)
+                    {
+                        // Make sure the array is cleared before returning it
+                        propertyFlags.AsSpan().Clear();
+
+                        propertyFlagsStack.Push(propertyFlags);
+                    }
+
+                    // We are now done processing the symbol, we can return the dictionary.
+                    // Note that we must clear it before doing so to avoid leaks and issues.
+                    propertyMap.Clear();
+
+                    PropertyMapPool.Free(propertyMap);
+
+                    // Also do the same for the stack, except we don't need to clean it (since it roots no compilation objects)
+                    PropertyFlagsStackPool.Free(propertyFlagsStack);
                 });
             }, SymbolKind.NamedType);
         });
@@ -281,6 +323,23 @@ public sealed class UseObservablePropertyOnSemiAutoPropertyAnalyzer : Diagnostic
         setPropertySymbol = null;
 
         return false;
+    }
+
+    /// <summary>
+    /// Produces a new <see cref="Stack{T}"/> instance to pool.
+    /// </summary>
+    /// <returns>The resulting <see cref="Stack{T}"/> instance to use.</returns>
+    private static Stack<bool[]> CreatePropertyFlagsStack()
+    {
+        static IEnumerable<bool[]> EnumerateFlags()
+        {
+            for (int i = 0; i < NumberOfPooledFlagsPerStack; i++)
+            {
+                yield return new bool[2];
+            }
+        }
+
+        return new(EnumerateFlags());
     }
 }
 
