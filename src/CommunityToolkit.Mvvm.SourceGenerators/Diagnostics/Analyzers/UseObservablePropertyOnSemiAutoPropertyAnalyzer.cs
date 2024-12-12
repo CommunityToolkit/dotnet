@@ -249,8 +249,12 @@ public sealed class UseObservablePropertyOnSemiAutoPropertyAnalyzer : Diagnostic
                     }
 
                     // Check that either of them is a semicolon token 'get;' accessor (it can be in either position)
-                    if (firstAccessor.IsKind(SyntaxKind.GetAccessorDeclaration) && firstAccessor.SemicolonToken.IsKind(SyntaxKind.SemicolonToken) ||
-                        secondAccessor.IsKind(SyntaxKind.GetAccessorDeclaration) && secondAccessor.SemicolonToken.IsKind(SyntaxKind.SemicolonToken))
+                    if (firstAccessor.IsKind(SyntaxKind.GetAccessorDeclaration) &&
+                        firstAccessor.SemicolonToken.IsKind(SyntaxKind.SemicolonToken) &&
+                        firstAccessor.ExpressionBody is null ||
+                        secondAccessor.IsKind(SyntaxKind.GetAccessorDeclaration) &&
+                        secondAccessor.SemicolonToken.IsKind(SyntaxKind.SemicolonToken) &&
+                        secondAccessor.ExpressionBody is null)
                     {
                         validFlags[0] = true;
                     }
