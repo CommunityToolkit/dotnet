@@ -1404,6 +1404,27 @@ partial class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
+    public async Task UseObservablePropertyOnSemiAutoPropertyAnalyzer_GetAccessorWithExpressionBody_DoesNotWarn()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp;
+
+            public partial class SampleViewModel : ObservableObject
+            {
+                public string Name
+                {
+                    get => "Hello world";
+                    set => SetProperty(ref field, value);
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<UseObservablePropertyOnSemiAutoPropertyAnalyzer>.VerifyAnalyzerAsync(source, LanguageVersion.Preview);
+    }
+
+    [TestMethod]
     public async Task UseObservablePropertyOnSemiAutoPropertyAnalyzer_ValidProperty_Warns()
     {
         const string source = """
