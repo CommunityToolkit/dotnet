@@ -110,8 +110,9 @@ public sealed class UseObservablePropertyOnSemiAutoPropertyAnalyzer : Diagnostic
                         continue;
                     }
 
-                    // We can safely ignore properties that already have [ObservableProperty]
-                    if (typeSymbol.HasAttributeWithType(observablePropertySymbol))
+                    // We can safely ignore properties that already have [ObservableProperty].
+                    // This is because in that case, the other analyzer will already emit an error.
+                    if (propertySymbol.HasAttributeWithType(observablePropertySymbol))
                     {
                         continue;
                     }
