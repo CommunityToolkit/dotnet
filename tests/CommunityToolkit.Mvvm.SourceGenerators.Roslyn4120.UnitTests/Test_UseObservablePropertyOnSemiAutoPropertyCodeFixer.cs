@@ -90,7 +90,10 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
                     {
                         return field;
                     }
-                    set => SetProperty(ref field, value);
+                    set
+                    {
+                        SetProperty(ref field, value);
+                    }
                 }
             }
             """;
