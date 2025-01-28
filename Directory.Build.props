@@ -25,7 +25,7 @@
   </Choose>
 
   <ItemGroup>
-    <PackageReference Include="Nerdbank.GitVersioning" Version="3.6.146" PrivateAssets="All" />
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.7.115" PrivateAssets="All" IsImplicitlyReferenced="true" />
   </ItemGroup>
 
   <Choose>
