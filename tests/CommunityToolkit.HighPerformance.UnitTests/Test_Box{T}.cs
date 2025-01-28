@@ -36,7 +36,7 @@ public class Test_BoxOfT
         public string Text;
 
         /// <inheritdoc/>
-        public bool Equals(TestStruct other)
+        public readonly bool Equals(TestStruct other)
         {
             return
                 this.Number == other.Number &&

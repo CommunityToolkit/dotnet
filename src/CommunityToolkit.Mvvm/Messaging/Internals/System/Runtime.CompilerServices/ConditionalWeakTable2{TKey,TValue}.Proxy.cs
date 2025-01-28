@@ -72,13 +72,13 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
         }
 
         /// <inheritdoc cref="IDisposable.Dispose"/>
-        public void Dispose()
+        public readonly void Dispose()
         {
             this.enumerator.Dispose();
         }
 
         /// <inheritdoc cref="Collections.IEnumerator.MoveNext"/>
-        public bool MoveNext()
+        public readonly bool MoveNext()
         {
             return this.enumerator.MoveNext();
         }
@@ -87,7 +87,7 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
         /// Gets the current key.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TKey GetKey()
+        public readonly TKey GetKey()
         {
             return this.enumerator.Current.Key;
         }
@@ -96,7 +96,7 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
         /// Gets the current value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TValue GetValue()
+        public readonly TValue GetValue()
         {
             return this.enumerator.Current.Value;
         }
