@@ -595,4 +595,38 @@ public class Test_AsyncRelayCommand
         Assert.IsFalse(command.CanBeCanceled);
         Assert.IsTrue(command.IsCancellationRequested);
     }
+
+    [TestMethod]
+    public async Task Test_AsyncRelayCommand_EnsureExceptionThrown()
+    {
+        const int delay = 500;
+        const string exceptionMessage = "This Exception Is Thrown Inside of the Task";
+
+        Exception? executeException = null, executeAsyncException = null;
+
+        AsyncRelayCommand command = new(async () =>
+        {
+            await Task.Delay(delay);
+            throw new Exception(exceptionMessage);
+        });
+
+        try
+        {
+            // Use AsyncContext to test `async void` methods https://stackoverflow.com/a/14207615/5953643
+            AsyncContext.Run(async () =>
+            {
+                command.Execute(null);
+                await Task.Delay(delay * 2); // Ensure we don't escape `AsyncContext` before command throws Exception
+            });
+        }
+        catch (Exception e)
+        {
+            executeException = e;
+        }
+
+        executeAsyncException = await Assert.ThrowsExceptionAsync<Exception>(() => command.ExecuteAsync(null));
+
+        Assert.AreEqual(exceptionMessage, executeException?.Message);
+        Assert.AreEqual(exceptionMessage, executeAsyncException?.Message);
+    }
 }
