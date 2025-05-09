@@ -2260,6 +2260,80 @@ public partial class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
+    public void RelayCommandWithOverriddenCanExecute_DoesNotWarn()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.Input;
+            
+            namespace MyApp
+            {
+                public partial class BaseViewModel : ObservableObject
+                {
+                    protected virtual bool CanDoStuff()
+                    {
+                        return false;
+                    }
+                }
+
+                public partial class SampleViewModel : BaseViewModel
+                {            
+                    [RelayCommand(CanExecute = nameof(CanDoStuff))]
+                    private void DoStuff()
+                    {
+                    }
+
+                    protected override bool CanDoStuff()
+                    {
+                        return true;
+                    }
+                }
+            }
+            """;
+
+        VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, LanguageVersion.CSharp12);
+    }
+
+    [TestMethod]
+    public void RelayCommandWithOverriddenCanExecute_WithOneMethodNotInTheSameHierarchy_Warns()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.Input;
+            
+            namespace MyApp
+            {
+                public partial class BaseViewModel : ObservableObject
+                {
+                    protected virtual bool CanDoStuff()
+                    {
+                        return false;
+                    }
+
+                    protected bool CanDoStuff(string x)
+                    {
+                    }
+                }
+
+                public partial class SampleViewModel : BaseViewModel
+                {            
+                    [RelayCommand(CanExecute = nameof(CanDoStuff)]
+                    private void DoStuff()
+                    {
+                    }
+
+                    private override bool CanDoStuff()
+                    {
+                        return true;
+                    }
+                }
+            }
+            """;
+
+        VerifyGeneratedDiagnostics<RelayCommandGenerator>(source, "MVVMTK0010");
+    }
+
+    [TestMethod]
     public async Task WinRTClassUsingNotifyPropertyChangedAttributesAnalyzer_NotTargetingWindows_DoesNotWarn()
     {
         const string source = """
@@ -2452,9 +2526,22 @@ public partial class Test_SourceGeneratorsDiagnostics
     internal static void VerifyGeneratedDiagnostics<TGenerator>(string source, params string[] diagnosticsIds)
         where TGenerator : class, IIncrementalGenerator, new()
     {
+        VerifyGeneratedDiagnostics<TGenerator>(source, LanguageVersion.CSharp8, diagnosticsIds);
+    }
+
+    /// <summary>
+    /// Verifies the output of a source generator.
+    /// </summary>
+    /// <typeparam name="TGenerator">The generator type to use.</typeparam>
+    /// <param name="source">The input source to process.</param>
+    /// <param name="languageVersion">The language version to use to parse code and run tests.</param>
+    /// <param name="diagnosticsIds">The diagnostic ids to expect for the input source code.</param>
+    internal static void VerifyGeneratedDiagnostics<TGenerator>(string source, LanguageVersion languageVersion, params string[] diagnosticsIds)
+        where TGenerator : class, IIncrementalGenerator, new()
+    {
         IIncrementalGenerator generator = new TGenerator();
 
-        VerifyGeneratedDiagnostics(CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp8)), new[] { generator }, diagnosticsIds, []);
+        VerifyGeneratedDiagnostics(CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(languageVersion)), new[] { generator }, diagnosticsIds, []);
     }
 
     /// <summary>
