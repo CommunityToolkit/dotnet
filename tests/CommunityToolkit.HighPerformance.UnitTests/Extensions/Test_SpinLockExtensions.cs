@@ -35,7 +35,7 @@ public class Test_SpinLockExtensions
         Assert.AreEqual(sum, 1000 * 10);
     }
 
-#if NET7_0_OR_GREATER
+#if NET8_0_OR_GREATER
     [TestMethod]
     public void Test_ArrayExtensions_Ref()
     {
