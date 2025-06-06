@@ -60,8 +60,9 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// </summary>
     private int totalErrors;
 
+#pragma warning disable CA1070 // Virtual required for things like NHibernate proxies
     /// <inheritdoc/>
-    public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
+    public virtual event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ObservableValidator"/> class.
@@ -124,7 +125,7 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
 
     /// <inheritdoc/>
     [Display(AutoGenerateField = false)]
-    public bool HasErrors => this.totalErrors > 0;
+    public virtual bool HasErrors => this.totalErrors > 0;
 
     /// <summary>
     /// Compares the current and new values for a given property. If the value has changed,
@@ -146,7 +147,7 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// </remarks>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="propertyName"/> is <see langword="null"/>.</exception>
     [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")]
-    protected bool SetProperty<T>([NotNullIfNotNull(nameof(newValue))] ref T field, T newValue, bool validate, [CallerMemberName] string propertyName = null!)
+    protected virtual bool SetProperty<T>([NotNullIfNotNull(nameof(newValue))] ref T field, T newValue, bool validate, [CallerMemberName] string propertyName = null!)
     {
         ArgumentNullException.ThrowIfNull(propertyName);
 
@@ -175,7 +176,7 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="comparer"/> or <paramref name="propertyName"/> are <see langword="null"/>.</exception>
     [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")]
-    protected bool SetProperty<T>([NotNullIfNotNull(nameof(newValue))] ref T field, T newValue, IEqualityComparer<T> comparer, bool validate, [CallerMemberName] string propertyName = null!)
+    protected virtual bool SetProperty<T>([NotNullIfNotNull(nameof(newValue))] ref T field, T newValue, IEqualityComparer<T> comparer, bool validate, [CallerMemberName] string propertyName = null!)
     {
         ArgumentNullException.ThrowIfNull(comparer);
         ArgumentNullException.ThrowIfNull(propertyName);
@@ -212,7 +213,7 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// </remarks>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="callback"/> or <paramref name="propertyName"/> are <see langword="null"/>.</exception>
     [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")]
-    protected bool SetProperty<T>(T oldValue, T newValue, Action<T> callback, bool validate, [CallerMemberName] string propertyName = null!)
+    protected virtual bool SetProperty<T>(T oldValue, T newValue, Action<T> callback, bool validate, [CallerMemberName] string propertyName = null!)
     {
         ArgumentNullException.ThrowIfNull(callback);
         ArgumentNullException.ThrowIfNull(propertyName);
@@ -243,7 +244,7 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="comparer"/>, <paramref name="callback"/> or <paramref name="propertyName"/> are <see langword="null"/>.</exception>
     [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")]
-    protected bool SetProperty<T>(T oldValue, T newValue, IEqualityComparer<T> comparer, Action<T> callback, bool validate, [CallerMemberName] string propertyName = null!)
+    protected virtual bool SetProperty<T>(T oldValue, T newValue, IEqualityComparer<T> comparer, Action<T> callback, bool validate, [CallerMemberName] string propertyName = null!)
     {
         ArgumentNullException.ThrowIfNull(comparer);
         ArgumentNullException.ThrowIfNull(callback);
@@ -278,7 +279,7 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="model"/>, <paramref name="callback"/> or <paramref name="propertyName"/> are <see langword="null"/>.</exception>
     [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")]
-    protected bool SetProperty<TModel, T>(T oldValue, T newValue, TModel model, Action<TModel, T> callback, bool validate, [CallerMemberName] string propertyName = null!)
+    protected virtual bool SetProperty<TModel, T>(T oldValue, T newValue, TModel model, Action<TModel, T> callback, bool validate, [CallerMemberName] string propertyName = null!)
         where TModel : class
     {
         ArgumentNullException.ThrowIfNull(model);
@@ -316,7 +317,7 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="comparer"/>, <paramref name="model"/>, <paramref name="callback"/> or <paramref name="propertyName"/> are <see langword="null"/>.</exception>
     [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")]
-    protected bool SetProperty<TModel, T>(T oldValue, T newValue, IEqualityComparer<T> comparer, TModel model, Action<TModel, T> callback, bool validate, [CallerMemberName] string propertyName = null!)
+    protected virtual bool SetProperty<TModel, T>(T oldValue, T newValue, IEqualityComparer<T> comparer, TModel model, Action<TModel, T> callback, bool validate, [CallerMemberName] string propertyName = null!)
         where TModel : class
     {
         ArgumentNullException.ThrowIfNull(comparer);
@@ -346,7 +347,7 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// <returns>Whether the validation was successful and the property value changed as well.</returns>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="propertyName"/> is <see langword="null"/>.</exception>
     [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")]
-    protected bool TrySetProperty<T>(ref T field, T newValue, out IReadOnlyCollection<ValidationResult> errors, [CallerMemberName] string propertyName = null!)
+    protected virtual bool TrySetProperty<T>(ref T field, T newValue, out IReadOnlyCollection<ValidationResult> errors, [CallerMemberName] string propertyName = null!)
     {
         ArgumentNullException.ThrowIfNull(propertyName);
 
@@ -367,7 +368,7 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// <returns>Whether the validation was successful and the property value changed as well.</returns>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="comparer"/> or <paramref name="propertyName"/> are <see langword="null"/>.</exception>
     [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")]
-    protected bool TrySetProperty<T>(ref T field, T newValue, IEqualityComparer<T> comparer, out IReadOnlyCollection<ValidationResult> errors, [CallerMemberName] string propertyName = null!)
+    protected virtual bool TrySetProperty<T>(ref T field, T newValue, IEqualityComparer<T> comparer, out IReadOnlyCollection<ValidationResult> errors, [CallerMemberName] string propertyName = null!)
     {
         ArgumentNullException.ThrowIfNull(comparer);
         ArgumentNullException.ThrowIfNull(propertyName);
@@ -389,7 +390,7 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// <returns>Whether the validation was successful and the property value changed as well.</returns>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="callback"/> or <paramref name="propertyName"/> are <see langword="null"/>.</exception>
     [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")]
-    protected bool TrySetProperty<T>(T oldValue, T newValue, Action<T> callback, out IReadOnlyCollection<ValidationResult> errors, [CallerMemberName] string propertyName = null!)
+    protected virtual bool TrySetProperty<T>(T oldValue, T newValue, Action<T> callback, out IReadOnlyCollection<ValidationResult> errors, [CallerMemberName] string propertyName = null!)
     {
         ArgumentNullException.ThrowIfNull(callback);
         ArgumentNullException.ThrowIfNull(propertyName);
@@ -412,7 +413,7 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// <returns>Whether the validation was successful and the property value changed as well.</returns>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="comparer"/>, <paramref name="callback"/> or <paramref name="propertyName"/> are <see langword="null"/>.</exception>
     [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")]
-    protected bool TrySetProperty<T>(T oldValue, T newValue, IEqualityComparer<T> comparer, Action<T> callback, out IReadOnlyCollection<ValidationResult> errors, [CallerMemberName] string propertyName = null!)
+    protected virtual bool TrySetProperty<T>(T oldValue, T newValue, IEqualityComparer<T> comparer, Action<T> callback, out IReadOnlyCollection<ValidationResult> errors, [CallerMemberName] string propertyName = null!)
     {
         ArgumentNullException.ThrowIfNull(comparer);
         ArgumentNullException.ThrowIfNull(callback);
@@ -437,7 +438,7 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// <returns>Whether the validation was successful and the property value changed as well.</returns>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="model"/>, <paramref name="callback"/> or <paramref name="propertyName"/> are <see langword="null"/>.</exception>
     [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")]
-    protected bool TrySetProperty<TModel, T>(T oldValue, T newValue, TModel model, Action<TModel, T> callback, out IReadOnlyCollection<ValidationResult> errors, [CallerMemberName] string propertyName = null!)
+    protected virtual bool TrySetProperty<TModel, T>(T oldValue, T newValue, TModel model, Action<TModel, T> callback, out IReadOnlyCollection<ValidationResult> errors, [CallerMemberName] string propertyName = null!)
         where TModel : class
     {
         ArgumentNullException.ThrowIfNull(model);
@@ -464,7 +465,7 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// <returns>Whether the validation was successful and the property value changed as well.</returns>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="comparer"/>, <paramref name="model"/>, <paramref name="callback"/> or <paramref name="propertyName"/> are <see langword="null"/>.</exception>
     [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")]
-    protected bool TrySetProperty<TModel, T>(T oldValue, T newValue, IEqualityComparer<T> comparer, TModel model, Action<TModel, T> callback, out IReadOnlyCollection<ValidationResult> errors, [CallerMemberName] string propertyName = null!)
+    protected virtual bool TrySetProperty<TModel, T>(T oldValue, T newValue, IEqualityComparer<T> comparer, TModel model, Action<TModel, T> callback, out IReadOnlyCollection<ValidationResult> errors, [CallerMemberName] string propertyName = null!)
         where TModel : class
     {
         ArgumentNullException.ThrowIfNull(comparer);
@@ -483,7 +484,7 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// The name of the property to clear validation errors for.
     /// If a <see langword="null"/> or empty name is used, all entity-level errors will be cleared.
     /// </param>
-    protected void ClearErrors(string? propertyName = null)
+    protected virtual void ClearErrors(string? propertyName = null)
     {
         // Clear entity-level errors when the target property is null or empty
         if (string.IsNullOrEmpty(propertyName))
@@ -497,7 +498,7 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     }
 
     /// <inheritdoc cref="INotifyDataErrorInfo.GetErrors(string)"/>
-    public IEnumerable<ValidationResult> GetErrors(string? propertyName = null)
+    public virtual IEnumerable<ValidationResult> GetErrors(string? propertyName = null)
     {
         // Get entity-level errors when the target property is null or empty
         if (string.IsNullOrEmpty(propertyName))
@@ -544,7 +545,7 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
         "If this type is removed by the linker, or if the target recipient was created dynamically and was missed by the source generator, a slower fallback " +
         "path using a compiled LINQ expression will be used. This will have more overhead in the first invocation of this method for any given recipient type. " +
         "Additionally, due to the usage of validation APIs, the type of the current instance cannot be statically discovered.")]
-    protected void ValidateAllProperties()
+    protected virtual void ValidateAllProperties()
     {
         // Fast path that tries to create a delegate from a generated type-specific method. This
         // is used to make this method more AOT-friendly and faster, as there is no dynamic code.
@@ -628,7 +629,7 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// <param name="propertyName">The name of the property to validate.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="propertyName"/> is <see langword="null"/>.</exception>
     [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")]
-    protected internal void ValidateProperty(object? value, [CallerMemberName] string propertyName = null!)
+    protected internal virtual void ValidateProperty(object? value, [CallerMemberName] string propertyName = null!)
     {
         ArgumentNullException.ThrowIfNull(propertyName);
 

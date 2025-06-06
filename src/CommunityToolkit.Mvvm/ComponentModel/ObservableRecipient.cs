@@ -54,7 +54,7 @@ public abstract class ObservableRecipient : ObservableObject
     /// <summary>
     /// Gets or sets a value indicating whether the current view model is currently active.
     /// </summary>
-    public bool IsActive
+    public virtual bool IsActive
     {
         get => this.isActive;
 
@@ -163,7 +163,7 @@ public abstract class ObservableRecipient : ObservableObject
     /// the <see cref="ObservableObject.PropertyChanging"/> and <see cref="ObservableObject.PropertyChanged"/> events
     /// are not raised if the current and new value for the target property are the same.
     /// </remarks>
-    protected bool SetProperty<T>([NotNullIfNotNull(nameof(newValue))] ref T field, T newValue, bool broadcast, [CallerMemberName] string? propertyName = null)
+    protected virtual bool SetProperty<T>([NotNullIfNotNull(nameof(newValue))] ref T field, T newValue, bool broadcast, [CallerMemberName] string? propertyName = null)
     {
         T oldValue = field;
 
@@ -193,7 +193,7 @@ public abstract class ObservableRecipient : ObservableObject
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="comparer"/> is <see langword="null"/>.</exception>
-    protected bool SetProperty<T>([NotNullIfNotNull(nameof(newValue))] ref T field, T newValue, IEqualityComparer<T> comparer, bool broadcast, [CallerMemberName] string? propertyName = null)
+    protected virtual bool SetProperty<T>([NotNullIfNotNull(nameof(newValue))] ref T field, T newValue, IEqualityComparer<T> comparer, bool broadcast, [CallerMemberName] string? propertyName = null)
     {
         ArgumentNullException.ThrowIfNull(comparer);
 
@@ -230,7 +230,7 @@ public abstract class ObservableRecipient : ObservableObject
     /// are not raised if the current and new value for the target property are the same.
     /// </remarks>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="callback"/> is <see langword="null"/>.</exception>
-    protected bool SetProperty<T>(T oldValue, T newValue, Action<T> callback, bool broadcast, [CallerMemberName] string? propertyName = null)
+    protected virtual bool SetProperty<T>(T oldValue, T newValue, Action<T> callback, bool broadcast, [CallerMemberName] string? propertyName = null)
     {
         ArgumentNullException.ThrowIfNull(callback);
 
@@ -259,7 +259,7 @@ public abstract class ObservableRecipient : ObservableObject
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="comparer"/> or <paramref name="callback"/> are <see langword="null"/>.</exception>
-    protected bool SetProperty<T>(T oldValue, T newValue, IEqualityComparer<T> comparer, Action<T> callback, bool broadcast, [CallerMemberName] string? propertyName = null)
+    protected virtual bool SetProperty<T>(T oldValue, T newValue, IEqualityComparer<T> comparer, Action<T> callback, bool broadcast, [CallerMemberName] string? propertyName = null)
     {
         ArgumentNullException.ThrowIfNull(comparer);
         ArgumentNullException.ThrowIfNull(callback);
@@ -292,7 +292,7 @@ public abstract class ObservableRecipient : ObservableObject
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="model"/> or <paramref name="callback"/> are <see langword="null"/>.</exception>
-    protected bool SetProperty<TModel, T>(T oldValue, T newValue, TModel model, Action<TModel, T> callback, bool broadcast, [CallerMemberName] string? propertyName = null)
+    protected virtual bool SetProperty<TModel, T>(T oldValue, T newValue, TModel model, Action<TModel, T> callback, bool broadcast, [CallerMemberName] string? propertyName = null)
         where TModel : class
     {
         ArgumentNullException.ThrowIfNull(model);
@@ -328,7 +328,7 @@ public abstract class ObservableRecipient : ObservableObject
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="comparer"/>, <paramref name="model"/> or <paramref name="callback"/> are <see langword="null"/>.</exception>
-    protected bool SetProperty<TModel, T>(T oldValue, T newValue, IEqualityComparer<T> comparer, TModel model, Action<TModel, T> callback, bool broadcast, [CallerMemberName] string? propertyName = null)
+    protected virtual bool SetProperty<TModel, T>(T oldValue, T newValue, IEqualityComparer<T> comparer, TModel model, Action<TModel, T> callback, bool broadcast, [CallerMemberName] string? propertyName = null)
         where TModel : class
     {
         ArgumentNullException.ThrowIfNull(comparer);

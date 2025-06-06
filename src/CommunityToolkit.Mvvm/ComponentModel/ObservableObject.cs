@@ -30,11 +30,13 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 /// </summary>
 public abstract class ObservableObject : INotifyPropertyChanged, INotifyPropertyChanging
 {
+
+#pragma warning disable CA1070 // Virtual required for things like NHibernate proxies
     /// <inheritdoc cref="INotifyPropertyChanged.PropertyChanged"/>
-    public event PropertyChangedEventHandler? PropertyChanged;
+    public virtual event PropertyChangedEventHandler? PropertyChanged;
 
     /// <inheritdoc cref="INotifyPropertyChanging.PropertyChanging"/>
-    public event PropertyChangingEventHandler? PropertyChanging;
+    public virtual event PropertyChangingEventHandler? PropertyChanging;
 
     /// <summary>
     /// Raises the <see cref="PropertyChanged"/> event.
@@ -70,7 +72,7 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
     /// Raises the <see cref="PropertyChanged"/> event.
     /// </summary>
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
-    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
     }
@@ -79,7 +81,7 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
     /// Raises the <see cref="PropertyChanging"/> event.
     /// </summary>
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
-    protected void OnPropertyChanging([CallerMemberName] string? propertyName = null)
+    protected virtual void OnPropertyChanging([CallerMemberName] string? propertyName = null)
     {
         // When support is disabled, avoid instantiating the event args entirely
         if (!FeatureSwitches.EnableINotifyPropertyChangingSupport)
@@ -104,7 +106,7 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
     /// The <see cref="PropertyChanging"/> and <see cref="PropertyChanged"/> events are not raised
     /// if the current and new value for the target property are the same.
     /// </remarks>
-    protected bool SetProperty<T>([NotNullIfNotNull(nameof(newValue))] ref T field, T newValue, [CallerMemberName] string? propertyName = null)
+    protected virtual bool SetProperty<T>([NotNullIfNotNull(nameof(newValue))] ref T field, T newValue, [CallerMemberName] string? propertyName = null)
     {
         // We duplicate the code here instead of calling the overload because we can't
         // guarantee that the invoked SetProperty<T> will be inlined, and we need the JIT
@@ -141,7 +143,7 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="comparer"/> is <see langword="null"/>.</exception>
-    protected bool SetProperty<T>([NotNullIfNotNull(nameof(newValue))] ref T field, T newValue, IEqualityComparer<T> comparer, [CallerMemberName] string? propertyName = null)
+    protected virtual bool SetProperty<T>([NotNullIfNotNull(nameof(newValue))] ref T field, T newValue, IEqualityComparer<T> comparer, [CallerMemberName] string? propertyName = null)
     {
         ArgumentNullException.ThrowIfNull(comparer);
 
@@ -183,7 +185,7 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
     /// if the current and new value for the target property are the same.
     /// </remarks>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="callback"/> is <see langword="null"/>.</exception>
-    protected bool SetProperty<T>(T oldValue, T newValue, Action<T> callback, [CallerMemberName] string? propertyName = null)
+    protected virtual bool SetProperty<T>(T oldValue, T newValue, Action<T> callback, [CallerMemberName] string? propertyName = null)
     {
         ArgumentNullException.ThrowIfNull(callback);
 
@@ -216,7 +218,7 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="comparer"/> or <paramref name="callback"/> are <see langword="null"/>.</exception>
-    protected bool SetProperty<T>(T oldValue, T newValue, IEqualityComparer<T> comparer, Action<T> callback, [CallerMemberName] string? propertyName = null)
+    protected virtual bool SetProperty<T>(T oldValue, T newValue, IEqualityComparer<T> comparer, Action<T> callback, [CallerMemberName] string? propertyName = null)
     {
         ArgumentNullException.ThrowIfNull(comparer);
         ArgumentNullException.ThrowIfNull(callback);
@@ -288,7 +290,7 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
     /// raised if the current and new value for the target property are the same.
     /// </remarks>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="model"/> or <paramref name="callback"/> are <see langword="null"/>.</exception>
-    protected bool SetProperty<TModel, T>(T oldValue, T newValue, TModel model, Action<TModel, T> callback, [CallerMemberName] string? propertyName = null)
+    protected virtual bool SetProperty<TModel, T>(T oldValue, T newValue, TModel model, Action<TModel, T> callback, [CallerMemberName] string? propertyName = null)
         where TModel : class
     {
         ArgumentNullException.ThrowIfNull(model);
@@ -325,7 +327,7 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
     /// <param name="propertyName">(optional) The name of the property that changed.</param>
     /// <returns><see langword="true"/> if the property was changed, <see langword="false"/> otherwise.</returns>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="comparer"/>, <paramref name="model"/> or <paramref name="callback"/> are <see langword="null"/>.</exception>
-    protected bool SetProperty<TModel, T>(T oldValue, T newValue, IEqualityComparer<T> comparer, TModel model, Action<TModel, T> callback, [CallerMemberName] string? propertyName = null)
+    protected virtual bool SetProperty<TModel, T>(T oldValue, T newValue, IEqualityComparer<T> comparer, TModel model, Action<TModel, T> callback, [CallerMemberName] string? propertyName = null)
         where TModel : class
     {
         ArgumentNullException.ThrowIfNull(comparer);
@@ -379,7 +381,7 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
     /// indicates that the new value being assigned to <paramref name="taskNotifier"/> is different than the previous one,
     /// and it does not mean the new <see cref="Task"/> instance passed as argument is in any particular state.
     /// </remarks>
-    protected bool SetPropertyAndNotifyOnCompletion([NotNull] ref TaskNotifier? taskNotifier, Task? newValue, [CallerMemberName] string? propertyName = null)
+    protected virtual bool SetPropertyAndNotifyOnCompletion([NotNull] ref TaskNotifier? taskNotifier, Task? newValue, [CallerMemberName] string? propertyName = null)
     {
         // We invoke the overload with a callback here to avoid code duplication, and simply pass an empty callback.
         // The lambda expression here is transformed by the C# compiler into an empty closure class with a
@@ -408,7 +410,7 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
     /// if the current and new value for the target property are the same.
     /// </remarks>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="callback"/> is <see langword="null"/>.</exception>
-    protected bool SetPropertyAndNotifyOnCompletion([NotNull] ref TaskNotifier? taskNotifier, Task? newValue, Action<Task?> callback, [CallerMemberName] string? propertyName = null)
+    protected virtual bool SetPropertyAndNotifyOnCompletion([NotNull] ref TaskNotifier? taskNotifier, Task? newValue, Action<Task?> callback, [CallerMemberName] string? propertyName = null)
     {
         ArgumentNullException.ThrowIfNull(callback);
 
@@ -449,7 +451,7 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
     /// indicates that the new value being assigned to <paramref name="taskNotifier"/> is different than the previous one,
     /// and it does not mean the new <see cref="Task{TResult}"/> instance passed as argument is in any particular state.
     /// </remarks>
-    protected bool SetPropertyAndNotifyOnCompletion<T>([NotNull] ref TaskNotifier<T>? taskNotifier, Task<T>? newValue, [CallerMemberName] string? propertyName = null)
+    protected virtual bool SetPropertyAndNotifyOnCompletion<T>([NotNull] ref TaskNotifier<T>? taskNotifier, Task<T>? newValue, [CallerMemberName] string? propertyName = null)
     {
         return SetPropertyAndNotifyOnCompletion(taskNotifier ??= new TaskNotifier<T>(), newValue, null, propertyName);
     }
@@ -473,7 +475,7 @@ public abstract class ObservableObject : INotifyPropertyChanged, INotifyProperty
     /// if the current and new value for the target property are the same.
     /// </remarks>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="callback"/> is <see langword="null"/>.</exception>
-    protected bool SetPropertyAndNotifyOnCompletion<T>([NotNull] ref TaskNotifier<T>? taskNotifier, Task<T>? newValue, Action<Task<T>?> callback, [CallerMemberName] string? propertyName = null)
+    protected virtual bool SetPropertyAndNotifyOnCompletion<T>([NotNull] ref TaskNotifier<T>? taskNotifier, Task<T>? newValue, Action<Task<T>?> callback, [CallerMemberName] string? propertyName = null)
     {
         ArgumentNullException.ThrowIfNull(callback);
 
