@@ -23,7 +23,11 @@ jobs:
     runs-on: windows-2022
     steps:
     - name: Git checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v4    
+    - name: Install .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        global-json-file: global.json
     
     # Build the whole solution
     - name: Build solution
