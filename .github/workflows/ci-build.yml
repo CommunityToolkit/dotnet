@@ -59,15 +59,7 @@ jobs:
     
     # Run tests
     - name: Test solution
-      run: dotnet test --no-build -c ${{matrix.configuration}} -l "trx;"
-    
-    # Publish test results
-    - name: Publish test results
-      uses: actions/upload-artifact@v5
-      with:
-        name: '**/TestResults/*.trx'
-        path: TestResults
-        if-no-files-found: error
+      run: dotnet test --no-build -c ${{matrix.configuration}} -l "console;verbosity=detailed"
 
     # Pack solution
     - name: Pack solution
