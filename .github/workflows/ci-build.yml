@@ -13,12 +13,13 @@ name: CI-build
 on: [push, pull_request]
 
 env:
-  DOTNET_VERSION: ${{ '9.0.x' }}
   IS_MAIN: ${{ github.ref == 'refs/heads/main' }}
   IS_PR: ${{ startsWith(github.ref, 'refs/pull/') }}
   IS_RELEASE: ${{ startsWith(github.ref, 'refs/heads/rel/') }}
 
 jobs:
+
+  # Build the solution, run all tests, push packages to the PR feed
   build-and-test:
     if: >-
       github.event_name == 'push' ||
@@ -62,8 +63,8 @@ jobs:
     - name: Pack solution
       run: dotnet pack --no-build -c ${{matrix.configuration}}
 
-    # Push Pull Request Packages to our DevOps Artifacts Feed (see nuget.config)
-    - name: Push Pull Request Packages (if not fork)
+    # Push PR packages to our DevOps artifacts feed (see nuget.config)
+    - name: Push PR packages (if not fork)
       if: ${{ env.IS_PR == 'true' && matrix.configuration == 'Release' && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]' }}
       run: |
         dotnet nuget add source https://pkgs.dev.azure.com/dotnet/CommunityToolkit/_packaging/CommunityToolkit-PullRequests/nuget/v3/index.json `
@@ -71,7 +72,7 @@ jobs:
           --username dummy --password ${{ secrets.DEVOPS_PACKAGE_PUSH_TOKEN }}
         dotnet nuget push "*.nupkg" --api-key dummy --source PullRequests --skip-duplicate
 
-    - name: Upload Package List
+    - name: Upload packages list
       uses: actions/upload-artifact@v5
       if: ${{ env.IS_PR == 'false' && matrix.configuration == 'Release' }}
       with:
@@ -80,8 +81,8 @@ jobs:
         path: |
           ${{ github.workspace }}/.github/workflows/SignClientFileList.txt
 
-    # if we're not doing a PR build (or it's a PR from a fork) then we upload our packages so we can sign as a separate job or have available to test.
-    - name: Upload Packages Artifacts
+    # If we're not doing a PR build (or it's a PR from a fork) then we upload our packages so we can sign as a separate job or have available to test
+    - name: Upload packages artifacts
       uses: actions/upload-artifact@v5
       if: ${{ (env.IS_PR == 'false' || github.event.pull_request.head.repo.full_name != github.repository) && matrix.configuration == 'Release' }}
       with:
@@ -90,7 +91,7 @@ jobs:
         path: |
           ./*.nupkg
 
-
+  # Sign the packages for release
   sign:
     needs: [build-and-test]
     if: ${{ env.IS_MAIN == 'true' || env.Is_RELEASE == 'true' }}
@@ -99,12 +100,12 @@ jobs:
       id-token: write # Required for requesting the JWT
 
     steps:
-      - name: Install .NET SDK v${{ env.DOTNET_VERSION }}
+      - name: Install .NET SDK
         uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
+          global-json-file: global.json
 
-      - name: Download Package List
+      - name: Download packages list
         uses: actions/download-artifact@v5
         with:
           name: nuget-list-dotnet
@@ -119,7 +120,7 @@ jobs:
       - name: Install Signing Tool
         run: dotnet tool install --tool-path ./tools sign --version 0.9.1-beta.25379.1
 
-      - name: Sign Packages
+      - name: Sign packages
         run: >
           ./tools/sign code azure-key-vault
           **/*.nupkg
@@ -136,14 +137,14 @@ jobs:
           --azure-key-vault-certificate "${{ secrets.SIGN_CERTIFICATE }}"
           --verbosity Information
 
-      - name: Push Signed Packages
+      - name: Push signed packages
         run: |
           dotnet nuget add source https://pkgs.dev.azure.com/dotnet/CommunityToolkit/_packaging/CommunityToolkit-MainLatest/nuget/v3/index.json `
             --name MainLatest `
             --username dummy --password ${{ secrets.DEVOPS_PACKAGE_PUSH_TOKEN }}
           dotnet nuget push "**/*.nupkg" --api-key dummy --source MainLatest --skip-duplicate
 
-      - name: Upload Signed Packages as Artifacts (for release)
+      - name: Upload signed packages as artifacts (for release)
         uses: actions/upload-artifact@v5
         if: ${{ env.IS_RELEASE == 'true' }}
         with:
@@ -152,6 +153,7 @@ jobs:
           path: |
             ${{ github.workspace }}/packages/**/*.nupkg
 
+  # Push official packages to NuGet
   release:
     if: ${{ env.IS_RELEASE == 'true' }}
     needs: [sign]
@@ -159,10 +161,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Install .NET SDK v${{ env.DOTNET_VERSION }}
+      - name: Install .NET SDK
         uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
+          global-json-file: global.json
 
       - name: Download signed packages for .NCT
         uses: actions/download-artifact@v5
