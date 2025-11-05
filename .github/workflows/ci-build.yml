@@ -31,6 +31,8 @@ jobs:
     steps:
     - name: Git checkout
       uses: actions/checkout@v5
+      with:
+        fetch-depth: 0 # We need the full history for proper versioning
 
     - name: Install .NET SDK
       uses: actions/setup-dotnet@v5
