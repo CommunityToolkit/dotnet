@@ -83,7 +83,7 @@ jobs:
     # if we're not doing a PR build (or it's a PR from a fork) then we upload our packages so we can sign as a separate job or have available to test.
     - name: Upload Packages Artifacts
       uses: actions/upload-artifact@v4
-      if: ${{ env.IS_PR == 'false' || github.event.pull_request.head.repo.full_name != github.repository }}
+      if: ${{ (env.IS_PR == 'false' || github.event.pull_request.head.repo.full_name != github.repository) && matrix.configuration == 'Release' }}
       with:
         name: nuget-packages-dotnet
         if-no-files-found: error
