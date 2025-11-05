@@ -1,0 +1,67 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="ARM" />
+    <Platform Name="ARM64" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path=".runsettings" />
+    <File Path="azure-pipelines.yml" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+    <File Path="toolkit.snk" />
+    <File Path="version.json" />
+  </Folder>
+  <Folder Name="/Solution Items/Build/">
+    <File Path="build/Community.Toolkit.Common.props" />
+    <File Path="build/Community.Toolkit.Common.targets" />
+    <File Path="build/header.txt" />
+    <File Path="build/nuget.png" />
+    <File Path="build/Sign-Package.ps1" />
+    <File Path="build/SignClientSettings.json" />
+    <File Path="build/Update-Headers.ps1" />
+  </Folder>
+  <Folder Name="/Solution Items/Docs/">
+    <File Path="CODE_OF_CONDUCT.md" />
+    <File Path="Contributing.md" />
+    <File Path="License.md" />
+    <File Path="README.md" />
+    <File Path="ThirdPartyNotices.txt" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="tests/CommunityToolkit.Common.UnitTests/CommunityToolkit.Common.UnitTests.csproj" />
+    <Project Path="tests/CommunityToolkit.Diagnostics.UnitTests/CommunityToolkit.Diagnostics.UnitTests.csproj" />
+    <Project Path="tests/CommunityToolkit.HighPerformance.UnitTests/CommunityToolkit.HighPerformance.UnitTests.csproj" />
+    <Project Path="tests/CommunityToolkit.Mvvm.ExternalAssembly.Roslyn4001/CommunityToolkit.Mvvm.ExternalAssembly.Roslyn4001.csproj" />
+    <Project Path="tests/CommunityToolkit.Mvvm.ExternalAssembly.Roslyn4031/CommunityToolkit.Mvvm.ExternalAssembly.Roslyn4031.csproj" />
+    <Project Path="tests/CommunityToolkit.Mvvm.ExternalAssembly/CommunityToolkit.Mvvm.ExternalAssembly.shproj" />
+    <Project Path="tests/CommunityToolkit.Mvvm.Internals.UnitTests/CommunityToolkit.Mvvm.Internals.UnitTests.csproj" />
+    <Project Path="tests/CommunityToolkit.Mvvm.Roslyn4001.UnitTests/CommunityToolkit.Mvvm.Roslyn4001.UnitTests.csproj" />
+    <Project Path="tests/CommunityToolkit.Mvvm.Roslyn4031.UnitTests/CommunityToolkit.Mvvm.Roslyn4031.UnitTests.csproj" />
+    <Project Path="tests/CommunityToolkit.Mvvm.Roslyn4120.UnitTests/CommunityToolkit.Mvvm.Roslyn4120.UnitTests.csproj" />
+    <Project Path="tests/CommunityToolkit.Mvvm.SourceGenerators.Roslyn4001.UnitTests/CommunityToolkit.Mvvm.SourceGenerators.Roslyn4001.UnitTests.csproj" />
+    <Project Path="tests/CommunityToolkit.Mvvm.SourceGenerators.Roslyn4031.UnitTests/CommunityToolkit.Mvvm.SourceGenerators.Roslyn4031.UnitTests.csproj" />
+    <Project Path="tests/CommunityToolkit.Mvvm.SourceGenerators.Roslyn4120.UnitTests/CommunityToolkit.Mvvm.SourceGenerators.Roslyn4120.UnitTests.csproj" />
+    <Project Path="tests/CommunityToolkit.Mvvm.SourceGenerators.UnitTests/CommunityToolkit.Mvvm.SourceGenerators.UnitTests.shproj" />
+    <Project Path="tests/CommunityToolkit.Mvvm.UnitTests/CommunityToolkit.Mvvm.UnitTests.shproj" />
+  </Folder>
+  <Folder Name="/Tests/FeatureSwitches/">
+    <Project Path="tests/CommunityToolkit.Mvvm.DisableINotifyPropertyChanging.UnitTests/CommunityToolkit.Mvvm.DisableINotifyPropertyChanging.UnitTests.csproj" />
+  </Folder>
+  <Project Path="src/CommunityToolkit.Common/CommunityToolkit.Common.csproj" />
+  <Project Path="src/CommunityToolkit.Diagnostics/CommunityToolkit.Diagnostics.csproj" />
+  <Project Path="src/CommunityToolkit.HighPerformance/CommunityToolkit.HighPerformance.csproj" />
+  <Project Path="src/CommunityToolkit.Mvvm.CodeFixers.Roslyn4001/CommunityToolkit.Mvvm.CodeFixers.Roslyn4001.csproj" />
+  <Project Path="src/CommunityToolkit.Mvvm.CodeFixers.Roslyn4120/CommunityToolkit.Mvvm.CodeFixers.Roslyn4120.csproj" />
+  <Project Path="src/CommunityToolkit.Mvvm.CodeFixers/CommunityToolkit.Mvvm.CodeFixers.shproj" />
+  <Project Path="src/CommunityToolkit.Mvvm.SourceGenerators.Roslyn4001/CommunityToolkit.Mvvm.SourceGenerators.Roslyn4001.csproj" />
+  <Project Path="src/CommunityToolkit.Mvvm.SourceGenerators.Roslyn4031/CommunityToolkit.Mvvm.SourceGenerators.Roslyn4031.csproj" />
+  <Project Path="src/CommunityToolkit.Mvvm.SourceGenerators.Roslyn4120/CommunityToolkit.Mvvm.SourceGenerators.Roslyn4120.csproj" />
+  <Project Path="src/CommunityToolkit.Mvvm.SourceGenerators/CommunityToolkit.Mvvm.SourceGenerators.shproj" />
+  <Project Path="src/CommunityToolkit.Mvvm/CommunityToolkit.Mvvm.csproj" />
+</Solution>
