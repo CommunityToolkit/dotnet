@@ -91,10 +91,12 @@ jobs:
         path: |
           ./*.nupkg
 
-  # Sign the packages for release
+  # Sign the packages for release.
+  # Note: here and below we're explicitly repeating the conditions, rather than using 'env.'.
+  # Doing so doesn't seem to work for conditions of jobs themselves, only for individual steps.
   sign:
     needs: [build-and-test]
-    if: ${{ env.IS_MAIN == 'true' || env.IS_RELEASE == 'true' }}
+    if: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/rel/') }}
     runs-on: windows-latest
     permissions:
       id-token: write # Required for requesting the JWT
@@ -155,7 +157,7 @@ jobs:
 
   # Push official packages to NuGet
   release:
-    if: ${{ env.IS_RELEASE == 'true' }}
+    if: ${{ startsWith(github.ref, 'refs/heads/rel/') }}
     needs: [sign]
     environment: nuget-release-gate # This gates this job until manually approved
     runs-on: ubuntu-latest
