@@ -54,7 +54,7 @@ jobs:
       uses: actions/upload-artifact@v5
       with:
         name: msbuild_log_${{matrix.configuration}}
-        path: msbuild.binlog
+        path: ${{ github.workspace }}/msbuild.binlog
         if-no-files-found: error
     
     # Run tests
@@ -79,9 +79,8 @@ jobs:
       if: ${{ env.IS_PR == 'false' && matrix.configuration == 'Release' }}
       with:
         name: nuget-list-dotnet
+        path: ${{ github.workspace }}/.github/workflows/SignClientFileList.txt
         if-no-files-found: error
-        path: |
-          ${{ github.workspace }}/.github/workflows/SignClientFileList.txt
 
     # If we're not doing a PR build (or it's a PR from a fork) then we upload our packages so we can sign as a separate job or have available to test
     - name: Upload packages artifacts
@@ -89,9 +88,8 @@ jobs:
       if: ${{ (env.IS_PR == 'false' || github.event.pull_request.head.repo.full_name != github.repository) && matrix.configuration == 'Release' }}
       with:
         name: nuget-packages-dotnet
+        path: ${{ github.workspace }}/bin/nupkg/*.nupkg
         if-no-files-found: error
-        path: |
-          ./*.nupkg
 
   # Sign the packages for release.
   # Note: here and below we're explicitly repeating the conditions, rather than using 'env.'.
@@ -113,13 +111,13 @@ jobs:
         uses: actions/download-artifact@v5
         with:
           name: nuget-list-dotnet
-          path: ./
+          path: ${{ github.workspace }}
   
       - name: Download built packages for .NCT
         uses: actions/download-artifact@v5
         with:
           name: nuget-packages-dotnet
-          path: ./packages
+          path: ${{ github.workspace }}/packages
 
       - name: Install Signing Tool
         run: dotnet tool install --tool-path ./tools sign --version 0.9.1-beta.25379.1
@@ -153,9 +151,8 @@ jobs:
         if: ${{ env.IS_RELEASE == 'true' }}
         with:
           name: signed-nuget-packages-dotnet
+          path: ${{ github.workspace }}/packages/**/*.nupkg
           if-no-files-found: error
-          path: |
-            ${{ github.workspace }}/packages/**/*.nupkg
 
   # Push official packages to NuGet
   release:
