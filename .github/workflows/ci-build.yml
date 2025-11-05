@@ -52,7 +52,7 @@ jobs:
     
     # Run tests
     - name: Test solution
-      run: dotnet test --no--build -c ${{matrix.configuration}} -l "trx;LogFileName=VSTestResults.trx"
+      run: dotnet test --no-build -c ${{matrix.configuration}} -l "trx;LogFileName=VSTestResults.trx"
     
     # Publish test results
     - name: Publish test results
