@@ -1,16 +1,20 @@
+# https://docs.github.com/actions/using-workflows/about-workflows
+# https://docs.github.com/actions/using-workflows/workflow-syntax-for-github-actions
+
 name: CI-build
 
-# This workflow should trigger in the following cases:
-#   - The commit is any push in any branch in the repo
-#   - The commit is a published PR from anyone else
-#
-# This setup is done to avoid duplicate runs for the same exact commits, for cases when
-# the PR is done from a branch in this repo, which would already trigger the "push"
-# condition. This way, only PRs from forks will actually trigger the workflow.
-#
-# Because we can't really check these conditions from the global triggers here, they are
-# added to the two root jobs below instead. If canceled, the whole workflow will stop.
-on: [push, pull_request]
+# Controls when the action will run.
+on:
+
+  # Triggers the workflow on push or PR events, but only for the 'main', development, or release branches
+  push:
+    branches: [ main, 'dev/*', 'rel/*' ]
+  pull_request:
+    branches: [ main, 'dev/*' ]
+
+  # Allows running this workflow manually from the 'Actions' tab
+  workflow_dispatch:
+  merge_group:
 
 env:
   IS_MAIN: ${{ github.ref == 'refs/heads/main' }}
@@ -21,9 +25,6 @@ jobs:
 
   # Build the solution, run all tests, push packages to the PR feed
   build-and-test:
-    if: >-
-      github.event_name == 'push' ||
-      github.event.pull_request.user.login != github.repository_owner
     strategy:
         matrix:
           configuration: [Debug, Release]
