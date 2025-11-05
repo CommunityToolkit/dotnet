@@ -59,14 +59,14 @@ jobs:
     
     # Run tests
     - name: Test solution
-      run: dotnet test --no-build -c ${{matrix.configuration}} -l "trx;LogFileName=VSTestResults.trx"
+      run: dotnet test --no-build -c ${{matrix.configuration}} -l "trx;"
     
     # Publish test results
     - name: Publish test results
       uses: actions/upload-artifact@v5
       with:
-        name: '**/TestResults/VSTestResults.trx'
-        path: VSTestResults
+        name: '**/TestResults/*.trx'
+        path: TestResults
         if-no-files-found: error
 
     # Pack solution
