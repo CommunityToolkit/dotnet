@@ -94,7 +94,7 @@ jobs:
   # Sign the packages for release
   sign:
     needs: [build-and-test]
-    if: ${{ env.IS_MAIN == 'true' || env.Is_RELEASE == 'true' }}
+    if: ${{ env.IS_MAIN == 'true' || env.IS_RELEASE == 'true' }}
     runs-on: windows-latest
     permissions:
       id-token: write # Required for requesting the JWT
