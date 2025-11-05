@@ -1,0 +1,181 @@
+name: CI-build
+
+# This workflow should trigger in the following cases:
+#   - The commit is any push in any branch in the repo
+#   - The commit is a published PR from anyone else
+#
+# This setup is done to avoid duplicate runs for the same exact commits, for cases when
+# the PR is done from a branch in this repo, which would already trigger the "push"
+# condition. This way, only PRs from forks will actually trigger the workflow.
+#
+# Because we can't really check these conditions from the global triggers here, they are
+# added to the two root jobs below instead. If canceled, the whole workflow will stop.
+on: [push, pull_request]
+
+env:
+  IS_MAIN: ${{ github.ref == 'refs/heads/main' }}
+  IS_PR: ${{ startsWith(github.ref, 'refs/pull/') }}
+  IS_RELEASE: ${{ startsWith(github.ref, 'refs/heads/rel/') }}
+
+jobs:
+
+  # Build the solution, run all tests, push packages to the PR feed
+  build-and-test:
+    if: >-
+      github.event_name == 'push' ||
+      github.event.pull_request.user.login != github.repository_owner
+    strategy:
+        matrix:
+          configuration: [Debug, Release]
+    runs-on: windows-2022
+    steps:
+    - name: Git checkout
+      uses: actions/checkout@v5
+
+    - name: Install .NET SDK
+      uses: actions/setup-dotnet@v5
+      with:
+        global-json-file: global.json
+    
+    # Build the whole solution
+    - name: Build solution
+      run: dotnet build -c ${{matrix.configuration}} /bl
+    - name: Upload MSBuild binary log
+      uses: actions/upload-artifact@v5
+      with:
+        name: msbuild_log_${{matrix.configuration}}
+        path: msbuild.binlog
+        if-no-files-found: error
+    
+    # Run tests
+    - name: Test solution
+      run: dotnet test --no--build -c ${{matrix.configuration}} -l "trx;LogFileName=VSTestResults.trx"
+    
+    # Publish test results
+    - name: Publish test results
+      uses: actions/upload-artifact@v5
+      with:
+        name: '**/TestResults/VSTestResults.trx'
+        path: VSTestResults
+        if-no-files-found: error
+
+    # Pack solution
+    - name: Pack solution
+      run: dotnet pack --no-build -c ${{matrix.configuration}}
+
+    # Push PR packages to our DevOps artifacts feed (see nuget.config)
+    - name: Push PR packages (if not fork)
+      if: ${{ env.IS_PR == 'true' && matrix.configuration == 'Release' && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]' }}
+      run: |
+        dotnet nuget add source https://pkgs.dev.azure.com/dotnet/CommunityToolkit/_packaging/CommunityToolkit-PullRequests/nuget/v3/index.json `
+          --name PullRequests `
+          --username dummy --password ${{ secrets.DEVOPS_PACKAGE_PUSH_TOKEN }}
+        dotnet nuget push "*.nupkg" --api-key dummy --source PullRequests --skip-duplicate
+
+    - name: Upload packages list
+      uses: actions/upload-artifact@v5
+      if: ${{ env.IS_PR == 'false' && matrix.configuration == 'Release' }}
+      with:
+        name: nuget-list-dotnet
+        if-no-files-found: error
+        path: |
+          ${{ github.workspace }}/.github/workflows/SignClientFileList.txt
+
+    # If we're not doing a PR build (or it's a PR from a fork) then we upload our packages so we can sign as a separate job or have available to test
+    - name: Upload packages artifacts
+      uses: actions/upload-artifact@v5
+      if: ${{ (env.IS_PR == 'false' || github.event.pull_request.head.repo.full_name != github.repository) && matrix.configuration == 'Release' }}
+      with:
+        name: nuget-packages-dotnet
+        if-no-files-found: error
+        path: |
+          ./*.nupkg
+
+  # Sign the packages for release
+  sign:
+    needs: [build-and-test]
+    if: ${{ env.IS_MAIN == 'true' || env.Is_RELEASE == 'true' }}
+    runs-on: windows-latest
+    permissions:
+      id-token: write # Required for requesting the JWT
+
+    steps:
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+
+      - name: Download packages list
+        uses: actions/download-artifact@v5
+        with:
+          name: nuget-list-dotnet
+          path: ./
+  
+      - name: Download built packages for .NCT
+        uses: actions/download-artifact@v5
+        with:
+          name: nuget-packages-dotnet
+          path: ./packages
+
+      - name: Install Signing Tool
+        run: dotnet tool install --tool-path ./tools sign --version 0.9.1-beta.25379.1
+
+      - name: Sign packages
+        run: >
+          ./tools/sign code azure-key-vault
+          **/*.nupkg
+          --base-directory "${{ github.workspace }}/packages"
+          --file-list "${{ github.workspace }}/SignClientFileList.txt"
+          --timestamp-url "http://timestamp.digicert.com"
+          --publisher-name ".NET Foundation"
+          --description ".NET Community Toolkit"
+          --description-url "https://github.com/CommunityToolkit/dotnet"
+          --azure-key-vault-url "${{ secrets.SIGN_KEY_VAULT_URL }}"
+          --azure-key-vault-client-id ${{ secrets.SIGN_CLIENT_ID }}
+          --azure-key-vault-client-secret "${{ secrets.SIGN_CLIENT_SECRET }}"
+          --azure-key-vault-tenant-id ${{ secrets.SIGN_TENANT_ID }}
+          --azure-key-vault-certificate "${{ secrets.SIGN_CERTIFICATE }}"
+          --verbosity Information
+
+      - name: Push signed packages
+        run: |
+          dotnet nuget add source https://pkgs.dev.azure.com/dotnet/CommunityToolkit/_packaging/CommunityToolkit-MainLatest/nuget/v3/index.json `
+            --name MainLatest `
+            --username dummy --password ${{ secrets.DEVOPS_PACKAGE_PUSH_TOKEN }}
+          dotnet nuget push "**/*.nupkg" --api-key dummy --source MainLatest --skip-duplicate
+
+      - name: Upload signed packages as artifacts (for release)
+        uses: actions/upload-artifact@v5
+        if: ${{ env.IS_RELEASE == 'true' }}
+        with:
+          name: signed-nuget-packages-dotnet
+          if-no-files-found: error
+          path: |
+            ${{ github.workspace }}/packages/**/*.nupkg
+
+  # Push official packages to NuGet
+  release:
+    if: ${{ env.IS_RELEASE == 'true' }}
+    needs: [sign]
+    environment: nuget-release-gate # This gates this job until manually approved
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+
+      - name: Download signed packages for .NCT
+        uses: actions/download-artifact@v5
+        with:
+          name: signed-nuget-packages-dotnet
+          path: ./packages
+
+      - name: Push to NuGet.org
+        run: >
+          dotnet nuget push
+          **/*.nupkg
+          --source https://api.nuget.org/v3/index.json
+          --api-key ${{ secrets.NUGET_PACKAGE_PUSH_TOKEN }}
+          --skip-duplicate
