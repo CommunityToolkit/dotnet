@@ -29,10 +29,10 @@ jobs:
     runs-on: windows-2022
     steps:
     - name: Git checkout
-      uses: actions/checkout@v4    
+      uses: actions/checkout@v5
 
     - name: Install .NET SDK
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
         global-json-file: global.json
     
@@ -40,7 +40,7 @@ jobs:
     - name: Build solution
       run: dotnet build -c ${{matrix.configuration}} /bl
     - name: Upload MSBuild binary log
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: msbuild_log_${{matrix.configuration}}
         path: msbuild.binlog
@@ -52,7 +52,7 @@ jobs:
     
     # Publish test results
     - name: Publish test results
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: '**/TestResults/VSTestResults.trx'
         path: VSTestResults
@@ -72,7 +72,7 @@ jobs:
         dotnet nuget push "*.nupkg" --api-key dummy --source PullRequests --skip-duplicate
 
     - name: Upload Package List
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       if: ${{ env.IS_PR == 'false' && matrix.configuration == 'Release' }}
       with:
         name: nuget-list-dotnet
@@ -82,7 +82,7 @@ jobs:
 
     # if we're not doing a PR build (or it's a PR from a fork) then we upload our packages so we can sign as a separate job or have available to test.
     - name: Upload Packages Artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       if: ${{ (env.IS_PR == 'false' || github.event.pull_request.head.repo.full_name != github.repository) && matrix.configuration == 'Release' }}
       with:
         name: nuget-packages-dotnet
@@ -100,18 +100,18 @@ jobs:
 
     steps:
       - name: Install .NET SDK v${{ env.DOTNET_VERSION }}
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Download Package List
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: nuget-list-dotnet
           path: ./
   
       - name: Download built packages for .NCT
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: nuget-packages-dotnet
           path: ./packages
@@ -144,7 +144,7 @@ jobs:
           dotnet nuget push "**/*.nupkg" --api-key dummy --source MainLatest --skip-duplicate
 
       - name: Upload Signed Packages as Artifacts (for release)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: ${{ env.IS_RELEASE == 'true' }}
         with:
           name: signed-nuget-packages-dotnet
@@ -160,12 +160,12 @@ jobs:
 
     steps:
       - name: Install .NET SDK v${{ env.DOTNET_VERSION }}
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Download signed packages for .NCT
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: signed-nuget-packages-dotnet
           path: ./packages
