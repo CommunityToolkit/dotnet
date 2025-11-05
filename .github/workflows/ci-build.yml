@@ -23,8 +23,15 @@ env:
 
 jobs:
 
-  # Build the solution, run all tests, push packages to the PR feed
+  # Build the solution, run all tests, push packages to the PR feed.
+  # We want to avoid the CI being triggered twice for PRs from the
+  # repository owner, however the repo is now under 'CommunityToolkit'.
+  # So we just hardcode the username and skip this job for PR triggers
+  # from that user. This ensures the workflow only runs once per commit.
   build-and-test:
+    if: >-
+      github.event_name == 'push' ||
+      github.event.pull_request.user.login != 'sergio0694'
     strategy:
         matrix:
           configuration: [Debug, Release]
