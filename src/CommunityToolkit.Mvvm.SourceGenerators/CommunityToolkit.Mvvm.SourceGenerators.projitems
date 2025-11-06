@@ -74,6 +74,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\GeneratorAttributeSyntaxContextWithOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\IncrementalGeneratorInitializationContextExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\IncrementalValuesProviderExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\IMethodSymbolExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\MethodDeclarationSyntaxExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\SymbolInfoExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\ISymbolExtensions.cs" />

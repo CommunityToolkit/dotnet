@@ -810,8 +810,10 @@ partial class RelayCommandGenerator
 
                 diagnostics.Add(InvalidCanExecuteMemberNameError, methodSymbol, memberName, methodSymbol.ContainingType);
             }
-            else if (canExecuteSymbols.Length > 1)
+            else if (canExecuteSymbols.Length > 1 && !canExecuteSymbols.AreAllInSameOverriddenMethodHierarchy())
             {
+                // We specifically allow targeting methods which are overridden: they'll be more than one,
+                // but it doesn't matter since you'd only ever call "one", being the most derived one.
                 diagnostics.Add(MultipleCanExecuteMemberNameMatchesError, methodSymbol, memberName, methodSymbol.ContainingType);
             }
             else if (TryGetCanExecuteExpressionFromSymbol(canExecuteSymbols[0], commandTypeArguments, out canExecuteExpressionType))
