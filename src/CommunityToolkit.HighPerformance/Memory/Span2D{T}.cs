@@ -56,7 +56,7 @@ public readonly ref partial struct Span2D<T>
     // discontiguous row, so that any arbitrary memory locations
     // can be used to internally represent a 2D span. This gives
     // users much more flexibility when creating spans from data.
-#if NET7_0_OR_GREATER
+#if NET8_0_OR_GREATER
     /// <summary>
     /// The <typeparamref name="T"/> reference for the <see cref="Span2D{T}"/> instance.
     /// </summary>
@@ -117,7 +117,7 @@ public readonly ref partial struct Span2D<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal Span2D(ref T value, int height, int width, int pitch)
     {
-#if NET7_0_OR_GREATER
+#if NET8_0_OR_GREATER
         this.reference = ref value;
         this.height = height;
 #else
@@ -160,7 +160,7 @@ public readonly ref partial struct Span2D<T>
 
         OverflowHelper.EnsureIsInNativeIntRange(height, width, pitch);
 
-#if NET7_0_OR_GREATER
+#if NET8_0_OR_GREATER
         this.reference = ref Unsafe.AsRef<T>(pointer);
         this.height = height;
 #elif NETSTANDARD2_1_OR_GREATER
@@ -264,7 +264,7 @@ public readonly ref partial struct Span2D<T>
             ThrowHelper.ThrowArgumentException();
         }
 
-#if NET7_0_OR_GREATER
+#if NET8_0_OR_GREATER
         this.reference = ref array.DangerousGetReferenceAt(offset);
         this.height = height;
 #elif NETSTANDARD2_1_OR_GREATER
@@ -299,7 +299,7 @@ public readonly ref partial struct Span2D<T>
             ThrowHelper.ThrowArrayTypeMismatchException();
         }
 
-#if NET7_0_OR_GREATER
+#if NET8_0_OR_GREATER
         this.reference = ref array.DangerousGetReference();
         this.height = array.GetLength(0);
 #elif NETSTANDARD2_1_OR_GREATER
@@ -369,7 +369,7 @@ public readonly ref partial struct Span2D<T>
             ThrowHelper.ThrowArgumentOutOfRangeExceptionForWidth();
         }
 
-#if NET7_0_OR_GREATER
+#if NET8_0_OR_GREATER
         this.reference = ref array.DangerousGetReferenceAt(row, column);
         this.height = height;
 #elif NETSTANDARD2_1_OR_GREATER
@@ -404,7 +404,7 @@ public readonly ref partial struct Span2D<T>
             ThrowHelper.ThrowArgumentOutOfRangeExceptionForDepth();
         }
 
-#if NET7_0_OR_GREATER
+#if NET8_0_OR_GREATER
         this.reference = ref array.DangerousGetReferenceAt(depth, 0, 0);
         this.height = array.GetLength(1);
 #elif NETSTANDARD2_1_OR_GREATER
@@ -465,7 +465,7 @@ public readonly ref partial struct Span2D<T>
             ThrowHelper.ThrowArgumentOutOfRangeExceptionForWidth();
         }
 
-#if NET7_0_OR_GREATER
+#if NET8_0_OR_GREATER
         this.reference = ref array.DangerousGetReferenceAt(depth, row, column);
         this.height = height;
 #elif NETSTANDARD2_1_OR_GREATER
@@ -546,7 +546,7 @@ public readonly ref partial struct Span2D<T>
             ThrowHelper.ThrowArgumentException();
         }
 
-#if NET7_0_OR_GREATER
+#if NET8_0_OR_GREATER
         this.reference = ref span.DangerousGetReferenceAt(offset);
         this.height = height;
 #else
@@ -619,7 +619,7 @@ public readonly ref partial struct Span2D<T>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get
         {
-#if NET7_0_OR_GREATER
+#if NET8_0_OR_GREATER
             return this.height;
 #elif NETSTANDARD2_1_OR_GREATER
             return this.span.Length;
@@ -943,7 +943,7 @@ public readonly ref partial struct Span2D<T>
 
         if (Length != 0)
         {
-#if NET7_0_OR_GREATER
+#if NET8_0_OR_GREATER
             r0 = ref this.reference;
 #elif NETSTANDARD2_1_OR_GREATER
             r0 = ref MemoryMarshal.GetReference(this.span);
@@ -962,7 +962,7 @@ public readonly ref partial struct Span2D<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ref T DangerousGetReference()
     {
-#if NET7_0_OR_GREATER
+#if NET8_0_OR_GREATER
         return ref this.reference;
 #elif NETSTANDARD2_1_OR_GREATER
         return ref MemoryMarshal.GetReference(this.span);
@@ -980,7 +980,7 @@ public readonly ref partial struct Span2D<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ref T DangerousGetReferenceAt(int i, int j)
     {
-#if NET7_0_OR_GREATER
+#if NET8_0_OR_GREATER
         ref T r0 = ref this.reference;
 #elif NETSTANDARD2_1_OR_GREATER
         ref T r0 = ref MemoryMarshal.GetReference(this.span);
@@ -1052,7 +1052,7 @@ public readonly ref partial struct Span2D<T>
         nint shift = ((nint)(uint)this.Stride * (nint)(uint)row) + (nint)(uint)column;
         int pitch = this.Stride - width;
 
-#if NET7_0_OR_GREATER
+#if NET8_0_OR_GREATER
         ref T r0 = ref Unsafe.Add(ref this.reference, shift);
 
         return new(ref r0, height, width, pitch);
@@ -1098,7 +1098,7 @@ public readonly ref partial struct Span2D<T>
         if (this.Stride == this.width &&
             Length <= int.MaxValue)
         {
-#if NET7_0_OR_GREATER
+#if NET8_0_OR_GREATER
             span = MemoryMarshal.CreateSpan(ref this.reference, (int)Length);
 
             return true;
@@ -1213,7 +1213,7 @@ public readonly ref partial struct Span2D<T>
     public static bool operator ==(Span2D<T> left, Span2D<T> right)
     {
         return
-#if NET7_0_OR_GREATER
+#if NET8_0_OR_GREATER
             Unsafe.AreSame(ref left.reference, ref right.reference) &&
             left.height == right.height &&
 #elif NETSTANDARD2_1_OR_GREATER

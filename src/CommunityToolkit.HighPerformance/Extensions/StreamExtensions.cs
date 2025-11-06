@@ -205,7 +205,7 @@ public static class StreamExtensions
     public static unsafe T Read<T>(this Stream stream)
         where T : unmanaged
     {
-#if NET7_0_OR_GREATER
+#if NET8_0_OR_GREATER
         T result;
 
         stream.ReadExactly(new Span<byte>(&result, sizeof(T)));
@@ -299,7 +299,7 @@ public static class StreamExtensions
 #endif
     }
 
-#if !NET7_0_OR_GREATER
+#if !NET8_0_OR_GREATER
     /// <summary>
     /// Throws an <see cref="EndOfStreamException"/> when <see cref="Read{T}"/> fails.
     /// </summary>
