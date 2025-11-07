@@ -31,8 +31,8 @@ public partial class Test_MemoryStream
         Assert.IsFalse(stream.CanRead);
         Assert.IsFalse(stream.CanSeek);
         Assert.IsFalse(stream.CanWrite);
-        _ = Assert.ThrowsException<ObjectDisposedException>(() => stream.Length);
-        _ = Assert.ThrowsException<ObjectDisposedException>(() => stream.Position);
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() => stream.Length);
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() => stream.Position);
     }
 
     [TestMethod]
@@ -46,20 +46,20 @@ public partial class Test_MemoryStream
 
         Assert.AreEqual(stream.Position, 42);
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Position = -1);
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Position = 120);
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => stream.Position = -1);
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => stream.Position = 120);
 
         _ = stream.Seek(0, SeekOrigin.Begin);
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Seek(-1, SeekOrigin.Begin));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Seek(120, SeekOrigin.Begin));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => stream.Seek(-1, SeekOrigin.Begin));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => stream.Seek(120, SeekOrigin.Begin));
 
         Assert.AreEqual(stream.Position, 0);
 
         _ = stream.Seek(-1, SeekOrigin.End);
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Seek(20, SeekOrigin.End));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Seek(-120, SeekOrigin.End));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => stream.Seek(20, SeekOrigin.End));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => stream.Seek(-120, SeekOrigin.End));
 
         Assert.AreEqual(stream.Position, stream.Length - 1);
 
@@ -67,8 +67,8 @@ public partial class Test_MemoryStream
         _ = stream.Seek(20, SeekOrigin.Current);
         _ = stream.Seek(-30, SeekOrigin.Current);
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Seek(-64, SeekOrigin.Current));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Seek(80, SeekOrigin.Current));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => stream.Seek(-64, SeekOrigin.Current));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => stream.Seek(80, SeekOrigin.Current));
 
         Assert.AreEqual(stream.Position, 32);
     }
@@ -128,15 +128,15 @@ public partial class Test_MemoryStream
         Assert.AreEqual(stream.Position, data.Length);
         Assert.IsTrue(data.AsSpan().SequenceEqual(result));
 
-        _ = Assert.ThrowsException<ArgumentNullException>(() => stream.Write(null!, 0, 10));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Write(data, -1, 10));
-        _ = Assert.ThrowsException<ArgumentException>(() => stream.Write(data, 200, 10));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Write(data, 0, -24));
-        _ = Assert.ThrowsException<ArgumentException>(() => stream.Write(data, 0, 200));
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() => stream.Write(null!, 0, 10));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => stream.Write(data, -1, 10));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => stream.Write(data, 200, 10));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => stream.Write(data, 0, -24));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => stream.Write(data, 0, 200));
 
         stream.Dispose();
 
-        _ = Assert.ThrowsException<ObjectDisposedException>(() => stream.Write(data, 0, data.Length));
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() => stream.Write(data, 0, data.Length));
     }
 
     [TestMethod]
@@ -160,15 +160,15 @@ public partial class Test_MemoryStream
         Assert.AreEqual(stream.Position, data.Length);
         Assert.IsTrue(data.AsSpan().SequenceEqual(result));
 
-        _ = await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => stream.WriteAsync(null!, 0, 10));
-        _ = await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(() => stream.WriteAsync(data, -1, 10));
-        _ = await Assert.ThrowsExceptionAsync<ArgumentException>(() => stream.WriteAsync(data, 200, 10));
-        _ = await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(() => stream.WriteAsync(data, 0, -24));
-        _ = await Assert.ThrowsExceptionAsync<ArgumentException>(() => stream.WriteAsync(data, 0, 200));
+        _ = await Assert.ThrowsExactlyAsync<ArgumentNullException>(() => stream.WriteAsync(null!, 0, 10));
+        _ = await Assert.ThrowsExactlyAsync<ArgumentOutOfRangeException>(() => stream.WriteAsync(data, -1, 10));
+        _ = await Assert.ThrowsExactlyAsync<ArgumentException>(() => stream.WriteAsync(data, 200, 10));
+        _ = await Assert.ThrowsExactlyAsync<ArgumentOutOfRangeException>(() => stream.WriteAsync(data, 0, -24));
+        _ = await Assert.ThrowsExactlyAsync<ArgumentException>(() => stream.WriteAsync(data, 0, 200));
 
         stream.Dispose();
 
-        _ = await Assert.ThrowsExceptionAsync<ObjectDisposedException>(() => stream.WriteAsync(data, 0, data.Length));
+        _ = await Assert.ThrowsExactlyAsync<ObjectDisposedException>(() => stream.WriteAsync(data, 0, data.Length));
     }
 
     [TestMethod]
@@ -199,7 +199,7 @@ public partial class Test_MemoryStream
         Assert.AreEqual(stream.Position, data.Length);
         Assert.IsTrue(data.SequenceEqual(result));
 
-        _ = Assert.ThrowsException<ArgumentException>(() => stream.WriteByte(128));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => stream.WriteByte(128));
 
         int exitCode = stream.ReadByte();
 

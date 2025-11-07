@@ -42,11 +42,11 @@ public class Test_MemoryBufferWriterOfT
         Assert.AreEqual(memory.Length - 43, writer.GetSpan(22).Length);
         Assert.AreEqual(memory.Length - 43, writer.GetMemory(22).Length);
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => writer.Advance(-1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => writer.GetMemory(-1));
-        _ = Assert.ThrowsException<ArgumentException>(() => writer.GetSpan(1024));
-        _ = Assert.ThrowsException<ArgumentException>(() => writer.GetMemory(1024));
-        _ = Assert.ThrowsException<ArgumentException>(() => writer.Advance(1024));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => writer.Advance(-1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => writer.GetMemory(-1));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => writer.GetSpan(1024));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => writer.GetMemory(1024));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => writer.Advance(1024));
     }
 
     [TestMethod]

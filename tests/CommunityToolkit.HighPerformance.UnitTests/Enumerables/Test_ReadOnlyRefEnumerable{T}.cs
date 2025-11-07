@@ -76,8 +76,8 @@ public class Test_ReadOnlyRefEnumerable
             0, 0, 0, 0
         };
 
-        _ = Assert.ThrowsException<IndexOutOfRangeException>(() => ReadOnlyRefEnumerable<int>.DangerousCreate(in array[0], array.Length, 1)[-1]);
-        _ = Assert.ThrowsException<IndexOutOfRangeException>(() => ReadOnlyRefEnumerable<int>.DangerousCreate(in array[0], array.Length, 1)[array.Length]);
+        _ = Assert.ThrowsExactly<IndexOutOfRangeException>(() => ReadOnlyRefEnumerable<int>.DangerousCreate(in array[0], array.Length, 1)[-1]);
+        _ = Assert.ThrowsExactly<IndexOutOfRangeException>(() => ReadOnlyRefEnumerable<int>.DangerousCreate(in array[0], array.Length, 1)[array.Length]);
     }
 
 #if NET6_0_OR_GREATER
@@ -112,8 +112,8 @@ public class Test_ReadOnlyRefEnumerable
             0, 0, 0, 0
         };
 
-        _ = Assert.ThrowsException<IndexOutOfRangeException>(() => ReadOnlyRefEnumerable<int>.DangerousCreate(in array[0], array.Length, 1)[new Index(array.Length)]);
-        _ = Assert.ThrowsException<IndexOutOfRangeException>(() => ReadOnlyRefEnumerable<int>.DangerousCreate(in array[0], array.Length, 1)[^0]);
+        _ = Assert.ThrowsExactly<IndexOutOfRangeException>(() => ReadOnlyRefEnumerable<int>.DangerousCreate(in array[0], array.Length, 1)[new Index(array.Length)]);
+        _ = Assert.ThrowsExactly<IndexOutOfRangeException>(() => ReadOnlyRefEnumerable<int>.DangerousCreate(in array[0], array.Length, 1)[^0]);
     }
 #endif
 }

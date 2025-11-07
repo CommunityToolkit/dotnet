@@ -179,10 +179,10 @@ public partial class Test_ArrayExtensions
         // Test an empty array
         Assert.AreSame(new int[1, 0].GetRow(0).ToArray(), Array.Empty<int>());
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetRow(-1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetRow(3));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => array.GetRow(-1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => array.GetRow(3));
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetRow(20));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => array.GetRow(20));
     }
 
     [TestMethod]
@@ -204,10 +204,10 @@ public partial class Test_ArrayExtensions
 
         CollectionAssert.AreEqual(array.GetColumn(1).ToArray(), new[] { 2, 6, 10 });
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetColumn(-1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetColumn(4));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => array.GetColumn(-1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => array.GetColumn(4));
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetColumn(20));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => array.GetColumn(20));
     }
 
     [TestMethod]
@@ -216,7 +216,7 @@ public partial class Test_ArrayExtensions
         int[,] array = new int[0, 0];
 
         // Try to get a row from an empty array (the row index isn't in range)
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetRow(0).ToArray());
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => array.GetRow(0).ToArray());
     }
 
     [TestMethod]
@@ -274,11 +274,11 @@ public partial class Test_ArrayExtensions
         CollectionAssert.AreEqual(copy, result);
 
         // Some invalid attempts to copy to an empty span or sequence
-        _ = Assert.ThrowsException<ArgumentException>(() => array.GetRow(0).CopyTo(default(RefEnumerable<int>)));
-        _ = Assert.ThrowsException<ArgumentException>(() => array.GetRow(0).CopyTo(default(Span<int>)));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => array.GetRow(0).CopyTo(default(RefEnumerable<int>)));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => array.GetRow(0).CopyTo(default(Span<int>)));
 
-        _ = Assert.ThrowsException<ArgumentException>(() => array.GetColumn(0).CopyTo(default(RefEnumerable<int>)));
-        _ = Assert.ThrowsException<ArgumentException>(() => array.GetColumn(0).CopyTo(default(Span<int>)));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => array.GetColumn(0).CopyTo(default(RefEnumerable<int>)));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => array.GetColumn(0).CopyTo(default(Span<int>)));
 
         // Same as CopyTo, but this will fail gracefully with an invalid target
         Assert.IsTrue(array.GetRow(2).TryCopyTo(copy));
@@ -344,11 +344,11 @@ public partial class Test_ArrayExtensions
 
         CollectionAssert.AreEqual(copy, result);
 
-        _ = Assert.ThrowsException<ArgumentException>(() => ((ReadOnlySpan2D<int>)array).GetRow(0).CopyTo(default(RefEnumerable<int>)));
-        _ = Assert.ThrowsException<ArgumentException>(() => ((ReadOnlySpan2D<int>)array).GetRow(0).CopyTo(default(Span<int>)));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => ((ReadOnlySpan2D<int>)array).GetRow(0).CopyTo(default(RefEnumerable<int>)));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => ((ReadOnlySpan2D<int>)array).GetRow(0).CopyTo(default(Span<int>)));
 
-        _ = Assert.ThrowsException<ArgumentException>(() => ((ReadOnlySpan2D<int>)array).GetColumn(0).CopyTo(default(RefEnumerable<int>)));
-        _ = Assert.ThrowsException<ArgumentException>(() => ((ReadOnlySpan2D<int>)array).GetColumn(0).CopyTo(default(Span<int>)));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => ((ReadOnlySpan2D<int>)array).GetColumn(0).CopyTo(default(RefEnumerable<int>)));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => ((ReadOnlySpan2D<int>)array).GetColumn(0).CopyTo(default(Span<int>)));
 
         Assert.IsTrue(span2D.GetRow(2).TryCopyTo(copy));
         Assert.IsFalse(span2D.GetRow(2).TryCopyTo(default(Span<int>)));
@@ -416,7 +416,7 @@ public partial class Test_ArrayExtensions
     {
         int[,] array = new int[0, 0];
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => array.GetColumn(0).ToArray());
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => array.GetColumn(0).ToArray());
     }
 
 #if NET6_0_OR_GREATER

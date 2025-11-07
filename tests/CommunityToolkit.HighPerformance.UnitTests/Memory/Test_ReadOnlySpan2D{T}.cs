@@ -61,9 +61,9 @@ public class Test_ReadOnlySpan2DT
         Assert.AreEqual(span2d[0, 0], 1);
         Assert.AreEqual(span2d[1, 2], 6);
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => ReadOnlySpan2D<int>.DangerousCreate(Unsafe.AsRef<int>(null), -1, 0, 0));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => ReadOnlySpan2D<int>.DangerousCreate(Unsafe.AsRef<int>(null), 1, -2, 0));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => ReadOnlySpan2D<int>.DangerousCreate(Unsafe.AsRef<int>(null), 1, 0, -5));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => ReadOnlySpan2D<int>.DangerousCreate(Unsafe.AsRef<int>(null), -1, 0, 0));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => ReadOnlySpan2D<int>.DangerousCreate(Unsafe.AsRef<int>(null), 1, -2, 0));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => ReadOnlySpan2D<int>.DangerousCreate(Unsafe.AsRef<int>(null), 1, 0, -5));
     }
 #endif
 
@@ -89,10 +89,10 @@ public class Test_ReadOnlySpan2DT
         Assert.AreEqual(span2d[0, 0], 1);
         Assert.AreEqual(span2d[1, 2], 6);
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>((void*)0, -1, 0, 0));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>((void*)0, 1, -2, 0));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>((void*)0, 1, 0, -5));
-        _ = Assert.ThrowsException<ArgumentException>(() => new ReadOnlySpan2D<string>((void*)0, 2, 2, 0));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>((void*)0, -1, 0, 0));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>((void*)0, 1, -2, 0));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>((void*)0, 1, 0, -5));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => new ReadOnlySpan2D<string>((void*)0, 2, 2, 0));
     }
 
     [TestMethod]
@@ -115,11 +115,11 @@ public class Test_ReadOnlySpan2DT
         // Same for ReadOnlyMemory2D<T>, we need to check that covariant array conversions are allowed
         _ = new ReadOnlySpan2D<object>(new string[1], 1, 1);
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, -99, 1, 1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 0, -10, 1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 0, 1, 1, -1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 0, 1, -100, 1));
-        _ = Assert.ThrowsException<ArgumentException>(() => new ReadOnlySpan2D<int>(array, 0, 10, 1, 120));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, -99, 1, 1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 0, -10, 1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 0, 1, 1, -1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 0, 1, -100, 1));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => new ReadOnlySpan2D<int>(array, 0, 10, 1, 120));
     }
 
     [TestMethod]
@@ -163,7 +163,7 @@ public class Test_ReadOnlySpan2DT
 
         _ = new ReadOnlySpan2D<object>(new string[1, 2]);
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<object>(new string[1, 2], 0, 0, 2, 2));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<object>(new string[1, 2], 0, 0, 2, 2));
     }
 
     [TestMethod]
@@ -191,8 +191,8 @@ public class Test_ReadOnlySpan2DT
         Assert.AreEqual(span2d[0, 1], 20);
         Assert.AreEqual(span2d[1, 2], 60);
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, -1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 20));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, -1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 20));
     }
 
     [TestMethod]
@@ -220,11 +220,11 @@ public class Test_ReadOnlySpan2DT
         Assert.AreEqual(span2d[0, 1], 30);
         Assert.AreEqual(span2d[1, 1], 60);
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, -1, 1, 1, 1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 1, -1, 1, 1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 1, 1, -1, 1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 1, 1, 1, -1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 1, 1, 1, 1, -1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, -1, 1, 1, 1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 1, -1, 1, 1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 1, 1, -1, 1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 1, 1, 1, -1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 1, 1, 1, 1, -1));
     }
 
     [TestMethod]
@@ -244,7 +244,7 @@ public class Test_ReadOnlySpan2DT
 
         CollectionAssert.AreEqual(array, target);
 
-        _ = Assert.ThrowsException<ArgumentException>(() => new ReadOnlySpan2D<int>(array).CopyTo(Span<int>.Empty));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => new ReadOnlySpan2D<int>(array).CopyTo(Span<int>.Empty));
     }
 
     [TestMethod]
@@ -266,7 +266,7 @@ public class Test_ReadOnlySpan2DT
 
         CollectionAssert.AreEqual(target, expected);
 
-        _ = Assert.ThrowsException<ArgumentException>(() => new ReadOnlySpan2D<int>(array).CopyTo(Span<int>.Empty));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => new ReadOnlySpan2D<int>(array).CopyTo(Span<int>.Empty));
     }
 
     [TestMethod]
@@ -286,7 +286,7 @@ public class Test_ReadOnlySpan2DT
 
         CollectionAssert.AreEqual(array, target);
 
-        _ = Assert.ThrowsException<ArgumentException>(() => new ReadOnlySpan2D<int>(array).CopyTo(Span2D<int>.Empty));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => new ReadOnlySpan2D<int>(array).CopyTo(Span2D<int>.Empty));
     }
 
     [TestMethod]
@@ -312,7 +312,7 @@ public class Test_ReadOnlySpan2DT
 
         CollectionAssert.AreEqual(target, expected);
 
-        _ = Assert.ThrowsException<ArgumentException>(() => new ReadOnlySpan2D<int>(array).CopyTo(new Span2D<int>(target)));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => new ReadOnlySpan2D<int>(array).CopyTo(new Span2D<int>(target)));
     }
 
     [TestMethod]
@@ -494,13 +494,13 @@ public class Test_ReadOnlySpan2DT
         Assert.AreEqual(slice2[1, 0], 5);
         Assert.AreEqual(slice2[1, 1], 6);
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).Slice(-1, 1, 1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).Slice(1, -1, 1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).Slice(1, 1, 1, -1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).Slice(1, 1, -1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).Slice(10, 1, 1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).Slice(1, 12, 1, 12));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).Slice(1, 1, 55, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).Slice(-1, 1, 1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).Slice(1, -1, 1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).Slice(1, 1, 1, -1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).Slice(1, 1, -1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).Slice(10, 1, 1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).Slice(1, 12, 1, 12));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).Slice(1, 1, 55, 1));
     }
 
     [TestMethod]
@@ -559,8 +559,8 @@ public class Test_ReadOnlySpan2DT
             ref Unsafe.AsRef(in span[2]),
             ref array[1, 2]));
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).GetRowSpan(-1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).GetRowSpan(5));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).GetRowSpan(-1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).GetRowSpan(5));
     }
 #endif
 
@@ -797,9 +797,9 @@ public class Test_ReadOnlySpan2DT
 
         Assert.AreSame(default(ReadOnlyRefEnumerable<int>).ToArray(), Array.Empty<int>());
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).GetRow(-1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).GetRow(2));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).GetRow(1000));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).GetRow(-1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).GetRow(2));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).GetRow(1000));
     }
 
     [TestMethod]
@@ -827,9 +827,9 @@ public class Test_ReadOnlySpan2DT
 
         CollectionAssert.AreEqual(enumerable.ToArray(), expected);
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 2, 3, 0).GetRow(-1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 2, 3, 0).GetRow(2));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 2, 3, 0).GetRow(1000));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 2, 3, 0).GetRow(-1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 2, 3, 0).GetRow(2));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 2, 3, 0).GetRow(1000));
     }
 
     [TestMethod]
@@ -853,9 +853,9 @@ public class Test_ReadOnlySpan2DT
 
         CollectionAssert.AreEqual(enumerable.ToArray(), expected);
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).GetColumn(-1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).GetColumn(3));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).GetColumn(1000));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).GetColumn(-1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).GetColumn(3));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).GetColumn(1000));
     }
 
     [TestMethod]
@@ -883,9 +883,9 @@ public class Test_ReadOnlySpan2DT
 
         CollectionAssert.AreEqual(enumerable.ToArray(), expected);
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 2, 3, 0).GetColumn(-1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 2, 3, 0).GetColumn(3));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 2, 3, 0).GetColumn(1000));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 2, 3, 0).GetColumn(-1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 2, 3, 0).GetColumn(3));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 2, 3, 0).GetColumn(1000));
     }
 
     [TestMethod]

@@ -110,12 +110,12 @@ public class Test_ReadOnlyObservableGroupedCollection
 
         ReadOnlyObservableGroup<string, int>? testGroup = new("test", new ObservableCollection<int>());
 
-        _ = Assert.ThrowsException<NotSupportedException>(() => list.Add(testGroup));
-        _ = Assert.ThrowsException<NotSupportedException>(() => list.Clear());
-        _ = Assert.ThrowsException<NotSupportedException>(() => list.Insert(2, testGroup));
-        _ = Assert.ThrowsException<NotSupportedException>(() => list.Remove(testGroup));
-        _ = Assert.ThrowsException<NotSupportedException>(() => list.RemoveAt(2));
-        _ = Assert.ThrowsException<NotSupportedException>(() => list[2] = testGroup);
+        _ = Assert.ThrowsExactly<NotSupportedException>(() => list.Add(testGroup));
+        _ = Assert.ThrowsExactly<NotSupportedException>(() => list.Clear());
+        _ = Assert.ThrowsExactly<NotSupportedException>(() => list.Insert(2, testGroup));
+        _ = Assert.ThrowsExactly<NotSupportedException>(() => list.Remove(testGroup));
+        _ = Assert.ThrowsExactly<NotSupportedException>(() => list.RemoveAt(2));
+        _ = Assert.ThrowsExactly<NotSupportedException>(() => list[2] = testGroup);
 
         object[]? array = new object[5];
 

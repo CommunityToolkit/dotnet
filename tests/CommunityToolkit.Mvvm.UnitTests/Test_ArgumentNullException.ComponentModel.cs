@@ -310,7 +310,7 @@ public partial class Test_ArgumentNullException
     /// <param name="parameterName">The parameter name to check.</param>
     private static void Assert(Action action, string parameterName)
     {
-        System.ArgumentNullException exception = Microsoft.VisualStudio.TestTools.UnitTesting.Assert.ThrowsException<System.ArgumentNullException>(action);
+        System.ArgumentNullException exception = Microsoft.VisualStudio.TestTools.UnitTesting.Assert.ThrowsExactly<System.ArgumentNullException>(action);
 
         Microsoft.VisualStudio.TestTools.UnitTesting.Assert.AreEqual(exception.ParamName, parameterName);
     }

@@ -138,7 +138,7 @@ public class Test_MemoryOwnerOfT
         // The original buffer instance is disposed here, because calling Slice transfers
         // the ownership of the internal buffer to the new instance (this is documented in
         // XML docs for the MemoryOwner<T>.Slice method).
-        _ = Assert.ThrowsException<ObjectDisposedException>(() => buffer.DangerousGetArray());
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() => buffer.DangerousGetArray());
 
         segment = second.DangerousGetArray();
 
@@ -150,6 +150,6 @@ public class Test_MemoryOwnerOfT
 
         second.Dispose();
 
-        _ = Assert.ThrowsException<ObjectDisposedException>(() => second.DangerousGetArray());
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() => second.DangerousGetArray());
     }
 }
