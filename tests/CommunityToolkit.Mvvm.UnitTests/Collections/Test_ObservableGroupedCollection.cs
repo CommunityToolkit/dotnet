@@ -41,9 +41,8 @@ public class Test_ObservableGroupedCollection
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void Test_ObservableGroupedCollection_Ctor_NullCollection()
     {
-        _ = new ObservableGroupedCollection<string, int>(null!);
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() => _ = new ObservableGroupedCollection<string, int>(null!));
     }
 }

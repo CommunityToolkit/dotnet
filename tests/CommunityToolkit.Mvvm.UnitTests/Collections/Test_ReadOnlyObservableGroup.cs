@@ -131,23 +131,20 @@ public class Test_ReadOnlyObservableGroup
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void Test_ReadOnlyObservableGroup_Ctor_NullKeyWithNotNullElements()
     {
-        _ = new ReadOnlyObservableGroup<string, int>(null!, new ObservableCollection<int>());
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() => _ = new ReadOnlyObservableGroup<string, int>(null!, new ObservableCollection<int>()));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void Test_ReadOnlyObservableGroup_Ctor_NotNullKeyWithNullElements()
     {
-        _ = new ReadOnlyObservableGroup<string, int>("A", null!);
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() => _ = new ReadOnlyObservableGroup<string, int>("A", null!));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void Test_ReadOnlyObservableGroup_Ctor_NullGroup()
     {
-        _ = new ReadOnlyObservableGroup<string, int>(null!);
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() => _ = new ReadOnlyObservableGroup<string, int>(null!));
     }
 }

@@ -45,7 +45,6 @@ partial class Test_Messenger
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
-    [ExpectedException(typeof(InvalidOperationException))]
     public void Test_Messenger_RequestMessage_Fail_NoReply(Type type)
     {
         IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
@@ -54,13 +53,12 @@ partial class Test_Messenger
 
         Assert.IsFalse(message.HasReceivedResponse);
 
-        _ = message.Response;
+        _ = Assert.ThrowsExactly<InvalidOperationException>(() => _ = message.Response);
     }
 
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
-    [ExpectedException(typeof(InvalidOperationException))]
     public void Test_Messenger_RequestMessage_Fail_MultipleReplies(Type type)
     {
         IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
@@ -74,7 +72,7 @@ partial class Test_Messenger
 
         messenger.Register<NumberRequestMessage>(recipient, Receive);
 
-        int result = messenger.Send<NumberRequestMessage>();
+        _ = Assert.ThrowsExactly<InvalidOperationException>(() => _ = messenger.Send<NumberRequestMessage>());
 
         GC.KeepAlive(recipient);
     }
@@ -145,7 +143,6 @@ partial class Test_Messenger
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
-    [ExpectedException(typeof(InvalidOperationException))]
     public async Task Test_Messenger_AsyncRequestMessage_Fail_NoReply(Type type)
     {
         IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
@@ -154,13 +151,12 @@ partial class Test_Messenger
 
         Assert.IsFalse(message.HasReceivedResponse);
 
-        _ = await message.Response;
+        _ = await Assert.ThrowsExactlyAsync<InvalidOperationException>(async () => _ = await message.Response);
     }
 
     [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
-    [ExpectedException(typeof(InvalidOperationException))]
     public async Task Test_Messenger_AsyncRequestMessage_Fail_MultipleReplies(Type type)
     {
         IMessenger? messenger = (IMessenger)Activator.CreateInstance(type)!;
@@ -174,9 +170,12 @@ partial class Test_Messenger
 
         messenger.Register<AsyncNumberRequestMessage>(recipient, Receive);
 
-        int result = await messenger.Send<AsyncNumberRequestMessage>();
+        _ = await Assert.ThrowsExactlyAsync<InvalidOperationException>(async () =>
+        {
+            _ = await messenger.Send<AsyncNumberRequestMessage>();
 
-        GC.KeepAlive(recipient);
+            GC.KeepAlive(recipient);
+        });
     }
 
     public class AsyncNumberRequestMessage : AsyncRequestMessage<int>

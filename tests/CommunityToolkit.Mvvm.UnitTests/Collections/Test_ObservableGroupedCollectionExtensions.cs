@@ -29,14 +29,13 @@ public class Test_ObservableGroupedCollectionExtensions
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))]
     public void Test_ObservableGroupedCollectionExtensions_FirstGroupByKey_WhenGroupDoesNotExist_ShouldThrow()
     {
         ObservableGroupedCollection<string, int> groupedCollection = new();
 
         _ = groupedCollection.AddGroup("A", new[] { 23 });
 
-        _ = groupedCollection.FirstGroupByKey("I do not exist");
+        _ = Assert.ThrowsExactly<InvalidOperationException>(() => _ = groupedCollection.FirstGroupByKey("I do not exist"));
     }
 
     [TestMethod]
@@ -84,7 +83,6 @@ public class Test_ObservableGroupedCollectionExtensions
     [TestMethod]
     [DataRow(-1)]
     [DataRow(3)]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_ObservableGroupedCollectionExtensions_FirstGroupByKey_WhenGroupExistsAndIndexOutOfRange_ShouldReturnThrow(int index)
     {
         ObservableGroupedCollection<string, int> groupedCollection = new();
@@ -93,7 +91,7 @@ public class Test_ObservableGroupedCollectionExtensions
         _ = groupedCollection.AddGroup("B", new[] { 10, 11, 12 });
         _ = groupedCollection.AddGroup("B", new[] { 42 });
 
-        _ = groupedCollection.FirstGroupByKey("B")[index];
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => _ = groupedCollection.FirstGroupByKey("B")[index]);
     }
 
     [TestMethod]
