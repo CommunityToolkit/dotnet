@@ -16,10 +16,9 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsEmpty_ArrayFail()
     {
-        Guard.IsEmpty(new int[1], nameof(Test_Guard_IsEmpty_ArrayFail));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.IsEmpty(new int[1], nameof(Test_Guard_IsEmpty_ArrayFail)));
     }
 
     [TestMethod]
@@ -29,10 +28,9 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsNotEmpty_ArrayFail()
     {
-        Guard.IsNotEmpty(new int[0], nameof(Test_Guard_IsNotEmpty_ArrayFail));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.IsNotEmpty(new int[0], nameof(Test_Guard_IsNotEmpty_ArrayFail)));
     }
 
     [TestMethod]
@@ -42,10 +40,9 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_HasSizeEqualTo_ArrayFail()
     {
-        Guard.HasSizeEqualTo(new int[3], 4, nameof(Test_Guard_HasSizeEqualTo_ArrayOk));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.HasSizeEqualTo(new int[3], 4, nameof(Test_Guard_HasSizeEqualTo_ArrayOk)));
     }
 
     [TestMethod]
@@ -55,10 +52,9 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_HasSizeNotEqualTo_ArrayFail()
     {
-        Guard.HasSizeNotEqualTo(new int[4], 4, nameof(Test_Guard_HasSizeNotEqualTo_ArrayFail));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.HasSizeNotEqualTo(new int[4], 4, nameof(Test_Guard_HasSizeNotEqualTo_ArrayFail)));
     }
 
     [TestMethod]
@@ -68,17 +64,15 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_HasSizeGreaterThan_ArrayEqualFail()
     {
-        Guard.HasSizeGreaterThan(new int[4], 4, nameof(Test_Guard_HasSizeGreaterThan_ArrayEqualFail));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.HasSizeGreaterThan(new int[4], 4, nameof(Test_Guard_HasSizeGreaterThan_ArrayEqualFail)));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_HasSizeGreaterThan_ArraySmallerFail()
     {
-        Guard.HasSizeGreaterThan(new int[1], 4, nameof(Test_Guard_HasSizeGreaterThan_ArraySmallerFail));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.HasSizeGreaterThan(new int[1], 4, nameof(Test_Guard_HasSizeGreaterThan_ArraySmallerFail)));
     }
 
     [TestMethod]
@@ -89,10 +83,9 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_HasSizeGreaterThanOrEqualTo_ArrayFail()
     {
-        Guard.HasSizeGreaterThan(new int[1], 4, nameof(Test_Guard_HasSizeGreaterThanOrEqualTo_ArrayFail));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.HasSizeGreaterThan(new int[1], 4, nameof(Test_Guard_HasSizeGreaterThanOrEqualTo_ArrayFail)));
     }
 
     [TestMethod]
@@ -102,17 +95,15 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_HasSizeLessThan_ArrayEqualFail()
     {
-        Guard.HasSizeLessThan(new int[4], 4, nameof(Test_Guard_HasSizeLessThan_ArrayEqualFail));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.HasSizeLessThan(new int[4], 4, nameof(Test_Guard_HasSizeLessThan_ArrayEqualFail)));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_HasSizeLessThan_ArrayGreaterFail()
     {
-        Guard.HasSizeLessThan(new int[6], 4, nameof(Test_Guard_HasSizeLessThan_ArrayGreaterFail));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.HasSizeLessThan(new int[6], 4, nameof(Test_Guard_HasSizeLessThan_ArrayGreaterFail)));
     }
 
     [TestMethod]
@@ -123,10 +114,9 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_HasSizeLessThanOrEqualTo_ArrayFail()
     {
-        Guard.HasSizeLessThanOrEqualTo(new int[8], 4, nameof(Test_Guard_HasSizeLessThanOrEqualTo_ArrayFail));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.HasSizeLessThanOrEqualTo(new int[8], 4, nameof(Test_Guard_HasSizeLessThanOrEqualTo_ArrayFail)));
     }
 
     [TestMethod]
@@ -136,10 +126,9 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_HasSizeEqualToArray_ArrayFail()
     {
-        Guard.HasSizeEqualTo(new int[8], new int[2], nameof(Test_Guard_HasSizeEqualToArray_ArrayFail));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.HasSizeEqualTo(new int[8], new int[2], nameof(Test_Guard_HasSizeEqualToArray_ArrayFail)));
     }
 
     [TestMethod]
@@ -150,9 +139,8 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_HasSizeLessThanOrEqualToArray_ArrayFail()
     {
-        Guard.HasSizeLessThanOrEqualTo(new int[8], new int[2], nameof(Test_Guard_HasSizeLessThanOrEqualToArray_ArrayFail));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.HasSizeLessThanOrEqualTo(new int[8], new int[2], nameof(Test_Guard_HasSizeLessThanOrEqualToArray_ArrayFail)));
     }
 }

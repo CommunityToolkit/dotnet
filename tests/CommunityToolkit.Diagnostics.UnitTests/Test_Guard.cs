@@ -26,21 +26,18 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsNull_ClassFail()
     {
-        Guard.IsNull(new object(), nameof(Test_Guard_IsNull_ClassFail));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.IsNull(new object(), nameof(Test_Guard_IsNull_ClassFail)));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsNull_StructFail()
     {
-        Guard.IsNull(7, nameof(Test_Guard_IsNull_StructFail));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.IsNull(7, nameof(Test_Guard_IsNull_StructFail)));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsNull_GenericClassFail()
     {
         static void Test<T>(T? obj)
@@ -48,11 +45,10 @@ public partial class Test_Guard
             Guard.IsNull(obj, nameof(Test_Guard_IsNull_GenericClassFail));
         }
 
-        Test("Hi!");
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Test("Hi!"));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsNull_GenericStructFail()
     {
         static void Test<T>(T? obj)
@@ -60,7 +56,7 @@ public partial class Test_Guard
             Guard.IsNull(obj, nameof(Test_Guard_IsNull_GenericStructFail));
         }
 
-        Test(42);
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Test(42));
     }
 
     [TestMethod]
@@ -80,21 +76,18 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void Test_Guard_IsNotNull_ClassFail()
     {
-        Guard.IsNotNull<object>(null, nameof(Test_Guard_IsNotNull_ClassFail));
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() => Guard.IsNotNull<object>(null, nameof(Test_Guard_IsNotNull_ClassFail)));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void Test_Guard_IsNotNull_StructFail()
     {
-        Guard.IsNotNull<int>(null, nameof(Test_Guard_IsNotNull_StructFail));
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() => Guard.IsNotNull<int>(null, nameof(Test_Guard_IsNotNull_StructFail)));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void Test_Guard_IsNotNull_GenericClassFail()
     {
         static void Test<T>(T? obj)
@@ -102,11 +95,10 @@ public partial class Test_Guard
             Guard.IsNotNull(obj, nameof(Test_Guard_IsNotNull_GenericClassFail));
         }
 
-        Test<string>(null);
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() => Test<string>(null));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void Test_Guard_IsNotNull_GenericStructFail()
     {
         static void Test<T>(T? obj)
@@ -114,7 +106,7 @@ public partial class Test_Guard
             Guard.IsNotNull(obj, nameof(Test_Guard_IsNotNull_GenericClassFail));
         }
 
-        Test<int?>(null);
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() => Test<int?>(null));
     }
 
     [TestMethod]
@@ -125,10 +117,9 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsOfT_Fail()
     {
-        Guard.IsOfType<string>(7, nameof(Test_Guard_IsOfT_Fail));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.IsOfType<string>(7, nameof(Test_Guard_IsOfT_Fail)));
     }
 
     [TestMethod]
@@ -139,10 +130,9 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsOfType_Fail()
     {
-        Guard.IsOfType(7, typeof(string), nameof(Test_Guard_IsOfType_Fail));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.IsOfType(7, typeof(string), nameof(Test_Guard_IsOfType_Fail)));
     }
 
     [TestMethod]
@@ -152,10 +142,9 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsAssignableToT_Fail()
     {
-        Guard.IsAssignableToType<string>(7, nameof(Test_Guard_IsAssignableToT_Fail));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.IsAssignableToType<string>(7, nameof(Test_Guard_IsAssignableToT_Fail)));
     }
 
     [TestMethod]
@@ -165,10 +154,9 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsAssignableToType_Fail()
     {
-        Guard.IsAssignableToType(7, typeof(string), nameof(Test_Guard_IsAssignableToType_Fail));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.IsAssignableToType(7, typeof(string), nameof(Test_Guard_IsAssignableToType_Fail)));
     }
 
     [TestMethod]
@@ -179,10 +167,9 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsNullOrEmpty_Fail()
     {
-        Guard.IsNullOrEmpty("Hello", nameof(Test_Guard_IsNullOrEmpty_Fail));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.IsNullOrEmpty("Hello", nameof(Test_Guard_IsNullOrEmpty_Fail)));
     }
 
     [TestMethod]
@@ -192,17 +179,15 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void Test_Guard_IsNotNullOrEmpty_Null()
     {
-        Guard.IsNotNullOrEmpty(null, nameof(Test_Guard_IsNotNullOrEmpty_Null));
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() => Guard.IsNotNullOrEmpty(null, nameof(Test_Guard_IsNotNullOrEmpty_Null)));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsNotNullOrEmpty_Empty()
     {
-        Guard.IsNotNullOrEmpty(string.Empty, nameof(Test_Guard_IsNotNullOrEmpty_Empty));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.IsNotNullOrEmpty(string.Empty, nameof(Test_Guard_IsNotNullOrEmpty_Empty)));
     }
 
     [TestMethod]
@@ -212,17 +197,15 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void Test_Guard_IsNotNullOrWhiteSpace_Null()
     {
-        Guard.IsNotNullOrWhiteSpace(null, nameof(Test_Guard_IsNotNullOrWhiteSpace_Null));
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() => Guard.IsNotNullOrWhiteSpace(null, nameof(Test_Guard_IsNotNullOrWhiteSpace_Null)));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsNotNullOrWhiteSpace_Empty()
     {
-        Guard.IsNotNullOrWhiteSpace("  ", nameof(Test_Guard_IsNotNullOrWhiteSpace_Empty));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.IsNotNullOrWhiteSpace("  ", nameof(Test_Guard_IsNotNullOrWhiteSpace_Empty)));
     }
 
     [TestMethod]
@@ -232,10 +215,9 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsEqualTo_Fail()
     {
-        Guard.IsEqualTo("Hello", "World", nameof(Test_Guard_IsEqualTo_Fail));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.IsEqualTo("Hello", "World", nameof(Test_Guard_IsEqualTo_Fail)));
     }
 
     [TestMethod]
@@ -245,10 +227,9 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsNotEqualTo_Fail()
     {
-        Guard.IsNotEqualTo("Hello", "Hello", nameof(Test_Guard_IsNotEqualTo_Fail));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.IsNotEqualTo("Hello", "Hello", nameof(Test_Guard_IsNotEqualTo_Fail)));
     }
 
     [TestMethod]
@@ -267,19 +248,27 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void Test_Guard_IsBitwiseEqualTo_Size8Fail()
+    public void Test_Guard_IsBitwiseEqualTo_Size8Fail_Double()
     {
-        Guard.IsBitwiseEqualTo(double.PositiveInfinity, double.Epsilon, nameof(Test_Guard_IsBitwiseEqualTo_Size8Fail));
-        Guard.IsBitwiseEqualTo(DateTime.Now, DateTime.Today, nameof(Test_Guard_IsBitwiseEqualTo_Size8Fail));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.IsBitwiseEqualTo(double.PositiveInfinity, double.Epsilon, nameof(Test_Guard_IsBitwiseEqualTo_Size8Fail_Double)));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void Test_Guard_IsBitwiseEqualTo_Size16Fail()
+    public void Test_Guard_IsBitwiseEqualTo_Size8Fail_DateTime()
     {
-        Guard.IsBitwiseEqualTo(decimal.MaxValue, decimal.MinusOne, nameof(Test_Guard_IsBitwiseEqualTo_Size16Fail));
-        Guard.IsBitwiseEqualTo(Guid.NewGuid(), Guid.NewGuid(), nameof(Test_Guard_IsBitwiseEqualTo_Size16Fail));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.IsBitwiseEqualTo(DateTime.Now, DateTime.Today, nameof(Test_Guard_IsBitwiseEqualTo_Size8Fail_DateTime)));
+    }
+
+    [TestMethod]
+    public void Test_Guard_IsBitwiseEqualTo_Size16Fail_Decimal()
+    {
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.IsBitwiseEqualTo(decimal.MaxValue, decimal.MinusOne, nameof(Test_Guard_IsBitwiseEqualTo_Size16Fail_Decimal)));
+    }
+
+    [TestMethod]
+    public void Test_Guard_IsBitwiseEqualTo_Size16Fail_Guid()
+    {
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.IsBitwiseEqualTo(Guid.NewGuid(), Guid.NewGuid(), nameof(Test_Guard_IsBitwiseEqualTo_Size16Fail_Guid)));
     }
 
     // a >16 byte struct for testing IsBitwiseEqual's pathway for >16 byte types
@@ -303,14 +292,13 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsBitwiseEqualTo_SequenceEqualFail()
     {
         // tests the >16 byte case where the loop is called
         BiggerThanLimit biggerThanLimit0 = new(0, 3, ulong.MaxValue, ulong.MinValue);
         BiggerThanLimit biggerThanLimit1 = new(long.MaxValue + 1UL, 99, ulong.MaxValue ^ 0xF7UL, ulong.MinValue ^ 5555UL);
 
-        Guard.IsBitwiseEqualTo(biggerThanLimit0, biggerThanLimit1, nameof(Test_Guard_IsBitwiseEqualTo_SequenceEqualFail));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.IsBitwiseEqualTo(biggerThanLimit0, biggerThanLimit1, nameof(Test_Guard_IsBitwiseEqualTo_SequenceEqualFail)));
     }
 
     [TestMethod]
@@ -322,10 +310,9 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsReferenceEqualTo_Fail()
     {
-        Guard.IsReferenceEqualTo(new object(), new object(), nameof(Test_Guard_IsReferenceEqualTo_Fail));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.IsReferenceEqualTo(new object(), new object(), nameof(Test_Guard_IsReferenceEqualTo_Fail)));
     }
 
     [TestMethod]
@@ -335,12 +322,11 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsReferenceNotEqualTo_Fail()
     {
         object? obj = new();
 
-        Guard.IsReferenceNotEqualTo(obj, obj, nameof(Test_Guard_IsReferenceEqualTo_Ok));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.IsReferenceNotEqualTo(obj, obj, nameof(Test_Guard_IsReferenceEqualTo_Ok)));
     }
 
     [TestMethod]
@@ -351,10 +337,9 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsTrue_Fail()
     {
-        Guard.IsTrue(false, nameof(Test_Guard_IsTrue_Fail));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.IsTrue(false, nameof(Test_Guard_IsTrue_Fail)));
     }
 
     [TestMethod]
@@ -411,10 +396,9 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_Guard_IsFalse_Fail()
     {
-        Guard.IsFalse(true, nameof(Test_Guard_IsFalse_Fail));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.IsFalse(true, nameof(Test_Guard_IsFalse_Fail)));
     }
 
     [TestMethod]
@@ -470,17 +454,15 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsLessThan_EqualsFalse()
     {
-        Guard.IsLessThan(1, 1, nameof(Test_Guard_IsLessThan_EqualsFalse));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => Guard.IsLessThan(1, 1, nameof(Test_Guard_IsLessThan_EqualsFalse)));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsLessThan_GreaterFalse()
     {
-        Guard.IsLessThan(2, 1, nameof(Test_Guard_IsLessThan_GreaterFalse));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => Guard.IsLessThan(2, 1, nameof(Test_Guard_IsLessThan_GreaterFalse)));
     }
 
     [TestMethod]
@@ -495,10 +477,9 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsLessThanOrEqualTo_False()
     {
-        Guard.IsLessThanOrEqualTo(2, 1, nameof(Test_Guard_IsLessThanOrEqualTo_False));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => Guard.IsLessThanOrEqualTo(2, 1, nameof(Test_Guard_IsLessThanOrEqualTo_False)));
     }
 
     [TestMethod]
@@ -510,17 +491,15 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsGreaterThan_EqualsFalse()
     {
-        Guard.IsGreaterThan(1, 1, nameof(Test_Guard_IsGreaterThan_EqualsFalse));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => Guard.IsGreaterThan(1, 1, nameof(Test_Guard_IsGreaterThan_EqualsFalse)));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsGreaterThan_LowerFalse()
     {
-        Guard.IsGreaterThan(1, 2, nameof(Test_Guard_IsGreaterThan_LowerFalse));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => Guard.IsGreaterThan(1, 2, nameof(Test_Guard_IsGreaterThan_LowerFalse)));
     }
 
     [TestMethod]
@@ -535,10 +514,9 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsGreaterThanOrEqualTo_False()
     {
-        Guard.IsGreaterThanOrEqualTo(1, 2, nameof(Test_Guard_IsGreaterThanOrEqualTo_False));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => Guard.IsGreaterThanOrEqualTo(1, 2, nameof(Test_Guard_IsGreaterThanOrEqualTo_False)));
     }
 
     [TestMethod]
@@ -555,24 +533,21 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsInRange_LowerFail()
     {
-        Guard.IsInRange(-3, 0, 4, nameof(Test_Guard_IsInRange_LowerFail));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => Guard.IsInRange(-3, 0, 4, nameof(Test_Guard_IsInRange_LowerFail)));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsInRange_EqualFail()
     {
-        Guard.IsInRange(0, 4, 4, nameof(Test_Guard_IsInRange_EqualFail));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => Guard.IsInRange(0, 4, 4, nameof(Test_Guard_IsInRange_EqualFail)));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsInRange_HigherFail()
     {
-        Guard.IsInRange(0, 20, 4, nameof(Test_Guard_IsInRange_HigherFail));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => Guard.IsInRange(0, 20, 4, nameof(Test_Guard_IsInRange_HigherFail)));
     }
 
     [TestMethod]
@@ -585,17 +560,15 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsNotInRange_LowerEqualFail()
     {
-        Guard.IsNotInRange(0, 0, 4, nameof(Test_Guard_IsNotInRange_LowerEqualFail));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => Guard.IsNotInRange(0, 0, 4, nameof(Test_Guard_IsNotInRange_LowerEqualFail)));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsNotInRange_InnerFail()
     {
-        Guard.IsNotInRange(2, 0, 4, nameof(Test_Guard_IsNotInRange_InnerFail));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => Guard.IsNotInRange(2, 0, 4, nameof(Test_Guard_IsNotInRange_InnerFail)));
     }
 
     [TestMethod]
@@ -609,30 +582,36 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsInRangeFor_LowerFail()
     {
-        Span<int> span = stackalloc int[10];
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            Span<int> span = stackalloc int[10];
 
-        Guard.IsInRangeFor(-2, span, nameof(Test_Guard_IsInRangeFor_LowerFail));
+            Guard.IsInRangeFor(-2, span, nameof(Test_Guard_IsInRangeFor_LowerFail));
+        });
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsInRangeFor_EqualFail()
     {
-        Span<int> span = stackalloc int[10];
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            Span<int> span = stackalloc int[10];
 
-        Guard.IsInRangeFor(10, span, nameof(Test_Guard_IsInRangeFor_EqualFail));
+            Guard.IsInRangeFor(10, span, nameof(Test_Guard_IsInRangeFor_EqualFail));
+        });
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsInRangeFor_HigherFail()
     {
-        Span<int> span = stackalloc int[10];
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            Span<int> span = stackalloc int[10];
 
-        Guard.IsInRangeFor(99, span, nameof(Test_Guard_IsInRangeFor_HigherFail));
+            Guard.IsInRangeFor(99, span, nameof(Test_Guard_IsInRangeFor_HigherFail));
+        });
     }
 
     [TestMethod]
@@ -646,21 +625,25 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsNotInRangeFor_LowerFail()
     {
-        Span<int> span = stackalloc int[10];
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            Span<int> span = stackalloc int[10];
 
-        Guard.IsNotInRangeFor(0, span, nameof(Test_Guard_IsNotInRangeFor_LowerFail));
+            Guard.IsNotInRangeFor(0, span, nameof(Test_Guard_IsNotInRangeFor_LowerFail));
+        });
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsNotInRangeFor_MiddleFail()
     {
-        Span<int> span = stackalloc int[10];
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            Span<int> span = stackalloc int[10];
 
-        Guard.IsNotInRangeFor(6, span, nameof(Test_Guard_IsNotInRangeFor_MiddleFail));
+            Guard.IsNotInRangeFor(6, span, nameof(Test_Guard_IsNotInRangeFor_MiddleFail));
+        });
     }
 
     [TestMethod]
@@ -672,24 +655,21 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsBetween_LowerFail()
     {
-        Guard.IsBetween(-1, 0, 4, nameof(Test_Guard_IsBetween_LowerFail));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => Guard.IsBetween(-1, 0, 4, nameof(Test_Guard_IsBetween_LowerFail)));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsBetween_EqualFail()
     {
-        Guard.IsBetween(0, 0, 4, nameof(Test_Guard_IsBetween_EqualFail));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => Guard.IsBetween(0, 0, 4, nameof(Test_Guard_IsBetween_EqualFail)));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsBetween_HigherFail()
     {
-        Guard.IsBetween(6, 0, 4, nameof(Test_Guard_IsBetween_HigherFail));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => Guard.IsBetween(6, 0, 4, nameof(Test_Guard_IsBetween_HigherFail)));
     }
 
     [TestMethod]
@@ -701,10 +681,9 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsNotBetween_Fail()
     {
-        Guard.IsNotBetween(1, 0, 4, nameof(Test_Guard_IsNotBetween_Fail));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => Guard.IsNotBetween(1, 0, 4, nameof(Test_Guard_IsNotBetween_Fail)));
     }
 
     [TestMethod]
@@ -716,17 +695,15 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsBetweenOrEqualTo_LowerFail()
     {
-        Guard.IsBetweenOrEqualTo(-1, 0, 4, nameof(Test_Guard_IsBetweenOrEqualTo_LowerFail));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => Guard.IsBetweenOrEqualTo(-1, 0, 4, nameof(Test_Guard_IsBetweenOrEqualTo_LowerFail)));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsBetweenOrEqualTo_HigherFail()
     {
-        Guard.IsBetweenOrEqualTo(6, 0, 4, nameof(Test_Guard_IsBetweenOrEqualTo_HigherFail));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => Guard.IsBetweenOrEqualTo(6, 0, 4, nameof(Test_Guard_IsBetweenOrEqualTo_HigherFail)));
     }
 
     [TestMethod]
@@ -737,10 +714,9 @@ public partial class Test_Guard
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_Guard_IsNotBetweenOrEqualTo_Fail()
     {
-        Guard.IsNotBetweenOrEqualTo(3, 0, 4, nameof(Test_Guard_IsNotBetweenOrEqualTo_Fail));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => Guard.IsNotBetweenOrEqualTo(3, 0, 4, nameof(Test_Guard_IsNotBetweenOrEqualTo_Fail)));
     }
 
     [TestCategory("Guard")]
