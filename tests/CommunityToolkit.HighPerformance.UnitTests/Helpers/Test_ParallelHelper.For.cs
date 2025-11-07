@@ -40,17 +40,15 @@ public partial class Test_ParallelHelper
 
 #if NET6_0_OR_GREATER
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_ParallelHelper_ForInvalidRange_FromEnd()
     {
-        ParallelHelper.For<Assigner>(..^1);
+        _ = Assert.ThrowsExactly<ArgumentException>(() => ParallelHelper.For<Assigner>(..^1));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_ParallelHelper_ForInvalidRange_RangeAll()
     {
-        ParallelHelper.For<Assigner>(..);
+        _ = Assert.ThrowsExactly<ArgumentException>(() => ParallelHelper.For<Assigner>(..));
     }
 
     [TestMethod]

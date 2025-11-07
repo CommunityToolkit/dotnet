@@ -417,14 +417,16 @@ public class Test_ReadOnlySpan2DT
     }
 
     [TestMethod]
-    [ExpectedException(typeof(IndexOutOfRangeException))]
     public unsafe void Test_ReadOnlySpan2DT_Index_Indexer_Fail()
     {
         int[,] array = new int[4, 4];
 
-        ReadOnlySpan2D<int> span2d = new(array);
+        _ = Assert.ThrowsExactly<IndexOutOfRangeException>(() =>
+        {
+            ReadOnlySpan2D<int> span2d = new(array);
 
-        ref readonly int span2dRef = ref span2d[^6, 2];
+            ref readonly int span2dRef = ref span2d[^6, 2];
+        });
     }
 
     [TestMethod]
@@ -454,15 +456,16 @@ public class Test_ReadOnlySpan2DT
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public unsafe void Test_ReadOnlySpan2DT_Range_Indexer_Fail()
     {
         int[,] array = new int[4, 4];
 
-        ReadOnlySpan2D<int> span2d = new(array);
-        _ = span2d[0..6, 2..^1];
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            ReadOnlySpan2D<int> span2d = new(array);
 
-        Assert.Fail();
+            _ = span2d[0..6, 2..^1];
+        });
     }
 #endif
 
@@ -690,7 +693,6 @@ public class Test_ReadOnlySpan2DT
     }
 
     [TestMethod]
-    [ExpectedException(typeof(NotSupportedException))]
     public void Test_ReadOnlySpan2DT_Equals()
     {
         int[,] array =
@@ -699,13 +701,15 @@ public class Test_ReadOnlySpan2DT
             { 4, 5, 6 }
         };
 
-        ReadOnlySpan2D<int> span2d = new(array);
+        _ = Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            ReadOnlySpan2D<int> span2d = new(array);
 
-        _ = span2d.Equals(null);
+            _ = span2d.Equals(null);
+        });
     }
 
     [TestMethod]
-    [ExpectedException(typeof(NotSupportedException))]
     public void Test_ReadOnlySpan2DT_GetHashCode()
     {
         int[,] array =
@@ -714,9 +718,12 @@ public class Test_ReadOnlySpan2DT
             { 4, 5, 6 }
         };
 
-        ReadOnlySpan2D<int> span2d = new(array);
+        _ = Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            ReadOnlySpan2D<int> span2d = new(array);
 
-        _ = span2d.GetHashCode();
+            _ = span2d.GetHashCode();
+        });
     }
 
     [TestMethod]

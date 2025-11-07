@@ -34,12 +34,14 @@ public class Test_NullableReadOnlyRefOfT
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))]
     public void Test_NullableReadOnlyRefOfT_CreateNullableReadOnlyRefOfT_Null_Exception()
     {
-        NullableReadOnlyRef<int> reference = default;
+        _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            NullableReadOnlyRef<int> reference = default;
 
-        _ = reference.Value;
+            _ = reference.Value;
+        });
     }
 
     [TestMethod]
@@ -85,12 +87,14 @@ public class Test_NullableReadOnlyRefOfT
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))]
     public void Test_NullableReadOnlyRefOfT_CreateNullableReadOnlyRefOfT_ExplicitCastOfT_Exception()
     {
-        NullableRef<int> invalid = default;
+        _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            NullableRef<int> invalid = default;
 
-        _ = (int)invalid;
+            _ = (int)invalid;
+        });
     }
 }
 

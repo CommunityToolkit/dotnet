@@ -47,12 +47,12 @@ public class Test_SpanOwnerOfT
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_SpanOwnerOfT_InvalidRequestedSize()
     {
-        using SpanOwner<int> buffer = SpanOwner<int>.Allocate(-1);
-
-        Assert.Fail("You shouldn't be here");
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            using SpanOwner<int> buffer = SpanOwner<int>.Allocate(-1);
+        });
     }
 
     [TestMethod]

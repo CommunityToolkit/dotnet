@@ -574,14 +574,16 @@ public class Test_Span2DT
     }
 
     [TestMethod]
-    [ExpectedException(typeof(IndexOutOfRangeException))]
     public unsafe void Test_Span2DT_Index_Indexer_Fail()
     {
         int[,] array = new int[4, 4];
 
-        Span2D<int> span2d = new(array);
+        _ = Assert.ThrowsExactly<IndexOutOfRangeException>(() =>
+        {
+            Span2D<int> span2d = new(array);
 
-        ref int span2dRef = ref span2d[^6, 2];
+            ref int span2dRef = ref span2d[^6, 2];
+        });
     }
 
     [TestMethod]
@@ -611,15 +613,16 @@ public class Test_Span2DT
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public unsafe void Test_Span2DT_Range_Indexer_Fail()
     {
         int[,] array = new int[4, 4];
 
-        Span2D<int> span2d = new(array);
-        _ = span2d[0..6, 2..^1];
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            Span2D<int> span2d = new(array);
 
-        Assert.Fail();
+            _ = span2d[0..6, 2..^1];
+        });
     }
 #endif
 
@@ -882,7 +885,6 @@ public class Test_Span2DT
     }
 
     [TestMethod]
-    [ExpectedException(typeof(NotSupportedException))]
     public void Test_Span2DT_Equals()
     {
         int[,] array =
@@ -891,14 +893,16 @@ public class Test_Span2DT
             { 4, 5, 6 }
         };
 
-        Span2D<int> span2d = new(array);
-
         // Span2D<T>.Equals always throw (this mirrors the behavior of Span<T>.Equals)
-        _ = span2d.Equals(null);
+        _ = Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            Span2D<int> span2d = new(array);
+
+            _ = span2d.Equals(null);
+        });
     }
 
     [TestMethod]
-    [ExpectedException(typeof(NotSupportedException))]
     public void Test_Span2DT_GetHashCode()
     {
         int[,] array =
@@ -907,10 +911,13 @@ public class Test_Span2DT
             { 4, 5, 6 }
         };
 
-        Span2D<int> span2d = new(array);
-
         // Same as above, this always throws
-        _ = span2d.GetHashCode();
+        _ = Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            Span2D<int> span2d = new(array);
+
+            _ = span2d.GetHashCode();
+        });
     }
 
     [TestMethod]

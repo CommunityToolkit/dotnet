@@ -51,34 +51,32 @@ public class Test_MemoryOwnerOfT
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_MemoryOwnerOfT_InvalidRequestedSize()
     {
-        using MemoryOwner<int>? buffer = MemoryOwner<int>.Allocate(-1);
-
-        Assert.Fail("You shouldn't be here");
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            using MemoryOwner<int>? buffer = MemoryOwner<int>.Allocate(-1);
+        });
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ObjectDisposedException))]
     public void Test_MemoryOwnerOfT_DisposedMemory()
     {
         MemoryOwner<int>? buffer = MemoryOwner<int>.Allocate(127);
 
         buffer.Dispose();
 
-        _ = buffer.Memory;
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() => _ = buffer.Memory);
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ObjectDisposedException))]
     public void Test_MemoryOwnerOfT_DisposedSpan()
     {
         MemoryOwner<int>? buffer = MemoryOwner<int>.Allocate(127);
 
         buffer.Dispose();
 
-        _ = buffer.Span;
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() => _ = buffer.Span);
     }
 
     [TestMethod]

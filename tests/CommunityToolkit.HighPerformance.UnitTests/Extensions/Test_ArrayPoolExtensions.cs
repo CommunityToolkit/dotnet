@@ -14,12 +14,11 @@ namespace CommunityToolkit.HighPerformance.UnitTests.Extensions;
 public class Test_ArrayPoolExtensions
 {
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_ArrayPoolExtensions_Resize_InvalidSize()
     {
         int[]? array = null;
 
-        ArrayPool<int>.Shared.Resize(ref array, -1);
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => ArrayPool<int>.Shared.Resize(ref array, -1));
     }
 
     [TestMethod]
@@ -89,12 +88,11 @@ public class Test_ArrayPoolExtensions
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_ArrayPoolExtensions_EnsureCapacity_InvalidCapacity()
     {
         int[]? array = null;
 
-        ArrayPool<int>.Shared.EnsureCapacity(ref array, -1);
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => ArrayPool<int>.Shared.EnsureCapacity(ref array, -1));
     }
 
     [TestMethod]

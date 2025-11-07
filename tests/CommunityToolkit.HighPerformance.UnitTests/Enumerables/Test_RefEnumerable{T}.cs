@@ -39,10 +39,9 @@ public class Test_RefEnumerable
     [DataRow(-44, 10)]
     [DataRow(10, -14)]
     [DataRow(-32, -1)]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public unsafe void Test_RefEnumerable_DangerousCreate_BelowZero(int length, int step)
     {
-        _ = RefEnumerable<int>.DangerousCreate(ref *(int*)null, length, step);
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => _ = RefEnumerable<int>.DangerousCreate(ref *(int*)null, length, step));
     }
 
     [TestMethod]

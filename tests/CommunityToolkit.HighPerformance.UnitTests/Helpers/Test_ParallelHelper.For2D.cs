@@ -52,17 +52,15 @@ public partial class Test_ParallelHelper
 
 #if NET6_0_OR_GREATER
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_ParallelHelper_For2DInvalidRange_FromEnd()
     {
-        ParallelHelper.For2D<Assigner2D>(..^1, ..4);
+        _ = Assert.ThrowsExactly<ArgumentException>(() => ParallelHelper.For2D<Assigner2D>(..^1, ..4));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Test_ParallelHelper_For2DInvalidRange_RangeAll()
     {
-        ParallelHelper.For2D<Assigner2D>(..5, ..);
+        _ = Assert.ThrowsExactly<ArgumentException>(() => ParallelHelper.For2D<Assigner2D>(..5, ..));
     }
 
     [TestMethod]
