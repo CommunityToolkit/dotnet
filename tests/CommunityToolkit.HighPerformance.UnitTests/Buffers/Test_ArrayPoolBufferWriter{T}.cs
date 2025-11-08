@@ -78,18 +78,18 @@ public class Test_ArrayPoolBufferWriterOfT
         Assert.AreEqual(writer.WrittenMemory.Length, 43);
         Assert.AreEqual(writer.WrittenSpan.Length, 43);
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => writer.Advance(-1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => writer.GetMemory(-1));
-        _ = Assert.ThrowsException<ArgumentException>(() => writer.Advance(1024));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => writer.Advance(-1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => writer.GetMemory(-1));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => writer.Advance(1024));
 
         writer.Dispose();
 
-        _ = Assert.ThrowsException<ObjectDisposedException>(() => writer.WrittenMemory);
-        _ = Assert.ThrowsException<ObjectDisposedException>(() => writer.WrittenSpan.Length);
-        _ = Assert.ThrowsException<ObjectDisposedException>(() => writer.Capacity);
-        _ = Assert.ThrowsException<ObjectDisposedException>(() => writer.FreeCapacity);
-        _ = Assert.ThrowsException<ObjectDisposedException>(() => writer.Clear());
-        _ = Assert.ThrowsException<ObjectDisposedException>(() => writer.Advance(1));
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() => writer.WrittenMemory);
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() => writer.WrittenSpan.Length);
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() => writer.Capacity);
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() => writer.FreeCapacity);
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() => writer.Clear());
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() => writer.Advance(1));
     }
 
     [TestMethod]
@@ -119,30 +119,27 @@ public class Test_ArrayPoolBufferWriterOfT
             Assert.AreEqual(writer.WrittenMemory.Length, 43);
             Assert.AreEqual(writer.WrittenSpan.Length, 43);
 
-            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => writer.Advance(-1));
-            _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => writer.GetMemory(-1));
-            _ = Assert.ThrowsException<ArgumentException>(() => writer.Advance(1024));
+            _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => writer.Advance(-1));
+            _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => writer.GetMemory(-1));
+            _ = Assert.ThrowsExactly<ArgumentException>(() => writer.Advance(1024));
 
             writer.Dispose();
 
-            _ = Assert.ThrowsException<ObjectDisposedException>(() => writer.WrittenMemory);
-            _ = Assert.ThrowsException<ObjectDisposedException>(() => writer.WrittenSpan.Length);
-            _ = Assert.ThrowsException<ObjectDisposedException>(() => writer.Capacity);
-            _ = Assert.ThrowsException<ObjectDisposedException>(() => writer.FreeCapacity);
-            _ = Assert.ThrowsException<ObjectDisposedException>(() => writer.Clear());
-            _ = Assert.ThrowsException<ObjectDisposedException>(() => writer.Advance(1));
+            _ = Assert.ThrowsExactly<ObjectDisposedException>(() => writer.WrittenMemory);
+            _ = Assert.ThrowsExactly<ObjectDisposedException>(() => writer.WrittenSpan.Length);
+            _ = Assert.ThrowsExactly<ObjectDisposedException>(() => writer.Capacity);
+            _ = Assert.ThrowsExactly<ObjectDisposedException>(() => writer.FreeCapacity);
+            _ = Assert.ThrowsExactly<ObjectDisposedException>(() => writer.Clear());
+            _ = Assert.ThrowsExactly<ObjectDisposedException>(() => writer.Advance(1));
         }
 
         Assert.AreEqual(pool.RentedArrays.Count, 0);
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_ArrayPoolBufferWriterOfT_InvalidRequestedSize()
     {
-        _ = new ArrayPoolBufferWriter<byte>(-1);
-
-        Assert.Fail("You shouldn't be here");
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ArrayPoolBufferWriter<byte>(-1));
     }
 
     [TestMethod]
@@ -218,7 +215,7 @@ public class Test_ArrayPoolBufferWriterOfT
         writer.Dispose();
 
         // Now check that the writer is actually disposed instead
-        _ = Assert.ThrowsException<ObjectDisposedException>(() => writer.Capacity);
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() => writer.Capacity);
     }
 
     [TestMethod]
@@ -244,6 +241,6 @@ public class Test_ArrayPoolBufferWriterOfT
 
         bufferWriter.Dispose();
 
-        _ = Assert.ThrowsException<ObjectDisposedException>(() => bufferWriter.DangerousGetArray());
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() => bufferWriter.DangerousGetArray());
     }
 }

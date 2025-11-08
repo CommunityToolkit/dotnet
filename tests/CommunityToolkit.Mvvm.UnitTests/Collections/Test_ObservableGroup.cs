@@ -118,39 +118,34 @@ public class Test_ObservableGroup
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void Test_ObservableGroup_Ctor_NullKey()
     {
-        _ = new ObservableGroup<string, int>((string)null!);
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() => _ = new ObservableGroup<string, int>((string)null!));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void Test_ObservableGroup_Ctor_NullGroup()
     {
-        _ = new ObservableGroup<string, int>((IGrouping<string, int>)null!);
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() => _ = new ObservableGroup<string, int>((IGrouping<string, int>)null!));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void Test_ObservableGroup_Ctor_NullKeyWithNotNullElements()
     {
-        _ = new ObservableGroup<string, int>(null!, new int[0]);
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() => _ = new ObservableGroup<string, int>(null!, []));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void Test_ObservableGroup_Ctor_NotNullKeyWithNullElements()
     {
-        _ = new ObservableGroup<string, int>("A", null!);
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() => _ = new ObservableGroup<string, int>("A", null!));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void Test_ObservableGroup_Ctor_NullKeySetter()
     {
         ObservableGroup<string, int> group = new("A");
 
-        group.Key = null!;
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() => group.Key = null!);
     }
 }

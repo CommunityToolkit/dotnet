@@ -27,6 +27,6 @@ public class Test_IMemoryOwnerStream
 
         stream.Dispose();
 
-        _ = Assert.ThrowsException<ObjectDisposedException>(() => buffer.Memory);
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() => buffer.Memory);
     }
 }

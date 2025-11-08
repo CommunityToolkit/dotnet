@@ -80,23 +80,20 @@ partial class Test_Messenger
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void Test_Messenger_CreateObservable_NullMessenger()
     {
-        _ = IMessengerExtensions.CreateObservable<MessageA>(null!);
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() => _ = IMessengerExtensions.CreateObservable<MessageA>(null!));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void Test_Messenger_CreateObservable_WithToken_NullMessenger()
     {
-        _ = IMessengerExtensions.CreateObservable<MessageA, string>(null!, "Hello");
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() => _ = IMessengerExtensions.CreateObservable<MessageA, string>(null!, "Hello"));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void Test_Messenger_CreateObservable_WithToken_NullToken()
     {
-        _ = IMessengerExtensions.CreateObservable<MessageA, string>(new WeakReferenceMessenger(), null!);
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() => _ = IMessengerExtensions.CreateObservable<MessageA, string>(new WeakReferenceMessenger(), null!));
     }
 }

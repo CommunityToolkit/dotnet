@@ -51,34 +51,32 @@ public class Test_MemoryOwnerOfT
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Test_MemoryOwnerOfT_InvalidRequestedSize()
     {
-        using MemoryOwner<int>? buffer = MemoryOwner<int>.Allocate(-1);
-
-        Assert.Fail("You shouldn't be here");
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            using MemoryOwner<int>? buffer = MemoryOwner<int>.Allocate(-1);
+        });
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ObjectDisposedException))]
     public void Test_MemoryOwnerOfT_DisposedMemory()
     {
         MemoryOwner<int>? buffer = MemoryOwner<int>.Allocate(127);
 
         buffer.Dispose();
 
-        _ = buffer.Memory;
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() => _ = buffer.Memory);
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ObjectDisposedException))]
     public void Test_MemoryOwnerOfT_DisposedSpan()
     {
         MemoryOwner<int>? buffer = MemoryOwner<int>.Allocate(127);
 
         buffer.Dispose();
 
-        _ = buffer.Span;
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() => _ = buffer.Span);
     }
 
     [TestMethod]
@@ -138,7 +136,7 @@ public class Test_MemoryOwnerOfT
         // The original buffer instance is disposed here, because calling Slice transfers
         // the ownership of the internal buffer to the new instance (this is documented in
         // XML docs for the MemoryOwner<T>.Slice method).
-        _ = Assert.ThrowsException<ObjectDisposedException>(() => buffer.DangerousGetArray());
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() => buffer.DangerousGetArray());
 
         segment = second.DangerousGetArray();
 
@@ -150,6 +148,6 @@ public class Test_MemoryOwnerOfT
 
         second.Dispose();
 
-        _ = Assert.ThrowsException<ObjectDisposedException>(() => second.DangerousGetArray());
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() => second.DangerousGetArray());
     }
 }

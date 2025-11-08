@@ -32,7 +32,7 @@ public class Test_Dictionary2
             Assert.IsNull(obj);
             Assert.IsFalse(dictionary.TryRemove(key));
 
-            _ = Assert.ThrowsException<ArgumentException>(() => _ = dictionary[key]);
+            _ = Assert.ThrowsExactly<ArgumentException>(() => _ = dictionary[key]);
 
             // This should create a new entry
             ref object? value = ref dictionary.GetOrAddValueRef(key);

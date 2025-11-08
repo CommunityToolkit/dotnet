@@ -110,12 +110,12 @@ public class Test_ReadOnlyObservableGroupedCollection
 
         ReadOnlyObservableGroup<string, int>? testGroup = new("test", new ObservableCollection<int>());
 
-        _ = Assert.ThrowsException<NotSupportedException>(() => list.Add(testGroup));
-        _ = Assert.ThrowsException<NotSupportedException>(() => list.Clear());
-        _ = Assert.ThrowsException<NotSupportedException>(() => list.Insert(2, testGroup));
-        _ = Assert.ThrowsException<NotSupportedException>(() => list.Remove(testGroup));
-        _ = Assert.ThrowsException<NotSupportedException>(() => list.RemoveAt(2));
-        _ = Assert.ThrowsException<NotSupportedException>(() => list[2] = testGroup);
+        _ = Assert.ThrowsExactly<NotSupportedException>(() => list.Add(testGroup));
+        _ = Assert.ThrowsExactly<NotSupportedException>(() => list.Clear());
+        _ = Assert.ThrowsExactly<NotSupportedException>(() => list.Insert(2, testGroup));
+        _ = Assert.ThrowsExactly<NotSupportedException>(() => list.Remove(testGroup));
+        _ = Assert.ThrowsExactly<NotSupportedException>(() => list.RemoveAt(2));
+        _ = Assert.ThrowsExactly<NotSupportedException>(() => list[2] = testGroup);
 
         object[]? array = new object[5];
 
@@ -470,16 +470,14 @@ public class Test_ReadOnlyObservableGroupedCollection
     private static bool IsResetEventValid(NotifyCollectionChangedEventArgs args) => args.Action == NotifyCollectionChangedAction.Reset && args.NewItems == null && args.OldItems == null;
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void Test_ReadOnlyObservableGroupedCollection_Ctor_NullCollectionWithObservableGroups()
     {
-        _ = new ReadOnlyObservableGroupedCollection<string, int>((ObservableCollection<ObservableGroup<string, int>>)null!);
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() => _ = new ReadOnlyObservableGroupedCollection<string, int>((ObservableCollection<ObservableGroup<string, int>>)null!));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void Test_ReadOnlyObservableGroupedCollection_Ctor_NullCollectionWithReadOnlyObservableGroups()
     {
-        _ = new ReadOnlyObservableGroupedCollection<string, int>((ObservableCollection<ReadOnlyObservableGroup<string, int>>)null!);
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() => _ = new ReadOnlyObservableGroupedCollection<string, int>((ObservableCollection<ReadOnlyObservableGroup<string, int>>)null!));
     }
 }

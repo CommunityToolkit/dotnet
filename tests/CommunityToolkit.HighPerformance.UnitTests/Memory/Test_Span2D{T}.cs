@@ -77,9 +77,9 @@ public class Test_Span2DT
         Assert.AreEqual(span[5], 101);
 
         // A few cases with invalid indices
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => Span2D<int>.DangerousCreate(ref Unsafe.AsRef<int>(null), -1, 0, 0));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => Span2D<int>.DangerousCreate(ref Unsafe.AsRef<int>(null), 1, -2, 0));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => Span2D<int>.DangerousCreate(ref Unsafe.AsRef<int>(null), 1, 0, -5));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => Span2D<int>.DangerousCreate(ref Unsafe.AsRef<int>(null), -1, 0, 0));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => Span2D<int>.DangerousCreate(ref Unsafe.AsRef<int>(null), 1, -2, 0));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => Span2D<int>.DangerousCreate(ref Unsafe.AsRef<int>(null), 1, 0, -5));
     }
 #endif
 
@@ -110,10 +110,10 @@ public class Test_Span2DT
         Assert.AreEqual(ptr[0], 99);
         Assert.AreEqual(ptr[5], 101);
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>((void*)0, -1, 0, 0));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>((void*)0, 1, -2, 0));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>((void*)0, 1, 0, -5));
-        _ = Assert.ThrowsException<ArgumentException>(() => new Span2D<string>((void*)0, 2, 2, 0));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>((void*)0, -1, 0, 0));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>((void*)0, 1, -2, 0));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>((void*)0, 1, 0, -5));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => new Span2D<string>((void*)0, 2, 2, 0));
     }
 
     [TestMethod]
@@ -140,12 +140,12 @@ public class Test_Span2DT
 
         // The first check fails due to the array covariance test mentioned in the Memory2D<T> tests.
         // The others just validate a number of cases with invalid arguments (eg. out of range).
-        _ = Assert.ThrowsException<ArrayTypeMismatchException>(() => new Span2D<object>(new string[1], 1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, -99, 1, 1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 0, -10, 1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 0, 1, 1, -1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 0, 1, -100, 1));
-        _ = Assert.ThrowsException<ArgumentException>(() => new Span2D<int>(array, 0, 10, 1, 120));
+        _ = Assert.ThrowsExactly<ArrayTypeMismatchException>(() => new Span2D<object>(new string[1], 1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array, -99, 1, 1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 0, -10, 1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 0, 1, 1, -1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 0, 1, -100, 1));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => new Span2D<int>(array, 0, 10, 1, 120));
     }
 
     [TestMethod]
@@ -171,7 +171,7 @@ public class Test_Span2DT
         Assert.AreEqual(array[0, 1], 99);
         Assert.AreEqual(array[1, 2], 101);
 
-        _ = Assert.ThrowsException<ArrayTypeMismatchException>(() => new Span2D<object>(new string[1, 2]));
+        _ = Assert.ThrowsExactly<ArrayTypeMismatchException>(() => new Span2D<object>(new string[1, 2]));
     }
 
     [TestMethod]
@@ -197,7 +197,7 @@ public class Test_Span2DT
         Assert.AreEqual(array[0, 1], 99);
         Assert.AreEqual(array[1, 2], 101);
 
-        _ = Assert.ThrowsException<ArrayTypeMismatchException>(() => new Span2D<object>(new string[1, 2], 0, 0, 2, 2));
+        _ = Assert.ThrowsExactly<ArrayTypeMismatchException>(() => new Span2D<object>(new string[1, 2], 0, 0, 2, 2));
     }
 
     [TestMethod]
@@ -230,8 +230,8 @@ public class Test_Span2DT
         Assert.AreEqual(array[1, 0, 1], 99);
         Assert.AreEqual(array[1, 1, 2], 101);
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, -1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 20));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array, -1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 20));
     }
 
     [TestMethod]
@@ -264,11 +264,11 @@ public class Test_Span2DT
         Assert.AreEqual(array[1, 0, 2], 99);
         Assert.AreEqual(array[1, 1, 2], 101);
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, -1, 1, 1, 1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 1, -1, 1, 1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 1, 1, -1, 1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 1, 1, 1, -1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 1, 1, 1, 1, -1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array, -1, 1, 1, 1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 1, -1, 1, 1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 1, 1, -1, 1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 1, 1, 1, -1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 1, 1, 1, 1, -1));
     }
 
     [TestMethod]
@@ -379,7 +379,7 @@ public class Test_Span2DT
         CollectionAssert.AreEqual(array, target);
 
         // Exception due to the target span being too small for the source Span2D<T> instance
-        _ = Assert.ThrowsException<ArgumentException>(() => new Span2D<int>(array).CopyTo(Span<int>.Empty));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => new Span2D<int>(array).CopyTo(Span<int>.Empty));
     }
 
     [TestMethod]
@@ -402,8 +402,8 @@ public class Test_Span2DT
 
         CollectionAssert.AreEqual(target, expected);
 
-        _ = Assert.ThrowsException<ArgumentException>(() => new Span2D<int>(array).CopyTo(Span<int>.Empty));
-        _ = Assert.ThrowsException<ArgumentException>(() => new Span2D<int>(array, 0, 1, 2, 2).CopyTo(Span<int>.Empty));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => new Span2D<int>(array).CopyTo(Span<int>.Empty));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => new Span2D<int>(array, 0, 1, 2, 2).CopyTo(Span<int>.Empty));
     }
 
     [TestMethod]
@@ -425,7 +425,7 @@ public class Test_Span2DT
 
         CollectionAssert.AreEqual(array, target);
 
-        _ = Assert.ThrowsException<ArgumentException>(() => new Span2D<int>(array).CopyTo(Span2D<int>.Empty));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => new Span2D<int>(array).CopyTo(Span2D<int>.Empty));
     }
 
     [TestMethod]
@@ -452,7 +452,7 @@ public class Test_Span2DT
 
         CollectionAssert.AreEqual(target, expected);
 
-        _ = Assert.ThrowsException<ArgumentException>(() => new Span2D<int>(array).CopyTo(new Span2D<int>(target)));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => new Span2D<int>(array).CopyTo(new Span2D<int>(target)));
     }
 
     [TestMethod]
@@ -574,14 +574,16 @@ public class Test_Span2DT
     }
 
     [TestMethod]
-    [ExpectedException(typeof(IndexOutOfRangeException))]
     public unsafe void Test_Span2DT_Index_Indexer_Fail()
     {
         int[,] array = new int[4, 4];
 
-        Span2D<int> span2d = new(array);
+        _ = Assert.ThrowsExactly<IndexOutOfRangeException>(() =>
+        {
+            Span2D<int> span2d = new(array);
 
-        ref int span2dRef = ref span2d[^6, 2];
+            ref int span2dRef = ref span2d[^6, 2];
+        });
     }
 
     [TestMethod]
@@ -611,15 +613,16 @@ public class Test_Span2DT
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public unsafe void Test_Span2DT_Range_Indexer_Fail()
     {
         int[,] array = new int[4, 4];
 
-        Span2D<int> span2d = new(array);
-        _ = span2d[0..6, 2..^1];
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            Span2D<int> span2d = new(array);
 
-        Assert.Fail();
+            _ = span2d[0..6, 2..^1];
+        });
     }
 #endif
 
@@ -655,13 +658,13 @@ public class Test_Span2DT
         Assert.AreEqual(slice2[1, 1], 6);
 
         // Some checks for invalid arguments
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).Slice(-1, 1, 1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).Slice(1, -1, 1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).Slice(1, 1, 1, -1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).Slice(1, 1, -1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).Slice(10, 1, 1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).Slice(1, 12, 1, 12));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).Slice(1, 1, 55, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array).Slice(-1, 1, 1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array).Slice(1, -1, 1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array).Slice(1, 1, 1, -1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array).Slice(1, 1, -1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array).Slice(10, 1, 1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array).Slice(1, 12, 1, 12));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array).Slice(1, 1, 55, 1));
     }
 
     [TestMethod]
@@ -727,8 +730,8 @@ public class Test_Span2DT
             ref span[2],
             ref array[1, 2]));
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetRowSpan(-1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetRowSpan(5));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetRowSpan(-1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetRowSpan(5));
     }
 #endif
 
@@ -882,7 +885,6 @@ public class Test_Span2DT
     }
 
     [TestMethod]
-    [ExpectedException(typeof(NotSupportedException))]
     public void Test_Span2DT_Equals()
     {
         int[,] array =
@@ -891,14 +893,16 @@ public class Test_Span2DT
             { 4, 5, 6 }
         };
 
-        Span2D<int> span2d = new(array);
-
         // Span2D<T>.Equals always throw (this mirrors the behavior of Span<T>.Equals)
-        _ = span2d.Equals(null);
+        _ = Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            Span2D<int> span2d = new(array);
+
+            _ = span2d.Equals(null);
+        });
     }
 
     [TestMethod]
-    [ExpectedException(typeof(NotSupportedException))]
     public void Test_Span2DT_GetHashCode()
     {
         int[,] array =
@@ -907,10 +911,13 @@ public class Test_Span2DT
             { 4, 5, 6 }
         };
 
-        Span2D<int> span2d = new(array);
-
         // Same as above, this always throws
-        _ = span2d.GetHashCode();
+        _ = Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            Span2D<int> span2d = new(array);
+
+            _ = span2d.GetHashCode();
+        });
     }
 
     [TestMethod]
@@ -990,9 +997,9 @@ public class Test_Span2DT
 
         CollectionAssert.AreEqual(enumerable.ToArray(), expected);
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetRow(-1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetRow(2));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetRow(1000));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetRow(-1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetRow(2));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetRow(1000));
     }
 
     [TestMethod]
@@ -1015,9 +1022,9 @@ public class Test_Span2DT
 
         CollectionAssert.AreEqual(enumerable.ToArray(), expected);
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 2, 3, 0).GetRow(-1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 2, 3, 0).GetRow(2));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 2, 3, 0).GetRow(1000));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 2, 3, 0).GetRow(-1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 2, 3, 0).GetRow(2));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 2, 3, 0).GetRow(1000));
     }
 
     [TestMethod]
@@ -1036,9 +1043,9 @@ public class Test_Span2DT
 
         CollectionAssert.AreEqual(enumerable.ToArray(), expected);
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetColumn(-1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetColumn(3));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetColumn(1000));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetColumn(-1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetColumn(3));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array).GetColumn(1000));
     }
 
     [TestMethod]
@@ -1061,9 +1068,9 @@ public class Test_Span2DT
 
         CollectionAssert.AreEqual(enumerable.ToArray(), expected);
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 2, 3, 0).GetColumn(-1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 2, 3, 0).GetColumn(3));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 2, 3, 0).GetColumn(1000));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 2, 3, 0).GetColumn(-1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 2, 3, 0).GetColumn(3));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Span2D<int>(array, 2, 3, 0).GetColumn(1000));
     }
 
     [TestMethod]

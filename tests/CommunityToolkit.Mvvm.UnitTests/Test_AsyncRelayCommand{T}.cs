@@ -341,7 +341,7 @@ public class Test_AsyncRelayCommandOfT
             executeException = e;
         }
 
-        executeAsyncException = await Assert.ThrowsExceptionAsync<Exception>(() => command.ExecuteAsync((object)delay));
+        executeAsyncException = await Assert.ThrowsExactlyAsync<Exception>(() => command.ExecuteAsync((object)delay));
 
         Assert.AreEqual(nameof(Test_AsyncRelayCommandOfT_EnsureExceptionThrown), executeException?.Message);
         Assert.AreEqual(nameof(Test_AsyncRelayCommandOfT_EnsureExceptionThrown), executeAsyncException?.Message);
@@ -376,7 +376,7 @@ public class Test_AsyncRelayCommandOfT
             executeTException = e;
         }
 
-        executeAsyncException = await Assert.ThrowsExceptionAsync<Exception>(() => command.ExecuteAsync(delay));
+        executeAsyncException = await Assert.ThrowsExactlyAsync<Exception>(() => command.ExecuteAsync(delay));
 
         Assert.AreEqual(nameof(Test_AsyncRelayCommandOfT_EnsureExceptionThrown_GenericExecute), executeTException?.Message);
         Assert.AreEqual(nameof(Test_AsyncRelayCommandOfT_EnsureExceptionThrown_GenericExecute), executeAsyncException?.Message);

@@ -66,15 +66,15 @@ public class Test_Memory2DT
 
         // Also ensure the right exceptions are thrown with invalid parameters, such as
         // negative indices, indices out of range, values that are too big, etc.
-        _ = Assert.ThrowsException<ArrayTypeMismatchException>(() => new Memory2D<object>(new string[1], 1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, -99, 1, 1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 0, -10, 1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 0, 1, 1, -1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 0, 1, -100, 1));
-        _ = Assert.ThrowsException<ArgumentException>(() => new Memory2D<int>(array, 0, 2, 4, 0));
-        _ = Assert.ThrowsException<ArgumentException>(() => new Memory2D<int>(array, 0, 3, 3, 0));
-        _ = Assert.ThrowsException<ArgumentException>(() => new Memory2D<int>(array, 1, 2, 3, 0));
-        _ = Assert.ThrowsException<ArgumentException>(() => new Memory2D<int>(array, 0, 10, 1, 120));
+        _ = Assert.ThrowsExactly<ArrayTypeMismatchException>(() => new Memory2D<object>(new string[1], 1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, -99, 1, 1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 0, -10, 1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 0, 1, 1, -1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 0, 1, -100, 1));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => new Memory2D<int>(array, 0, 2, 4, 0));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => new Memory2D<int>(array, 0, 3, 3, 0));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => new Memory2D<int>(array, 1, 2, 3, 0));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => new Memory2D<int>(array, 0, 10, 1, 120));
     }
 
     [TestMethod]
@@ -98,7 +98,7 @@ public class Test_Memory2DT
 
         // Here we test the check for covariance: we can't create a Memory2D<T> from a U[,] array
         // where U is assignable to T (as in, U : T). This would cause a type safety violation on write.
-        _ = Assert.ThrowsException<ArrayTypeMismatchException>(() => new Memory2D<object>(new string[1, 2]));
+        _ = Assert.ThrowsExactly<ArrayTypeMismatchException>(() => new Memory2D<object>(new string[1, 2]));
     }
 
     [TestMethod]
@@ -120,7 +120,7 @@ public class Test_Memory2DT
         Assert.AreEqual(memory2d.Span[0, 0], 2);
         Assert.AreEqual(memory2d.Span[1, 1], 6);
 
-        _ = Assert.ThrowsException<ArrayTypeMismatchException>(() => new Memory2D<object>(new string[1, 2], 0, 0, 2, 2));
+        _ = Assert.ThrowsExactly<ArrayTypeMismatchException>(() => new Memory2D<object>(new string[1, 2], 0, 0, 2, 2));
     }
 
     [TestMethod]
@@ -149,9 +149,9 @@ public class Test_Memory2DT
         Assert.AreEqual(memory2d.Span[1, 2], 60);
 
         // A couple of tests for invalid parameters, ie. layers out of range
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, -1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 2));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 20));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, -1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 2));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 20));
     }
 
     [TestMethod]
@@ -183,15 +183,15 @@ public class Test_Memory2DT
         Assert.AreEqual(memory2d.Span[1, 1], 60);
 
         // Same as above, testing a few cases with invalid parameters
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, -1, 1, 1, 1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 1, -1, 1, 1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 1, 1, -1, 1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 1, 1, 1, -1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 1, 1, 1, 1, -1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 2, 0, 0, 2, 3));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 0, 0, 1, 2, 3));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 0, 0, 0, 2, 4));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 0, 0, 0, 3, 3));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, -1, 1, 1, 1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 1, -1, 1, 1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 1, 1, -1, 1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 1, 1, 1, -1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 1, 1, 1, 1, -1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 2, 0, 0, 2, 3));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 0, 0, 1, 2, 3));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 0, 0, 0, 2, 4));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, 0, 0, 0, 3, 3));
     }
 
 #if NET6_0_OR_GREATER
@@ -216,14 +216,14 @@ public class Test_Memory2DT
         Assert.AreEqual(memory2d.Span[0, 0], 2);
         Assert.AreEqual(memory2d.Span[1, 1], 6);
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => memory.AsMemory2D(-99, 1, 1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => memory.AsMemory2D(0, -10, 1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => memory.AsMemory2D(0, 1, 1, -1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => memory.AsMemory2D(0, 1, -100, 1));
-        _ = Assert.ThrowsException<ArgumentException>(() => memory.AsMemory2D(0, 2, 4, 0));
-        _ = Assert.ThrowsException<ArgumentException>(() => memory.AsMemory2D(0, 3, 3, 0));
-        _ = Assert.ThrowsException<ArgumentException>(() => memory.AsMemory2D(1, 2, 3, 0));
-        _ = Assert.ThrowsException<ArgumentException>(() => memory.AsMemory2D(0, 10, 1, 120));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => memory.AsMemory2D(-99, 1, 1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => memory.AsMemory2D(0, -10, 1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => memory.AsMemory2D(0, 1, 1, -1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => memory.AsMemory2D(0, 1, -100, 1));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => memory.AsMemory2D(0, 2, 4, 0));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => memory.AsMemory2D(0, 3, 3, 0));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => memory.AsMemory2D(1, 2, 3, 0));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => memory.AsMemory2D(0, 10, 1, 120));
     }
 #endif
 
@@ -260,17 +260,17 @@ public class Test_Memory2DT
         Assert.AreEqual(slice2.Span[1, 1], 6);
 
         // A few invalid slicing operations, with out of range parameters
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(-1, 1, 1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(1, -1, 1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(1, 1, 1, -1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(1, 1, -1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(10, 1, 1, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(1, 12, 1, 12));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(1, 1, 55, 1));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(0, 0, 2, 4));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(0, 0, 3, 3));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(0, 1, 2, 3));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(1, 0, 2, 3));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(-1, 1, 1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(1, -1, 1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(1, 1, 1, -1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(1, 1, -1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(10, 1, 1, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(1, 12, 1, 12));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(1, 1, 55, 1));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(0, 0, 2, 4));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(0, 0, 3, 3));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(0, 1, 2, 3));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(1, 0, 2, 3));
     }
 
     [TestMethod]

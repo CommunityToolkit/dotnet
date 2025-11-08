@@ -27,8 +27,8 @@ public class Test_IBufferWriterStream
         Assert.IsFalse(stream.CanSeek);
         Assert.IsTrue(stream.CanWrite);
 
-        _ = Assert.ThrowsException<NotSupportedException>(() => stream.Length);
-        _ = Assert.ThrowsException<NotSupportedException>(() => stream.Position);
+        _ = Assert.ThrowsExactly<NotSupportedException>(() => stream.Length);
+        _ = Assert.ThrowsExactly<NotSupportedException>(() => stream.Position);
 
         // Dispose the stream and check that no operation is now allowed
         stream.Dispose();
@@ -36,8 +36,8 @@ public class Test_IBufferWriterStream
         Assert.IsFalse(stream.CanRead);
         Assert.IsFalse(stream.CanSeek);
         Assert.IsFalse(stream.CanWrite);
-        _ = Assert.ThrowsException<NotSupportedException>(() => stream.Length);
-        _ = Assert.ThrowsException<NotSupportedException>(() => stream.Position);
+        _ = Assert.ThrowsExactly<NotSupportedException>(() => stream.Length);
+        _ = Assert.ThrowsExactly<NotSupportedException>(() => stream.Position);
     }
 
     [TestMethod]
@@ -56,15 +56,15 @@ public class Test_IBufferWriterStream
         Assert.IsTrue(writer.WrittenSpan.SequenceEqual(data));
 
         // A few tests with invalid inputs (null buffers, invalid indices, etc.)
-        _ = Assert.ThrowsException<ArgumentNullException>(() => stream.Write(null!, 0, 10));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Write(data, -1, 10));
-        _ = Assert.ThrowsException<ArgumentException>(() => stream.Write(data, 200, 10));
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() => stream.Write(data, 0, -24));
-        _ = Assert.ThrowsException<ArgumentException>(() => stream.Write(data, 0, 200));
+        _ = Assert.ThrowsExactly<ArgumentNullException>(() => stream.Write(null!, 0, 10));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => stream.Write(data, -1, 10));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => stream.Write(data, 200, 10));
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => stream.Write(data, 0, -24));
+        _ = Assert.ThrowsExactly<ArgumentException>(() => stream.Write(data, 0, 200));
 
         stream.Dispose();
 
-        _ = Assert.ThrowsException<ObjectDisposedException>(() => stream.Write(data, 0, data.Length));
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() => stream.Write(data, 0, data.Length));
     }
 
     [TestMethod]
@@ -81,15 +81,15 @@ public class Test_IBufferWriterStream
         Assert.AreEqual(writer.WrittenCount, data.Length);
         Assert.IsTrue(writer.WrittenSpan.SequenceEqual(data));
 
-        _ = await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => stream.WriteAsync(null!, 0, 10));
-        _ = await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(() => stream.WriteAsync(data, -1, 10));
-        _ = await Assert.ThrowsExceptionAsync<ArgumentException>(() => stream.WriteAsync(data, 200, 10));
-        _ = await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(() => stream.WriteAsync(data, 0, -24));
-        _ = await Assert.ThrowsExceptionAsync<ArgumentException>(() => stream.WriteAsync(data, 0, 200));
+        _ = await Assert.ThrowsExactlyAsync<ArgumentNullException>(() => stream.WriteAsync(null!, 0, 10));
+        _ = await Assert.ThrowsExactlyAsync<ArgumentOutOfRangeException>(() => stream.WriteAsync(data, -1, 10));
+        _ = await Assert.ThrowsExactlyAsync<ArgumentException>(() => stream.WriteAsync(data, 200, 10));
+        _ = await Assert.ThrowsExactlyAsync<ArgumentOutOfRangeException>(() => stream.WriteAsync(data, 0, -24));
+        _ = await Assert.ThrowsExactlyAsync<ArgumentException>(() => stream.WriteAsync(data, 0, 200));
 
         stream.Dispose();
 
-        _ = await Assert.ThrowsExceptionAsync<ObjectDisposedException>(() => stream.WriteAsync(data, 0, data.Length));
+        _ = await Assert.ThrowsExactlyAsync<ObjectDisposedException>(() => stream.WriteAsync(data, 0, data.Length));
     }
 
     [TestMethod]
@@ -114,7 +114,7 @@ public class Test_IBufferWriterStream
         Assert.AreEqual(writer.WrittenCount, data.Length);
         Assert.IsTrue(data.SequenceEqual(writer.WrittenSpan));
 
-        _ = Assert.ThrowsException<NotSupportedException>(() => stream.ReadByte());
+        _ = Assert.ThrowsExactly<NotSupportedException>(() => stream.ReadByte());
     }
 
     [TestMethod]

@@ -37,12 +37,12 @@ public class Test_ArrayExtensions
             new int[] { 7 }
         };
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             {
                 _ = array.GetColumn(-1).ToArray();
             });
 
-        _ = Assert.ThrowsException<ArgumentOutOfRangeException>(() =>
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             {
                 _ = array.GetColumn(3).ToArray();
             });
