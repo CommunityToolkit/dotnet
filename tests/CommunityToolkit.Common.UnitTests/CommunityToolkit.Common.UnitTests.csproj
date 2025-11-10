@@ -11,6 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <AssemblyAttribute Include="Microsoft.VisualStudio.TestTools.UnitTesting.ParallelizeAttribute"/>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\CommunityToolkit.Common\CommunityToolkit.Common.csproj" />
   </ItemGroup>
 
