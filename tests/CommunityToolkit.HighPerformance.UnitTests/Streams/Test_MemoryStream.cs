@@ -24,7 +24,7 @@ public partial class Test_MemoryStream
         Assert.IsTrue(stream.CanSeek);
         Assert.IsTrue(stream.CanWrite);
         Assert.AreEqual(stream.Length, memory.Length);
-        Assert.AreEqual(stream.Position, 0);
+        Assert.AreEqual(0, stream.Position);
 
         stream.Dispose();
 
@@ -40,11 +40,11 @@ public partial class Test_MemoryStream
     {
         Stream stream = new byte[100].AsMemory().AsStream();
 
-        Assert.AreEqual(stream.Position, 0);
+        Assert.AreEqual(0, stream.Position);
 
         stream.Position = 42;
 
-        Assert.AreEqual(stream.Position, 42);
+        Assert.AreEqual(42, stream.Position);
 
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => stream.Position = -1);
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => stream.Position = 120);
@@ -54,7 +54,7 @@ public partial class Test_MemoryStream
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => stream.Seek(-1, SeekOrigin.Begin));
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => stream.Seek(120, SeekOrigin.Begin));
 
-        Assert.AreEqual(stream.Position, 0);
+        Assert.AreEqual(0, stream.Position);
 
         _ = stream.Seek(-1, SeekOrigin.End);
 
@@ -70,7 +70,7 @@ public partial class Test_MemoryStream
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => stream.Seek(-64, SeekOrigin.Current));
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => stream.Seek(80, SeekOrigin.Current));
 
-        Assert.AreEqual(stream.Position, 32);
+        Assert.AreEqual(32, stream.Position);
     }
 
     // See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/3536
@@ -87,7 +87,7 @@ public partial class Test_MemoryStream
         {
             int read = stream.Read(temp, 0, 1);
 
-            Assert.AreEqual(read, 1);
+            Assert.AreEqual(1, read);
             Assert.AreEqual(stream.Position, i + 1);
         }
 
@@ -203,7 +203,7 @@ public partial class Test_MemoryStream
 
         int exitCode = stream.ReadByte();
 
-        Assert.AreEqual(exitCode, -1);
+        Assert.AreEqual(-1, exitCode);
     }
 
     [TestMethod]

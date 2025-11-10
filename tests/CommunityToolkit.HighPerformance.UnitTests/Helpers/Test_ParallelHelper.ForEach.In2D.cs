@@ -50,7 +50,7 @@ public partial class Test_ParallelHelper
             expected += n;
         }
 
-        Assert.AreEqual(sum, expected, $"The sum doesn't match, was {sum} instead of {expected}");
+        Assert.AreEqual(expected, sum, $"The sum doesn't match, was {sum} instead of {expected}");
     }
 
     /// <summary>

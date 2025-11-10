@@ -34,8 +34,8 @@ public partial class Test_INotifyPropertyChangedAttribute
 
         model.Data = 42;
 
-        Assert.AreEqual(changed.Item1?.PropertyName, nameof(SampleModel.Data));
-        Assert.AreEqual(changed.Item2, 42);
+        Assert.AreEqual(nameof(SampleModel.Data), changed.Item1?.PropertyName);
+        Assert.AreEqual(42, changed.Item2);
     }
 
     [INotifyPropertyChanged]
@@ -61,13 +61,13 @@ public partial class Test_INotifyPropertyChangedAttribute
 
         MethodInfo[]? methods = typeof(SampleModelWithoutHelpers).GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
 
-        Assert.AreEqual(methods.Length, 2);
-        Assert.AreEqual(methods[0].Name, "OnPropertyChanged");
-        Assert.AreEqual(methods[1].Name, "OnPropertyChanged");
+        Assert.AreEqual(2, methods.Length);
+        Assert.AreEqual("OnPropertyChanged", methods[0].Name);
+        Assert.AreEqual("OnPropertyChanged", methods[1].Name);
 
         System.Type[]? types = typeof(SampleModelWithoutHelpers).GetNestedTypes(BindingFlags.NonPublic);
 
-        Assert.AreEqual(types.Length, 0);
+        Assert.AreEqual(0, types.Length);
     }
 
     [INotifyPropertyChanged(IncludeAdditionalHelperMethods = false)]
@@ -89,9 +89,9 @@ public partial class Test_INotifyPropertyChangedAttribute
         model.X = 42;
         model.Y = 66;
 
-        Assert.AreEqual(eventArgs.Count, 2);
-        Assert.AreEqual(eventArgs[0].PropertyName, nameof(SampleModelWithINPCAndObservableProperties.X));
-        Assert.AreEqual(eventArgs[1].PropertyName, nameof(SampleModelWithINPCAndObservableProperties.Y));
+        Assert.AreEqual(2, eventArgs.Count);
+        Assert.AreEqual(nameof(SampleModelWithINPCAndObservableProperties.X), eventArgs[0].PropertyName);
+        Assert.AreEqual(nameof(SampleModelWithINPCAndObservableProperties.Y), eventArgs[1].PropertyName);
     }
 
     // See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4167
@@ -120,9 +120,9 @@ public partial class Test_INotifyPropertyChangedAttribute
         model.X = 42;
         model.Y = 66;
 
-        Assert.AreEqual(eventArgs.Count, 2);
-        Assert.AreEqual(eventArgs[0].PropertyName, nameof(SampleModelWithINPCAndObservablePartialProperties.X));
-        Assert.AreEqual(eventArgs[1].PropertyName, nameof(SampleModelWithINPCAndObservablePartialProperties.Y));
+        Assert.AreEqual(2, eventArgs.Count);
+        Assert.AreEqual(nameof(SampleModelWithINPCAndObservablePartialProperties.X), eventArgs[0].PropertyName);
+        Assert.AreEqual(nameof(SampleModelWithINPCAndObservablePartialProperties.Y), eventArgs[1].PropertyName);
     }
 
     [INotifyPropertyChanged]
@@ -150,8 +150,8 @@ public partial class Test_INotifyPropertyChangedAttribute
         model.X = 42;
         model.Y = 66;
 
-        Assert.AreEqual(eventArgs.Count, 2);
-        Assert.AreEqual(eventArgs[0].PropertyName, nameof(ExternalAssembly.SampleModelWithINPCAndObservableProperties.X));
-        Assert.AreEqual(eventArgs[1].PropertyName, nameof(ExternalAssembly.SampleModelWithINPCAndObservableProperties.Y));
+        Assert.AreEqual(2, eventArgs.Count);
+        Assert.AreEqual(nameof(ExternalAssembly.SampleModelWithINPCAndObservableProperties.X), eventArgs[0].PropertyName);
+        Assert.AreEqual(nameof(ExternalAssembly.SampleModelWithINPCAndObservableProperties.Y), eventArgs[1].PropertyName);
     }
 }

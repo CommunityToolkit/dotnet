@@ -194,7 +194,7 @@ public class Test_BitHelper
         uint restored = BitHelper.SetRange(result, start, length, backup);
 
         Assert.AreEqual(extracted, flags);
-        Assert.AreEqual(restored, value);
+        Assert.AreEqual(value, restored);
     }
 
     [TestMethod]
@@ -302,6 +302,6 @@ public class Test_BitHelper
         ulong restored = BitHelper.SetRange(result, start, length, backup);
 
         Assert.AreEqual(extracted, flags);
-        Assert.AreEqual(restored, value);
+        Assert.AreEqual(value, restored);
     }
 }

@@ -39,7 +39,7 @@ partial class Test_Messenger
         int result = messenger.Send<NumberRequestMessage>();
 
         Assert.AreSame(test, recipient);
-        Assert.AreEqual(result, 42);
+        Assert.AreEqual(42, result);
     }
 
     [TestMethod]
@@ -102,7 +102,7 @@ partial class Test_Messenger
 
         int result = await messenger.Send<AsyncNumberRequestMessage>();
 
-        Assert.AreEqual(result, 42);
+        Assert.AreEqual(42, result);
 
         GC.KeepAlive(recipient);
     }
@@ -135,7 +135,7 @@ partial class Test_Messenger
 
         int result = await messenger.Send<AsyncNumberRequestMessage>();
 
-        Assert.AreEqual(result, 42);
+        Assert.AreEqual(42, result);
 
         GC.KeepAlive(recipient);
     }
@@ -198,7 +198,7 @@ partial class Test_Messenger
 
         IReadOnlyCollection<int>? results = messenger.Send<NumbersCollectionRequestMessage>().Responses;
 
-        Assert.AreEqual(results.Count, 0);
+        Assert.AreEqual(0, results.Count);
 
         GC.KeepAlive(recipient);
     }
@@ -272,7 +272,7 @@ partial class Test_Messenger
 
         IReadOnlyCollection<int>? results = await messenger.Send<AsyncNumbersCollectionRequestMessage>().GetResponsesAsync();
 
-        Assert.AreEqual(results.Count, 0);
+        Assert.AreEqual(0, results.Count);
 
         GC.KeepAlive(recipient);
     }

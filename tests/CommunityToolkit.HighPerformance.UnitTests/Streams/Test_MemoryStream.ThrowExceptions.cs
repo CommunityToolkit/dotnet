@@ -23,7 +23,7 @@ public partial class Test_MemoryStream
         }
         catch (ArgumentOutOfRangeException e) when (e.GetType() == typeof(ArgumentOutOfRangeException))
         {
-            Assert.AreEqual(e.ParamName, nameof(Stream.Position));
+            Assert.AreEqual(nameof(Stream.Position), e.ParamName);
 
             return;
         }

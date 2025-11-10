@@ -23,7 +23,7 @@ public class Test_StreamExtensions
         stream.Write(3.14f);
         stream.Write(unchecked(uint.MaxValue * 324823489204ul));
 
-        Assert.AreEqual(stream.Position, 17);
+        Assert.AreEqual(17, stream.Position);
 
         _ = Assert.ThrowsExactly<ArgumentException>(() => stream.Write(long.MaxValue));
 

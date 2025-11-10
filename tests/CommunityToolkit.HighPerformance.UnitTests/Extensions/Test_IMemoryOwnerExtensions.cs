@@ -19,8 +19,8 @@ public class Test_IMemoryOwnerExtensions
         Stream stream = buffer.AsStream();
 
         Assert.IsNotNull(stream);
-        Assert.AreEqual(buffer.Length, 0);
-        Assert.AreEqual(stream.Length, 0);
+        Assert.AreEqual(0, buffer.Length);
+        Assert.AreEqual(0, stream.Length);
         Assert.IsTrue(stream.CanWrite);
     }
 

@@ -46,10 +46,10 @@ public class Test_ObservableObject
 
         model.Data = 42;
 
-        Assert.AreEqual(changing.Item1?.PropertyName, nameof(SampleModel<int>.Data));
-        Assert.AreEqual(changing.Item2, 0);
-        Assert.AreEqual(changed.Item1?.PropertyName, nameof(SampleModel<int>.Data));
-        Assert.AreEqual(changed.Item2, 42);
+        Assert.AreEqual(nameof(SampleModel<int>.Data), changing.Item1?.PropertyName);
+        Assert.AreEqual(0, changing.Item2);
+        Assert.AreEqual(nameof(SampleModel<int>.Data), changed.Item1?.PropertyName);
+        Assert.AreEqual(42, changed.Item2);
     }
 
     public class SampleModel<T> : ObservableObject
@@ -87,11 +87,11 @@ public class Test_ObservableObject
 
         model.Name = "Bob";
 
-        Assert.AreEqual(changing.Item1?.PropertyName, nameof(WrappingModelWithProperty.Name));
-        Assert.AreEqual(changing.Item2, "Alice");
-        Assert.AreEqual(changed.Item1?.PropertyName, nameof(WrappingModelWithProperty.Name));
-        Assert.AreEqual(changed.Item2, "Bob");
-        Assert.AreEqual(model.PersonProxy.Name, "Bob");
+        Assert.AreEqual(nameof(WrappingModelWithProperty.Name), changing.Item1?.PropertyName);
+        Assert.AreEqual("Alice", changing.Item2);
+        Assert.AreEqual(nameof(WrappingModelWithProperty.Name), changed.Item1?.PropertyName);
+        Assert.AreEqual("Bob", changed.Item2);
+        Assert.AreEqual("Bob", model.PersonProxy.Name);
     }
 
     public class Person
@@ -141,11 +141,11 @@ public class Test_ObservableObject
 
         model.Name = "Bob";
 
-        Assert.AreEqual(changing.Item1?.PropertyName, nameof(WrappingModelWithField.Name));
-        Assert.AreEqual(changing.Item2, "Alice");
-        Assert.AreEqual(changed.Item1?.PropertyName, nameof(WrappingModelWithField.Name));
-        Assert.AreEqual(changed.Item2, "Bob");
-        Assert.AreEqual(model.PersonProxy.Name, "Bob");
+        Assert.AreEqual(nameof(WrappingModelWithField.Name), changing.Item1?.PropertyName);
+        Assert.AreEqual("Alice", changing.Item2);
+        Assert.AreEqual(nameof(WrappingModelWithField.Name), changed.Item1?.PropertyName);
+        Assert.AreEqual("Bob", changed.Item2);
+        Assert.AreEqual("Bob", model.PersonProxy.Name);
     }
 
     public class WrappingModelWithField : ObservableObject
@@ -195,9 +195,9 @@ public class Test_ObservableObject
             model.Data = task;
 
             Assert.IsFalse(task.IsCompleted);
-            Assert.AreEqual(changing.Item1?.PropertyName, nameof(SampleModelWithTask<int>.Data));
+            Assert.AreEqual(nameof(SampleModelWithTask<int>.Data), changing.Item1?.PropertyName);
             Assert.IsNull(changing.Item2);
-            Assert.AreEqual(changed.Item1?.PropertyName, nameof(SampleModelWithTask<int>.Data));
+            Assert.AreEqual(nameof(SampleModelWithTask<int>.Data), changed.Item1?.PropertyName);
             Assert.AreSame(changed.Item2, task);
 
             changed = default;
@@ -207,7 +207,7 @@ public class Test_ObservableObject
             await Task.Delay(100); // Time for the notification to dispatch
 
             Assert.IsTrue(task.IsCompleted);
-            Assert.AreEqual(changed.Item1?.PropertyName, nameof(SampleModel<int>.Data));
+            Assert.AreEqual(nameof(SampleModel<int>.Data), changed.Item1?.PropertyName);
             Assert.AreSame(changed.Item2, task);
         }
 

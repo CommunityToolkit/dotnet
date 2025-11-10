@@ -19,30 +19,30 @@ public class Test_Memory2DT
         Memory2D<int> empty1 = default;
 
         Assert.IsTrue(empty1.IsEmpty);
-        Assert.AreEqual(empty1.Length, 0);
-        Assert.AreEqual(empty1.Width, 0);
-        Assert.AreEqual(empty1.Height, 0);
+        Assert.AreEqual(0, empty1.Length);
+        Assert.AreEqual(0, empty1.Width);
+        Assert.AreEqual(0, empty1.Height);
 
         Memory2D<string> empty2 = Memory2D<string>.Empty;
 
         Assert.IsTrue(empty2.IsEmpty);
-        Assert.AreEqual(empty2.Length, 0);
-        Assert.AreEqual(empty2.Width, 0);
-        Assert.AreEqual(empty2.Height, 0);
+        Assert.AreEqual(0, empty2.Length);
+        Assert.AreEqual(0, empty2.Width);
+        Assert.AreEqual(0, empty2.Height);
 
         Memory2D<int> empty3 = new int[4, 0];
 
         Assert.IsTrue(empty3.IsEmpty);
-        Assert.AreEqual(empty3.Length, 0);
-        Assert.AreEqual(empty3.Width, 0);
-        Assert.AreEqual(empty3.Height, 4);
+        Assert.AreEqual(0, empty3.Length);
+        Assert.AreEqual(0, empty3.Width);
+        Assert.AreEqual(4, empty3.Height);
 
         Memory2D<int> empty4 = new int[0, 7];
 
         Assert.IsTrue(empty4.IsEmpty);
-        Assert.AreEqual(empty4.Length, 0);
-        Assert.AreEqual(empty4.Width, 7);
-        Assert.AreEqual(empty4.Height, 0);
+        Assert.AreEqual(0, empty4.Length);
+        Assert.AreEqual(7, empty4.Width);
+        Assert.AreEqual(0, empty4.Height);
     }
 
     [TestMethod]
@@ -58,11 +58,11 @@ public class Test_Memory2DT
         Memory2D<int> memory2d = new(array, 1, 2, 2, 1);
 
         Assert.IsFalse(memory2d.IsEmpty);
-        Assert.AreEqual(memory2d.Length, 4);
-        Assert.AreEqual(memory2d.Width, 2);
-        Assert.AreEqual(memory2d.Height, 2);
-        Assert.AreEqual(memory2d.Span[0, 0], 2);
-        Assert.AreEqual(memory2d.Span[1, 1], 6);
+        Assert.AreEqual(4, memory2d.Length);
+        Assert.AreEqual(2, memory2d.Width);
+        Assert.AreEqual(2, memory2d.Height);
+        Assert.AreEqual(2, memory2d.Span[0, 0]);
+        Assert.AreEqual(6, memory2d.Span[1, 1]);
 
         // Also ensure the right exceptions are thrown with invalid parameters, such as
         // negative indices, indices out of range, values that are too big, etc.
@@ -90,11 +90,11 @@ public class Test_Memory2DT
         Memory2D<int> memory2d = new(array);
 
         Assert.IsFalse(memory2d.IsEmpty);
-        Assert.AreEqual(memory2d.Length, 6);
-        Assert.AreEqual(memory2d.Width, 3);
-        Assert.AreEqual(memory2d.Height, 2);
-        Assert.AreEqual(memory2d.Span[0, 1], 2);
-        Assert.AreEqual(memory2d.Span[1, 2], 6);
+        Assert.AreEqual(6, memory2d.Length);
+        Assert.AreEqual(3, memory2d.Width);
+        Assert.AreEqual(2, memory2d.Height);
+        Assert.AreEqual(2, memory2d.Span[0, 1]);
+        Assert.AreEqual(6, memory2d.Span[1, 2]);
 
         // Here we test the check for covariance: we can't create a Memory2D<T> from a U[,] array
         // where U is assignable to T (as in, U : T). This would cause a type safety violation on write.
@@ -114,11 +114,11 @@ public class Test_Memory2DT
         Memory2D<int> memory2d = new(array, 0, 1, 2, 2);
 
         Assert.IsFalse(memory2d.IsEmpty);
-        Assert.AreEqual(memory2d.Length, 4);
-        Assert.AreEqual(memory2d.Width, 2);
-        Assert.AreEqual(memory2d.Height, 2);
-        Assert.AreEqual(memory2d.Span[0, 0], 2);
-        Assert.AreEqual(memory2d.Span[1, 1], 6);
+        Assert.AreEqual(4, memory2d.Length);
+        Assert.AreEqual(2, memory2d.Width);
+        Assert.AreEqual(2, memory2d.Height);
+        Assert.AreEqual(2, memory2d.Span[0, 0]);
+        Assert.AreEqual(6, memory2d.Span[1, 1]);
 
         _ = Assert.ThrowsExactly<ArrayTypeMismatchException>(() => new Memory2D<object>(new string[1, 2], 0, 0, 2, 2));
     }
@@ -142,11 +142,11 @@ public class Test_Memory2DT
         Memory2D<int> memory2d = new(array, 1);
 
         Assert.IsFalse(memory2d.IsEmpty);
-        Assert.AreEqual(memory2d.Length, 6);
-        Assert.AreEqual(memory2d.Width, 3);
-        Assert.AreEqual(memory2d.Height, 2);
-        Assert.AreEqual(memory2d.Span[0, 1], 20);
-        Assert.AreEqual(memory2d.Span[1, 2], 60);
+        Assert.AreEqual(6, memory2d.Length);
+        Assert.AreEqual(3, memory2d.Width);
+        Assert.AreEqual(2, memory2d.Height);
+        Assert.AreEqual(20, memory2d.Span[0, 1]);
+        Assert.AreEqual(60, memory2d.Span[1, 2]);
 
         // A couple of tests for invalid parameters, ie. layers out of range
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, -1));
@@ -176,11 +176,11 @@ public class Test_Memory2DT
         Memory2D<int> memory2d = new(array, 1, 0, 1, 2, 2);
 
         Assert.IsFalse(memory2d.IsEmpty);
-        Assert.AreEqual(memory2d.Length, 4);
-        Assert.AreEqual(memory2d.Width, 2);
-        Assert.AreEqual(memory2d.Height, 2);
-        Assert.AreEqual(memory2d.Span[0, 0], 20);
-        Assert.AreEqual(memory2d.Span[1, 1], 60);
+        Assert.AreEqual(4, memory2d.Length);
+        Assert.AreEqual(2, memory2d.Width);
+        Assert.AreEqual(2, memory2d.Height);
+        Assert.AreEqual(20, memory2d.Span[0, 0]);
+        Assert.AreEqual(60, memory2d.Span[1, 1]);
 
         // Same as above, testing a few cases with invalid parameters
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Memory2D<int>(array, -1, 1, 1, 1, 1));
@@ -210,11 +210,11 @@ public class Test_Memory2DT
         Memory2D<int> memory2d = memory.AsMemory2D(1, 2, 2, 1);
 
         Assert.IsFalse(memory2d.IsEmpty);
-        Assert.AreEqual(memory2d.Length, 4);
-        Assert.AreEqual(memory2d.Width, 2);
-        Assert.AreEqual(memory2d.Height, 2);
-        Assert.AreEqual(memory2d.Span[0, 0], 2);
-        Assert.AreEqual(memory2d.Span[1, 1], 6);
+        Assert.AreEqual(4, memory2d.Length);
+        Assert.AreEqual(2, memory2d.Width);
+        Assert.AreEqual(2, memory2d.Height);
+        Assert.AreEqual(2, memory2d.Span[0, 0]);
+        Assert.AreEqual(6, memory2d.Span[1, 1]);
 
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => memory.AsMemory2D(-99, 1, 1, 1));
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => memory.AsMemory2D(0, -10, 1, 1));
@@ -241,23 +241,23 @@ public class Test_Memory2DT
         // Test a slice from a Memory2D<T> with valid parameters
         Memory2D<int> slice1 = memory2d.Slice(1, 1, 1, 2);
 
-        Assert.AreEqual(slice1.Length, 2);
-        Assert.AreEqual(slice1.Height, 1);
-        Assert.AreEqual(slice1.Width, 2);
-        Assert.AreEqual(slice1.Span[0, 0], 5);
-        Assert.AreEqual(slice1.Span[0, 1], 6);
+        Assert.AreEqual(2, slice1.Length);
+        Assert.AreEqual(1, slice1.Height);
+        Assert.AreEqual(2, slice1.Width);
+        Assert.AreEqual(5, slice1.Span[0, 0]);
+        Assert.AreEqual(6, slice1.Span[0, 1]);
 
         // Same above, but we test slicing a pre-sliced instance as well. This
         // is done to verify that the internal offsets are properly tracked
         // across multiple slicing operations, instead of just in the first.
         Memory2D<int> slice2 = memory2d.Slice(0, 1, 2, 2);
 
-        Assert.AreEqual(slice2.Length, 4);
-        Assert.AreEqual(slice2.Height, 2);
-        Assert.AreEqual(slice2.Width, 2);
-        Assert.AreEqual(slice2.Span[0, 0], 2);
-        Assert.AreEqual(slice2.Span[1, 0], 5);
-        Assert.AreEqual(slice2.Span[1, 1], 6);
+        Assert.AreEqual(4, slice2.Length);
+        Assert.AreEqual(2, slice2.Height);
+        Assert.AreEqual(2, slice2.Width);
+        Assert.AreEqual(2, slice2.Span[0, 0]);
+        Assert.AreEqual(5, slice2.Span[1, 0]);
+        Assert.AreEqual(6, slice2.Span[1, 1]);
 
         // A few invalid slicing operations, with out of range parameters
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new Memory2D<int>(array).Slice(-1, 1, 1, 1));
@@ -287,26 +287,26 @@ public class Test_Memory2DT
         // Mostly the same test as above, just with different parameters
         Memory2D<int> slice1 = memory2d.Slice(0, 0, 2, 2);
 
-        Assert.AreEqual(slice1.Length, 4);
-        Assert.AreEqual(slice1.Height, 2);
-        Assert.AreEqual(slice1.Width, 2);
-        Assert.AreEqual(slice1.Span[0, 0], 1);
-        Assert.AreEqual(slice1.Span[1, 1], 5);
+        Assert.AreEqual(4, slice1.Length);
+        Assert.AreEqual(2, slice1.Height);
+        Assert.AreEqual(2, slice1.Width);
+        Assert.AreEqual(1, slice1.Span[0, 0]);
+        Assert.AreEqual(5, slice1.Span[1, 1]);
 
         Memory2D<int> slice2 = slice1.Slice(1, 0, 1, 2);
 
-        Assert.AreEqual(slice2.Length, 2);
-        Assert.AreEqual(slice2.Height, 1);
-        Assert.AreEqual(slice2.Width, 2);
-        Assert.AreEqual(slice2.Span[0, 0], 4);
-        Assert.AreEqual(slice2.Span[0, 1], 5);
+        Assert.AreEqual(2, slice2.Length);
+        Assert.AreEqual(1, slice2.Height);
+        Assert.AreEqual(2, slice2.Width);
+        Assert.AreEqual(4, slice2.Span[0, 0]);
+        Assert.AreEqual(5, slice2.Span[0, 1]);
 
         Memory2D<int> slice3 = slice2.Slice(0, 1, 1, 1);
 
-        Assert.AreEqual(slice3.Length, 1);
-        Assert.AreEqual(slice3.Height, 1);
-        Assert.AreEqual(slice3.Width, 1);
-        Assert.AreEqual(slice3.Span[0, 0], 5);
+        Assert.AreEqual(1, slice3.Length);
+        Assert.AreEqual(1, slice3.Height);
+        Assert.AreEqual(1, slice3.Width);
+        Assert.AreEqual(5, slice3.Span[0, 0]);
     }
 
     [TestMethod]
@@ -349,7 +349,7 @@ public class Test_Memory2DT
 
         Assert.IsTrue(success);
         Assert.AreEqual(memory.Length, array.Length);
-        Assert.AreEqual(memory.Span[2], 3);
+        Assert.AreEqual(3, memory.Span[2]);
     }
 
 #if NET6_0_OR_GREATER
@@ -367,7 +367,7 @@ public class Test_Memory2DT
 
         Assert.IsTrue(success);
         Assert.AreEqual(memory.Length, data.Length);
-        Assert.AreEqual(memory.Span[2], 3);
+        Assert.AreEqual(3, memory.Span[2]);
     }
 #endif
 
@@ -382,8 +382,8 @@ public class Test_Memory2DT
 
         using System.Buffers.MemoryHandle pin = memory2d.Pin();
 
-        Assert.AreEqual(((int*)pin.Pointer)[0], 1);
-        Assert.AreEqual(((int*)pin.Pointer)[3], 4);
+        Assert.AreEqual(1, ((int*)pin.Pointer)[0]);
+        Assert.AreEqual(4, ((int*)pin.Pointer)[3]);
     }
 
     [TestMethod]
@@ -396,8 +396,8 @@ public class Test_Memory2DT
 
         using System.Buffers.MemoryHandle pin = memory2d.Pin();
 
-        Assert.AreEqual(((int*)pin.Pointer)[0], 1);
-        Assert.AreEqual(((int*)pin.Pointer)[3], 4);
+        Assert.AreEqual(1, ((int*)pin.Pointer)[0]);
+        Assert.AreEqual(4, ((int*)pin.Pointer)[3]);
     }
 
     [TestMethod]
@@ -435,8 +435,8 @@ public class Test_Memory2DT
 
         int[,] copy = memory2d.ToArray();
 
-        Assert.AreEqual(copy.GetLength(0), 2);
-        Assert.AreEqual(copy.GetLength(1), 2);
+        Assert.AreEqual(2, copy.GetLength(0));
+        Assert.AreEqual(2, copy.GetLength(1));
 
         int[,] expected =
         {
@@ -476,7 +476,7 @@ public class Test_Memory2DT
     public void Test_Memory2DT_GetHashCode()
     {
         // An empty Memory2D<T> has just 0 as the hashcode
-        Assert.AreEqual(Memory2D<int>.Empty.GetHashCode(), 0);
+        Assert.AreEqual(0, Memory2D<int>.Empty.GetHashCode());
 
         int[,] array =
         {
@@ -514,7 +514,7 @@ public class Test_Memory2DT
 
         const string expected = "CommunityToolkit.HighPerformance.Memory2D<System.Int32>[2, 3]";
 
-        Assert.AreEqual(text, expected);
+        Assert.AreEqual(expected, text);
     }
 
 #if NET6_0_OR_GREATER

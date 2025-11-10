@@ -20,7 +20,7 @@ public class Test_ReadOnlyObservableGroup
         ObservableCollection<int> source = new(new[] { 1, 2, 3 });
         ReadOnlyObservableGroup<string, int> group = new("key", source);
 
-        Assert.AreEqual(group.Key, "key");
+        Assert.AreEqual("key", group.Key);
         CollectionAssert.AreEqual(group, new[] { 1, 2, 3 });
     }
 
@@ -31,7 +31,7 @@ public class Test_ReadOnlyObservableGroup
         ObservableGroup<string, int> sourceGroup = new("key", source);
         ReadOnlyObservableGroup<string, int> group = new(sourceGroup);
 
-        Assert.AreEqual(group.Key, "key");
+        Assert.AreEqual("key", group.Key);
         CollectionAssert.AreEqual(group, new[] { 1, 2, 3 });
     }
 
@@ -41,7 +41,7 @@ public class Test_ReadOnlyObservableGroup
         ObservableCollection<int> source = new() { 1, 2, 3 };
         ReadOnlyObservableGroup<string, int> group = new("key", source);
 
-        Assert.AreEqual(group.Key, "key");
+        Assert.AreEqual("key", group.Key);
         CollectionAssert.AreEqual(group, new[] { 1, 2, 3 });
     }
 
@@ -57,7 +57,7 @@ public class Test_ReadOnlyObservableGroup
 
         sourceGroup.Add(4);
 
-        Assert.AreEqual(group.Key, "key");
+        Assert.AreEqual("key", group.Key);
         CollectionAssert.AreEqual(group, new[] { 1, 2, 3, 4 });
 
         Assert.IsTrue(collectionChangedEventRaised);
@@ -75,7 +75,7 @@ public class Test_ReadOnlyObservableGroup
 
         sourceGroup[1] = 4;
 
-        Assert.AreEqual(group.Key, "key");
+        Assert.AreEqual("key", group.Key);
         CollectionAssert.AreEqual(group, new[] { 1, 4, 3 });
 
         Assert.IsTrue(collectionChangedEventRaised);
@@ -93,7 +93,7 @@ public class Test_ReadOnlyObservableGroup
 
         _ = sourceGroup.Remove(1);
 
-        Assert.AreEqual(group.Key, "key");
+        Assert.AreEqual("key", group.Key);
         CollectionAssert.AreEqual(group, new[] { 2, 3 });
 
         Assert.IsTrue(collectionChangedEventRaised);
@@ -111,7 +111,7 @@ public class Test_ReadOnlyObservableGroup
 
         sourceGroup.Clear();
 
-        Assert.AreEqual(group.Key, "key");
+        Assert.AreEqual("key", group.Key);
         CollectionAssert.AreEqual(group, Array.Empty<int>());
 
         Assert.IsTrue(collectionChangedEventRaised);
@@ -126,7 +126,7 @@ public class Test_ReadOnlyObservableGroup
         ReadOnlyObservableGroup<string, int> group = new(sourceGroup);
         IReadOnlyObservableGroup iReadOnlyObservableGroup = group;
 
-        Assert.AreEqual(iReadOnlyObservableGroup.Key, "key");
+        Assert.AreEqual("key", iReadOnlyObservableGroup.Key);
         Assert.AreEqual(iReadOnlyObservableGroup.Count, count);
     }
 

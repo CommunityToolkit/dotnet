@@ -87,9 +87,9 @@ public class Test_ObservableRecipient
 
         Assert.IsNotNull(message);
         Assert.AreSame(message.Sender, viewmodel);
-        Assert.AreEqual(message.OldValue, 0);
-        Assert.AreEqual(message.NewValue, 42);
-        Assert.AreEqual(message.PropertyName, nameof(SomeRecipient<int>.Data));
+        Assert.AreEqual(0, message.OldValue);
+        Assert.AreEqual(42, message.NewValue);
+        Assert.AreEqual(nameof(SomeRecipient<int>.Data), message.PropertyName);
     }
 
     [TestMethod]
