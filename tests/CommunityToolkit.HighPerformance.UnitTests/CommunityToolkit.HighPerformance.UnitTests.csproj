@@ -11,10 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <AssemblyAttribute Include="Microsoft.VisualStudio.TestTools.UnitTesting.ParallelizeAttribute"/>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="MSTest.TestAdapter" Version="4.0.1" />
     <PackageReference Include="MSTest.TestFramework" Version="4.0.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
