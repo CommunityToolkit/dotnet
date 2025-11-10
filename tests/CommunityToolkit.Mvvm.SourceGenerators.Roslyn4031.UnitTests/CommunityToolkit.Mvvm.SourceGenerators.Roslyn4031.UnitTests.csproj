@@ -18,7 +18,7 @@
     <PackageReference Include="MSTest.TestFramework" Version="4.0.1" />
 
     <!-- Top-level override to fix address security vulnerability warnings -->
-    <PackageReference Include="System.Formats.Asn1" Version="9.0.5" />
+    <PackageReference Include="System.Formats.Asn1" Version="9.0.10" />
   </ItemGroup>
 
   <ItemGroup>
