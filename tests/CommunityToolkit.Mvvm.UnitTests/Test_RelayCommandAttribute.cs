@@ -665,10 +665,10 @@ public partial class Test_RelayCommandAttribute
     {
         ModelWithPartialCommandMethods model = new();
 
-        Assert.IsInstanceOfType<RelayCommand>(model.FooCommand);
-        Assert.IsInstanceOfType<RelayCommand<string>>(model.BarCommand);
-        Assert.IsInstanceOfType<RelayCommand>(model.BazCommand);
-        Assert.IsInstanceOfType<AsyncRelayCommand>(model.FooBarCommand);
+        _ = Assert.IsInstanceOfType<RelayCommand>(model.FooCommand);
+        _ = Assert.IsInstanceOfType<RelayCommand<string>>(model.BarCommand);
+        _ = Assert.IsInstanceOfType<RelayCommand>(model.BazCommand);
+        _ = Assert.IsInstanceOfType<AsyncRelayCommand>(model.FooBarCommand);
 
         FieldInfo bazField = typeof(ModelWithPartialCommandMethods).GetField("bazCommand", BindingFlags.Instance | BindingFlags.NonPublic)!;
 
