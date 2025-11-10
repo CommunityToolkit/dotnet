@@ -91,20 +91,20 @@ public partial class Test_MemoryStream
             Assert.AreEqual(stream.Position, i + 1);
         }
 
-        Assert.HasCount(stream.Position, array);
+        Assert.HasCount((int)stream.Position, array);
 
         // These should not throw, seeking to the end is valid
         stream.Position = stream.Position;
-        Assert.HasCount(stream.Position, array);
+        Assert.HasCount((int)stream.Position, array);
 
         _ = stream.Seek(array.Length, SeekOrigin.Begin);
-        Assert.HasCount(stream.Position, array);
+        Assert.HasCount((int)stream.Position, array);
 
         _ = stream.Seek(0, SeekOrigin.Current);
-        Assert.HasCount(stream.Position, array);
+        Assert.HasCount((int)stream.Position, array);
 
         _ = stream.Seek(0, SeekOrigin.End);
-        Assert.HasCount(stream.Position, array);
+        Assert.HasCount((int)stream.Position, array);
     }
 
     [TestMethod]
@@ -116,7 +116,7 @@ public partial class Test_MemoryStream
 
         stream.Write(data, 0, data.Length);
 
-        Assert.HasCount(stream.Position, data);
+        Assert.HasCount((int)stream.Position, data);
 
         stream.Position = 0;
 
@@ -125,7 +125,7 @@ public partial class Test_MemoryStream
         int bytesRead = stream.Read(result, 0, result.Length);
 
         Assert.HasCount(bytesRead, result);
-        Assert.HasCount(stream.Position, data);
+        Assert.HasCount((int)stream.Position, data);
         Assert.IsTrue(data.AsSpan().SequenceEqual(result));
 
         _ = Assert.ThrowsExactly<ArgumentNullException>(() => stream.Write(null!, 0, 10));
@@ -148,7 +148,7 @@ public partial class Test_MemoryStream
 
         await stream.WriteAsync(data, 0, data.Length);
 
-        Assert.HasCount(stream.Position, data);
+        Assert.HasCount((int)stream.Position, data);
 
         stream.Position = 0;
 
@@ -157,7 +157,7 @@ public partial class Test_MemoryStream
         int bytesRead = await stream.ReadAsync(result, 0, result.Length);
 
         Assert.HasCount(bytesRead, result);
-        Assert.HasCount(stream.Position, data);
+        Assert.HasCount((int)stream.Position, data);
         Assert.IsTrue(data.AsSpan().SequenceEqual(result));
 
         _ = await Assert.ThrowsExactlyAsync<ArgumentNullException>(() => stream.WriteAsync(null!, 0, 10));
