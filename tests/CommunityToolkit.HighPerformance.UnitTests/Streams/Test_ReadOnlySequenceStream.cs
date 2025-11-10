@@ -26,7 +26,7 @@ public partial class Test_ReadOnlySequenceStream
         Assert.IsTrue(stream.CanSeek);
         Assert.IsFalse(stream.CanWrite);
         Assert.AreEqual(stream.Length, sequence.Length);
-        Assert.AreEqual(stream.Position, 0);
+        Assert.AreEqual(0, stream.Position);
 
         stream.Dispose();
 
@@ -43,11 +43,11 @@ public partial class Test_ReadOnlySequenceStream
     {
         Stream stream = CreateReadOnlySequence(new byte[50], new byte[50]).AsStream();
 
-        Assert.AreEqual(stream.Position, 0);
+        Assert.AreEqual(0, stream.Position);
 
         stream.Position = 42;
 
-        Assert.AreEqual(stream.Position, 42);
+        Assert.AreEqual(42, stream.Position);
 
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => stream.Position = -1);
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => stream.Position = 120);
@@ -57,7 +57,7 @@ public partial class Test_ReadOnlySequenceStream
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => stream.Seek(-1, SeekOrigin.Begin));
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => stream.Seek(120, SeekOrigin.Begin));
 
-        Assert.AreEqual(stream.Position, 0);
+        Assert.AreEqual(0, stream.Position);
 
         _ = stream.Seek(-1, SeekOrigin.End);
 
@@ -73,7 +73,7 @@ public partial class Test_ReadOnlySequenceStream
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => stream.Seek(-64, SeekOrigin.Current));
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => stream.Seek(80, SeekOrigin.Current));
 
-        Assert.AreEqual(stream.Position, 32);
+        Assert.AreEqual(32, stream.Position);
     }
 
     [TestMethod]
@@ -89,7 +89,7 @@ public partial class Test_ReadOnlySequenceStream
 
         int bytesRead = stream.Read(result, 0, result.Length);
 
-        Assert.AreEqual(bytesRead, result.Length);
+        Assert.HasCount(bytesRead, result);
         Assert.AreEqual(stream.Position, data.Length);
         Assert.IsTrue(data.Span.SequenceEqual(result));
 
@@ -113,7 +113,7 @@ public partial class Test_ReadOnlySequenceStream
 
         int bytesRead = stream.Read(result, 0, result.Length);
 
-        Assert.AreEqual(bytesRead, result.Length);
+        Assert.HasCount(bytesRead, result);
         Assert.AreEqual(stream.Position, result.Length + offset);
         Assert.IsTrue(data.Span.Slice(offset).SequenceEqual(result));
 
@@ -141,7 +141,7 @@ public partial class Test_ReadOnlySequenceStream
 
         int exitCode = stream.ReadByte();
 
-        Assert.AreEqual(exitCode, -1);
+        Assert.AreEqual(-1, exitCode);
     }
 
     [TestMethod]

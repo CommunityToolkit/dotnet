@@ -351,7 +351,7 @@ public partial class Test_Guard
         }
         catch (ArgumentException e)
         {
-            Assert.IsTrue(e.Message.Contains("\"Hello world\""));
+            Assert.Contains("\"Hello world\"", e.Message);
 
             return;
         }
@@ -377,7 +377,7 @@ public partial class Test_Guard
         }
         catch (ArgumentException e)
         {
-            Assert.IsTrue(e.Message.Contains($"This is an interpolated message: {DateTime.Now.Year}, {"hello".AsSpan()}"));
+            Assert.Contains($"This is an interpolated message: {DateTime.Now.Year}, {"hello".AsSpan()}", e.Message);
 
             return;
         }
@@ -410,7 +410,7 @@ public partial class Test_Guard
         }
         catch (ArgumentException e)
         {
-            Assert.IsTrue(e.Message.Contains("\"Hello world\""));
+            Assert.Contains("\"Hello world\"", e.Message);
 
             return;
         }
@@ -434,7 +434,7 @@ public partial class Test_Guard
         }
         catch (ArgumentException e)
         {
-            Assert.IsTrue(e.Message.Contains($"This is an interpolated message: {DateTime.Now.Year}, {"hello".AsSpan()}"));
+            Assert.Contains($"This is an interpolated message: {DateTime.Now.Year}, {"hello".AsSpan()}", e.Message);
 
             return;
         }
@@ -731,7 +731,7 @@ public partial class Test_Guard
         }
         catch (ArgumentNullException e)
         {
-            Assert.AreEqual(e.ParamName, nameof(thisStringShouldNotBeNull));
+            Assert.AreEqual(nameof(thisStringShouldNotBeNull), e.ParamName);
 
             return;
         }
@@ -751,7 +751,7 @@ public partial class Test_Guard
         }
         catch (ArgumentOutOfRangeException e)
         {
-            Assert.AreEqual(e.ParamName, nameof(thisIndexIsOutOfRange));
+            Assert.AreEqual(nameof(thisIndexIsOutOfRange), e.ParamName);
 
             return;
         }
@@ -771,7 +771,7 @@ public partial class Test_Guard
         }
         catch (ArgumentException e)
         {
-            Assert.AreEqual(e.ParamName, nameof(thisArrayShouldNotBeShorterThan10));
+            Assert.AreEqual(nameof(thisArrayShouldNotBeShorterThan10), e.ParamName);
 
             return;
         }

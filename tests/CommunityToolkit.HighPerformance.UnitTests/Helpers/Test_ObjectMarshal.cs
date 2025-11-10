@@ -107,7 +107,7 @@ public class Test_ObjectMarshal
         success = obj.TryUnbox(out decimal test);
 
         Assert.IsFalse(success);
-        Assert.AreEqual(test, default);
+        Assert.AreEqual(default, test);
 
         result = ObjectMarshal.DangerousUnbox<T>(obj);
 

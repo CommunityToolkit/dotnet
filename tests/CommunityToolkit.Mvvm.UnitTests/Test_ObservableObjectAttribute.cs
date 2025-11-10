@@ -48,10 +48,10 @@ public partial class Test_ObservableObjectAttribute
 
         model.Data = 42;
 
-        Assert.AreEqual(changing.Item1?.PropertyName, nameof(SampleModel.Data));
-        Assert.AreEqual(changing.Item2, 0);
-        Assert.AreEqual(changed.Item1?.PropertyName, nameof(SampleModel.Data));
-        Assert.AreEqual(changed.Item2, 42);
+        Assert.AreEqual(nameof(SampleModel.Data), changing.Item1?.PropertyName);
+        Assert.AreEqual(0, changing.Item2);
+        Assert.AreEqual(nameof(SampleModel.Data), changed.Item1?.PropertyName);
+        Assert.AreEqual(42, changed.Item2);
     }
 
     [TestMethod]
@@ -89,10 +89,10 @@ public partial class Test_ObservableObjectAttribute
 
         model.Data = 42;
 
-        Assert.AreEqual(changing.Item1?.PropertyName, nameof(SampleModelSealed.Data));
-        Assert.AreEqual(changing.Item2, 0);
-        Assert.AreEqual(changed.Item1?.PropertyName, nameof(SampleModelSealed.Data));
-        Assert.AreEqual(changed.Item2, 42);
+        Assert.AreEqual(nameof(SampleModelSealed.Data), changing.Item1?.PropertyName);
+        Assert.AreEqual(0, changing.Item2);
+        Assert.AreEqual(nameof(SampleModelSealed.Data), changed.Item1?.PropertyName);
+        Assert.AreEqual(42, changed.Item2);
     }
 
     [ObservableObject]

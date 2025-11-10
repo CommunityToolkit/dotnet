@@ -35,16 +35,16 @@ public class Test_ObservableValidator
         // properties were broadcast as well (both the changed property and HasErrors). We need
         // this last one to raise notifications too so that users can bind to that in the UI.
         Assert.IsTrue(model.HasErrors);
-        Assert.AreEqual(args.Count, 2);
-        Assert.AreEqual(args[0].PropertyName, nameof(Person.Name));
-        Assert.AreEqual(args[1].PropertyName, nameof(INotifyDataErrorInfo.HasErrors));
+        Assert.HasCount(2, args);
+        Assert.AreEqual(nameof(Person.Name), args[0].PropertyName);
+        Assert.AreEqual(nameof(INotifyDataErrorInfo.HasErrors), args[1].PropertyName);
 
         model.Name = "Valid";
 
         Assert.IsFalse(model.HasErrors);
-        Assert.AreEqual(args.Count, 4);
-        Assert.AreEqual(args[2].PropertyName, nameof(Person.Name));
-        Assert.AreEqual(args[3].PropertyName, nameof(INotifyDataErrorInfo.HasErrors));
+        Assert.HasCount(4, args);
+        Assert.AreEqual(nameof(Person.Name), args[2].PropertyName);
+        Assert.AreEqual(nameof(INotifyDataErrorInfo.HasErrors), args[3].PropertyName);
     }
 
     [TestMethod]
@@ -58,31 +58,31 @@ public class Test_ObservableValidator
 
         model.Name = "Foo";
 
-        Assert.AreEqual(errors.Count, 1);
+        Assert.HasCount(1, errors);
         Assert.AreSame(errors[0].Sender, model);
-        Assert.AreEqual(errors[0].Args.PropertyName, nameof(Person.Name));
+        Assert.AreEqual(nameof(Person.Name), errors[0].Args.PropertyName);
 
         errors.Clear();
 
         model.Name = "Bar";
 
-        Assert.AreEqual(errors.Count, 1);
+        Assert.HasCount(1, errors);
         Assert.AreSame(errors[0].Sender, model);
-        Assert.AreEqual(errors[0].Args.PropertyName, nameof(Person.Name));
+        Assert.AreEqual(nameof(Person.Name), errors[0].Args.PropertyName);
 
         errors.Clear();
 
         model.Name = "Valid";
 
-        Assert.AreEqual(errors.Count, 1);
+        Assert.HasCount(1, errors);
         Assert.AreSame(errors[0].Sender, model);
-        Assert.AreEqual(errors[0].Args.PropertyName, nameof(Person.Name));
+        Assert.AreEqual(nameof(Person.Name), errors[0].Args.PropertyName);
 
         errors.Clear();
 
         model.Name = "This is fine";
 
-        Assert.AreEqual(errors.Count, 0);
+        Assert.IsEmpty(errors);
     }
 
     [TestMethod]
@@ -90,35 +90,35 @@ public class Test_ObservableValidator
     {
         Person? model = new();
 
-        Assert.AreEqual(model.GetErrors(null).Count(), 0);
-        Assert.AreEqual(model.GetErrors(string.Empty).Count(), 0);
-        Assert.AreEqual(model.GetErrors("ThereIsntAPropertyWithThisName").Count(), 0);
-        Assert.AreEqual(model.GetErrors(nameof(Person.Name)).Count(), 0);
+        Assert.AreEqual(0, model.GetErrors(null).Count());
+        Assert.AreEqual(0, model.GetErrors(string.Empty).Count());
+        Assert.AreEqual(0, model.GetErrors("ThereIsntAPropertyWithThisName").Count());
+        Assert.AreEqual(0, model.GetErrors(nameof(Person.Name)).Count());
 
         model.Name = "Foo";
 
         ValidationResult[]? errors = model.GetErrors(nameof(Person.Name)).ToArray();
 
-        Assert.AreEqual(errors.Length, 1);
-        Assert.AreEqual(errors[0].MemberNames.First(), nameof(Person.Name));
+        Assert.HasCount(1, errors);
+        Assert.AreEqual(nameof(Person.Name), errors[0].MemberNames.First());
 
-        Assert.AreEqual(model.GetErrors("ThereIsntAPropertyWithThisName").Count(), 0);
+        Assert.AreEqual(0, model.GetErrors("ThereIsntAPropertyWithThisName").Count());
 
         errors = model.GetErrors(null).ToArray();
 
-        Assert.AreEqual(errors.Length, 1);
-        Assert.AreEqual(errors[0].MemberNames.First(), nameof(Person.Name));
+        Assert.HasCount(1, errors);
+        Assert.AreEqual(nameof(Person.Name), errors[0].MemberNames.First());
 
         errors = model.GetErrors(string.Empty).ToArray();
 
-        Assert.AreEqual(errors.Length, 1);
-        Assert.AreEqual(errors[0].MemberNames.First(), nameof(Person.Name));
+        Assert.HasCount(1, errors);
+        Assert.AreEqual(nameof(Person.Name), errors[0].MemberNames.First());
 
         model.Age = -1;
 
         errors = model.GetErrors(null).ToArray();
 
-        Assert.AreEqual(errors.Length, 2);
+        Assert.HasCount(2, errors);
         Assert.IsTrue(errors.Any(e => e.MemberNames.First().Equals(nameof(Person.Name))));
         Assert.IsTrue(errors.Any(e => e.MemberNames.First().Equals(nameof(Person.Age))));
 
@@ -126,7 +126,7 @@ public class Test_ObservableValidator
 
         errors = model.GetErrors(null).ToArray();
 
-        Assert.AreEqual(errors.Length, 1);
+        Assert.HasCount(1, errors);
         Assert.IsTrue(errors.Any(e => e.MemberNames.First().Equals(nameof(Person.Name))));
         Assert.IsFalse(errors.Any(e => e.MemberNames.First().Equals(nameof(Person.Age))));
     }
@@ -146,7 +146,7 @@ public class Test_ObservableValidator
 
         if (isValid)
         {
-            Assert.IsTrue(!model.GetErrors(nameof(Person.Name)).Any());
+            Assert.IsFalse(model.GetErrors(nameof(Person.Name)).Any());
         }
         else
         {
@@ -164,30 +164,30 @@ public class Test_ObservableValidator
 
         // Set a correct value, this should update the property
         Assert.IsTrue(model.TrySetName("Hello", out IReadOnlyCollection<ValidationResult>? errors));
-        Assert.IsTrue(errors.Count == 0);
-        Assert.IsTrue(events.Count == 0);
-        Assert.AreEqual(model.Name, "Hello");
+        Assert.IsEmpty(errors);
+        Assert.IsEmpty(events);
+        Assert.AreEqual("Hello", model.Name);
         Assert.IsFalse(model.HasErrors);
 
         // Invalid value #1, this should be ignored
         Assert.IsFalse(model.TrySetName(null, out errors));
-        Assert.IsTrue(errors.Count > 0);
-        Assert.IsTrue(events.Count == 0);
-        Assert.AreEqual(model.Name, "Hello");
+        Assert.IsNotEmpty(errors);
+        Assert.IsEmpty(events);
+        Assert.AreEqual("Hello", model.Name);
         Assert.IsFalse(model.HasErrors);
 
         // Invalid value #2, same as above
         Assert.IsFalse(model.TrySetName("This string is too long for the target property in this model and should fail", out errors));
-        Assert.IsTrue(errors.Count > 0);
-        Assert.IsTrue(events.Count == 0);
-        Assert.AreEqual(model.Name, "Hello");
+        Assert.IsNotEmpty(errors);
+        Assert.IsEmpty(events);
+        Assert.AreEqual("Hello", model.Name);
         Assert.IsFalse(model.HasErrors);
 
         // Correct value, this should update the property
         Assert.IsTrue(model.TrySetName("Hello world", out errors));
-        Assert.IsTrue(errors.Count == 0);
-        Assert.IsTrue(events.Count == 0);
-        Assert.AreEqual(model.Name, "Hello world");
+        Assert.IsEmpty(errors);
+        Assert.IsEmpty(events);
+        Assert.AreEqual("Hello world", model.Name);
         Assert.IsFalse(model.HasErrors);
 
         // Actually set an invalid value to show some errors
@@ -195,16 +195,16 @@ public class Test_ObservableValidator
 
         // Errors should now be present
         Assert.IsTrue(model.HasErrors);
-        Assert.IsTrue(events.Count == 1);
+        Assert.HasCount(1, events);
         Assert.IsTrue(model.GetErrors(nameof(Person.Name)).Any());
         Assert.IsTrue(model.HasErrors);
 
         // Trying to set a correct property should clear the errors
         Assert.IsTrue(model.TrySetName("This is fine", out errors));
-        Assert.IsTrue(errors.Count == 0);
-        Assert.IsTrue(events.Count == 2);
+        Assert.IsEmpty(errors);
+        Assert.HasCount(2, events);
         Assert.IsFalse(model.HasErrors);
-        Assert.AreEqual(model.Name, "This is fine");
+        Assert.AreEqual("This is fine", model.Name);
     }
 
     [TestMethod]
@@ -219,14 +219,14 @@ public class Test_ObservableValidator
         model.A = 42;
         model.B = 30;
 
-        Assert.AreEqual(events.Count, 0);
+        Assert.IsEmpty(events);
         Assert.IsFalse(model.HasErrors);
 
         // Make B greater than A, hence invalidating A
         model.B = 50;
 
-        Assert.AreEqual(events.Count, 1);
-        Assert.AreEqual(events.Last().PropertyName, nameof(ComparableModel.A));
+        Assert.HasCount(1, events);
+        Assert.AreEqual(nameof(ComparableModel.A), events.Last().PropertyName);
         Assert.IsTrue(model.HasErrors);
 
         events.Clear();
@@ -234,9 +234,9 @@ public class Test_ObservableValidator
         // Make A greater than B, hence making it valid again
         model.A = 51;
 
-        Assert.AreEqual(events.Count, 1);
-        Assert.AreEqual(events.Last().PropertyName, nameof(ComparableModel.A));
-        Assert.AreEqual(model.GetErrors(nameof(ComparableModel.A)).Count(), 0);
+        Assert.HasCount(1, events);
+        Assert.AreEqual(nameof(ComparableModel.A), events.Last().PropertyName);
+        Assert.AreEqual(0, model.GetErrors(nameof(ComparableModel.A)).Count());
         Assert.IsFalse(model.HasErrors);
 
         events.Clear();
@@ -244,9 +244,9 @@ public class Test_ObservableValidator
         // Make A smaller than B, hence invalidating it
         model.A = 49;
 
-        Assert.AreEqual(events.Count, 1);
-        Assert.AreEqual(events.Last().PropertyName, nameof(ComparableModel.A));
-        Assert.AreEqual(model.GetErrors(nameof(ComparableModel.A)).Count(), 1);
+        Assert.HasCount(1, events);
+        Assert.AreEqual(nameof(ComparableModel.A), events.Last().PropertyName);
+        Assert.AreEqual(1, model.GetErrors(nameof(ComparableModel.A)).Count());
         Assert.IsTrue(model.HasErrors);
 
         events.Clear();
@@ -254,9 +254,9 @@ public class Test_ObservableValidator
         // Lower B, hence making A valid again
         model.B = 20;
 
-        Assert.AreEqual(events.Count, 1);
-        Assert.AreEqual(events.Last().PropertyName, nameof(ComparableModel.A));
-        Assert.AreEqual(model.GetErrors(nameof(ComparableModel.A)).Count(), 0);
+        Assert.HasCount(1, events);
+        Assert.AreEqual(nameof(ComparableModel.A), events.Last().PropertyName);
+        Assert.AreEqual(0, model.GetErrors(nameof(ComparableModel.A)).Count());
         Assert.IsFalse(model.HasErrors);
     }
 
@@ -276,7 +276,7 @@ public class Test_ObservableValidator
         model.ClearErrors(nameof(Person.Age));
 
         Assert.IsFalse(model.HasErrors);
-        Assert.IsTrue(events.Count == 2);
+        Assert.HasCount(2, events);
 
         model.Age = 200;
         model.Name = "Bo";
@@ -290,9 +290,9 @@ public class Test_ObservableValidator
         Assert.IsFalse(model.HasErrors);
         Assert.IsFalse(model.GetErrors(nameof(Person.Age)).Any());
         Assert.IsFalse(model.GetErrors(nameof(Person.Name)).Any());
-        Assert.IsTrue(events.Count == 2);
-        Assert.IsTrue(events[0].PropertyName == nameof(Person.Age));
-        Assert.IsTrue(events[1].PropertyName == nameof(Person.Name));
+        Assert.HasCount(2, events);
+        Assert.AreEqual(nameof(Person.Age), events[0].PropertyName);
+        Assert.AreEqual(nameof(Person.Name), events[1].PropertyName);
     }
 
     [TestMethod]
@@ -306,7 +306,7 @@ public class Test_ObservableValidator
         model.ValidateAllProperties();
 
         Assert.IsTrue(model.HasErrors);
-        Assert.IsTrue(events.Count == 2);
+        Assert.HasCount(2, events);
 
         // Note: we can't use an index here because the order used to return properties
         // from reflection APIs is an implementation detail and might change at any time.
@@ -321,7 +321,7 @@ public class Test_ObservableValidator
         model.ValidateAllProperties();
 
         Assert.IsFalse(model.HasErrors);
-        Assert.IsTrue(events.Count == 2);
+        Assert.HasCount(2, events);
         Assert.IsTrue(events.Any(e => e.PropertyName == nameof(Person.Name)));
         Assert.IsTrue(events.Any(e => e.PropertyName == nameof(Person.Age)));
 
@@ -332,7 +332,7 @@ public class Test_ObservableValidator
         model.ValidateAllProperties();
 
         Assert.IsTrue(model.HasErrors);
-        Assert.IsTrue(events.Count == 1);
+        Assert.HasCount(1, events);
         Assert.IsTrue(events.Any(e => e.PropertyName == nameof(Person.Age)));
     }
 
@@ -352,7 +352,7 @@ public class Test_ObservableValidator
         validationAction(model);
 
         Assert.IsTrue(model.HasErrors);
-        Assert.IsTrue(events.Count == 2);
+        Assert.HasCount(2, events);
 
         // Note: we can't use an index here because the order used to return properties
         // from reflection APIs is an implementation detail and might change at any time.
@@ -367,7 +367,7 @@ public class Test_ObservableValidator
         validationAction(model);
 
         Assert.IsFalse(model.HasErrors);
-        Assert.IsTrue(events.Count == 2);
+        Assert.HasCount(2, events);
         Assert.IsTrue(events.Any(e => e.PropertyName == nameof(Person.Name)));
         Assert.IsTrue(events.Any(e => e.PropertyName == nameof(Person.Age)));
 
@@ -378,7 +378,7 @@ public class Test_ObservableValidator
         validationAction(model);
 
         Assert.IsTrue(model.HasErrors);
-        Assert.IsTrue(events.Count == 1);
+        Assert.HasCount(1, events);
         Assert.IsTrue(events.Any(e => e.PropertyName == nameof(Person.Age)));
     }
 
@@ -394,7 +394,7 @@ public class Test_ObservableValidator
         model.ValidateAllProperties();
 
         Assert.IsTrue(model.HasErrors);
-        Assert.IsTrue(events.Count == 2);
+        Assert.HasCount(2, events);
 
         Assert.IsTrue(events.Any(e => e.PropertyName == nameof(PersonWithPartialDeclaration.Name)));
         Assert.IsTrue(events.Any(e => e.PropertyName == nameof(PersonWithPartialDeclaration.Number)));
@@ -407,7 +407,7 @@ public class Test_ObservableValidator
         model.ValidateAllProperties();
 
         Assert.IsFalse(model.HasErrors);
-        Assert.IsTrue(events.Count == 2);
+        Assert.HasCount(2, events);
         Assert.IsTrue(events.Any(e => e.PropertyName == nameof(PersonWithPartialDeclaration.Name)));
         Assert.IsTrue(events.Any(e => e.PropertyName == nameof(PersonWithPartialDeclaration.Number)));
     }
@@ -424,7 +424,7 @@ public class Test_ObservableValidator
         model.A = 10;
 
         Assert.IsFalse(model.HasErrors);
-        Assert.AreEqual(events.Count, 0);
+        Assert.IsEmpty(events);
     }
 
     [TestMethod]
@@ -438,28 +438,28 @@ public class Test_ObservableValidator
         model.Name = "This is a valid name";
 
         Assert.IsFalse(model.HasErrors);
-        Assert.AreEqual(events.Count, 0);
+        Assert.IsEmpty(events);
 
         model.Name = "This is invalid238!!";
 
         Assert.IsTrue(model.HasErrors);
-        Assert.AreEqual(events.Count, 1);
-        Assert.AreEqual(events[0].PropertyName, nameof(ValidationWithServiceModel.Name));
-        Assert.AreEqual(model.GetErrors(nameof(ValidationWithServiceModel.Name)).ToArray().Length, 1);
+        Assert.HasCount(1, events);
+        Assert.AreEqual(nameof(ValidationWithServiceModel.Name), events[0].PropertyName);
+        Assert.HasCount(1, model.GetErrors(nameof(ValidationWithServiceModel.Name)).ToArray());
 
         model.Name = "This is valid but it is too long so the validation will fail anyway";
 
         Assert.IsTrue(model.HasErrors);
-        Assert.AreEqual(events.Count, 2);
-        Assert.AreEqual(events[1].PropertyName, nameof(ValidationWithServiceModel.Name));
-        Assert.AreEqual(model.GetErrors(nameof(ValidationWithServiceModel.Name)).ToArray().Length, 1);
+        Assert.HasCount(2, events);
+        Assert.AreEqual(nameof(ValidationWithServiceModel.Name), events[1].PropertyName);
+        Assert.HasCount(1, model.GetErrors(nameof(ValidationWithServiceModel.Name)).ToArray());
 
         model.Name = "This is both too long and it also contains invalid characters, a real disaster!";
 
         Assert.IsTrue(model.HasErrors);
-        Assert.AreEqual(events.Count, 3);
-        Assert.AreEqual(events[2].PropertyName, nameof(ValidationWithServiceModel.Name));
-        Assert.AreEqual(model.GetErrors(nameof(ValidationWithServiceModel.Name)).ToArray().Length, 2);
+        Assert.HasCount(3, events);
+        Assert.AreEqual(nameof(ValidationWithServiceModel.Name), events[2].PropertyName);
+        Assert.HasCount(2, model.GetErrors(nameof(ValidationWithServiceModel.Name)).ToArray());
     }
 
     [TestMethod]
@@ -472,15 +472,15 @@ public class Test_ObservableValidator
         // We need to order because there is no guaranteed order on the members of a type
         ValidationResult[] allErrors = model.GetErrors().OrderBy(error => error.ErrorMessage).ToArray();
 
-        Assert.AreEqual(allErrors.Length, 2);
+        Assert.HasCount(2, allErrors);
 
-        Assert.AreEqual(allErrors[0].MemberNames.Count(), 1);
-        Assert.AreEqual(allErrors[0].MemberNames.Single(), nameof(ValidationWithDisplayName.StringMayNotBeEmpty));
-        Assert.AreEqual(allErrors[0].ErrorMessage, $"FIRST: {nameof(ValidationWithDisplayName.StringMayNotBeEmpty)}.");
+        Assert.AreEqual(1, allErrors[0].MemberNames.Count());
+        Assert.AreEqual(nameof(ValidationWithDisplayName.StringMayNotBeEmpty), allErrors[0].MemberNames.Single());
+        Assert.AreEqual($"FIRST: {nameof(ValidationWithDisplayName.StringMayNotBeEmpty)}.", allErrors[0].ErrorMessage);
 
-        Assert.AreEqual(allErrors[1].MemberNames.Count(), 1);
-        Assert.AreEqual(allErrors[1].MemberNames.Single(), nameof(ValidationWithDisplayName.AnotherRequiredField));
-        Assert.AreEqual(allErrors[1].ErrorMessage, $"SECOND: {nameof(ValidationWithDisplayName.AnotherRequiredField)}.");
+        Assert.AreEqual(1, allErrors[1].MemberNames.Count());
+        Assert.AreEqual(nameof(ValidationWithDisplayName.AnotherRequiredField), allErrors[1].MemberNames.Single());
+        Assert.AreEqual($"SECOND: {nameof(ValidationWithDisplayName.AnotherRequiredField)}.", allErrors[1].ErrorMessage);
     }
 
     // See: https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4272
@@ -554,7 +554,7 @@ public class Test_ObservableValidator
         ValidationResult[] errors = model.GetErrors(nameof(model.Value)).ToArray();
 
         Assert.IsNotNull(errors);
-        Assert.AreEqual(errors.Length, 1);
+        Assert.HasCount(1, errors);
 
         CollectionAssert.AreEqual(errors[0].MemberNames.ToArray(), new[] { nameof(model.Value) });
 
@@ -577,7 +577,7 @@ public class Test_ObservableValidator
         model.ValidateAllProperties();
 
         Assert.IsTrue(model.HasErrors);
-        Assert.IsTrue(events.Count == 2);
+        Assert.HasCount(2, events);
 
         Assert.IsTrue(events.Any(e => e.PropertyName == nameof(DerivedModelWithValidatableProperties.Name)));
         Assert.IsTrue(events.Any(e => e.PropertyName == nameof(DerivedModelWithValidatableProperties.Number)));
@@ -589,7 +589,7 @@ public class Test_ObservableValidator
         model.ValidateAllProperties();
 
         Assert.IsTrue(model.HasErrors);
-        Assert.IsTrue(events.Count == 2);
+        Assert.HasCount(2, events);
 
         Assert.IsTrue(events.Any(e => e.PropertyName == nameof(DerivedModelWithValidatableProperties.Name)));
         Assert.IsTrue(events.Any(e => e.PropertyName == nameof(DerivedModelWithValidatableProperties.Number)));
@@ -605,7 +605,7 @@ public class Test_ObservableValidator
         model.ValidateAllProperties();
 
         Assert.IsFalse(model.HasErrors);
-        Assert.IsTrue(events.Count == 1);
+        Assert.HasCount(1, events);
 
         Assert.IsTrue(events.Any(e => e.PropertyName == nameof(DerivedModelWithValidatableProperties.Name)));
     }
@@ -749,7 +749,7 @@ public class Test_ObservableValidator
 
         public static ValidationResult ValidateA(int x, ValidationContext context)
         {
-            Assert.AreEqual(context.MemberName, nameof(A));
+            Assert.AreEqual(nameof(A), context.MemberName);
 
             if ((int)context.Items[nameof(A)]! == 42)
             {

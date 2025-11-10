@@ -16,4 +16,9 @@
     <None Include="$(RepositoryDirectory)ThirdPartyNotices.txt" Pack="true" PackagePath="\" Visible="False" />
   </ItemGroup>
 
+  <!-- Run tests in parallel by default -->
+  <ItemGroup Condition="$(IsTestProject)">
+    <AssemblyAttribute Include="Microsoft.VisualStudio.TestTools.UnitTesting.ParallelizeAttribute"/>
+  </ItemGroup>
+
 </Project>

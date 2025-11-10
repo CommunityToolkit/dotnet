@@ -54,13 +54,13 @@ public class Test_AsyncRelayCommandOfT
 
         Assert.IsFalse(command.IsRunning);
 
-        Assert.AreEqual(ticks, 42);
+        Assert.AreEqual(42, ticks);
 
         command.Execute("2");
 
         await command.ExecutionTask!;
 
-        Assert.AreEqual(ticks, 2);
+        Assert.AreEqual(2, ticks);
 
         ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(new object()), "parameter");
         ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(42), "parameter");
@@ -86,11 +86,11 @@ public class Test_AsyncRelayCommandOfT
 
         command.Execute("42");
 
-        Assert.AreEqual(ticks, 42);
+        Assert.AreEqual(42, ticks);
 
         command.Execute("2");
 
-        Assert.AreEqual(ticks, 2);
+        Assert.AreEqual(2, ticks);
 
         ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(new object()), "parameter");
         ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(42), "parameter");
@@ -117,11 +117,11 @@ public class Test_AsyncRelayCommandOfT
         command.Execute("2");
 
         // Like in the RelayCommand test, ensure Execute is unconditionally invoked
-        Assert.AreEqual(ticks, 2);
+        Assert.AreEqual(2, ticks);
 
         command.Execute("42");
 
-        Assert.AreEqual(ticks, 42);
+        Assert.AreEqual(42, ticks);
 
         ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(new object()), "parameter");
         ExceptionHelper.ThrowsArgumentExceptionWithParameterName(() => command.CanExecute(42), "parameter");
@@ -197,17 +197,17 @@ public class Test_AsyncRelayCommandOfT
         Assert.IsTrue(command.CanBeCanceled);
         Assert.IsFalse(command.IsCancellationRequested);
 
-        Assert.AreEqual(args.Count, 4);
-        Assert.AreEqual(args[0].PropertyName, nameof(IAsyncRelayCommand.ExecutionTask));
-        Assert.AreEqual(args[1].PropertyName, nameof(IAsyncRelayCommand.IsRunning));
-        Assert.AreEqual(args[2].PropertyName, nameof(IAsyncRelayCommand.CanBeCanceled));
-        Assert.AreEqual(args[3].PropertyName, nameof(IAsyncRelayCommand.IsCancellationRequested));
+        Assert.HasCount(4, args);
+        Assert.AreEqual(nameof(IAsyncRelayCommand.ExecutionTask), args[0].PropertyName);
+        Assert.AreEqual(nameof(IAsyncRelayCommand.IsRunning), args[1].PropertyName);
+        Assert.AreEqual(nameof(IAsyncRelayCommand.CanBeCanceled), args[2].PropertyName);
+        Assert.AreEqual(nameof(IAsyncRelayCommand.IsCancellationRequested), args[3].PropertyName);
 
         command.Cancel();
 
-        Assert.AreEqual(args.Count, 6);
-        Assert.AreEqual(args[4].PropertyName, nameof(IAsyncRelayCommand.CanBeCanceled));
-        Assert.AreEqual(args[5].PropertyName, nameof(IAsyncRelayCommand.IsCancellationRequested));
+        Assert.HasCount(6, args);
+        Assert.AreEqual(nameof(IAsyncRelayCommand.CanBeCanceled), args[4].PropertyName);
+        Assert.AreEqual(nameof(IAsyncRelayCommand.IsCancellationRequested), args[5].PropertyName);
 
         Assert.IsTrue(command.IsCancellationRequested);
 
@@ -589,7 +589,7 @@ public class Test_AsyncRelayCommandOfT
 
         command.Execute(null);
 
-        Assert.AreEqual(1, cancelCommandCanExecuteChangedArgs.Count);
+        Assert.HasCount(1, cancelCommandCanExecuteChangedArgs);
         Assert.AreSame(cancelCommand, cancelCommandCanExecuteChangedArgs[0].Sender);
         Assert.AreSame(EventArgs.Empty, cancelCommandCanExecuteChangedArgs[0].Args);
 
@@ -598,7 +598,7 @@ public class Test_AsyncRelayCommandOfT
         cancelCommand.Execute(null);
 
         Assert.IsFalse(cancelCommand.CanExecute(null));
-        Assert.AreEqual(2, cancelCommandCanExecuteChangedArgs.Count);
+        Assert.HasCount(2, cancelCommandCanExecuteChangedArgs);
         Assert.AreSame(cancelCommand, cancelCommandCanExecuteChangedArgs[1].Sender);
         Assert.AreSame(EventArgs.Empty, cancelCommandCanExecuteChangedArgs[1].Args);
         Assert.IsFalse(command.CanBeCanceled);

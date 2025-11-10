@@ -19,9 +19,9 @@ public class Test_MemoryBufferWriterOfT
 
         MemoryBufferWriter<byte>? writer = new(memory);
 
-        Assert.AreEqual(writer.Capacity, 256);
-        Assert.AreEqual(writer.FreeCapacity, 256);
-        Assert.AreEqual(writer.WrittenCount, 0);
+        Assert.AreEqual(256, writer.Capacity);
+        Assert.AreEqual(256, writer.FreeCapacity);
+        Assert.AreEqual(0, writer.WrittenCount);
         Assert.IsTrue(writer.WrittenMemory.IsEmpty);
         Assert.IsTrue(writer.WrittenSpan.IsEmpty);
 
@@ -31,11 +31,11 @@ public class Test_MemoryBufferWriterOfT
 
         writer.Advance(43);
 
-        Assert.AreEqual(writer.Capacity, 256);
-        Assert.AreEqual(writer.FreeCapacity, 256 - 43);
-        Assert.AreEqual(writer.WrittenCount, 43);
-        Assert.AreEqual(writer.WrittenMemory.Length, 43);
-        Assert.AreEqual(writer.WrittenSpan.Length, 43);
+        Assert.AreEqual(256, writer.Capacity);
+        Assert.AreEqual(256 - 43, writer.FreeCapacity);
+        Assert.AreEqual(43, writer.WrittenCount);
+        Assert.AreEqual(43, writer.WrittenMemory.Length);
+        Assert.AreEqual(43, writer.WrittenSpan.Length);
 
         Assert.AreEqual(memory.Length - 43, writer.GetSpan().Length);
         Assert.AreEqual(memory.Length - 43, writer.GetMemory().Length);
@@ -64,12 +64,12 @@ public class Test_MemoryBufferWriterOfT
 
         writer.Advance(4);
 
-        Assert.AreEqual(writer.WrittenCount, 4);
+        Assert.AreEqual(4, writer.WrittenCount);
         Assert.IsTrue(span.SequenceEqual(data));
 
         writer.Clear();
 
-        Assert.AreEqual(writer.WrittenCount, 0);
+        Assert.AreEqual(0, writer.WrittenCount);
         Assert.IsTrue(span.ToArray().All(b => b == 0));
     }
 }

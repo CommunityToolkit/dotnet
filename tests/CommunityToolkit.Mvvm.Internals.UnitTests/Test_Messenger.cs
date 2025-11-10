@@ -41,7 +41,7 @@ public partial class Test_Messenger
 
             Assert.IsTrue(messenger.IsRegistered<MessageA>(recipient));
 
-            Assert.AreEqual(GetRecipientsMapCount(messenger), 1);
+            Assert.AreEqual(1, GetRecipientsMapCount(messenger));
 
             GC.KeepAlive(recipient);
         }
@@ -57,7 +57,7 @@ public partial class Test_Messenger
         GC.Collect();
         GC.WaitForPendingFinalizers();
 
-        Assert.AreEqual(GetRecipientsMapCount(messenger), 0);
+        Assert.AreEqual(0, GetRecipientsMapCount(messenger));
 
         GC.KeepAlive(messenger);
     }

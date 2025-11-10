@@ -23,7 +23,7 @@ public class Test_ReadOnlyObservableGroupedCollection
         ObservableGroupedCollection<string, int> source = new();
         ReadOnlyObservableGroupedCollection<string, int> readOnlyGroup = new(source);
 
-        Assert.AreEqual(readOnlyGroup.Count, 0);
+        Assert.IsEmpty(readOnlyGroup);
         CollectionAssert.AreEqual(readOnlyGroup, Array.Empty<int>());
     }
 
@@ -38,12 +38,12 @@ public class Test_ReadOnlyObservableGroupedCollection
         ObservableGroupedCollection<string, int> source = new(groups);
         ReadOnlyObservableGroupedCollection<string, int> readOnlyGroup = new(source);
 
-        Assert.AreEqual(readOnlyGroup.Count, 2);
+        Assert.HasCount(2, readOnlyGroup);
 
-        Assert.AreEqual(readOnlyGroup[0].Key, "A");
+        Assert.AreEqual("A", readOnlyGroup[0].Key);
         CollectionAssert.AreEquivalent(readOnlyGroup[0], new[] { 1, 3, 5 });
 
-        Assert.AreEqual(readOnlyGroup[1].Key, "B");
+        Assert.AreEqual("B", readOnlyGroup[1].Key);
         CollectionAssert.AreEquivalent(readOnlyGroup[1], new[] { 2, 4, 6 });
     }
 
@@ -57,12 +57,12 @@ public class Test_ReadOnlyObservableGroupedCollection
         };
         ReadOnlyObservableGroupedCollection<string, int> readOnlyGroup = new(source);
 
-        Assert.AreEqual(readOnlyGroup.Count, 2);
+        Assert.HasCount(2, readOnlyGroup);
 
-        Assert.AreEqual(readOnlyGroup[0].Key, "A");
+        Assert.AreEqual("A", readOnlyGroup[0].Key);
         CollectionAssert.AreEqual(readOnlyGroup[0], new[] { 1, 3, 5 });
 
-        Assert.AreEqual(readOnlyGroup[1].Key, "B");
+        Assert.AreEqual("B", readOnlyGroup[1].Key);
         CollectionAssert.AreEqual(readOnlyGroup[1], new[] { 2, 4, 6 });
     }
 
@@ -78,16 +78,16 @@ public class Test_ReadOnlyObservableGroupedCollection
         ReadOnlyObservableGroupedCollection<string, int> readOnlyGroup = new(source);
         IList list = readOnlyGroup;
 
-        Assert.AreEqual(list.Count, 2);
+        Assert.HasCount(2, list);
 
         ReadOnlyObservableGroup<string, int> group0 = (ReadOnlyObservableGroup<string, int>)list[0]!;
 
-        Assert.AreEqual(group0.Key, "A");
+        Assert.AreEqual("A", group0.Key);
         CollectionAssert.AreEqual(group0, new[] { 1, 3, 5 });
 
         ReadOnlyObservableGroup<string, int> group1 = (ReadOnlyObservableGroup<string, int>)list[1]!;
 
-        Assert.AreEqual(group1.Key, "B");
+        Assert.AreEqual("B", group1.Key);
         CollectionAssert.AreEqual(group1, new[] { 2, 4, 6 });
 
         Assert.IsNotNull(list.SyncRoot);
@@ -166,7 +166,7 @@ public class Test_ReadOnlyObservableGroupedCollection
 
         bool result = list.Contains(groupToSearch);
 
-        Assert.AreEqual(result, expectedResult);
+        Assert.AreEqual(expectedResult, result);
     }
 
     [TestMethod]
@@ -196,11 +196,11 @@ public class Test_ReadOnlyObservableGroupedCollection
 
         int expectedReadOnlyGroupCount = sourceInitialItemsCount + 1;
 
-        Assert.AreEqual(readOnlyGroup.Count, expectedReadOnlyGroupCount);
+        Assert.HasCount(expectedReadOnlyGroupCount, readOnlyGroup);
         Assert.AreEqual("Add", readOnlyGroup[readOnlyGroup.Count - 1].Key);
         Assert.IsTrue(isCountPropertyChangedEventRaised);
         Assert.IsNotNull(collectionChangedEventArgs);
-        Assert.AreEqual(collectionChangedEventsCount, 1);
+        Assert.AreEqual(1, collectionChangedEventsCount);
 
         bool isAddEventValid = IsAddEventValid(collectionChangedEventArgs, itemsList, expectedInsertionIndex);
 
@@ -232,11 +232,11 @@ public class Test_ReadOnlyObservableGroupedCollection
 
         source.Insert(insertionIndex, new ObservableGroup<string, int>("Add", itemsList));
 
-        Assert.AreEqual(readOnlyGroup.Count, 3);
+        Assert.HasCount(3, readOnlyGroup);
         Assert.AreEqual("Add", readOnlyGroup[insertionIndex].Key);
         Assert.IsTrue(isCountPropertyChangedEventRaised);
         Assert.IsNotNull(collectionChangedEventArgs);
-        Assert.AreEqual(collectionChangedEventsCount, 1);
+        Assert.AreEqual(1, collectionChangedEventsCount);
 
         bool isAddEventValid = IsAddEventValid(collectionChangedEventArgs, itemsList, addIndex: insertionIndex);
 
@@ -267,14 +267,14 @@ public class Test_ReadOnlyObservableGroupedCollection
 
         source.RemoveAt(1);
 
-        Assert.AreEqual(readOnlyGroup.Count, 1);
+        Assert.HasCount(1, readOnlyGroup);
 
-        Assert.AreEqual(readOnlyGroup[0].Key, "A");
+        Assert.AreEqual("A", readOnlyGroup[0].Key);
         CollectionAssert.AreEquivalent(readOnlyGroup[0], aItemsList);
 
         Assert.IsTrue(isCountPropertyChangedEventRaised);
         Assert.IsNotNull(collectionChangedEventArgs);
-        Assert.AreEqual(collectionChangedEventsCount, 1);
+        Assert.AreEqual(1, collectionChangedEventsCount);
 
         bool isRemoveEventValid = IsRemoveEventValid(collectionChangedEventArgs, bItemsList, 1);
 
@@ -312,9 +312,9 @@ public class Test_ReadOnlyObservableGroupedCollection
 
         source.Move(oldIndex, newIndex);
 
-        Assert.AreEqual(groups.Count, readOnlyGroup.Count);
+        Assert.HasCount(groups.Count, readOnlyGroup);
 
-        Assert.AreEqual(readOnlyGroup[0].Key, "B");
+        Assert.AreEqual("B", readOnlyGroup[0].Key);
         CollectionAssert.AreEquivalent(readOnlyGroup[0], bItemsList);
 
         List<IGrouping<string, int>> tempList = new(groups);
@@ -331,7 +331,7 @@ public class Test_ReadOnlyObservableGroupedCollection
 
         Assert.IsFalse(isCountPropertyChangedEventRaised);
         Assert.IsNotNull(collectionChangedEventArgs);
-        Assert.AreEqual(collectionChangedEventsCount, 1);
+        Assert.AreEqual(1, collectionChangedEventsCount);
 
         bool isMoveEventValid = IsMoveEventValid(collectionChangedEventArgs, groups[oldIndex], oldIndex, newIndex);
 
@@ -362,11 +362,11 @@ public class Test_ReadOnlyObservableGroupedCollection
 
         source.Clear();
 
-        Assert.AreEqual(readOnlyGroup.Count, 0);
+        Assert.IsEmpty(readOnlyGroup);
 
         Assert.IsTrue(isCountPropertyChangedEventRaised);
         Assert.IsNotNull(collectionChangedEventArgs);
-        Assert.AreEqual(collectionChangedEventsCount, 1);
+        Assert.AreEqual(1, collectionChangedEventsCount);
 
         bool isResetEventValid = IsResetEventValid(collectionChangedEventArgs);
 
@@ -398,17 +398,17 @@ public class Test_ReadOnlyObservableGroupedCollection
 
         source[0] = new ObservableGroup<string, int>("C", cItemsList);
 
-        Assert.AreEqual(readOnlyGroup.Count, 2);
+        Assert.HasCount(2, readOnlyGroup);
 
-        Assert.AreEqual(readOnlyGroup[0].Key, "C");
+        Assert.AreEqual("C", readOnlyGroup[0].Key);
         CollectionAssert.AreEquivalent(readOnlyGroup[0], cItemsList);
 
-        Assert.AreEqual(readOnlyGroup[1].Key, "B");
+        Assert.AreEqual("B", readOnlyGroup[1].Key);
         CollectionAssert.AreEquivalent(readOnlyGroup[1], bItemsList);
 
         Assert.IsFalse(isCountPropertyChangedEventRaised);
         Assert.IsNotNull(collectionChangedEventArgs);
-        Assert.AreEqual(collectionChangedEventsCount, 1);
+        Assert.AreEqual(1, collectionChangedEventsCount);
 
         bool isReplaceEventValid = IsReplaceEventValid(collectionChangedEventArgs, aItemsList, cItemsList);
 

@@ -26,16 +26,16 @@ public class Test_ReadOnlySpan2DT
         ReadOnlySpan2D<int> empty1 = default;
 
         Assert.IsTrue(empty1.IsEmpty);
-        Assert.AreEqual(empty1.Length, 0);
-        Assert.AreEqual(empty1.Width, 0);
-        Assert.AreEqual(empty1.Height, 0);
+        Assert.AreEqual(0, empty1.Length);
+        Assert.AreEqual(0, empty1.Width);
+        Assert.AreEqual(0, empty1.Height);
 
         ReadOnlySpan2D<string> empty2 = ReadOnlySpan2D<string>.Empty;
 
         Assert.IsTrue(empty2.IsEmpty);
-        Assert.AreEqual(empty2.Length, 0);
-        Assert.AreEqual(empty2.Width, 0);
-        Assert.AreEqual(empty2.Height, 0);
+        Assert.AreEqual(0, empty2.Length);
+        Assert.AreEqual(0, empty2.Width);
+        Assert.AreEqual(0, empty2.Height);
     }
 
 #if NET6_0_OR_GREATER
@@ -55,11 +55,11 @@ public class Test_ReadOnlySpan2DT
         ReadOnlySpan2D<int> span2d = ReadOnlySpan2D<int>.DangerousCreate(span[0], 2, 3, 0);
 
         Assert.IsFalse(span2d.IsEmpty);
-        Assert.AreEqual(span2d.Length, 6);
-        Assert.AreEqual(span2d.Width, 3);
-        Assert.AreEqual(span2d.Height, 2);
-        Assert.AreEqual(span2d[0, 0], 1);
-        Assert.AreEqual(span2d[1, 2], 6);
+        Assert.AreEqual(6, span2d.Length);
+        Assert.AreEqual(3, span2d.Width);
+        Assert.AreEqual(2, span2d.Height);
+        Assert.AreEqual(1, span2d[0, 0]);
+        Assert.AreEqual(6, span2d[1, 2]);
 
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => ReadOnlySpan2D<int>.DangerousCreate(Unsafe.AsRef<int>(null), -1, 0, 0));
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => ReadOnlySpan2D<int>.DangerousCreate(Unsafe.AsRef<int>(null), 1, -2, 0));
@@ -83,11 +83,11 @@ public class Test_ReadOnlySpan2DT
         ReadOnlySpan2D<int> span2d = new(ptr, 2, 3, 0);
 
         Assert.IsFalse(span2d.IsEmpty);
-        Assert.AreEqual(span2d.Length, 6);
-        Assert.AreEqual(span2d.Width, 3);
-        Assert.AreEqual(span2d.Height, 2);
-        Assert.AreEqual(span2d[0, 0], 1);
-        Assert.AreEqual(span2d[1, 2], 6);
+        Assert.AreEqual(6, span2d.Length);
+        Assert.AreEqual(3, span2d.Width);
+        Assert.AreEqual(2, span2d.Height);
+        Assert.AreEqual(1, span2d[0, 0]);
+        Assert.AreEqual(6, span2d[1, 2]);
 
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>((void*)0, -1, 0, 0));
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>((void*)0, 1, -2, 0));
@@ -106,11 +106,11 @@ public class Test_ReadOnlySpan2DT
         ReadOnlySpan2D<int> span2d = new(array, 1, 2, 2, 1);
 
         Assert.IsFalse(span2d.IsEmpty);
-        Assert.AreEqual(span2d.Length, 4);
-        Assert.AreEqual(span2d.Width, 2);
-        Assert.AreEqual(span2d.Height, 2);
-        Assert.AreEqual(span2d[0, 0], 2);
-        Assert.AreEqual(span2d[1, 1], 6);
+        Assert.AreEqual(4, span2d.Length);
+        Assert.AreEqual(2, span2d.Width);
+        Assert.AreEqual(2, span2d.Height);
+        Assert.AreEqual(2, span2d[0, 0]);
+        Assert.AreEqual(6, span2d[1, 1]);
 
         // Same for ReadOnlyMemory2D<T>, we need to check that covariant array conversions are allowed
         _ = new ReadOnlySpan2D<object>(new string[1], 1, 1);
@@ -134,11 +134,11 @@ public class Test_ReadOnlySpan2DT
         ReadOnlySpan2D<int> span2d = new(array);
 
         Assert.IsFalse(span2d.IsEmpty);
-        Assert.AreEqual(span2d.Length, 6);
-        Assert.AreEqual(span2d.Width, 3);
-        Assert.AreEqual(span2d.Height, 2);
-        Assert.AreEqual(span2d[0, 1], 2);
-        Assert.AreEqual(span2d[1, 2], 6);
+        Assert.AreEqual(6, span2d.Length);
+        Assert.AreEqual(3, span2d.Width);
+        Assert.AreEqual(2, span2d.Height);
+        Assert.AreEqual(2, span2d[0, 1]);
+        Assert.AreEqual(6, span2d[1, 2]);
 
         _ = new ReadOnlySpan2D<object>(new string[1, 2]);
     }
@@ -155,11 +155,11 @@ public class Test_ReadOnlySpan2DT
         ReadOnlySpan2D<int> span2d = new(array, 0, 1, 2, 2);
 
         Assert.IsFalse(span2d.IsEmpty);
-        Assert.AreEqual(span2d.Length, 4);
-        Assert.AreEqual(span2d.Width, 2);
-        Assert.AreEqual(span2d.Height, 2);
-        Assert.AreEqual(span2d[0, 0], 2);
-        Assert.AreEqual(span2d[1, 1], 6);
+        Assert.AreEqual(4, span2d.Length);
+        Assert.AreEqual(2, span2d.Width);
+        Assert.AreEqual(2, span2d.Height);
+        Assert.AreEqual(2, span2d[0, 0]);
+        Assert.AreEqual(6, span2d[1, 1]);
 
         _ = new ReadOnlySpan2D<object>(new string[1, 2]);
 
@@ -184,12 +184,12 @@ public class Test_ReadOnlySpan2DT
         ReadOnlySpan2D<int> span2d = new(array, 1);
 
         Assert.IsFalse(span2d.IsEmpty);
-        Assert.AreEqual(span2d.Length, 6);
-        Assert.AreEqual(span2d.Width, 3);
-        Assert.AreEqual(span2d.Height, 2);
-        Assert.AreEqual(span2d[0, 0], 10);
-        Assert.AreEqual(span2d[0, 1], 20);
-        Assert.AreEqual(span2d[1, 2], 60);
+        Assert.AreEqual(6, span2d.Length);
+        Assert.AreEqual(3, span2d.Width);
+        Assert.AreEqual(2, span2d.Height);
+        Assert.AreEqual(10, span2d[0, 0]);
+        Assert.AreEqual(20, span2d[0, 1]);
+        Assert.AreEqual(60, span2d[1, 2]);
 
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, -1));
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 20));
@@ -213,12 +213,12 @@ public class Test_ReadOnlySpan2DT
         ReadOnlySpan2D<int> span2d = new(array, 1, 0, 1, 2, 2);
 
         Assert.IsFalse(span2d.IsEmpty);
-        Assert.AreEqual(span2d.Length, 4);
-        Assert.AreEqual(span2d.Width, 2);
-        Assert.AreEqual(span2d.Height, 2);
-        Assert.AreEqual(span2d[0, 0], 20);
-        Assert.AreEqual(span2d[0, 1], 30);
-        Assert.AreEqual(span2d[1, 1], 60);
+        Assert.AreEqual(4, span2d.Length);
+        Assert.AreEqual(2, span2d.Width);
+        Assert.AreEqual(2, span2d.Height);
+        Assert.AreEqual(20, span2d[0, 0]);
+        Assert.AreEqual(30, span2d[0, 1]);
+        Assert.AreEqual(60, span2d[1, 1]);
 
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, -1, 1, 1, 1, 1));
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array, 1, -1, 1, 1, 1));
@@ -437,7 +437,7 @@ public class Test_ReadOnlySpan2DT
         ReadOnlySpan2D<int> span2d = new(array);
         ReadOnlySpan2D<int> slice = span2d[1.., 1..];
 
-        Assert.AreEqual(slice.Length, 9);
+        Assert.AreEqual(9, slice.Length);
         Assert.IsTrue(Unsafe.AreSame(ref array[1, 1], ref Unsafe.AsRef(in slice[0, 0])));
         Assert.IsTrue(Unsafe.AreSame(ref array[3, 3], ref Unsafe.AsRef(in slice[2, 2])));
     }
@@ -450,7 +450,7 @@ public class Test_ReadOnlySpan2DT
         ReadOnlySpan2D<int> span2d = new(array);
         ReadOnlySpan2D<int> slice = span2d[0..^2, 1..^1];
 
-        Assert.AreEqual(slice.Length, 4);
+        Assert.AreEqual(4, slice.Length);
         Assert.IsTrue(Unsafe.AreSame(ref array[0, 1], ref Unsafe.AsRef(in slice[0, 0])));
         Assert.IsTrue(Unsafe.AreSame(ref array[1, 2], ref Unsafe.AsRef(in slice[1, 1])));
     }
@@ -482,20 +482,20 @@ public class Test_ReadOnlySpan2DT
 
         ReadOnlySpan2D<int> slice1 = span2d.Slice(1, 1, 1, 2);
 
-        Assert.AreEqual(slice1.Length, 2);
-        Assert.AreEqual(slice1.Height, 1);
-        Assert.AreEqual(slice1.Width, 2);
-        Assert.AreEqual(slice1[0, 0], 5);
-        Assert.AreEqual(slice1[0, 1], 6);
+        Assert.AreEqual(2, slice1.Length);
+        Assert.AreEqual(1, slice1.Height);
+        Assert.AreEqual(2, slice1.Width);
+        Assert.AreEqual(5, slice1[0, 0]);
+        Assert.AreEqual(6, slice1[0, 1]);
 
         ReadOnlySpan2D<int> slice2 = span2d.Slice(0, 1, 2, 2);
 
-        Assert.AreEqual(slice2.Length, 4);
-        Assert.AreEqual(slice2.Height, 2);
-        Assert.AreEqual(slice2.Width, 2);
-        Assert.AreEqual(slice2[0, 0], 2);
-        Assert.AreEqual(slice2[1, 0], 5);
-        Assert.AreEqual(slice2[1, 1], 6);
+        Assert.AreEqual(4, slice2.Length);
+        Assert.AreEqual(2, slice2.Height);
+        Assert.AreEqual(2, slice2.Width);
+        Assert.AreEqual(2, slice2[0, 0]);
+        Assert.AreEqual(5, slice2[1, 0]);
+        Assert.AreEqual(6, slice2[1, 1]);
 
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).Slice(-1, 1, 1, 1));
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new ReadOnlySpan2D<int>(array).Slice(1, -1, 1, 1));
@@ -519,26 +519,26 @@ public class Test_ReadOnlySpan2DT
 
         ReadOnlySpan2D<int> slice1 = span2d.Slice(0, 0, 2, 2);
 
-        Assert.AreEqual(slice1.Length, 4);
-        Assert.AreEqual(slice1.Height, 2);
-        Assert.AreEqual(slice1.Width, 2);
-        Assert.AreEqual(slice1[0, 0], 1);
-        Assert.AreEqual(slice1[1, 1], 5);
+        Assert.AreEqual(4, slice1.Length);
+        Assert.AreEqual(2, slice1.Height);
+        Assert.AreEqual(2, slice1.Width);
+        Assert.AreEqual(1, slice1[0, 0]);
+        Assert.AreEqual(5, slice1[1, 1]);
 
         ReadOnlySpan2D<int> slice2 = slice1.Slice(1, 0, 1, 2);
 
-        Assert.AreEqual(slice2.Length, 2);
-        Assert.AreEqual(slice2.Height, 1);
-        Assert.AreEqual(slice2.Width, 2);
-        Assert.AreEqual(slice2[0, 0], 4);
-        Assert.AreEqual(slice2[0, 1], 5);
+        Assert.AreEqual(2, slice2.Length);
+        Assert.AreEqual(1, slice2.Height);
+        Assert.AreEqual(2, slice2.Width);
+        Assert.AreEqual(4, slice2[0, 0]);
+        Assert.AreEqual(5, slice2[0, 1]);
 
         ReadOnlySpan2D<int> slice3 = slice2.Slice(0, 1, 1, 1);
 
-        Assert.AreEqual(slice3.Length, 1);
-        Assert.AreEqual(slice3.Height, 1);
-        Assert.AreEqual(slice3.Width, 1);
-        Assert.AreEqual(slice3[0, 0], 5);
+        Assert.AreEqual(1, slice3.Length);
+        Assert.AreEqual(1, slice3.Height);
+        Assert.AreEqual(1, slice3.Width);
+        Assert.AreEqual(5, slice3[0, 0]);
     }
 
 #if NET6_0_OR_GREATER
@@ -605,7 +605,7 @@ public class Test_ReadOnlySpan2DT
         bool success = span2d.TryGetSpan(out ReadOnlySpan<int> span);
 
         Assert.IsFalse(success);
-        Assert.AreEqual(span.Length, 0);
+        Assert.AreEqual(0, span.Length);
     }
 
     [TestMethod]
@@ -624,7 +624,7 @@ public class Test_ReadOnlySpan2DT
 #if NETFRAMEWORK
         // Can't get a ReadOnlySpan<T> over a T[,] array on .NET Standard 2.0
         Assert.IsFalse(success);
-        Assert.AreEqual(span.Length, 0);
+        Assert.AreEqual(0, span.Length);
 #else
         Assert.IsTrue(success);
         Assert.AreEqual(span.Length, span2d.Length);
@@ -680,8 +680,8 @@ public class Test_ReadOnlySpan2DT
 
         int[,] copy = span2d.ToArray();
 
-        Assert.AreEqual(copy.GetLength(0), 2);
-        Assert.AreEqual(copy.GetLength(1), 2);
+        Assert.AreEqual(2, copy.GetLength(0));
+        Assert.AreEqual(2, copy.GetLength(1));
 
         int[,] expected =
         {
@@ -741,7 +741,7 @@ public class Test_ReadOnlySpan2DT
 
         const string expected = "CommunityToolkit.HighPerformance.ReadOnlySpan2D<System.Int32>[2, 3]";
 
-        Assert.AreEqual(text, expected);
+        Assert.AreEqual(expected, text);
     }
 
     [TestMethod]

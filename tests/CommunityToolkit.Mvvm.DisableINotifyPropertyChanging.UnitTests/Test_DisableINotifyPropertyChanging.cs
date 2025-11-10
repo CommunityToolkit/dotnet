@@ -38,8 +38,8 @@ public class Test_DisableINotifyPropertyChanging
 
         model.Data = 42;
 
-        Assert.AreEqual(changed.Item1?.PropertyName, nameof(SampleModel<int>.Data));
-        Assert.AreEqual(changed.Item2, 42);
+        Assert.AreEqual(nameof(SampleModel<int>.Data), changed.Item1?.PropertyName);
+        Assert.AreEqual(42, changed.Item2);
     }
 
     public class SampleModel<T> : ObservableObject

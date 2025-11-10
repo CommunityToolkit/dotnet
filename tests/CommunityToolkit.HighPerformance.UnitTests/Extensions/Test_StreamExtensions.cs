@@ -23,13 +23,13 @@ public class Test_StreamExtensions
         stream.Write(3.14f);
         stream.Write(unchecked(uint.MaxValue * 324823489204ul));
 
-        Assert.AreEqual(stream.Position, 17);
+        Assert.AreEqual(17, stream.Position);
 
         _ = Assert.ThrowsExactly<ArgumentException>(() => stream.Write(long.MaxValue));
 
         stream.Position = 0;
 
-        Assert.AreEqual(true, stream.Read<bool>());
+        Assert.IsTrue(stream.Read<bool>());
         Assert.AreEqual(42, stream.Read<int>());
         Assert.AreEqual(3.14f, stream.Read<float>());
         Assert.AreEqual(unchecked(uint.MaxValue * 324823489204ul), stream.Read<ulong>());
@@ -50,7 +50,7 @@ public class Test_StreamExtensions
 
         stream.Position = 0;
 
-        Assert.AreEqual(true, stream.Read<bool>());
+        Assert.IsTrue(stream.Read<bool>());
         Assert.AreEqual(42, stream.Read<int>());
         Assert.AreEqual(3.14f, stream.Read<float>());
         Assert.AreEqual(unchecked(uint.MaxValue * 324823489204ul), stream.Read<ulong>());
