@@ -297,7 +297,7 @@ public class Test_ReadOnlyMemory2DT
         Assert.IsTrue(memory.IsEmpty);
 #else
         Assert.IsTrue(success);
-        Assert.AreEqual(memory.Length, array.Length);
+        Assert.HasCount(memory.Length, array);
         Assert.IsTrue(Unsafe.AreSame(ref array[0, 0], ref Unsafe.AsRef(in memory.Span[0])));
 #endif
     }
@@ -312,7 +312,7 @@ public class Test_ReadOnlyMemory2DT
         bool success = memory2d.TryGetMemory(out ReadOnlyMemory<int> memory);
 
         Assert.IsTrue(success);
-        Assert.AreEqual(memory.Length, array.Length);
+        Assert.HasCount(memory.Length, array);
         Assert.AreEqual(3, memory.Span[2]);
     }
 

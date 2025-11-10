@@ -52,7 +52,7 @@ public class Test_ArrayPoolBufferWriterOfT
 
         byte[] array = (byte[])arrayFieldInfo!.GetValue(writer)!;
 
-        Assert.AreEqual(expected, array.Length);
+        Assert.HasCount(expected, array);
     }
 
     [TestMethod]
@@ -68,7 +68,7 @@ public class Test_ArrayPoolBufferWriterOfT
 
         Span<byte> span = writer.GetSpan(43);
 
-        Assert.IsTrue(span.Length >= 43);
+        Assert.IsGreaterThanOrEqualTo(43, span.Length);
 
         writer.Advance(43);
 
@@ -99,7 +99,7 @@ public class Test_ArrayPoolBufferWriterOfT
 
         using (ArrayPoolBufferWriter<byte>? writer = new(pool))
         {
-            Assert.AreEqual(1, pool.RentedArrays.Count);
+            Assert.HasCount(1, pool.RentedArrays);
 
             Assert.AreEqual(256, writer.Capacity);
             Assert.AreEqual(256, writer.FreeCapacity);
@@ -109,7 +109,7 @@ public class Test_ArrayPoolBufferWriterOfT
 
             Span<byte> span = writer.GetSpan(43);
 
-            Assert.IsTrue(span.Length >= 43);
+            Assert.IsGreaterThanOrEqualTo(43, span.Length);
 
             writer.Advance(43);
 
@@ -133,7 +133,7 @@ public class Test_ArrayPoolBufferWriterOfT
             _ = Assert.ThrowsExactly<ObjectDisposedException>(() => writer.Advance(1));
         }
 
-        Assert.AreEqual(0, pool.RentedArrays.Count);
+        Assert.IsEmpty(pool.RentedArrays);
     }
 
     [TestMethod]
@@ -230,7 +230,7 @@ public class Test_ArrayPoolBufferWriterOfT
         ArraySegment<int> segment = bufferWriter.DangerousGetArray();
 
         Assert.IsNotNull(segment.Array);
-        Assert.IsTrue(segment.Array.Length >= bufferWriter.WrittenSpan.Length);
+        Assert.IsGreaterThanOrEqualTo(bufferWriter.WrittenSpan.Length, segment.Array.Length);
         Assert.AreEqual(0, segment.Offset);
         Assert.AreEqual(segment.Count, bufferWriter.WrittenSpan.Length);
 

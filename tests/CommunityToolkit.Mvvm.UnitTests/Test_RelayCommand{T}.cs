@@ -43,7 +43,7 @@ public class Test_RelayCommandOfT
 
         command.Execute(null);
 
-        Assert.AreEqual(null, text);
+        Assert.IsNull(text);
     }
 
     [TestMethod]

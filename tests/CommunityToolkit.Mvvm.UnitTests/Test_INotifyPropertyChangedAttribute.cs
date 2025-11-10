@@ -61,13 +61,13 @@ public partial class Test_INotifyPropertyChangedAttribute
 
         MethodInfo[]? methods = typeof(SampleModelWithoutHelpers).GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
 
-        Assert.AreEqual(2, methods.Length);
+        Assert.HasCount(2, methods);
         Assert.AreEqual("OnPropertyChanged", methods[0].Name);
         Assert.AreEqual("OnPropertyChanged", methods[1].Name);
 
         System.Type[]? types = typeof(SampleModelWithoutHelpers).GetNestedTypes(BindingFlags.NonPublic);
 
-        Assert.AreEqual(0, types.Length);
+        Assert.IsEmpty(types);
     }
 
     [INotifyPropertyChanged(IncludeAdditionalHelperMethods = false)]
@@ -89,7 +89,7 @@ public partial class Test_INotifyPropertyChangedAttribute
         model.X = 42;
         model.Y = 66;
 
-        Assert.AreEqual(2, eventArgs.Count);
+        Assert.HasCount(2, eventArgs);
         Assert.AreEqual(nameof(SampleModelWithINPCAndObservableProperties.X), eventArgs[0].PropertyName);
         Assert.AreEqual(nameof(SampleModelWithINPCAndObservableProperties.Y), eventArgs[1].PropertyName);
     }
@@ -120,7 +120,7 @@ public partial class Test_INotifyPropertyChangedAttribute
         model.X = 42;
         model.Y = 66;
 
-        Assert.AreEqual(2, eventArgs.Count);
+        Assert.HasCount(2, eventArgs);
         Assert.AreEqual(nameof(SampleModelWithINPCAndObservablePartialProperties.X), eventArgs[0].PropertyName);
         Assert.AreEqual(nameof(SampleModelWithINPCAndObservablePartialProperties.Y), eventArgs[1].PropertyName);
     }
@@ -150,7 +150,7 @@ public partial class Test_INotifyPropertyChangedAttribute
         model.X = 42;
         model.Y = 66;
 
-        Assert.AreEqual(2, eventArgs.Count);
+        Assert.HasCount(2, eventArgs);
         Assert.AreEqual(nameof(ExternalAssembly.SampleModelWithINPCAndObservableProperties.X), eventArgs[0].PropertyName);
         Assert.AreEqual(nameof(ExternalAssembly.SampleModelWithINPCAndObservableProperties.Y), eventArgs[1].PropertyName);
     }

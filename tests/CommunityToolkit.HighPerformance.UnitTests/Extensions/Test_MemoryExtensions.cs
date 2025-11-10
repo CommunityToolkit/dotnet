@@ -150,7 +150,7 @@ public class Test_MemoryExtensions
         Assert.IsTrue(MemoryMarshal.TryGetArray(memoryBack, out ArraySegment<byte> segment));
         Assert.AreSame(segment.Array!, data);
         Assert.AreEqual(0, segment.Offset);
-        Assert.AreEqual(segment.Count, data.Length);
+        Assert.HasCount(segment.Count, data);
 
         Assert.IsTrue(memoryOfBytes.Equals(memoryBack));
 
@@ -253,7 +253,7 @@ public class Test_MemoryExtensions
         Assert.IsTrue(MemoryMarshal.TryGetArray(memoryBack, out ArraySegment<byte> segment));
         Assert.AreSame(segment.Array!, data);
         Assert.AreEqual(128, segment.Offset);
-        Assert.AreEqual(128, segment.Count);
+        Assert.HasCount(128, segment);
 
         Assert.IsTrue(memoryOfBytes.Equals(memoryBack));
 

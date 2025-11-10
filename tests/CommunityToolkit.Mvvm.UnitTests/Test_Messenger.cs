@@ -682,11 +682,11 @@ public partial class Test_Messenger
                 _ = messenger.Send<MessageA>();
 
                 // We can't just check that the count has been increased by 1, as there may be other concurrent broadcasts
-                Assert.IsTrue(r.As > a);
+                Assert.IsGreaterThan(a, r.As);
 
                 _ = messenger.Send<MessageB>();
 
-                Assert.IsTrue(r.Bs > b);
+                Assert.IsGreaterThan(b, r.Bs);
 
                 switch (random.Next(0, 2))
                 {
@@ -739,7 +739,7 @@ public partial class Test_Messenger
 
                     _ = messenger.Send<MessageA>();
 
-                    Assert.IsTrue(r.As > a);
+                    Assert.IsGreaterThan(a, r.As);
 
                     messenger.Unregister<MessageA>(r);
                 }
@@ -763,7 +763,7 @@ public partial class Test_Messenger
 
                     _ = messenger.Send<MessageB>();
 
-                    Assert.IsTrue(r.Bs > b);
+                    Assert.IsGreaterThan(b, r.Bs);
 
                     messenger.Unregister<MessageB>(r);
                 }
@@ -816,11 +816,11 @@ public partial class Test_Messenger
 
                 _ = messenger.Send<MessageA, string>(token);
 
-                Assert.IsTrue(r.As > a);
+                Assert.IsGreaterThan(a, r.As);
 
                 _ = messenger.Send<MessageB, string>(token);
 
-                Assert.IsTrue(r.Bs > b);
+                Assert.IsGreaterThan(b, r.Bs);
 
                 switch (random.Next(0, 3))
                 {
@@ -878,7 +878,7 @@ public partial class Test_Messenger
 
                     _ = messenger.Send<MessageA, string>(token);
 
-                    Assert.IsTrue(r.As > a);
+                    Assert.IsGreaterThan(a, r.As);
 
                     messenger.Unregister<MessageA, string>(r, token);
                 }
@@ -902,7 +902,7 @@ public partial class Test_Messenger
 
                     _ = messenger.Send<MessageB, string>(token);
 
-                    Assert.IsTrue(r.Bs > b);
+                    Assert.IsGreaterThan(b, r.Bs);
 
                     messenger.Unregister<MessageB, string>(r, token);
                 }
@@ -1029,8 +1029,8 @@ public partial class Test_Messenger
                     messenger.UnregisterAll(r);
                 }
 
-                Assert.IsTrue(r.As > a);
-                Assert.IsTrue(r.Bs > b);
+                Assert.IsGreaterThan(a, r.As);
+                Assert.IsGreaterThan(b, r.Bs);
             }
         });
     }

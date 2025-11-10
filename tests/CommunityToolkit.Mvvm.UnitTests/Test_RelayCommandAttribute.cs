@@ -81,7 +81,7 @@ public partial class Test_RelayCommandAttribute
 
         await Task.WhenAll(tasks);
 
-        Assert.AreEqual(1, tasks.Count);
+        Assert.HasCount(1, tasks);
 
         // Only the first item should have been added
         CollectionAssert.AreEqual(model.Values, new[] { 0 });
@@ -100,7 +100,7 @@ public partial class Test_RelayCommandAttribute
 
         await Task.WhenAll(tasks);
 
-        Assert.AreEqual(10, tasks.Count);
+        Assert.HasCount(10, tasks);
 
         CollectionAssert.AreEqual(model.Values, Enumerable.Range(0, 10).ToArray());
 
@@ -115,7 +115,7 @@ public partial class Test_RelayCommandAttribute
             }
         }
 
-        Assert.AreEqual(1, tasks.Count);
+        Assert.HasCount(1, tasks);
 
         // Same as above, only the first one is added
         CollectionAssert.AreEqual(model.Values, new[] { 0 });
@@ -129,7 +129,7 @@ public partial class Test_RelayCommandAttribute
             tasks.Add(model.AddValueToListAndDelayWithDefaultConcurrencyAsync_WithCancelCommandCommand.ExecuteAsync(i));
         }
 
-        Assert.AreEqual(10, tasks.Count);
+        Assert.HasCount(10, tasks);
 
         CollectionAssert.AreEqual(model.Values, Enumerable.Range(0, 10).ToArray());
     }
@@ -602,14 +602,14 @@ public partial class Test_RelayCommandAttribute
             Assert.IsNotNull(testAttribute);
             Assert.IsNull(testAttribute.O);
             Assert.AreEqual(typeof(MyViewModelWithExplicitFieldAndPropertyAttributes), testAttribute.T);
-            Assert.AreEqual(true, testAttribute.Flag);
+            Assert.IsTrue(testAttribute.Flag);
             Assert.AreEqual(6.28, testAttribute.D);
             CollectionAssert.AreEqual(testAttribute.Names, new[] { "Bob", "Ross" });
 
             object[]? nestedArray = (object[]?)testAttribute.NestedArray;
 
             Assert.IsNotNull(nestedArray);
-            Assert.AreEqual(3, nestedArray!.Length);
+            Assert.HasCount(3, nestedArray);
             Assert.AreEqual(1, nestedArray[0]);
             Assert.AreEqual("Hello", nestedArray[1]);
             Assert.IsTrue(nestedArray[2] is int[]);
@@ -639,18 +639,18 @@ public partial class Test_RelayCommandAttribute
         Assert.IsNotNull(testAttribute2);
         Assert.IsNull(testAttribute2.O);
         Assert.AreEqual(typeof(MyViewModelWithExplicitFieldAndPropertyAttributes), testAttribute2.T);
-        Assert.AreEqual(true, testAttribute2.Flag);
+        Assert.IsTrue(testAttribute2.Flag);
         Assert.AreEqual(6.28, testAttribute2.D);
         Assert.IsNotNull(testAttribute2.Objects);
         Assert.IsTrue(testAttribute2.Objects is object[]);
-        Assert.AreEqual(1, ((object[])testAttribute2.Objects).Length);
+        Assert.HasCount(1, (object[])testAttribute2.Objects);
         Assert.AreEqual("Test", ((object[])testAttribute2.Objects)[0]);
         CollectionAssert.AreEqual(testAttribute2.Names, new[] { "Bob", "Ross" });
 
         object[]? nestedArray2 = (object[]?)testAttribute2.NestedArray;
 
         Assert.IsNotNull(nestedArray2);
-        Assert.AreEqual(4, nestedArray2!.Length);
+        Assert.HasCount(4, nestedArray2);
         Assert.AreEqual(1, nestedArray2[0]);
         Assert.AreEqual("Hello", nestedArray2[1]);
         Assert.AreEqual(42, nestedArray2[2]);

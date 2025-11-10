@@ -89,7 +89,7 @@ public partial class Test_ReadOnlySequenceStream
 
         int bytesRead = stream.Read(result, 0, result.Length);
 
-        Assert.AreEqual(bytesRead, result.Length);
+        Assert.HasCount(bytesRead, result);
         Assert.AreEqual(stream.Position, data.Length);
         Assert.IsTrue(data.Span.SequenceEqual(result));
 
@@ -113,7 +113,7 @@ public partial class Test_ReadOnlySequenceStream
 
         int bytesRead = stream.Read(result, 0, result.Length);
 
-        Assert.AreEqual(bytesRead, result.Length);
+        Assert.HasCount(bytesRead, result);
         Assert.AreEqual(stream.Position, result.Length + offset);
         Assert.IsTrue(data.Span.Slice(offset).SequenceEqual(result));
 

@@ -32,19 +32,19 @@ public partial class Test_ObservableRecipientAttribute
         model.Name = "No";
 
         Assert.IsTrue(model.HasErrors);
-        Assert.AreEqual(2, args.Count);
+        Assert.HasCount(2, args);
         Assert.AreEqual(nameof(Person.Name), args[0].PropertyName);
         Assert.AreEqual(nameof(INotifyDataErrorInfo.HasErrors), args[1].PropertyName);
 
         model.Name = "Valid";
 
         Assert.IsFalse(model.HasErrors);
-        Assert.AreEqual(4, args.Count);
+        Assert.HasCount(4, args);
         Assert.AreEqual(nameof(Person.Name), args[2].PropertyName);
         Assert.AreEqual(nameof(INotifyDataErrorInfo.HasErrors), args[3].PropertyName);
 
         Assert.IsNotNull(typeof(Person).GetProperty("Messenger", BindingFlags.Instance | BindingFlags.NonPublic));
-        Assert.AreEqual(0, typeof(Person).GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic).Length);
+        Assert.IsEmpty(typeof(Person).GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic));
     }
 
     [ObservableRecipient]
@@ -78,7 +78,7 @@ public partial class Test_ObservableRecipientAttribute
     {
         ConstructorInfo[]? ctors = typeof(AbstractPerson).GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic);
 
-        Assert.AreEqual(2, ctors.Length);
+        Assert.HasCount(2, ctors);
         Assert.IsTrue(ctors.All(static ctor => ctor.IsFamily));
     }
 
@@ -92,7 +92,7 @@ public partial class Test_ObservableRecipientAttribute
     {
         ConstructorInfo[]? ctors = typeof(NonAbstractPerson).GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
-        Assert.AreEqual(2, ctors.Length);
+        Assert.HasCount(2, ctors);
         Assert.IsTrue(ctors.All(static ctor => ctor.IsPublic));
     }
 
@@ -117,14 +117,14 @@ public partial class Test_ObservableRecipientAttribute
         {
             Attribute[] attributes = isActivePropertySetter.GetCustomAttributes().ToArray();
 
-            Assert.AreEqual(1, attributes.Length);
+            Assert.HasCount(1, attributes);
             Assert.AreEqual("System.Diagnostics.CodeAnalysis.RequiresUnreferencedCodeAttribute", attributes[0].GetType().ToString());
         }
         else
         {
             Attribute[] attributes = isActivePropertySetter.GetCustomAttributes().ToArray();
 
-            Assert.AreEqual(0, attributes.Length);
+            Assert.IsEmpty(attributes);
         }
     }
 

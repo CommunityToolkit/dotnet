@@ -428,7 +428,7 @@ public partial class Test_ArrayExtensions
         Span<int> span = array.AsSpan();
 
         // Check that the empty array was loaded properly
-        Assert.AreEqual(span.Length, array.Length);
+        Assert.HasCount(span.Length, array);
         Assert.IsTrue(span.IsEmpty);
     }
 
@@ -445,7 +445,7 @@ public partial class Test_ArrayExtensions
         Span<int> span = array.AsSpan();
 
         // Test the total length of the span
-        Assert.AreEqual(span.Length, array.Length);
+        Assert.HasCount(span.Length, array);
 
         ref int r0 = ref array[0, 0];
         ref int r1 = ref span[0];

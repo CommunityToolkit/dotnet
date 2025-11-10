@@ -52,7 +52,7 @@ public class Test_IBufferWriterStream
         // that the state of the writer is consistent, and the written content matches.
         stream.Write(data, 0, data.Length);
 
-        Assert.AreEqual(writer.WrittenCount, data.Length);
+        Assert.HasCount(writer.WrittenCount, data);
         Assert.IsTrue(writer.WrittenSpan.SequenceEqual(data));
 
         // A few tests with invalid inputs (null buffers, invalid indices, etc.)
@@ -78,7 +78,7 @@ public class Test_IBufferWriterStream
         // Same test as above, but using an asynchronous write instead
         await stream.WriteAsync(data, 0, data.Length);
 
-        Assert.AreEqual(writer.WrittenCount, data.Length);
+        Assert.HasCount(writer.WrittenCount, data);
         Assert.IsTrue(writer.WrittenSpan.SequenceEqual(data));
 
         _ = await Assert.ThrowsExactlyAsync<ArgumentNullException>(() => stream.WriteAsync(null!, 0, 10));

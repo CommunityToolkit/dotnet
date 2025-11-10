@@ -331,7 +331,7 @@ public class Test_Memory2DT
         Assert.IsTrue(memory.IsEmpty);
 #else
         Assert.IsTrue(success);
-        Assert.AreEqual(memory.Length, array.Length);
+        Assert.HasCount(memory.Length, array);
         Assert.IsTrue(Unsafe.AreSame(ref array[0, 0], ref memory.Span[0]));
 #endif
     }
@@ -348,7 +348,7 @@ public class Test_Memory2DT
         bool success = memory2d.TryGetMemory(out Memory<int> memory);
 
         Assert.IsTrue(success);
-        Assert.AreEqual(memory.Length, array.Length);
+        Assert.HasCount(memory.Length, array);
         Assert.AreEqual(3, memory.Span[2]);
     }
 

@@ -142,7 +142,7 @@ public partial class Test_ObservablePropertyAttribute
         model.Name = "Bob";
 
         Assert.AreEqual(nameof(SampleModel.Name), changing.Item1?.PropertyName);
-        Assert.AreEqual(null, changing.Item2);
+        Assert.IsNull(changing.Item2);
         Assert.AreEqual(nameof(SampleModel.Name), changed.Item1?.PropertyName);
         Assert.AreEqual("Bob", changed.Item2);
     }
@@ -190,14 +190,14 @@ public partial class Test_ObservablePropertyAttribute
         Assert.IsNotNull(testAttribute);
         Assert.IsNull(testAttribute.O);
         Assert.AreEqual(typeof(SampleModel), testAttribute.T);
-        Assert.AreEqual(true, testAttribute.Flag);
+        Assert.IsTrue(testAttribute.Flag);
         Assert.AreEqual(6.28, testAttribute.D);
         CollectionAssert.AreEqual(testAttribute.Names, new[] { "Bob", "Ross" });
 
         object[]? nestedArray = (object[]?)testAttribute.NestedArray;
 
         Assert.IsNotNull(nestedArray);
-        Assert.AreEqual(3, nestedArray!.Length);
+        Assert.HasCount(3, nestedArray);
         Assert.AreEqual(1, nestedArray[0]);
         Assert.AreEqual("Hello", nestedArray[1]);
         Assert.IsTrue(nestedArray[2] is int[]);
@@ -263,13 +263,13 @@ public partial class Test_ObservablePropertyAttribute
         model.Value = "Bo";
 
         Assert.IsTrue(model.HasErrors);
-        Assert.AreEqual(1, errors.Count);
+        Assert.HasCount(1, errors);
         Assert.AreEqual(nameof(ModelWithValuePropertyWithAutomaticValidation.Value), errors[0].PropertyName);
 
         model.Value = "Hello world";
 
         Assert.IsFalse(model.HasErrors);
-        Assert.AreEqual(2, errors.Count);
+        Assert.HasCount(2, errors);
         Assert.AreEqual(nameof(ModelWithValuePropertyWithAutomaticValidation.Value), errors[1].PropertyName);
     }
 
@@ -289,13 +289,13 @@ public partial class Test_ObservablePropertyAttribute
         model.Value = "Bo";
 
         Assert.IsTrue(model.HasErrors);
-        Assert.AreEqual(1, errors.Count);
+        Assert.HasCount(1, errors);
         Assert.AreEqual(nameof(ModelWithValuePropertyWithAutomaticValidationWithClassLevelAttribute.Value), errors[0].PropertyName);
 
         model.Value = "Hello world";
 
         Assert.IsFalse(model.HasErrors);
-        Assert.AreEqual(2, errors.Count);
+        Assert.HasCount(2, errors);
         Assert.AreEqual(nameof(ModelWithValuePropertyWithAutomaticValidationWithClassLevelAttribute.Value), errors[1].PropertyName);
     }
 
@@ -315,13 +315,13 @@ public partial class Test_ObservablePropertyAttribute
         model.Value2 = "Bo";
 
         Assert.IsTrue(model.HasErrors);
-        Assert.AreEqual(1, errors.Count);
+        Assert.HasCount(1, errors);
         Assert.AreEqual(nameof(ModelWithValuePropertyWithAutomaticValidationInheritingClassLevelAttribute.Value2), errors[0].PropertyName);
 
         model.Value2 = "Hello world";
 
         Assert.IsFalse(model.HasErrors);
-        Assert.AreEqual(2, errors.Count);
+        Assert.HasCount(2, errors);
         Assert.AreEqual(nameof(ModelWithValuePropertyWithAutomaticValidationInheritingClassLevelAttribute.Value2), errors[1].PropertyName);
     }
 
@@ -348,7 +348,7 @@ public partial class Test_ObservablePropertyAttribute
 
         ValidationResult[] validationErrors = model.GetErrors().ToArray();
 
-        Assert.AreEqual(2, validationErrors.Length);
+        Assert.HasCount(2, validationErrors);
 
         CollectionAssert.AreEqual(new[] { nameof(ViewModelWithValidatableGeneratedProperties.First) }, validationErrors[0].MemberNames.ToArray());
         CollectionAssert.AreEqual(new[] { nameof(ViewModelWithValidatableGeneratedProperties.Last) }, validationErrors[1].MemberNames.ToArray());
@@ -446,7 +446,7 @@ public partial class Test_ObservablePropertyAttribute
     {
         ViewModelWithImplementedUpdateMethods2 model = new();
 
-        Assert.AreEqual(null, model.Name);
+        Assert.IsNull(model.Name);
         Assert.AreEqual(0, model.Number);
 
         CollectionAssert.AreEqual(Array.Empty<(string, string)>(), model.OnNameChangingValues);
@@ -588,15 +588,15 @@ public partial class Test_ObservablePropertyAttribute
 
         setter(model, "Bob");
 
-        Assert.AreEqual(1, messages.Count);
+        Assert.HasCount(1, messages);
         Assert.AreSame(model, messages[0].Sender);
-        Assert.AreEqual(null, messages[0].Message.OldValue);
+        Assert.IsNull(messages[0].Message.OldValue);
         Assert.AreEqual("Bob", messages[0].Message.NewValue);
         Assert.AreEqual(propertyName, messages[0].Message.PropertyName);
 
         setter(model, "Ross");
 
-        Assert.AreEqual(2, messages.Count);
+        Assert.HasCount(2, messages);
         Assert.AreSame(model, messages[1].Sender);
         Assert.AreEqual("Bob", messages[1].Message.OldValue);
         Assert.AreEqual("Ross", messages[1].Message.NewValue);
@@ -618,7 +618,7 @@ public partial class Test_ObservablePropertyAttribute
         model.Name = null;
 
         // The [NotifyPropertyChangedRecipients] attribute wasn't used, so no messages should have been sent
-        Assert.AreEqual(0, messages.Count);
+        Assert.IsEmpty(messages);
     }
 
 #if NET6_0_OR_GREATER
@@ -633,7 +633,7 @@ public partial class Test_ObservablePropertyAttribute
         Assert.AreEqual(typeof(List<string>), info.Type);
         Assert.AreEqual(NullabilityState.Nullable, info.ReadState);
         Assert.AreEqual(NullabilityState.Nullable, info.WriteState);
-        Assert.AreEqual(1, info.GenericTypeArguments.Length);
+        Assert.HasCount(1, info.GenericTypeArguments);
 
         NullabilityInfo elementInfo = info.GenericTypeArguments[0];
 
@@ -653,14 +653,14 @@ public partial class Test_ObservablePropertyAttribute
         Assert.AreEqual(typeof(Foo<Foo<string?, int>.Bar<object?>?, StrongBox<Foo<int, string?>.Bar<object>?>?>), info.Type);
         Assert.AreEqual(NullabilityState.Nullable, info.ReadState);
         Assert.AreEqual(NullabilityState.Nullable, info.WriteState);
-        Assert.AreEqual(2, info.GenericTypeArguments.Length);
+        Assert.HasCount(2, info.GenericTypeArguments);
 
         NullabilityInfo leftInfo = info.GenericTypeArguments[0];
 
         Assert.AreEqual(typeof(Foo<string?, int>.Bar<object?>), leftInfo.Type);
         Assert.AreEqual(NullabilityState.Nullable, leftInfo.ReadState);
         Assert.AreEqual(NullabilityState.Nullable, leftInfo.WriteState);
-        Assert.AreEqual(3, leftInfo.GenericTypeArguments.Length);
+        Assert.HasCount(3, leftInfo.GenericTypeArguments);
 
         NullabilityInfo leftInfo0 = leftInfo.GenericTypeArguments[0];
 
@@ -685,14 +685,14 @@ public partial class Test_ObservablePropertyAttribute
         Assert.AreEqual(typeof(StrongBox<Foo<int, string?>.Bar<object>?>), rightInfo.Type);
         Assert.AreEqual(NullabilityState.Nullable, rightInfo.ReadState);
         Assert.AreEqual(NullabilityState.Nullable, rightInfo.WriteState);
-        Assert.AreEqual(1, rightInfo.GenericTypeArguments.Length);
+        Assert.HasCount(1, rightInfo.GenericTypeArguments);
 
         NullabilityInfo rightInnerInfo = rightInfo.GenericTypeArguments[0];
 
         Assert.AreEqual(typeof(Foo<int, string?>.Bar<object>), rightInnerInfo.Type);
         Assert.AreEqual(NullabilityState.Nullable, rightInnerInfo.ReadState);
         Assert.AreEqual(NullabilityState.Nullable, rightInnerInfo.WriteState);
-        Assert.AreEqual(3, rightInnerInfo.GenericTypeArguments.Length);
+        Assert.HasCount(3, rightInnerInfo.GenericTypeArguments);
 
         NullabilityInfo rightInfo0 = rightInnerInfo.GenericTypeArguments[0];
 
@@ -760,7 +760,7 @@ public partial class Test_ObservablePropertyAttribute
         model.UValue = "Hello";
         model.List = new List<int>() { 420 };
 
-        Assert.AreEqual(true, model.Value);
+        Assert.IsTrue(model.Value);
         Assert.AreEqual(42, model.TValue);
         Assert.AreEqual("Hello", model.UValue);
         CollectionAssert.AreEqual(new[] { 420 }, model.List);
@@ -882,7 +882,7 @@ public partial class Test_ObservablePropertyAttribute
         Assert.IsNotNull(uiHintAttribute);
         Assert.AreEqual("MyControl", uiHintAttribute!.UIHint);
         Assert.AreEqual("WPF", uiHintAttribute.PresentationLayer);
-        Assert.AreEqual(3, uiHintAttribute.ControlParameters.Count);
+        Assert.HasCount(3, uiHintAttribute.ControlParameters);
         Assert.IsTrue(uiHintAttribute.ControlParameters.ContainsKey("Foo"));
         Assert.IsTrue(uiHintAttribute.ControlParameters.ContainsKey("Bar"));
         Assert.IsTrue(uiHintAttribute.ControlParameters.ContainsKey("Baz"));
@@ -959,14 +959,14 @@ public partial class Test_ObservablePropertyAttribute
         Assert.IsNotNull(testAttribute);
         Assert.IsNull(testAttribute.O);
         Assert.AreEqual(typeof(MyViewModelWithExplicitPropertyAttributes), testAttribute.T);
-        Assert.AreEqual(true, testAttribute.Flag);
+        Assert.IsTrue(testAttribute.Flag);
         Assert.AreEqual(6.28, testAttribute.D);
         CollectionAssert.AreEqual(testAttribute.Names, new[] { "Bob", "Ross" });
 
         object[]? nestedArray = (object[]?)testAttribute.NestedArray;
 
         Assert.IsNotNull(nestedArray);
-        Assert.AreEqual(3, nestedArray!.Length);
+        Assert.HasCount(3, nestedArray);
         Assert.AreEqual(1, nestedArray[0]);
         Assert.AreEqual("Hello", nestedArray[1]);
         Assert.IsTrue(nestedArray[2] is int[]);
@@ -983,18 +983,18 @@ public partial class Test_ObservablePropertyAttribute
         Assert.IsNotNull(testAttribute2);
         Assert.IsNull(testAttribute2.O);
         Assert.AreEqual(typeof(MyViewModelWithExplicitPropertyAttributes), testAttribute2.T);
-        Assert.AreEqual(true, testAttribute2.Flag);
+        Assert.IsTrue(testAttribute2.Flag);
         Assert.AreEqual(6.28, testAttribute2.D);
         Assert.IsNotNull(testAttribute2.Objects);
         Assert.IsTrue(testAttribute2.Objects is object[]);
-        Assert.AreEqual(1, ((object[])testAttribute2.Objects).Length);
+        Assert.HasCount(1, (object[])testAttribute2.Objects);
         Assert.AreEqual("Test", ((object[])testAttribute2.Objects)[0]);
         CollectionAssert.AreEqual(testAttribute2.Names, new[] { "Bob", "Ross" });
 
         object[]? nestedArray2 = (object[]?)testAttribute2.NestedArray;
 
         Assert.IsNotNull(nestedArray2);
-        Assert.AreEqual(4, nestedArray2!.Length);
+        Assert.HasCount(4, nestedArray2);
         Assert.AreEqual(1, nestedArray2[0]);
         Assert.AreEqual("Hello", nestedArray2[1]);
         Assert.AreEqual(42, nestedArray2[2]);

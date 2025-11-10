@@ -198,7 +198,7 @@ partial class Test_Messenger
 
         IReadOnlyCollection<int>? results = messenger.Send<NumbersCollectionRequestMessage>().Responses;
 
-        Assert.AreEqual(0, results.Count);
+        Assert.IsEmpty(results);
 
         GC.KeepAlive(recipient);
     }
@@ -272,7 +272,7 @@ partial class Test_Messenger
 
         IReadOnlyCollection<int>? results = await messenger.Send<AsyncNumbersCollectionRequestMessage>().GetResponsesAsync();
 
-        Assert.AreEqual(0, results.Count);
+        Assert.IsEmpty(results);
 
         GC.KeepAlive(recipient);
     }

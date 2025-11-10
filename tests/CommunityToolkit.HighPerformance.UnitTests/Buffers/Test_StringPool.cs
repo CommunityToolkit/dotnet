@@ -37,13 +37,13 @@ public class Test_StringPool
 
         Array maps = (Array)typeof(StringPool).GetField("maps", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(pool)!;
 
-        Assert.AreEqual(x, maps.Length);
+        Assert.HasCount(x, maps);
 
         Type bucketType = Type.GetType("CommunityToolkit.HighPerformance.Buffers.StringPool+FixedSizePriorityMap, CommunityToolkit.HighPerformance")!;
 
         int[] buckets = (int[])bucketType.GetField("buckets", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(maps.GetValue(0))!;
 
-        Assert.AreEqual(y, buckets.Length);
+        Assert.HasCount(y, buckets);
     }
 
     [TestMethod]

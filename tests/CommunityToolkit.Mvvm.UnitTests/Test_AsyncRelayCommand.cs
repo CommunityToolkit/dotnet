@@ -154,7 +154,7 @@ public class Test_AsyncRelayCommand
         Assert.IsFalse(command.IsCancellationRequested);
 
         // Validate the various event args for all the properties that were updated when executing the command
-        Assert.AreEqual(4, args.Count);
+        Assert.HasCount(4, args);
         Assert.AreEqual(nameof(IAsyncRelayCommand.ExecutionTask), args[0].PropertyName);
         Assert.AreEqual(nameof(IAsyncRelayCommand.IsRunning), args[1].PropertyName);
         Assert.AreEqual(nameof(IAsyncRelayCommand.CanBeCanceled), args[2].PropertyName);
@@ -164,7 +164,7 @@ public class Test_AsyncRelayCommand
 
         // Verify that these two properties raised notifications correctly when canceling the command too.
         // We need to ensure all command properties support notifications so that users can bind to them.
-        Assert.AreEqual(6, args.Count);
+        Assert.HasCount(6, args);
         Assert.AreEqual(nameof(IAsyncRelayCommand.CanBeCanceled), args[4].PropertyName);
         Assert.AreEqual(nameof(IAsyncRelayCommand.IsCancellationRequested), args[5].PropertyName);
 
@@ -580,7 +580,7 @@ public class Test_AsyncRelayCommand
 
         command.Execute(null);
 
-        Assert.AreEqual(1, cancelCommandCanExecuteChangedArgs.Count);
+        Assert.HasCount(1, cancelCommandCanExecuteChangedArgs);
         Assert.AreSame(cancelCommand, cancelCommandCanExecuteChangedArgs[0].Sender);
         Assert.AreSame(EventArgs.Empty, cancelCommandCanExecuteChangedArgs[0].Args);
 
@@ -589,7 +589,7 @@ public class Test_AsyncRelayCommand
         cancelCommand.Execute(null);
 
         Assert.IsFalse(cancelCommand.CanExecute(null));
-        Assert.AreEqual(2, cancelCommandCanExecuteChangedArgs.Count);
+        Assert.HasCount(2, cancelCommandCanExecuteChangedArgs);
         Assert.AreSame(cancelCommand, cancelCommandCanExecuteChangedArgs[1].Sender);
         Assert.AreSame(EventArgs.Empty, cancelCommandCanExecuteChangedArgs[1].Args);
         Assert.IsFalse(command.CanBeCanceled);

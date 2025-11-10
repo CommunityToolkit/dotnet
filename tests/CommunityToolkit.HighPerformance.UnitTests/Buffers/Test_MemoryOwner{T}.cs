@@ -18,9 +18,9 @@ public class Test_MemoryOwnerOfT
     {
         using MemoryOwner<int>? buffer = MemoryOwner<int>.Allocate(127);
 
-        Assert.IsTrue(buffer.Length == 127);
-        Assert.IsTrue(buffer.Memory.Length == 127);
-        Assert.IsTrue(buffer.Span.Length == 127);
+        Assert.AreEqual(127, buffer.Length);
+        Assert.AreEqual(127, buffer.Memory.Length);
+        Assert.AreEqual(127, buffer.Span.Length);
 
         buffer.Span.Fill(42);
 
@@ -35,11 +35,11 @@ public class Test_MemoryOwnerOfT
 
         using (MemoryOwner<int>? buffer = MemoryOwner<int>.Allocate(127, pool))
         {
-            Assert.AreEqual(1, pool.RentedArrays.Count);
+            Assert.HasCount(1, pool.RentedArrays);
 
-            Assert.IsTrue(buffer.Length == 127);
-            Assert.IsTrue(buffer.Memory.Length == 127);
-            Assert.IsTrue(buffer.Span.Length == 127);
+            Assert.AreEqual(127, buffer.Length);
+            Assert.AreEqual(127, buffer.Memory.Length);
+            Assert.AreEqual(127, buffer.Span.Length);
 
             buffer.Span.Fill(42);
 
@@ -47,7 +47,7 @@ public class Test_MemoryOwnerOfT
             Assert.IsTrue(buffer.Span.ToArray().All(i => i == 42));
         }
 
-        Assert.AreEqual(0, pool.RentedArrays.Count);
+        Assert.IsEmpty(pool.RentedArrays);
     }
 
     [TestMethod]
@@ -127,7 +127,7 @@ public class Test_MemoryOwnerOfT
         ArraySegment<int> segment = buffer.DangerousGetArray();
 
         Assert.IsNotNull(segment.Array);
-        Assert.IsTrue(segment.Array.Length >= buffer.Length);
+        Assert.IsGreaterThanOrEqualTo(buffer.Length, segment.Array.Length);
         Assert.AreEqual(0, segment.Offset);
         Assert.AreEqual(segment.Count, buffer.Length);
 
@@ -142,7 +142,7 @@ public class Test_MemoryOwnerOfT
 
         // Same as before, but we now also verify the initial offset != 0, as we used Slice
         Assert.IsNotNull(segment.Array);
-        Assert.IsTrue(segment.Array.Length >= second.Length);
+        Assert.IsGreaterThanOrEqualTo(second.Length, segment.Array.Length);
         Assert.AreEqual(10, segment.Offset);
         Assert.AreEqual(segment.Count, second.Length);
 

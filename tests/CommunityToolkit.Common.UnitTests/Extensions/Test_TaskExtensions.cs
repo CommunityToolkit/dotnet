@@ -34,7 +34,7 @@ public class Test_TaskExtensions
     {
         TaskCompletionSource<string?> tcs = new();
 
-        Assert.AreEqual(null, tcs.Task.GetResultOrDefault());
+        Assert.IsNull(tcs.Task.GetResultOrDefault());
 
         tcs.SetResult(nameof(Test_TaskExtensions_Generic_ReferenceType));
 
@@ -46,17 +46,17 @@ public class Test_TaskExtensions
     {
         TaskCompletionSource<int> tcs = new();
 
-        Assert.AreEqual(null, ((Task)tcs.Task).GetResultOrDefault());
+        Assert.IsNull(((Task)tcs.Task).GetResultOrDefault());
 
         tcs.SetCanceled();
 
-        Assert.AreEqual(null, ((Task)tcs.Task).GetResultOrDefault());
+        Assert.IsNull(((Task)tcs.Task).GetResultOrDefault());
 
         tcs = new TaskCompletionSource<int>();
 
         tcs.SetException(new InvalidOperationException("Test"));
 
-        Assert.AreEqual(null, ((Task)tcs.Task).GetResultOrDefault());
+        Assert.IsNull(((Task)tcs.Task).GetResultOrDefault());
 
         tcs = new TaskCompletionSource<int>();
 
@@ -68,7 +68,7 @@ public class Test_TaskExtensions
     [TestMethod]
     public void Test_TaskExtensions_ResultOrDefault_FromTaskCompleted()
     {
-        Assert.AreEqual(null, Task.CompletedTask.GetResultOrDefault());
+        Assert.IsNull(Task.CompletedTask.GetResultOrDefault());
     }
 
     [TestMethod]
@@ -118,17 +118,17 @@ public class Test_TaskExtensions
     {
         TaskCompletionSource<string?> tcs = new();
 
-        Assert.AreEqual(null, tcs.Task.GetResultOrDefault());
+        Assert.IsNull(tcs.Task.GetResultOrDefault());
 
         tcs.SetCanceled();
 
-        Assert.AreEqual(null, tcs.Task.GetResultOrDefault());
+        Assert.IsNull(tcs.Task.GetResultOrDefault());
 
         tcs = new TaskCompletionSource<string?>();
 
         tcs.SetException(new InvalidOperationException("Test"));
 
-        Assert.AreEqual(null, tcs.Task.GetResultOrDefault());
+        Assert.IsNull(tcs.Task.GetResultOrDefault());
 
         tcs = new TaskCompletionSource<string?>();
 

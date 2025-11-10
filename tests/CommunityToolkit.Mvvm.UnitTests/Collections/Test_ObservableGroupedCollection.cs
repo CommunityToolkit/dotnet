@@ -18,7 +18,7 @@ public class Test_ObservableGroupedCollection
     {
         ObservableGroupedCollection<string, int> groupCollection = new();
 
-        Assert.AreEqual(0, groupCollection.Count);
+        Assert.IsEmpty(groupCollection);
     }
 
     [TestMethod]
@@ -31,7 +31,7 @@ public class Test_ObservableGroupedCollection
         };
         ObservableGroupedCollection<string, int> groupCollection = new(groups);
 
-        Assert.AreEqual(2, groupCollection.Count);
+        Assert.HasCount(2, groupCollection);
 
         Assert.AreEqual("A", groupCollection[0].Key);
         CollectionAssert.AreEqual(groupCollection[0], new[] { 1, 3, 5 });

@@ -29,7 +29,7 @@ public class Test_ArrayPoolExtensions
         ArrayPool<int>.Shared.Resize(ref array, 10);
 
         Assert.IsNotNull(array);
-        Assert.IsTrue(array.Length >= 10);
+        Assert.IsGreaterThanOrEqualTo(10, array.Length);
     }
 
     [TestMethod]
@@ -54,7 +54,7 @@ public class Test_ArrayPoolExtensions
         ArrayPool<int>.Shared.Resize(ref array, 32);
 
         Assert.AreNotSame(array, backup);
-        Assert.IsTrue(array.Length >= 32);
+        Assert.IsGreaterThanOrEqualTo(32, array.Length);
         Assert.IsTrue(array.AsSpan(0, 16).ToArray().All(i => i == 7));
     }
 
@@ -69,7 +69,7 @@ public class Test_ArrayPoolExtensions
         ArrayPool<int>.Shared.Resize(ref array, 16);
 
         Assert.AreNotSame(array, backup);
-        Assert.IsTrue(array.Length >= 16);
+        Assert.IsGreaterThanOrEqualTo(16, array.Length);
         Assert.IsTrue(array.AsSpan(0, 16).ToArray().All(i => i == 7));
     }
 
@@ -103,7 +103,7 @@ public class Test_ArrayPoolExtensions
 
         ArrayPool<int>.Shared.EnsureCapacity(ref array, 10);
         Assert.AreSame(backup, array);
-        Assert.IsTrue(array.Length >= 10);
+        Assert.IsGreaterThanOrEqualTo(10, array.Length);
     }
 
     [TestMethod]
@@ -114,13 +114,13 @@ public class Test_ArrayPoolExtensions
         ArrayPool<int>.Shared.EnsureCapacity(ref array, 7);
 
         Assert.IsNotNull(array);
-        Assert.IsTrue(array.Length >= 7);
+        Assert.IsGreaterThanOrEqualTo(7, array.Length);
         int[]? backup = array;
 
         ArrayPool<int>.Shared.EnsureCapacity(ref array, 64);
 
         Assert.AreNotSame(backup, array);
-        Assert.IsTrue(array.Length >= 64);
+        Assert.IsGreaterThanOrEqualTo(64, array.Length);
     }
 
     [TestMethod]
@@ -152,6 +152,6 @@ public class Test_ArrayPoolExtensions
 
         Assert.AreNotSame(backup, array);
         Assert.IsTrue(backup.All(i => i == default));
-        Assert.IsTrue(array.Length >= 256);
+        Assert.IsGreaterThanOrEqualTo(256, array.Length);
     }
 }

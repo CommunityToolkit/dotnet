@@ -2589,7 +2589,7 @@ public partial class Test_SourceGeneratorsDiagnostics
             // Filtered diagnostics
             List<Diagnostic> filteredDiagnostics = outputCompilationDiagnostics.Where(diagnostic => !ignoredDiagnosticIds.Contains(diagnostic.Id)).ToList();
 
-            Assert.IsTrue(filteredDiagnostics.Count == 0, $"resultingIds: {string.Join(", ", filteredDiagnostics)}");
+            Assert.IsEmpty(filteredDiagnostics, $"resultingIds: {string.Join(", ", filteredDiagnostics)}");
         }
 
         GC.KeepAlive(observableObjectType);

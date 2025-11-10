@@ -18,7 +18,7 @@ public class Test_ObservableGroup
         ObservableGroup<string, int> group = new("key");
 
         Assert.AreEqual("key", group.Key);
-        Assert.AreEqual(0, group.Count);
+        Assert.IsEmpty(group);
     }
 
     [TestMethod]
@@ -101,7 +101,7 @@ public class Test_ObservableGroup
         group.Clear();
 
         Assert.AreEqual("key", group.Key);
-        Assert.AreEqual(0, group.Count);
+        Assert.IsEmpty(group);
         Assert.IsTrue(collectionChangedEventRaised);
     }
 
