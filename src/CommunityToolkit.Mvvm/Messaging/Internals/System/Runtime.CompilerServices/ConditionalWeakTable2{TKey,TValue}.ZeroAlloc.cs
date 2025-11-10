@@ -248,7 +248,7 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
         /// Gets the current key.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TKey GetKey()
+        public readonly TKey GetKey()
         {
             return this.key!;
         }
@@ -257,7 +257,7 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
         /// Gets the current value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TValue GetValue()
+        public readonly TValue GetValue()
         {
             return this.value!;
         }

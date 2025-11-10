@@ -27,9 +27,9 @@
           - The recommended Windows SDK package for UWP projects using the .NET 9 SDK (with UWP XAML projections).
           - The recommended Windows SDK package for WindowsAppSDK projects (ie. without UWP XAML projections). 
       -->
-      <_MvvmToolkitWindowsSdkPackageMinBuild>38</_MvvmToolkitWindowsSdkPackageMinBuild>
-      <_MvvmToolkitWindowsSdkPackageRecommendedUwpBuild>54</_MvvmToolkitWindowsSdkPackageRecommendedUwpBuild>
-      <_MvvmToolkitWindowsSdkPackageRecommendedWindowsAppSDKBuild>53</_MvvmToolkitWindowsSdkPackageRecommendedWindowsAppSDKBuild>
+      <_MvvmToolkitWindowsSdkPackageMinBuild>56</_MvvmToolkitWindowsSdkPackageMinBuild>
+      <_MvvmToolkitWindowsSdkPackageRecommendedUwpBuild>57</_MvvmToolkitWindowsSdkPackageRecommendedUwpBuild>
+      <_MvvmToolkitWindowsSdkPackageRecommendedWindowsAppSDKBuild>56</_MvvmToolkitWindowsSdkPackageRecommendedWindowsAppSDKBuild>
 
       <!-- Switch on the recommended one based on configuration -->
       <_MvvmToolkitWindowsSdkPackageRecommendedBuild>$(_MvvmToolkitWindowsSdkPackageMinBuild)</_MvvmToolkitWindowsSdkPackageRecommendedBuild>
@@ -82,7 +82,7 @@
       Condition="'@(_MvvmToolkitCompatibleWindowsSdkPackages)' == ''"
       Code="MVVMTKCFG0003"
       HelpLink="https://aka.ms/mvvmtoolkit/errors/mvvmtkcfg0003"
-      Text="This version of the MVVM Toolkit requires 'Microsoft.Windows.SDK.NET.Ref' version '$(_MvvmToolkitWindowsSdkPackageRequired)' or later. Please update to .NET SDK 8.0.109, 8.0.305 or 8.0.402 (or later). Alternatively, use a temporary 'Microsoft.Windows.SDK.NET.Ref' reference, which can be done by setting the 'WindowsSdkPackageVersion' property in your .csproj file. For your project configuration, it is recommended to set the package version to '$(_MvvmToolkitWindowsSdkPackageRecommended)'." />
+      Text="This version of the MVVM Toolkit requires 'Microsoft.Windows.SDK.NET.Ref' version '$(_MvvmToolkitWindowsSdkPackageRequired)' or later. Please update the .NET SDK in use to 8.0.405 (or later) or 9.0.102 (or later). Alternatively, use a temporary 'Microsoft.Windows.SDK.NET.Ref' reference, which can be done by setting the 'WindowsSdkPackageVersion' property in your .csproj file. For your project configuration, it is recommended to set the package version to '$(_MvvmToolkitWindowsSdkPackageRecommended)'." />
   </Target>
 
 </Project>

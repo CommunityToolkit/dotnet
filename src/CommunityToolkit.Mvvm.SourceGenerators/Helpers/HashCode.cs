@@ -134,7 +134,7 @@ internal struct HashCode
     /// Gets the resulting hashcode from the current instance.
     /// </summary>
     /// <returns>The resulting hashcode from the current instance.</returns>
-    public int ToHashCode()
+    public readonly int ToHashCode()
     {
         uint length = this.length;
         uint position = length % 4;
@@ -165,12 +165,12 @@ internal struct HashCode
     /// <inheritdoc/>
     [Obsolete("HashCode is a mutable struct and should not be compared with other HashCodes. Use ToHashCode to retrieve the computed hash code.", error: true)]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public override int GetHashCode() => throw new NotSupportedException();
+    public override readonly int GetHashCode() => throw new NotSupportedException();
 
     /// <inheritdoc/>
     [Obsolete("HashCode is a mutable struct and should not be compared with other HashCodes.", error: true)]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public override bool Equals(object? obj) => throw new NotSupportedException();
+    public override readonly bool Equals(object? obj) => throw new NotSupportedException();
 
     /// <summary>
     /// Rotates the specified value left by the specified number of bits.

@@ -58,7 +58,7 @@ internal ref struct ArrayPoolBufferWriter<T>
     /// <summary>
     /// Gets a <see cref="ReadOnlySpan{T}"/> with the current items.
     /// </summary>
-    public ReadOnlySpan<T> Span
+    public readonly ReadOnlySpan<T> Span
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => this.span.Slice(0, this.index);
@@ -116,7 +116,7 @@ internal ref struct ArrayPoolBufferWriter<T>
     }
 
     /// <inheritdoc cref="IDisposable.Dispose"/>
-    public void Dispose()
+    public readonly void Dispose()
     {
         Array.Clear(this.array, 0, this.index);
 

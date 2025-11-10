@@ -320,7 +320,7 @@ internal class Dictionary2<TKey, TValue> : IDictionary2<TKey, TValue>
         /// Gets the current key.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TKey GetKey()
+        public readonly TKey GetKey()
         {
             return this.entries[this.index - 1].Key;
         }
@@ -329,7 +329,7 @@ internal class Dictionary2<TKey, TValue> : IDictionary2<TKey, TValue>
         /// Gets the current value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TValue GetValue()
+        public readonly TValue GetValue()
         {
             return this.entries[this.index - 1].Value!;
         }
