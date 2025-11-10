@@ -146,7 +146,7 @@ public class Test_ObservableValidator
 
         if (isValid)
         {
-            Assert.IsTrue(!model.GetErrors(nameof(Person.Name)).Any());
+            Assert.IsFalse(model.GetErrors(nameof(Person.Name)).Any());
         }
         else
         {
