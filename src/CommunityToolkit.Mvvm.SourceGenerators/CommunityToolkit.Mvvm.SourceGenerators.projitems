@@ -57,7 +57,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\FieldWithOrphanedDependentObservablePropertyAttributesAnalyzer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\FieldReferenceForObservablePropertyFieldAnalyzer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\UnsupportedRoslynVersionForPartialPropertyAnalyzer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\RequiresCSharpLanguageVersionPreviewAnalyzer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\RequiresCSharpLanguageVersion14OrPreviewAnalyzer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\InvalidPropertyLevelObservablePropertyAttributeAnalyzer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\UseObservablePropertyOnPartialPropertyAnalyzer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\UnsupportedCSharpLanguageVersionAnalyzer.cs" />
