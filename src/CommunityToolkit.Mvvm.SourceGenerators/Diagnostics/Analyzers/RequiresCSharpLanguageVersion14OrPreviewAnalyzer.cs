@@ -18,7 +18,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators;
 /// A diagnostic analyzer that generates errors when a property using <c>[ObservableProperty]</c> on a partial property is in a project with the C# language version not set to 14.0 or 'preview'.
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public sealed class RequiresCSharpLanguageVersionPreviewAnalyzer : DiagnosticAnalyzer
+public sealed class RequiresCSharpLanguageVersion14OrPreviewAnalyzer : DiagnosticAnalyzer
 {
     /// <inheritdoc/>
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = [CSharpLanguageVersionIsNot14OrPreviewForObservableProperty];
@@ -32,7 +32,11 @@ public sealed class RequiresCSharpLanguageVersionPreviewAnalyzer : DiagnosticAna
         context.RegisterCompilationStartAction(static context =>
         {
             // If the language version is set to preview or if we are set to at least C# 14.0, we'll never emit diagnostics
+#if ROSLYN_5_0_0_OR_GREATER
+            if (context.Compilation.HasLanguageVersionAtLeastEqualTo(LanguageVersion.CSharp14))
+#else
             if (context.Compilation.IsLanguageVersionPreview())
+#endif
             {
                 return;
             }

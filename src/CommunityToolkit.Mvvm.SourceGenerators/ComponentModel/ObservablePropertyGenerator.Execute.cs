@@ -85,8 +85,10 @@ partial class ObservablePropertyGenerator
             // check. When we add Roslyn 18.0 support, we can also update this check to check for at least C# 14.
             if (node is PropertyDeclarationSyntax)
             {
-#if ROSLYN_4_12_0_OR_GREATER
-                return semanticModel.Compilation.HasLanguageVersionGreaterThan(LanguageVersion.CSharp13) || semanticModel.Compilation.IsLanguageVersionPreview();
+#if ROSLYN_5_0_0_OR_GREATER
+                return semanticModel.Compilation.HasLanguageVersionAtLeastEqualTo(LanguageVersion.CSharp14);
+#elif ROSLYN_4_12_0_OR_GREATER
+                return semanticModel.Compilation.IsLanguageVersionPreview();
 #else
                 return false;
 #endif

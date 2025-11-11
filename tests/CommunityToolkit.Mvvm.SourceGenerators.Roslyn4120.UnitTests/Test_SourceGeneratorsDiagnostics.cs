@@ -28,7 +28,7 @@ partial class Test_SourceGeneratorsDiagnostics
             }
             """;
 
-        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<RequiresCSharpLanguageVersionPreviewAnalyzer>(source, LanguageVersion.CSharp12);
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<RequiresCSharpLanguageVersion14OrPreviewAnalyzer>(source, LanguageVersion.CSharp12);
     }
 
     [TestMethod]
@@ -47,7 +47,7 @@ partial class Test_SourceGeneratorsDiagnostics
             }
             """;
 
-        await CSharpAnalyzerWithLanguageVersionTest<RequiresCSharpLanguageVersionPreviewAnalyzer>.VerifyAnalyzerAsync(
+        await CSharpAnalyzerWithLanguageVersionTest<RequiresCSharpLanguageVersion14OrPreviewAnalyzer>.VerifyAnalyzerAsync(
             source,
             LanguageVersion.CSharp12,
 
@@ -73,7 +73,7 @@ partial class Test_SourceGeneratorsDiagnostics
             }
             """;
 
-        await CSharpAnalyzerWithLanguageVersionTest<RequiresCSharpLanguageVersionPreviewAnalyzer>.VerifyAnalyzerAsync(
+        await CSharpAnalyzerWithLanguageVersionTest<RequiresCSharpLanguageVersion14OrPreviewAnalyzer>.VerifyAnalyzerAsync(
             source,
             LanguageVersion.CSharp13,
 
@@ -97,7 +97,7 @@ partial class Test_SourceGeneratorsDiagnostics
             }
             """;
 
-        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<RequiresCSharpLanguageVersionPreviewAnalyzer>(source, languageVersion: LanguageVersion.Preview);
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<RequiresCSharpLanguageVersion14OrPreviewAnalyzer>(source, languageVersion: LanguageVersion.Preview);
     }
 
     [TestMethod]
@@ -116,7 +116,7 @@ partial class Test_SourceGeneratorsDiagnostics
             }
             """;
 
-        await CSharpAnalyzerWithLanguageVersionTest<RequiresCSharpLanguageVersionPreviewAnalyzer>.VerifyAnalyzerAsync(
+        await CSharpAnalyzerWithLanguageVersionTest<RequiresCSharpLanguageVersion14OrPreviewAnalyzer>.VerifyAnalyzerAsync(
             source,
             LanguageVersion.Preview,
 
