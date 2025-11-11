@@ -691,17 +691,17 @@ internal static class DiagnosticDescriptors
     /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> for the C# language version not being sufficient for <c>[ObservableProperty]</c> on partial properties.
     /// <para>
-    /// Format: <c>"Using [ObservableProperty] on partial properties requires the C# language version to be set to 'preview', as support for the 'field' keyword is needed by the source generators to emit valid code (add <LangVersion>preview</LangVersion> to your .csproj/.props file)"</c>.
+    /// Format: <c>"Using [ObservableProperty] on partial properties requires the C# language version to be set to at least 14.0 or 'preview', as support for the 'field' keyword is needed by the source generators to emit valid code (add <LangVersion>14.0</LangVersion> or <LangVersion>preview</LangVersion> to your .csproj/.props file)"</c>.
     /// </para>
     /// </summary>
-    public static readonly DiagnosticDescriptor CSharpLanguageVersionIsNotPreviewForObservableProperty = new DiagnosticDescriptor(
+    public static readonly DiagnosticDescriptor CSharpLanguageVersionIsNot14OrPreviewForObservableProperty = new DiagnosticDescriptor(
         id: "MVVMTK0041",
-        title: "C# language version is not 'preview'",
-        messageFormat: """Using [ObservableProperty] on partial properties requires the C# language version to be set to 'preview', as support for the 'field' keyword is needed by the source generators to emit valid code (add <LangVersion>preview</LangVersion> to your .csproj/.props file)""",
+        title: "C# language version is not at least 14.0 or 'preview'",
+        messageFormat: """Using [ObservableProperty] on partial properties requires the C# language version to be set to at least 14.0 or 'preview', as support for the 'field' keyword is needed by the source generators to emit valid code (add <LangVersion>14.0</LangVersion> or <LangVersion>preview</LangVersion> to your .csproj/.props file)""",
         category: typeof(ObservablePropertyGenerator).FullName,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "The C# language version must be set to 'preview' when using [ObservableProperty] on partial properties for the source generators to emit valid code (the <LangVersion>preview</LangVersion> option must be set in the .csproj/.props file).",
+        description: "The C# language version must be set to at least 14.0 or 'preview' when using [ObservableProperty] on partial properties for the source generators to emit valid code (the <LangVersion>14.0</LangVersion> or <LangVersion>preview</LangVersion> option must be set in the .csproj/.props file).",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0041");
 
     /// <summary>

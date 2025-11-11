@@ -15,13 +15,13 @@ using static CommunityToolkit.Mvvm.SourceGenerators.Diagnostics.DiagnosticDescri
 namespace CommunityToolkit.Mvvm.SourceGenerators;
 
 /// <summary>
-/// A diagnostic analyzer that generates errors when a property using <c>[ObservableProperty]</c> on a partial property is in a project with the C# language version not set to preview.
+/// A diagnostic analyzer that generates errors when a property using <c>[ObservableProperty]</c> on a partial property is in a project with the C# language version not set to 14.0 or 'preview'.
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class RequiresCSharpLanguageVersionPreviewAnalyzer : DiagnosticAnalyzer
 {
     /// <inheritdoc/>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = [CSharpLanguageVersionIsNotPreviewForObservableProperty];
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = [CSharpLanguageVersionIsNot14OrPreviewForObservableProperty];
 
     /// <inheritdoc/>
     public override void Initialize(AnalysisContext context)
@@ -31,7 +31,7 @@ public sealed class RequiresCSharpLanguageVersionPreviewAnalyzer : DiagnosticAna
 
         context.RegisterCompilationStartAction(static context =>
         {
-            // If the language version is set to preview, we'll never emit diagnostics
+            // If the language version is set to preview or if we are set to at least C# 14.0, we'll never emit diagnostics
             if (context.Compilation.IsLanguageVersionPreview())
             {
                 return;
@@ -69,7 +69,7 @@ public sealed class RequiresCSharpLanguageVersionPreviewAnalyzer : DiagnosticAna
                 if (context.Symbol.TryGetAttributeWithType(observablePropertySymbol, out AttributeData? observablePropertyAttribute))
                 {
                     context.ReportDiagnostic(Diagnostic.Create(
-                        CSharpLanguageVersionIsNotPreviewForObservableProperty,
+                        CSharpLanguageVersionIsNot14OrPreviewForObservableProperty,
                         observablePropertyAttribute.GetLocation(),
                         context.Symbol));
                 }

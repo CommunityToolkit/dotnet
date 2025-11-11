@@ -28,6 +28,17 @@ internal static class CompilationExtensions
     }
 
     /// <summary>
+    /// Checks whether a given compilation (assumed to be for C#) is using a language version greater than a specified one.
+    /// </summary>
+    /// <param name="compilation">The <see cref="Compilation"/> to consider for analysis.</param>
+    /// <param name="languageVersion">The minimum language version to check.</param>
+    /// <returns>Whether <paramref name="compilation"/> is using a language version greater than the specified one.</returns>
+    public static bool HasLanguageVersionGreaterThan(this Compilation compilation, LanguageVersion languageVersion)
+    {
+        return ((CSharpCompilation)compilation).LanguageVersion > languageVersion;
+    }
+
+    /// <summary>
     /// Checks whether a given compilation (assumed to be for C#) is using the preview language version.
     /// </summary>
     /// <param name="compilation">The <see cref="Compilation"/> to consider for analysis.</param>

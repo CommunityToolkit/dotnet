@@ -80,11 +80,16 @@ partial class ObservablePropertyGenerator
                 return false;
             }
 
-            // If the target is a property, we only support using C# preview.
-            // This is because the generator is relying on the 'field' keyword.
-            if (node is PropertyDeclarationSyntax && !semanticModel.Compilation.IsLanguageVersionPreview())
+            // If the target is a property, we must either be using C# preview, or C# 14 or above. When we're using
+            // an older version of Roslyn, we know properties will never be supported anyway, so we have nothing to
+            // check. When we add Roslyn 18.0 support, we can also update this check to check for at least C# 14.
+            if (node is PropertyDeclarationSyntax)
             {
+#if ROSLYN_4_12_0_OR_GREATER
+                return semanticModel.Compilation.HasLanguageVersionGreaterThan(LanguageVersion.CSharp13) || semanticModel.Compilation.IsLanguageVersionPreview();
+#else
                 return false;
+#endif
             }
 
             // All other cases are supported, the syntax filter is already validating that
