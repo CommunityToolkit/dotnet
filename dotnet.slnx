@@ -1,7 +1,4 @@
 <Solution>
-  <Configurations>
-    <Platform Name="Any CPU" />
-  </Configurations>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
     <File Path=".gitattributes" />
@@ -58,6 +55,7 @@
   <Project Path="src/CommunityToolkit.Mvvm.SourceGenerators.Roslyn4001/CommunityToolkit.Mvvm.SourceGenerators.Roslyn4001.csproj" />
   <Project Path="src/CommunityToolkit.Mvvm.SourceGenerators.Roslyn4031/CommunityToolkit.Mvvm.SourceGenerators.Roslyn4031.csproj" />
   <Project Path="src/CommunityToolkit.Mvvm.SourceGenerators.Roslyn4120/CommunityToolkit.Mvvm.SourceGenerators.Roslyn4120.csproj" />
+  <Project Path="src/CommunityToolkit.Mvvm.SourceGenerators.Roslyn5000/CommunityToolkit.Mvvm.SourceGenerators.Roslyn5000.csproj" />
   <Project Path="src/CommunityToolkit.Mvvm.SourceGenerators/CommunityToolkit.Mvvm.SourceGenerators.shproj" />
   <Project Path="src/CommunityToolkit.Mvvm/CommunityToolkit.Mvvm.csproj" />
 </Solution>
