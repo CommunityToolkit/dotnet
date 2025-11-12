@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net472;net8.0;net9.0</TargetFrameworks>
+    <DefineConstants>$(DefineConstants);ROSLYN_4_3_1_OR_GREATER;ROSLYN_4_12_0_OR_GREATER;ROSLYN_5_0_0_OR_GREATER</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4120.UnitTests\Test_SourceGeneratorsCodegen.cs" Link="Test_SourceGeneratorsCodegen.cs" />
+    <Compile Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4120.UnitTests\Test_SourceGeneratorsDiagnostics.cs" Link="Test_SourceGeneratorsDiagnostics.cs" />
+    <Compile Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4120.UnitTests\Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer.cs" Link="Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer.cs" />
+    <Compile Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4120.UnitTests\Test_UsePartialPropertyForObservablePropertyCodeFixer.cs" Link="Test_UsePartialPropertyForObservablePropertyCodeFixer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing" Version="1.1.2" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing" Version="1.1.2" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.0.0-2.final" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="4.0.1" />
+    <PackageReference Include="MSTest.TestFramework" Version="4.0.1" />
+
+    <!-- Top-level override to fix address security vulnerability warnings -->
+    <PackageReference Include="System.Formats.Asn1" Version="9.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\CommunityToolkit.Mvvm\CommunityToolkit.Mvvm.csproj" />
+    <ProjectReference Include="..\..\src\CommunityToolkit.Mvvm.CodeFixers.Roslyn4120\CommunityToolkit.Mvvm.CodeFixers.Roslyn4120.csproj" />
+    <ProjectReference Include="..\..\src\CommunityToolkit.Mvvm.SourceGenerators.Roslyn5000\CommunityToolkit.Mvvm.SourceGenerators.Roslyn5000.csproj" />
+  </ItemGroup>
+
+  <Import Project="..\CommunityToolkit.Mvvm.SourceGenerators.UnitTests\CommunityToolkit.Mvvm.SourceGenerators.UnitTests.projitems" Label="Shared" />
+
+</Project>

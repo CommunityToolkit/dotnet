@@ -41,6 +41,7 @@
     <Project Path="tests/CommunityToolkit.Mvvm.SourceGenerators.Roslyn4001.UnitTests/CommunityToolkit.Mvvm.SourceGenerators.Roslyn4001.UnitTests.csproj" />
     <Project Path="tests/CommunityToolkit.Mvvm.SourceGenerators.Roslyn4031.UnitTests/CommunityToolkit.Mvvm.SourceGenerators.Roslyn4031.UnitTests.csproj" />
     <Project Path="tests/CommunityToolkit.Mvvm.SourceGenerators.Roslyn4120.UnitTests/CommunityToolkit.Mvvm.SourceGenerators.Roslyn4120.UnitTests.csproj" />
+    <Project Path="tests/CommunityToolkit.Mvvm.SourceGenerators.Roslyn5000.UnitTests/CommunityToolkit.Mvvm.SourceGenerators.Roslyn5000.UnitTests.csproj" />
     <Project Path="tests/CommunityToolkit.Mvvm.SourceGenerators.UnitTests/CommunityToolkit.Mvvm.SourceGenerators.UnitTests.shproj" />
     <Project Path="tests/CommunityToolkit.Mvvm.UnitTests/CommunityToolkit.Mvvm.UnitTests.shproj" />
   </Folder>

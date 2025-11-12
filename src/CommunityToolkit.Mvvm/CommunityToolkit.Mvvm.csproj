@@ -69,7 +69,7 @@
     <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4001\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4001.csproj" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4031\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4031.csproj" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4120\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4120.csproj" ReferenceOutputAssembly="false" />
-    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4120\CommunityToolkit.Mvvm.SourceGenerators.Roslyn5000.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn5000\CommunityToolkit.Mvvm.SourceGenerators.Roslyn5000.csproj" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\CommunityToolkit.Mvvm.CodeFixers.Roslyn4001\CommunityToolkit.Mvvm.CodeFixers.Roslyn4001.csproj" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\CommunityToolkit.Mvvm.CodeFixers.Roslyn4120\CommunityToolkit.Mvvm.CodeFixers.Roslyn4120.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
