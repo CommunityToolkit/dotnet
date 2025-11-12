@@ -3,7 +3,9 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Buffers;
 using System.Runtime.CompilerServices;
+using CommunityToolkit.HighPerformance.UnitTests.Buffers.Internals;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommunityToolkit.HighPerformance.UnitTests;
@@ -34,6 +36,30 @@ public class Test_ReadOnlyMemory2DT
         Assert.AreEqual(0, empty2.Length);
         Assert.AreEqual(0, empty2.Width);
         Assert.AreEqual(0, empty2.Height);
+
+#if NET6_0_OR_GREATER
+        MemoryManager<int> memoryManager = new UnmanagedSpanOwner<int>(1);
+        ReadOnlyMemory2D<int> empty5 = new(memoryManager, 0, 0);
+
+        Assert.IsTrue(empty5.IsEmpty);
+        Assert.AreEqual(0, empty5.Length);
+        Assert.AreEqual(0, empty5.Width);
+        Assert.AreEqual(0, empty5.Height);
+
+        ReadOnlyMemory2D<int> empty6 = new(memoryManager, 4, 0);
+
+        Assert.IsTrue(empty6.IsEmpty);
+        Assert.AreEqual(0, empty6.Length);
+        Assert.AreEqual(0, empty6.Width);
+        Assert.AreEqual(4, empty6.Height);
+
+        ReadOnlyMemory2D<int> empty7 = new(memoryManager, 0, 7);
+
+        Assert.IsTrue(empty7.IsEmpty);
+        Assert.AreEqual(0, empty7.Length);
+        Assert.AreEqual(7, empty7.Width);
+        Assert.AreEqual(0, empty7.Height);
+#endif
     }
 
     [TestMethod]
