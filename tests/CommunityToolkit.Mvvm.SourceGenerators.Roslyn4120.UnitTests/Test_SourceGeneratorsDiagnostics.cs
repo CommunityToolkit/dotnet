@@ -22,13 +22,13 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [ObservableProperty]            
+                    [ObservableProperty]
                     public string Name { get; set; }
                 }
             }
             """;
 
-        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<RequiresCSharpLanguageVersionPreviewAnalyzer>(source, LanguageVersion.CSharp12);
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<RequiresCSharpLanguageVersion14OrPreviewAnalyzer>(source, LanguageVersion.CSharp12);
     }
 
     [TestMethod]
@@ -41,13 +41,13 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [{|MVVMTK0041:ObservableProperty|}]            
+                    [{|MVVMTK0041:ObservableProperty|}]
                     public partial string Name { get; set; }
                 }
             }
             """;
 
-        await CSharpAnalyzerWithLanguageVersionTest<RequiresCSharpLanguageVersionPreviewAnalyzer>.VerifyAnalyzerAsync(
+        await CSharpAnalyzerWithLanguageVersionTest<RequiresCSharpLanguageVersion14OrPreviewAnalyzer>.VerifyAnalyzerAsync(
             source,
             LanguageVersion.CSharp12,
 
@@ -67,19 +67,45 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [{|MVVMTK0041:ObservableProperty|}]            
+                    [{|MVVMTK0041:ObservableProperty|}]
                     public partial string Name { get; set; }
                 }
             }
             """;
 
-        await CSharpAnalyzerWithLanguageVersionTest<RequiresCSharpLanguageVersionPreviewAnalyzer>.VerifyAnalyzerAsync(
+        await CSharpAnalyzerWithLanguageVersionTest<RequiresCSharpLanguageVersion14OrPreviewAnalyzer>.VerifyAnalyzerAsync(
             source,
             LanguageVersion.CSharp13,
 
             // /0/Test0.cs(8,31): error CS9248: Partial property 'SampleViewModel.Name' must have an implementation part.
             DiagnosticResult.CompilerError("CS9248").WithSpan(8, 31, 8, 35).WithArguments("MyApp.SampleViewModel.Name"));
     }
+
+#if ROSLYN_5_0_0_OR_GREATER
+    [TestMethod]
+    public async Task RequireCSharpLanguageVersionPreviewAnalyzer_LanguageVersionIsNotPreview_CSharp14_Partial_DoesNotWarn()
+    {
+        const string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {            
+                    [ObservableProperty]
+                    public partial string Name { get; set; }
+                }
+            }
+            """;
+
+        await CSharpAnalyzerWithLanguageVersionTest<RequiresCSharpLanguageVersion14OrPreviewAnalyzer>.VerifyAnalyzerAsync(
+            source,
+            LanguageVersion.Preview,
+
+            // /0/Test0.cs(8,31): error CS9248: Partial property 'SampleViewModel.Name' must have an implementation part.
+            DiagnosticResult.CompilerError("CS9248").WithSpan(8, 31, 8, 35).WithArguments("MyApp.SampleViewModel.Name"));
+    }
+#endif
 
     [TestMethod]
     public async Task RequireCSharpLanguageVersionPreviewAnalyzer_LanguageVersionIsPreview_DoesNotWarn()
@@ -91,13 +117,13 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [ObservableProperty]            
+                    [ObservableProperty]
                     public string Name { get; set; }
                 }
             }
             """;
 
-        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<RequiresCSharpLanguageVersionPreviewAnalyzer>(source, languageVersion: LanguageVersion.Preview);
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<RequiresCSharpLanguageVersion14OrPreviewAnalyzer>(source, languageVersion: LanguageVersion.Preview);
     }
 
     [TestMethod]
@@ -110,13 +136,13 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [ObservableProperty]            
+                    [ObservableProperty]
                     public partial string Name { get; set; }
                 }
             }
             """;
 
-        await CSharpAnalyzerWithLanguageVersionTest<RequiresCSharpLanguageVersionPreviewAnalyzer>.VerifyAnalyzerAsync(
+        await CSharpAnalyzerWithLanguageVersionTest<RequiresCSharpLanguageVersion14OrPreviewAnalyzer>.VerifyAnalyzerAsync(
             source,
             LanguageVersion.Preview,
 
@@ -134,7 +160,7 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [ObservableProperty]            
+                    [ObservableProperty]
                     private string name;
                 }
             }
@@ -153,7 +179,7 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [ObservableProperty]            
+                    [ObservableProperty]
                     private string {|MVVMTK0042:name|};
                 }
             }
@@ -172,7 +198,7 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [ObservableProperty]            
+                    [ObservableProperty]
                     public string Name { get; set; }
                 }
             }
@@ -191,7 +217,7 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [ObservableProperty]            
+                    [ObservableProperty]
                     public partial string {|CS9248:Name|} { get; set; }
                 }
             }
@@ -210,7 +236,7 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [ObservableProperty]            
+                    [ObservableProperty]
                     internal partial string {|CS9248:Name|} { get; private set; }
                 }
             }
@@ -229,7 +255,7 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [ObservableProperty]            
+                    [ObservableProperty]
                     protected internal partial string {|CS9248:Name|} { get; private protected set; }
                 }
             }
@@ -248,7 +274,7 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [{|MVVMTK0043:ObservableProperty|}]            
+                    [{|MVVMTK0043:ObservableProperty|}]
                     public string Name { get; set; }
                 }
             }
@@ -267,7 +293,7 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [{|MVVMTK0043:ObservableProperty|}]            
+                    [{|MVVMTK0043:ObservableProperty|}]
                     public static partial string {|CS9248:Name|} { get; set; }
                 }
             }
@@ -286,7 +312,7 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [{|MVVMTK0043:ObservableProperty|}]            
+                    [{|MVVMTK0043:ObservableProperty|}]
                     public partial string {|CS9248:Name|} { get; }
                 }
             }
@@ -305,7 +331,7 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [{|MVVMTK0043:ObservableProperty|}]            
+                    [{|MVVMTK0043:ObservableProperty|}]
                     public partial string {|CS9248:Name|} { set; }
                 }
             }
@@ -325,7 +351,7 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [{|MVVMTK0043:ObservableProperty|}]            
+                    [{|MVVMTK0043:ObservableProperty|}]
                     public partial string {|CS9248:Name|} { get; init; }
                 }
             }
@@ -358,7 +384,7 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [ObservableProperty]            
+                    [ObservableProperty]
                     private static string name;
                 }
             }
@@ -377,7 +403,7 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [ObservableProperty]            
+                    [ObservableProperty]
                     private static string name;
                 }
             }
@@ -399,7 +425,7 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [ObservableProperty]            
+                    [ObservableProperty]
                     private string name;
                 }
             }
@@ -421,7 +447,7 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [ObservableProperty]            
+                    [ObservableProperty]
                     private string name;
                 }
             }
@@ -443,7 +469,7 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [ObservableProperty]            
+                    [ObservableProperty]
                     private string name;
                 }
             }
@@ -465,7 +491,7 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [ObservableProperty]            
+                    [ObservableProperty]
                     private string {|MVVMTK0045:name|};
                 }
             }
@@ -565,7 +591,7 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [ObservableProperty]            
+                    [ObservableProperty]
                     private string name;
                 }
             }
@@ -587,7 +613,7 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [ObservableProperty]            
+                    [ObservableProperty]
                     private string {|MVVMTK0045:name|};
                 }
             }
@@ -609,7 +635,7 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [ObservableProperty]            
+                    [ObservableProperty]
                     private string {|MVVMTK0045:name|};
                 }
             }
@@ -631,7 +657,7 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [ObservableProperty]            
+                    [ObservableProperty]
                     private string {|MVVMTK0045:name|};
                 }
             }
@@ -658,7 +684,7 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [ObservableProperty]            
+                    [ObservableProperty]
                     private string {|MVVMTK0045:name|};
                 }
             }
@@ -1016,7 +1042,7 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [ObservableProperty]            
+                    [ObservableProperty]
                     public partial string {|CS9248:Name|} { get; set; }
                 }
             }
@@ -1060,7 +1086,7 @@ partial class Test_SourceGeneratorsDiagnostics
             {
                 public partial class SampleViewModel : ObservableObject
                 {            
-                    [ObservableProperty]            
+                    [ObservableProperty]
                     public partial string Name { get; set; }
 
                     [GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", "1.0.0")]
