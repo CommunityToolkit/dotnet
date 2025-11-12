@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net472;net8.0;net9.0</TargetFrameworks>
+    <LangVersion>preview</LangVersion>
+    <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+    <DefineConstants>$(DefineConstants);ROSLYN_4_12_0_OR_GREATER;ROSLYN_5_0_0_OR_GREATER</DefineConstants>
+
+    <!-- We're intentionally also using '[ObservableProperty]' on some fields, for testing -->
+    <NoWarn>$(NoWarn);MVVMTK0042</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\CommunityToolkit.Mvvm.Roslyn4120.UnitTests\Test_ObservablePropertyAttribute_PartialProperties.cs" Link="Test_ObservablePropertyAttribute_PartialProperties.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dbs.Signed3.Nito.AsyncEx.Context" Version="5.0.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="4.0.1" />
+    <PackageReference Include="MSTest.TestFramework" Version="4.0.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.0" />
+    <PackageReference Include="System.Reactive" Version="6.1.0" />
+    <PackageReference Include="System.Text.Json" Version="9.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CommunityToolkit.Mvvm.ExternalAssembly.Roslyn4031\CommunityToolkit.Mvvm.ExternalAssembly.Roslyn4031.csproj" />
+    <ProjectReference Include="..\..\src\CommunityToolkit.Mvvm\CommunityToolkit.Mvvm.csproj" />
+    <ProjectReference Include="..\..\src\CommunityToolkit.Mvvm.SourceGenerators.Roslyn5000\CommunityToolkit.Mvvm.SourceGenerators.Roslyn5000.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="contentfiles;build" />
+    <ProjectReference Include="..\..\src\CommunityToolkit.Mvvm.CodeFixers.Roslyn4120\CommunityToolkit.Mvvm.CodeFixers.Roslyn4120.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="contentfiles;build" />
+  </ItemGroup>
+
+  <Import Project="..\CommunityToolkit.Mvvm.UnitTests\CommunityToolkit.Mvvm.UnitTests.projitems" Label="Shared" />
+
+</Project>
