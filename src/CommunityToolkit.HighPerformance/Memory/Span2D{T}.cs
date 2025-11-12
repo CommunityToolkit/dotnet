@@ -531,13 +531,6 @@ public readonly ref partial struct Span2D<T>
             ThrowHelper.ThrowArgumentOutOfRangeExceptionForPitch();
         }
 
-        if (width == 0 || height == 0)
-        {
-            this = default;
-
-            return;
-        }
-
         int area = OverflowHelper.ComputeInt32Area(height, width, pitch);
         int remaining = span.Length - offset;
 

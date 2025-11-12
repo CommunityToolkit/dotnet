@@ -64,6 +64,6 @@ internal static class OverflowHelper
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int ComputeInt32Area(int height, int width, int pitch)
     {
-        return checked(((width + pitch) * Max(unchecked(height - 1), 0)) + width);
+        return Max(checked(((width + pitch) * (height - 1)) + width), 0);
     }
 }
