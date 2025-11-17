@@ -8,13 +8,13 @@
 
     <!-- We're intentionally also using '[ObservableProperty]' on some fields, for testing -->
     <NoWarn>$(NoWarn);MVVMTK0042</NoWarn>
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Dbs.Signed3.Nito.AsyncEx.Context" Version="5.0.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="4.0.1" />
     <PackageReference Include="MSTest.TestFramework" Version="4.0.1" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.0" />
     <PackageReference Include="System.Reactive" Version="6.1.0" />
     <PackageReference Include="System.Text.Json" Version="10.0.1" />
   </ItemGroup>

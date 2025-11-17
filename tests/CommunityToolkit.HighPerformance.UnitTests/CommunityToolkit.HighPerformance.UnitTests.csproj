@@ -4,6 +4,7 @@
     <TargetFrameworks>net472;net8.0;net9.0;net10.0</TargetFrameworks>
     <EnablePreviewFeatures>true</EnablePreviewFeatures>
     <NoWarn>$(NoWarn);CA2252</NoWarn>
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,7 +14,6 @@
   <ItemGroup>
     <PackageReference Include="MSTest.TestAdapter" Version="4.0.1" />
     <PackageReference Include="MSTest.TestFramework" Version="4.0.1" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.0" />
   </ItemGroup>
 
 </Project>
