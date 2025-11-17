@@ -64,7 +64,7 @@ jobs:
     
     # Run tests
     - name: Test solution
-      run: dotnet test --no-build -c ${{matrix.configuration}} -l "console;verbosity=detailed"
+      run: dotnet test --no-build -c ${{matrix.configuration}}
 
     # Pack solution
     - name: Pack solution
