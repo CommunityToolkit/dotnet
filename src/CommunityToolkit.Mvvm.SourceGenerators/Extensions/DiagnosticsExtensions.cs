@@ -12,7 +12,7 @@ using Microsoft.CodeAnalysis;
 namespace CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 
 /// <summary>
-/// Extension methods for <see cref="GeneratorExecutionContext"/>, specifically for reporting diagnostics.
+/// Extension methods for working with diagnostics from incremental generator pipelines.
 /// </summary>
 internal static class DiagnosticsExtensions
 {

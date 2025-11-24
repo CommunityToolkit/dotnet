@@ -69,6 +69,7 @@
     <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4001\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4001.csproj" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4031\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4031.csproj" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4120\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4120.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn5000\CommunityToolkit.Mvvm.SourceGenerators.Roslyn5000.csproj" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\CommunityToolkit.Mvvm.CodeFixers.Roslyn4001\CommunityToolkit.Mvvm.CodeFixers.Roslyn4001.csproj" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\CommunityToolkit.Mvvm.CodeFixers.Roslyn4120\CommunityToolkit.Mvvm.CodeFixers.Roslyn4120.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
@@ -123,9 +124,11 @@
     <None Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4001\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.SourceGenerators.dll" PackagePath="analyzers\dotnet\roslyn4.0\cs" Pack="true" Visible="false" />
     <None Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4031\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.SourceGenerators.dll" PackagePath="analyzers\dotnet\roslyn4.3\cs" Pack="true" Visible="false" />
     <None Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4120\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.SourceGenerators.dll" PackagePath="analyzers\dotnet\roslyn4.12\cs" Pack="true" Visible="false" />
+    <None Include="..\CommunityToolkit.Mvvm.SourceGenerators.Roslyn4120\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.SourceGenerators.dll" PackagePath="analyzers\dotnet\roslyn5.0\cs" Pack="true" Visible="false" />
     <None Include="..\CommunityToolkit.Mvvm.CodeFixers.Roslyn4001\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.CodeFixers.dll" PackagePath="analyzers\dotnet\roslyn4.0\cs" Pack="true" Visible="false" />
     <None Include="..\CommunityToolkit.Mvvm.CodeFixers.Roslyn4001\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.CodeFixers.dll" PackagePath="analyzers\dotnet\roslyn4.3\cs" Pack="true" Visible="false" />
     <None Include="..\CommunityToolkit.Mvvm.CodeFixers.Roslyn4120\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.CodeFixers.dll" PackagePath="analyzers\dotnet\roslyn4.12\cs" Pack="true" Visible="false" />
+    <None Include="..\CommunityToolkit.Mvvm.CodeFixers.Roslyn4120\bin\$(Configuration)\netstandard2.0\CommunityToolkit.Mvvm.CodeFixers.dll" PackagePath="analyzers\dotnet\roslyn5.0\cs" Pack="true" Visible="false" />
   </ItemGroup>
 
 </Project>
