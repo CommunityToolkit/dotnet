@@ -24,7 +24,7 @@ env:
   # The version of .NET to use just for NuGet package operations.
   # This doesn't have to be exactly in sync with the .NET SDK
   # version defined in 'global.json', as it's not used for builds.
-  DOTNET_NUGET_VERSION: ${{ '9.0.x' }}
+  DOTNET_NUGET_VERSION: ${{ '10.0.x' }}
 
 jobs:
 

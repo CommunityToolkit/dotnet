@@ -82,7 +82,7 @@
       Condition="'@(_MvvmToolkitCompatibleWindowsSdkPackages)' == ''"
       Code="MVVMTKCFG0003"
       HelpLink="https://aka.ms/mvvmtoolkit/errors/mvvmtkcfg0003"
-      Text="This version of the MVVM Toolkit requires 'Microsoft.Windows.SDK.NET.Ref' version '$(_MvvmToolkitWindowsSdkPackageRequired)' or later. Please update the .NET SDK in use to 8.0.405 (or later) or 9.0.102 (or later). Alternatively, use a temporary 'Microsoft.Windows.SDK.NET.Ref' reference, which can be done by setting the 'WindowsSdkPackageVersion' property in your .csproj file. For your project configuration, it is recommended to set the package version to '$(_MvvmToolkitWindowsSdkPackageRecommended)'." />
+      Text="This version of the MVVM Toolkit requires 'Microsoft.Windows.SDK.NET.Ref' version '$(_MvvmToolkitWindowsSdkPackageRequired)' or later. Please update the .NET SDK in use to the latest version. Alternatively, use a temporary 'Microsoft.Windows.SDK.NET.Ref' reference, which can be done by setting the 'WindowsSdkPackageVersion' property in your .csproj file. For your project configuration, it is recommended to set the package version to '$(_MvvmToolkitWindowsSdkPackageRecommended)'." />
   </Target>
 
 </Project>
