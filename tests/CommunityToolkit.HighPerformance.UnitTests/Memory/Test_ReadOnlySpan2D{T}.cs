@@ -36,6 +36,27 @@ public class Test_ReadOnlySpan2DT
         Assert.AreEqual(0, empty2.Length);
         Assert.AreEqual(0, empty2.Width);
         Assert.AreEqual(0, empty2.Height);
+
+        ReadOnlySpan2D<string> empty3 = new([], 0, 0);
+
+        Assert.IsTrue(empty3.IsEmpty);
+        Assert.AreEqual(0, empty3.Length);
+        Assert.AreEqual(0, empty3.Width);
+        Assert.AreEqual(0, empty3.Height);
+        
+        ReadOnlySpan2D<string> empty4 = new([], 4, 0);
+
+        Assert.IsTrue(empty4.IsEmpty);
+        Assert.AreEqual(0, empty4.Length);
+        Assert.AreEqual(0, empty4.Width);
+        Assert.AreEqual(4, empty4.Height);
+
+        ReadOnlySpan2D<string> empty5 = new([], 0, 7);
+
+        Assert.IsTrue(empty5.IsEmpty);
+        Assert.AreEqual(0, empty5.Length);
+        Assert.AreEqual(7, empty5.Width);
+        Assert.AreEqual(0, empty5.Height);
     }
 
 #if NET6_0_OR_GREATER

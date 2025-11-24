@@ -294,4 +294,31 @@ public partial class Test_ReadOnlySpanExtensions
 
         CollectionAssert.AreEqual(array, result);
     }
+
+#if NET8_0_OR_GREATER
+    [TestMethod]
+    public void Test_ReadOnlySpanExtensions_AsSpan2D_Empty()
+    {
+        ReadOnlySpan2D<int> empty1 = ReadOnlySpan<int>.Empty.AsSpan2D(0, 0);
+
+        Assert.IsTrue(empty1.IsEmpty);
+        Assert.AreEqual(0, empty1.Length);
+        Assert.AreEqual(0, empty1.Width);
+        Assert.AreEqual(0, empty1.Height);
+
+        ReadOnlySpan2D<int> empty2 = ReadOnlySpan<int>.Empty.AsSpan2D(4, 0);
+
+        Assert.IsTrue(empty2.IsEmpty);
+        Assert.AreEqual(0, empty2.Length);
+        Assert.AreEqual(0, empty2.Width);
+        Assert.AreEqual(4, empty2.Height);
+
+        ReadOnlySpan2D<int> empty3 = ReadOnlySpan<int>.Empty.AsSpan2D(0, 7);
+
+        Assert.IsTrue(empty3.IsEmpty);
+        Assert.AreEqual(0, empty3.Length);
+        Assert.AreEqual(7, empty3.Width);
+        Assert.AreEqual(0, empty3.Height);
+    }
+#endif
 }
