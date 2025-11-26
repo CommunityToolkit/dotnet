@@ -3,6 +3,8 @@
   <PropertyGroup>
     <RepositoryDirectory>$(MSBuildThisFileDirectory)</RepositoryDirectory>
     <BuildToolsDirectory>$(RepositoryDirectory)build\</BuildToolsDirectory>
+
+    <EnableMSTestRunner>true</EnableMSTestRunner>
   </PropertyGroup>
 
   <Import Project="$(BuildToolsDirectory)Community.Toolkit.Common.props" />
