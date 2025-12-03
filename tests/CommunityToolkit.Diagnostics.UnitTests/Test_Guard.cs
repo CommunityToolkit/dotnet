@@ -207,6 +207,50 @@ public partial class Test_Guard
     {
         _ = Assert.ThrowsExactly<ArgumentException>(() => Guard.IsNotNullOrWhiteSpace("  ", nameof(Test_Guard_IsNotNullOrWhiteSpace_Empty)));
     }
+    
+    [TestMethod]
+    public void Test_Guard_IsWhiteSpace_Ok()
+    {
+        Guard.IsWhiteSpace("  ", nameof(Test_Guard_IsWhiteSpace_Ok));
+        Guard.IsWhiteSpace("\t", nameof(Test_Guard_IsWhiteSpace_Ok));
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void Test_Guard_IsWhiteSpace_Null()
+    {
+        Guard.IsWhiteSpace(null, nameof(Test_Guard_IsWhiteSpace_Null));
+    }
+    
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void Test_Guard_IsWhiteSpace_Empty()
+    {
+        Guard.IsWhiteSpace(string.Empty, nameof(Test_Guard_IsWhiteSpace_Empty));
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void Test_Guard_IsWhiteSpace_NotWhiteSpace()
+    {
+        Guard.IsWhiteSpace("foo", nameof(Test_Guard_IsWhiteSpace_NotWhiteSpace));
+    }
+    
+    [TestMethod]
+    public void Test_Guard_IsNotWhiteSpace_Ok()
+    {
+        Guard.IsNotWhiteSpace(null, nameof(Test_Guard_IsNotWhiteSpace_Ok));
+        Guard.IsNotWhiteSpace("foo", nameof(Test_Guard_IsNotWhiteSpace_Ok));
+        Guard.IsNotWhiteSpace(string.Empty, nameof(Test_Guard_IsNotWhiteSpace_Ok));
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void Test_Guard_IsNotWhiteSpace_WhiteSpace()
+    {
+        Guard.IsNotWhiteSpace("  ", nameof(Test_Guard_IsNotWhiteSpace_WhiteSpace));
+        Guard.IsNotWhiteSpace("\t", nameof(Test_Guard_IsNotWhiteSpace_WhiteSpace));
+    }
 
     [TestMethod]
     public void Test_Guard_IsEqualTo_Ok()
