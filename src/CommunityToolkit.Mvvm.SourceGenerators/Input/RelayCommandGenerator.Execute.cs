@@ -345,7 +345,7 @@ partial class RelayCommandGenerator
                     ArrowExpressionClause(
                         AssignmentExpression(
                             SyntaxKind.CoalesceAssignmentExpression,
-                            commandInfo.FieldName is not null ? IdentifierName(commandInfo.FieldName) : IdentifierName(Token(SyntaxKind.FieldKeyword)),
+                            commandInfo.FieldName is not null ? IdentifierName(commandInfo.FieldName) : IdentifierName("field"),
                             ObjectCreationExpression(IdentifierName(commandClassTypeName))
                             .AddArgumentListArguments(commandCreationArguments.ToArray()))))
                 .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
@@ -410,7 +410,7 @@ partial class RelayCommandGenerator
                         ArrowExpressionClause(
                             AssignmentExpression(
                                 SyntaxKind.CoalesceAssignmentExpression,
-                                cancelCommandFieldName is not null ? IdentifierName(cancelCommandFieldName) : IdentifierName(Token(SyntaxKind.FieldKeyword)),
+                                cancelCommandFieldName is not null ? IdentifierName(cancelCommandFieldName) : IdentifierName("field"),
                                 InvocationExpression(
                                     MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
