@@ -207,8 +207,9 @@ partial class RelayCommandGenerator
                 .Select(static a => AttributeList(SingletonSeparatedList(a.GetSyntax())))
                 .ToArray();
 
+            ImmutableArrayBuilder<MemberDeclarationSyntax> declarations = ImmutableArrayBuilder<MemberDeclarationSyntax>.Rent();
+
             // Declare a backing field if needed
-            FieldDeclarationSyntax? fieldDeclaration = null;
             if (commandInfo.FieldName is not null)
             {
                 // Construct the generated field as follows:
@@ -217,7 +218,7 @@ partial class RelayCommandGenerator
                 // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
                 // <FORWARDED_ATTRIBUTES>
                 // private <COMMAND_TYPE>? <COMMAND_FIELD_NAME>;
-                fieldDeclaration =
+                FieldDeclarationSyntax fieldDeclaration =
                     FieldDeclaration(
                     VariableDeclaration(NullableType(IdentifierName(commandClassTypeName)))
                     .AddVariables(VariableDeclarator(Identifier(commandInfo.FieldName))))
@@ -230,6 +231,8 @@ partial class RelayCommandGenerator
                                 AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(RelayCommandGenerator).Assembly.GetName().Version.ToString()))))))
                         .WithOpenBracketToken(Token(TriviaList(Comment($"/// <summary>The backing field for <see cref=\"{commandInfo.PropertyName}\"/>.</summary>")), SyntaxKind.OpenBracketToken, TriviaList())))
                     .AddAttributeLists(forwardedFieldAttributes);
+
+                declarations.Add(fieldDeclaration);
             }
 
             // Prepares the argument to pass the underlying method to invoke
@@ -347,6 +350,8 @@ partial class RelayCommandGenerator
                             .AddArgumentListArguments(commandCreationArguments.ToArray()))))
                 .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
 
+            declarations.Add(propertyDeclaration);
+
             // Conditionally declare the additional members for the cancel commands
             if (commandInfo.IncludeCancelCommand)
             {
@@ -354,7 +359,8 @@ partial class RelayCommandGenerator
                 string? cancelCommandFieldName = commandInfo.FieldName is not null ? $"{commandInfo.FieldName.Substring(0, commandInfo.FieldName.Length - "Command".Length)}CancelCommand" : null;
                 string cancelCommandPropertyName = $"{commandInfo.PropertyName.Substring(0, commandInfo.PropertyName.Length - "Command".Length)}CancelCommand";
 
-                FieldDeclarationSyntax? cancelCommandFieldDeclaration = null;
+                // Declare a backing field for the cancel command if needed.
+                // This is only needed if we can't use the field keyword for the main command, as otherwise the cancel command can just use its own field keyword.
                 if (cancelCommandFieldName is not null)
                 {
                     // Construct the generated field for the cancel command as follows:
@@ -362,7 +368,7 @@ partial class RelayCommandGenerator
                     // /// <summary>The backing field for <see cref="<COMMAND_PROPERTY_NAME>"/></summary>
                     // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
                     // private global::System.Windows.Input.ICommand? <CANCEL_COMMAND_FIELD_NAME>;
-                    cancelCommandFieldDeclaration =
+                    FieldDeclarationSyntax cancelCommandFieldDeclaration =
                         FieldDeclaration(
                         VariableDeclaration(NullableType(IdentifierName("global::System.Windows.Input.ICommand")))
                         .AddVariables(VariableDeclarator(Identifier(cancelCommandFieldName))))
@@ -375,6 +381,7 @@ partial class RelayCommandGenerator
                                     AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(RelayCommandGenerator).Assembly.GetName().Version.ToString()))))))
                             .WithOpenBracketToken(Token(TriviaList(Comment($"/// <summary>The backing field for <see cref=\"{cancelCommandPropertyName}\"/>.</summary>")), SyntaxKind.OpenBracketToken, TriviaList())));
 
+                    declarations.Add(cancelCommandFieldDeclaration);
                 }
 
                 // Construct the generated property as follows (the explicit delegate cast is needed to avoid overload resolution conflicts):
@@ -412,20 +419,11 @@ partial class RelayCommandGenerator
                                 .AddArgumentListArguments(Argument(IdentifierName(commandInfo.PropertyName))))))
                     .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
 
-                if (fieldDeclaration is not null && cancelCommandFieldDeclaration is not null)
-                {
-                    return ImmutableArray.Create<MemberDeclarationSyntax>(fieldDeclaration, propertyDeclaration, cancelCommandFieldDeclaration, cancelCommandPropertyDeclaration);
-                }
+                declarations.Add(cancelCommandPropertyDeclaration);
 
-                return ImmutableArray.Create<MemberDeclarationSyntax>(propertyDeclaration, cancelCommandPropertyDeclaration);
             }
 
-            if (fieldDeclaration is not null)
-            {
-                return ImmutableArray.Create<MemberDeclarationSyntax>(fieldDeclaration, propertyDeclaration);
-            }
-
-            return ImmutableArray.Create<MemberDeclarationSyntax>(propertyDeclaration);
+            return declarations.ToImmutable();
         }
 
         /// <summary>
