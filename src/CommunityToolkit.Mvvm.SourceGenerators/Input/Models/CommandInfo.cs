@@ -11,7 +11,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
 /// A model with gathered info on a given command method.
 /// </summary>
 /// <param name="MethodName">The name of the target method.</param>
-/// <param name="FieldName">The resulting field name for the generated command.</param>
+/// <param name="FieldName">The resulting field name for the generated command, or null if the <see langword="field"/> is available.</param>
 /// <param name="PropertyName">The resulting property name for the generated command.</param>
 /// <param name="CommandInterfaceType">The command interface type name.</param>
 /// <param name="CommandClassType">The command class type name.</param>
@@ -26,7 +26,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.Input.Models;
 /// <param name="ForwardedAttributes">The sequence of forwarded attributes for the generated members.</param>
 internal sealed record CommandInfo(
     string MethodName,
-    string FieldName,
+    string? FieldName,
     string PropertyName,
     string CommandInterfaceType,
     string CommandClassType,
