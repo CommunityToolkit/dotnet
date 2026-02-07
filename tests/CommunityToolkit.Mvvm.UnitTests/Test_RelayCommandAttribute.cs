@@ -571,6 +571,7 @@ public partial class Test_RelayCommandAttribute
     [TestMethod]
     public void Test_RelayCommandAttribute_WithExplicitAttributesForFieldAndProperty()
     {
+#if !ROSLYN_4_12_0_OR_GREATER
         FieldInfo fooField = typeof(MyViewModelWithExplicitFieldAndPropertyAttributes).GetField("fooCommand", BindingFlags.Instance | BindingFlags.NonPublic)!;
 
         Assert.IsNotNull(fooField.GetCustomAttribute<RequiredAttribute>());
@@ -579,6 +580,7 @@ public partial class Test_RelayCommandAttribute
         Assert.IsNotNull(fooField.GetCustomAttribute<MaxLengthAttribute>());
         Assert.AreEqual(100, fooField.GetCustomAttribute<MaxLengthAttribute>()!.Length);
 
+#endif
         PropertyInfo fooProperty = typeof(MyViewModelWithExplicitFieldAndPropertyAttributes).GetProperty("FooCommand")!;
 
         Assert.IsNotNull(fooProperty.GetCustomAttribute<RequiredAttribute>());
@@ -618,17 +620,21 @@ public partial class Test_RelayCommandAttribute
             Assert.AreEqual(Test_ObservablePropertyAttribute.Animal.Llama, testAttribute.Animal);
         }
 
+#if !ROSLYN_4_12_0_OR_GREATER
         FieldInfo fooBarField = typeof(MyViewModelWithExplicitFieldAndPropertyAttributes).GetField("fooBarCommand", BindingFlags.Instance | BindingFlags.NonPublic)!;
 
         ValidateTestAttribute(fooBarField.GetCustomAttribute<TestValidationAttribute>()!);
+#endif
 
         PropertyInfo fooBarProperty = typeof(MyViewModelWithExplicitFieldAndPropertyAttributes).GetProperty("FooBarCommand")!;
 
         ValidateTestAttribute(fooBarProperty.GetCustomAttribute<TestValidationAttribute>()!);
 
+#if !ROSLYN_4_12_0_OR_GREATER
         FieldInfo barBazField = typeof(MyViewModelWithExplicitFieldAndPropertyAttributes).GetField("barBazCommand", BindingFlags.Instance | BindingFlags.NonPublic)!;
 
         Assert.IsNotNull(barBazField.GetCustomAttribute<Test_ObservablePropertyAttribute.TestAttribute>());
+#endif
 
         PropertyInfo barBazCommand = typeof(MyViewModelWithExplicitFieldAndPropertyAttributes).GetProperty("BarBazCommand")!;
 
@@ -670,11 +676,13 @@ public partial class Test_RelayCommandAttribute
         _ = Assert.IsInstanceOfType<RelayCommand>(model.BazCommand);
         _ = Assert.IsInstanceOfType<AsyncRelayCommand>(model.FooBarCommand);
 
+#if !ROSLYN_4_12_0_OR_GREATER
         FieldInfo bazField = typeof(ModelWithPartialCommandMethods).GetField("bazCommand", BindingFlags.Instance | BindingFlags.NonPublic)!;
 
         Assert.IsNotNull(bazField.GetCustomAttribute<RequiredAttribute>());
         Assert.IsNotNull(bazField.GetCustomAttribute<MinLengthAttribute>());
         Assert.AreEqual(1, bazField.GetCustomAttribute<MinLengthAttribute>()!.Length);
+#endif
 
         PropertyInfo bazProperty = typeof(ModelWithPartialCommandMethods).GetProperty("BazCommand")!;
 
@@ -682,11 +690,13 @@ public partial class Test_RelayCommandAttribute
         Assert.AreEqual(2, bazProperty.GetCustomAttribute<MinLengthAttribute>()!.Length);
         Assert.IsNotNull(bazProperty.GetCustomAttribute<XmlIgnoreAttribute>());
 
+#if !ROSLYN_4_12_0_OR_GREATER
         FieldInfo fooBarField = typeof(ModelWithPartialCommandMethods).GetField("fooBarCommand", BindingFlags.Instance | BindingFlags.NonPublic)!;
 
         Assert.IsNotNull(fooBarField.GetCustomAttribute<RequiredAttribute>());
         Assert.IsNotNull(fooBarField.GetCustomAttribute<MinLengthAttribute>());
-        Assert.AreEqual(1, fooBarField.GetCustomAttribute<MinLengthAttribute>()!.Length);
+        Assert.AreEqual(1, fooBarField.GetCustomAttribute<MinLengthAttribute>()!.Length); 
+#endif
 
         PropertyInfo fooBarProperty = typeof(ModelWithPartialCommandMethods).GetProperty("FooBarCommand")!;
 
