@@ -84,10 +84,11 @@ internal static class OverflowHelper
         // Refer to the explanation above for the Memory2D<T> and Span2D<T> types.
         // For the Memory3D<T> and Span3D<T> types it is similar, except we now have a "volume"
         // consisting of one or more 2D slices. For these 2D slices, rowPitch is the distance
-        // between consecutive rows. slicePitch is the distance between consecutive slices.
+        // between the end of a row and the start of the next row. Similarly, slicePitch is
+        // the distance between the end of a slice and the start of the next slice.
         // Note that we're also subtracting 1 to the depth as we don't want to include the trailing pitch
         // for the 3D memory area.
-        _ = checked(((nint)slicePitch * Max(unchecked(depth - 1), 0)) +
+        _ = checked(((nint)(((width + rowPitch) * height) + slicePitch) * Max(unchecked(depth - 1), 0)) +
                     ((nint)(width + rowPitch) * Max(unchecked(height - 1), 0)) +
                     Max(unchecked(width - 1), 0));
     }
@@ -106,8 +107,8 @@ internal static class OverflowHelper
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int ComputeInt32Volume(int depth, int height, int width, int slicePitch, int rowPitch)
     {
-        return Max(checked((slicePitch * (depth - 1)) +
-                           ((width + rowPitch) * (height - 1)) +
-                           width), 0);
+        return Max(checked(((width + rowPitch) * height + slicePitch) * (depth - 1) +
+                            (width + rowPitch) * (height - 1) +
+                            width), 0);
     }
 }
