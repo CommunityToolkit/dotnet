@@ -78,6 +78,14 @@ internal static class ThrowHelper
     {
         throw new ArgumentOutOfRangeException("depth");
     }
+    
+    /// <summary>
+    /// Throws an <see cref="ArgumentOutOfRangeException"/> when the "slice" parameter is invalid.
+    /// </summary>
+    public static void ThrowArgumentOutOfRangeExceptionForSlice()
+    {
+        throw new ArgumentOutOfRangeException("slice");
+    }
 
     /// <summary>
     /// Throws an <see cref="ArgumentOutOfRangeException"/> when the "row" parameter is invalid.
@@ -125,5 +133,21 @@ internal static class ThrowHelper
     public static void ThrowArgumentOutOfRangeExceptionForPitch()
     {
         throw new ArgumentOutOfRangeException("pitch");
+    }
+    
+    /// <summary>
+    /// Throws an <see cref="ArgumentOutOfRangeException"/> when the "rowPitch" parameter is invalid.
+    /// </summary>
+    public static void ThrowArgumentOutOfRangeExceptionForRowPitch()
+    {
+        throw new ArgumentOutOfRangeException("rowPitch");
+    }
+    
+    /// <summary>
+    /// Throws an <see cref="ArgumentOutOfRangeException"/> when the "slicePitch" parameter is invalid.
+    /// </summary>
+    public static void ThrowArgumentOutOfRangeExceptionForSlicePitch()
+    {
+        throw new ArgumentOutOfRangeException("slicePitch");
     }
 }

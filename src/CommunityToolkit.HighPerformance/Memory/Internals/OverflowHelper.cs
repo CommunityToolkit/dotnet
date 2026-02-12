@@ -9,7 +9,8 @@ using static System.Math;
 namespace CommunityToolkit.HighPerformance.Memory.Internals;
 
 /// <summary>
-/// A helper to validate arithmetic operations for <see cref="Memory2D{T}"/> and <see cref="Span2D{T}"/>.
+/// A helper to validate arithmetic operations for <see cref="Memory2D{T}"/>, <see cref="Span2D{T}"/>,
+/// <see cref="Memory3D{T}"/>, and <see cref="Span3D{T}"/>.
 /// </summary>
 internal static class OverflowHelper
 {
