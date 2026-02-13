@@ -320,5 +320,40 @@ public partial class Test_ReadOnlySpanExtensions
         Assert.AreEqual(7, empty3.Width);
         Assert.AreEqual(0, empty3.Height);
     }
+
+    [TestMethod]
+    public void Test_ReadOnlySpanExtensions_AsSpan3D_Empty()
+    {
+        ReadOnlySpan3D<int> empty1 = ReadOnlySpan<int>.Empty.AsSpan3D(0, 0, 0);
+
+        Assert.IsTrue(empty1.IsEmpty);
+        Assert.AreEqual(0, empty1.Length);
+        Assert.AreEqual(0, empty1.Width);
+        Assert.AreEqual(0, empty1.Height);
+
+        ReadOnlySpan3D<int> empty2 = ReadOnlySpan<int>.Empty.AsSpan3D(4, 0, 0);
+
+        Assert.IsTrue(empty2.IsEmpty);
+        Assert.AreEqual(0, empty2.Length);
+        Assert.AreEqual(4, empty2.Width);
+        Assert.AreEqual(0, empty2.Height);
+        Assert.AreEqual(0, empty2.Depth);
+
+        ReadOnlySpan3D<int> empty3 = ReadOnlySpan<int>.Empty.AsSpan3D(0, 7, 0);
+
+        Assert.IsTrue(empty3.IsEmpty);
+        Assert.AreEqual(0, empty3.Length);
+        Assert.AreEqual(0, empty3.Width);
+        Assert.AreEqual(7, empty3.Height);
+        Assert.AreEqual(0, empty2.Depth);
+
+        ReadOnlySpan3D<int> empty4 = ReadOnlySpan<int>.Empty.AsSpan3D(0, 0, 3);
+
+        Assert.IsTrue(empty4.IsEmpty);
+        Assert.AreEqual(0, empty4.Length);
+        Assert.AreEqual(3, empty4.Width);
+        Assert.AreEqual(0, empty4.Height);
+        Assert.AreEqual(0, empty2.Depth);
+    }
 #endif
 }

@@ -225,5 +225,40 @@ public class Test_SpanExtensions
         Assert.AreEqual(7, empty3.Width);
         Assert.AreEqual(0, empty3.Height);
     }
+
+    [TestMethod]
+    public void Test_SpanExtensions_AsSpan3D_Empty()
+    {
+        Span3D<int> empty1 = Span<int>.Empty.AsSpan3D(0, 0, 0);
+
+        Assert.IsTrue(empty1.IsEmpty);
+        Assert.AreEqual(0, empty1.Length);
+        Assert.AreEqual(0, empty1.Width);
+        Assert.AreEqual(0, empty1.Height);
+
+        Span3D<int> empty2 = Span<int>.Empty.AsSpan3D(4, 0, 0);
+
+        Assert.IsTrue(empty2.IsEmpty);
+        Assert.AreEqual(0, empty2.Length);
+        Assert.AreEqual(4, empty2.Width);
+        Assert.AreEqual(0, empty2.Height);
+        Assert.AreEqual(0, empty2.Depth);
+
+        Span3D<int> empty3 = Span<int>.Empty.AsSpan3D(0, 7, 0);
+
+        Assert.IsTrue(empty3.IsEmpty);
+        Assert.AreEqual(0, empty3.Length);
+        Assert.AreEqual(0, empty3.Width);
+        Assert.AreEqual(7, empty3.Height);
+        Assert.AreEqual(0, empty2.Depth);
+
+        Span3D<int> empty4 = Span<int>.Empty.AsSpan3D(0, 0, 3);
+
+        Assert.IsTrue(empty4.IsEmpty);
+        Assert.AreEqual(0, empty4.Length);
+        Assert.AreEqual(3, empty4.Width);
+        Assert.AreEqual(0, empty4.Height);
+        Assert.AreEqual(0, empty2.Depth);
+    }
 #endif
 }
