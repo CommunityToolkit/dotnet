@@ -60,6 +60,51 @@ public static class ReadOnlyMemoryExtensions
     {
         return new(memory, offset, height, width, pitch);
     }
+
+    /// <summary>
+    /// Returns a <see cref="ReadOnlyMemory3D{T}"/> instance wrapping the underlying data for the given <see cref="ReadOnlyMemory{T}"/> instance.
+    /// </summary>
+    /// <typeparam name="T">The type of items in the input <see cref="ReadOnlyMemory{T}"/> instance.</typeparam>
+    /// <param name="memory">The input <see cref="ReadOnlyMemory{T}"/> instance.</param>
+    /// <param name="depth">The depth of the resulting 3D area.</param>
+    /// <param name="height">The height of each slice in the resulting 3D area.</param>
+    /// <param name="width">The width of each row in the resulting 3D area.</param>
+    /// <returns>The resulting <see cref="ReadOnlyMemory3D{T}"/> instance.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when one of the input parameters is out of range.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the requested volume is outside of bounds for <paramref name="memory"/>.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ReadOnlyMemory3D<T> AsMemory3D<T>(this ReadOnlyMemory<T> memory, int depth, int height, int width)
+    {
+        return new(memory, depth, height, width);
+    }
+
+    /// <summary>
+    /// Returns a <see cref="ReadOnlyMemory3D{T}"/> instance wrapping the underlying data for the given <see cref="ReadOnlyMemory{T}"/> instance.
+    /// </summary>
+    /// <typeparam name="T">The type of items in the input <see cref="ReadOnlyMemory{T}"/> instance.</typeparam>
+    /// <param name="memory">The input <see cref="ReadOnlyMemory{T}"/> instance.</param>
+    /// <param name="offset">The initial offset within <paramref name="memory"/>.</param>
+    /// <param name="depth">The depth of the resulting 3D area.</param>
+    /// <param name="height">The height of each slice in the resulting 3D area.</param>
+    /// <param name="width">The width of each row in the resulting 3D area.</param>
+    /// <param name="slicePitch">The slice pitch in the resulting 3D area (distance between slices).</param>
+    /// <param name="rowPitch">The row pitch in the resulting 3D area (distance between rows).</param>
+    /// <returns>The resulting <see cref="ReadOnlyMemory3D{T}"/> instance.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when one of the input parameters is out of range.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the requested volume is outside of bounds for <paramref name="memory"/>.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ReadOnlyMemory3D<T> AsMemory3D<T>(this ReadOnlyMemory<T> memory, int offset, int depth, int height, int width, int slicePitch, int rowPitch)
+    {
+        return new(memory, offset, depth, height, width, slicePitch, rowPitch);
+    }
 #endif
 
     /// <summary>
