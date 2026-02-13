@@ -188,6 +188,82 @@ partial class ArrayExtensions
 #endif
 
     /// <summary>
+    /// Creates a new <see cref="Span3D{T}"/> over an input 3D <typeparamref name="T"/> array.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the input 3D <typeparamref name="T"/> array instance.</typeparam>
+    /// <param name="array">The input 3D <typeparamref name="T"/> array instance.</param>
+    /// <returns>A <see cref="Span3D{T}"/> instance with the values of <paramref name="array"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Span3D<T> AsSpan3D<T>(this T[,,]? array)
+    {
+        return new(array);
+    }
+
+    /// <summary>
+    /// Creates a new <see cref="Span3D{T}"/> over an input 3D <typeparamref name="T"/> array.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the input 3D <typeparamref name="T"/> array instance.</typeparam>
+    /// <param name="array">The input 3D <typeparamref name="T"/> array instance.</param>
+    /// <param name="slice">The target slice to map within <paramref name="array"/>.</param>
+    /// <param name="row">The target row to map within <paramref name="array"/>.</param>
+    /// <param name="column">The target column to map within <paramref name="array"/>.</param>
+    /// <param name="depth">The depth to map within <paramref name="array"/>.</param>
+    /// <param name="height">The height to map within <paramref name="array"/>.</param>
+    /// <param name="width">The width to map within <paramref name="array"/>.</param>
+    /// <exception cref="ArrayTypeMismatchException">
+    /// Thrown when <paramref name="array"/> doesn't match <typeparamref name="T"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when either <paramref name="slice"/>, <paramref name="row"/>, <paramref name="column"/>,
+    /// <paramref name="height"/>, <paramref name="width"/>, or <paramref name="height"/>
+    /// are negative or not within the bounds that are valid for <paramref name="array"/>.
+    /// </exception>
+    /// <returns>A <see cref="Span3D{T}"/> instance with the values of <paramref name="array"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Span3D<T> AsSpan3D<T>(this T[,,]? array, int slice, int row, int column, int depth, int height, int width)
+    {
+        return new(array, slice, row, column, depth, height, width);
+    }
+
+    /// <summary>
+    /// Creates a new <see cref="Memory3D{T}"/> over an input 3D <typeparamref name="T"/> array.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the input 3D <typeparamref name="T"/> array instance.</typeparam>
+    /// <param name="array">The input 3D <typeparamref name="T"/> array instance.</param>
+    /// <returns>A <see cref="Memory3D{T}"/> instance with the values of <paramref name="array"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Memory3D<T> AsMemory3D<T>(this T[,,]? array)
+    {
+        return new(array);
+    }
+
+    /// <summary>
+    /// Creates a new <see cref="Memory3D{T}"/> over an input 3D <typeparamref name="T"/> array.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the input 3D <typeparamref name="T"/> array instance.</typeparam>
+    /// <param name="array">The input 3D <typeparamref name="T"/> array instance.</param>
+    /// <param name="slice">The target slice to map within <paramref name="array"/>.</param>
+    /// <param name="row">The target row to map within <paramref name="array"/>.</param>
+    /// <param name="column">The target column to map within <paramref name="array"/>.</param>
+    /// <param name="depth">The depth to map within <paramref name="array"/>.</param>
+    /// <param name="height">The height to map within <paramref name="array"/>.</param>
+    /// <param name="width">The width to map within <paramref name="array"/>.</param>
+    /// <exception cref="ArrayTypeMismatchException">
+    /// Thrown when <paramref name="array"/> doesn't match <typeparamref name="T"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when either <paramref name="slice"/>, <paramref name="row"/>, <paramref name="column"/>,
+    /// <paramref name="height"/>, <paramref name="width"/>, or <paramref name="height"/>
+    /// are negative or not within the bounds that are valid for <paramref name="array"/>.
+    /// </exception>
+    /// <returns>A <see cref="Memory3D{T}"/> instance with the values of <paramref name="array"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Memory3D<T> AsMemory3D<T>(this T[,,]? array, int slice, int row, int column, int depth, int height, int width)
+    {
+        return new(array, slice, row, column, depth, height, width);
+    }
+
+    /// <summary>
     /// Creates a new instance of the <see cref="Span2D{T}"/> struct wrapping a layer in a 3D array.
     /// </summary>
     /// <typeparam name="T">The type of elements in the input 3D <typeparamref name="T"/> array instance.</typeparam>
@@ -280,5 +356,13 @@ partial class ArrayExtensions
     private static void ThrowArgumentOutOfRangeExceptionForDepth()
     {
         throw new ArgumentOutOfRangeException("depth");
+    }
+
+    /// <summary>
+    /// Throws an <see cref="ArgumentOutOfRangeException"/> when the "slice" parameter is invalid.
+    /// </summary>
+    private static void ThrowArgumentOutOfRangeExceptionForSlice()
+    {
+        throw new ArgumentOutOfRangeException("slice");
     }
 }
