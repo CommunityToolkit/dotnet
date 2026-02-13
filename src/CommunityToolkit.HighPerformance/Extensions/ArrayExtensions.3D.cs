@@ -4,6 +4,7 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using CommunityToolkit.HighPerformance.Enumerables;
 using CommunityToolkit.HighPerformance.Helpers;
 #if NETSTANDARD2_1_OR_GREATER
 using System.Runtime.InteropServices;
@@ -76,6 +77,186 @@ partial class ArrayExtensions
 
         return ref ri;
 #endif
+    }
+
+    /// <summary>
+    /// Returns a <see cref="RefEnumerable{T}"/> over a row in a given 3D <typeparamref name="T"/> array instance.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the input 3D <typeparamref name="T"/> array instance.</typeparam>
+    /// <param name="array">The input <typeparamref name="T"/> array instance.</param>
+    /// <param name="slice">The target slice to retrieve (0-based index).</param>
+    /// <param name="row">The target row to retrieve (0-based index).</param>
+    /// <returns>A <see cref="RefEnumerable{T}"/> with the items from the target row within <paramref name="array"/>.</returns>
+    /// <remarks>The returned <see cref="RefEnumerable{T}"/> value shouldn't be used directly: use this extension in a <see langword="foreach"/> loop.</remarks>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when one of the input parameters is out of range.</exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static RefEnumerable<T> GetRow<T>(this T[,,] array, int slice, int row)
+    {
+        if (array.IsCovariant())
+        {
+            ThrowArrayTypeMismatchException();
+        }
+
+        int depth = array.GetLength(0);
+        int height = array.GetLength(1);
+
+        if ((uint)slice >= (uint)depth)
+        {
+            ThrowArgumentOutOfRangeExceptionForSlice();
+        }
+
+        if ((uint)row >= (uint)height)
+        {
+            ThrowArgumentOutOfRangeExceptionForRow();
+        }
+
+        int width = array.GetLength(2);
+
+#if NETSTANDARD2_1_OR_GREATER
+        ref T r0 = ref array.DangerousGetReferenceAt(slice, row, 0);
+
+        return new(ref r0, width, 1);
+#else
+        ref T r0 = ref array.DangerousGetReferenceAt(slice, row, 0);
+        IntPtr offset = ObjectMarshal.DangerousGetObjectDataByteOffset(array, ref r0);
+
+        return new(array, offset, width, 1);
+#endif
+    }
+
+    /// <summary>
+    /// Returns a <see cref="RefEnumerable{T}"/> that returns the items from a given column in a given depth slice of a 3D <typeparamref name="T"/> array instance.
+    /// This extension should be used directly within a <see langword="foreach"/> loop:
+    /// <code>
+    /// int[,,] cube =
+    /// {
+    ///     {
+    ///         { 1, 2, 3 },
+    ///         { 4, 5, 6 },
+    ///         { 7, 8, 9 }
+    ///     },
+    ///     {
+    ///         { 10, 11, 12 },
+    ///         { 13, 14, 15 },
+    ///         { 16, 17, 18 }
+    ///     }
+    /// };
+    ///
+    /// foreach (ref int number in cube.GetColumn(0, 1))
+    /// {
+    ///     // Access the current number in column 1 of depth slice 0 by reference here...
+    /// }
+    /// </code>
+    /// The compiler will take care of properly setting up the <see langword="foreach"/> loop with the type returned from this method.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the input 3D <typeparamref name="T"/> array instance.</typeparam>
+    /// <param name="array">The input <typeparamref name="T"/> array instance.</param>
+    /// <param name="slice">The target depth slice to use (0-based index).</param>
+    /// <param name="column">The target column to retrieve (0-based index).</param>
+    /// <returns>A wrapper type that will handle the column enumeration for <paramref name="array"/>.</returns>
+    /// <remarks>The returned <see cref="RefEnumerable{T}"/> value shouldn't be used directly: use this extension in a <see langword="foreach"/> loop.</remarks>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when one of the input parameters is out of range.</exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static RefEnumerable<T> GetColumn<T>(this T[,,] array, int slice, int column)
+    {
+        if (array.IsCovariant())
+        {
+            ThrowArrayTypeMismatchException();
+        }
+
+        int depth = array.GetLength(0);
+        int height = array.GetLength(1);
+        int width = array.GetLength(2);
+
+        if ((uint)slice >= (uint)depth)
+        {
+            ThrowArgumentOutOfRangeExceptionForSlice();
+        }
+
+        if ((uint)column >= (uint)width)
+        {
+            ThrowArgumentOutOfRangeExceptionForColumn();
+        }
+
+#if NETSTANDARD2_1_OR_GREATER
+        ref T r0 = ref array.DangerousGetReferenceAt(slice, 0, column);
+
+        return new(ref r0, height, width);
+#else
+    ref T r0 = ref array.DangerousGetReferenceAt(slice, 0, column);
+    IntPtr offset = ObjectMarshal.DangerousGetObjectDataByteOffset(array, ref r0);
+
+    return new(array, offset, height, width);
+#endif
+    }
+
+    /// <summary>
+    /// Returns a <see cref="RefEnumerable{T}"/> that returns the items from a given depth column in a 3D <typeparamref name="T"/> array instance.
+    /// A depth column consists of all elements with the same row and column coordinates across all depth slices.
+    /// This extension should be used directly within a <see langword="foreach"/> loop:
+    /// <code>
+    /// int[,,] cube =
+    /// {
+    ///     {
+    ///         { 1, 2, 3 },
+    ///         { 4, 5, 6 },
+    ///         { 7, 8, 9 }
+    ///     },
+    ///     {
+    ///         { 10, 11, 12 },
+    ///         { 13, 14, 15 },
+    ///         { 16, 17, 18 }
+    ///     }
+    /// };
+    ///
+    /// foreach (ref int number in cube.GetDepthColumn(1, 2))
+    /// {
+    ///     // Access elements [0,1,2], [1,1,2], etc. by reference here...
+    /// }
+    /// </code>
+    /// The compiler will take care of properly setting up the <see langword="foreach"/> loop with the type returned from this method.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the input 3D <typeparamref name="T"/> array instance.</typeparam>
+    /// <param name="array">The input <typeparamref name="T"/> array instance.</param>
+    /// <param name="row">The target row coordinate (0-based index).</param>
+    /// <param name="column">The target column coordinate (0-based index).</param>
+    /// <returns>A wrapper type that will handle the depth column enumeration for <paramref name="array"/>.</returns>
+    /// <remarks>The returned <see cref="RefEnumerable{T}"/> value shouldn't be used directly: use this extension in a <see langword="foreach"/> loop.</remarks>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when one of the input parameters is out of range.</exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static RefEnumerable<T> GetDepthColumn<T>(this T[,,] array, int row, int column)
+    {
+        if (array.IsCovariant())
+        {
+            ThrowArrayTypeMismatchException();
+        }
+
+        int depth = array.GetLength(0);
+        int height = array.GetLength(1);
+        int width = array.GetLength(2);
+
+        if ((uint)row >= (uint)height)
+        {
+            ThrowArgumentOutOfRangeExceptionForRow();
+        }
+
+        if ((uint)column >= (uint)width)
+        {
+            ThrowArgumentOutOfRangeExceptionForColumn();
+        }
+
+    #if NETSTANDARD2_1_OR_GREATER
+        ref T r0 = ref array.DangerousGetReferenceAt(0, row, column);
+
+        // Step size is height * width (size of one depth slice)
+        return new(ref r0, depth, height * width);
+    #else
+        ref T r0 = ref array.DangerousGetReferenceAt(0, row, column);
+        IntPtr offset = ObjectMarshal.DangerousGetObjectDataByteOffset(array, ref r0);
+
+        // Step size is height * width (size of one depth slice)
+        return new(array, offset, depth, height * width);
+    #endif
     }
 
 #if NETSTANDARD2_1_OR_GREATER
@@ -184,6 +365,77 @@ partial class ArrayExtensions
         int length = checked(array.GetLength(1) * array.GetLength(2));
 
         return new RawObjectMemoryManager<T>(array, offset, length).Memory;
+    }
+
+    /// <summary>
+    /// Returns a <see cref="Span{T}"/> over a row in a given 3D <typeparamref name="T"/> array instance.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the input 3D <typeparamref name="T"/> array instance.</typeparam>
+    /// <param name="array">The input <typeparamref name="T"/> array instance.</param>
+    /// <param name="slice">The target slice to retrieve (0-based index).</param>
+    /// <param name="row">The target row in the slice to retrieve (0-based index).</param>
+    /// <returns>A <see cref="Span{T}"/> with the items from the target row within <paramref name="array"/>.</returns>
+    /// <exception cref="ArrayTypeMismatchException">Thrown when <paramref name="array"/> doesn't match <typeparamref name="T"/>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when either <paramref name="slice"/> or <paramref name="row"/> is invalid.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Span<T> GetRowSpan<T>(this T[,,] array, int slice, int row)
+    {
+        if (array.IsCovariant())
+        {
+            ThrowArrayTypeMismatchException();
+        }
+
+        if ((uint)slice >= (uint)array.GetLength(0))
+        {
+            ThrowArgumentOutOfRangeExceptionForSlice();
+        }
+
+        if ((uint)row >= (uint)array.GetLength(1))
+        {
+            ThrowArgumentOutOfRangeExceptionForRow();
+        }
+
+        ref T r0 = ref array.DangerousGetReferenceAt(slice, row, 0);
+
+        return MemoryMarshal.CreateSpan(ref r0, array.GetLength(2));
+    }
+
+    /// <summary>
+    /// Returns a <see cref="Memory{T}"/> over a row in a given 3D <typeparamref name="T"/> array instance.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the input 3D <typeparamref name="T"/> array instance.</typeparam>
+    /// <param name="array">The input <typeparamref name="T"/> array instance.</param>
+    /// <param name="slice">The target slice to retrieve (0-based index).</param>
+    /// <param name="row">The target row in the slice to retrieve (0-based index).</param>
+    /// <returns>A <see cref="Memory{T}"/> with the items from the target row within <paramref name="array"/>.</returns>
+    /// <exception cref="ArrayTypeMismatchException">Thrown when <paramref name="array"/> doesn't match <typeparamref name="T"/>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when either <paramref name="slice"/> or <paramref name="row"/> is invalid.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Memory<T> GetRowMemory<T>(this T[,,] array, int slice, int row)
+    {
+        if (array.IsCovariant())
+        {
+            ThrowArrayTypeMismatchException();
+        }
+
+        if ((uint)slice >= (uint)array.GetLength(0))
+        {
+            ThrowArgumentOutOfRangeExceptionForSlice();
+        }
+
+        if ((uint)row >= (uint)array.GetLength(1))
+        {
+            ThrowArgumentOutOfRangeExceptionForRow();
+        }
+
+        ref T r0 = ref array.DangerousGetReferenceAt(slice, row, 0);
+        IntPtr offset = ObjectMarshal.DangerousGetObjectDataByteOffset(array, ref r0);
+
+        return new RawObjectMemoryManager<T>(array, offset, array.GetLength(2)).Memory;
     }
 #endif
 
