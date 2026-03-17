@@ -53,6 +53,7 @@
   <Project Path="src/CommunityToolkit.HighPerformance/CommunityToolkit.HighPerformance.csproj" />
   <Project Path="src/CommunityToolkit.Mvvm.CodeFixers.Roslyn4001/CommunityToolkit.Mvvm.CodeFixers.Roslyn4001.csproj" />
   <Project Path="src/CommunityToolkit.Mvvm.CodeFixers.Roslyn4120/CommunityToolkit.Mvvm.CodeFixers.Roslyn4120.csproj" />
+  <Project Path="src/CommunityToolkit.Mvvm.CodeFixers.Roslyn5000/CommunityToolkit.Mvvm.CodeFixers.Roslyn5000.csproj" />
   <Project Path="src/CommunityToolkit.Mvvm.CodeFixers/CommunityToolkit.Mvvm.CodeFixers.shproj" />
   <Project Path="src/CommunityToolkit.Mvvm.SourceGenerators.Roslyn4001/CommunityToolkit.Mvvm.SourceGenerators.Roslyn4001.csproj" />
   <Project Path="src/CommunityToolkit.Mvvm.SourceGenerators.Roslyn4031/CommunityToolkit.Mvvm.SourceGenerators.Roslyn4031.csproj" />
