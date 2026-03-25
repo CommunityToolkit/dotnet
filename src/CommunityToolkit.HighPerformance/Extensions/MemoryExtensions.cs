@@ -57,6 +57,51 @@ public static class MemoryExtensions
     {
         return new(memory, offset, height, width, pitch);
     }
+
+    /// <summary>
+    /// Returns a <see cref="Memory3D{T}"/> instance wrapping the underlying data for the given <see cref="Memory{T}"/> instance.
+    /// </summary>
+    /// <typeparam name="T">The type of items in the input <see cref="Memory{T}"/> instance.</typeparam>
+    /// <param name="memory">The input <see cref="Memory{T}"/> instance.</param>
+    /// <param name="depth">The depth of the resulting 3D volume.</param>
+    /// <param name="height">The height of each slice in the resulting 3D volume.</param>
+    /// <param name="width">The width of each row in the resulting 3D volume.</param>
+    /// <returns>The resulting <see cref="Memory3D{T}"/> instance.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when one of the input parameters is out of range.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the requested volume is outside of bounds for <paramref name="memory"/>.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Memory3D<T> AsMemory3D<T>(this Memory<T> memory, int depth, int height, int width)
+    {
+        return new(memory, depth, height, width);
+    }
+
+    /// <summary>
+    /// Returns a <see cref="Memory3D{T}"/> instance wrapping the underlying data for the given <see cref="Memory{T}"/> instance.
+    /// </summary>
+    /// <typeparam name="T">The type of items in the input <see cref="Memory{T}"/> instance.</typeparam>
+    /// <param name="memory">The input <see cref="Memory{T}"/> instance.</param>
+    /// <param name="offset">The initial offset within <paramref name="memory"/>.</param>
+    /// <param name="depth">The depth of the resulting 3D volume.</param>
+    /// <param name="height">The height of each slice in the resulting 3D volume.</param>
+    /// <param name="width">The width of each row in the resulting 3D volume.</param>
+    /// <param name="slicePitch">The pitch of each slice in the resulting 3D volume (distance between slices).</param>
+    /// <param name="rowPitch">The pitch of each row in the resulting 3D volume (distance between rows).</param>
+    /// <returns>The resulting <see cref="Memory3D{T}"/> instance.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when one of the input parameters is out of range.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the requested volume is outside of bounds for <paramref name="memory"/>.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Memory3D<T> AsMemory3D<T>(this Memory<T> memory, int offset, int depth, int height, int width, int slicePitch, int rowPitch)
+    {
+        return new(memory, offset, depth, height, width, slicePitch, rowPitch);
+    }
 #endif
 
     /// <summary>

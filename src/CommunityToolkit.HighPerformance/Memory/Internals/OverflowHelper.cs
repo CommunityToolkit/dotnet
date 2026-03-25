@@ -9,7 +9,8 @@ using static System.Math;
 namespace CommunityToolkit.HighPerformance.Memory.Internals;
 
 /// <summary>
-/// A helper to validate arithmetic operations for <see cref="Memory2D{T}"/> and <see cref="Span2D{T}"/>.
+/// A helper to validate arithmetic operations for <see cref="Memory2D{T}"/>, <see cref="Span2D{T}"/>,
+/// <see cref="Memory3D{T}"/>, and <see cref="Span3D{T}"/>.
 /// </summary>
 internal static class OverflowHelper
 {
@@ -65,5 +66,49 @@ internal static class OverflowHelper
     public static int ComputeInt32Area(int height, int width, int pitch)
     {
         return Max(checked(((width + pitch) * (height - 1)) + width), 0);
+    }
+
+    /// <summary>
+    /// Ensures that the input parameters will not exceed the maximum native int value when indexing.
+    /// </summary>
+    /// <param name="height">The height of the 3D memory area to map.</param>
+    /// <param name="width">The width of the 3D memory area to map.</param>
+    /// <param name="depth">The depth of the 3D memory area to map.</param>
+    /// <param name="rowPitch">The row pitch of the 3D memory area (the distance between each row).</param>
+    /// <param name="slicePitch">The slice pitch of the 3D memory area (the distance between each 2D slice).</param>
+    /// <exception cref="OverflowException">Throw when the inputs don't fit in the expected range.</exception>
+    /// <remarks>The input parameters are assumed to always be positive.</remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void EnsureIsInNativeIntRange(int depth, int height, int width, int slicePitch, int rowPitch)
+    {
+        // Refer to the explanation above for the Memory2D<T> and Span2D<T> types.
+        // For the Memory3D<T> and Span3D<T> types it is similar, except we now have a "volume"
+        // consisting of one or more 2D slices. For these 2D slices, rowPitch is the distance
+        // between the end of a row and the start of the next row. Similarly, slicePitch is
+        // the distance between the end of a slice and the start of the next slice.
+        // Note that we're also subtracting 1 to the depth as we don't want to include the trailing pitch
+        // for the 3D memory area.
+        _ = checked(((nint)(((width + rowPitch) * height) + slicePitch) * Max(unchecked(depth - 1), 0)) +
+                    ((nint)(width + rowPitch) * Max(unchecked(height - 1), 0)) +
+                    Max(unchecked(width - 1), 0));
+    }
+
+    /// <summary>
+    /// Ensures that the input parameters will not exceed <see cref="int.MaxValue"/> when indexing.
+    /// </summary>
+    /// <param name="height">The height of the 3D memory area to map.</param>
+    /// <param name="width">The width of the 3D memory area to map.</param>
+    /// <param name="depth">The depth of the 3D memory area to map.</param>
+    /// <param name="rowPitch">The row pitch of the 3D memory area (the distance between each row).</param>
+    /// <param name="slicePitch">The slice pitch of the 3D memory area (the distance between each 2D slice).</param>
+    /// <returns>The volume resulting from the given parameters.</returns>
+    /// <exception cref="OverflowException">Throw when the inputs don't fit in the expected range.</exception>
+    /// <remarks>The input parameters are assumed to always be positive.</remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int ComputeInt32Volume(int depth, int height, int width, int slicePitch, int rowPitch)
+    {
+        return Max(checked(((width + rowPitch) * height + slicePitch) * (depth - 1) +
+                            (width + rowPitch) * (height - 1) +
+                            width), 0);
     }
 }
