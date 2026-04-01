@@ -1169,7 +1169,7 @@ partial class ObservablePropertyGenerator
             //   - For partial properties, always just inherit from the partial declaration
             //   - For fields, inherit from them
             string xmlSummary = propertyInfo.AnnotatedMemberKind is SyntaxKind.PropertyDeclaration
-                ? "/// <inheritdoc/>"
+                ? string.Empty
                 : $"/// <inheritdoc cref=\"{getterFieldIdentifierName}\"/>";
 
             if (propertyInfo.NotifyPropertyChangedRecipients || propertyInfo.IsOldPropertyValueDirectlyReferenced)
