@@ -41,7 +41,6 @@ partial class Test_SourceGeneratorsCodegen
                 /// <inheritdoc/>
                 partial class MyViewModel
                 {
-                    /// <inheritdoc/>
                     [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     partial int Number
@@ -116,7 +115,6 @@ partial class Test_SourceGeneratorsCodegen
                 /// <inheritdoc/>
                 partial class MyViewModel
                 {
-                    /// <inheritdoc/>
                     [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     partial int Number
@@ -192,7 +190,6 @@ partial class Test_SourceGeneratorsCodegen
                 /// <inheritdoc/>
                 partial class MyViewModel
                 {
-                    /// <inheritdoc/>
                     [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     public required partial int Number
@@ -272,7 +269,6 @@ partial class Test_SourceGeneratorsCodegen
                 /// <inheritdoc/>
                 partial class MyViewModel
                 {
-                    /// <inheritdoc/>
                     [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     public new partial int Number
@@ -346,7 +342,6 @@ partial class Test_SourceGeneratorsCodegen
                 /// <inheritdoc/>
                 partial class MyViewModel
                 {
-                    /// <inheritdoc/>
                     [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     public virtual partial int Number
@@ -427,7 +422,6 @@ partial class Test_SourceGeneratorsCodegen
                 /// <inheritdoc/>
                 partial class MyViewModel
                 {
-                    /// <inheritdoc/>
                     [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     public {{modifiers}} partial int Number
@@ -501,7 +495,6 @@ partial class Test_SourceGeneratorsCodegen
                 /// <inheritdoc/>
                 partial class MyViewModel
                 {
-                    /// <inheritdoc/>
                     [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     public partial int Number
@@ -575,7 +568,6 @@ partial class Test_SourceGeneratorsCodegen
                 /// <inheritdoc/>
                 partial class MyViewModel
                 {
-                    /// <inheritdoc/>
                     [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     internal partial int Number
@@ -650,7 +642,6 @@ partial class Test_SourceGeneratorsCodegen
                 /// <inheritdoc/>
                 partial class MyViewModel
                 {
-                    /// <inheritdoc/>
                     [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     protected internal partial string Name
@@ -726,7 +717,6 @@ partial class Test_SourceGeneratorsCodegen
                 /// <inheritdoc/>
                 partial class MyViewModel
                 {
-                    /// <inheritdoc/>
                     [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     public partial string Name
@@ -802,7 +792,6 @@ partial class Test_SourceGeneratorsCodegen
                 /// <inheritdoc/>
                 partial class MyViewModel
                 {
-                    /// <inheritdoc/>
                     [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     public partial string? Name
@@ -879,7 +868,6 @@ partial class Test_SourceGeneratorsCodegen
                 /// <inheritdoc/>
                 partial class MyViewModel
                 {
-                    /// <inheritdoc/>
                     [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     public partial string Name
@@ -959,7 +947,6 @@ partial class Test_SourceGeneratorsCodegen
                 /// <inheritdoc/>
                 partial class MyViewModel
                 {
-                    /// <inheritdoc/>
                     [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     public partial string Name
@@ -1036,7 +1023,6 @@ partial class Test_SourceGeneratorsCodegen
                 /// <inheritdoc/>
                 partial class MyViewModel
                 {
-                    /// <inheritdoc/>
                     [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     public partial string Name
@@ -1117,7 +1103,6 @@ partial class Test_SourceGeneratorsCodegen
                 /// <inheritdoc/>
                 partial class MyViewModel
                 {
-                    /// <inheritdoc/>
                     [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     public partial string Name
@@ -1175,7 +1160,6 @@ partial class Test_SourceGeneratorsCodegen
                 /// <inheritdoc/>
                 partial class MyViewModel
                 {
-                    /// <inheritdoc/>
                     [global::System.CodeDom.Compiler.GeneratedCode("CommunityToolkit.Mvvm.SourceGenerators.ObservablePropertyGenerator", <ASSEMBLY_VERSION>)]
                     [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
                     public partial string Name
