@@ -28,6 +28,10 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 /// <param name="IsReferenceTypeOrUnconstrainedTypeParameter">Indicates whether the property is of a reference type or an unconstrained type parameter.</param>
 /// <param name="IncludeMemberNotNullOnSetAccessor">Indicates whether to include nullability annotations on the setter.</param>
 /// <param name="IncludeRequiresUnreferencedCodeOnSetAccessor">Indicates whether to annotate the setter as requiring unreferenced code.</param>
+/// <param name="GenerateOnChanging">Indicates whether to generate property changing partial method.</param>
+/// <param name="GenerateOnChanged">Indicates whether to generate property changed partial method.</param>
+/// <param name="CallOnChanging">Indicates whether to call property changing method.</param>
+/// <param name="CallOnChanged">Indicates whether to call property changed method.</param>
 /// <param name="ForwardedAttributes">The sequence of forwarded attributes for the generated property.</param>
 internal sealed record PropertyInfo(
     SyntaxKind AnnotatedMemberKind,
@@ -47,4 +51,8 @@ internal sealed record PropertyInfo(
     bool IsReferenceTypeOrUnconstrainedTypeParameter,
     bool IncludeMemberNotNullOnSetAccessor,
     bool IncludeRequiresUnreferencedCodeOnSetAccessor,
+    bool GenerateOnChanging, 
+    bool GenerateOnChanged, 
+    bool CallOnChanging,
+    bool CallOnChanged,
     EquatableArray<AttributeInfo> ForwardedAttributes);
