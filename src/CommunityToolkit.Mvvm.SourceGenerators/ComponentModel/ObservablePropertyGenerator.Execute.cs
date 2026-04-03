@@ -242,6 +242,7 @@ partial class ObservablePropertyGenerator
             bool hasOrInheritsClassLevelNotifyDataErrorInfo = false;
             bool hasAnyValidationAttributes = false;
             bool isOldPropertyValueDirectlyReferenced = IsOldPropertyValueDirectlyReferenced(memberSymbol, propertyName);
+            bool generateOnChanging = true, generateOnChanged = true, callOnChanging = true, callOnChanged = true;
 
             token.ThrowIfCancellationRequested();
 
@@ -281,6 +282,11 @@ partial class ObservablePropertyGenerator
             foreach (AttributeData attributeData in memberSymbol.GetAttributes())
             {
                 token.ThrowIfCancellationRequested();
+
+                if (TryGetGenerateOptional(attributeData, ref generateOnChanging, ref generateOnChanged, ref callOnChanging, ref callOnChanged))
+                {
+                    continue;
+                }
 
                 // Gather dependent property and command names
                 if (TryGatherDependentPropertyChangedNames(memberSymbol, attributeData, in propertyChangedNames, in builder) ||
@@ -415,6 +421,10 @@ partial class ObservablePropertyGenerator
                 isReferenceTypeOrUnconstrainedTypeParameter,
                 includeMemberNotNullOnSetAccessor,
                 includeRequiresUnreferencedCodeOnSetAccessor,
+                generateOnChanging,
+                generateOnChanged,
+                callOnChanging,
+                callOnChanged,
                 forwardedAttributes.ToImmutable());
 
             diagnostics = builder.ToImmutable();
@@ -1140,7 +1150,7 @@ partial class ObservablePropertyGenerator
             {
                 getterFieldIdentifierName = "field";
                 getterFieldExpression = setterFieldExpression = IdentifierName(getterFieldIdentifierName);
-            }    
+            }
             else if (propertyInfo.FieldName == "value")
             {
                 // In case the backing field is exactly named "value", we need to add the "this." prefix to ensure that comparisons and assignments
@@ -1185,14 +1195,6 @@ partial class ObservablePropertyGenerator
                             .WithInitializer(EqualsValueClause(setterFieldExpression)))));
             }
 
-            // Add the OnPropertyChanging() call first:
-            //
-            // On<PROPERTY_NAME>Changing(value);
-            setterStatements.Add(
-                ExpressionStatement(
-                    InvocationExpression(IdentifierName($"On{propertyInfo.PropertyName}Changing"))
-                    .AddArgumentListArguments(Argument(IdentifierName("value")))));
-
             // Optimization: if the previous property value is not being referenced (which we can check by looking for an existing
             // symbol matching the name of either of these generated methods), we can pass a default expression and avoid generating
             // a field read, which won't otherwise be elided by Roslyn. Otherwise, we just store the value in a local as usual.
@@ -1202,13 +1204,24 @@ partial class ObservablePropertyGenerator
                 false => Argument(LiteralExpression(SyntaxKind.DefaultLiteralExpression, Token(SyntaxKind.DefaultKeyword)))
             };
 
-            // Also call the overload after that:
-            //
-            // On<PROPERTY_NAME>Changing(<OLD_PROPERTY_VALUE_EXPRESSION>, value);
-            setterStatements.Add(
-                ExpressionStatement(
-                    InvocationExpression(IdentifierName($"On{propertyInfo.PropertyName}Changing"))
-                    .AddArgumentListArguments(oldPropertyValueArgument, Argument(IdentifierName("value")))));
+            if (propertyInfo.CallOnChanging)
+            {
+                // Add the OnPropertyChanging() call first:
+                //
+                // On<PROPERTY_NAME>Changing(value);
+                setterStatements.Add(
+                    ExpressionStatement(
+                        InvocationExpression(IdentifierName($"On{propertyInfo.PropertyName}Changing"))
+                        .AddArgumentListArguments(Argument(IdentifierName("value")))));
+
+                // Also call the overload after that:
+                //
+                // On<PROPERTY_NAME>Changing(<OLD_PROPERTY_VALUE_EXPRESSION>, value);
+                setterStatements.Add(
+                    ExpressionStatement(
+                        InvocationExpression(IdentifierName($"On{propertyInfo.PropertyName}Changing"))
+                        .AddArgumentListArguments(oldPropertyValueArgument, Argument(IdentifierName("value")))));
+            }
 
             // Gather the statements to notify dependent properties
             foreach (string propertyName in propertyInfo.PropertyChangingNames)
@@ -1248,21 +1261,24 @@ partial class ObservablePropertyGenerator
                             Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(propertyInfo.PropertyName))))));
             }
 
-            // Add the OnPropertyChanged() call:
-            //
-            // On<PROPERTY_NAME>Changed(value);
-            setterStatements.Add(
-                ExpressionStatement(
-                    InvocationExpression(IdentifierName($"On{propertyInfo.PropertyName}Changed"))
-                    .AddArgumentListArguments(Argument(IdentifierName("value")))));
+            if (propertyInfo.CallOnChanged)
+            {
+                // Add the OnPropertyChanged() call:
+                //
+                // On<PROPERTY_NAME>Changed(value);
+                setterStatements.Add(
+                    ExpressionStatement(
+                        InvocationExpression(IdentifierName($"On{propertyInfo.PropertyName}Changed"))
+                        .AddArgumentListArguments(Argument(IdentifierName("value")))));
 
-            // Do the same for the overload, as above:
-            //
-            // On<PROPERTY_NAME>Changed(<OLD_PROPERTY_VALUE_EXPRESSION>, value);
-            setterStatements.Add(
-                ExpressionStatement(
-                    InvocationExpression(IdentifierName($"On{propertyInfo.PropertyName}Changed"))
-                    .AddArgumentListArguments(oldPropertyValueArgument, Argument(IdentifierName("value")))));
+                // Do the same for the overload, as above:
+                //
+                // On<PROPERTY_NAME>Changed(<OLD_PROPERTY_VALUE_EXPRESSION>, value);
+                setterStatements.Add(
+                    ExpressionStatement(
+                        InvocationExpression(IdentifierName($"On{propertyInfo.PropertyName}Changed"))
+                        .AddArgumentListArguments(oldPropertyValueArgument, Argument(IdentifierName("value")))));
+            }
 
             // Gather the statements to notify dependent properties
             foreach (string propertyName in propertyInfo.PropertyChangedNames)
@@ -1456,6 +1472,9 @@ partial class ObservablePropertyGenerator
         /// <returns>The generated <see cref="MemberDeclarationSyntax"/> instances for the <c>OnPropertyChanging</c> and <c>OnPropertyChanged</c> methods.</returns>
         public static ImmutableArray<MemberDeclarationSyntax> GetOnPropertyChangeMethodsSyntax(PropertyInfo propertyInfo)
         {
+            if (!propertyInfo.GenerateOnChanged && !propertyInfo.GenerateOnChanging)
+                return ImmutableArray<MemberDeclarationSyntax>.Empty;
+
             // Get the property type syntax
             TypeSyntax parameterType = IdentifierName(propertyInfo.TypeNameWithNullabilityAnnotations);
 
@@ -1466,7 +1485,7 @@ partial class ObservablePropertyGenerator
             // /// <remarks>This method is invoked right before the value of <see cref="<PROPERTY_NAME>"/> is changed.</remarks>
             // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
             // partial void On<PROPERTY_NAME>Changing(<PROPERTY_TYPE> value);
-            MemberDeclarationSyntax onPropertyChangingDeclaration =
+            MemberDeclarationSyntax? onPropertyChangingDeclaration = propertyInfo.GenerateOnChanging ?
                 MethodDeclaration(PredefinedType(Token(SyntaxKind.VoidKeyword)), Identifier($"On{propertyInfo.PropertyName}Changing"))
                 .AddModifiers(Token(SyntaxKind.PartialKeyword))
                 .AddParameterListParameters(Parameter(Identifier("value")).WithType(parameterType))
@@ -1480,7 +1499,7 @@ partial class ObservablePropertyGenerator
                         Comment($"/// <summary>Executes the logic for when <see cref=\"{propertyInfo.PropertyName}\"/> is changing.</summary>"),
                         Comment("/// <param name=\"value\">The new property value being set.</param>"),
                         Comment($"/// <remarks>This method is invoked right before the value of <see cref=\"{propertyInfo.PropertyName}\"/> is changed.</remarks>")), SyntaxKind.OpenBracketToken, TriviaList())))
-                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)) : null;
 
             // Get the type for the 'oldValue' parameter (which can be null on first invocation) 
             TypeSyntax oldValueTypeSyntax = GetPropertyTypeForOldValue(propertyInfo);
@@ -1493,7 +1512,7 @@ partial class ObservablePropertyGenerator
             // /// <remarks>This method is invoked right before the value of <see cref="<PROPERTY_NAME>"/> is changed.</remarks>
             // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
             // partial void On<PROPERTY_NAME>Changing(<OLD_VALUE_TYPE> oldValue, <PROPERTY_TYPE> newValue);
-            MemberDeclarationSyntax onPropertyChanging2Declaration =
+            MemberDeclarationSyntax? onPropertyChanging2Declaration = propertyInfo.GenerateOnChanging ?
                 MethodDeclaration(PredefinedType(Token(SyntaxKind.VoidKeyword)), Identifier($"On{propertyInfo.PropertyName}Changing"))
                 .AddModifiers(Token(SyntaxKind.PartialKeyword))
                 .AddParameterListParameters(
@@ -1510,7 +1529,7 @@ partial class ObservablePropertyGenerator
                         Comment("/// <param name=\"oldValue\">The previous property value that is being replaced.</param>"),
                         Comment("/// <param name=\"newValue\">The new property value being set.</param>"),
                         Comment($"/// <remarks>This method is invoked right before the value of <see cref=\"{propertyInfo.PropertyName}\"/> is changed.</remarks>")), SyntaxKind.OpenBracketToken, TriviaList())))
-                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)) : null;
 
             // Construct the generated method as follows:
             //
@@ -1519,7 +1538,7 @@ partial class ObservablePropertyGenerator
             // /// <remarks>This method is invoked right after the value of <see cref="<PROPERTY_NAME>"/> is changed.</remarks>
             // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
             // partial void On<PROPERTY_NAME>Changed(<PROPERTY_TYPE> value);
-            MemberDeclarationSyntax onPropertyChangedDeclaration =
+            MemberDeclarationSyntax? onPropertyChangedDeclaration = propertyInfo.GenerateOnChanged ?
                 MethodDeclaration(PredefinedType(Token(SyntaxKind.VoidKeyword)), Identifier($"On{propertyInfo.PropertyName}Changed"))
                 .AddModifiers(Token(SyntaxKind.PartialKeyword))
                 .AddParameterListParameters(Parameter(Identifier("value")).WithType(parameterType))
@@ -1533,7 +1552,7 @@ partial class ObservablePropertyGenerator
                         Comment($"/// <summary>Executes the logic for when <see cref=\"{propertyInfo.PropertyName}\"/> just changed.</summary>"),
                         Comment("/// <param name=\"value\">The new property value that was set.</param>"),
                         Comment($"/// <remarks>This method is invoked right after the value of <see cref=\"{propertyInfo.PropertyName}\"/> is changed.</remarks>")), SyntaxKind.OpenBracketToken, TriviaList())))
-                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)) : null;
 
             // Construct the generated method as follows:
             //
@@ -1543,7 +1562,7 @@ partial class ObservablePropertyGenerator
             // /// <remarks>This method is invoked right after the value of <see cref="<PROPERTY_NAME>"/> is changed.</remarks>
             // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
             // partial void On<PROPERTY_NAME>Changed(<OLD_VALUE_TYPE> oldValue, <PROPERTY_TYPE> newValue);
-            MemberDeclarationSyntax onPropertyChanged2Declaration =
+            MemberDeclarationSyntax? onPropertyChanged2Declaration = propertyInfo.GenerateOnChanged ?
                 MethodDeclaration(PredefinedType(Token(SyntaxKind.VoidKeyword)), Identifier($"On{propertyInfo.PropertyName}Changed"))
                 .AddModifiers(Token(SyntaxKind.PartialKeyword))
                 .AddParameterListParameters(
@@ -1560,13 +1579,28 @@ partial class ObservablePropertyGenerator
                         Comment("/// <param name=\"oldValue\">The previous property value that was replaced.</param>"),
                         Comment("/// <param name=\"newValue\">The new property value that was set.</param>"),
                         Comment($"/// <remarks>This method is invoked right after the value of <see cref=\"{propertyInfo.PropertyName}\"/> is changed.</remarks>")), SyntaxKind.OpenBracketToken, TriviaList())))
-                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)) : null;
 
-            return ImmutableArray.Create(
-                onPropertyChangingDeclaration,
-                onPropertyChanging2Declaration,
-                onPropertyChangedDeclaration,
-                onPropertyChanged2Declaration);
+            if (propertyInfo.GenerateOnChanged && propertyInfo.GenerateOnChanging)
+            {
+                return ImmutableArray.Create(
+                    onPropertyChangingDeclaration!,
+                    onPropertyChanging2Declaration!,
+                    onPropertyChangedDeclaration!,
+                    onPropertyChanged2Declaration!);
+            }
+            else if (propertyInfo.GenerateOnChanged)
+            {
+                return ImmutableArray.Create(
+                    onPropertyChangedDeclaration!,
+                    onPropertyChanged2Declaration!);
+            }
+            else
+            {
+                return ImmutableArray.Create(
+                    onPropertyChangingDeclaration!,
+                    onPropertyChanging2Declaration!);
+            }
         }
 
         /// <summary>
@@ -1751,6 +1785,34 @@ partial class ObservablePropertyGenerator
             }
 
             return $"{char.ToUpper(propertyName[0], CultureInfo.InvariantCulture)}{propertyName.Substring(1)}";
+        }
+
+        /// <summary>
+        /// Tries to gather generate and call optional from ObservablePropertyAttribute.
+        /// </summary>
+        /// <param name="attributeData">The <see cref="AttributeData"/> instance.</param>
+        /// <param name="generateOnChanging">Field which indicates whether to generate property On{PropertyName}Changing partial method.</param>
+        /// <param name="generateOnChanged">Field which indicates whether to generate property On{PropertyName}Changed partial method.</param>
+        /// <param name="callOnChanging">Field which indicates whether to call property On{PropertyName}Changing method.</param>
+        /// <param name="callOnChanged">Field which indicates whether to call property On{PropertyName}Changed method.</param>
+        /// <returns>Whether or not <paramref name="attributeData"/> was ObservablePropertyAttribute.</returns>
+        private static bool TryGetGenerateOptional(AttributeData attributeData, ref bool generateOnChanging, ref bool generateOnChanged, ref bool callOnChanging, ref bool callOnChanged)
+        {
+            bool value;
+            if (attributeData.AttributeClass?.HasFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute") == true)
+            {
+                if (attributeData.TryGetNamedArgument<bool>("GenerateOnChanging", out value))
+                    generateOnChanging = value;
+                if (attributeData.TryGetNamedArgument<bool>("GenerateOnChanged", out value))
+                    generateOnChanged = value;
+                if (attributeData.TryGetNamedArgument<bool>("CallOnChanging", out value))
+                    callOnChanging = value;
+                if (attributeData.TryGetNamedArgument<bool>("CallOnChanged", out value))
+                    callOnChanged = value;
+                return true;
+            }
+
+            return false;
         }
     }
 }

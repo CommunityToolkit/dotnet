@@ -70,4 +70,23 @@ namespace CommunityToolkit.Mvvm.ComponentModel;
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
 public sealed class ObservablePropertyAttribute : Attribute
 {
+    /// <summary>
+    /// Indicates whether to generate property On{PropertyName}Changing partial method.
+    /// </summary>
+    public bool GenerateOnChanging { get; set; } = true;
+
+    /// <summary>
+    /// Indicates whether to generate property On{PropertyName}Changed partial method.
+    /// </summary>
+    public bool GenerateOnChanged { get; set; } = true;
+
+    /// <summary>
+    /// Indicates whether to call property On{PropertyName}Changing method.
+    /// </summary>
+    public bool CallOnChanging { get; set; } = true;
+
+    /// <summary>
+    /// Indicates whether to call property On{PropertyName}Changed method.
+    /// </summary>
+    public bool CallOnChanged { get; set; } = true;
 }
