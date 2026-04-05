@@ -1,13 +1,17 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net472;net8.0;net9.0;net10.0</TargetFrameworks>
+    <TargetFramework>net10.0</TargetFramework>
     <LangVersion>14.0</LangVersion>
     <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
     <DefineConstants>$(DefineConstants);ROSLYN_4_12_0_OR_GREATER;ROSLYN_5_0_0_OR_GREATER</DefineConstants>
 
     <!-- We're intentionally also using '[ObservableProperty]' on some fields, for testing -->
     <NoWarn>$(NoWarn);MVVMTK0042</NoWarn>
+
+    <IsPublishable>true</IsPublishable>
+    <PublishAot>true</PublishAot>
+    <OutputType>exe</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,12 +19,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="MSTest.Engine" Version="2.0.0" />
+    <PackageReference Include="MSTest.SourceGeneration" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Testing.Platform.MSBuild" Version="2.2.0" />
+
     <PackageReference Include="Dbs.Signed3.Nito.AsyncEx.Context" Version="5.0.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="4.0.1" />
     <PackageReference Include="MSTest.TestFramework" Version="4.0.1" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.0" />
+    <PackageReference Include="MSTest.Analyzers" Version="4.0.1" />
     <PackageReference Include="System.Reactive" Version="6.1.0" />
-    <PackageReference Include="System.Text.Json" Version="10.0.1" />
   </ItemGroup>
 
   <ItemGroup>

@@ -28,15 +28,17 @@
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\INotifyPropertyChangedInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\ObservableRecipientInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\PropertyInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\PropertyValidationInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\TypedConstantInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\TypedConstantInfo.Factory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\ValidationInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\Models\ValidationTypeInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\ObservableObjectGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\ObservablePropertyGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\ObservablePropertyGenerator.Execute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\ObservableRecipientGenerator.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\ObservableValidatorValidateAllPropertiesGenerator.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\ObservableValidatorValidateAllPropertiesGenerator.Execute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\ObservableValidatorValidationGenerator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\ObservableValidatorValidationGenerator.Execute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\TransitiveMembersGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\TransitiveMembersGenerator.Execute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\UseObservablePropertyOnSemiAutoPropertyAnalyzer.cs" />
@@ -59,6 +61,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\UnsupportedRoslynVersionForPartialPropertyAnalyzer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\RequiresCSharpLanguageVersion14OrPreviewAnalyzer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\InvalidPropertyLevelObservablePropertyAttributeAnalyzer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\ObservableValidatorValidationGeneratorPartialTypeAnalyzer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\UseObservablePropertyOnPartialPropertyAnalyzer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Analyzers\UnsupportedCSharpLanguageVersionAnalyzer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\Suppressors\RelayCommandAttributeWithFieldOrPropertyTargetDiagnosticSuppressor.cs" />

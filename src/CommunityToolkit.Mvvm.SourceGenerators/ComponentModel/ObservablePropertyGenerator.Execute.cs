@@ -327,6 +327,7 @@ partial class ObservablePropertyGenerator
                 memberSyntax,
                 memberSymbol,
                 semanticModel,
+                ref hasAnyValidationAttributes,
                 in forwardedAttributes,
                 in builder,
                 token);
@@ -356,13 +357,6 @@ partial class ObservablePropertyGenerator
                     memberSymbol.ContainingType,
                     memberSymbol.Name);
             }
-
-            token.ThrowIfCancellationRequested();
-
-            // We should generate [RequiresUnreferencedCode] on the setter if [NotifyDataErrorInfo] was used and the attribute is available
-            bool includeRequiresUnreferencedCodeOnSetAccessor =
-                notifyDataErrorInfo &&
-                semanticModel.Compilation.HasAccessibleTypeWithMetadataName("System.Diagnostics.CodeAnalysis.RequiresUnreferencedCodeAttribute");
 
             token.ThrowIfCancellationRequested();
 
@@ -411,10 +405,10 @@ partial class ObservablePropertyGenerator
                 notifiedCommandNames.ToImmutable(),
                 notifyRecipients,
                 notifyDataErrorInfo,
+                hasAnyValidationAttributes,
                 isOldPropertyValueDirectlyReferenced,
                 isReferenceTypeOrUnconstrainedTypeParameter,
                 includeMemberNotNullOnSetAccessor,
-                includeRequiresUnreferencedCodeOnSetAccessor,
                 forwardedAttributes.ToImmutable());
 
             diagnostics = builder.ToImmutable();
@@ -885,6 +879,7 @@ partial class ObservablePropertyGenerator
         /// <param name="memberSyntax">The <see cref="MemberDeclarationSyntax"/> instance to process.</param>
         /// <param name="memberSymbol">The input <see cref="ISymbol"/> instance to process.</param>
         /// <param name="semanticModel">The <see cref="SemanticModel"/> instance for the current run.</param>
+        /// <param name="hasAnyValidationAttributes">Tracks whether the effective generated property has validation attributes.</param>
         /// <param name="forwardedAttributes">The collection of forwarded attributes to add new ones to.</param>
         /// <param name="diagnostics">The current collection of gathered diagnostics.</param>
         /// <param name="token">The cancellation token for the current operation.</param>
@@ -892,6 +887,7 @@ partial class ObservablePropertyGenerator
             MemberDeclarationSyntax memberSyntax,
             ISymbol memberSymbol,
             SemanticModel semanticModel,
+            ref bool hasAnyValidationAttributes,
             in ImmutableArrayBuilder<AttributeInfo> forwardedAttributes,
             in ImmutableArrayBuilder<DiagnosticInfo> diagnostics,
             CancellationToken token)
@@ -963,6 +959,12 @@ partial class ObservablePropertyGenerator
                             attribute.Name);
 
                         continue;
+                    }
+
+                    if (targetIdentifier.IsKind(SyntaxKind.PropertyKeyword) &&
+                        attributeTypeSymbol.InheritsFromFullyQualifiedMetadataName("System.ComponentModel.DataAnnotations.ValidationAttribute"))
+                    {
+                        hasAnyValidationAttributes = true;
                     }
 
                     IEnumerable<AttributeArgumentSyntax> attributeArguments = attribute.ArgumentList?.Arguments ?? Enumerable.Empty<AttributeArgumentSyntax>();
@@ -1374,19 +1376,6 @@ partial class ObservablePropertyGenerator
                         Attribute(IdentifierName("global::System.Diagnostics.CodeAnalysis.MemberNotNull"))
                         .AddArgumentListArguments(
                             AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(propertyInfo.FieldName)))))));
-            }
-
-            // Add the [RequiresUnreferencedCode] attribute if needed:
-            //
-            // [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")]
-            // <SET_ACCESSOR>
-            if (propertyInfo.IncludeRequiresUnreferencedCodeOnSetAccessor)
-            {
-                setAccessor = setAccessor.AddAttributeLists(
-                    AttributeList(SingletonSeparatedList(
-                        Attribute(IdentifierName("global::System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode"))
-                        .AddArgumentListArguments(
-                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("The type of the current instance cannot be statically discovered.")))))));
             }
 
             // Also add any forwarded attributes

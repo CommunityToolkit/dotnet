@@ -24,10 +24,10 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 /// <param name="NotifiedCommandNames">The sequence of commands to notify.</param>
 /// <param name="NotifyPropertyChangedRecipients">Whether or not the generated property also broadcasts changes.</param>
 /// <param name="NotifyDataErrorInfo">Whether or not the generated property also validates its value.</param>
+/// <param name="HasValidationAttributes">Whether or not the generated property has validation attributes on the effective generated property.</param>
 /// <param name="IsOldPropertyValueDirectlyReferenced">Whether the old property value is being directly referenced.</param>
 /// <param name="IsReferenceTypeOrUnconstrainedTypeParameter">Indicates whether the property is of a reference type or an unconstrained type parameter.</param>
 /// <param name="IncludeMemberNotNullOnSetAccessor">Indicates whether to include nullability annotations on the setter.</param>
-/// <param name="IncludeRequiresUnreferencedCodeOnSetAccessor">Indicates whether to annotate the setter as requiring unreferenced code.</param>
 /// <param name="ForwardedAttributes">The sequence of forwarded attributes for the generated property.</param>
 internal sealed record PropertyInfo(
     SyntaxKind AnnotatedMemberKind,
@@ -43,8 +43,8 @@ internal sealed record PropertyInfo(
     EquatableArray<string> NotifiedCommandNames,
     bool NotifyPropertyChangedRecipients,
     bool NotifyDataErrorInfo,
+    bool HasValidationAttributes,
     bool IsOldPropertyValueDirectlyReferenced,
     bool IsReferenceTypeOrUnconstrainedTypeParameter,
     bool IncludeMemberNotNullOnSetAccessor,
-    bool IncludeRequiresUnreferencedCodeOnSetAccessor,
     EquatableArray<AttributeInfo> ForwardedAttributes);

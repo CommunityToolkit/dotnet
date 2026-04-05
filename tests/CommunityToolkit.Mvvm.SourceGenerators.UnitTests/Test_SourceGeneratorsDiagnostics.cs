@@ -327,7 +327,7 @@ public partial class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
-    public async Task UnsupportedCSharpLanguageVersion_FromObservableValidatorValidateAllPropertiesGenerator()
+    public async Task UnsupportedCSharpLanguageVersion_FromObservableValidatorValidationGenerator()
     {
         string source = """
             using System.ComponentModel.DataAnnotations;
@@ -344,6 +344,49 @@ public partial class Test_SourceGeneratorsDiagnostics
             """;
 
         await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<UnsupportedCSharpLanguageVersionAnalyzer>(source, LanguageVersion.CSharp7_3);
+    }
+
+    [TestMethod]
+    public async Task ObservableValidatorValidationGeneratorRequiresPartialType()
+    {
+        string source = """
+            using System.ComponentModel.DataAnnotations;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public class {|MVVMTK0057:SampleViewModel|} : ObservableValidator
+                {
+                    [Required]
+                    public string Name { get; set; }
+                }
+            }
+            """;
+
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<ObservableValidatorValidationGeneratorPartialTypeAnalyzer>(source, LanguageVersion.CSharp8);
+    }
+
+    [TestMethod]
+    public async Task ObservableValidatorValidationGeneratorRequiresContainingTypesToBePartial()
+    {
+        string source = """
+            using System.ComponentModel.DataAnnotations;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public class {|MVVMTK0057:Outer|}
+                {
+                    public partial class Inner : ObservableValidator
+                    {
+                        [Required]
+                        public string Name { get; set; }
+                    }
+                }
+            }
+            """;
+
+        await VerifyAnalyzerDiagnosticsAndSuccessfulGeneration<ObservableValidatorValidationGeneratorPartialTypeAnalyzer>(source, LanguageVersion.CSharp8);
     }
 
     [TestMethod]
@@ -2507,7 +2550,7 @@ public partial class Test_SourceGeneratorsDiagnostics
             new INotifyPropertyChangedGenerator(),
             new ObservablePropertyGenerator(),
             new ObservableRecipientGenerator(),
-            new ObservableValidatorValidateAllPropertiesGenerator(),
+            new ObservableValidatorValidationGenerator(),
             new RelayCommandGenerator()
         };
 

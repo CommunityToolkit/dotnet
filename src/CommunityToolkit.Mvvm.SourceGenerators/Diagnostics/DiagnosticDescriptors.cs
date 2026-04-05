@@ -50,6 +50,11 @@ internal static class DiagnosticDescriptors
     public const string UseObservablePropertyOnSemiAutoPropertyId = "MVVMTK0056";
 
     /// <summary>
+    /// The diagnostic id for <see cref="ObservableValidatorTypeMustBePartial"/>.
+    /// </summary>
+    public const string ObservableValidatorTypeMustBePartialId = "MVVMTK0057";
+
+    /// <summary>
     /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a duplicate declaration of <see cref="INotifyPropertyChanged"/> would happen.
     /// <para>
     /// Format: <c>"Cannot apply [INotifyPropertyChangedAttribute] to type {0}, as it already declares the INotifyPropertyChanged interface"</c>.
@@ -944,4 +949,20 @@ internal static class DiagnosticDescriptors
         isEnabledByDefault: true,
         description: "Semi-auto properties should be converted to partial properties using [ObservableProperty] when possible, which is recommended (doing so makes the code less verbose and results in more optimized code).",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0056");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a type requiring generated validation hooks is not partial.
+    /// <para>
+    /// Format: <c>"The type {0} must be partial to enable generated validation support for ObservableValidator"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor ObservableValidatorTypeMustBePartial = new DiagnosticDescriptor(
+        id: ObservableValidatorTypeMustBePartialId,
+        title: "ObservableValidator type must be partial",
+        messageFormat: "The type {0} must be partial to enable generated validation support for ObservableValidator",
+        category: typeof(ObservableValidatorValidationGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "Types deriving from ObservableValidator and declaring validatable properties must be partial, and all containing types must be partial as well, so the source generators can emit validation hooks.",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0057");
 }
