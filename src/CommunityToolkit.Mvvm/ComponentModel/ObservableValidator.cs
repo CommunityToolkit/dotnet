@@ -577,7 +577,7 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
 
         ValidationContext updatedContext = GetOrCreateUpdatedValidationContext(propertyName, displayName);
 
-        return Validator.TryValidateValue(value, updatedContext, errors, validationAttributes)
+        return Validator.TryValidateValue(value!, updatedContext, errors, validationAttributes)
             ? ValidationStatus.Success
             : ValidationStatus.Error;
     }

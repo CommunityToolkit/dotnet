@@ -360,13 +360,6 @@ partial class ObservablePropertyGenerator
 
             token.ThrowIfCancellationRequested();
 
-            // We should generate [RequiresUnreferencedCode] on the setter if [NotifyDataErrorInfo] was used and the attribute is available
-            bool includeRequiresUnreferencedCodeOnSetAccessor =
-                notifyDataErrorInfo &&
-                semanticModel.Compilation.HasAccessibleTypeWithMetadataName("System.Diagnostics.CodeAnalysis.RequiresUnreferencedCodeAttribute");
-
-            token.ThrowIfCancellationRequested();
-
             // Prepare the effective property changing/changed names. For the property changing names,
             // there are two possible cases: if the mode is disabled, then there are no names to report
             // at all. If the mode is enabled, then the list is just the same as for property changed.
@@ -416,7 +409,6 @@ partial class ObservablePropertyGenerator
                 isOldPropertyValueDirectlyReferenced,
                 isReferenceTypeOrUnconstrainedTypeParameter,
                 includeMemberNotNullOnSetAccessor,
-                includeRequiresUnreferencedCodeOnSetAccessor,
                 forwardedAttributes.ToImmutable());
 
             diagnostics = builder.ToImmutable();
@@ -1384,19 +1376,6 @@ partial class ObservablePropertyGenerator
                         Attribute(IdentifierName("global::System.Diagnostics.CodeAnalysis.MemberNotNull"))
                         .AddArgumentListArguments(
                             AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(propertyInfo.FieldName)))))));
-            }
-
-            // Add the [RequiresUnreferencedCode] attribute if needed:
-            //
-            // [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")]
-            // <SET_ACCESSOR>
-            if (propertyInfo.IncludeRequiresUnreferencedCodeOnSetAccessor)
-            {
-                setAccessor = setAccessor.AddAttributeLists(
-                    AttributeList(SingletonSeparatedList(
-                        Attribute(IdentifierName("global::System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode"))
-                        .AddArgumentListArguments(
-                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("The type of the current instance cannot be statically discovered.")))))));
             }
 
             // Also add any forwarded attributes
