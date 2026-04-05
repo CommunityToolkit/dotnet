@@ -327,6 +327,7 @@ partial class ObservablePropertyGenerator
                 memberSyntax,
                 memberSymbol,
                 semanticModel,
+                ref hasAnyValidationAttributes,
                 in forwardedAttributes,
                 in builder,
                 token);
@@ -411,6 +412,7 @@ partial class ObservablePropertyGenerator
                 notifiedCommandNames.ToImmutable(),
                 notifyRecipients,
                 notifyDataErrorInfo,
+                hasAnyValidationAttributes,
                 isOldPropertyValueDirectlyReferenced,
                 isReferenceTypeOrUnconstrainedTypeParameter,
                 includeMemberNotNullOnSetAccessor,
@@ -885,6 +887,7 @@ partial class ObservablePropertyGenerator
         /// <param name="memberSyntax">The <see cref="MemberDeclarationSyntax"/> instance to process.</param>
         /// <param name="memberSymbol">The input <see cref="ISymbol"/> instance to process.</param>
         /// <param name="semanticModel">The <see cref="SemanticModel"/> instance for the current run.</param>
+        /// <param name="hasAnyValidationAttributes">Tracks whether the effective generated property has validation attributes.</param>
         /// <param name="forwardedAttributes">The collection of forwarded attributes to add new ones to.</param>
         /// <param name="diagnostics">The current collection of gathered diagnostics.</param>
         /// <param name="token">The cancellation token for the current operation.</param>
@@ -892,6 +895,7 @@ partial class ObservablePropertyGenerator
             MemberDeclarationSyntax memberSyntax,
             ISymbol memberSymbol,
             SemanticModel semanticModel,
+            ref bool hasAnyValidationAttributes,
             in ImmutableArrayBuilder<AttributeInfo> forwardedAttributes,
             in ImmutableArrayBuilder<DiagnosticInfo> diagnostics,
             CancellationToken token)
@@ -963,6 +967,12 @@ partial class ObservablePropertyGenerator
                             attribute.Name);
 
                         continue;
+                    }
+
+                    if (targetIdentifier.IsKind(SyntaxKind.PropertyKeyword) &&
+                        attributeTypeSymbol.InheritsFromFullyQualifiedMetadataName("System.ComponentModel.DataAnnotations.ValidationAttribute"))
+                    {
+                        hasAnyValidationAttributes = true;
                     }
 
                     IEnumerable<AttributeArgumentSyntax> attributeArguments = attribute.ArgumentList?.Arguments ?? Enumerable.Empty<AttributeArgumentSyntax>();

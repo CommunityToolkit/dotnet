@@ -3,9 +3,12 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections.Immutable;
 using System.Linq;
 using CommunityToolkit.Mvvm.SourceGenerators.Helpers;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace CommunityToolkit.Mvvm.SourceGenerators.Extensions;
 
@@ -172,6 +175,40 @@ internal static class ITypeSymbolExtensions
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// Gets all non-partial declarations for a target type and its containing types.
+    /// </summary>
+    /// <param name="typeSymbol">The target <see cref="INamedTypeSymbol"/> instance.</param>
+    /// <returns>The sequence of all non-partial declarations for <paramref name="typeSymbol"/> and its containing types.</returns>
+    public static ImmutableArray<TypeDeclarationSyntax> GetNonPartialTypeDeclarationNodes(this INamedTypeSymbol typeSymbol)
+    {
+        using ImmutableArrayBuilder<TypeDeclarationSyntax> builder = ImmutableArrayBuilder<TypeDeclarationSyntax>.Rent();
+
+        for (INamedTypeSymbol? currentType = typeSymbol; currentType is not null; currentType = currentType.ContainingType)
+        {
+            foreach (SyntaxReference syntaxReference in currentType.DeclaringSyntaxReferences)
+            {
+                if (syntaxReference.GetSyntax() is TypeDeclarationSyntax typeDeclaration &&
+                    !typeDeclaration.Modifiers.Any(SyntaxKind.PartialKeyword))
+                {
+                    builder.Add(typeDeclaration);
+                }
+            }
+        }
+
+        return builder.ToImmutable();
+    }
+
+    /// <summary>
+    /// Checks whether a target type and all its containing types are partial across all declarations.
+    /// </summary>
+    /// <param name="typeSymbol">The target <see cref="INamedTypeSymbol"/> instance.</param>
+    /// <returns>Whether <paramref name="typeSymbol"/> and all its containing types are partial.</returns>
+    public static bool IsTypeHierarchyPartial(this INamedTypeSymbol typeSymbol)
+    {
+        return GetNonPartialTypeDeclarationNodes(typeSymbol).IsEmpty;
     }
 
     /// <summary>

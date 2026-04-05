@@ -476,7 +476,7 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
         }
         else
         {
-            ClearErrorsForProperty(propertyName);
+            ClearErrorsForProperty(propertyName!);
         }
     }
 
@@ -497,7 +497,7 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
         }
 
         // Property-level errors, if any
-        if (this.errors.TryGetValue(propertyName, out List<ValidationResult>? errors))
+        if (this.errors.TryGetValue(propertyName!, out List<ValidationResult>? errors))
         {
             return errors;
         }
