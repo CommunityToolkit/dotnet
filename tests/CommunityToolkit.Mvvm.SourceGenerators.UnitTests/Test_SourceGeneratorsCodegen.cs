@@ -3448,6 +3448,64 @@ public partial class Test_SourceGeneratorsCodegen
         VerifyGenerateSources(source, new[] { new ObservablePropertyGenerator() }, ("MyApp.MyViewModel.g.cs", result));
     }
 
+    [TestMethod]
+    public void ObservableValidator_GeneratesValidationHooksForObservablePropertyFields()
+    {
+        string source = """
+            using System.ComponentModel.DataAnnotations;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            #nullable enable
+
+            namespace MyApp;
+
+            partial class MyViewModel : ObservableValidator
+            {
+                [ObservableProperty]
+                [Required]
+                private string? name;
+            }
+            """;
+
+        Type observableObjectType = typeof(ObservableObject);
+        Type validationAttributeType = typeof(ValidationAttribute);
+
+        IEnumerable<MetadataReference> references =
+            from assembly in AppDomain.CurrentDomain.GetAssemblies()
+            where !assembly.IsDynamic
+            let reference = MetadataReference.CreateFromFile(assembly.Location)
+            select reference;
+
+        SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp10));
+
+        CSharpCompilation compilation = CSharpCompilation.Create(
+            "original",
+            new SyntaxTree[] { syntaxTree },
+            references,
+            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+
+        GeneratorDriver driver = CSharpGeneratorDriver.Create(new IIncrementalGenerator[]
+        {
+            new ObservablePropertyGenerator(),
+            new ObservableValidatorValidationGenerator()
+        }).WithUpdatedParseOptions((CSharpParseOptions)syntaxTree.Options);
+
+        _ = driver.RunGeneratorsAndUpdateCompilation(compilation, out Compilation outputCompilation, out ImmutableArray<Diagnostic> diagnostics);
+
+        CollectionAssert.AreEquivalent(Array.Empty<Diagnostic>(), diagnostics);
+
+        SyntaxTree generatedTree = outputCompilation.SyntaxTrees.Single(tree => Path.GetFileName(tree.FilePath) == "MyApp.MyViewModel.ObservableValidator.g.cs");
+        string generatedText = generatedTree.ToString();
+
+        StringAssert.Contains(generatedText, "protected override void ValidateAllPropertiesCore()");
+        StringAssert.Contains(generatedText, "ValidateProperty(Name, \"Name\");");
+        StringAssert.Contains(generatedText, "GetProperty(\"Name\")!");
+        StringAssert.Contains(generatedText, "protected override ValidationStatus TryValidatePropertyCore(object? value, string propertyName");
+
+        GC.KeepAlive(observableObjectType);
+        GC.KeepAlive(validationAttributeType);
+    }
+
     /// <summary>
     /// Generates the requested sources
     /// </summary>
