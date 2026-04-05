@@ -484,6 +484,19 @@ public sealed partial class Test_ObservableValidator
     }
 
     [TestMethod]
+    public void Test_ObservableValidator_ValidationWithLocalizedDisplayName()
+    {
+        ValidationWithLocalizedDisplayName? model = new();
+
+        Assert.IsTrue(model.HasErrors);
+
+        ValidationResult error = model.GetErrors(nameof(ValidationWithLocalizedDisplayName.UserName)).Cast<ValidationResult>().Single();
+
+        Assert.AreEqual(nameof(ValidationWithLocalizedDisplayName.UserName), error.MemberNames.Single());
+        Assert.AreEqual("LOCALIZED: Localized User Name.", error.ErrorMessage);
+    }
+
+    [TestMethod]
     public void Test_EnsureConstructorsArePreserved()
     {
         // DynamicallyAccessedMembers on test methods do not seem to preserve constructors.
@@ -849,6 +862,29 @@ public sealed partial class Test_ObservableValidator
             get => this.anotherRequiredField;
             set => SetProperty(ref this.anotherRequiredField, value, true);
         }
+    }
+
+    public partial class ValidationWithLocalizedDisplayName : ObservableValidator
+    {
+        public ValidationWithLocalizedDisplayName()
+        {
+            ValidateAllProperties();
+        }
+
+        private string? userName;
+
+        [Required(AllowEmptyStrings = false, ErrorMessage = "LOCALIZED: {0}.")]
+        [Display(Name = nameof(ValidationDisplayNameResources.LocalizedUserName), ResourceType = typeof(ValidationDisplayNameResources))]
+        public string? UserName
+        {
+            get => this.userName;
+            set => SetProperty(ref this.userName, value, true);
+        }
+    }
+
+    public static class ValidationDisplayNameResources
+    {
+        public static string LocalizedUserName => "Localized User Name";
     }
 
     public class ObservableValidatorBase : ObservableValidator

@@ -70,7 +70,7 @@ partial class ObservableValidatorValidationGenerator
                     continue;
                 }
 
-                properties.Add(new(propertySymbol.Name));
+                properties.Add(new(propertySymbol.Name, HasDisplayAttribute(propertySymbol.GetAttributes())));
             }
 
             token.ThrowIfCancellationRequested();
@@ -112,7 +112,7 @@ partial class ObservableValidatorValidationGenerator
 
             return (
                 new ValidationTypeInfo(HierarchyInfo.From(fieldSymbol.ContainingType), fieldSymbol.ContainingType.GetFullyQualifiedName()),
-                new PropertyValidationInfo(propertyInfo.PropertyName));
+                new PropertyValidationInfo(propertyInfo.PropertyName, HasDisplayAttribute(propertyInfo.ForwardedAttributes)));
         }
 
         /// <summary>
@@ -124,7 +124,12 @@ partial class ObservableValidatorValidationGenerator
         {
             ImmutableArray<MemberDeclarationSyntax> memberDeclarations = GetMemberDeclarations(validationInfo);
 
-            return validationInfo.Hierarchy.GetCompilationUnit(memberDeclarations);
+            return validationInfo.Hierarchy.GetCompilationUnit(memberDeclarations)
+                .AddUsings(
+                    UsingDirective(ParseName("System.Collections.Generic")),
+                    UsingDirective(ParseName("System.ComponentModel.DataAnnotations")),
+                    UsingDirective(ParseName("System.Reflection")))
+                .NormalizeWhitespace();
         }
 
         /// <summary>
@@ -188,74 +193,28 @@ partial class ObservableValidatorValidationGenerator
         {
             using ImmutableArrayBuilder<MemberDeclarationSyntax> members = ImmutableArrayBuilder<MemberDeclarationSyntax>.Rent();
 
-            string generatorTypeName = typeof(ObservableValidatorValidationGenerator).FullName!;
-            string generatorAssemblyVersion = typeof(ObservableValidatorValidationGenerator).Assembly.GetName().Version!.ToString();
-
-            string generatedOverrideAttributes = $$"""
-                [global::System.CodeDom.Compiler.GeneratedCode("{{generatorTypeName}}", "{{generatorAssemblyVersion}}")]
-                [global::System.Diagnostics.DebuggerNonUserCode]
-                [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-                """;
-
-            string generatedMethodAttributes = $$"""
-                [global::System.CodeDom.Compiler.GeneratedCode("{{generatorTypeName}}", "{{generatorAssemblyVersion}}")]
-                [global::System.Diagnostics.DebuggerNonUserCode]
-                """;
-
-            string generatedFieldAttributes = $$"""
-                [global::System.CodeDom.Compiler.GeneratedCode("{{generatorTypeName}}", "{{generatorAssemblyVersion}}")]
-                """;
-
-            foreach ((PropertyValidationInfo propertyInfo, int index) in validationInfo.Properties.Select(static (item, index) => (item, index)))
+            foreach (PropertyValidationInfo propertyInfo in validationInfo.Properties)
             {
-                string helperName = GetHelperName(propertyInfo.PropertyName, index);
+                string validationHelperName = GetValidationAttributesHelperName(propertyInfo.PropertyName);
 
                 members.Add(ParseMemberDeclaration($$"""
-                    {{generatedFieldAttributes}}
-                    private static readonly global::System.Reflection.PropertyInfo {{helperName}}PropertyInfo = typeof({{validationInfo.TypeName}}).GetProperty("{{propertyInfo.PropertyName}}")!;
+                    private static readonly IEnumerable<ValidationAttribute> {{validationHelperName}} =
+                        typeof({{validationInfo.TypeName}}).GetProperty(nameof({{propertyInfo.PropertyName}}))!.GetCustomAttributes<ValidationAttribute>();
                     """)!);
 
-                members.Add(ParseMemberDeclaration($$"""
-                    {{generatedFieldAttributes}}
-                    private static readonly string {{helperName}}DisplayName = __GetDisplayName({{helperName}}PropertyInfo, "{{propertyInfo.PropertyName}}");
-                    """)!);
+                if (propertyInfo.HasDisplayAttribute)
+                {
+                    string displayHelperName = GetDisplayAttributeHelperName(propertyInfo.PropertyName);
 
-                members.Add(ParseMemberDeclaration($$"""
-                    {{generatedFieldAttributes}}
-                    private static readonly global::System.ComponentModel.DataAnnotations.ValidationAttribute[] {{helperName}}ValidationAttributes = __GetValidationAttributes({{helperName}}PropertyInfo);
-                    """)!);
-
-                members.Add(ParseMemberDeclaration($$"""
-                    {{generatedMethodAttributes}}
-                    private ValidationStatus {{helperName}}TryValidate(object? value, global::System.Collections.Generic.ICollection<global::System.ComponentModel.DataAnnotations.ValidationResult> errors)
-                    {
-                        return TryValidateValue(value, "{{propertyInfo.PropertyName}}", {{helperName}}DisplayName, {{helperName}}ValidationAttributes, errors);
-                    }
-                    """)!);
+                    members.Add(ParseMemberDeclaration($$"""
+                        private static readonly DisplayAttribute {{displayHelperName}} =
+                            typeof({{validationInfo.TypeName}}).GetProperty(nameof({{propertyInfo.PropertyName}}))!.GetCustomAttribute<DisplayAttribute>()!;
+                        """)!);
+                }
             }
 
-            members.Add(ParseMemberDeclaration($$"""
-                {{generatedMethodAttributes}}
-                private static global::System.ComponentModel.DataAnnotations.ValidationAttribute[] __GetValidationAttributes(global::System.Reflection.PropertyInfo propertyInfo)
-                {
-                    return global::System.Array.ConvertAll(
-                        propertyInfo.GetCustomAttributes(typeof(global::System.ComponentModel.DataAnnotations.ValidationAttribute), true),
-                        static item => (global::System.ComponentModel.DataAnnotations.ValidationAttribute)item);
-                }
-                """)!);
-
-            members.Add(ParseMemberDeclaration($$"""
-                {{generatedMethodAttributes}}
-                private static string __GetDisplayName(global::System.Reflection.PropertyInfo propertyInfo, string propertyName)
-                {
-                    return ((global::System.ComponentModel.DataAnnotations.DisplayAttribute?)global::System.Attribute.GetCustomAttribute(propertyInfo, typeof(global::System.ComponentModel.DataAnnotations.DisplayAttribute)))?.GetName()
-                        ?? ((global::System.ComponentModel.DisplayNameAttribute?)global::System.Attribute.GetCustomAttribute(propertyInfo, typeof(global::System.ComponentModel.DisplayNameAttribute)))?.DisplayName
-                        ?? propertyName;
-                }
-                """)!);
-
-            members.Add(ParseMemberDeclaration(GetTryValidatePropertyCoreSource(validationInfo, generatedOverrideAttributes))!);
-            members.Add(ParseMemberDeclaration(GetValidateAllPropertiesCoreSource(validationInfo, generatedOverrideAttributes))!);
+            members.Add(ParseMemberDeclaration(GetTryValidatePropertyCoreSource(validationInfo))!);
+            members.Add(ParseMemberDeclaration(GetValidateAllPropertiesCoreSource(validationInfo))!);
 
             return members.ToImmutable();
         }
@@ -264,24 +223,25 @@ partial class ObservableValidatorValidationGenerator
         /// Creates the source for the generated <c>TryValidatePropertyCore</c> override.
         /// </summary>
         /// <param name="validationInfo">The validation info for the current type.</param>
-        /// <param name="attributes">The generated member attributes to apply.</param>
         /// <returns>The generated member source.</returns>
-        private static string GetTryValidatePropertyCoreSource(ValidationInfo validationInfo, string attributes)
+        private static string GetTryValidatePropertyCoreSource(ValidationInfo validationInfo)
         {
             StringBuilder builder = new();
 
             builder.AppendLine("/// <inheritdoc/>");
-            builder.AppendLine(attributes);
-            builder.AppendLine("protected override ValidationStatus TryValidatePropertyCore(object? value, string propertyName, global::System.Collections.Generic.ICollection<global::System.ComponentModel.DataAnnotations.ValidationResult> errors)");
+            builder.AppendLine("protected override ValidationStatus TryValidatePropertyCore(object? value, string propertyName, ICollection<ValidationResult> errors)");
             builder.AppendLine("{");
-            builder.AppendLine("    return propertyName switch");
+            builder.AppendLine("    return (propertyName) switch");
             builder.AppendLine("    {");
 
-            foreach ((PropertyValidationInfo propertyInfo, int index) in validationInfo.Properties.Select(static (item, index) => (item, index)))
+            foreach (PropertyValidationInfo propertyInfo in validationInfo.Properties)
             {
-                string helperName = GetHelperName(propertyInfo.PropertyName, index);
+                string validationHelperName = GetValidationAttributesHelperName(propertyInfo.PropertyName);
+                string displayNameExpression = propertyInfo.HasDisplayAttribute
+                    ? $"{GetDisplayAttributeHelperName(propertyInfo.PropertyName)}.GetName() ?? {SymbolDisplay.FormatLiteral(propertyInfo.PropertyName, true)}"
+                    : SymbolDisplay.FormatLiteral(propertyInfo.PropertyName, true);
 
-                builder.AppendLine($"        \"{propertyInfo.PropertyName}\" => {helperName}TryValidate(value, errors),");
+                builder.AppendLine($"        nameof({propertyInfo.PropertyName}) => TryValidateValue(value, nameof({propertyInfo.PropertyName}), {displayNameExpression}, {validationHelperName}, errors),");
             }
 
             builder.AppendLine("        _ => base.TryValidatePropertyCore(value, propertyName, errors)");
@@ -295,20 +255,18 @@ partial class ObservableValidatorValidationGenerator
         /// Creates the source for the generated <c>ValidateAllPropertiesCore</c> override.
         /// </summary>
         /// <param name="validationInfo">The validation info for the current type.</param>
-        /// <param name="attributes">The generated member attributes to apply.</param>
         /// <returns>The generated member source.</returns>
-        private static string GetValidateAllPropertiesCoreSource(ValidationInfo validationInfo, string attributes)
+        private static string GetValidateAllPropertiesCoreSource(ValidationInfo validationInfo)
         {
             StringBuilder builder = new();
 
             builder.AppendLine("/// <inheritdoc/>");
-            builder.AppendLine(attributes);
             builder.AppendLine("protected override void ValidateAllPropertiesCore()");
             builder.AppendLine("{");
 
             foreach (PropertyValidationInfo propertyInfo in validationInfo.Properties)
             {
-                builder.AppendLine($"    ValidateProperty({propertyInfo.PropertyName}, \"{propertyInfo.PropertyName}\");");
+                builder.AppendLine($"    ValidateProperty({propertyInfo.PropertyName}, nameof({propertyInfo.PropertyName}));");
             }
 
             builder.AppendLine("    base.ValidateAllPropertiesCore();");
@@ -321,9 +279,29 @@ partial class ObservableValidatorValidationGenerator
         /// Creates a stable helper name for a given property.
         /// </summary>
         /// <param name="propertyName">The property name to process.</param>
-        /// <param name="index">The index of the current property.</param>
         /// <returns>A stable helper name for <paramref name="propertyName"/>.</returns>
-        private static string GetHelperName(string propertyName, int index)
+        private static string GetValidationAttributesHelperName(string propertyName)
+        {
+            return GetHelperName(propertyName, "ValidationAttributes");
+        }
+
+        /// <summary>
+        /// Creates a stable display helper name for a given property.
+        /// </summary>
+        /// <param name="propertyName">The property name to process.</param>
+        /// <returns>A stable display helper name for <paramref name="propertyName"/>.</returns>
+        private static string GetDisplayAttributeHelperName(string propertyName)
+        {
+            return GetHelperName(propertyName, "DisplayAttribute");
+        }
+
+        /// <summary>
+        /// Creates a stable helper name for a given property and suffix.
+        /// </summary>
+        /// <param name="propertyName">The property name to process.</param>
+        /// <param name="suffix">The suffix to append.</param>
+        /// <returns>A stable helper name for <paramref name="propertyName"/>.</returns>
+        private static string GetHelperName(string propertyName, string suffix)
         {
             StringBuilder builder = new("__");
 
@@ -337,10 +315,45 @@ partial class ObservableValidatorValidationGenerator
                 builder.Insert(2, '_');
             }
 
-            builder.Append('_');
-            builder.Append(index.ToString("D2"));
+            builder.Append(suffix);
 
             return builder.ToString();
+        }
+
+        /// <summary>
+        /// Checks whether a property has a <c>DisplayAttribute</c> declared.
+        /// </summary>
+        /// <param name="attributes">The attributes declared on the property.</param>
+        /// <returns>Whether the property has a display attribute.</returns>
+        private static bool HasDisplayAttribute(ImmutableArray<AttributeData> attributes)
+        {
+            foreach (AttributeData attributeData in attributes)
+            {
+                if (attributeData.AttributeClass?.HasFullyQualifiedMetadataName("System.ComponentModel.DataAnnotations.DisplayAttribute") == true)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Checks whether a generated property has a forwarded <c>DisplayAttribute</c>.
+        /// </summary>
+        /// <param name="attributes">The forwarded property attributes.</param>
+        /// <returns>Whether the property has a display attribute.</returns>
+        private static bool HasDisplayAttribute(EquatableArray<AttributeInfo> attributes)
+        {
+            foreach (AttributeInfo attributeInfo in attributes)
+            {
+                if (attributeInfo.TypeName == "global::System.ComponentModel.DataAnnotations.DisplayAttribute")
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

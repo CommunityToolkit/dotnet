@@ -3497,10 +3497,90 @@ public partial class Test_SourceGeneratorsCodegen
         SyntaxTree generatedTree = outputCompilation.SyntaxTrees.Single(tree => Path.GetFileName(tree.FilePath) == "MyApp.MyViewModel.ObservableValidator.g.cs");
         string generatedText = generatedTree.ToString();
 
+        StringAssert.Contains(generatedText, "using System.Collections.Generic;");
+        StringAssert.Contains(generatedText, "using System.ComponentModel.DataAnnotations;");
+        StringAssert.Contains(generatedText, "using System.Reflection;");
+        StringAssert.Contains(generatedText, "private static readonly IEnumerable<ValidationAttribute> __NameValidationAttributes =");
+        StringAssert.Contains(generatedText, "typeof(global::MyApp.MyViewModel).GetProperty(nameof(Name))!.GetCustomAttributes<ValidationAttribute>();");
         StringAssert.Contains(generatedText, "protected override void ValidateAllPropertiesCore()");
-        StringAssert.Contains(generatedText, "ValidateProperty(Name, \"Name\");");
-        StringAssert.Contains(generatedText, "GetProperty(\"Name\")!");
-        StringAssert.Contains(generatedText, "protected override ValidationStatus TryValidatePropertyCore(object? value, string propertyName");
+        StringAssert.Contains(generatedText, "ValidateProperty(Name, nameof(Name));");
+        StringAssert.Contains(generatedText, "protected override ValidationStatus TryValidatePropertyCore(object? value, string propertyName, ICollection<ValidationResult> errors)");
+        StringAssert.Contains(generatedText, "nameof(Name) => TryValidateValue(value, nameof(Name), \"Name\", __NameValidationAttributes, errors),");
+        Assert.DoesNotContain(generatedText, "GetProperty(\"Name\")!");
+        Assert.DoesNotContain(generatedText, "PropertyInfo __");
+        Assert.DoesNotContain(generatedText, "__GetDisplayName");
+        Assert.DoesNotContain(generatedText, "__GetValidationAttributes");
+
+        GC.KeepAlive(observableObjectType);
+        GC.KeepAlive(validationAttributeType);
+    }
+
+    [TestMethod]
+    public void ObservableValidator_UsesDeclaredDisplayNamesInValidationHooks()
+    {
+        string source = """
+            using System.ComponentModel.DataAnnotations;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            #nullable enable
+
+            namespace MyApp;
+
+            partial class MyViewModel : ObservableValidator
+            {
+                private string? userName;
+
+                [Required]
+                [Display(Name = "User Name")]
+                public string? UserName
+                {
+                    get => this.userName;
+                    set => SetProperty(ref this.userName, value, validate: true);
+                }
+
+                [ObservableProperty]
+                [Required]
+                [Display(Name = "Email Address")]
+                private string? email;
+            }
+            """;
+
+        Type observableObjectType = typeof(ObservableObject);
+        Type validationAttributeType = typeof(ValidationAttribute);
+
+        IEnumerable<MetadataReference> references =
+            from assembly in AppDomain.CurrentDomain.GetAssemblies()
+            where !assembly.IsDynamic
+            let reference = MetadataReference.CreateFromFile(assembly.Location)
+            select reference;
+
+        SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp10));
+
+        CSharpCompilation compilation = CSharpCompilation.Create(
+            "original",
+            new SyntaxTree[] { syntaxTree },
+            references,
+            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+
+        GeneratorDriver driver = CSharpGeneratorDriver.Create(new IIncrementalGenerator[]
+        {
+            new ObservablePropertyGenerator(),
+            new ObservableValidatorValidationGenerator()
+        }).WithUpdatedParseOptions((CSharpParseOptions)syntaxTree.Options);
+
+        _ = driver.RunGeneratorsAndUpdateCompilation(compilation, out Compilation outputCompilation, out ImmutableArray<Diagnostic> diagnostics);
+
+        CollectionAssert.AreEquivalent(Array.Empty<Diagnostic>(), diagnostics);
+
+        SyntaxTree generatedTree = outputCompilation.SyntaxTrees.Single(tree => Path.GetFileName(tree.FilePath) == "MyApp.MyViewModel.ObservableValidator.g.cs");
+        string generatedText = generatedTree.ToString();
+
+        StringAssert.Contains(generatedText, "private static readonly DisplayAttribute __UserNameDisplayAttribute =");
+        StringAssert.Contains(generatedText, "typeof(global::MyApp.MyViewModel).GetProperty(nameof(UserName))!.GetCustomAttribute<DisplayAttribute>();");
+        StringAssert.Contains(generatedText, "private static readonly DisplayAttribute __EmailDisplayAttribute =");
+        StringAssert.Contains(generatedText, "typeof(global::MyApp.MyViewModel).GetProperty(nameof(Email))!.GetCustomAttribute<DisplayAttribute>();");
+        StringAssert.Contains(generatedText, "nameof(UserName) => TryValidateValue(value, nameof(UserName), __UserNameDisplayAttribute.GetName() ?? \"UserName\", __UserNameValidationAttributes, errors),");
+        StringAssert.Contains(generatedText, "nameof(Email) => TryValidateValue(value, nameof(Email), __EmailDisplayAttribute.GetName() ?? \"Email\", __EmailValidationAttributes, errors),");
 
         GC.KeepAlive(observableObjectType);
         GC.KeepAlive(validationAttributeType);

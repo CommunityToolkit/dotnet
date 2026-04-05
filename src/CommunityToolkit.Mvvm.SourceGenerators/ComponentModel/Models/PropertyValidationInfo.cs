@@ -8,4 +8,5 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 /// A model with gathered info on a locally declared validatable property.
 /// </summary>
 /// <param name="PropertyName">The name of the property to validate.</param>
-internal sealed record PropertyValidationInfo(string PropertyName);
+/// <param name="HasDisplayAttribute">Whether the property has a <c>DisplayAttribute</c>.</param>
+internal sealed record PropertyValidationInfo(string PropertyName, bool HasDisplayAttribute);
