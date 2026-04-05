@@ -21,6 +21,18 @@ namespace CommunityToolkit.Mvvm.UnitTests;
 public class Test_ObservableRecipient
 {
     [TestMethod]
+    public void Test_EnsureConstructorsArePreserved()
+    {
+        // DynamicallyAccessedMembers on test methods do not seem to preserve constructors.
+        // Therefore, this method calls them
+        IMessenger strongMessenger = Activator.CreateInstance<StrongReferenceMessenger>();
+        IMessenger weakMessenger = Activator.CreateInstance<WeakReferenceMessenger>();
+
+        Assert.IsNotNull(strongMessenger);
+        Assert.IsNotNull(weakMessenger);
+    }
+
+    [TestMethod]
     [DataRow(typeof(StrongReferenceMessenger))]
     [DataRow(typeof(WeakReferenceMessenger))]
     public void Test_ObservableRecipient_Activation(Type type)

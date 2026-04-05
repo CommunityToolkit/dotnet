@@ -7,6 +7,7 @@
     <File Path="azure-pipelines.yml" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Build.targets" />
+    <File Path="nuget.config" />
     <File Path="toolkit.snk" />
     <File Path="version.json" />
   </Folder>
@@ -30,6 +31,7 @@
     <Project Path="tests/CommunityToolkit.Common.UnitTests/CommunityToolkit.Common.UnitTests.csproj" />
     <Project Path="tests/CommunityToolkit.Diagnostics.UnitTests/CommunityToolkit.Diagnostics.UnitTests.csproj" />
     <Project Path="tests/CommunityToolkit.HighPerformance.UnitTests/CommunityToolkit.HighPerformance.UnitTests.csproj" />
+    <Project Path="tests/CommunityToolkit.Mvvm.Aot.UnitTests/CommunityToolkit.Mvvm.Aot.UnitTests.csproj" />
     <Project Path="tests/CommunityToolkit.Mvvm.ExternalAssembly.Roslyn4001/CommunityToolkit.Mvvm.ExternalAssembly.Roslyn4001.csproj" />
     <Project Path="tests/CommunityToolkit.Mvvm.ExternalAssembly.Roslyn4031/CommunityToolkit.Mvvm.ExternalAssembly.Roslyn4031.csproj" />
     <Project Path="tests/CommunityToolkit.Mvvm.ExternalAssembly/CommunityToolkit.Mvvm.ExternalAssembly.shproj" />

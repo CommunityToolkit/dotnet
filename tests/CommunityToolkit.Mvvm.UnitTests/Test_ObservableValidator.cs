@@ -11,13 +11,14 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static CommunityToolkit.Mvvm.UnitTests.ObservableValidators;
 
 #pragma warning disable CS0618
 
 namespace CommunityToolkit.Mvvm.UnitTests;
 
 [TestClass]
-public class Test_ObservableValidator
+public sealed class Test_ObservableValidator
 {
     [TestMethod]
     public void Test_ObservableValidator_HasErrors()
@@ -483,6 +484,18 @@ public class Test_ObservableValidator
         Assert.AreEqual($"SECOND: {nameof(ValidationWithDisplayName.AnotherRequiredField)}.", allErrors[1].ErrorMessage);
     }
 
+    [TestMethod]
+    public void Test_EnsureConstructorsArePreserved()
+    {
+        // DynamicallyAccessedMembers on test methods do not seem to preserve constructors.
+        // Therefore, this method calls them
+        ObservableValidatorBase baseValidator = Activator.CreateInstance<ObservableValidatorBase>();
+        ObservableValidatorDerived derivedValidator = Activator.CreateInstance<ObservableValidatorDerived>();
+
+        Assert.IsNotNull(baseValidator);
+        Assert.IsNotNull(derivedValidator);
+    }
+
     // See: https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/4272
     [TestMethod]
     [DataRow(typeof(ObservableValidatorBase))]
@@ -621,8 +634,11 @@ public class Test_ObservableValidator
         Assert.IsNotNull(displayAttribute);
         Assert.IsFalse(displayAttribute.AutoGenerateField);
     }
+}
 
-    public class Person : ObservableValidator
+public static partial class ObservableValidators
+{
+    public partial class Person : ObservableValidator
     {
         private string? name;
 
@@ -655,7 +671,7 @@ public class Test_ObservableValidator
         }
     }
 
-    public class PersonWithDeferredValidation : ObservableValidator
+    public partial class PersonWithDeferredValidation : ObservableValidator
     {
         [MinLength(4)]
         [MaxLength(20)]
@@ -678,7 +694,7 @@ public class Test_ObservableValidator
     /// Test model for linked properties, to test <see cref="ObservableValidator.ValidateProperty(object?, string?)"/> instance.
     /// See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/3665 for the original request for this feature.
     /// </summary>
-    public class ComparableModel : ObservableValidator
+    public partial class ComparableModel : ObservableValidator
     {
         private int a;
 
@@ -731,7 +747,7 @@ public class Test_ObservableValidator
     /// Test model for custom validation properties.
     /// See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/3729 for the original request for this feature.
     /// </summary>
-    public class CustomValidationModel : ObservableValidator
+    public partial class CustomValidationModel : ObservableValidator
     {
         public CustomValidationModel(IDictionary<object, object?> items)
             : base(items)
@@ -777,7 +793,7 @@ public class Test_ObservableValidator
     /// Test model for custom validation with an injected service.
     /// See https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/3750 for the original request for this feature.
     /// </summary>
-    public class ValidationWithServiceModel : ObservableValidator
+    public partial class ValidationWithServiceModel : ObservableValidator
     {
         private readonly IFancyService service;
 
@@ -813,7 +829,7 @@ public class Test_ObservableValidator
     /// Test model for validation with a formatted display name string on each property.
     /// This is issue #1 from https://github.com/CommunityToolkit/WindowsCommunityToolkit/issues/3763.
     /// </summary>
-    public class ValidationWithDisplayName : ObservableValidator
+    public partial class ValidationWithDisplayName : ObservableValidator
     {
         public ValidationWithDisplayName()
         {
@@ -874,14 +890,14 @@ public class Test_ObservableValidator
         public int Number { get; set; }
     }
 
-    public abstract class AbstractModelWithValidatableProperty : ObservableValidator
+    public abstract partial class AbstractModelWithValidatableProperty : ObservableValidator
     {
         [Required]
         [MinLength(2)]
         public string? Name { get; set; }
     }
 
-    public class DerivedModelWithValidatableProperties : AbstractModelWithValidatableProperty
+    public partial class DerivedModelWithValidatableProperties : AbstractModelWithValidatableProperty
     {
         [Range(10, 1000)]
         public int Number { get; set; }
@@ -892,7 +908,7 @@ public class Test_ObservableValidator
         }
     }
 
-    public class GenericPerson<T> : ObservableValidator
+    public partial class GenericPerson<T> : ObservableValidator
     {
         [Required]
         [MinLength(1)]
