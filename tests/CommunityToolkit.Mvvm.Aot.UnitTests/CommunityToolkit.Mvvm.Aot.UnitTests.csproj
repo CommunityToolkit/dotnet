@@ -19,9 +19,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MSTest.Engine" Version="1.0.0-alpha.24163.4" />
-    <PackageReference Include="MSTest.SourceGeneration" Version="1.0.0-alpha.24163.4" />
-    <PackageReference Include="Microsoft.Testing.Platform.MSBuild" Version="1.0.2" />
+    <PackageReference Include="MSTest.Engine" Version="2.0.0" />
+    <PackageReference Include="MSTest.SourceGeneration" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Testing.Platform.MSBuild" Version="2.2.0" />
 
     <PackageReference Include="Dbs.Signed3.Nito.AsyncEx.Context" Version="5.0.0" />
     <PackageReference Include="MSTest.TestFramework" Version="4.0.1" />

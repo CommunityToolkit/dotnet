@@ -11,14 +11,13 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static CommunityToolkit.Mvvm.UnitTests.ObservableValidators;
 
 #pragma warning disable CS0618
 
 namespace CommunityToolkit.Mvvm.UnitTests;
 
 [TestClass]
-public sealed class Test_ObservableValidator
+public sealed partial class Test_ObservableValidator
 {
     [TestMethod]
     public void Test_ObservableValidator_HasErrors()
@@ -634,10 +633,7 @@ public sealed class Test_ObservableValidator
         Assert.IsNotNull(displayAttribute);
         Assert.IsFalse(displayAttribute.AutoGenerateField);
     }
-}
 
-public static partial class ObservableValidators
-{
     public partial class Person : ObservableValidator
     {
         private string? name;
