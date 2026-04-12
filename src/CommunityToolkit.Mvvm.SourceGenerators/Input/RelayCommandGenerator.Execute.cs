@@ -59,7 +59,7 @@ partial class RelayCommandGenerator
             token.ThrowIfCancellationRequested();
 
             // Get the command field and property names
-            (string? fieldName, string propertyName) = GetGeneratedFieldAndPropertyNames(methodSymbol, semanticModel.Compilation);
+            (string fieldName, string propertyName) = GetGeneratedFieldAndPropertyNames(methodSymbol);
 
             token.ThrowIfCancellationRequested();
 
@@ -135,6 +135,17 @@ partial class RelayCommandGenerator
 
             token.ThrowIfCancellationRequested();
 
+            // Get the option to force a backing field, if any
+            if (!TryGetUseBackingField(
+                attributeData,
+                semanticModel,
+                out bool useBackingField))
+            {
+                goto Failure;
+            }
+
+            token.ThrowIfCancellationRequested();
+
             // Get all forwarded attributes (don't stop in case of errors, just ignore faulting attributes)
             GatherForwardedAttributes(
                 methodSymbol,
@@ -147,7 +158,7 @@ partial class RelayCommandGenerator
 
             commandInfo = new CommandInfo(
                 methodSymbol.Name,
-                fieldName,
+                useBackingField ? fieldName : null,
                 propertyName,
                 commandInterfaceType,
                 commandClassType,
@@ -356,8 +367,8 @@ partial class RelayCommandGenerator
             if (commandInfo.IncludeCancelCommand)
             {
                 // Prepare all necessary member and type names
-                string? cancelCommandFieldName = commandInfo.FieldName is not null ? $"{commandInfo.FieldName.Substring(0, commandInfo.FieldName.Length - "Command".Length)}CancelCommand" : null;
-                string cancelCommandPropertyName = $"{commandInfo.PropertyName.Substring(0, commandInfo.PropertyName.Length - "Command".Length)}CancelCommand";
+                string? cancelCommandFieldName = commandInfo.FieldName is not null ? $"{commandInfo.FieldName[..^"Command".Length]}CancelCommand" : null;
+                string cancelCommandPropertyName = $"{commandInfo.PropertyName[..^"Command".Length]}CancelCommand";
 
                 // Declare a backing field for the cancel command if needed.
                 // This is only needed if we can't use the field keyword for the main command, as otherwise the cancel command can just use its own field keyword.
@@ -492,9 +503,8 @@ partial class RelayCommandGenerator
         /// Get the generated field and property names for the input method.
         /// </summary>
         /// <param name="methodSymbol">The input <see cref="IMethodSymbol"/> instance to process.</param>
-        /// <param name="compilation">The compilation info, used to determine language version.</param>
         /// <returns>The generated field and property names for <paramref name="methodSymbol"/>.</returns>
-        public static (string? FieldName, string PropertyName) GetGeneratedFieldAndPropertyNames(IMethodSymbol methodSymbol, Compilation? compilation = null)
+        public static (string FieldName, string PropertyName) GetGeneratedFieldAndPropertyNames(IMethodSymbol methodSymbol)
         {
             string propertyName = methodSymbol.Name;
 
@@ -516,24 +526,6 @@ partial class RelayCommandGenerator
             }
 
             propertyName += "Command";
-
-            if (compilation is not null)
-            {
-                // We can use the field keyword as the generated field name if the language version is C# 14 or greater, or if it's C# 13 and the preview features are enabled.
-                // In this case, there is no need to generate a backing field, as the property itself will be auto-generated with an underlying field.
-                bool useFieldKeyword = false;
-
-#if ROSLYN_5_0_0_OR_GREATER
-                useFieldKeyword = compilation.HasLanguageVersionAtLeastEqualTo(LanguageVersion.CSharp14);
-#elif ROSLYN_4_12_0_OR_GREATER
-                useFieldKeyword = compilation.IsLanguageVersionPreview();
-#endif
-
-                if (useFieldKeyword)
-                {
-                    return (null, propertyName);
-                }
-            }
 
             char firstCharacter = propertyName[0];
             char loweredFirstCharacter = char.ToLower(firstCharacter, CultureInfo.InvariantCulture);
@@ -795,6 +787,43 @@ partial class RelayCommandGenerator
 
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Checks whether or not the user has requested to force using a backing field.
+        /// </summary>
+        /// <param name="attributeData">The <see cref="AttributeData"/> instance the method was annotated with.</param>
+        /// <param name="semanticModel">The <see cref="SemanticModel"/> instance for the current run.</param>
+        /// <param name="useBackingField">Whether or not to use a backing field.</param>
+        /// <returns>Whether or not a value for <paramref name="useBackingField"/> could be retrieved successfully.</returns>
+        private static bool TryGetUseBackingField(
+            AttributeData attributeData,
+            SemanticModel semanticModel,
+            out bool useBackingField)
+        {
+            // Try to get the custom switch for cancel command generation (the default is false)
+            if (!attributeData.TryGetNamedArgument("ForceBackingField", out useBackingField))
+            {
+                useBackingField = false;
+            }
+            
+            // We can only use the field keyword as the generated field name if the language version is C# 14 or greater, or if it's C# 13 and the preview features are enabled.
+            // Otherwise, we must use a backing field.
+#if ROSLYN_5_0_0_OR_GREATER
+            if (!semanticModel.Compilation.HasLanguageVersionAtLeastEqualTo(LanguageVersion.CSharp14))
+            {
+                useBackingField = true;
+            }
+#elif ROSLYN_4_12_0_OR_GREATER
+            if (!semanticModel.Compilation.IsLanguageVersionPreview())
+            {
+                useBackingField = true;
+            }
+#else
+                useBackingField = true;
+#endif
+
+            return true;
         }
 
         /// <summary>

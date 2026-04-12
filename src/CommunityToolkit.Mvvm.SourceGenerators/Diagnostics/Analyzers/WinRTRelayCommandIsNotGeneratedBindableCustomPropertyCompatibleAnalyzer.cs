@@ -60,7 +60,7 @@ public sealed class WinRTRelayCommandIsNotGeneratedBindableCustomPropertyCompati
                     return;
                 }
 
-                (_, string propertyName) = RelayCommandGenerator.Execute.GetGeneratedFieldAndPropertyNames(methodSymbol, context.Compilation);
+                (_, string propertyName) = RelayCommandGenerator.Execute.GetGeneratedFieldAndPropertyNames(methodSymbol);
 
                 if (DoesGeneratedBindableCustomPropertyAttributeIncludePropertyName(generatedBindableCustomPropertyAttribute, propertyName))
                 {
