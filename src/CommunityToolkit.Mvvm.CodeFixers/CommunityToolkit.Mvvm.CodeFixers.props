@@ -4,9 +4,6 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
-
-    <!-- Embed the .pdb file (see notes in the MVVM Toolkit generator projects) -->
-    <DebugType>embedded</DebugType>
   </PropertyGroup>
 
   <!-- Simplified version of the same props as the source generators -->
@@ -27,6 +24,7 @@
     <!-- Also define "ROSLYN_<MAJOR>_<MINOR>_OR_GREATER" build constants, so the generator code can multi-target whenever needed and add any required polyfills -->
     <DefineConstants Condition="$([MSBuild]::VersionGreaterThanOrEquals($(MvvmToolkitSourceGeneratorRoslynVersion), 4.3.1))">$(DefineConstants);ROSLYN_4_3_1_OR_GREATER</DefineConstants>
     <DefineConstants Condition="$([MSBuild]::VersionGreaterThanOrEquals($(MvvmToolkitSourceGeneratorRoslynVersion), 4.12.0))">$(DefineConstants);ROSLYN_4_12_0_OR_GREATER</DefineConstants>
+    <DefineConstants Condition="$([MSBuild]::VersionGreaterThanOrEquals($(MvvmToolkitSourceGeneratorRoslynVersion), 5.0.0))">$(DefineConstants);ROSLYN_5_0_0_OR_GREATER</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
