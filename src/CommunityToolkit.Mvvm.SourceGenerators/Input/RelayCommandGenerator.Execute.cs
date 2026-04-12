@@ -207,7 +207,7 @@ partial class RelayCommandGenerator
                 .Select(static a => AttributeList(SingletonSeparatedList(a.GetSyntax())))
                 .ToArray();
 
-            ImmutableArrayBuilder<MemberDeclarationSyntax> declarations = ImmutableArrayBuilder<MemberDeclarationSyntax>.Rent();
+            using ImmutableArrayBuilder<MemberDeclarationSyntax> declarations = ImmutableArrayBuilder<MemberDeclarationSyntax>.Rent();
 
             // Declare a backing field if needed
             if (commandInfo.FieldName is not null)
