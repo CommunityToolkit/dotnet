@@ -1003,6 +1003,7 @@ public partial class Test_ObservablePropertyAttribute
         Assert.AreEqual((Animal)67, testAttribute2.Animal);
     }
 
+#if !ROSLYN_4_12_0_OR_GREATER
     // See https://github.com/CommunityToolkit/dotnet/issues/446
     [TestMethod]
     public void Test_ObservableProperty_CommandNamesThatCantBeLowered()
@@ -1021,6 +1022,7 @@ public partial class Test_ObservablePropertyAttribute
 
         Assert.AreSame(model.c中文Command, fieldInfo?.GetValue(model));
     }
+#endif
 
     // See https://github.com/CommunityToolkit/dotnet/issues/375
     [TestMethod]

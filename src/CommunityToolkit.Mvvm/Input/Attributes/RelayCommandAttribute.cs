@@ -116,4 +116,9 @@ public sealed class RelayCommandAttribute : Attribute
     /// </summary>
     /// <remarks>Using this property is not valid if the target command doesn't map to a cancellable asynchronous command.</remarks>
     public bool IncludeCancelCommand { get; init; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether or not a backing field should generated regardless of the availablity of the <see langword="field"/> keyword.
+    /// </summary>
+    public bool ForceBackingField { get; init; }
 }

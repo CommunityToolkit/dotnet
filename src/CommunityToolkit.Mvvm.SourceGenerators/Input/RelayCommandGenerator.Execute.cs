@@ -135,6 +135,17 @@ partial class RelayCommandGenerator
 
             token.ThrowIfCancellationRequested();
 
+            // Get the option to force a backing field, if any
+            if (!TryGetUseBackingField(
+                attributeData,
+                semanticModel,
+                out bool useBackingField))
+            {
+                goto Failure;
+            }
+
+            token.ThrowIfCancellationRequested();
+
             // Get all forwarded attributes (don't stop in case of errors, just ignore faulting attributes)
             GatherForwardedAttributes(
                 methodSymbol,
@@ -147,7 +158,7 @@ partial class RelayCommandGenerator
 
             commandInfo = new CommandInfo(
                 methodSymbol.Name,
-                fieldName,
+                useBackingField ? fieldName : null,
                 propertyName,
                 commandInterfaceType,
                 commandClassType,
@@ -207,25 +218,33 @@ partial class RelayCommandGenerator
                 .Select(static a => AttributeList(SingletonSeparatedList(a.GetSyntax())))
                 .ToArray();
 
-            // Construct the generated field as follows:
-            //
-            // /// <summary>The backing field for <see cref="<COMMAND_PROPERTY_NAME>"/></summary>
-            // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
-            // <FORWARDED_ATTRIBUTES>
-            // private <COMMAND_TYPE>? <COMMAND_FIELD_NAME>;
-            FieldDeclarationSyntax fieldDeclaration =
-                FieldDeclaration(
-                VariableDeclaration(NullableType(IdentifierName(commandClassTypeName)))
-                .AddVariables(VariableDeclarator(Identifier(commandInfo.FieldName))))
-                .AddModifiers(Token(SyntaxKind.PrivateKeyword))
-                .AddAttributeLists(
-                    AttributeList(SingletonSeparatedList(
-                        Attribute(IdentifierName("global::System.CodeDom.Compiler.GeneratedCode"))
-                        .AddArgumentListArguments(
-                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(RelayCommandGenerator).FullName))),
-                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(RelayCommandGenerator).Assembly.GetName().Version.ToString()))))))
-                    .WithOpenBracketToken(Token(TriviaList(Comment($"/// <summary>The backing field for <see cref=\"{commandInfo.PropertyName}\"/>.</summary>")), SyntaxKind.OpenBracketToken, TriviaList())))
-                .AddAttributeLists(forwardedFieldAttributes);
+            using ImmutableArrayBuilder<MemberDeclarationSyntax> declarations = ImmutableArrayBuilder<MemberDeclarationSyntax>.Rent();
+
+            // Declare a backing field if needed
+            if (commandInfo.FieldName is not null)
+            {
+                // Construct the generated field as follows:
+                //
+                // /// <summary>The backing field for <see cref="<COMMAND_PROPERTY_NAME>"/></summary>
+                // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
+                // <FORWARDED_ATTRIBUTES>
+                // private <COMMAND_TYPE>? <COMMAND_FIELD_NAME>;
+                FieldDeclarationSyntax fieldDeclaration =
+                    FieldDeclaration(
+                    VariableDeclaration(NullableType(IdentifierName(commandClassTypeName)))
+                    .AddVariables(VariableDeclarator(Identifier(commandInfo.FieldName))))
+                    .AddModifiers(Token(SyntaxKind.PrivateKeyword))
+                    .AddAttributeLists(
+                        AttributeList(SingletonSeparatedList(
+                            Attribute(IdentifierName("global::System.CodeDom.Compiler.GeneratedCode"))
+                            .AddArgumentListArguments(
+                                AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(RelayCommandGenerator).FullName))),
+                                AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(RelayCommandGenerator).Assembly.GetName().Version.ToString()))))))
+                        .WithOpenBracketToken(Token(TriviaList(Comment($"/// <summary>The backing field for <see cref=\"{commandInfo.PropertyName}\"/>.</summary>")), SyntaxKind.OpenBracketToken, TriviaList())))
+                    .AddAttributeLists(forwardedFieldAttributes);
+
+                declarations.Add(fieldDeclaration);
+            }
 
             // Prepares the argument to pass the underlying method to invoke
             using ImmutableArrayBuilder<ArgumentSyntax> commandCreationArguments = ImmutableArrayBuilder<ArgumentSyntax>.Rent();
@@ -337,35 +356,44 @@ partial class RelayCommandGenerator
                     ArrowExpressionClause(
                         AssignmentExpression(
                             SyntaxKind.CoalesceAssignmentExpression,
-                            IdentifierName(commandInfo.FieldName),
+                            commandInfo.FieldName is not null ? IdentifierName(commandInfo.FieldName) : IdentifierName("field"),
                             ObjectCreationExpression(IdentifierName(commandClassTypeName))
                             .AddArgumentListArguments(commandCreationArguments.ToArray()))))
                 .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+
+            declarations.Add(propertyDeclaration);
 
             // Conditionally declare the additional members for the cancel commands
             if (commandInfo.IncludeCancelCommand)
             {
                 // Prepare all necessary member and type names
-                string cancelCommandFieldName = $"{commandInfo.FieldName.Substring(0, commandInfo.FieldName.Length - "Command".Length)}CancelCommand";
-                string cancelCommandPropertyName = $"{commandInfo.PropertyName.Substring(0, commandInfo.PropertyName.Length - "Command".Length)}CancelCommand";
+                string? cancelCommandFieldName = commandInfo.FieldName is not null ? $"{commandInfo.FieldName[..^"Command".Length]}CancelCommand" : null;
+                string cancelCommandPropertyName = $"{commandInfo.PropertyName[..^"Command".Length]}CancelCommand";
 
-                // Construct the generated field for the cancel command as follows:
-                //
-                // /// <summary>The backing field for <see cref="<COMMAND_PROPERTY_NAME>"/></summary>
-                // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
-                // private global::System.Windows.Input.ICommand? <CANCEL_COMMAND_FIELD_NAME>;
-                FieldDeclarationSyntax cancelCommandFieldDeclaration =
-                    FieldDeclaration(
-                    VariableDeclaration(NullableType(IdentifierName("global::System.Windows.Input.ICommand")))
-                    .AddVariables(VariableDeclarator(Identifier(cancelCommandFieldName))))
-                    .AddModifiers(Token(SyntaxKind.PrivateKeyword))
-                    .AddAttributeLists(
-                        AttributeList(SingletonSeparatedList(
-                            Attribute(IdentifierName("global::System.CodeDom.Compiler.GeneratedCode"))
-                            .AddArgumentListArguments(
-                                AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(RelayCommandGenerator).FullName))),
-                                AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(RelayCommandGenerator).Assembly.GetName().Version.ToString()))))))
-                        .WithOpenBracketToken(Token(TriviaList(Comment($"/// <summary>The backing field for <see cref=\"{cancelCommandPropertyName}\"/>.</summary>")), SyntaxKind.OpenBracketToken, TriviaList())));
+                // Declare a backing field for the cancel command if needed.
+                // This is only needed if we can't use the field keyword for the main command, as otherwise the cancel command can just use its own field keyword.
+                if (cancelCommandFieldName is not null)
+                {
+                    // Construct the generated field for the cancel command as follows:
+                    //
+                    // /// <summary>The backing field for <see cref="<COMMAND_PROPERTY_NAME>"/></summary>
+                    // [global::System.CodeDom.Compiler.GeneratedCode("...", "...")]
+                    // private global::System.Windows.Input.ICommand? <CANCEL_COMMAND_FIELD_NAME>;
+                    FieldDeclarationSyntax cancelCommandFieldDeclaration =
+                        FieldDeclaration(
+                        VariableDeclaration(NullableType(IdentifierName("global::System.Windows.Input.ICommand")))
+                        .AddVariables(VariableDeclarator(Identifier(cancelCommandFieldName))))
+                        .AddModifiers(Token(SyntaxKind.PrivateKeyword))
+                        .AddAttributeLists(
+                            AttributeList(SingletonSeparatedList(
+                                Attribute(IdentifierName("global::System.CodeDom.Compiler.GeneratedCode"))
+                                .AddArgumentListArguments(
+                                    AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(RelayCommandGenerator).FullName))),
+                                    AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(typeof(RelayCommandGenerator).Assembly.GetName().Version.ToString()))))))
+                            .WithOpenBracketToken(Token(TriviaList(Comment($"/// <summary>The backing field for <see cref=\"{cancelCommandPropertyName}\"/>.</summary>")), SyntaxKind.OpenBracketToken, TriviaList())));
+
+                    declarations.Add(cancelCommandFieldDeclaration);
+                }
 
                 // Construct the generated property as follows (the explicit delegate cast is needed to avoid overload resolution conflicts):
                 //
@@ -393,7 +421,7 @@ partial class RelayCommandGenerator
                         ArrowExpressionClause(
                             AssignmentExpression(
                                 SyntaxKind.CoalesceAssignmentExpression,
-                                IdentifierName(cancelCommandFieldName),
+                                cancelCommandFieldName is not null ? IdentifierName(cancelCommandFieldName) : IdentifierName("field"),
                                 InvocationExpression(
                                     MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
@@ -402,10 +430,11 @@ partial class RelayCommandGenerator
                                 .AddArgumentListArguments(Argument(IdentifierName(commandInfo.PropertyName))))))
                     .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
 
-                return ImmutableArray.Create<MemberDeclarationSyntax>(fieldDeclaration, propertyDeclaration, cancelCommandFieldDeclaration, cancelCommandPropertyDeclaration);
+                declarations.Add(cancelCommandPropertyDeclaration);
+
             }
 
-            return ImmutableArray.Create<MemberDeclarationSyntax>(fieldDeclaration, propertyDeclaration);
+            return declarations.ToImmutable();
         }
 
         /// <summary>
@@ -758,6 +787,43 @@ partial class RelayCommandGenerator
 
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Checks whether or not the user has requested to force using a backing field.
+        /// </summary>
+        /// <param name="attributeData">The <see cref="AttributeData"/> instance the method was annotated with.</param>
+        /// <param name="semanticModel">The <see cref="SemanticModel"/> instance for the current run.</param>
+        /// <param name="useBackingField">Whether or not to use a backing field.</param>
+        /// <returns>Whether or not a value for <paramref name="useBackingField"/> could be retrieved successfully.</returns>
+        private static bool TryGetUseBackingField(
+            AttributeData attributeData,
+            SemanticModel semanticModel,
+            out bool useBackingField)
+        {
+            // Try to get the custom switch for cancel command generation (the default is false)
+            if (!attributeData.TryGetNamedArgument("ForceBackingField", out useBackingField))
+            {
+                useBackingField = false;
+            }
+            
+            // We can only use the field keyword as the generated field name if the language version is C# 14 or greater, or if it's C# 13 and the preview features are enabled.
+            // Otherwise, we must use a backing field.
+#if ROSLYN_5_0_0_OR_GREATER
+            if (!semanticModel.Compilation.HasLanguageVersionAtLeastEqualTo(LanguageVersion.CSharp14))
+            {
+                useBackingField = true;
+            }
+#elif ROSLYN_4_12_0_OR_GREATER
+            if (!semanticModel.Compilation.IsLanguageVersionPreview())
+            {
+                useBackingField = true;
+            }
+#else
+                useBackingField = true;
+#endif
+
+            return true;
         }
 
         /// <summary>
