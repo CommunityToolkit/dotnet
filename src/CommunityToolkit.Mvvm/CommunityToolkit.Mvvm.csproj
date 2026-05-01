@@ -1,7 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard2.1;net8.0;net8.0-windows10.0.17763.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net8.0;net8.0-windows10.0.17763.0;net10.0;net10.0-windows10.0.17763.0</TargetFrameworks>
+    <!-- C# 13 enables the optimized lock statement for System.Threading.Lock (NET9+), where
+         the compiler emits Lock.EnterScope() instead of Monitor.Enter/Exit for reduced overhead. -->
+    <LangVersion>13.0</LangVersion>
   </PropertyGroup>
 
   <!--

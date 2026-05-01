@@ -29,7 +29,11 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
     /// <summary>
     /// This lock protects all mutation of data in the table. Readers do not take this lock.
     /// </summary>
-    private readonly object lockObject;
+#if NET9_0_OR_GREATER
+    private readonly Lock lockObject = new();
+#else
+    private readonly object lockObject = new();
+#endif
 
     /// <summary>
     /// The actual storage for the table; swapped out as the table grows.
@@ -41,7 +45,6 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
     /// </summary>
     public ConditionalWeakTable2()
     {
-        this.lockObject = new object();
         this.container = new Container(this);
     }
 
@@ -138,7 +141,11 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
         // invoked. This is fine in this specific scenario because we're the only users of the enumerators so
         // there's no concern about blocking other threads while enumerating. So here we just preemptively take
         // a lock for the entire lifetime of the enumerator, and just release it once once we're done.
+#if NET9_0_OR_GREATER
+        this.lockObject.Enter();
+#else
         Monitor.Enter(this.lockObject);
+#endif
 
         return new(this);
     }
@@ -204,7 +211,11 @@ internal sealed class ConditionalWeakTable2<TKey, TValue>
         public void Dispose()
         {
             // Release the lock
+#if NET9_0_OR_GREATER
+            this.table.lockObject.Exit();
+#else
             Monitor.Exit(this.table.lockObject);
+#endif
 
             this.table = null!;
 
