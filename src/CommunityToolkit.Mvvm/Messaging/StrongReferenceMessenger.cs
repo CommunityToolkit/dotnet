@@ -95,6 +95,18 @@ public sealed class StrongReferenceMessenger : IMessenger
     /// </remarks>
     private readonly Dictionary2<Type2, IMapping> typesMap = new();
 
+#if NET9_0_OR_GREATER
+    /// <summary>
+    /// The <see cref="Lock"/> used to synchronize access to <see cref="recipientsMap"/>.
+    /// </summary>
+    private readonly Lock recipientsMapLock = new();
+#else
+    /// <summary>
+    /// The lock object used to synchronize access to <see cref="recipientsMap"/>.
+    /// </summary>
+    private readonly object recipientsMapLock = new();
+#endif
+
     /// <summary>
     /// Gets the default <see cref="StrongReferenceMessenger"/> instance.
     /// </summary>
@@ -108,7 +120,7 @@ public sealed class StrongReferenceMessenger : IMessenger
         ArgumentNullException.ThrowIfNull(recipient);
         ArgumentNullException.For<TToken>.ThrowIfNull(token);
 
-        lock (this.recipientsMap)
+        lock (this.recipientsMapLock)
         {
             if (typeof(TToken) == typeof(Unit))
             {
@@ -171,7 +183,7 @@ public sealed class StrongReferenceMessenger : IMessenger
        where TMessage : class
        where TToken : IEquatable<TToken>
     {
-        lock (this.recipientsMap)
+        lock (this.recipientsMapLock)
         {
             Recipient key = new(recipient);
             IMapping mapping;
@@ -227,7 +239,7 @@ public sealed class StrongReferenceMessenger : IMessenger
     {
         ArgumentNullException.ThrowIfNull(recipient);
 
-        lock (this.recipientsMap)
+        lock (this.recipientsMapLock)
         {
             // If the recipient has no registered messages at all, ignore
             Recipient key = new(recipient);
@@ -399,7 +411,7 @@ public sealed class StrongReferenceMessenger : IMessenger
         ArgumentNullException.ThrowIfNull(recipient);
         ArgumentNullException.For<TToken>.ThrowIfNull(token);
 
-        lock (this.recipientsMap)
+        lock (this.recipientsMapLock)
         {
             if (typeof(TToken) == typeof(Unit))
             {
@@ -500,7 +512,7 @@ public sealed class StrongReferenceMessenger : IMessenger
         Span<object?> pairs;
         int i = 0;
 
-        lock (this.recipientsMap)
+        lock (this.recipientsMapLock)
         {
             if (typeof(TToken) == typeof(Unit))
             {
@@ -618,7 +630,7 @@ public sealed class StrongReferenceMessenger : IMessenger
     /// <inheritdoc/>
     public void Reset()
     {
-        lock (this.recipientsMap)
+        lock (this.recipientsMapLock)
         {
             this.recipientsMap.Clear();
             this.typesMap.Clear();
@@ -856,3 +868,4 @@ public sealed class StrongReferenceMessenger : IMessenger
         throw new InvalidOperationException("The target recipient has already subscribed to the target message.");
     }
 }
+

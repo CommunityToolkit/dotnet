@@ -62,6 +62,18 @@ public sealed class WeakReferenceMessenger : IMessenger
     /// </summary>
     private readonly Dictionary2<Type2, ConditionalWeakTable2<object, object?>> recipientsMap = new();
 
+#if NET9_0_OR_GREATER
+    /// <summary>
+    /// The <see cref="Lock"/> used to synchronize access to <see cref="recipientsMap"/>.
+    /// </summary>
+    private readonly Lock recipientsMapLock = new();
+#else
+    /// <summary>
+    /// The lock object used to synchronize access to <see cref="recipientsMap"/>.
+    /// </summary>
+    private readonly object recipientsMapLock = new();
+#endif
+
     /// <summary>
     /// Initializes a new instance of the <see cref="WeakReferenceMessenger"/> class.
     /// </summary>
@@ -98,7 +110,7 @@ public sealed class WeakReferenceMessenger : IMessenger
         ArgumentNullException.ThrowIfNull(recipient);
         ArgumentNullException.For<TToken>.ThrowIfNull(token);
 
-        lock (this.recipientsMap)
+        lock (this.recipientsMapLock)
         {
             Type2 type2 = new(typeof(TMessage), typeof(TToken));
 
@@ -168,7 +180,7 @@ public sealed class WeakReferenceMessenger : IMessenger
         where TMessage : class
         where TToken : IEquatable<TToken>
     {
-        lock (this.recipientsMap)
+        lock (this.recipientsMapLock)
         {
             Type2 type2 = new(typeof(TMessage), typeof(TToken));
 
@@ -209,7 +221,7 @@ public sealed class WeakReferenceMessenger : IMessenger
     {
         ArgumentNullException.ThrowIfNull(recipient);
 
-        lock (this.recipientsMap)
+        lock (this.recipientsMapLock)
         {
             Dictionary2<Type2, ConditionalWeakTable2<object, object?>>.Enumerator enumerator = this.recipientsMap.GetEnumerator();
 
@@ -237,7 +249,7 @@ public sealed class WeakReferenceMessenger : IMessenger
             throw new NotImplementedException();
         }
 
-        lock (this.recipientsMap)
+        lock (this.recipientsMapLock)
         {
             Dictionary2<Type2, ConditionalWeakTable2<object, object?>>.Enumerator enumerator = this.recipientsMap.GetEnumerator();
 
@@ -265,7 +277,7 @@ public sealed class WeakReferenceMessenger : IMessenger
         ArgumentNullException.ThrowIfNull(recipient);
         ArgumentNullException.For<TToken>.ThrowIfNull(token);
 
-        lock (this.recipientsMap)
+        lock (this.recipientsMapLock)
         {
             Type2 type2 = new(typeof(TMessage), typeof(TToken));
 
@@ -296,7 +308,7 @@ public sealed class WeakReferenceMessenger : IMessenger
         ArrayPoolBufferWriter<object?> bufferWriter;
         int i = 0;
 
-        lock (this.recipientsMap)
+        lock (this.recipientsMapLock)
         {
             Type2 type2 = new(typeof(TMessage), typeof(TToken));
 
@@ -422,7 +434,7 @@ public sealed class WeakReferenceMessenger : IMessenger
     /// <inheritdoc/>
     public void Cleanup()
     {
-        lock (this.recipientsMap)
+        lock (this.recipientsMapLock)
         {
             CleanupWithoutLock();
         }
@@ -431,7 +443,7 @@ public sealed class WeakReferenceMessenger : IMessenger
     /// <inheritdoc/>
     public void Reset()
     {
-        lock (this.recipientsMap)
+        lock (this.recipientsMapLock)
         {
             this.recipientsMap.Clear();
         }
@@ -443,7 +455,20 @@ public sealed class WeakReferenceMessenger : IMessenger
     /// </summary>
     private void CleanupWithNonBlockingLock()
     {
-        object lockObject = this.recipientsMap;
+#if NET9_0_OR_GREATER
+        if (this.recipientsMapLock.TryEnter())
+        {
+            try
+            {
+                CleanupWithoutLock();
+            }
+            finally
+            {
+                this.recipientsMapLock.Exit();
+            }
+        }
+#else
+        object lockObject = this.recipientsMapLock;
         bool lockTaken = false;
 
         try
@@ -462,6 +487,7 @@ public sealed class WeakReferenceMessenger : IMessenger
                 Monitor.Exit(lockObject);
             }
         }
+#endif
     }
 
     /// <summary>
@@ -546,3 +572,4 @@ public sealed class WeakReferenceMessenger : IMessenger
         throw new InvalidOperationException("The target recipient has already subscribed to the target message.");
     }
 }
+

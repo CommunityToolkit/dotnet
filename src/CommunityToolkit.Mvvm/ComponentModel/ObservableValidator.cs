@@ -5,6 +5,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+#if NET8_0_OR_GREATER
+using System.Collections.Frozen;
+#endif
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
@@ -36,7 +39,11 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     /// so we need to replicate the same logic to retrieve the right display name for properties to validate and update that
     /// property manually right before passing the context to <see cref="Validator"/> and proceed with the normal functionality.
     /// </remarks>
+#if NET8_0_OR_GREATER
+    private static readonly ConditionalWeakTable<Type, FrozenDictionary<string, string>> DisplayNamesMap = new();
+#else
     private static readonly ConditionalWeakTable<Type, Dictionary<string, string>> DisplayNamesMap = new();
+#endif
 
     /// <summary>
     /// The cached <see cref="PropertyChangedEventArgs"/> for <see cref="HasErrors"/>.
@@ -807,6 +814,23 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
     [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")]
     private string GetDisplayNameForProperty(string propertyName)
     {
+#if NET8_0_OR_GREATER
+        static FrozenDictionary<string, string> GetDisplayNames(Type type)
+        {
+            Dictionary<string, string> displayNames = new();
+
+            foreach (PropertyInfo property in type.GetProperties(BindingFlags.Instance | BindingFlags.Public))
+            {
+                if (property.GetCustomAttribute<DisplayAttribute>() is DisplayAttribute attribute &&
+                    attribute.GetName() is string displayName)
+                {
+                    displayNames.Add(property.Name, displayName);
+                }
+            }
+
+            return displayNames.ToFrozenDictionary();
+        }
+#else
         static Dictionary<string, string> GetDisplayNames(Type type)
         {
             Dictionary<string, string> displayNames = new();
@@ -822,6 +846,7 @@ public abstract class ObservableValidator : ObservableObject, INotifyDataErrorIn
 
             return displayNames;
         }
+#endif
 
         // This method replicates the logic of DisplayName and GetDisplayName from the
         // ValidationContext class. See the original source in the BCL for more details.
