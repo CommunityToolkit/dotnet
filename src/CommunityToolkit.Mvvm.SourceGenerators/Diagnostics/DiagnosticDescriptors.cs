@@ -944,4 +944,52 @@ internal static class DiagnosticDescriptors
         isEnabledByDefault: true,
         description: "Semi-auto properties should be converted to partial properties using [ObservableProperty] when possible, which is recommended (doing so makes the code less verbose and results in more optimized code).",
         helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0056");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when a <c>[DependsOn]</c> source property is invalid.
+    /// <para>
+    /// Format: <c>"The source property "{0}" for [DependsOn] has no valid match in type {1}"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor DependsOnInvalidSourceError = new DiagnosticDescriptor(
+        id: "MVVMTK0057",
+        title: "Invalid source name for [DependsOn]",
+        messageFormat: "The source property \"{0}\" for [DependsOn] has no valid match in type {1}",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "The source properties for [DependsOn] must be different accessible properties in the parent type.",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0057");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[DependsOn]</c> declarations create a cycle.
+    /// <para>
+    /// Format: <c>"The [DependsOn] declaration for property "{0}" creates a dependency cycle in type {1}"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor DependsOnCycleError = new DiagnosticDescriptor(
+        id: "MVVMTK0058",
+        title: "Dependency cycle for [DependsOn]",
+        messageFormat: "The [DependsOn] declaration for property \"{0}\" creates a dependency cycle in type {1}",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "The dependency graph declared with [DependsOn] must not contain cycles.",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0058");
+
+    /// <summary>
+    /// Gets a <see cref="DiagnosticDescriptor"/> indicating when <c>[DependsOn(NotifyOnSubPropertyChanges = true)]</c> is used with an invalid source.
+    /// <para>
+    /// Format: <c>"The source property "{0}" for [DependsOn(NotifyOnSubPropertyChanges = true)] must be a generated observable property implementing INotifyPropertyChanged in type {1}"</c>.
+    /// </para>
+    /// </summary>
+    public static readonly DiagnosticDescriptor DependsOnInvalidSubPropertySourceError = new DiagnosticDescriptor(
+        id: "MVVMTK0059",
+        title: "Invalid sub-property source for [DependsOn]",
+        messageFormat: "The source property \"{0}\" for [DependsOn(NotifyOnSubPropertyChanges = true)] must be a generated observable property implementing INotifyPropertyChanged in type {1}",
+        category: typeof(ObservablePropertyGenerator).FullName,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "Sources for [DependsOn(NotifyOnSubPropertyChanges = true)] must be generated observable properties with a type implementing INotifyPropertyChanged.",
+        helpLinkUri: "https://aka.ms/mvvmtoolkit/errors/mvvmtk0059");
 }

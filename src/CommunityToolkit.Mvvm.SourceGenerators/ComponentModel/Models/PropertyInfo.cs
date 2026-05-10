@@ -22,6 +22,7 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.ComponentModel.Models;
 /// <param name="PropertyChangingNames">The sequence of property changing properties to notify.</param>
 /// <param name="PropertyChangedNames">The sequence of property changed properties to notify.</param>
 /// <param name="NotifiedCommandNames">The sequence of commands to notify.</param>
+/// <param name="ChildPropertyChangedSubscriptions">The child property changed subscriptions to generate.</param>
 /// <param name="NotifyPropertyChangedRecipients">Whether or not the generated property also broadcasts changes.</param>
 /// <param name="NotifyDataErrorInfo">Whether or not the generated property also validates its value.</param>
 /// <param name="IsOldPropertyValueDirectlyReferenced">Whether the old property value is being directly referenced.</param>
@@ -41,6 +42,7 @@ internal sealed record PropertyInfo(
     EquatableArray<string> PropertyChangingNames,
     EquatableArray<string> PropertyChangedNames,
     EquatableArray<string> NotifiedCommandNames,
+    EquatableArray<ChildPropertyChangedSubscriptionInfo> ChildPropertyChangedSubscriptions,
     bool NotifyPropertyChangedRecipients,
     bool NotifyDataErrorInfo,
     bool IsOldPropertyValueDirectlyReferenced,

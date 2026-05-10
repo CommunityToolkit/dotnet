@@ -915,6 +915,113 @@ public partial class Test_SourceGeneratorsDiagnostics
     }
 
     [TestMethod]
+    public void DependsOnInvalidSourceError_Missing()
+    {
+        string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    private string name;
+
+                    [DependsOn("FooBar")]
+                    public string DisplayName => Name;
+                }
+            }
+            """;
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0057");
+    }
+
+    [TestMethod]
+    public void DependsOnInvalidSourceError_Self()
+    {
+        string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [DependsOn(nameof(DisplayName))]
+                    public string DisplayName => "";
+                }
+            }
+            """;
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0057");
+    }
+
+    [TestMethod]
+    public void DependsOnCycleError()
+    {
+        string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [DependsOn(nameof(Second))]
+                    public string First => "";
+
+                    [DependsOn(nameof(First))]
+                    public string Second => "";
+                }
+            }
+            """;
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0058");
+    }
+
+    [TestMethod]
+    public void DependsOnInvalidSubPropertySourceError_NonGeneratedSource()
+    {
+        string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {
+                    public object Child { get; } = new();
+
+                    [DependsOn(nameof(Child), NotifyOnSubPropertyChanges = true)]
+                    public string DisplayName => "";
+                }
+            }
+            """;
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source, "MVVMTK0059");
+    }
+
+    [TestMethod]
+    public void DependsOnSubPropertySourceExactINotifyPropertyChangedTypeIsValid()
+    {
+        string source = """
+            using System.ComponentModel;
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp
+            {
+                public partial class SampleViewModel : ObservableObject
+                {
+                    [ObservableProperty]
+                    private INotifyPropertyChanged? child;
+
+                    [DependsOn(nameof(Child), NotifyOnSubPropertyChanges = true)]
+                    public string DisplayName => "";
+                }
+            }
+            """;
+
+        VerifyGeneratedDiagnostics<ObservablePropertyGenerator>(source);
+    }
+
+    [TestMethod]
     public void InvalidAttributeCombinationForINotifyPropertyChangedAttributeError_InheritingINotifyPropertyChangedAttribute()
     {
         string source = """
