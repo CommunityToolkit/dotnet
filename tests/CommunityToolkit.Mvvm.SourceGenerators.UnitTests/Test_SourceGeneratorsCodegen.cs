@@ -231,6 +231,80 @@ public partial class Test_SourceGeneratorsCodegen
     }
 
     [TestMethod]
+    public void DependsOnGeneratedDependencyGraph_IncludesTransitiveNotificationsAndCommandInvalidation()
+    {
+        string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+            using CommunityToolkit.Mvvm.Input;
+
+            namespace MyApp;
+
+            partial class MyViewModel : ObservableObject
+            {
+                [ObservableProperty]
+                private string? name;
+
+                [DependsOn(nameof(Name))]
+                public bool CanSave => !string.IsNullOrWhiteSpace(Name);
+
+                [DependsOn(nameof(CanSave))]
+                public string State => CanSave ? "Ready" : "Blocked";
+
+                [RelayCommand(CanExecute = nameof(CanSave))]
+                private void Save()
+                {
+                }
+            }
+            """;
+
+        VerifyGeneratedSourceContains(
+            source,
+            new IIncrementalGenerator[] { new ObservablePropertyGenerator(), new RelayCommandGenerator() },
+            "MyApp.MyViewModel.g.cs",
+            [
+                "OnPropertyChanged(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.Name);",
+                "OnPropertyChanged(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.CanSave);",
+                "OnPropertyChanged(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.State);",
+                "SaveCommand.NotifyCanExecuteChanged();"
+            ]);
+    }
+
+    [TestMethod]
+    public void DependsOnGeneratedDependencyGraph_IncludesChildSubscriptionHelpers()
+    {
+        string source = """
+            using CommunityToolkit.Mvvm.ComponentModel;
+
+            namespace MyApp;
+
+            partial class ChildViewModel : ObservableObject
+            {
+                [ObservableProperty]
+                private string? name;
+            }
+
+            partial class MyViewModel : ObservableObject
+            {
+                [ObservableProperty]
+                private ChildViewModel? selectedItem;
+
+                [DependsOn(nameof(SelectedItem), NotifyOnSubPropertyChanges = true)]
+                public string? SelectedItemName => SelectedItem?.Name;
+            }
+            """;
+
+        VerifyGeneratedSourceContains(
+            source,
+            new[] { new ObservablePropertyGenerator() },
+            "MyApp.MyViewModel.g.cs",
+            [
+                "PropertyChanged +=",
+                "PropertyChanged -=",
+                "OnPropertyChanged(global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.SelectedItemName);"
+            ]);
+    }
+
+    [TestMethod]
     public void ObservablePropertyWithNonNullableUnconstrainedGenericType_EmitsMemberNotNullAttribute()
     {
         string source = """
@@ -3520,6 +3594,51 @@ public partial class Test_SourceGeneratorsCodegen
                 // If the text is null, verify that the file was not generated at all
                 Assert.IsFalse(outputCompilation.SyntaxTrees.Any(tree => Path.GetFileName(tree.FilePath) == filename));
             }
+        }
+
+        GC.KeepAlive(observableObjectType);
+        GC.KeepAlive(validationAttributeType);
+    }
+
+    /// <summary>
+    /// Generates sources and verifies that a generated file contains a set of snippets.
+    /// </summary>
+    /// <param name="source">The input source to process.</param>
+    /// <param name="generators">The generators to apply to the input syntax tree.</param>
+    /// <param name="filename">The generated filename to inspect.</param>
+    /// <param name="snippets">The snippets expected in the generated source.</param>
+    private static void VerifyGeneratedSourceContains(string source, IIncrementalGenerator[] generators, string filename, string[] snippets)
+    {
+        // Ensure CommunityToolkit.Mvvm and System.ComponentModel.DataAnnotations are loaded
+        Type observableObjectType = typeof(ObservableObject);
+        Type validationAttributeType = typeof(ValidationAttribute);
+
+        IEnumerable<MetadataReference> references =
+            from assembly in AppDomain.CurrentDomain.GetAssemblies()
+            where !assembly.IsDynamic
+            let reference = MetadataReference.CreateFromFile(assembly.Location)
+            select reference;
+
+        SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(source, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp10));
+
+        CSharpCompilation compilation = CSharpCompilation.Create(
+            "original",
+            [syntaxTree],
+            references,
+            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+
+        GeneratorDriver driver = CSharpGeneratorDriver.Create(generators).WithUpdatedParseOptions((CSharpParseOptions)syntaxTree.Options);
+
+        _ = driver.RunGeneratorsAndUpdateCompilation(compilation, out Compilation outputCompilation, out ImmutableArray<Diagnostic> diagnostics);
+
+        CollectionAssert.AreEquivalent(Array.Empty<Diagnostic>(), diagnostics);
+
+        SyntaxTree generatedTree = outputCompilation.SyntaxTrees.Single(tree => Path.GetFileName(tree.FilePath) == filename);
+        string generatedText = generatedTree.ToString();
+
+        foreach (string snippet in snippets)
+        {
+            StringAssert.Contains(generatedText, snippet);
         }
 
         GC.KeepAlive(observableObjectType);

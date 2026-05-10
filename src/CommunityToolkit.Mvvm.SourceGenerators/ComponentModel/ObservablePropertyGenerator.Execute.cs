@@ -234,6 +234,7 @@ partial class ObservablePropertyGenerator
 
             using ImmutableArrayBuilder<string> propertyChangedNames = ImmutableArrayBuilder<string>.Rent();
             using ImmutableArrayBuilder<string> notifiedCommandNames = ImmutableArrayBuilder<string>.Rent();
+            using ImmutableArrayBuilder<ChildPropertyChangedSubscriptionInfo> childPropertyChangedSubscriptions = ImmutableArrayBuilder<ChildPropertyChangedSubscriptionInfo>.Rent();
             using ImmutableArrayBuilder<AttributeInfo> forwardedAttributes = ImmutableArrayBuilder<AttributeInfo>.Rent();
 
             bool notifyRecipients = false;
@@ -359,6 +360,15 @@ partial class ObservablePropertyGenerator
 
             token.ThrowIfCancellationRequested();
 
+            GatherDependencyGraphInfo(
+                memberSymbol,
+                propertyName,
+                in propertyChangedNames,
+                in notifiedCommandNames,
+                in childPropertyChangedSubscriptions);
+
+            token.ThrowIfCancellationRequested();
+
             // We should generate [RequiresUnreferencedCode] on the setter if [NotifyDataErrorInfo] was used and the attribute is available
             bool includeRequiresUnreferencedCodeOnSetAccessor =
                 notifyDataErrorInfo &&
@@ -409,6 +419,7 @@ partial class ObservablePropertyGenerator
                 effectivePropertyChangingNames,
                 effectivePropertyChangedNames,
                 notifiedCommandNames.ToImmutable(),
+                childPropertyChangedSubscriptions.ToImmutable(),
                 notifyRecipients,
                 notifyDataErrorInfo,
                 isOldPropertyValueDirectlyReferenced,
@@ -621,6 +632,534 @@ partial class ObservablePropertyGenerator
 
             return false;
         }
+
+        /// <summary>
+        /// Gets diagnostics for <c>[DependsOn]</c> usages on a target property.
+        /// </summary>
+        /// <param name="targetPropertySymbol">The target property annotated with <c>[DependsOn]</c>.</param>
+        /// <param name="attributeData">The attributes that were matched for the target property.</param>
+        /// <param name="token">The cancellation token for the current operation.</param>
+        /// <returns>The diagnostics produced for <paramref name="targetPropertySymbol"/>.</returns>
+        public static EquatableArray<DiagnosticInfo> GetDependsOnDiagnostics(
+            IPropertySymbol targetPropertySymbol,
+            ImmutableArray<AttributeData> attributeData,
+            CancellationToken token)
+        {
+            using ImmutableArrayBuilder<DiagnosticInfo> diagnostics = ImmutableArrayBuilder<DiagnosticInfo>.Rent();
+
+            foreach (AttributeData attribute in attributeData)
+            {
+                token.ThrowIfCancellationRequested();
+
+                if (attribute.AttributeClass?.HasFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.DependsOnAttribute") != true)
+                {
+                    continue;
+                }
+
+                bool notifyOnSubPropertyChanges = attribute.GetNamedArgument("NotifyOnSubPropertyChanges", false);
+
+                foreach (string? sourcePropertyName in attribute.GetConstructorArguments<string>())
+                {
+                    if (!TryGetPropertyDependencySource(targetPropertySymbol.ContainingType, sourcePropertyName, out ITypeSymbol? sourceType, out bool isGeneratedSource))
+                    {
+                        diagnostics.Add(DependsOnInvalidSourceError, targetPropertySymbol, sourcePropertyName ?? "", targetPropertySymbol.ContainingType);
+
+                        continue;
+                    }
+
+                    if (sourcePropertyName == targetPropertySymbol.Name)
+                    {
+                        diagnostics.Add(DependsOnInvalidSourceError, targetPropertySymbol, sourcePropertyName, targetPropertySymbol.ContainingType);
+
+                        continue;
+                    }
+
+                    if (notifyOnSubPropertyChanges &&
+                        (!isGeneratedSource ||
+                         sourceType is null ||
+                         !IsINotifyPropertyChangedType(sourceType)))
+                    {
+                        diagnostics.Add(DependsOnInvalidSubPropertySourceError, targetPropertySymbol, sourcePropertyName ?? "", targetPropertySymbol.ContainingType);
+                    }
+                }
+            }
+
+            Dictionary<string, List<DependsOnEdge>> sourceToTargets = GetDependsOnSourceToTargetsMap(targetPropertySymbol.ContainingType, includeOnlyValidEdges: true);
+
+            if (IsInDependsOnCycle(targetPropertySymbol.Name, sourceToTargets) &&
+                IsCanonicalCycleDiagnosticTarget(targetPropertySymbol.Name, sourceToTargets))
+            {
+                diagnostics.Add(DependsOnCycleError, targetPropertySymbol, targetPropertySymbol.Name, targetPropertySymbol.ContainingType);
+            }
+
+            return diagnostics.ToImmutable().AsEquatableArray();
+        }
+
+        /// <summary>
+        /// Gathers property and command notifications declared through the generated dependency graph.
+        /// </summary>
+        /// <param name="memberSymbol">The source member being generated.</param>
+        /// <param name="propertyName">The generated property name.</param>
+        /// <param name="propertyChangedNames">The collection of property changed names to update.</param>
+        /// <param name="notifiedCommandNames">The collection of command names to update.</param>
+        /// <param name="childPropertyChangedSubscriptions">The collection of child subscriptions to update.</param>
+        private static void GatherDependencyGraphInfo(
+            ISymbol memberSymbol,
+            string propertyName,
+            in ImmutableArrayBuilder<string> propertyChangedNames,
+            in ImmutableArrayBuilder<string> notifiedCommandNames,
+            in ImmutableArrayBuilder<ChildPropertyChangedSubscriptionInfo> childPropertyChangedSubscriptions)
+        {
+            INamedTypeSymbol containingType = memberSymbol.ContainingType;
+            Dictionary<string, List<DependsOnEdge>> sourceToTargets = GetDependsOnSourceToTargetsMap(containingType, includeOnlyValidEdges: true);
+            Dictionary<string, List<string>> canExecutePropertyToCommandNames = GetCanExecutePropertyToCommandNamesMap(containingType);
+
+            ImmutableArray<string> graphPropertyChangedNames = GetTransitiveDependsOnTargets(propertyName, sourceToTargets);
+
+            foreach (string dependentPropertyName in graphPropertyChangedNames)
+            {
+                AddIfMissing(in propertyChangedNames, dependentPropertyName);
+            }
+
+            AddInferredCommandNames(propertyName, graphPropertyChangedNames, canExecutePropertyToCommandNames, in notifiedCommandNames);
+
+            ImmutableArray<string> childGraphPropertyChangedNames = GetTransitiveChildDependsOnTargets(propertyName, sourceToTargets);
+
+            if (childGraphPropertyChangedNames.Length > 0)
+            {
+                using ImmutableArrayBuilder<string> childPropertyNames = ImmutableArrayBuilder<string>.Rent();
+                using ImmutableArrayBuilder<string> childCommandNames = ImmutableArrayBuilder<string>.Rent();
+
+                foreach (string dependentPropertyName in childGraphPropertyChangedNames)
+                {
+                    AddIfMissing(in childPropertyNames, dependentPropertyName);
+                    AddInferredCommandNamesForProperty(dependentPropertyName, canExecutePropertyToCommandNames, in childCommandNames);
+                }
+
+                childPropertyChangedSubscriptions.Add(new ChildPropertyChangedSubscriptionInfo(
+                    childPropertyNames.ToImmutable(),
+                    childCommandNames.ToImmutable()));
+            }
+        }
+
+        /// <summary>
+        /// Gets all valid transitive property targets for a given source property.
+        /// </summary>
+        /// <param name="sourcePropertyName">The source property name.</param>
+        /// <param name="sourceToTargets">The source to target graph.</param>
+        /// <returns>The transitive targets for <paramref name="sourcePropertyName"/>.</returns>
+        private static ImmutableArray<string> GetTransitiveDependsOnTargets(string sourcePropertyName, Dictionary<string, List<DependsOnEdge>> sourceToTargets)
+        {
+            using ImmutableArrayBuilder<string> propertyNames = ImmutableArrayBuilder<string>.Rent();
+            HashSet<string> visitedNames = new(StringComparer.Ordinal);
+            Queue<string> pendingNames = new();
+
+            visitedNames.Add(sourcePropertyName);
+            pendingNames.Enqueue(sourcePropertyName);
+
+            while (pendingNames.Count > 0)
+            {
+                string currentPropertyName = pendingNames.Dequeue();
+
+                if (!sourceToTargets.TryGetValue(currentPropertyName, out List<DependsOnEdge>? targetEdges))
+                {
+                    continue;
+                }
+
+                foreach (DependsOnEdge targetEdge in targetEdges)
+                {
+                    if (visitedNames.Add(targetEdge.TargetName))
+                    {
+                        propertyNames.Add(targetEdge.TargetName);
+                        pendingNames.Enqueue(targetEdge.TargetName);
+                    }
+                }
+            }
+
+            return propertyNames.ToImmutable();
+        }
+
+        /// <summary>
+        /// Gets all transitive child property targets from direct edges that opted into child forwarding.
+        /// </summary>
+        /// <param name="sourcePropertyName">The source property name.</param>
+        /// <param name="sourceToTargets">The source to target graph.</param>
+        /// <returns>The transitive child property targets for <paramref name="sourcePropertyName"/>.</returns>
+        private static ImmutableArray<string> GetTransitiveChildDependsOnTargets(string sourcePropertyName, Dictionary<string, List<DependsOnEdge>> sourceToTargets)
+        {
+            using ImmutableArrayBuilder<string> propertyNames = ImmutableArrayBuilder<string>.Rent();
+            HashSet<string> visitedNames = new(StringComparer.Ordinal) { sourcePropertyName };
+            Queue<string> pendingNames = new();
+
+            if (!sourceToTargets.TryGetValue(sourcePropertyName, out List<DependsOnEdge>? rootTargetEdges))
+            {
+                return ImmutableArray<string>.Empty;
+            }
+
+            foreach (DependsOnEdge targetEdge in rootTargetEdges)
+            {
+                if (targetEdge.NotifyOnSubPropertyChanges &&
+                    visitedNames.Add(targetEdge.TargetName))
+                {
+                    propertyNames.Add(targetEdge.TargetName);
+                    pendingNames.Enqueue(targetEdge.TargetName);
+                }
+            }
+
+            while (pendingNames.Count > 0)
+            {
+                string currentPropertyName = pendingNames.Dequeue();
+
+                if (!sourceToTargets.TryGetValue(currentPropertyName, out List<DependsOnEdge>? targetEdges))
+                {
+                    continue;
+                }
+
+                foreach (DependsOnEdge targetEdge in targetEdges)
+                {
+                    if (visitedNames.Add(targetEdge.TargetName))
+                    {
+                        propertyNames.Add(targetEdge.TargetName);
+                        pendingNames.Enqueue(targetEdge.TargetName);
+                    }
+                }
+            }
+
+            return propertyNames.ToImmutable();
+        }
+
+        /// <summary>
+        /// Adds inferred command names for all property names produced by the dependency graph.
+        /// </summary>
+        /// <param name="sourcePropertyName">The source property name.</param>
+        /// <param name="graphPropertyChangedNames">The transitive graph property names.</param>
+        /// <param name="canExecutePropertyToCommandNames">The map of can execute properties to command names.</param>
+        /// <param name="notifiedCommandNames">The command notification collection to update.</param>
+        private static void AddInferredCommandNames(
+            string sourcePropertyName,
+            ImmutableArray<string> graphPropertyChangedNames,
+            Dictionary<string, List<string>> canExecutePropertyToCommandNames,
+            in ImmutableArrayBuilder<string> notifiedCommandNames)
+        {
+            AddInferredCommandNamesForProperty(sourcePropertyName, canExecutePropertyToCommandNames, in notifiedCommandNames);
+
+            foreach (string propertyName in graphPropertyChangedNames)
+            {
+                AddInferredCommandNamesForProperty(propertyName, canExecutePropertyToCommandNames, in notifiedCommandNames);
+            }
+        }
+
+        /// <summary>
+        /// Adds inferred command names for a single property.
+        /// </summary>
+        /// <param name="propertyName">The property name to inspect.</param>
+        /// <param name="canExecutePropertyToCommandNames">The map of can execute properties to command names.</param>
+        /// <param name="notifiedCommandNames">The command notification collection to update.</param>
+        private static void AddInferredCommandNamesForProperty(
+            string propertyName,
+            Dictionary<string, List<string>> canExecutePropertyToCommandNames,
+            in ImmutableArrayBuilder<string> notifiedCommandNames)
+        {
+            if (canExecutePropertyToCommandNames.TryGetValue(propertyName, out List<string>? commandNames))
+            {
+                foreach (string commandName in commandNames)
+                {
+                    AddIfMissing(in notifiedCommandNames, commandName);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Builds the source to target map for all <c>[DependsOn]</c> declarations in a type.
+        /// </summary>
+        /// <param name="containingType">The containing type to inspect.</param>
+        /// <param name="includeOnlyValidEdges">Whether invalid edges should be skipped.</param>
+        /// <returns>The source to target map for <paramref name="containingType"/>.</returns>
+        private static Dictionary<string, List<DependsOnEdge>> GetDependsOnSourceToTargetsMap(INamedTypeSymbol containingType, bool includeOnlyValidEdges)
+        {
+            Dictionary<string, List<DependsOnEdge>> sourceToTargets = new(StringComparer.Ordinal);
+
+            foreach (IPropertySymbol propertySymbol in containingType.GetAllMembers().OfType<IPropertySymbol>())
+            {
+                foreach (AttributeData attributeData in propertySymbol.GetAttributes())
+                {
+                    if (attributeData.AttributeClass?.HasFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.DependsOnAttribute") != true)
+                    {
+                        continue;
+                    }
+
+                    bool notifyOnSubPropertyChanges = attributeData.GetNamedArgument("NotifyOnSubPropertyChanges", false);
+
+                    foreach (string? sourcePropertyName in attributeData.GetConstructorArguments<string>())
+                    {
+                        if (!TryGetPropertyDependencySource(containingType, sourcePropertyName, out _, out _) ||
+                            sourcePropertyName == propertySymbol.Name)
+                        {
+                            if (includeOnlyValidEdges)
+                            {
+                                continue;
+                            }
+                        }
+
+                        if (sourcePropertyName is null or "")
+                        {
+                            continue;
+                        }
+
+                        if (!sourceToTargets.TryGetValue(sourcePropertyName, out List<DependsOnEdge>? targetEdges))
+                        {
+                            sourceToTargets.Add(sourcePropertyName, targetEdges = new List<DependsOnEdge>());
+                        }
+
+                        targetEdges.Add(new DependsOnEdge(sourcePropertyName, propertySymbol.Name, notifyOnSubPropertyChanges));
+                    }
+                }
+            }
+
+            return sourceToTargets;
+        }
+
+        /// <summary>
+        /// Builds the map of <c>CanExecute</c> properties to generated command property names.
+        /// </summary>
+        /// <param name="containingType">The containing type to inspect.</param>
+        /// <returns>The map of <c>CanExecute</c> properties to command property names.</returns>
+        private static Dictionary<string, List<string>> GetCanExecutePropertyToCommandNamesMap(INamedTypeSymbol containingType)
+        {
+            Dictionary<string, List<string>> canExecutePropertyToCommandNames = new(StringComparer.Ordinal);
+
+            foreach (IMethodSymbol methodSymbol in containingType.GetAllMembers().OfType<IMethodSymbol>())
+            {
+                AttributeData? relayCommandAttribute = null;
+
+                foreach (AttributeData attributeData in methodSymbol.GetAttributes())
+                {
+                    if (attributeData.AttributeClass?.HasFullyQualifiedMetadataName("CommunityToolkit.Mvvm.Input.RelayCommandAttribute") == true)
+                    {
+                        relayCommandAttribute = attributeData;
+
+                        break;
+                    }
+                }
+
+                if (relayCommandAttribute is null ||
+                    !relayCommandAttribute.TryGetNamedArgument("CanExecute", out string? canExecuteMemberName) ||
+                    canExecuteMemberName is null or "" ||
+                    !IsBooleanProperty(containingType, canExecuteMemberName))
+                {
+                    continue;
+                }
+
+                string commandPropertyName = RelayCommandGenerator.Execute.GetGeneratedFieldAndPropertyNames(methodSymbol).PropertyName;
+
+                if (!canExecutePropertyToCommandNames.TryGetValue(canExecuteMemberName, out List<string>? commandNames))
+                {
+                    canExecutePropertyToCommandNames.Add(canExecuteMemberName, commandNames = new List<string>());
+                }
+
+                commandNames.Add(commandPropertyName);
+            }
+
+            return canExecutePropertyToCommandNames;
+        }
+
+        /// <summary>
+        /// Checks whether a property dependency source exists.
+        /// </summary>
+        /// <param name="containingType">The containing type to inspect.</param>
+        /// <param name="propertyName">The property name to resolve.</param>
+        /// <param name="propertyType">The resolved source property type, if any.</param>
+        /// <param name="isGeneratedSource">Whether the source property is generated from <c>[ObservableProperty]</c>.</param>
+        /// <returns>Whether <paramref name="propertyName"/> resolves to a valid source property.</returns>
+        private static bool TryGetPropertyDependencySource(
+            INamedTypeSymbol containingType,
+            string? propertyName,
+            [NotNullWhen(true)] out ITypeSymbol? propertyType,
+            out bool isGeneratedSource)
+        {
+            if (propertyName is null or "")
+            {
+                propertyType = null;
+                isGeneratedSource = false;
+
+                return false;
+            }
+
+            foreach (IPropertySymbol propertySymbol in containingType.GetAllMembers(propertyName).OfType<IPropertySymbol>())
+            {
+                propertyType = propertySymbol.Type;
+                isGeneratedSource = propertySymbol.HasAttributeWithFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute");
+
+                return true;
+            }
+
+            foreach (ISymbol memberSymbol in containingType.GetAllMembers())
+            {
+                if (memberSymbol is IFieldSymbol fieldSymbol &&
+                    fieldSymbol.HasAttributeWithFullyQualifiedMetadataName("CommunityToolkit.Mvvm.ComponentModel.ObservablePropertyAttribute") &&
+                    propertyName == GetGeneratedPropertyName(fieldSymbol))
+                {
+                    propertyType = fieldSymbol.Type;
+                    isGeneratedSource = true;
+
+                    return true;
+                }
+            }
+
+            propertyType = null;
+            isGeneratedSource = false;
+
+            return false;
+        }
+
+        /// <summary>
+        /// Checks whether a property name resolves to a bool property.
+        /// </summary>
+        /// <param name="containingType">The containing type to inspect.</param>
+        /// <param name="propertyName">The property name to resolve.</param>
+        /// <returns>Whether <paramref name="propertyName"/> resolves to a bool property.</returns>
+        private static bool IsBooleanProperty(INamedTypeSymbol containingType, string propertyName)
+        {
+            return
+                TryGetPropertyDependencySource(containingType, propertyName, out ITypeSymbol? propertyType, out _) &&
+                propertyType.SpecialType == SpecialType.System_Boolean;
+        }
+
+        /// <summary>
+        /// Checks whether a type is or implements <see cref="INotifyPropertyChanged"/>.
+        /// </summary>
+        /// <param name="typeSymbol">The type symbol to inspect.</param>
+        /// <returns>Whether <paramref name="typeSymbol"/> is or implements <see cref="INotifyPropertyChanged"/>.</returns>
+        private static bool IsINotifyPropertyChangedType(ITypeSymbol typeSymbol)
+        {
+            return
+                typeSymbol.HasFullyQualifiedMetadataName("System.ComponentModel.INotifyPropertyChanged") ||
+                typeSymbol.HasInterfaceWithFullyQualifiedMetadataName("System.ComponentModel.INotifyPropertyChanged");
+        }
+
+        /// <summary>
+        /// Checks whether a target property participates in a cycle.
+        /// </summary>
+        /// <param name="propertyName">The target property name.</param>
+        /// <param name="sourceToTargets">The source to target graph.</param>
+        /// <returns>Whether <paramref name="propertyName"/> participates in a cycle.</returns>
+        private static bool IsInDependsOnCycle(string propertyName, Dictionary<string, List<DependsOnEdge>> sourceToTargets)
+        {
+            HashSet<string> visitedNames = new(StringComparer.Ordinal);
+
+            bool Visit(string currentPropertyName)
+            {
+                if (!sourceToTargets.TryGetValue(currentPropertyName, out List<DependsOnEdge>? targetEdges))
+                {
+                    return false;
+                }
+
+                foreach (DependsOnEdge targetEdge in targetEdges)
+                {
+                    if (targetEdge.TargetName == propertyName)
+                    {
+                        return true;
+                    }
+
+                    if (visitedNames.Add(targetEdge.TargetName) && Visit(targetEdge.TargetName))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            return Visit(propertyName);
+        }
+
+        /// <summary>
+        /// Checks whether a property is the canonical diagnostic location for a cycle.
+        /// </summary>
+        /// <param name="propertyName">The target property name.</param>
+        /// <param name="sourceToTargets">The source to target graph.</param>
+        /// <returns>Whether <paramref name="propertyName"/> is the canonical diagnostic target.</returns>
+        private static bool IsCanonicalCycleDiagnosticTarget(string propertyName, Dictionary<string, List<DependsOnEdge>> sourceToTargets)
+        {
+            List<string> cycleNames = new() { propertyName };
+
+            foreach (string candidateName in sourceToTargets.Keys)
+            {
+                if (candidateName != propertyName &&
+                    IsReachable(propertyName, candidateName, sourceToTargets) &&
+                    IsReachable(candidateName, propertyName, sourceToTargets))
+                {
+                    cycleNames.Add(candidateName);
+                }
+            }
+
+            cycleNames.Sort(StringComparer.Ordinal);
+
+            return cycleNames[0] == propertyName;
+        }
+
+        /// <summary>
+        /// Checks whether one property is reachable from another.
+        /// </summary>
+        /// <param name="sourcePropertyName">The source property name.</param>
+        /// <param name="targetPropertyName">The target property name.</param>
+        /// <param name="sourceToTargets">The source to target graph.</param>
+        /// <returns>Whether <paramref name="targetPropertyName"/> is reachable from <paramref name="sourcePropertyName"/>.</returns>
+        private static bool IsReachable(string sourcePropertyName, string targetPropertyName, Dictionary<string, List<DependsOnEdge>> sourceToTargets)
+        {
+            HashSet<string> visitedNames = new(StringComparer.Ordinal);
+
+            bool Visit(string currentPropertyName)
+            {
+                if (!sourceToTargets.TryGetValue(currentPropertyName, out List<DependsOnEdge>? targetEdges))
+                {
+                    return false;
+                }
+
+                foreach (DependsOnEdge targetEdge in targetEdges)
+                {
+                    if (targetEdge.TargetName == targetPropertyName)
+                    {
+                        return true;
+                    }
+
+                    if (visitedNames.Add(targetEdge.TargetName) && Visit(targetEdge.TargetName))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            return Visit(sourcePropertyName);
+        }
+
+        /// <summary>
+        /// Adds a value to a builder if it is not already present.
+        /// </summary>
+        /// <param name="builder">The builder to update.</param>
+        /// <param name="value">The value to add.</param>
+        private static void AddIfMissing(in ImmutableArrayBuilder<string> builder, string value)
+        {
+            foreach (string existingValue in builder.WrittenSpan)
+            {
+                if (existingValue == value)
+                {
+                    return;
+                }
+            }
+
+            builder.Add(value);
+        }
+
+        /// <summary>
+        /// A dependency edge from a source property to a target calculated property.
+        /// </summary>
+        /// <param name="SourceName">The source property name.</param>
+        /// <param name="TargetName">The target property name.</param>
+        /// <param name="NotifyOnSubPropertyChanges">Whether child <see cref="INotifyPropertyChanged.PropertyChanged"/> events should be forwarded.</param>
+        private sealed record DependsOnEdge(string SourceName, string TargetName, bool NotifyOnSubPropertyChanges);
 
         /// <summary>
         /// Checks whether a given generated property should also notify recipients.
@@ -1235,6 +1774,17 @@ partial class ObservablePropertyGenerator
                         setterFieldExpression,
                         IdentifierName("value"))));
 
+            // Add the child PropertyChanged subscription update, if requested:
+            //
+            // __SubscribeTo<PROPERTY_NAME>PropertyChanged(value);
+            if (!propertyInfo.ChildPropertyChangedSubscriptions.IsEmpty)
+            {
+                setterStatements.Add(
+                    ExpressionStatement(
+                        InvocationExpression(IdentifierName($"__SubscribeTo{propertyInfo.PropertyName}PropertyChanged"))
+                        .AddArgumentListArguments(Argument(IdentifierName("value")))));
+            }
+
             // If validation is requested, add a call to ValidateProperty:
             //
             // ValidateProperty(value, <PROPERTY_NAME>);
@@ -1392,6 +1942,26 @@ partial class ObservablePropertyGenerator
             // Also add any forwarded attributes
             setAccessor = setAccessor.AddAttributeLists(forwardedSetAccessorAttributes);
 
+            AccessorDeclarationSyntax getAccessor = AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+                .WithModifiers(propertyInfo.GetterAccessibility.ToSyntaxTokenList());
+
+            if (propertyInfo.ChildPropertyChangedSubscriptions.IsEmpty)
+            {
+                getAccessor = getAccessor
+                    .WithExpressionBody(ArrowExpressionClause(getterFieldExpression))
+                    .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+            }
+            else
+            {
+                getAccessor = getAccessor.WithBody(Block(
+                    ExpressionStatement(
+                        InvocationExpression(IdentifierName($"__SubscribeTo{propertyInfo.PropertyName}PropertyChanged"))
+                        .AddArgumentListArguments(Argument(getterFieldExpression))),
+                    ReturnStatement(getterFieldExpression)));
+            }
+
+            getAccessor = getAccessor.AddAttributeLists(forwardedGetAccessorAttributes);
+
             // Construct the generated property as follows:
             //
             // <XML_SUMMARY>
@@ -1417,11 +1987,7 @@ partial class ObservablePropertyGenerator
                 .AddAttributeLists(forwardedPropertyAttributes)
                 .WithModifiers(GetPropertyModifiers(propertyInfo))
                 .AddAccessorListAccessors(
-                    AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
-                    .WithModifiers(propertyInfo.GetterAccessibility.ToSyntaxTokenList())
-                    .WithExpressionBody(ArrowExpressionClause(getterFieldExpression))
-                    .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
-                    .AddAttributeLists(forwardedGetAccessorAttributes),
+                    getAccessor,
                     setAccessor);
         }
 
@@ -1447,6 +2013,85 @@ partial class ObservablePropertyGenerator
             }
 
             return propertyModifiers;
+        }
+
+        /// <summary>
+        /// Gets generated members used to forward child <see cref="INotifyPropertyChanged.PropertyChanged"/> events.
+        /// </summary>
+        /// <param name="propertyInfo">The input <see cref="PropertyInfo"/> instance to process.</param>
+        /// <returns>The generated members for child property changed forwarding.</returns>
+        public static ImmutableArray<MemberDeclarationSyntax> GetChildPropertyChangedSubscriptionMembersSyntax(PropertyInfo propertyInfo)
+        {
+            if (propertyInfo.ChildPropertyChangedSubscriptions.IsEmpty)
+            {
+                return ImmutableArray<MemberDeclarationSyntax>.Empty;
+            }
+
+            using ImmutableArrayBuilder<MemberDeclarationSyntax> memberDeclarations = ImmutableArrayBuilder<MemberDeclarationSyntax>.Rent();
+
+            ChildPropertyChangedSubscriptionInfo childSubscription = propertyInfo.ChildPropertyChangedSubscriptions[0];
+            string sourceFieldName = $"__{char.ToLower(propertyInfo.PropertyName[0], CultureInfo.InvariantCulture)}{propertyInfo.PropertyName.Substring(1)}PropertyChangedSource";
+            string handlerName = $"__On{propertyInfo.PropertyName}PropertyChanged";
+            string subscribeMethodName = $"__SubscribeTo{propertyInfo.PropertyName}PropertyChanged";
+
+            memberDeclarations.Add(ParseMemberDeclaration($$"""
+                private global::System.ComponentModel.INotifyPropertyChanged? {{sourceFieldName}};
+                """)!);
+
+            memberDeclarations.Add(ParseMemberDeclaration($$"""
+                private void {{subscribeMethodName}}({{propertyInfo.TypeNameWithNullabilityAnnotations}} value)
+                {
+                    if (global::System.Object.ReferenceEquals({{sourceFieldName}}, value))
+                    {
+                        return;
+                    }
+
+                    if ({{sourceFieldName}} is object)
+                    {
+                        {{sourceFieldName}}.PropertyChanged -= {{handlerName}};
+                    }
+
+                    {{sourceFieldName}} = value;
+
+                    if (value is object)
+                    {
+                        value.PropertyChanged += {{handlerName}};
+                    }
+                }
+                """)!);
+
+            using ImmutableArrayBuilder<StatementSyntax> handlerStatements = ImmutableArrayBuilder<StatementSyntax>.Rent();
+
+            foreach (string propertyName in childSubscription.PropertyChangedNames)
+            {
+                handlerStatements.Add(
+                    ExpressionStatement(
+                        InvocationExpression(IdentifierName("OnPropertyChanged"))
+                        .AddArgumentListArguments(Argument(MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            IdentifierName("global::CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs"),
+                            IdentifierName(propertyName))))));
+            }
+
+            foreach (string commandName in childSubscription.NotifiedCommandNames)
+            {
+                handlerStatements.Add(
+                    ExpressionStatement(
+                        InvocationExpression(MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            IdentifierName(commandName),
+                            IdentifierName("NotifyCanExecuteChanged")))));
+            }
+
+            memberDeclarations.Add(
+                MethodDeclaration(PredefinedType(Token(SyntaxKind.VoidKeyword)), Identifier(handlerName))
+                .AddModifiers(Token(SyntaxKind.PrivateKeyword))
+                .AddParameterListParameters(
+                    Parameter(Identifier("sender")).WithType(NullableType(PredefinedType(Token(SyntaxKind.ObjectKeyword)))),
+                    Parameter(Identifier("e")).WithType(IdentifierName("global::System.ComponentModel.PropertyChangedEventArgs")))
+                .WithBody(Block(handlerStatements.AsEnumerable())));
+
+            return memberDeclarations.ToImmutable();
         }
 
         /// <summary>

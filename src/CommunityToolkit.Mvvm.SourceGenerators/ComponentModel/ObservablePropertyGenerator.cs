@@ -22,6 +22,16 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
     /// <inheritdoc/>
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+        // Gather diagnostics for [DependsOn] declarations, including cases where no observable property is generated in the target type.
+        IncrementalValuesProvider<EquatableArray<DiagnosticInfo>> dependsOnDiagnostics =
+            context.SyntaxProvider
+            .ForAttributeWithMetadataName(
+                "CommunityToolkit.Mvvm.ComponentModel.DependsOnAttribute",
+                static (node, _) => node is PropertyDeclarationSyntax propertyDeclaration && propertyDeclaration.AttributeLists.Count > 0,
+                static (context, token) => Execute.GetDependsOnDiagnostics((IPropertySymbol)context.TargetSymbol, context.Attributes, token));
+
+        context.ReportDiagnostics(dependsOnDiagnostics);
+
         // Gather info for all annotated fields
         IncrementalValuesProvider<(HierarchyInfo Hierarchy, Result<PropertyInfo?> Info)> propertyInfoWithErrors =
             context.ForAttributeWithMetadataNameAndOptions(
@@ -86,6 +96,7 @@ public sealed partial class ObservablePropertyGenerator : IIncrementalGenerator
                 item.Properties
                 .Select(Execute.GetPropertySyntax)
                 .Concat(item.Properties.Select(Execute.GetOnPropertyChangeMethodsSyntax).SelectMany(static l => l))
+                .Concat(item.Properties.Select(Execute.GetChildPropertyChangedSubscriptionMembersSyntax).SelectMany(static l => l))
                 .ToImmutableArray();
 
             // Insert all members into the same partial type declaration

@@ -1069,6 +1069,154 @@ public partial class Test_ObservablePropertyAttribute
         CollectionAssert.AreEqual(new[] { nameof(ModelWithDependentPropertyAndNoPropertyChanging.Name), nameof(ModelWithDependentPropertyAndNoPropertyChanging.FullName) }, changedArgs);
     }
 
+    [TestMethod]
+    public void Test_DependsOn_TransitiveCalculatedProperties()
+    {
+        ModelWithDependsOnTransitiveProperties model = new();
+
+        List<string?> propertyNames = new();
+
+        model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
+
+        model.FirstName = "Bob";
+
+        CollectionAssert.AreEqual(
+            new[]
+            {
+                nameof(ModelWithDependsOnTransitiveProperties.FirstName),
+                nameof(ModelWithDependsOnTransitiveProperties.FullName),
+                nameof(ModelWithDependsOnTransitiveProperties.DisplayName)
+            },
+            propertyNames);
+    }
+
+    [TestMethod]
+    public void Test_DependsOn_CommandCanExecuteIsInvalidated()
+    {
+        ModelWithDependsOnCommand model = new();
+
+        int canExecuteChangedRequests = 0;
+
+        model.SaveCommand.CanExecuteChanged += (s, e) => canExecuteChangedRequests++;
+
+        model.Name = "Bob";
+
+        Assert.AreEqual(1, canExecuteChangedRequests);
+    }
+
+    [TestMethod]
+    public void Test_DependsOn_NotifyPropertyChangedForRemainsDirectOnly()
+    {
+        ModelWithNotifyPropertyChangedForDirectOnly model = new();
+
+        List<string?> propertyNames = new();
+
+        model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
+
+        model.Name = "Bob";
+
+        CollectionAssert.AreEqual(
+            new[]
+            {
+                nameof(ModelWithNotifyPropertyChangedForDirectOnly.Name),
+                nameof(ModelWithNotifyPropertyChangedForDirectOnly.Intermediate)
+            },
+            propertyNames);
+    }
+
+    [TestMethod]
+    public void Test_DependsOn_SubPropertyChangesNotifyDependents()
+    {
+        ChildModelForDependsOn child = new();
+        ModelWithDependsOnChildProperty model = new() { SelectedItem = child };
+
+        List<string?> propertyNames = new();
+
+        model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
+
+        child.Name = "Bob";
+
+        CollectionAssert.AreEqual(new[] { nameof(ModelWithDependsOnChildProperty.SelectedItemName) }, propertyNames);
+    }
+
+    [TestMethod]
+    public void Test_DependsOn_SubPropertyChangesOnlyNotifyOptedInDependents()
+    {
+        ChildModelForDependsOn child = new();
+        ModelWithDependsOnMixedChildProperty model = new() { SelectedItem = child };
+
+        List<string?> propertyNames = new();
+        int canExecuteChangedRequests = 0;
+
+        model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
+        model.SaveCommand.CanExecuteChanged += (s, e) => canExecuteChangedRequests++;
+
+        child.Name = "Bob";
+
+        CollectionAssert.AreEqual(
+            new[]
+            {
+                nameof(ModelWithDependsOnMixedChildProperty.SelectedItemName),
+                nameof(ModelWithDependsOnMixedChildProperty.SelectedItemDisplayName)
+            },
+            propertyNames);
+
+        Assert.AreEqual(0, canExecuteChangedRequests);
+    }
+
+    [TestMethod]
+    public void Test_DependsOn_SubPropertyReplacingChildDetachesOldInstance()
+    {
+        ChildModelForDependsOn oldChild = new();
+        ChildModelForDependsOn newChild = new();
+        ModelWithDependsOnChildProperty model = new() { SelectedItem = oldChild };
+
+        List<string?> propertyNames = new();
+
+        model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
+
+        model.SelectedItem = newChild;
+        propertyNames.Clear();
+
+        oldChild.Name = "Bob";
+        newChild.Name = "Alice";
+
+        CollectionAssert.AreEqual(new[] { nameof(ModelWithDependsOnChildProperty.SelectedItemName) }, propertyNames);
+    }
+
+    [TestMethod]
+    public void Test_DependsOn_SubPropertyNullAssignmentIsSafe()
+    {
+        ChildModelForDependsOn child = new();
+        ModelWithDependsOnChildProperty model = new() { SelectedItem = child };
+
+        List<string?> propertyNames = new();
+
+        model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
+
+        model.SelectedItem = null;
+        propertyNames.Clear();
+
+        child.Name = "Bob";
+
+        Assert.IsEmpty(propertyNames);
+    }
+
+    [TestMethod]
+    public void Test_DependsOn_SubPropertyInitializedBackingFieldSubscribesAfterGetterAccess()
+    {
+        ModelWithInitializedDependsOnChildProperty model = new();
+        ChildModelForDependsOn child = model.SelectedItem!;
+
+        List<string?> propertyNames = new();
+
+        model.PropertyChanged += (s, e) => propertyNames.Add(e.PropertyName);
+
+        child.Name = "Bob";
+
+        CollectionAssert.AreEqual(new[] { nameof(ModelWithInitializedDependsOnChildProperty.SelectedItemName) }, propertyNames);
+    }
+
 #if NET6_0_OR_GREATER
     [TestMethod]
     public void Test_ObservableProperty_MemberNotNullAttributeIsPresent()
@@ -1792,6 +1940,89 @@ public partial class Test_ObservablePropertyAttribute
         private string? name;
 
         public string? FullName => "";
+    }
+
+    private sealed partial class ModelWithDependsOnTransitiveProperties : ObservableObject
+    {
+        [ObservableProperty]
+        private string? firstName;
+
+        [DependsOn(nameof(FirstName))]
+        public string FullName => FirstName ?? "";
+
+        [DependsOn(nameof(FullName))]
+        public string DisplayName => FullName.ToUpperInvariant();
+    }
+
+    private sealed partial class ModelWithDependsOnCommand : ObservableObject
+    {
+        [ObservableProperty]
+        private string? name;
+
+        [DependsOn(nameof(Name))]
+        public bool CanSave => !string.IsNullOrWhiteSpace(Name);
+
+        [RelayCommand(CanExecute = nameof(CanSave))]
+        private void Save()
+        {
+        }
+    }
+
+    private sealed partial class ModelWithNotifyPropertyChangedForDirectOnly : ObservableObject
+    {
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(Intermediate))]
+        private string? name;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(Final))]
+        private string? intermediate;
+
+        public string Final => Intermediate ?? "";
+    }
+
+    private sealed partial class ChildModelForDependsOn : ObservableObject
+    {
+        [ObservableProperty]
+        private string? name;
+    }
+
+    private sealed partial class ModelWithDependsOnChildProperty : ObservableObject
+    {
+        [ObservableProperty]
+        private ChildModelForDependsOn? selectedItem;
+
+        [DependsOn(nameof(SelectedItem), NotifyOnSubPropertyChanges = true)]
+        public string? SelectedItemName => SelectedItem?.Name;
+    }
+
+    private sealed partial class ModelWithDependsOnMixedChildProperty : ObservableObject
+    {
+        [ObservableProperty]
+        private ChildModelForDependsOn? selectedItem;
+
+        [DependsOn(nameof(SelectedItem), NotifyOnSubPropertyChanges = true)]
+        public string? SelectedItemName => SelectedItem?.Name;
+
+        [DependsOn(nameof(SelectedItemName))]
+        public string? SelectedItemDisplayName => SelectedItemName?.ToUpperInvariant();
+
+        [DependsOn(nameof(SelectedItem))]
+        public bool HasSelection => SelectedItem is not null;
+
+        [RelayCommand(CanExecute = nameof(HasSelection))]
+        private void Save()
+        {
+        }
+    }
+
+    private sealed partial class ModelWithInitializedDependsOnChildProperty : ObservableObject
+    {
+        [ObservableProperty]
+        private ChildModelForDependsOn? selectedItem = new();
+
+        [DependsOn(nameof(SelectedItem), NotifyOnSubPropertyChanges = true)]
+        public string? SelectedItemName => SelectedItem?.Name;
     }
 
 #if NET6_0_OR_GREATER
