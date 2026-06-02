@@ -86,47 +86,18 @@ public static partial class IMessengerExtensions
     /// <param name="recipient">The recipient that will receive the messages.</param>
     /// <remarks>See notes for <see cref="RegisterAll{TToken}(IMessenger,object,TToken)"/> for more info.</remarks>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="messenger"/> or <paramref name="recipient"/> are <see langword="null"/>.</exception>
-    [RequiresUnreferencedCode(
-        "This method requires the generated CommunityToolkit.Mvvm.Messaging.__Internals.__IMessengerExtensions type not to be removed to use the fast path. " +
-        "If this type is removed by the linker, or if the target recipient was created dynamically and was missed by the source generator, a slower fallback " +
-        "path using a compiled LINQ expression will be used. This will have more overhead in the first invocation of this method for any given recipient type.")]
     [RequiresDynamicCode(
-        "This method requires the generated CommunityToolkit.Mvvm.Messaging.__Internals.__IMessengerExtensions type not to be removed to use the fast path. " +
-        "If that is present, the method is AOT safe, as the only methods being invoked to register the messages will be the ones produced by the source generator. " +
-        "If it isn't, this method will need to dynamically create the generic methods to register messages, which might not be available at runtime.")]
+        "\nThis fallback method uses `MethodInfo.MakeGenericMethod(Type[])` and " +
+        "to dynamically construct delegates. " +
+        "This will fail in Native AOT if the specific generic instantiations were not generated. " +
+        "Ensure the exact recipient type implements the `CommunityToolkit.Mvvm.Messaging.IRecipient<TMessage>` interface(s) and " +
+        "is statically known at compile time to use the source-generated, AOT-safe fast path.")]
     public static void RegisterAll(this IMessenger messenger, object recipient)
     {
         ArgumentNullException.ThrowIfNull(messenger);
         ArgumentNullException.ThrowIfNull(recipient);
 
-        // We use this method as a callback for the conditional weak table, which will handle
-        // thread-safety for us. This first callback will try to find a generated method for the
-        // target recipient type, and just invoke it to get the delegate to cache and use later.
-        [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")]
-        static Action<IMessenger, object>? LoadRegistrationMethodsForType(Type recipientType)
-        {
-            if (recipientType.Assembly.GetType("CommunityToolkit.Mvvm.Messaging.__Internals.__IMessengerExtensions") is Type extensionsType &&
-                extensionsType.GetMethod("CreateAllMessagesRegistrator", new[] { recipientType }) is MethodInfo methodInfo)
-            {
-                return (Action<IMessenger, object>)methodInfo.Invoke(null, new object?[] { null })!;
-            }
-
-            return null;
-        }
-
-        // Try to get the cached delegate, if the generator has run correctly
-        Action<IMessenger, object>? registrationAction = DiscoveredRecipients.RegistrationMethods.GetValue(
-            recipient.GetType(),
-            LoadRegistrationMethodsForType);
-
-        if (registrationAction is not null)
-        {
-            registrationAction(messenger, recipient);
-        }
-        else
-        {
-            messenger.RegisterAll(recipient, default(Unit));
-        }
+        messenger.RegisterAll(recipient, default(Unit));
     }
 
     /// <summary>
@@ -137,18 +108,35 @@ public static partial class IMessengerExtensions
     /// <param name="recipient">The recipient that will receive the messages.</param>
     /// <param name="token">The token indicating what channel to use.</param>
     /// <remarks>
-    /// This method will register all messages corresponding to the <see cref="IRecipient{TMessage}"/> interfaces
-    /// being implemented by <paramref name="recipient"/>. If none are present, this method will do nothing.
-    /// Note that unlike all other extensions, this method will use reflection to find the handlers to register.
-    /// Once the registration is complete though, the performance will be exactly the same as with handlers
-    /// registered directly through any of the other generic extensions for the <see cref="IMessenger"/> interface.
+    /// <para>
+    /// This method will register all messages corresponding to 
+    /// the <see cref="IRecipient{TMessage}"/> interfaces being implemented
+    /// by <paramref name="recipient"/>. If none are present, this method will do nothing.
+    /// </para>
+    /// <para>
+    /// This method serves as a runtime fallback registration path.
+    /// Normally, the MVVM Toolkit source generator automatically produces strongly-typed,
+    /// AOT-friendly overloads of this method for each discovered recipient type.
+    /// The C# compiler will prefer those generated methods during overload resolution
+    /// if the exact type is known.
+    /// </para>
+    /// <para>
+    /// This specific extension method (taking an <see cref="object"/>) is only invoked
+    /// if the recipient was cast to <see cref="object"/>, created dynamically,
+    /// or missed by the source generator.
+    /// It relies on reflection and compiled LINQ expressions to discover and
+    /// register <see cref="IRecipient{TMessage}"/> interfaces.
+    /// This incurs a performance overhead on the first invocation for any given type and
+    /// is not safe for Trimming or Native AOT deployment.
+    /// </para>
     /// </remarks>
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="messenger"/>, <paramref name="recipient"/> or <paramref name="token"/> are <see langword="null"/>.</exception>
-    [RequiresUnreferencedCode(
-        "This method requires the generated CommunityToolkit.Mvvm.Messaging.__Internals.__IMessengerExtensions type not to be removed to use the fast path. " +
-        "If this type is removed by the linker, or if the target recipient was created dynamically and was missed by the source generator, a slower fallback " +
-        "path using a compiled LINQ expression will be used. This will have more overhead in the first invocation of this method for any given recipient type.")]
-    [RequiresDynamicCode("The generic methods to register messages might not be available at runtime.")]
+    [RequiresDynamicCode(
+        "\nThis fallback method uses `MethodInfo.MakeGenericMethod(Type[])` " +
+        "to dynamically construct delegates. " +
+        "This will fail in Native AOT if the specific generic instantiations were not generated. " +
+        "Ensure the exact recipient type implements the `CommunityToolkit.Mvvm.Messaging.IRecipient<TMessage>` interface(s) and " +
+        "is statically known at compile time to use the source-generated, AOT-safe fast path.")]
     public static void RegisterAll<TToken>(this IMessenger messenger, object recipient, TToken token)
         where TToken : IEquatable<TToken>
     {
@@ -157,30 +145,15 @@ public static partial class IMessengerExtensions
         ArgumentNullException.For<TToken>.ThrowIfNull(token);
 
         // We use this method as a callback for the conditional weak table, which will handle
-        // thread-safety for us. This first callback will try to find a generated method for the
-        // target recipient type, and just invoke it to get the delegate to cache and use later.
-        // In this case we also need to create a generic instantiation of the target method first.
-        [RequiresUnreferencedCode("The type of the current instance cannot be statically discovered.")]
-        [RequiresDynamicCode("The generic methods to register messages might not be available at runtime.")]
-        static Action<IMessenger, object, TToken> LoadRegistrationMethodsForType(Type recipientType)
-        {
-            if (recipientType.Assembly.GetType("CommunityToolkit.Mvvm.Messaging.__Internals.__IMessengerExtensions") is Type extensionsType &&
-                extensionsType.GetMethod("CreateAllMessagesRegistratorWithToken", new[] { recipientType }) is MethodInfo methodInfo)
-            {
-                MethodInfo genericMethodInfo = methodInfo.MakeGenericMethod(typeof(TToken));
-
-                return (Action<IMessenger, object, TToken>)genericMethodInfo.Invoke(null, new object?[] { null })!;
-            }
-
-            return LoadRegistrationMethodsForTypeFallback(recipientType);
-        }
-
-        // Fallback method when a generated method is not found.
+        // thread-safety for us.
         // This method is only invoked once per recipient type and token type, so we're not
         // worried about making it super efficient, and we can use the LINQ code for clarity.
         // The LINQ codegen bloat is not really important for the same reason.
-        [RequiresDynamicCode("The generic methods to register messages might not be available at runtime.")]
-        static Action<IMessenger, object, TToken> LoadRegistrationMethodsForTypeFallback(Type recipientType)
+        [RequiresDynamicCode(
+            "The generated strongly-typed method to register messages might not be available at runtime. " +
+            "Calls `System.Reflection.MethodInfo.MakeGenericMethod(params Type[])`",
+            Url = "https://learn.microsoft.com/dotnet/core/deploying/native-aot/intrinsic-requiresdynamiccode-apis#methodinfomakegenericmethodtype-method-net-9")]
+        static Action<IMessenger, object, TToken> LoadRegistrationMethodsForType(Type recipientType)
         {
             // Get the collection of validation methods
             MethodInfo[] registrationMethods = (

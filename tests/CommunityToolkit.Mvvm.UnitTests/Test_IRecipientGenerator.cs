@@ -24,9 +24,7 @@ public partial class Test_IRecipientGenerator
         MessageA messageA = new();
         MessageB messageB = new();
 
-        Action<IMessenger, object, int> registrator = Messaging.__Internals.__IMessengerExtensions.CreateAllMessagesRegistratorWithToken<int>(recipient);
-
-        registrator(messenger, recipient, 42);
+        messenger.RegisterAll(recipient, 42);
 
         Assert.IsTrue(messenger.IsRegistered<MessageA, int>(recipient, 42));
         Assert.IsTrue(messenger.IsRegistered<MessageB, int>(recipient, 42));
@@ -51,16 +49,16 @@ public partial class Test_IRecipientGenerator
         RecipientWithMultipleClassDeclarations recipient = new();
 
         // This test really just needs to verify this compiles and executes normally
-        _ = Messaging.__Internals.__IMessengerExtensions.CreateAllMessagesRegistratorWithToken<int>(recipient);
+        WeakReferenceMessenger.Default.RegisterAll(recipient, 5);
     }
 
     [TestMethod]
     public void Test_IRecipientGenerator_AbstractTypesDoNotTriggerCodeGeneration()
     {
-        MethodInfo? createAllPropertiesValidatorMethod = typeof(Messaging.__Internals.__IMessengerExtensions)
+        MethodInfo? createAllPropertiesValidatorMethod = typeof(Messaging.__IMessengerExtensions)
             .GetMethods(BindingFlags.Static | BindingFlags.Public)
-            .Where(static m => m.Name == "CreateAllMessagesRegistratorWithToken")
-            .Where(static m => m.GetParameters() is { Length: 1 } parameters && parameters[0].ParameterType == typeof(AbstractModelWithValidatablePropertyIRecipientInterfaces))
+            .Where(static m => m.Name == "RegisterAll")
+            .Where(static m => m.GetParameters() is { Length: 3 } parameters && parameters[1].ParameterType == typeof(AbstractModelWithValidatablePropertyIRecipientInterfaces))
             .FirstOrDefault();
 
         // We need to validate that no methods are generated for abstract types, so we just check this method doesn't exist

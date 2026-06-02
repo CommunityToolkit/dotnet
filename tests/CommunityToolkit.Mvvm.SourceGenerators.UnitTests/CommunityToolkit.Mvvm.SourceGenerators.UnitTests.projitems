@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\CSharpCodeFixWithLanguageVersionTest{TAnalyzer,TCodeFix,TVerifier}.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\CSharpAnalyzerWithLanguageVersionTest{TAnalyzer}.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Test_SourceGeneratorsCodegen.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Test_SourceGeneratorsCodegen.IMessengerRegisterAll.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Test_SourceGeneratorsDiagnostics.cs" />
   </ItemGroup>
 </Project>

@@ -54,22 +54,18 @@ public abstract class ObservableRecipient : ObservableObject
     /// <summary>
     /// Gets or sets a value indicating whether the current view model is currently active.
     /// </summary>
+    /// <remarks>
+    /// When this property is set to <see langword="true"/>, the <see cref="OnActivated">OnActivated()</see> method will be invoked,
+    /// which will register all necessary message handlers for this recipient.
+    /// </remarks>
     public bool IsActive
     {
         get => this.isActive;
 
-        [RequiresUnreferencedCode(
-            "When this property is set to true, the OnActivated() method will be invoked, which will register all necessary message handlers for this recipient. " +
-            "This method requires the generated CommunityToolkit.Mvvm.Messaging.__Internals.__IMessengerExtensions type not to be removed to use the fast path. " +
-            "If this type is removed by the linker, or if the target recipient was created dynamically and was missed by the source generator, a slower fallback " +
-            "path using a compiled LINQ expression will be used. This will have more overhead in the first invocation of this method for any given recipient type. " +
-            "Alternatively, OnActivated() can be manually overwritten, and registration can be done individually for each required message for this recipient.")]
         [RequiresDynamicCode(
-            "When this property is set to true, the OnActivated() method will be invoked, which will register all necessary message handlers for this recipient. " +
-            "This method requires the generated CommunityToolkit.Mvvm.Messaging.__Internals.__IMessengerExtensions type not to be removed to use the fast path. " +
-            "If that is present, the method is AOT safe, as the only methods being invoked to register the messages will be the ones produced by the source generator. " +
-            "If it isn't, this method will need to dynamically create the generic methods to register messages, which might not be available at runtime. " +
-            "Alternatively, OnActivated() can be manually overwritten, and registration can be done individually for each required message for this recipient.")]
+            "\nEnsure that the calling view model implements the `IRecipient<TMessage>` interface(s), " +
+            "or that `OnActivated()` has been manually overridden to register each required message for this recipient individually. " +
+            "If either of these conditions is met, you can suppress this warning by using the `UnconditionalSuppressMessage` attribute.")]
         set
         {
             if (SetProperty(ref this.isActive, value, true))
@@ -91,22 +87,21 @@ public abstract class ObservableRecipient : ObservableObject
     /// Use this method to register to messages and do other initialization for this instance.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// The base implementation registers all messages for this recipients that have been declared
     /// explicitly through the <see cref="IRecipient{TMessage}"/> interface, using the default channel.
     /// For more details on how this works, see the <see cref="IMessengerExtensions.RegisterAll"/> method.
+    /// </para>
+    /// <para>
     /// If you need more fine tuned control, want to register messages individually or just prefer
     /// the lambda-style syntax for message registration, override this method and register manually.
+    /// </para>
     /// </remarks>
-    [RequiresUnreferencedCode(
-        "This method requires the generated CommunityToolkit.Mvvm.Messaging.__Internals.__IMessengerExtensions type not to be removed to use the fast path. " +
-        "If this type is removed by the linker, or if the target recipient was created dynamically and was missed by the source generator, a slower fallback " +
-        "path using a compiled LINQ expression will be used. This will have more overhead in the first invocation of this method for any given recipient type. " +
-        "Alternatively, OnActivated() can be manually overwritten, and registration can be done individually for each required message for this recipient.")]
     [RequiresDynamicCode(
-        "This method requires the generated CommunityToolkit.Mvvm.Messaging.__Internals.__IMessengerExtensions type not to be removed to use the fast path. " +
-        "If that is present, the method is AOT safe, as the only methods being invoked to register the messages will be the ones produced by the source generator. " +
-        "If it isn't, this method will need to dynamically create the generic methods to register messages, which might not be available at runtime. " +
-        "Alternatively, OnActivated() can be manually overwritten, and registration can be done individually for each required message for this recipient.")]
+        "Ensure that the view model implements the `IRecipient<TMessage>` interface(s), " +
+        "Alternatively, `OnActivated()` can be manually overwritten, and registration can be done individually for each required message for this recipient. " +
+        "If either of these conditions is met, you can suppress this warning by using the `UnconditionalSuppressMessage` attribute.",
+        Url = "https://learn.microsoft.com/dotnet/communitytoolkit/mvvm/observablerecipient#how-it-works")]
     protected virtual void OnActivated()
     {
         Messenger.RegisterAll(this);
