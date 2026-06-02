@@ -50,10 +50,10 @@ public partial class Test_ArgumentNullException
         Assert(() => messenger.IsRegistered<DummyMessage>(recipient: null!), "recipient");
 
         Assert(() => ((IMessenger)null!).RegisterAll(new object()), "messenger");
-        Assert(() => messenger.RegisterAll(recipient: null!), "recipient");
+        Assert(() => messenger.RegisterAll(recipient: (object)null!), "recipient");
 
         Assert(() => ((IMessenger)null!).RegisterAll(new object(), ""), "messenger");
-        Assert(() => messenger.RegisterAll(recipient: null!, ""), "recipient");
+        Assert(() => messenger.RegisterAll(recipient: (object)null!, ""), "recipient");
         Assert(() => messenger.RegisterAll<string>(new object(), token: null!), "token");
 
         Assert(() => ((IMessenger)null!).Register(new Recipient()), "messenger");

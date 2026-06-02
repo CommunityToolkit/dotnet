@@ -97,13 +97,13 @@ public class Test_ObservableRecipient
     {
 #if NET6_0_OR_GREATER
         System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembersAttribute? attribute =
-            typeof(Messaging.__Internals.__IMessengerExtensions)
+            typeof(Messaging.__IMessengerExtensions)
             .GetCustomAttribute<System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembersAttribute>();
 
         Assert.IsNotNull(attribute);
         Assert.AreEqual(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicMethods, attribute.MemberTypes);
 #else
-        IEnumerable<Attribute> attributes = typeof(Messaging.__Internals.__IMessengerExtensions).GetCustomAttributes();
+        IEnumerable<Attribute> attributes = typeof(Messaging.__IMessengerExtensions).GetCustomAttributes();
 
         Assert.IsFalse(attributes.Any(static a => a.GetType().Name is "DynamicallyAccessedMembersAttribute"));
 #endif
