@@ -162,10 +162,15 @@ public static partial class ParallelHelper
             return;
         }
 
-        int count = Math.Abs(start - end);
-        int maxBatches = 1 + ((count - 1) / minimumActionsPerThread);
+        // The number of elements in [start, end) can exceed int.MaxValue (for example the
+        // full [int.MinValue, int.MaxValue) range), so the range size is computed using 64-bit
+        // arithmetic. Using int here would overflow: 'start - end' could wrap around to a small
+        // value (silently degrading to a single-threaded run), and 'Math.Abs(int.MinValue)'
+        // throws OverflowException. The earlier 'start > end' check guarantees count >= 1.
+        long count = (long)end - start;
+        long maxBatches = 1 + ((count - 1) / minimumActionsPerThread);
         int cores = Environment.ProcessorCount;
-        int numBatches = Math.Min(maxBatches, cores);
+        int numBatches = (int)Math.Min(maxBatches, (long)cores);
 
         // Skip the parallel invocation when a single batch is needed
         if (numBatches == 1)
@@ -178,7 +183,7 @@ public static partial class ParallelHelper
             return;
         }
 
-        int batchSize = 1 + ((count - 1) / numBatches);
+        long batchSize = 1 + ((count - 1) / numBatches);
 
         ActionInvoker<TAction> actionInvoker = new(start, end, batchSize, action);
 
@@ -196,14 +201,14 @@ public static partial class ParallelHelper
     {
         private readonly int start;
         private readonly int end;
-        private readonly int batchSize;
+        private readonly long batchSize;
         private readonly TAction action;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ActionInvoker(
             int start,
             int end,
-            int batchSize,
+            long batchSize,
             in TAction action)
         {
             this.start = start;
@@ -218,12 +223,15 @@ public static partial class ParallelHelper
         /// <param name="i">The index of the batch to process</param>
         public void Invoke(int i)
         {
-            int offset = i * this.batchSize;
-            int low = this.start + offset;
-            int high = low + this.batchSize;
-            int stop = Math.Min(high, this.end);
+            // The batch offset is computed with 64-bit arithmetic so it doesn't overflow for
+            // large ranges. 'low' and 'stop' are always within [start, end], which fits in an
+            // int, so the narrowing casts below are safe.
+            long offset = (long)i * this.batchSize;
+            long low = this.start + offset;
+            long high = low + this.batchSize;
+            int stop = (int)Math.Min(high, (long)this.end);
 
-            for (int j = low; j < stop; j++)
+            for (int j = (int)low; j < stop; j++)
             {
                 Unsafe.AsRef(in this.action).Invoke(j);
             }
