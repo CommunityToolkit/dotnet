@@ -3,6 +3,8 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using CommunityToolkit.HighPerformance.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CommunityToolkit.HighPerformance.UnitTests.Buffers.Internals;
@@ -72,6 +74,86 @@ public partial class Test_ParallelHelper
         }
     }
 #endif
+
+    [TestMethod]
+    public void Test_ParallelHelper_ForLargeNegativeRange_DoesNotOverflow()
+    {
+        // Regression test for https://github.com/CommunityToolkit/dotnet/issues/1188.
+        // [int.MinValue, 0) spans 2^31 elements. The range size used to be computed as
+        // 'Math.Abs(start - end)', and 'Math.Abs(int.MinValue)' throws OverflowException
+        // before any work runs. The action throws on its first invocation so the loop
+        // exits immediately instead of iterating two billion times.
+        Exception? caught = null;
+
+        try
+        {
+            ParallelHelper.For(int.MinValue, 0, default(ThrowingAction), 1);
+        }
+        catch (Exception e)
+        {
+            caught = e;
+        }
+
+        Assert.IsNotNull(caught, "Expected the action to run and throw.");
+
+        IEnumerable<Exception> leaves = caught is AggregateException aggregate
+            ? aggregate.Flatten().InnerExceptions
+            : new[] { caught };
+
+        Assert.IsFalse(leaves.Any(static e => e is OverflowException), "The range size overflowed.");
+        Assert.IsTrue(leaves.Any(static e => e is ThrowingActionException), "The action did not run.");
+    }
+
+    [TestMethod]
+    public void Test_ParallelHelper_ForFullRange_IsParallelized()
+    {
+        // Regression test for https://github.com/CommunityToolkit/dotnet/issues/1188.
+        // For [int.MinValue, int.MaxValue) the range size used to overflow to 1 ('start - end'
+        // wraps around), so the helper silently ran the whole loop on the calling thread
+        // instead of parallelizing it. When the work is parallelized, Parallel.For surfaces a
+        // failing action as an AggregateException; the buggy single-threaded path would throw
+        // the action's exception directly. The action throws on its first invocation so each
+        // batch exits immediately instead of iterating billions of times.
+        if (Environment.ProcessorCount < 2)
+        {
+            Assert.Inconclusive("Parallel dispatch requires more than one processor.");
+        }
+
+        Exception? caught = null;
+
+        try
+        {
+            ParallelHelper.For(int.MinValue, int.MaxValue, default(ThrowingAction), 1);
+        }
+        catch (Exception e)
+        {
+            caught = e;
+        }
+
+        Assert.IsInstanceOfType(caught, typeof(AggregateException), "The work was not parallelized.");
+        Assert.IsTrue(
+            ((AggregateException)caught!).Flatten().InnerExceptions.All(static e => e is ThrowingActionException),
+            "Unexpected exception type.");
+    }
+
+    /// <summary>
+    /// An exception type thrown by <see cref="ThrowingAction"/>.
+    /// </summary>
+    private sealed class ThrowingActionException : Exception
+    {
+    }
+
+    /// <summary>
+    /// A type implementing <see cref="IAction"/> that throws on its first invocation.
+    /// </summary>
+    private readonly struct ThrowingAction : IAction
+    {
+        /// <inheritdoc/>
+        public void Invoke(int i)
+        {
+            throw new ThrowingActionException();
+        }
+    }
 
     /// <summary>
     /// A type implementing <see cref="IAction"/> to initialize an array
