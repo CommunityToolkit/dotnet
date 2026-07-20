@@ -22,7 +22,11 @@ namespace CommunityToolkit.Mvvm.SourceGenerators.UnitTests;
 public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
 {
     [TestMethod]
-    public async Task SimpleProperty()
+#if ROSLYN_5_0_0_OR_GREATER
+    [DataRow(LanguageVersion.CSharp14)]
+#endif
+    [DataRow(LanguageVersion.Preview)]
+    public async Task SimpleProperty(LanguageVersion languageVersion)
     {
         string original = """
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -51,7 +55,7 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
             }
             """;
 
-        CSharpCodeFixTest test = new(LanguageVersion.Preview)
+        CSharpCodeFixTest test = new(languageVersion)
         {
             TestCode = original,
             FixedCode = @fixed,
@@ -75,7 +79,11 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
     }
 
     [TestMethod]
-    public async Task SimplePropertyWithBlockAccessorSyntax()
+#if ROSLYN_5_0_0_OR_GREATER
+    [DataRow(LanguageVersion.CSharp14)]
+#endif
+    [DataRow(LanguageVersion.Preview)]
+    public async Task SimplePropertyWithBlockAccessorSyntax(LanguageVersion languageVersion)
     {
         string original = """
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -110,7 +118,7 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
             }
             """;
 
-        CSharpCodeFixTest test = new(LanguageVersion.Preview)
+        CSharpCodeFixTest test = new(languageVersion)
         {
             TestCode = original,
             FixedCode = @fixed,
@@ -134,7 +142,11 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
     }
 
     [TestMethod]
-    public async Task SimplePropertyWithNestedBlockSyntax()
+#if ROSLYN_5_0_0_OR_GREATER
+    [DataRow(LanguageVersion.CSharp14)]
+#endif
+    [DataRow(LanguageVersion.Preview)]
+    public async Task SimplePropertyWithNestedBlockSyntax(LanguageVersion languageVersion)
     {
         string original = """
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -168,7 +180,7 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
             }
             """;
 
-        CSharpCodeFixTest test = new(LanguageVersion.Preview)
+        CSharpCodeFixTest test = new(languageVersion)
         {
             TestCode = original,
             FixedCode = @fixed,
@@ -192,7 +204,11 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
     }
 
     [TestMethod]
-    public async Task SimpleProperty_WithSemicolonTokenGetAccessor()
+#if ROSLYN_5_0_0_OR_GREATER
+    [DataRow(LanguageVersion.CSharp14)]
+#endif
+    [DataRow(LanguageVersion.Preview)]
+    public async Task SimpleProperty_WithSemicolonTokenGetAccessor(LanguageVersion languageVersion)
     {
         string original = """
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -221,7 +237,7 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
             }
             """;
 
-        CSharpCodeFixTest test = new(LanguageVersion.Preview)
+        CSharpCodeFixTest test = new(languageVersion)
         {
             TestCode = original,
             FixedCode = @fixed,
@@ -245,7 +261,11 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
     }
 
     [TestMethod]
-    public async Task SimpleProperty_WithMissingUsingDirective()
+#if ROSLYN_5_0_0_OR_GREATER
+    [DataRow(LanguageVersion.CSharp14)]
+#endif
+    [DataRow(LanguageVersion.Preview)]
+    public async Task SimpleProperty_WithMissingUsingDirective(LanguageVersion languageVersion)
     {
         string original = """
             namespace MyApp;
@@ -272,7 +292,7 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
             }
             """;
 
-        CSharpCodeFixTest test = new(LanguageVersion.Preview)
+        CSharpCodeFixTest test = new(languageVersion)
         {
             TestCode = original,
             FixedCode = @fixed,
@@ -296,7 +316,11 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
     }
 
     [TestMethod]
-    public async Task SimpleProperty_WithLeadingTrivia()
+#if ROSLYN_5_0_0_OR_GREATER
+    [DataRow(LanguageVersion.CSharp14)]
+#endif
+    [DataRow(LanguageVersion.Preview)]
+    public async Task SimpleProperty_WithLeadingTrivia(LanguageVersion languageVersion)
     {
         string original = """
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -331,7 +355,7 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
             }
             """;
 
-        CSharpCodeFixTest test = new(LanguageVersion.Preview)
+        CSharpCodeFixTest test = new(languageVersion)
         {
             TestCode = original,
             FixedCode = @fixed,
@@ -355,7 +379,11 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
     }
 
     [TestMethod]
-    public async Task SimpleProperty_WithLeadingTrivia_AndAttributes()
+#if ROSLYN_5_0_0_OR_GREATER
+    [DataRow(LanguageVersion.CSharp14)]
+#endif
+    [DataRow(LanguageVersion.Preview)]
+    public async Task SimpleProperty_WithLeadingTrivia_AndAttributes(LanguageVersion languageVersion)
     {
         string original = """
             using System;
@@ -400,7 +428,7 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
             public class TestAttribute(string text) : Attribute;
             """;
 
-        CSharpCodeFixTest test = new(LanguageVersion.Preview)
+        CSharpCodeFixTest test = new(languageVersion)
         {
             TestCode = original,
             FixedCode = @fixed,
@@ -424,7 +452,11 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
     }
 
     [TestMethod]
-    public async Task SimpleProperty_Multiple()
+#if ROSLYN_5_0_0_OR_GREATER
+    [DataRow(LanguageVersion.CSharp14)]
+#endif
+    [DataRow(LanguageVersion.Preview)]
+    public async Task SimpleProperty_Multiple(LanguageVersion languageVersion)
     {
         string original = """
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -462,7 +494,7 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
             }
             """;
 
-        CSharpCodeFixTest test = new(LanguageVersion.Preview)
+        CSharpCodeFixTest test = new(languageVersion)
         {
             TestCode = original,
             FixedCode = @fixed,
@@ -492,7 +524,11 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
     }
 
     [TestMethod]
-    public async Task SimpleProperty_Multiple_OnlyTriggersOnFirstOne()
+#if ROSLYN_5_0_0_OR_GREATER
+    [DataRow(LanguageVersion.CSharp14)]
+#endif
+    [DataRow(LanguageVersion.Preview)]
+    public async Task SimpleProperty_Multiple_OnlyTriggersOnFirstOne(LanguageVersion languageVersion)
     {
         string original = """
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -537,7 +573,7 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
             }
             """;
 
-        CSharpCodeFixTest test = new(LanguageVersion.Preview)
+        CSharpCodeFixTest test = new(languageVersion)
         {
             TestCode = original,
             FixedCode = @fixed,
@@ -561,7 +597,11 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
     }
 
     [TestMethod]
-    public async Task SimpleProperty_Multiple_OnlyTriggersOnSecondOne()
+#if ROSLYN_5_0_0_OR_GREATER
+    [DataRow(LanguageVersion.CSharp14)]
+#endif
+    [DataRow(LanguageVersion.Preview)]
+    public async Task SimpleProperty_Multiple_OnlyTriggersOnSecondOne(LanguageVersion languageVersion)
     {
         string original = """
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -606,7 +646,7 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
             }
             """;
 
-        CSharpCodeFixTest test = new(LanguageVersion.Preview)
+        CSharpCodeFixTest test = new(languageVersion)
         {
             TestCode = original,
             FixedCode = @fixed,
@@ -630,7 +670,11 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
     }
 
     [TestMethod]
-    public async Task SimpleProperty_WithinPartialType()
+#if ROSLYN_5_0_0_OR_GREATER
+    [DataRow(LanguageVersion.CSharp14)]
+#endif
+    [DataRow(LanguageVersion.Preview)]
+    public async Task SimpleProperty_WithinPartialType(LanguageVersion languageVersion)
     {
         string original = """
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -659,7 +703,7 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
             }
             """;
 
-        CSharpCodeFixTest test = new(LanguageVersion.Preview)
+        CSharpCodeFixTest test = new(languageVersion)
         {
             TestCode = original,
             FixedCode = @fixed,
@@ -683,7 +727,11 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
     }
 
     [TestMethod]
-    public async Task SimpleProperty_WithinPartialType_Multiple()
+#if ROSLYN_5_0_0_OR_GREATER
+    [DataRow(LanguageVersion.CSharp14)]
+#endif
+    [DataRow(LanguageVersion.Preview)]
+    public async Task SimpleProperty_WithinPartialType_Multiple(LanguageVersion languageVersion)
     {
         string original = """
             using CommunityToolkit.Mvvm.ComponentModel;
@@ -721,7 +769,7 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
             }
             """;
 
-        CSharpCodeFixTest test = new(LanguageVersion.Preview)
+        CSharpCodeFixTest test = new(languageVersion)
         {
             TestCode = original,
             FixedCode = @fixed,
@@ -751,7 +799,11 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
     }
 
     [TestMethod]
-    public async Task SimpleProperty_Multiple_WithMissingUsingDirective()
+#if ROSLYN_5_0_0_OR_GREATER
+    [DataRow(LanguageVersion.CSharp14)]
+#endif
+    [DataRow(LanguageVersion.Preview)]
+    public async Task SimpleProperty_Multiple_WithMissingUsingDirective(LanguageVersion languageVersion)
     {
         string original = """
             namespace MyApp;
@@ -796,7 +848,7 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
             }
             """;
 
-        CSharpCodeFixTest test = new(LanguageVersion.Preview)
+        CSharpCodeFixTest test = new(languageVersion)
         {
             TestCode = original,
             FixedCode = @fixed,
@@ -832,7 +884,11 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
     }
 
     [TestMethod]
-    public async Task SimpleProperty_WithinPartialType_Multiple_MixedScenario()
+#if ROSLYN_5_0_0_OR_GREATER
+    [DataRow(LanguageVersion.CSharp14)]
+#endif
+    [DataRow(LanguageVersion.Preview)]
+    public async Task SimpleProperty_WithinPartialType_Multiple_MixedScenario(LanguageVersion languageVersion)
     {
         string original = """
             using System;
@@ -945,7 +1001,7 @@ public class Test_UseObservablePropertyOnSemiAutoPropertyCodeFixer
             public class TestAttribute(string text) : Attribute;
             """;
 
-        CSharpCodeFixTest test = new(LanguageVersion.Preview)
+        CSharpCodeFixTest test = new(languageVersion)
         {
             TestCode = original,
             FixedCode = @fixed,

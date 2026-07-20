@@ -24,17 +24,19 @@
     </Otherwise>
   </Choose>
 
+  <!-- Build-only packages for versioning and reproducible builds -->
   <ItemGroup>
     <PackageReference Include="Nerdbank.GitVersioning" Version="3.9.50" PrivateAssets="All" IsImplicitlyReferenced="true" />
+    <PackageReference Include="DotNet.ReproducibleBuilds" Version="2.0.2" PrivateAssets="all" IsImplicitlyReferenced="true" />
   </ItemGroup>
 
   <Choose>
     <When Condition="'$(SourceLinkEnabled)' != 'false'">
       <PropertyGroup>
-        <!-- Declare that the Repository URL can be published to NuSpec -->
-        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+
         <!-- Embed source files that are not tracked by the source control manager to the PDB -->
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
+
         <!-- Include PDB in the built .nupkg -->
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
       </PropertyGroup>

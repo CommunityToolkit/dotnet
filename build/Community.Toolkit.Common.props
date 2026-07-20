@@ -46,7 +46,6 @@
   <PropertyGroup>
     <IsPackable>true</IsPackable>
     <IsPublishable>true</IsPublishable>
-    <ContinuousIntegrationBuild>$(TF_BUILD)</ContinuousIntegrationBuild>
   </PropertyGroup>
 
 </Project>

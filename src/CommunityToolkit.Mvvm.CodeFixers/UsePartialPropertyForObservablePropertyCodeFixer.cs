@@ -82,7 +82,11 @@ public sealed class UsePartialPropertyForObservablePropertyCodeFixer : CodeFixPr
         SemanticModel semanticModel = (await context.Document.GetSemanticModelAsync(context.CancellationToken).ConfigureAwait(false))!;
 
         // If the language is not preview, we cannot apply this code fix (as it would generate invalid C# code)
+#if ROSLYN_5_0_0_OR_GREATER
+        if (!semanticModel.Compilation.HasLanguageVersionAtLeastEqualTo(LanguageVersion.CSharp14))
+#else
         if (!semanticModel.Compilation.IsLanguageVersionPreview())
+#endif
         {
             return;
         }
