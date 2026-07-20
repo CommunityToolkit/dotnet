@@ -22,6 +22,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowArrayTypeMismatchException<T>()
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new ArrayTypeMismatchException();
     }
@@ -35,6 +38,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowArrayTypeMismatchException<T>(string? message)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new ArrayTypeMismatchException(message);
     }
@@ -49,6 +55,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowArrayTypeMismatchException<T>(string? message, Exception? innerException)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new ArrayTypeMismatchException(message, innerException);
     }
@@ -61,6 +70,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowArgumentException<T>()
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new ArgumentException();
     }
@@ -74,6 +86,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowArgumentException<T>(string? message)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new ArgumentException(message);
     }
@@ -88,6 +103,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowArgumentException<T>(string? message, Exception? innerException)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new ArgumentException(message, innerException);
     }
@@ -102,6 +120,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowArgumentException<T>(string? name, string? message)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new ArgumentException(message, name);
     }
@@ -117,6 +138,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowArgumentException<T>(string? name, string? message, Exception? innerException)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new ArgumentException(message, name, innerException);
     }
@@ -129,6 +153,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowArgumentNullException<T>()
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new ArgumentNullException();
     }
@@ -142,6 +169,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowArgumentNullException<T>(string? name)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new ArgumentNullException(name);
     }
@@ -156,6 +186,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowArgumentNullException<T>(string? name, Exception? innerException)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new ArgumentNullException(name, innerException);
     }
@@ -170,6 +203,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowArgumentNullException<T>(string? name, string? message)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new ArgumentNullException(name, message);
     }
@@ -182,6 +218,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowArgumentOutOfRangeException<T>()
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new ArgumentOutOfRangeException();
     }
@@ -195,6 +234,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowArgumentOutOfRangeException<T>(string? name)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new ArgumentOutOfRangeException(name);
     }
@@ -209,6 +251,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowArgumentOutOfRangeException<T>(string? name, Exception? innerException)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new ArgumentOutOfRangeException(name, innerException);
     }
@@ -223,6 +268,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowArgumentOutOfRangeException<T>(string? name, string? message)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new ArgumentOutOfRangeException(name, message);
     }
@@ -238,6 +286,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowArgumentOutOfRangeException<T>(string? name, object? value, string? message)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new ArgumentOutOfRangeException(name, value, message);
     }
@@ -250,6 +301,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowCOMException<T>()
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new COMException();
     }
@@ -263,6 +317,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowCOMException<T>(string? message)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new COMException(message);
     }
@@ -277,6 +334,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowCOMException<T>(string? message, Exception? innerException)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new COMException(message, innerException);
     }
@@ -291,6 +351,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowCOMException<T>(string? message, int error)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new COMException(message, error);
     }
@@ -303,6 +366,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowExternalException<T>()
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new ExternalException();
     }
@@ -316,6 +382,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowExternalException<T>(string? message)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new ExternalException(message);
     }
@@ -330,6 +399,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowExternalException<T>(string? message, Exception? innerException)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new ExternalException(message, innerException);
     }
@@ -344,6 +416,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowExternalException<T>(string? message, int error)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new ExternalException(message, error);
     }
@@ -356,6 +431,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowFormatException<T>()
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new FormatException();
     }
@@ -369,6 +447,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowFormatException<T>(string? message)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new FormatException(message);
     }
@@ -383,6 +464,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowFormatException<T>(string? message, Exception? innerException)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new FormatException(message, innerException);
     }
@@ -395,6 +479,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowInsufficientMemoryException<T>()
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new InsufficientMemoryException();
     }
@@ -408,6 +495,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowInsufficientMemoryException<T>(string? message)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new InsufficientMemoryException(message);
     }
@@ -422,6 +512,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowInsufficientMemoryException<T>(string? message, Exception? innerException)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new InsufficientMemoryException(message, innerException);
     }
@@ -434,6 +527,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowInvalidDataException<T>()
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new InvalidDataException();
     }
@@ -447,6 +543,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowInvalidDataException<T>(string? message)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new InvalidDataException(message);
     }
@@ -461,6 +560,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowInvalidDataException<T>(string? message, Exception? innerException)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new InvalidDataException(message, innerException);
     }
@@ -473,6 +575,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowInvalidOperationException<T>()
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new InvalidOperationException();
     }
@@ -486,6 +591,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowInvalidOperationException<T>(string? message)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new InvalidOperationException(message);
     }
@@ -500,6 +608,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowInvalidOperationException<T>(string? message, Exception? innerException)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new InvalidOperationException(message, innerException);
     }
@@ -512,6 +623,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowLockRecursionException<T>()
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new LockRecursionException();
     }
@@ -525,6 +639,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowLockRecursionException<T>(string? message)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new LockRecursionException(message);
     }
@@ -539,6 +656,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowLockRecursionException<T>(string? message, Exception? innerException)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new LockRecursionException(message, innerException);
     }
@@ -551,6 +671,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowMissingFieldException<T>()
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new MissingFieldException();
     }
@@ -564,6 +687,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowMissingFieldException<T>(string? message)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new MissingFieldException(message);
     }
@@ -578,6 +704,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowMissingFieldException<T>(string? message, Exception? innerException)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new MissingFieldException(message, innerException);
     }
@@ -592,6 +721,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowMissingFieldException<T>(string? className, string? fieldName)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new MissingFieldException(className, fieldName);
     }
@@ -604,6 +736,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowMissingMemberException<T>()
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new MissingMemberException();
     }
@@ -617,6 +752,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowMissingMemberException<T>(string? message)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new MissingMemberException(message);
     }
@@ -631,6 +769,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowMissingMemberException<T>(string? message, Exception? innerException)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new MissingMemberException(message, innerException);
     }
@@ -645,6 +786,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowMissingMemberException<T>(string? className, string? memberName)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new MissingMemberException(className, memberName);
     }
@@ -657,6 +801,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowMissingMethodException<T>()
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new MissingMethodException();
     }
@@ -670,6 +817,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowMissingMethodException<T>(string? message)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new MissingMethodException(message);
     }
@@ -684,6 +834,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowMissingMethodException<T>(string? message, Exception? innerException)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new MissingMethodException(message, innerException);
     }
@@ -698,6 +851,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowMissingMethodException<T>(string? className, string? methodName)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new MissingMethodException(className, methodName);
     }
@@ -710,6 +866,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowNotSupportedException<T>()
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new NotSupportedException();
     }
@@ -723,6 +882,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowNotSupportedException<T>(string? message)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new NotSupportedException(message);
     }
@@ -737,6 +899,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowNotSupportedException<T>(string? message, Exception? innerException)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new NotSupportedException(message, innerException);
     }
@@ -750,6 +915,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowObjectDisposedException<T>(string? objectName)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new ObjectDisposedException(objectName);
     }
@@ -764,6 +932,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowObjectDisposedException<T>(string? objectName, Exception? innerException)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new ObjectDisposedException(objectName, innerException);
     }
@@ -778,6 +949,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowObjectDisposedException<T>(string? objectName, string? message)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new ObjectDisposedException(objectName, message);
     }
@@ -790,6 +964,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowOperationCanceledException<T>()
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new OperationCanceledException();
     }
@@ -803,6 +980,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowOperationCanceledException<T>(string? message)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new OperationCanceledException(message);
     }
@@ -817,6 +997,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowOperationCanceledException<T>(string? message, Exception? innerException)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new OperationCanceledException(message, innerException);
     }
@@ -830,6 +1013,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowOperationCanceledException<T>(CancellationToken token)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new OperationCanceledException(token);
     }
@@ -844,6 +1030,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowOperationCanceledException<T>(string? message, CancellationToken token)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new OperationCanceledException(message, token);
     }
@@ -859,6 +1048,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowOperationCanceledException<T>(string? message, Exception? innerException, CancellationToken token)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new OperationCanceledException(message, innerException, token);
     }
@@ -871,6 +1063,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowPlatformNotSupportedException<T>()
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new PlatformNotSupportedException();
     }
@@ -884,6 +1079,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowPlatformNotSupportedException<T>(string? message)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new PlatformNotSupportedException(message);
     }
@@ -898,6 +1096,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowPlatformNotSupportedException<T>(string? message, Exception? innerException)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new PlatformNotSupportedException(message, innerException);
     }
@@ -910,6 +1111,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowSynchronizationLockException<T>()
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new SynchronizationLockException();
     }
@@ -923,6 +1127,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowSynchronizationLockException<T>(string? message)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new SynchronizationLockException(message);
     }
@@ -937,6 +1144,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowSynchronizationLockException<T>(string? message, Exception? innerException)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new SynchronizationLockException(message, innerException);
     }
@@ -949,6 +1159,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowTimeoutException<T>()
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new TimeoutException();
     }
@@ -962,6 +1175,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowTimeoutException<T>(string? message)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new TimeoutException(message);
     }
@@ -976,6 +1192,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowTimeoutException<T>(string? message, Exception? innerException)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new TimeoutException(message, innerException);
     }
@@ -988,6 +1207,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowUnauthorizedAccessException<T>()
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new UnauthorizedAccessException();
     }
@@ -1001,6 +1223,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowUnauthorizedAccessException<T>(string? message)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new UnauthorizedAccessException(message);
     }
@@ -1015,6 +1240,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowUnauthorizedAccessException<T>(string? message, Exception? innerException)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new UnauthorizedAccessException(message, innerException);
     }
@@ -1027,6 +1255,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowWin32Exception<T>()
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new Win32Exception();
     }
@@ -1040,6 +1271,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowWin32Exception<T>(int error)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new Win32Exception(error);
     }
@@ -1054,6 +1288,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowWin32Exception<T>(int error, string? message)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new Win32Exception(error, message);
     }
@@ -1067,6 +1304,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowWin32Exception<T>(string? message)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new Win32Exception(message);
     }
@@ -1081,6 +1321,9 @@ partial class ThrowHelper
     /// <returns>This method always throws, so it actually never returns a value.</returns>
     [DoesNotReturn]
     public static T ThrowWin32Exception<T>(string? message, Exception? innerException)
+        #if NET9_0_OR_GREATER
+        where T : allows ref struct
+        #endif
     {
         throw new Win32Exception(message, innerException);
     }
