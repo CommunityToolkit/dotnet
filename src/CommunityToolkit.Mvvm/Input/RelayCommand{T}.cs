@@ -82,17 +82,16 @@ public sealed partial class RelayCommand<T> : IRelayCommand<T>
     /// <inheritdoc/>
     public bool CanExecute(object? parameter)
     {
-        // WPF may call CanExecute(null) during initialization before the
-        // CommandParameter binding has produced a value. For non-nullable
-        // value types (e.g. int, enums), null cannot be meaningfully
-        // converted — there is no "default" that can safely stand in for
-        // "no value" (0 could be a legitimate SelectedIndex, for example).
-        //
-        // - If the user didn't supply a canExecute predicate, the command
-        //   is meant to always run — return true.
-        // - If a predicate exists, we cannot guess the user's intent, so
-        //   return false. The framework will re-query CanExecute when the
-        //   binding eventually produces the real parameter value.
+        // WPF and other command sources may query CanExecute(null) before a
+        // non-nullable value-type command parameter is available.
+        // 
+        // A command without a canExecute predicate has no availability
+        // restriction, so null does not make the command unavailable.
+        // When a predicate exists, null cannot be converted to T and the
+        // predicate cannot be evaluated safely, so return false.
+        // 
+        // This result only describes command availability. Execute still
+        // validates the parameter contract and rejects an invalid argument.
         if (parameter is null && default(T) is not null)
         {
             return _canExecute is null;
