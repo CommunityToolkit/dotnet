@@ -4,6 +4,7 @@
 
 using System;
 using System.Buffers;
+using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -45,21 +46,17 @@ public static class IBufferWriterExtensions
     /// <param name="writer">The target <see cref="IBufferWriter{T}"/> instance to write to.</param>
     /// <param name="value">The input value to write to <paramref name="writer"/>.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="writer"/> reaches the end.</exception>
+    /// <remarks>
+    /// The <c>sizeHint</c> passed to <see cref="IBufferWriter{T}.GetSpan"/> is a hint, not a demand: a writer is
+    /// free to return less. The write is therefore delegated to <see cref="BuffersExtensions"/>, which loops over
+    /// whatever spans it is given, rather than requiring <paramref name="value"/> to fit in a single span.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe void Write<T>(this IBufferWriter<byte> writer, T value)
         where T : unmanaged
     {
-        Span<byte> span = writer.GetSpan(sizeof(T));
-
-        if (span.Length < sizeof(T))
-        {
-            ThrowArgumentExceptionForEndOfBuffer();
-        }
-
-        ref byte r0 = ref MemoryMarshal.GetReference(span);
-
-        Unsafe.WriteUnaligned(ref r0, value);
-
-        writer.Advance(sizeof(T));
+        // the address of a parameter is stack-based, so this needs no pinning
+        BuffersExtensions.Write(writer, new ReadOnlySpan<byte>(&value, sizeof(T)));
     }
 
     /// <summary>
@@ -91,16 +88,16 @@ public static class IBufferWriterExtensions
     /// <param name="writer">The target <see cref="IBufferWriter{T}"/> instance to write to.</param>
     /// <param name="span">The input <see cref="ReadOnlySpan{T}"/> to write to <paramref name="writer"/>.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="writer"/> reaches the end.</exception>
+    /// <remarks>
+    /// The <c>sizeHint</c> passed to <see cref="IBufferWriter{T}.GetSpan"/> is a hint, not a demand: a writer is
+    /// free to return less. The write is therefore delegated to <see cref="BuffersExtensions"/>, which loops over
+    /// whatever spans it is given, rather than requiring <paramref name="span"/> to fit in a single span.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Write<T>(this IBufferWriter<byte> writer, ReadOnlySpan<T> span)
         where T : unmanaged
     {
-        ReadOnlySpan<byte> source = MemoryMarshal.AsBytes(span);
-        Span<byte> destination = writer.GetSpan(source.Length);
-
-        source.CopyTo(destination);
-
-        writer.Advance(source.Length);
+        BuffersExtensions.Write(writer, MemoryMarshal.AsBytes(span));
     }
 
 #if !NETSTANDARD2_1_OR_GREATER
@@ -111,14 +108,17 @@ public static class IBufferWriterExtensions
     /// <param name="writer">The target <see cref="IBufferWriter{T}"/> instance to write to.</param>
     /// <param name="span">The input <see cref="ReadOnlySpan{T}"/> to write to <paramref name="writer"/>.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="writer"/> reaches the end.</exception>
+    /// <remarks>
+    /// This is not an extension method: <see cref="BuffersExtensions.Write"/> has the same signature and is always
+    /// available (the System.Memory package is a dependency of this package on netstandard2.0), so an extension
+    /// method here would only be an ambiguity. It remains for binary compatibility.
+    /// </remarks>
+    [Obsolete("Use System.Buffers.BuffersExtensions.Write instead; this overload exists only for binary compatibility.")]
+    [EditorBrowsable(EditorBrowsableState.Never)]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Write<T>(this IBufferWriter<T> writer, ReadOnlySpan<T> span)
+    public static void Write<T>(IBufferWriter<T> writer, ReadOnlySpan<T> span)
     {
-        Span<T> destination = writer.GetSpan(span.Length);
-
-        span.CopyTo(destination);
-
-        writer.Advance(span.Length);
+        BuffersExtensions.Write(writer, span);
     }
 #endif
 
