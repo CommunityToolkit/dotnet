@@ -326,4 +326,160 @@ public class Test_StringPool
             Assert.IsTrue(IsMinHeap(array));
         }
     }
+
+    [TestMethod]
+    [DataRow(62, 63)]
+    [DataRow(63, 64)]
+    [DataRow(64, 65)]
+    [DataRow(126, 127)]
+    [DataRow(127, 128)]
+    [DataRow(128, 129)]
+    public void Test_StringPool_GetOrAdd_Encoding_Utf8_BufferBoundary(int inputLength, int expectedMaxLength)
+    {
+        StringPool pool = new();
+        string text = new('a', inputLength);
+        byte[] bytes = Encoding.UTF8.GetBytes(text);
+
+        Assert.AreEqual(expectedMaxLength, Encoding.UTF8.GetMaxCharCount(bytes.Length));
+
+        string first = pool.GetOrAdd(bytes, Encoding.UTF8);
+        string second = pool.GetOrAdd(bytes, Encoding.UTF8);
+
+        Assert.AreEqual(text, first);
+        Assert.AreSame(first, second);
+    }
+
+    [TestMethod]
+    public void Test_StringPool_GetOrAdd_Encoding_Unicode_SmallAndLarge()
+    {
+        string small = "Zażółć 😀 東京";
+        string large = string.Concat(Enumerable.Repeat("Zażółć 😀 東京 ", 32));
+
+        foreach (Encoding encoding in new[] { Encoding.UTF8, Encoding.Unicode })
+        {
+            byte[] smallBytes = encoding.GetBytes(small);
+            byte[] largeBytes = encoding.GetBytes(large);
+
+            Assert.IsLessThanOrEqualTo(64, encoding.GetMaxCharCount(smallBytes.Length));
+            Assert.IsGreaterThan(64, encoding.GetMaxCharCount(largeBytes.Length));
+
+            StringPool pool = new();
+
+            string smallFirst = pool.GetOrAdd(smallBytes, encoding);
+            string smallSecond = pool.GetOrAdd(smallBytes, encoding);
+            string largeFirst = pool.GetOrAdd(largeBytes, encoding);
+            string largeSecond = pool.GetOrAdd(largeBytes, encoding);
+
+            Assert.AreEqual(small, smallFirst);
+            Assert.AreSame(smallFirst, smallSecond);
+            Assert.AreEqual(large, largeFirst);
+            Assert.AreSame(largeFirst, largeSecond);
+        }
+    }
+
+    [TestMethod]
+    [DataRow(1)]
+    [DataRow(128)]
+    public void Test_StringPool_GetOrAdd_Encoding_InvalidUtf8(int inputLength)
+    {
+        byte[] bytes = Enumerable.Repeat((byte)0xFF, inputLength).ToArray();
+        Encoding replacementEncoding = new UTF8Encoding(false, false);
+        Encoding throwingEncoding = new UTF8Encoding(false, true);
+        StringPool pool = new();
+
+        if (inputLength == 1)
+        {
+            Assert.IsLessThanOrEqualTo(64, replacementEncoding.GetMaxCharCount(bytes.Length));
+        }
+        else
+        {
+            Assert.IsGreaterThan(64, replacementEncoding.GetMaxCharCount(bytes.Length));
+        }
+
+        Assert.AreEqual(replacementEncoding.GetString(bytes), pool.GetOrAdd(bytes, replacementEncoding));
+        _ = Assert.ThrowsExactly<DecoderFallbackException>(() => pool.GetOrAdd(bytes, throwingEncoding));
+    }
+
+    [TestMethod]
+    public void Test_StringPool_GetOrAdd_Encoding_Empty_AllowsNullEncoding()
+    {
+        StringPool pool = new();
+
+        Assert.AreSame(string.Empty, pool.GetOrAdd(ReadOnlySpan<byte>.Empty, null!));
+        _ = Assert.ThrowsExactly<NullReferenceException>(() => pool.GetOrAdd(new byte[] { 1 }, null!));
+    }
+
+    [TestMethod]
+    [DataRow(0, "")]
+    [DataRow(129, "A")]
+    public void Test_StringPool_GetOrAdd_Encoding_PassesExactCapacityAndNonNullDestination(int maxCharCount, string expected)
+    {
+        TrackingEncoding encoding = new(maxCharCount);
+        StringPool pool = new();
+
+        string result = pool.GetOrAdd(new byte[] { (byte)'A' }, encoding);
+
+        Assert.AreEqual(expected, result);
+        Assert.AreEqual(maxCharCount, encoding.LastCharCapacity);
+        Assert.IsTrue(encoding.DestinationWasNonNull);
+    }
+
+    private unsafe sealed class TrackingEncoding : Encoding
+    {
+        private readonly int maxCharCount;
+
+        public TrackingEncoding(int maxCharCount)
+        {
+            this.maxCharCount = maxCharCount;
+        }
+
+        public int LastCharCapacity { get; private set; }
+
+        public bool DestinationWasNonNull { get; private set; }
+
+        public override int GetMaxCharCount(int byteCount)
+        {
+            return this.maxCharCount;
+        }
+
+        public override int GetMaxByteCount(int charCount)
+        {
+            return charCount;
+        }
+
+        public override int GetChars(byte* bytes, int byteCount, char* chars, int charCount)
+        {
+            this.LastCharCapacity = charCount;
+            this.DestinationWasNonNull = chars != null;
+
+            if (charCount == 0)
+            {
+                return 0;
+            }
+
+            chars[0] = (char)bytes[0];
+
+            return 1;
+        }
+
+        public override int GetByteCount(char[] chars, int index, int count)
+        {
+            throw new NotSupportedException();
+        }
+
+        public override int GetBytes(char[] chars, int charIndex, int charCount, byte[] bytes, int byteIndex)
+        {
+            throw new NotSupportedException();
+        }
+
+        public override int GetCharCount(byte[] bytes, int index, int count)
+        {
+            throw new NotSupportedException();
+        }
+
+        public override int GetChars(byte[] bytes, int byteIndex, int byteCount, char[] chars, int charIndex)
+        {
+            throw new NotSupportedException();
+        }
+    }
 }

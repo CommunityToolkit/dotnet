@@ -223,10 +223,35 @@ public sealed class StringPool
 
         int maxLength = encoding.GetMaxCharCount(span.Length);
 
+        if ((uint)maxLength <= 64)
+        {
+            return GetOrAddWithStackBuffer(span, encoding, maxLength);
+        }
+
         using SpanOwner<char> buffer = SpanOwner<char>.Allocate(maxLength);
 
         fixed (byte* source = span)
         fixed (char* destination = &buffer.DangerousGetReference())
+        {
+            int effectiveLength = encoding.GetChars(source, span.Length, destination, maxLength);
+
+            return GetOrAdd(new ReadOnlySpan<char>(destination, effectiveLength));
+        }
+    }
+
+    /// <summary>
+    /// Decodes a bounded byte span using a stack-allocated buffer and returns its pooled string.
+    /// </summary>
+    /// <param name="span">The byte span to decode.</param>
+    /// <param name="encoding">The encoding to use.</param>
+    /// <param name="maxLength">The maximum decoded character count.</param>
+    /// <returns>The pooled string for the decoded characters.</returns>
+    private unsafe string GetOrAddWithStackBuffer(ReadOnlySpan<byte> span, Encoding encoding, int maxLength)
+    {
+        Span<char> stackBuffer = stackalloc char[64];
+
+        fixed (byte* source = span)
+        fixed (char* destination = stackBuffer)
         {
             int effectiveLength = encoding.GetChars(source, span.Length, destination, maxLength);
 
