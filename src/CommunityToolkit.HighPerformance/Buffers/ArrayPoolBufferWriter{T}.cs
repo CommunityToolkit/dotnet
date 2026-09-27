@@ -4,6 +4,7 @@
 
 using System;
 using System.Buffers;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -37,6 +38,11 @@ public sealed class ArrayPoolBufferWriter<T> : IBuffer<T>, IMemoryOwner<T>
     private const int DefaultInitialBufferSize = 256;
 
     /// <summary>
+    /// The maximum size to target when growing buffers geometrically.
+    /// </summary>
+    private const int MaximumSegmentSize = 1024 * 1024;
+
+    /// <summary>
     /// The <see cref="ArrayPool{T}"/> instance used to rent <see cref="array"/>.
     /// </summary>
     private readonly ArrayPool<T> pool;
@@ -45,6 +51,16 @@ public sealed class ArrayPoolBufferWriter<T> : IBuffer<T>, IMemoryOwner<T>
     /// The underlying <typeparamref name="T"/> array.
     /// </summary>
     private T[]? array;
+
+    /// <summary>
+    /// The completed buffers that were previously used as active write targets.
+    /// </summary>
+    private List<BufferInfo>? buffers;
+
+    /// <summary>
+    /// The total number of written items in <see cref="buffers"/>.
+    /// </summary>
+    private int bufferedCount;
 
 #pragma warning disable IDE0032 // Use field over auto-property (clearer and faster)
     /// <summary>
@@ -121,14 +137,9 @@ public sealed class ArrayPoolBufferWriter<T> : IBuffer<T>, IMemoryOwner<T>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get
         {
-            T[]? array = this.array;
+            EnsureSingleBuffer();
 
-            if (array is null)
-            {
-                ThrowObjectDisposedException();
-            }
-
-            return array!.AsMemory(0, this.index);
+            return this.array.AsMemory(0, this.index);
         }
     }
 
@@ -138,14 +149,9 @@ public sealed class ArrayPoolBufferWriter<T> : IBuffer<T>, IMemoryOwner<T>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get
         {
-            T[]? array = this.array;
+            EnsureSingleBuffer();
 
-            if (array is null)
-            {
-                ThrowObjectDisposedException();
-            }
-
-            return array!.AsSpan(0, this.index);
+            return this.array.AsSpan(0, this.index);
         }
     }
 
@@ -153,7 +159,7 @@ public sealed class ArrayPoolBufferWriter<T> : IBuffer<T>, IMemoryOwner<T>
     public int WrittenCount
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => this.index;
+        get => this.bufferedCount + this.index;
     }
 
     /// <inheritdoc/>
@@ -169,7 +175,7 @@ public sealed class ArrayPoolBufferWriter<T> : IBuffer<T>, IMemoryOwner<T>
                 ThrowObjectDisposedException();
             }
 
-            return array!.Length;
+            return this.bufferedCount + Math.Min(array!.Length, int.MaxValue - this.bufferedCount);
         }
     }
 
@@ -186,7 +192,7 @@ public sealed class ArrayPoolBufferWriter<T> : IBuffer<T>, IMemoryOwner<T>
                 ThrowObjectDisposedException();
             }
 
-            return array!.Length - this.index;
+            return Math.Min(array!.Length - this.index, int.MaxValue - WrittenCount);
         }
     }
 
@@ -198,6 +204,18 @@ public sealed class ArrayPoolBufferWriter<T> : IBuffer<T>, IMemoryOwner<T>
         if (array is null)
         {
             ThrowObjectDisposedException();
+        }
+
+        if (this.buffers is { Count: > 0 } buffers)
+        {
+            foreach (BufferInfo buffer in buffers)
+            {
+                buffer.Array.AsSpan(0, buffer.Length).Clear();
+                this.pool.Return(buffer.Array);
+            }
+
+            buffers.Clear();
+            this.bufferedCount = 0;
         }
 
         array.AsSpan(0, this.index).Clear();
@@ -225,6 +243,11 @@ public sealed class ArrayPoolBufferWriter<T> : IBuffer<T>, IMemoryOwner<T>
             ThrowArgumentExceptionForAdvancedTooFar();
         }
 
+        if (count > int.MaxValue - WrittenCount)
+        {
+            ThrowArgumentExceptionForAdvancedTooFar();
+        }
+
         this.index += count;
     }
 
@@ -233,7 +256,7 @@ public sealed class ArrayPoolBufferWriter<T> : IBuffer<T>, IMemoryOwner<T>
     {
         CheckBufferAndEnsureCapacity(sizeHint);
 
-        return this.array.AsMemory(this.index);
+        return this.array.AsMemory(this.index, FreeCapacity);
     }
 
     /// <inheritdoc/>
@@ -241,7 +264,64 @@ public sealed class ArrayPoolBufferWriter<T> : IBuffer<T>, IMemoryOwner<T>
     {
         CheckBufferAndEnsureCapacity(sizeHint);
 
-        return this.array.AsSpan(this.index);
+        return this.array.AsSpan(this.index, FreeCapacity);
+    }
+
+    /// <summary>
+    /// Gets a <see cref="ReadOnlySequence{T}"/> over the written data.
+    /// </summary>
+    /// <returns>A <see cref="ReadOnlySequence{T}"/> over the written data.</returns>
+    /// <exception cref="ObjectDisposedException">Thrown when the current instance has been disposed.</exception>
+    /// <remarks>
+    /// The returned sequence is only valid as long as the current instance is not modified, cleared, consolidated or disposed.
+    /// </remarks>
+    public ReadOnlySequence<T> GetReadOnlySequence()
+    {
+        T[]? array = this.array;
+
+        if (array is null)
+        {
+            ThrowObjectDisposedException();
+        }
+
+        if (this.bufferedCount + this.index == 0)
+        {
+            return ReadOnlySequence<T>.Empty;
+        }
+
+        if (this.buffers is not { Count: > 0 })
+        {
+            return new ReadOnlySequence<T>(array!, 0, this.index);
+        }
+
+        SequenceSegment? startSegment = null;
+        SequenceSegment? endSegment = null;
+
+        foreach (BufferInfo buffer in this.buffers)
+        {
+            SequenceSegment segment = new(buffer.Array.AsMemory(0, buffer.Length));
+
+            if (startSegment is null)
+            {
+                startSegment = segment;
+            }
+            else
+            {
+                endSegment!.SetNext(segment);
+            }
+
+            endSegment = segment;
+        }
+
+        if (this.index > 0)
+        {
+            SequenceSegment segment = new(array!.AsMemory(0, this.index));
+
+            endSegment!.SetNext(segment);
+            endSegment = segment;
+        }
+
+        return new(startSegment!, 0, endSegment!, endSegment!.Memory.Length);
     }
 
     /// <summary>
@@ -258,14 +338,9 @@ public sealed class ArrayPoolBufferWriter<T> : IBuffer<T>, IMemoryOwner<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ArraySegment<T> DangerousGetArray()
     {
-        T[]? array = this.array;
+        EnsureSingleBuffer();
 
-        if (array is null)
-        {
-            ThrowObjectDisposedException();
-        }
-
-        return new(array!, 0, this.index);
+        return new(this.array!, 0, this.index);
     }
 
     /// <inheritdoc/>
@@ -280,6 +355,19 @@ public sealed class ArrayPoolBufferWriter<T> : IBuffer<T>, IMemoryOwner<T>
 
         this.array = null;
 
+        if (this.buffers is { Count: > 0 } buffers)
+        {
+            foreach (BufferInfo buffer in buffers)
+            {
+                this.pool.Return(buffer.Array);
+            }
+
+            buffers.Clear();
+        }
+
+        this.bufferedCount = 0;
+        this.index = 0;
+
         this.pool.Return(array);
     }
 
@@ -290,11 +378,47 @@ public sealed class ArrayPoolBufferWriter<T> : IBuffer<T>, IMemoryOwner<T>
         if (typeof(T) == typeof(char) &&
             this.array is char[] chars)
         {
-            return new(chars, 0, this.index);
+            if (this.bufferedCount == 0)
+            {
+                return new(chars, 0, this.index);
+            }
+
+#if NETSTANDARD2_0
+            ArrayPool<char> pool = (ArrayPool<char>)(object)this.pool;
+            char[] buffer = pool.Rent(WrittenCount);
+
+            try
+            {
+                CopyWrittenCharsTo(buffer);
+
+                return new(buffer, 0, WrittenCount);
+            }
+            finally
+            {
+                pool.Return(buffer);
+            }
+#else
+            return string.Create(WrittenCount, this, static (destination, writer) => writer.CopyWrittenCharsTo(destination));
+#endif
         }
 
         // Same representation used in Span<T>
-        return $"CommunityToolkit.HighPerformance.Buffers.ArrayPoolBufferWriter<{typeof(T)}>[{this.index}]";
+        return $"CommunityToolkit.HighPerformance.Buffers.ArrayPoolBufferWriter<{typeof(T)}>[{WrittenCount}]";
+    }
+
+    /// <summary>
+    /// Copies the written characters to a destination without modifying the writer.
+    /// </summary>
+    /// <param name="destination">The destination for the written characters.</param>
+    private void CopyWrittenCharsTo(Span<char> destination)
+    {
+        foreach (BufferInfo buffer in this.buffers!)
+        {
+            ((char[])(object)buffer.Array).AsSpan(0, buffer.Length).CopyTo(destination);
+            destination = destination.Slice(buffer.Length);
+        }
+
+        ((char[])(object)this.array!).AsSpan(0, this.index).CopyTo(destination);
     }
 
     /// <summary>
@@ -321,32 +445,143 @@ public sealed class ArrayPoolBufferWriter<T> : IBuffer<T>, IMemoryOwner<T>
             sizeHint = 1;
         }
 
+        // The public counts are ints, so never expose or retain more than int.MaxValue items.
+        // Check before renting to preserve ownership and the current sequence on failure.
+        if (sizeHint > int.MaxValue - WrittenCount)
+        {
+            ThrowArgumentOutOfRangeExceptionForExcessiveSizeHint();
+        }
+
         if (sizeHint > array!.Length - this.index)
         {
-            ResizeBuffer(sizeHint);
+            RentNextBuffer(sizeHint);
         }
     }
 
     /// <summary>
-    /// Resizes <see cref="array"/> to ensure it can fit the specified number of new items.
+    /// Rents a new active buffer with enough space for the specified number of new items.
     /// </summary>
     /// <param name="sizeHint">The minimum number of items to ensure space for in <see cref="array"/>.</param>
     [MethodImpl(MethodImplOptions.NoInlining)]
-    private void ResizeBuffer(int sizeHint)
+    private void RentNextBuffer(int sizeHint)
     {
-        uint minimumSize = (uint)this.index + (uint)sizeHint;
+        Debug.Assert(this.array is not null);
+
+        T[] array = this.array!;
+
+        // Rent before transferring ownership of the current buffer so that a failed rent
+        // leaves the writer unchanged and still owning its current buffer.
+        T[] nextArray = this.pool.Rent(GetMinimumBufferSize(array.Length, sizeHint));
+
+        try
+        {
+            if (this.index > 0)
+            {
+                AddBuffer(array, this.index);
+            }
+            else
+            {
+                this.pool.Return(array);
+            }
+        }
+        catch
+        {
+            // If transferring the current buffer fails, return the new one to avoid a leak.
+            this.pool.Return(nextArray);
+
+            throw;
+        }
+
+        this.array = nextArray;
+        this.index = 0;
+    }
+
+    /// <summary>
+    /// Adds a completed buffer to <see cref="buffers"/>.
+    /// </summary>
+    /// <param name="array">The buffer to add.</param>
+    /// <param name="length">The number of written items in <paramref name="array"/>.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void AddBuffer(T[] array, int length)
+    {
+        (this.buffers ??= new List<BufferInfo>()).Add(new BufferInfo(array, length));
+        this.bufferedCount += length;
+    }
+
+    /// <summary>
+    /// Gets the minimum size to use for a new active buffer.
+    /// </summary>
+    /// <param name="currentLength">The length of the current active buffer.</param>
+    /// <param name="sizeHint">The minimum required number of writable items.</param>
+    /// <returns>The minimum size to request to the pool.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static int GetMinimumBufferSize(int currentLength, int sizeHint)
+    {
+        int nextSize = currentLength < MaximumSegmentSize
+            ? Math.Min(currentLength * 2, MaximumSegmentSize)
+            : currentLength;
+
+        uint minimumSize = (uint)Math.Max(nextSize, sizeHint);
 
         // The ArrayPool<T> class has a maximum threshold of 1024 * 1024 for the maximum length of
         // pooled arrays, and once this is exceeded it will just allocate a new array every time
         // of exactly the requested size. In that case, we manually round up the requested size to
-        // the nearest power of two, to ensure that repeated consecutive writes when the array in
-        // use is bigger than that threshold don't end up causing a resize every single time.
-        if (minimumSize > 1024 * 1024)
+        // the nearest power of two, to avoid renting a new array for every consecutive write
+        // once the active buffer exceeds that threshold.
+        if (minimumSize > MaximumSegmentSize)
         {
             minimumSize = BitOperations.RoundUpToPowerOf2(minimumSize);
         }
 
-        this.pool.Resize(ref this.array, (int)minimumSize);
+        return (int)minimumSize;
+    }
+
+    /// <summary>
+    /// Ensures all written data is represented by a single active buffer.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void EnsureSingleBuffer()
+    {
+        T[]? array = this.array;
+
+        if (array is null)
+        {
+            ThrowObjectDisposedException();
+        }
+
+        if (this.bufferedCount == 0)
+        {
+            return;
+        }
+
+        ConsolidateBuffers();
+    }
+
+    /// <summary>
+    /// Consolidates all written data into a single active buffer.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private void ConsolidateBuffers()
+    {
+        T[] currentBuffer = this.array!;
+        int totalCount = this.bufferedCount + this.index;
+        T[] targetBuffer = this.pool.Rent(totalCount);
+        int offset = 0;
+
+        foreach (BufferInfo buffer in this.buffers!)
+        {
+            buffer.Array.AsSpan(0, buffer.Length).CopyTo(targetBuffer.AsSpan(offset));
+            offset += buffer.Length;
+            this.pool.Return(buffer.Array);
+        }
+
+        currentBuffer.AsSpan(0, this.index).CopyTo(targetBuffer.AsSpan(offset));
+        this.pool.Return(currentBuffer);
+
+        this.buffers!.Clear();
+        this.bufferedCount = 0;
+        this.array = targetBuffer;
+        this.index = totalCount;
     }
 
     /// <summary>
@@ -366,6 +601,14 @@ public sealed class ArrayPoolBufferWriter<T> : IBuffer<T>, IMemoryOwner<T>
     }
 
     /// <summary>
+    /// Throws an <see cref="ArgumentOutOfRangeException"/> when the requested size exceeds the supported length.
+    /// </summary>
+    private static void ThrowArgumentOutOfRangeExceptionForExcessiveSizeHint()
+    {
+        throw new ArgumentOutOfRangeException("sizeHint", "The buffer writer cannot contain more than int.MaxValue items.");
+    }
+
+    /// <summary>
     /// Throws an <see cref="ArgumentOutOfRangeException"/> when the requested count is negative.
     /// </summary>
     private static void ThrowArgumentExceptionForAdvancedTooFar()
@@ -379,5 +622,58 @@ public sealed class ArrayPoolBufferWriter<T> : IBuffer<T>, IMemoryOwner<T>
     private static void ThrowObjectDisposedException()
     {
         throw new ObjectDisposedException("The current buffer has already been disposed.");
+    }
+
+    /// <summary>
+    /// The metadata for each completed buffer.
+    /// </summary>
+    private readonly struct BufferInfo
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BufferInfo"/> struct.
+        /// </summary>
+        /// <param name="array">The underlying array.</param>
+        /// <param name="length">The number of written items.</param>
+        public BufferInfo(T[] array, int length)
+        {
+            this.Array = array;
+            this.Length = length;
+        }
+
+        /// <summary>
+        /// Gets the underlying array.
+        /// </summary>
+        public T[] Array { get; }
+
+        /// <summary>
+        /// Gets the number of written items in <see cref="Array"/>.
+        /// </summary>
+        public int Length { get; }
+    }
+
+    /// <summary>
+    /// A <see cref="ReadOnlySequenceSegment{T}"/> implementation for pooled buffers.
+    /// </summary>
+    private sealed class SequenceSegment : ReadOnlySequenceSegment<T>
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SequenceSegment"/> class.
+        /// </summary>
+        /// <param name="memory">The memory to wrap.</param>
+        public SequenceSegment(ReadOnlyMemory<T> memory)
+        {
+            this.Memory = memory;
+        }
+
+        /// <summary>
+        /// Sets the next segment and updates the running index.
+        /// </summary>
+        /// <param name="next">The next segment.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void SetNext(SequenceSegment next)
+        {
+            next.RunningIndex = this.RunningIndex + this.Memory.Length;
+            this.Next = next;
+        }
     }
 }

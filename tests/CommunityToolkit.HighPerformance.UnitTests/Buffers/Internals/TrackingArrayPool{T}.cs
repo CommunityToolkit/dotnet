@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
 using System.Buffers;
 using System.Collections.Generic;
 
@@ -18,9 +19,21 @@ internal sealed class TrackingArrayPool<T> : ArrayPool<T>
     /// </summary>
     public IReadOnlyCollection<T[]> RentedArrays => this.arrays;
 
+    /// <summary>
+    /// Gets or sets whether the next rent should fail.
+    /// </summary>
+    public bool FailNextRent { get; set; }
+
     /// <inheritdoc/>
     public override T[] Rent(int minimumLength)
     {
+        if (this.FailNextRent)
+        {
+            this.FailNextRent = false;
+
+            throw new InvalidOperationException();
+        }
+
         T[] array = this.pool.Rent(minimumLength);
 
         _ = this.arrays.Add(array);

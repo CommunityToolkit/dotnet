@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Buffers;
 using System.Diagnostics;
 
 namespace CommunityToolkit.HighPerformance.Buffers.Views;
@@ -18,7 +19,7 @@ internal sealed class MemoryDebugView<T>
     /// <param name="arrayPoolBufferWriter">The input <see cref="ArrayPoolBufferWriter{T}"/> instance with the items to display.</param>
     public MemoryDebugView(ArrayPoolBufferWriter<T>? arrayPoolBufferWriter)
     {
-        this.Items = arrayPoolBufferWriter?.WrittenSpan.ToArray();
+        this.Items = arrayPoolBufferWriter?.GetReadOnlySequence().ToArray();
     }
 
     /// <summary>
